@@ -1,3 +1,5 @@
+> 最新 Joint P2 的研究结果见 [独立中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) 和 [新阶段入口](research/joint_p2/START_HERE.md)。以下历史正文保留。
+
 # B1 最终研究裁决
 
 **GO_LIMITED_TOPK_PROTOTYPE**：已实现从散射数据到3D vector-Mie模板材料事件概率、Top-K代表图、第三分支余量与不确定性。竞争主例50.64%单空腔、40.43%双空腔、8.93%实心。它是有明确proper prior的条件材料posterior，不是多图美化。

@@ -1,3 +1,5 @@
+> 最新 Joint P2 的研究结果见 [独立中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) 和 [新阶段入口](research/joint_p2/START_HERE.md)。以下历史正文保留。
+
 # B1：从一张材料图，到几个有概率意义的 Maxwell 材料解释
 
 2026-10-13。完整代码、配置、图、概率数据和账本在本目录。交互入口是[dashboard.html](dashboard.html)，数学细节见[THEORY.md](THEORY.md)，机器结果见[results](results/PRIMARY_SUMMARY.json)。

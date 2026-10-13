@@ -1,3 +1,5 @@
+> 最新 Joint P2 的理论与范围见 [独立中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) 和 [新阶段入口](research/joint_p2/START_HERE.md)。以下历史正文保留。
+
 # B1：材料事件概率与 Maxwell 成像
 
 2026-10-13。本文解释本项目实际使用的数学对象。已有 A17/A31/A32 结论保持原归属；以下 Bayes、importance、链式条件概率和插值稳定性不是新颖性声明。

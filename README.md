@@ -1,3 +1,9 @@
+# 最新研究：B1 × C1 Joint P2
+
+[中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) · [交互Top-K图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/joint_p2/) · [科学裁决](research/joint_p2/GATE_DECISION.md) · [完整证据下载](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/joint-p2-20261014)
+
+同一连续材料prior保留实心/中心/环形空腔解释，提供事件质量、条件不确定性、full-Mie补偿与独立传感器更新。新增3459/4000次物理attempt；C1未达到完整连续posterior目标。下面原有内容保留为历史研究。
+
 # B1 — Probabilistic Multi-Hypothesis Maxwell Imaging
 
 本仓库最新更新 **B1 E0**：[新入口](research/b1_next/e0/START_HERE.md)、[新中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)。原始公开baseline及数据保持；E0新增物理0，E1未授权，E0已在本仓库公开。`python -m src.b1 e0`是零物理入口，已经完成的output不能原地覆盖。

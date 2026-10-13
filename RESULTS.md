@@ -1,3 +1,5 @@
+> 最新 Joint P2 的研究结果见 [独立中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) 和 [新阶段入口](research/joint_p2/START_HERE.md)。以下历史正文保留。
+
 # B1 实验结果
 
 2026-10-13。原始、派生与经验近似结果分列，不是严格概率认证。

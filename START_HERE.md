@@ -1,4 +1,10 @@
-# 最新研究入口：B1 E0
+# 最新研究：B1 × C1 Joint P2
+
+[中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) · [交互Top-K图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/joint_p2/) · [科学裁决](research/joint_p2/GATE_DECISION.md) · [完整证据下载](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/joint-p2-20261014)
+
+同一连续材料prior保留实心/中心/环形空腔解释，提供事件质量、条件不确定性、full-Mie补偿与独立传感器更新。新增3459/4000次物理attempt；C1未达到完整连续posterior目标。下面原有内容保留为历史研究。
+
+# 历史入口：B1 E0
 
 已完成零新增物理的连续posterior摘要修复：[E0入口](research/b1_next/e0/START_HERE.md)、[独立中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)、[资源与原始数组](research/b1_next/e0/results/SUMMARY.json)。旧报告/图/384次账本保留；新阶段公开更新到同一仓库。
 

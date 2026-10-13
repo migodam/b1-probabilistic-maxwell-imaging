@@ -1,0 +1,22 @@
+/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/numpy/_core/fromnumeric.py:3862: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/tools/p2_accept_reference.py", line 27, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/tools/p2_accept_reference.py", line 26, in main
+    b=rng.choice(delta,(2000,64),replace=True).mean(1);dump(out/'REFINED_FRESH_EVENT_COMPARISON.json',dict(aggregates=aggregates,rows=metrics,full_minus_diagonal=dict(mean=float(np.mean(delta)),CI95=np.quantile(b,[.025,.975]).tolist()),models_unchanged=True,new_physics=0,old_metrics_retained=True,reference='all128 moment/event audit; upgraded3 rows17 crosschecked21',latent_KL='old13quadrature expectation retained empirical, not recomputed/material KL'))
+                                                       ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/src/b1_joint/accounting.py", line 14, in dump
+    path.write_text(json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False,default=numpy_default)+'\n')
+                    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant: nan
