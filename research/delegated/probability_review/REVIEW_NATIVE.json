@@ -1,0 +1,296 @@
+{
+  "schema": "B1-independent-native-probability-review-v1",
+  "review_date": "2026-10-13",
+  "working_directory": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-probabilistic-maxwell-imaging",
+  "status": "NO_FATAL_TARGET_BUG_FOUND_WITHIN_DECLARED_MODEL; TWO_ACTIONABLE_CORRECTIONS_FIXED_AND_VERIFIED; SCIENTIFIC_LIMITS_REMAIN",
+  "final_scientific_judgment_owner": "parent Codex",
+  "codex_intervention_needed": true,
+  "intervention_reason": "Final claim scope, empirical-vs-certified reference interpretation, failed sampler gate, and native-A17 interpretation remain parent scientific judgments; source/reporting bugs identified here are fixed.",
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "SCOPE",
+      "status": "PASS_WITH_LIMITED_SUPPORT",
+      "title": "Proper continuous target, preserved TopK remainder, and correct image moments",
+      "evidence": [
+        "configs/protocol.json",
+        "src/b1/inference.py:9",
+        "src/b1/inference.py:38",
+        "src/b1/inference.py:71",
+        "src/b1/inference.py:87",
+        "research/delegated/probability_review/FIELD_AUDIT_NATIVE.json"
+      ],
+      "detail": "The adopted prior has H in {0,1,2} and a uniform continuous complex material box Re(epsilon)=[2.2,2.8], Im(epsilon)=[.04,.16]. Branch quadrature weights sum to one and posterior event masses include the declared topology prior. Displayed representatives are grid maximum-likelihood points, not atoms with their displayed branch mass. Top2 retains the third branch mass. Direct saved-weight image moments agree within 1.5e-14 for complex variance over all 12 saved cases.",
+      "limitation": "These are fixed-center, fixed-boundary concentric geometry events and 2D central sections of a 3D model. Outside adopted support has zero mass by prior construction, including off-box material values. Probability under a broader physical model is undefined, not ruled out by these data.",
+      "action": "Preserve the narrow support and representative/event distinction in final scientific claims; no probability reassignment is justified."
+    },
+    {
+      "id": "R2",
+      "severity": "PASS",
+      "status": "PASS_WITH_FINITE_AUDIT_SCOPE",
+      "title": "Real Gaussian likelihood and marginalized gain determinant are correct",
+      "evidence": [
+        "src/b1/physics.py:35",
+        "src/b1/physics.py:82",
+        "src/b1/inference.py:16",
+        "tests/test_probability.py",
+        "results/refinement/FULL_FORWARD_CHECKS.json",
+        "research/delegated/probability_review/RECOMPUTATION_NATIVE.json"
+      ],
+      "detail": "The 16 complex angular/polarization channels are packed into 32 real components. Sigma is fixed per experiment; complex RMS noise equals sqrt(2)*sigma. Integrating real gain g~N(1,s^2) gives covariance sigma^2 I+s^2 F F^T and retains its candidate-dependent determinant. Dense Cholesky cross-check on saved responses agrees with the rank-one implementation to floating-point precision. Static boundary matching uses TM weight 1/m and TE weight m, consistent with the homogeneous coefficients and outgoing h1 under exp(-i omega t).",
+      "limitation": "Static formula review and saved finite checks support this concentric, nonmagnetic model only. Independent treams comparison errors are reported but its oracle outputs are not retained in FULL_FORWARD_CHECKS, so they were not numerically rederived in this review.",
+      "action": "Keep likelihood normalization and determinant. Do not generalize finite model audits into general 3D imaging validation."
+    },
+    {
+      "id": "R3",
+      "severity": "LIMITATION",
+      "status": "STRICT_REFERENCE_UNRESOLVED",
+      "title": "Second-round reference is empirical and changes the forward target",
+      "evidence": [
+        "src/b1/refine.py:68",
+        "src/b1/cli_infer.py:46",
+        "results/PRIMARY_SUMMARY.json",
+        "results/refinement/SUMMARY.json",
+        "results/refinement/FULL_FORWARD_CHECKS.json"
+      ],
+      "detail": "Original 5/7 full-grid reference fails in four of six cases: distinguishable, gain_mismatch, gain_marginalized, and representation_mismatch. All six alternative cases pass the unchanged probability .02 and logBF .1 diagnostics using 7x7 polynomial forward interpolation and 17/25 integration. Recomputed maximum empirical relative field error is 5.999465843e-7 at 24 paid development points; four separately paid treams checks report <=1.852148388e-15.",
+      "limitation": "Passing 5/7 interpolation and 17/25 integration differences does not bound unseen interpolation error or certify full-Mie probability error. The checks are development evidence, not blind validation. Original failed gates remain failed.",
+      "action": "Use EMPIRICALLY_REFINED_REFERENCE with its approximation target; do not claim a uniform remainder, rigorous .02 probability certificate, or strict full-Maxwell reference."
+    },
+    {
+      "id": "R4",
+      "severity": "LIMITATION",
+      "status": "MATERIAL_CDF_NOT_CERTIFIED",
+      "title": "Conditional material quantiles have a distinct approximation and no convergence gate",
+      "evidence": [
+        "src/b1/inference.py:29",
+        "src/b1/inference.py:50",
+        "src/b1/inference.py:63",
+        "research/delegated/probability_review/RECOMPUTATION_NATIVE.json"
+      ],
+      "detail": "Conditional summaries use a prior-mass-bin piecewise constant reconstruction, which reproduces prior quantiles for constant likelihood but is not the exact continuous posterior CDF. The reference function checks topology probabilities and logBF only. Across all branches, conditional Re(epsilon) quantiles can differ by .0151477 between 17 and 25 integration nodes in the distinguishable case, even while its branch reference passes; that maximum includes very low-probability branches.",
+      "limitation": "No credible-interval discretization error bound or dedicated interval convergence tolerance was declared. A branch-mass diagnostic cannot certify the material interval.",
+      "action": "Continue labeling material quantiles approximate; limit interval interpretation and separate their numerical uncertainty from posterior uncertainty."
+    },
+    {
+      "id": "R5",
+      "severity": "P2",
+      "status": "FIXED_AND_VERIFIED",
+      "title": "Calibration coverage was marginal, not conditional on topology",
+      "evidence": [
+        "src/b1/pilot.py:168",
+        "src/b1/pilot.py:184",
+        "results/CALIBRATION_RESULTS.json",
+        "results/PRIMARY_SUMMARY.json",
+        "research/delegated/probability_review/CALIBRATION_INTERVAL_REANALYSIS_NATIVE.json",
+        "research/delegated/probability_review/CORRECTION_VERIFICATION_NATIVE.json"
+      ],
+      "detail": "Initial code computed the material CDF using joint posterior weights across all H but called the resulting coverage conditional_material_90_coverage. The parent has corrected source and current outputs to marginal_material_90_coverage without changing values. Exact seed replay reproduces all 24 parent parameters and 720 stored probability vectors (maximum discrepancy 1.11e-15). A separate true-H conditional reanalysis gives Re coverage .902778 and Im coverage .865278.",
+      "limitation": "True-H conditional coverage is oracle-conditioned on the known generative topology and uses the same approximate CDF method. It is descriptive model-check evidence, not a public classifier selecting the true H.",
+      "action": "Keep the corrected marginal label; cite conditional reanalysis separately, with its parent-cluster intervals and scope."
+    },
+    {
+      "id": "R6",
+      "severity": "LIMITATION",
+      "status": "EXPLORATORY_CLUSTER_LIMIT",
+      "title": "Calibration uncertainty belongs to 24 material parents, not 720 independent objects",
+      "evidence": [
+        "src/b1/pilot.py:154",
+        "src/b1/pilot.py:180",
+        "results/CALIBRATION_RESULTS.json",
+        "research/delegated/probability_review/CALIBRATION_INTERVAL_REANALYSIS_NATIVE.json"
+      ],
+      "detail": "The existing stratified parent bootstrap correctly reproduces Brier .518204 [95% .459352,.579154] and log score .851607 [.750279,.959285]. Adding the same 8-parent-per-topology bootstrap to coverage gives marginal Re [.8375,.981944], marginal Im [.744444,.972222], true-H conditional Re [.809722,.9625], and true-H conditional Im [.741667,.969444]. Top2 empirical coverage minus mean reported mass is -.001244 with interval [-.045829,.036437]. The discrete nominal 90% topology sets actually average .975623 posterior mass and cover .979167.",
+      "limitation": "Coverage point estimates, sparse reliability bins, and apparent Top2 agreement do not establish calibrated probabilities outside this prior/noise design. Cluster intervals omit solver and representation bias. Discrete credible-set overshoot explains why coverage can greatly exceed .9.",
+      "action": "Report parent-cluster uncertainty and the achieved topology-set mass; keep calibration exploratory."
+    },
+    {
+      "id": "R7",
+      "severity": "FAILED_GATE",
+      "status": "SAMPLER_ACCURACY_FAIL_RETAINED",
+      "title": "Defensive importance correction is correct but the finite sampler misses the tolerance",
+      "evidence": [
+        "src/b1/pilot.py:60",
+        "results/importance/RESULT.json",
+        "results/importance/SAMPLES.json",
+        "research/delegated/probability_review/RECOMPUTATION_NATIVE.json",
+        "research/delegated/probability_review/DERIVED_METHOD_COMPARISON_NATIVE.json"
+      ],
+      "detail": "The stratified estimator averages L/q_z with q_z=.5+.5 product-Beta in unit-box coordinates; the Jacobian cancels because both the material prior and proposal transform by the same volume. Recomputed densities, saved paid-response likelihoods, evidence, and probabilities agree to roundoff. Max probability error is .025653929 vs original order7 and .025653928 vs the refined reference, exceeding .02. ESS remains 14.22-15.68 of 16 per branch. Reusing this same 48-point bank on the exactly recorded 720 calibration observations, without refitting its y0 proposal, gives mean/max event-mass error .038766/.232232 vs Gauss7. Only 205/720 pass probability .02, and 124/720 pass both probability and logBF thresholds. At the same nominal cold75 states, Gauss5 gives mean/max error 3.43196e-5/2.90358e-4 and passes both diagnostics in 720/720. Paired parent-bootstrap frozen-IS minus Gauss5 score changes are Brier .0119718 [.0033808,.0208755] and log .0194827 [.0039134,.0349092].",
+      "limitation": "Positive defensive support and high sampled ESS do not guarantee finite-N accuracy or detection of unsampled within-branch modes. Normalized evidence ratios are finite-N biased; bootstrap intervals cannot certify absent modes. This is a frozen single-y0 proposal and an exposed panel, not importance newly adapted to each datum or general proof that quadrature always beats importance.",
+      "action": "Retain failed sampler accuracy and the 27+48=75 paid setup/sample cost; do not upgrade this run to a successful accelerated method."
+    },
+    {
+      "id": "R8",
+      "severity": "LIMITATION",
+      "status": "GENERIC_SIGNATURE_ONLY",
+      "title": "Generic affine reweighting does not demonstrate native A17 feedback acceleration",
+      "evidence": [
+        "src/b1/pilot.py:108",
+        "results/MODEL_CORRECTION_MECHANISM.json",
+        "results/LINEAR_MODELS.npz",
+        "research/delegated/probability_review/RECOMPUTATION_NATIVE.json"
+      ],
+      "detail": "Saved affine identity and branch reweighting arithmetic reproduce to roundoff. The Jacobian defect is rank 2 in a 2D material space for every branch, with signature dimension up to 4. Exact nonlinear reweighting uses the already paid full target bank; no prior-support remainder is certified. The report explicitly sets A17_native_Galerkin_exchange_used=false.",
+      "limitation": "Recovering full evidence by using the exact paid target likelihood is an algebraic identity, not independent predictive accuracy or uncharged speedup. There is no material-dimension reduction here, and nonlinear remainders are non-negligible for mismatched controls.",
+      "action": "Keep the generic SVD/affine interpretation and no-native-A17/no-speedup conclusion; parent owns final theoretical judgment."
+    },
+    {
+      "id": "R9",
+      "severity": "P1",
+      "status": "FIXED_AND_VERIFIED",
+      "title": "NPZ gain metadata originally silently changed the probability target",
+      "evidence": [
+        "src/b1/cli_infer.py:38",
+        "src/b1/cli_infer.py:55",
+        "src/b1/pilot.py:42",
+        "src/b1/pilot.py:210",
+        "src/b1/refine.py:79",
+        "results/NPZ_OBSERVATION_METADATA_CORRECTION.json",
+        "results/cli_gain_regression_corrected/RUN_RECEIPT.json",
+        "research/delegated/probability_review/CORRECTION_VERIFICATION_NATIVE.json"
+      ],
+      "detail": "Initial marginalized posterior snapshots omitted gain_sd while the NPZ loader forced gain_sd=0. Refeeding that snapshot could change the refined probability by .4706791. The parent now saves and loads gain_sd, persists .15 for marginalized cases, and writes likelihood metadata. Corrected CLI replay exactly matches refined_gain_marginalized probabilities and every persisted NPZ field, with zero new physics.",
+      "limitation": "The first wrong-target regression remains historical evidence of the bug; it must not be presented as the corrected marginalized run. Missing gain metadata in genuinely older external observations still defaults to zero by documented loader behavior.",
+      "action": "Use corrected replay and provenance receipt. The source/data-contract bug is resolved in the current artifacts."
+    },
+    {
+      "id": "R10",
+      "severity": "PASS",
+      "status": "HARD_BUDGET_ACCOUNTED",
+      "title": "All 384 physical evaluations are charged; reviewer reanalysis adds zero",
+      "evidence": [
+        "src/b1/budget.py",
+        "src/b1/audit.py",
+        "tests/test_probability.py",
+        "results/PHYSICS_LEDGER.jsonl",
+        "results/BUDGET_CONTRACT.json",
+        "results/JOB_LEDGER.jsonl",
+        "results/RESOURCE_SUMMARY.json",
+        "research/delegated/probability_review/RECOMPUTATION_NATIVE.json"
+      ],
+      "detail": "Ledger BEGIN ids are unique and contiguous 1..384, each has exactly one PASS END, with no unfinished or failed physical calls. By-kind totals and job physics totals agree with the immutable contract high-water 384. Decomposition is 16 physical audit calls +243 grid calls +4 fresh truth/control calls +48 importance +9 optimizer endpoint checks +12 derivatives +24 calibration parents +28 second-round checks =384. Nineteen forward audit assertions do not mean nineteen physical calls. Algebra tests perform no physical solver calls, including the temporary synthetic-failure budget test.",
+      "limitation": "The declared historical 74 calls are provenance only, not recomputed or read; the combined 458 count is not a new budget. Zero physical failures here does not erase separately logged nonphysical implementation failures.",
+      "action": "No more physics calls are authorized; retain 384/384, zero remaining, and no NN/GPU/old locked-data claims beyond the observed source/ledger scope."
+    }
+  ],
+  "new_physics_evaluations": 0,
+  "physics_budget": {
+    "before": 384,
+    "after": 384,
+    "cap": 384,
+    "remaining": 0
+  },
+  "recomputation_cost": {
+    "instrumented_wall_seconds": 3.151867501088418,
+    "process_cpu_seconds": 2.802013,
+    "main_reanalysis_runs": 2,
+    "additional_field_audit_runs": 1,
+    "metadata_verification_runs": 1,
+    "note": "Initial dense slogdet warnings retained in RECOMPUTATION_RUNS_NATIVE; finite Cholesky follow-up passed. Costs include imports in recorded scripts, exclude report writing and UI/tool transport.",
+    "derived_comparison_runs": 2
+  },
+  "prohibited_actions": {
+    "new_physics": false,
+    "neural_training": false,
+    "installs": false,
+    "historical_or_locked_arrays": false,
+    "model_subprocess_workers": false,
+    "new_agents": false,
+    "shared_source_or_results_modified_by_reviewer": false
+  },
+  "numerical_checks": {
+    "dense_gain_log_likelihood_error": 1.4210854715202004e-14,
+    "calibration_identity_error": 1.1102230246251565e-15,
+    "image_variance_max_error": 1.4664918585038933e-14,
+    "corrected_gain_snapshot_field_max_error": 0.0
+  },
+  "evidence_artifacts": [
+    "RECOMPUTATION_NATIVE.json",
+    "CALIBRATION_INTERVAL_REANALYSIS_NATIVE.json",
+    "FIELD_AUDIT_NATIVE.json",
+    "CORRECTION_VERIFICATION_NATIVE.json",
+    "RECOMPUTATION_RUNS_NATIVE.json",
+    "DERIVED_METHOD_COMPARISON_NATIVE.json",
+    "DERIVED_METHOD_COMPARISON_RECEIPT_NATIVE.json",
+    "DERIVED_METHOD_COMPARISON_RUNS_NATIVE.json",
+    "DERIVED_METHOD_COMPARISON_NATIVE.md"
+  ],
+  "current_metadata_verified": true,
+  "strict_uniform_certificate": false,
+  "scientific_or_human_acceptance_claimed": false,
+  "derived_method_comparison": {
+    "artifact": "DERIVED_METHOD_COMPARISON_NATIVE.json",
+    "receipt": "DERIVED_METHOD_COMPARISON_RECEIPT_NATIVE.json",
+    "scope": {
+      "target": "Adopted 3-template continuous uniform material prior, 32 real Gaussian components, no gain nuisance",
+      "calibration_design": "24 previously generated continuous material parents, 8 per H, 30 previously recorded noise realizations each",
+      "reconstruction": "Published seed replay; exact parent manifest and all 720 Gauss7 probability records verified before comparison",
+      "original_probability_identity_max_error": 1.4432899320127035e-15,
+      "reference": "Original paid order7 full-Mie Gauss quadrature; exposed development reference, not certified truth",
+      "frozen_importance_proposal": "Single competitive y0 proposal fitted only to its order3 posterior; samples and q_z frozen for all 720 other data",
+      "importance_adapted_per_datum": false,
+      "importance_redrawn_for_calibration": false,
+      "cold_cost_semantics": "Hypothetical standalone method setup states from existing paid banks, not additional charges. Gauss5 3*25=75; frozen IS27+48=75; Gauss7 reference 3*49=147. Common finite solver audit and reference validation costs are separate.",
+      "gauss5_actual_initial_pipeline_new_calls": 72,
+      "gauss5_initial_reused_center_states": 3,
+      "bootstrap": "2,000 parent-stratified resamples, 8 parents per true H, paired comparisons preserve shared data",
+      "method_superiority_scope": "Within this already exposed prior/noise calibration panel only; no general sampler superiority or real-world calibration claim",
+      "hard_map_log_score": "Exact one-hot decision: +infinity on wrong predictions. Strict JSON uses null plus explicit positive-infinity flags; no floor.",
+      "no_new_experiment": true,
+      "no_uniform_error_certificate": true,
+      "locked_or_historical_arrays_read": false,
+      "imported_B1_modules": false,
+      "neural_training": false,
+      "installs": false
+    },
+    "equal_cold_cost_paired_scores": {
+      "methods": [
+        "frozen_importance48",
+        "gauss5"
+      ],
+      "nominal_cold_states_each": 75,
+      "sign": "frozen_importance48 minus gauss5; positive Brier/log-score differences favor gauss5 on this panel",
+      "frozen_importance_not_adapted_per_datum": true,
+      "metrics": {
+        "Brier_multiclass": {
+          "paired_mean_difference": 0.011971820543826985,
+          "parent_stratified_bootstrap95": [
+            0.003380795819034999,
+            0.020875512585155215
+          ]
+        },
+        "log_score": {
+          "paired_mean_difference": 0.019482725891092866,
+          "parent_stratified_bootstrap95": [
+            0.0039133950134457056,
+            0.03490921126392294
+          ]
+        },
+        "mean_max_probability_error_vs_gauss7": {
+          "paired_mean_difference": 0.038731945883203396,
+          "parent_stratified_bootstrap95": [
+            0.03528187065206835,
+            0.04209293104106733
+          ]
+        },
+        "fraction_within_probability_tolerance": {
+          "paired_mean_difference": -0.7152777777777777,
+          "parent_stratified_bootstrap95": [
+            -0.7569444444444445,
+            -0.6722222222222224
+          ]
+        },
+        "MAP_accuracy": {
+          "paired_mean_difference": 1.1564823173178713e-18,
+          "parent_stratified_bootstrap95": [
+            -0.016666666666666663,
+            0.015277777777777779
+          ]
+        }
+      }
+    },
+    "source_probability_identity_error": 1.4432899320127035e-15,
+    "new_physics_evaluations": 0
+  }
+}

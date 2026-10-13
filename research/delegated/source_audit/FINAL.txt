@@ -1,0 +1,21 @@
+Audit complete. Both artifacts are written (only under the audit output dir); no physics was executed, no datasets/hashes touched.
+
+Artifacts:
+- [SOURCE_AUDIT.md](/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-probabilistic-maxwell-imaging/research/delegated/source_audit/SOURCE_AUDIT.md)
+- [EVIDENCE_REUSE.csv](/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-probabilistic-maxwell-imaging/research/delegated/source_audit/EVIDENCE_REUSE.csv)
+
+Findings (10):
+
+1. The strongest reusable asset is a homogeneous vector-Mie kernel in [mie_validation.py](/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A13/REVISION_R2/src/mie_validation.py): Bohren-Huffman `a_n/b_n`, `S1/S2` recurrences, physical far-field vector/bank, efficiencies, Rayleigh checks. Convention is frozen to `exp(-iωt)`, incidence `exp(+i k u·x)`, outgoing `exp(+ikR)/R`, algebraic `b·E` projection. All its checks are floating-point identities (coeff diff 0.0; S0 formula 9.2e-17; optical theorem 1.3e-16; nmax 20/30/40 identical).
+2. A layer-capable vector-Mie kernel already exists in [run_reference_checks.py](/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A15/research/delegated/layered_reference/run_reference_checks.py): `treams.coeffs.mie` multilayer coefficients with the achiral map `a=-(h00+h01)`, `b=-(h00-h01)`, checked against the homogeneous kernel (collapsed 3.2e-15, vacuum-shell 4.3e-15, vacuum-zero 0.0, multipole convergence 0.0). This is the piece B1 E0's concentric layered sphere needs.
+3. Acquisition/observation geometry is reusable as-is: `A9/code/experiment_support.py` `acquisition()` (Fibonacci dirs, receivers at `5·unit`, transverse basis) is already shared by both Mie harnesses.
+4. License/provenance: `treams` 0.4.7 is vendored under `A6/vendor/treams` and is MIT (© 2025 Dominik Beutel). In-tree Gaussian modules (A9/A12/A13/A15/A17/A24/A30/A32) carry no LICENSE of their own; published siblings are MIT (© 2026 migodam). Textbook Mie formulas carry no license obligation.
+5. Negative boundary N1/N2: the A13 DDA-vs-Mie check is PARTIAL — grids 16 and 28 fail the 3% field gate, grid 28 fails the 5% derivative gate; convergence is non-monotone, and 28³ holds only 93.14% of the sphere volume vs 99.56% at 32³.
+6. Negative boundary N3: the layered DDA reference qualifies only grids 20/24/32 (12/16/28 fail), concentric-only, uniform-real-derivative only, no full Jacobian.
+7. Negative boundary N4: `treams` is ABI-incompatible with the current SciPy and its `parity` path warns; only the `helicity` path is clean and it must run in a fresh, vendor-prepended process.
+8. Prior "selection vs capacity" negatives must not be overwritten: A30 E0 packed capacity offline (hull +13.12%, sparse64 +35.69%) but E1 was NO-GO (min compensated full-F distance 8.84 vs ≤1); A32 E0 FAILED (complex MSE +39.46% vs N3 while offline capacity remained); A28/A29 6-step F/L gained only +1.01%/+0.40% with a budget-compliance FAIL.
+9. No reference posterior exists yet: A14/A15 = `UNRESOLVED_REFERENCE_INSUFFICIENT` / Gate_B FAIL / Flow NOT RUN. B1 must build the E0 reference before any sampler comparison. A32 theory also fixes the ill-posedness boundary: no uniform minimum-hole detection without a declared scale, and topology needs an explicit event definition plus `P(K=0)>0`.
+10. All prior inverse physics in-tree is 2-D scalar TM (24×24, 8/32); the only 3-D vector physics is analytic forward Mie. The in-repo A32/A30 "frozen" backend is reusable for budget/reservation idioms, not as 3-D evidence.
+
+Uncertainties: no second independent *layered* solver exists (the A15 layered check is step-convergence + linearity, and its angular projection is inherited, not independent); only a 2-region example was exercised (3+ shells, strong absorption unverified); B1 E0 tolerances (ΔP(H) ≤ 0.02, Δlog-BF ≤ 0.1, 384-call cap) are research tolerances, so E0 may legitimately return `REFERENCE_UNRESOLVED`; the provided A32 theory package and `Gaussian/A32` E0-FAIL experiment are distinct objects and should not be merged.
+
