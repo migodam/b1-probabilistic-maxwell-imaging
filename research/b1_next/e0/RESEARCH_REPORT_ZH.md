@@ -84,3 +84,6 @@ E1 raw/full-Mie secant、ε及ε+gain补偿、多频、统一implicit radial fie
 
 当前没有IEEE TAP强理论/算法创新证据。停止用高ESS、低residual、拓扑mass稳定或漂亮图替代连续posterior参考；停止把fixed-template benchmark说成统一开放几何成像。下一步在有真实授权时先验证结构信号与nuisance compensation；机制失败则转active sensing或仅保留benchmark，不能无限调噪声制造成功。
 
+
+
+公开更新：用户2026-10-13要求研究默认公开。本E0已并入同一个B1仓库；[网页报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/b1_next/e0/)、[研究总览](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/)。发布未运行新实验、哈希检查或额外测试。此前未发布的表述保留其历史时间含义，物理授权仍0。

@@ -1,6 +1,6 @@
 # B1 — Probabilistic Multi-Hypothesis Maxwell Imaging
 
-本隔离分支新增 **B1 E0**：[新入口](research/b1_next/e0/START_HERE.md)、[新中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)。原始公开baseline及数据保持；E0新增物理0，E1未授权，分支未公开发布。`python -m src.b1 e0`是零物理入口，已经完成的output不能原地覆盖。
+本仓库最新更新 **B1 E0**：[新入口](research/b1_next/e0/START_HERE.md)、[新中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)。原始公开baseline及数据保持；E0新增物理0，E1未授权，E0已在本仓库公开。`python -m src.b1 e0`是零物理入口，已经完成的output不能原地覆盖。
 
 公开仓库：[https://github.com/migodam/b1-probabilistic-maxwell-imaging](https://github.com/migodam/b1-probabilistic-maxwell-imaging)。重建图网页：[Top-K imaging dashboard](https://migodam.github.io/b1-probabilistic-maxwell-imaging/)。网页版GPT阅读入口：[START_HERE.md](START_HERE.md)。
 
@@ -20,7 +20,7 @@ b1_python=python3
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 "$b1_python" -m src.b1 infer --observation results/cases/competitive/posterior.npz --output results/new_imaging_demo
 ```
 
-从项目根目录执行。输出目录必须未存在，以保留之前预测。该入口已经实际测试，输出probabilities.json、posterior.npz、实/虚部top_k_material.png与occupancy/SD图；新Maxwell调用0。`--model full-grid`使用原生已付费7阶网格，并对5阶比较；本隔离分支的`refined`或`continuous`使用同一polynomial density的65/97积分、直接CDF及quantile反解；原生`full-grid`保留节点/bin混合摘要诊断，不作为连续材料区间参考。
+从项目根目录执行。输出目录必须未存在，以保留之前预测。该入口已经实际测试，输出probabilities.json、posterior.npz、实/虚部top_k_material.png与occupancy/SD图；新Maxwell调用0。`--model full-grid`使用原生已付费7阶网格，并对5阶比较；当前版本的`refined`或`continuous`使用同一polynomial density的65/97积分、直接CDF及quantile反解；原生`full-grid`保留节点/bin混合摘要诊断，不作为连续材料区间参考。
 
 外部观测可以用JSON：`data`为32个实数（16复通道全部实部后全部虚部），`noise_real_sd`为正且固定的σ，可选`topology_prior`为3个正数并归一化，可选`gain_sd`为g~N(1,s_g²)的标准差。必须与protocol.json的角度、偏振、k、单位及物理模型相同；该原型不能直接解释任意实验仪器的数据。程序拒绝改动既付费bank的材料prior/几何/频率配置后重新解读缓存。NPZ同样保留gain_sd，修复前的错误重放已归档。
 

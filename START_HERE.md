@@ -1,6 +1,6 @@
-# 本隔离分支的新入口：B1 E0
+# 最新研究入口：B1 E0
 
-已完成零新增物理的连续posterior摘要修复：[E0入口](research/b1_next/e0/START_HERE.md)、[独立中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)、[资源与原始数组](research/b1_next/e0/results/SUMMARY.json)。旧报告/图/384次账本保留；新阶段未发布。
+已完成零新增物理的连续posterior摘要修复：[E0入口](research/b1_next/e0/START_HERE.md)、[独立中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)、[资源与原始数组](research/b1_next/e0/results/SUMMARY.json)。旧报告/图/384次账本保留；新阶段公开更新到同一仓库。
 
 以下为历史固定模板baseline入口。
 

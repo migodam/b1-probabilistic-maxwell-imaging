@@ -6,4 +6,4 @@
 
 隔离分支research/b1-e0-posterior-audit，main未修改。新增物理0/0，历史384/384；未借用C1。只有指定必要概率核对，没有旧全suite/smoke/哈希。原生subagent写controls；报告worker容量失败后由父Codex完成，不换model/provider。
 
-新报告及裁决见RESEARCH_REPORT_ZH.md、GATE_DECISION.json；可复用资产见REUSABLE_ASSETS.md。同target积分参考不认证真实Maxwell/continuum/仪器概率；E1及新发布未授权，未执行。
+新报告及裁决见RESEARCH_REPORT_ZH.md、GATE_DECISION.json；可复用资产见REUSABLE_ASSETS.md。同target积分参考不认证真实Maxwell/continuum/仪器概率；E1新增物理仍未授权；公开发布现已由用户授权。

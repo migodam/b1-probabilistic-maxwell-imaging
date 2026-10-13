@@ -54,3 +54,7 @@
 新CLI显式携带gain_sd，实际gain观测重放概率与E0一致，旧缺失metadata不能静默改变likelihood。提供216个直接CDF probes、连续数组、六TopK图和两诊断图。保留slogdet警告、独立Cholesky检查、旧treams数组缺口及三次原生报告worker容量失败。初版图文字重叠已修，旧图/绘图成本保留。
 
 新的同一polynomial target是经验参考，无uniform/full-Mie/现实校准认证；原先720数据材料coverage不自动沿用。E1 full-Mie secant/epsilon+gain补偿、多频、统一implicit field、active sensing、NN与新发布均未执行。科研裁决：继续修复概率benchmark；机制解释力未测。不放宽门槛、不追加物理、不重置历史账本。完整证据见 research/b1_next/e0/。
+
+## 2026-10-13 — 用户要求默认公开、复用仓库并整理主页
+
+E0发布并入当前B1 main，最新入口改为同一项目网页。新增研究总览、发布维护规则，历史A系列19仓库归档但不改名/删除，A17论文保持独立。主页只突出B1/C1/A17，其他项目与历史折叠。此工作没有新物理、训练、SHA或额外测试。
