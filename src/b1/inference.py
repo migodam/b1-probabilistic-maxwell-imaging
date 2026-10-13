@@ -51,13 +51,18 @@ def infer(bank,y,sigma,prior,gain_sd=0.):
         for j in range(2):
             bounds=bank.get('bounds',[(theta[:,0].min(),theta[:,0].max()),(theta[:,1].min(),theta[:,1].max())])[j]
             qs.append(weighted_quantiles(theta[ids,j],cond,weights[ids],bounds))
-        summ.append(dict(H=h,mean=mu.tolist(),covariance=cov.tolist(),quantiles_05_50_95=qs,effective_quadrature_nodes=float(1/np.sum(cond**2))))
+        lower=.05*(np.maximum(mu-np.array(qs)[:,0],0.)**2+np.maximum(np.array(qs)[:,2]-mu,0.)**2)
+        span=np.asarray([b[1]-b[0] for b in bank.get('bounds',[(theta[:,0].min(),theta[:,0].max()),(theta[:,1].min(),theta[:,1].max())])])
+        summ.append(dict(H=h,mean=mu.tolist(),covariance=cov.tolist(),quantiles_05_50_95=qs,effective_quadrature_nodes=float(1/np.sum(cond**2)),
+                         summary_measure=dict(moments='quadrature-node measure',quantiles='prior-mass-bin reconstruction',same_continuous_measure=False),
+                         coherence=dict(necessary_variance_lower_bound=lower.tolist(),passed=bool(np.all(np.diag(cov)+1e-12*span**2>=lower)),sufficient_for_accuracy=False)))
     return dict(topology_probabilities=p.tolist(),log_evidence=logzh.tolist(),log_total_evidence=float(total),
                 log_bayes_factors_vs_solid=(logzh-logzh[0]).tolist(),weights=W,representative_ids=reps,conditional_material=summ,
                 map_index=int(np.argmax(np.log(np.asarray(prior)[H])+logl)),
                 posterior_predictive_tail_probability=float(W@chi2.sf(mah,F.shape[1])),
                 posterior_expected_whitened_residual_per_component=float(W@mah/F.shape[1]),
-                wall_seconds=time.perf_counter()-start)
+                wall_seconds=time.perf_counter()-start,
+                material_summary_status='LEGACY_MIXED_NUMERICAL_SUMMARIES; use explicit continuous density for intervals and moments')
 
 
 def refinement(coarse,fine,config):

@@ -44,3 +44,13 @@
 ## 2026-10-13 用户授权公开发布
 
 用户要求直接publish，并明确不新增gate、不核验SHA-256、不增加smoke或零碎代码测试。按此要求发布既有代码、科学报告、材料图、概率结果与成本/失败记录；不重跑实验。公开状态与已有科学限制分别记录。
+
+## B1 E0 — 连续posterior摘要修复（独立本地分支）
+
+用户授权新增物理0。主线在 research/b1-e0-posterior-audit 上执行；未发现额外variable-radius阶段，未借用C1预算。对六旧development案例、三条件事件与材料边际实施25/41/65/97同一density积分及独立二维分区自适应参考。全部指定连续摘要经验条件通过；四项历史full-grid失败仍保留。
+
+关键发现：原生node moments/bin-CDF组合违反必要方差下界，72历史条件坐标中5项不相容。原生与细化q05在修复density中的实际CDF约0.006096/0.030012，不能视为5%。修复后strong H0 Re SD=.027064934288、q05=2.467483321080。只修复summary，不把该问题称evidence归一化失败。
+
+新CLI显式携带gain_sd，实际gain观测重放概率与E0一致，旧缺失metadata不能静默改变likelihood。提供216个直接CDF probes、连续数组、六TopK图和两诊断图。保留slogdet警告、独立Cholesky检查、旧treams数组缺口及三次原生报告worker容量失败。初版图文字重叠已修，旧图/绘图成本保留。
+
+新的同一polynomial target是经验参考，无uniform/full-Mie/现实校准认证；原先720数据材料coverage不自动沿用。E1 full-Mie secant/epsilon+gain补偿、多频、统一implicit field、active sensing、NN与新发布均未执行。科研裁决：继续修复概率benchmark；机制解释力未测。不放宽门槛、不追加物理、不重置历史账本。完整证据见 research/b1_next/e0/。

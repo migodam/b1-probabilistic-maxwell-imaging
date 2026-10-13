@@ -1,3 +1,9 @@
+# 本隔离分支的新入口：B1 E0
+
+已完成零新增物理的连续posterior摘要修复：[E0入口](research/b1_next/e0/START_HERE.md)、[独立中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)、[资源与原始数组](research/b1_next/e0/results/SUMMARY.json)。旧报告/图/384次账本保留；新阶段未发布。
+
+以下为历史固定模板baseline入口。
+
 # B1：多假设 Maxwell 概率成像
 
 这是一个实际运行的3D矢量Mie概率成像研究原型。输入16个复散射通道，在三个固定同心材料模板和连续复介电常数先验下，计算各拓扑事件的后验质量、代表性实/虚部材料切面与不确定性。
