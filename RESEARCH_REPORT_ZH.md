@@ -123,3 +123,6 @@ A30材料可观测metric帮助检查弱方向及prior尺度，但没有把局部
 
 
 证据保留缺口：4次独立treams核对保留了输入、误差与环境回执，但未保留其原始参考系数/数据数组；因此这些差异不能仅凭已存oracle数组独立重算。后续代码已增加原始数组保存，本研究在384次上限后没有重跑物理。
+
+
+公开发布更新（2026-10-13）：用户授权公开本研究的代码、概率结果、报告和失败/资源记录。仓库：[https://github.com/migodam/b1-probabilistic-maxwell-imaging](https://github.com/migodam/b1-probabilistic-maxwell-imaging)；[重建图网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/)。发布过程未新增科研gate、SHA-256核验、smoke或代码小测试，未运行新物理。文中的历史未发布状态仅描述当时记录。

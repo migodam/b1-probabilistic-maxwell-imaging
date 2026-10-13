@@ -10,4 +10,4 @@
 
 **预算收口**：新物理384/384，完整历史不删除，原包二维74另外保留，合计458解析材料–频率评估。GPU/NN/locked0。后续新物理或扩展support需要用户另行授权；本阶段代码/结果/报告/失败/成本完成本地交付。下一阶段优先增加一个可积分的几何变量或proper其他分支，重建reference，再考虑likelihood-informed/tempered/RJ方案。
 
-详细PASS/FAIL/HOLD/NOT_RUN与证据见[GATE_DECISION.json](GATE_DECISION.json)、[中文报告](RESEARCH_REPORT_ZH.md)、[独立native review](research/delegated/probability_review/REVIEW_NATIVE.md)。公开发布未执行。HTML现场渲染被本地file访问策略拒绝，记NOT_RUN；8张静态科学图已视觉核对。
+详细PASS/FAIL/HOLD/NOT_RUN与证据见[GATE_DECISION.json](GATE_DECISION.json)、[中文报告](RESEARCH_REPORT_ZH.md)、[独立native review](research/delegated/probability_review/REVIEW_NATIVE.md)。已按用户2026-10-13的明确授权公开发布：[https://github.com/migodam/b1-probabilistic-maxwell-imaging](https://github.com/migodam/b1-probabilistic-maxwell-imaging)。发布不改变上述科学结论。HTML现场渲染被本地file访问策略拒绝，记NOT_RUN；8张静态科学图已视觉核对。
