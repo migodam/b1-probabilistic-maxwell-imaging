@@ -1,0 +1,252 @@
+{
+  "type": "object",
+  "required": [
+    "version",
+    "episode_id",
+    "native_package_refs",
+    "target",
+    "observations",
+    "candidate",
+    "validation",
+    "structure",
+    "history",
+    "probability",
+    "cost"
+  ],
+  "properties": {
+    "version": {
+      "const": "GSearchEpisode/v1"
+    },
+    "episode_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "native_package_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "id",
+        "packing_version",
+        "gain_version",
+        "gain"
+      ],
+      "properties": {
+        "id": {
+          "const": "LEGACY_FROZEN_A30_24x24_scalar_TM"
+        },
+        "packing_version": {
+          "const": "A30_SOURCE_MAJOR_RE32_IM32/v1"
+        },
+        "gain_version": {
+          "const": "FIXED_ONE/v1"
+        },
+        "gain": {
+          "type": "number",
+          "const": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "observation_id",
+          "data_path"
+        ],
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "data_path": {
+            "$ref": "#/$defs/asset"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "required": [
+        "candidate_id",
+        "raw_field_path",
+        "corrected_field_path",
+        "verified_field_path",
+        "prediction_path"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_field_path": {
+          "$ref": "#/$defs/asset"
+        },
+        "corrected_field_path": {
+          "$ref": "#/$defs/asset"
+        },
+        "verified_field_path": {
+          "$ref": "#/$defs/asset"
+        },
+        "prediction_path": {
+          "$ref": "#/$defs/asset"
+        }
+      },
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "solver_diagnostics",
+        "constitutive_diagnostics",
+        "full_residual",
+        "material_legal",
+        "full_validation_receipt"
+      ],
+      "properties": {
+        "solver_diagnostics": {
+          "$ref": "#/$defs/diagnostic"
+        },
+        "constitutive_diagnostics": {
+          "$ref": "#/$defs/diagnostic"
+        },
+        "full_residual": {
+          "$ref": "#/$defs/diagnostic"
+        },
+        "material_legal": {
+          "type": "boolean"
+        },
+        "full_validation_receipt": {
+          "$ref": "#/$defs/asset"
+        }
+      },
+      "additionalProperties": false
+    },
+    "structure": {
+      "type": "object"
+    },
+    "history": {
+      "type": "object"
+    },
+    "probability": {
+      "type": "object",
+      "required": [
+        "posterior_weight",
+        "represented_mass",
+        "unmodeled_mass"
+      ],
+      "properties": {
+        "posterior_weight": {
+          "type": "null"
+        },
+        "represented_mass": {
+          "type": "null"
+        },
+        "unmodeled_mass": {
+          "type": "null"
+        },
+        "proposal_density": {
+          "type": "object",
+          "required": [
+            "value",
+            "interpretation"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "interpretation": {
+              "const": "PROPOSAL_ONLY"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "cost": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:research-g:GSearchEpisode:v1",
+  "$defs": {
+    "asset": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*[:\\\\]).+$"
+        },
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "array_key"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*[:\\\\]).+$"
+            },
+            "array_key": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "diagnostic": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "value",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "reason": {
+              "type": "null"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "value",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "null"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "Use g_contract.validate_episode as well: duplicate observation IDs, recursive forbidden online inputs, finite numbers and optional asset existence/key checks are application invariants. Software validation does not prove physics."
+}

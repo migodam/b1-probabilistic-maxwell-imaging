@@ -1,0 +1,104 @@
+{
+  "protocol_id": "Research-G-legacy-E1-20261015-v1",
+  "execution_authorized": true,
+  "backend_ready": true,
+  "authorization": "Current user message384 states/12288 complex RHS/10800 controlledwall; identical verified historical backend exception; no Pro-budget stacking",
+  "backend": {
+    "target_id": "A30_24x24_TM_8src32rx_v1",
+    "A30_commit": "717d3d26a290248bd2b9aeb55f3d03694b407b84",
+    "corrector_commit": "f1b674eb4893e39126701ed48f3d3dcef3098c3c",
+    "corrector_id": "ResearchA_E2_32realHaar_GN2_v1",
+    "packing": "source-major-Re32-Im32",
+    "gain": 1,
+    "whitening": "sqrt(2)/original_sigma",
+    "data_threshold": 23.785449004057032,
+    "state_dimension": 576,
+    "sources": 8,
+    "receivers": 32,
+    "precision": "complex128/float64",
+    "mass": 0.001736111111111111,
+    "constitutive": "current=chi*field; same material across8 sources",
+    "not_general_3D": true
+  },
+  "cases": [
+    "p250069_weak_a1_snr20",
+    "p250073_weak_a1_snr20",
+    "p250077_weak_a1_snr20"
+  ],
+  "case_selection": "all legal weak bases from historical eight-condition panel; saved full residual/material legality only, no truth; shrink4to3",
+  "T_guided": "WAITING_FOR_COMMITTED_T_HANDOFF; not implemented or renamed",
+  "T_new_corrector_used": false,
+  "methods": [
+    "multistart",
+    "static_scale",
+    "QD",
+    "bandit"
+  ],
+  "rounds": [
+    "first",
+    "quality"
+  ],
+  "trajectory_count_per_parent_method_round": 3,
+  "state_calls_per_trajectory": [
+    "raw",
+    "correction1",
+    "correction2",
+    "independent_fresh_validation"
+  ],
+  "per_parent_method_round_caps": {
+    "states": 12,
+    "RHS": 288
+  },
+  "planned_common_base_states": 3,
+  "planned_states": 291,
+  "planned_RHS_upper_bound": 6936,
+  "hard_caps": {
+    "states": 384,
+    "complex_RHS": 12288,
+    "controlled_wall_seconds": 10800,
+    "GPU": 0
+  },
+  "cache": "Keep normal within-trajectory receiver-transfer reuse; no gratuitous solves to equalize RHS; independently charge full base and endpoint validation",
+  "primary_cost_comparison": "matched fresh state attempts; actual RHS/time separately, not claimed equal",
+  "corrector": "unaltered A e2._gn_proposal,32real Haar,2 bounded GN steps,trust.35/rejection*.3; original regression corrector not T proposal-retentive",
+  "metric_version": "G-multiscale-support-v1",
+  "material_dM": {
+    "Re_scale": 4.5,
+    "Im_scale": 0.5,
+    "threshold": 0.03
+  },
+  "structure": {
+    "Gaussian_sigma_cells": [
+      0,
+      1,
+      2
+    ],
+    "boundary": "constant0",
+    "occupancy_low": 0.2,
+    "occupancy_width": 0.1,
+    "contrast_scale": 1.2,
+    "distance_threshold": 0.08,
+    "raw_mask_level": 0.25,
+    "minimum_XOR_cells": 6,
+    "sensitivity": [
+      0.04,
+      0.08,
+      0.16
+    ]
+  },
+  "defensive_global": "trajectory0 each3; probability fraction >=1/3, no screening",
+  "screening": "none; every generated proposal receives full evaluation; screened-out audit N/A",
+  "seed": 261015561,
+  "truth_policy": "No truth loaded in online process; freeze RESULTS and all arrays first; standalone scorer only after online process exits",
+  "exposure": "HISTORICALLY_EXPOSED_DEVELOPMENT",
+  "e0_completed_before_E1": true,
+  "e0_evidence": [
+    "results/E0_TRAJECTORY_AUDIT.json",
+    "results/E0_HISTORY_SIGNAL.json",
+    "results/E0_ARCHIVE_REPAIR_REPLAY.json",
+    "research/delegated/g_source_audit/LEGACY_BASE_AUDIT.json"
+  ],
+  "budget_borrowed_from_T_or_history": false,
+  "failure_policy": "Count all attempts/RHS; no automatic campaign retry or parent replacement; stop if any cap binds",
+  "iteration": "E0 first-member quality-loss diagnosis -> packing-safe quality replacement -> cached replay -> matched-state first/quality live-search comparison"
+}

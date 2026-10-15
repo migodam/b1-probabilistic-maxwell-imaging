@@ -1,0 +1,41 @@
+{
+  "version": "G-offline-score-v1",
+  "status": "METRICS_FROZEN_BEFORE_E1_OUTPUT; REAL_INPUT_INTERFACE_CONFIRMED",
+  "scope": "Exposed A30 24x24 scalar TM, parents 250069/250073/250077 weak conditions; not new confirmation",
+  "truth_access": "Only separate scorer process after immutable online manifest closes; original A30 exposed OFFLINE_TARGETS.npz; no online process import",
+  "material_errors": [
+    "mean absolute real chi error",
+    "mean absolute imaginary chi error",
+    "mean absolute complex chi error"
+  ],
+  "material_coverage": {
+    "historical": "sqrt(mean(abs(delta_chi)^2))/1.2 <= .1",
+    "G_bounds_scaled": "sqrt(mean((delta_real/4.5)^2+(delta_imag/.5)^2)) <= .1"
+  },
+  "support": {
+    "foreground": "abs(chi-known_background)/1.2 > .25",
+    "support_iou_coverage_threshold": 0.8,
+    "empty_union_iou": 1.0
+  },
+  "holes": {
+    "interpretation": "post-hoc 2D digital holes only",
+    "foreground_connectivity": 4,
+    "background_connectivity": 8,
+    "min_hole_area_cells": 6,
+    "truth_hole_recall_match": "candidate enclosed background overlaps at least .5 of truth hole cells",
+    "absence_of_truth_holes": "truth-hole recall and all-truth-hole-covered are null/NOT_APPLICABLE; exact hole-count match separately reported"
+  },
+  "top_k": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "selection": "Only frozen online candidate IDs; no offline reselection, padding, duplicate insertion or truth use. For K beyond returned candidates evaluate available prefix and report shortfall.",
+  "summary": "Conditional-on-valid MAE plus all-episode coverage and no-valid rate. Paired differences descriptive across three exposed parents, no confirmation/bootstrap victory.",
+  "gallery": "All candidate and failed evaluated material fields, fixed physical chi color bounds Re[-.5,4], Im[0,.5]; known background and offline truth explicitly labeled. No source/online array edits.",
+  "new_full_state_attempts": 0,
+  "new_complex_full_solver_RHS": 0,
+  "GPU_seconds": 0,
+  "input_contract": "results/E1_LEGACY/RESULTS.json methods success_ledger/episodes, per-trajectory raw/correction1/correction2/validation arrays; supplied by parent before execution"
+}
