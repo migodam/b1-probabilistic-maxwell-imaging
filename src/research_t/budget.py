@@ -60,4 +60,7 @@ class Book:
             self.append(dict(event='JOB_END',job=name,wall_seconds=elapsed,cpu_seconds=time.process_time()-cpu,status=status,error=error));self.name=None
     def receipt(self):
         r=self.totals();rows=self.rows()
-        return dict(new_full_state_attempts=r['states'],state_cap=192,complex_full_solver_RHS=r['rhs'],RHS_cap=6144,controlled_execution_wall=r['wall'],wall_cap=7200,GPU=0,old_budget_credit=0,failed_actions=sum(a.get('status')=='FAIL' and a['event']=='ACTION' for a in rows),action_counts=dict(self.counts))
+        cumulative=Counter()
+        for row in rows:
+            if row['event']=='ACTION':cumulative.update(row.get('counts',{}))
+        return dict(new_full_state_attempts=r['states'],state_cap=192,complex_full_solver_RHS=r['rhs'],RHS_cap=6144,controlled_execution_wall=r['wall'],wall_cap=7200,GPU=0,old_budget_credit=0,failed_actions=sum(a.get('status')=='FAIL' and a['event']=='ACTION' for a in rows),action_counts=dict(cumulative))

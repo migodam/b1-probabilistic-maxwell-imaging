@@ -54,16 +54,16 @@ def qualify(book):
         summary.append(entry);dump(root/'SUMMARY.json',summary)
     return summary
 
-def mechanism(book):
+def mechanism(book,version=1):
     # These fixed locations and the ring-first case choice are frozen before Q.
     protocol=json.loads((OUT/'configs/MECHANISM_v1.json').read_text())
     q=json.loads((OUT/'qualification/SUMMARY.json').read_text());lookup={r['case']:r for r in q}
-    targets=Targets(book);root=OUT/'mechanism_v1';root.mkdir(parents=True,exist_ok=True);summary=[]
+    targets=Targets(book);root=OUT/f'mechanism_v{version}';root.mkdir(parents=True,exist_ok=True);summary=[]
     for parent in protocol['parents']:
         choices=[f'p{parent}_{bg}_a1_snr20' for bg in protocol['background_priority']]
         choices=[c for c in choices if lookup[c]['qualified']]
         if not choices:continue
-        case=choices[0];book.context=dict(phase='finite_mechanism_v1',case=case,truth_access=False)
+        case=choices[0];book.context=dict(phase=f'finite_mechanism_v{version}',case=case,truth_access=False)
         start=len(book.rows());model,_,y,sigma=targets.case(case)
         # A new matching base factor/endpoint is paid, not silently reconstructed.
         with np.load(OUT/'qualification'/case/'qualified_base.npz') as z:chi=z['chi'].copy()
@@ -76,7 +76,9 @@ def mechanism(book):
             folder=case_folder/f'edit_{idx:02}';folder.mkdir(exist_ok=True)
             edit=cavity_birth(base.chi,center_row_col=tuple(center),radius_cells=2,min_feature_radius_cells=2,grid_spacing=1/24)
             low,high=protected_bounds(edit.core,edit.guard);protected=dict(lower=low,upper=high)
-            np.savez_compressed(folder/'edit_geometry.npz',core=edit.core,guard=edit.guard,lower=low,upper=high)
+            phase_lock=(base.chi.real>=.15)&~edit.core.ravel() if version==2 else np.zeros(model.n,dtype=bool)
+            low[:model.n][phase_lock]=np.maximum(low[:model.n][phase_lock],.15)
+            np.savez_compressed(folder/'edit_geometry.npz',core=edit.core,guard=edit.guard,lower=low,upper=high,phase_lock=phase_lock)
             raw=model.full_state(edit.chi.ravel(),purpose='ResearchT_fixed_structural_edit')
             save_state(folder/'raw.npz',raw);rv=validate(raw,y,sigma)
             cfg=CorrectorConfig(mode='full',max_steps=3,max_full_attempts=3,trust_radius=.6,damping=.001,tau=TAU)
@@ -88,7 +90,8 @@ def mechanism(book):
             fv=validate(end,y,sigma);dist=material_distances(base.chi,end.chi,mass=1/576)
             guard=check_protected(end.chi,edit.core,edit.guard)
             genuine=bool(fv['status']=='FULL_VALIDATED_NUMERICAL' and guard['preserved'] and dist['significant_phase_edit'] and dist['normalized_material_l2']>=.03)
-            row=dict(case=case,edit_id=idx,edit_metadata=edit.metadata,base_validation=bv,shared_base_cost=base_cost,
+            row=dict(case=case,edit_id=idx,version=version,edit_metadata=edit.metadata,base_validation=bv,shared_base_cost=base_cost,
+                     extra_phase_protected_cells=int(phase_lock.sum()),
                      raw_validation=rv,compensation_score=score,corrected_validation=fv,
                      structural_protection=guard,material_distance=dist,topology=topology_summary(end.chi),
                      genuine_new_candidate=genuine,invalid_to_valid=genuine and rv['status']=='REJECTED',
@@ -100,11 +103,11 @@ def mechanism(book):
     return summary
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('phase',choices=['qualification','mechanism']);args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('phase',choices=['qualification','mechanism','mechanism2']);args=p.parse_args()
     book=Book(OUT)
     try:
         with book.job(args.phase+'_v1'):
-            qualify(book) if args.phase=='qualification' else mechanism(book)
+            qualify(book) if args.phase=='qualification' else mechanism(book,version=2 if args.phase=='mechanism2' else 1)
     finally:dump(OUT/'RESOURCE_RECEIPT.json',book.receipt())
 
 if __name__=='__main__':main()
