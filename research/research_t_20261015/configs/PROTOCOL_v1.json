@@ -1,0 +1,56 @@
+{
+  "target": "A30-original-24x24-scalarTM-v1",
+  "source_commit": "717d3d26a290248bd2b9aeb55f3d03694b407b84",
+  "ResearchA_commit": "f1b674eb4893e39126701ed48f3d3dcef3098c3c",
+  "parents": [
+    250065,
+    250069,
+    250073,
+    250077
+  ],
+  "backgrounds": [
+    "weak",
+    "ring"
+  ],
+  "exposure": "historically_exposed_development",
+  "gain": 1,
+  "real_bounds": [
+    -0.5,
+    4
+  ],
+  "imag_bounds": [
+    0,
+    0.5
+  ],
+  "whitening": "sqrt(2)/sigma;persourceRe32Im32",
+  "tau": "sqrt(chi2.ppf(.95,512))",
+  "qualification": {
+    "arms": [
+      "full",
+      "multiscale64"
+    ],
+    "start": "originalsamepaidN3",
+    "trust": 0.6,
+    "damping": 0.001,
+    "max_updates": 4,
+    "max_full_attempts_per_arm": 6,
+    "stop_residual_fraction_tau": 0.95
+  },
+  "mechanism": {
+    "absolute_air": "abs(chi)<=.10",
+    "persistence": [
+      0.075,
+      0.1,
+      0.125
+    ],
+    "core_radius_cells": 2,
+    "guard_width_cells": 1,
+    "guard_min_real_chi": 0.3,
+    "minimum_changed_phase_cells": 6,
+    "material_distance_min": 0.03,
+    "material_norm": "volumeRMS/1.2",
+    "ranking": "constrainedlinearcompensation residualU; nouniformnonlinearerrorbound",
+    "allocation": "qualification first; max4qualifiedparents_fixedorder,4frozenedits each; onecommoncorrector; onlyphysicsmechanismnotGpolicysearch"
+  },
+  "E3": false
+}
