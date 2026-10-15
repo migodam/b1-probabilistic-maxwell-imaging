@@ -54,10 +54,31 @@ def qualify(book):
         summary.append(entry);dump(root/'SUMMARY.json',summary)
     return summary
 
+def select_minchange():
+    """Discrepancy-constrained, truth-free selection from already paid states."""
+    root=OUT/'qualification';q=json.loads((root/'SUMMARY.json').read_text());out=[]
+    for row in q:
+        folder=root/row['case']
+        with np.load(folder/'original_n3.npz') as z:ref=z['chi'].copy()
+        candidates=[('original_n3',folder/'original_n3.npz',row['initial'])]
+        candidates += [(a['arm'],folder/a['arm']/'best_valid.npz',a['validation']) for a in row['arms'] if (folder/a['arm']/'best_valid.npz').exists()]
+        legal=[]
+        for arm,path,val in candidates:
+            if val['status']!='FULL_VALIDATED_NUMERICAL':continue
+            with np.load(path) as z:delta=float(np.sqrt(np.mean(abs(z['chi']-ref)**2)))
+            legal.append((delta,arm,path,val))
+        if not legal:raise RuntimeError('NO_QUALIFIED_MINCHANGE_BASE')
+        delta,arm,path,val=min(legal,key=lambda x:(x[0],x[1]))
+        (folder/'qualified_minchange_base.npz').write_bytes(path.read_bytes())
+        out.append(dict(case=row['case'],selected_arm=arm,material_L2_change=delta,validation=val,
+                        source=str(path.relative_to(OUT)),selection='min material L2 change from original N3 among legal compatible cached endpoints; no truth'))
+    dump(root/'MINCHANGE_SUMMARY.json',out);return out
+
 def mechanism(book,version=1):
     # These fixed locations and the ring-first case choice are frozen before Q.
     protocol=json.loads((OUT/'configs/MECHANISM_v1.json').read_text())
     q=json.loads((OUT/'qualification/SUMMARY.json').read_text());lookup={r['case']:r for r in q}
+    if version==3:select_minchange()
     targets=Targets(book);root=OUT/f'mechanism_v{version}';root.mkdir(parents=True,exist_ok=True);summary=[]
     for parent in protocol['parents']:
         choices=[f'p{parent}_{bg}_a1_snr20' for bg in protocol['background_priority']]
@@ -66,12 +87,14 @@ def mechanism(book,version=1):
         case=choices[0];book.context=dict(phase=f'finite_mechanism_v{version}',case=case,truth_access=False)
         start=len(book.rows());model,_,y,sigma=targets.case(case)
         # A new matching base factor/endpoint is paid, not silently reconstructed.
-        with np.load(OUT/'qualification'/case/'qualified_base.npz') as z:chi=z['chi'].copy()
+        base_filename='qualified_minchange_base.npz' if version==3 else 'qualified_base.npz'
+        with np.load(OUT/'qualification'/case/base_filename) as z:chi=z['chi'].copy()
         base=model.full_state(chi,purpose='ResearchT_mechanism_base_refactor');bv=validate(base,y,sigma)
         if bv['status']!='FULL_VALIDATED_NUMERICAL':raise RuntimeError('FROZEN_BASE_REPLAY_FAILED')
         base_cost=costs(book,start);case_folder=root/case;case_folder.mkdir(exist_ok=True)
         save_state(case_folder/'base.npz',base)
         for idx,center in enumerate(protocol['centers_row_col']):
+            if version==3 and idx not in [0,2]:continue
             book.context.update(edit=idx);start=len(book.rows());tic=time.perf_counter()
             folder=case_folder/f'edit_{idx:02}';folder.mkdir(exist_ok=True)
             edit=cavity_birth(base.chi,center_row_col=tuple(center),radius_cells=2,min_feature_radius_cells=2,grid_spacing=1/24)
@@ -103,11 +126,11 @@ def mechanism(book,version=1):
     return summary
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('phase',choices=['qualification','mechanism','mechanism2']);args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('phase',choices=['qualification','mechanism','mechanism2','mechanism3']);args=p.parse_args()
     book=Book(OUT)
     try:
         with book.job(args.phase+'_v1'):
-            qualify(book) if args.phase=='qualification' else mechanism(book,version=2 if args.phase=='mechanism2' else 1)
+            qualify(book) if args.phase=='qualification' else mechanism(book,version={'mechanism':1,'mechanism2':2,'mechanism3':3}[args.phase])
     finally:dump(OUT/'RESOURCE_RECEIPT.json',book.receipt())
 
 if __name__=='__main__':main()
