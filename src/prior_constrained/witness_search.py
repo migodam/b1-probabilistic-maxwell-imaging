@@ -83,7 +83,8 @@ def run():
     rows=[]; replays=[]; pairs=[]; models={}; emitted=0; cache={}
     configs=[(0,'ring'),(1,'weak'),(2,'weak'),(3,'ring')]
     # Resume uses the SAME authorization/ledger and preserves failed arrays.
-    dest=OUT/'offline_only/E1_completion'; dest.mkdir(parents=True,exist_ok=True)
+    execution=1+sum(r['event']=='JOB_BEGIN' for r in book.rows())
+    dest=OUT/'offline_only'/f'E1_execution_{execution}'; dest.mkdir(parents=True,exist_ok=True)
     if any(dest.glob('*.npz')): raise RuntimeError('completion arrays exist; explicit array-safe resume required')
     book.append(dict(event='JOB_BEGIN',name='E1_bounded_original_P0_search_completion',failure_history_preserved=True))
     def full(model,row,bg,tag):
@@ -141,7 +142,7 @@ def run():
                     role=role,round=roundno,predicted_d=score,d_pred=d,sigma_fixed=sigma,prior_status='P0_EXACT',
                     anchor_array=str(path.relative_to(ROOT)),candidate_array=str(pp.relative_to(ROOT)),**sep)
                 rows.append(row); qualified.append((d,ss,rr,row))
-                with (OUT/'CANDIDATE_LEDGER.jsonl').open('a') as f: f.write(json.dumps(plain(dict(stage='E1',role='OFFLINE_WITNESS_CONSTRUCTION',posterior_mass=None,**row)))+'\n')
+                with (OUT/'CANDIDATE_LEDGER.jsonl').open('a') as f: f.write(json.dumps(plain(dict(stage='E1',evaluation_role='OFFLINE_WITNESS_CONSTRUCTION',posterior_mass=None,**row)))+'\n')
             if qualified:
                 _,current,current_row,_=min(qualified,key=lambda t:t[0])
                 if roundno==0: jac=linear(model,current)
