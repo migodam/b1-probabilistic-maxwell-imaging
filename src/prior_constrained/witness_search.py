@@ -169,8 +169,13 @@ def run():
             emitted+=1; pp=mutate(rr,rng,.02,emitted); ss,where=full(model,pp,bg,f"robust_{pair['pair_id']}_{k}")
             robust.append(dict(pair_id=pair['pair_id'],scale_fraction=.02,d_pred=float(np.linalg.norm(ss.data-fa)*np.sqrt(2)/pair['sigma_fixed']),array=str(where.relative_to(ROOT))))
     dump(OUT/'WITNESS_PAIRS.json',dict(visibility='OFFLINE_ONLY; no E2 online reader authorized',posterior_mass=None,pairs=pairs,local_robustness=robust))
-    decision=dict(status='SUPPORTED_ALTERNATIVES' if len(good)>=2 else 'NO_GO_FOR_GENERATOR_COMPARISON',
-        material_state='ONE_SUPPORTED_CANDIDATE_AMBIGUITY_UNRESOLVED',qualified_parent_disjoint_pairs=len(good),E2_authorized_by_evidence=len(good)>=2,
+    # The present run has zero qualifying pairs. A future positive branch must
+    # check full parent ancestry, local robustness and prior-tail diagnostics;
+    # raw pair count alone must never open E2. No such positive result is
+    # implemented/claimed by this closed negative pilot.
+    decision=dict(status='PROVISIONAL_PAIRS_REQUIRE_REMAINING_PROTOCOL_CHECKS' if good else 'NO_GO_FOR_GENERATOR_COMPARISON',
+        material_state='ONE_SUPPORTED_CANDIDATE_AMBIGUITY_UNRESOLVED',qualified_parent_disjoint_pairs=0,
+        provisional_pair_count=len(good),E2_authorized_by_evidence=False,
         finite_search_not_global_uniqueness=True,new_generator_secants=emitted,material_only_conservative_total=512+emitted,
         costs=book.totals('E1'),controlled_wall_seconds=time.perf_counter()-start,
         minimum_d_pred=min(r['d_pred'] for r in rows),all_pairs=pairs)

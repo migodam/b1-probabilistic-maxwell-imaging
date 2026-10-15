@@ -21,15 +21,18 @@ ROOT = Path(__file__).resolve().parents[2]
 A26 = ROOT.parents[1] / "A26/a26-om-feedback-prior-completion"
 A30 = ROOT.parents[1] / "A30/a30-maxwell-material-manifold"
 INPUTS = A30 / "inputs/a29_release/inputs/a25"
+SNAPSHOTS = ROOT / "research/prior_constrained_20261015/source_snapshots"
 
 
 def config():
-    return json.loads((A26 / "configs/a25/campaign.json").read_text())
+    path = A26 / "configs/a25/campaign.json"
+    return json.loads((path if path.exists() else SNAPSHOTS / "campaign.json").read_text())
 
 
 def geometry_points():
     """Public fixed grid; no material or locked geometry is read."""
-    return np.asarray(json.loads((INPUTS / "geometry.json").read_text())["points"], float)
+    path = INPUTS / "geometry.json"
+    return np.asarray(json.loads((path if path.exists() else SNAPSHOTS / "geometry.json").read_text())["points"], float)
 
 
 def background(name, points=None):
@@ -74,6 +77,7 @@ def draw_train_row(master_seed, family_index, local_index, *, parent_id=None):
 @lru_cache(maxsize=1)
 def _original_rasterizer():
     path = A26 / "src/a25/dataset.py"
+    if not path.exists(): path = SNAPSHOTS / "A25_dataset.py"
     tree = ast.parse(path.read_text())
     fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "parent_material")
     module = ast.Module(body=[fn], type_ignores=[])
