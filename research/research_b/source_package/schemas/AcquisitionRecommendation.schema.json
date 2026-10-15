@@ -1,0 +1,627 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "research-b-acquisition-1.0"
+    },
+    "input_package_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_data_history_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "RECOMMEND_MEASURE",
+        "STOP_TASK_SUFFICIENT",
+        "STOP_NOT_WORTH_COST",
+        "PRESERVE_AMBIGUITY",
+        "ABSTAIN_POSTERIOR_UNRELIABLE",
+        "EXPAND_SUPPORT_FIRST",
+        "ABSTAIN_UTILITY_RANK_UNRESOLVED",
+        "BUDGET_EXHAUSTED",
+        "SIMULATION_DESIGN_ONLY"
+      ]
+    },
+    "selected_action_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "criterion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "criterion_probability_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planning_horizon": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "loss_definition": {
+      "type": "string",
+      "minLength": 1
+    },
+    "current_risk": {
+      "type": "object",
+      "properties": {
+        "estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "estimate",
+        "lower",
+        "upper",
+        "confidence",
+        "error_scope"
+      ],
+      "additionalProperties": false
+    },
+    "expected_future_risk": {
+      "type": "object",
+      "properties": {
+        "estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "estimate",
+        "lower",
+        "upper",
+        "confidence",
+        "error_scope"
+      ],
+      "additionalProperties": false
+    },
+    "risk_reduction": {
+      "type": "object",
+      "properties": {
+        "estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "estimate",
+        "lower",
+        "upper",
+        "confidence",
+        "error_scope"
+      ],
+      "additionalProperties": false
+    },
+    "event_eig": {
+      "type": "object",
+      "properties": {
+        "estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "estimate",
+        "lower",
+        "upper",
+        "confidence",
+        "error_scope"
+      ],
+      "additionalProperties": false
+    },
+    "posterior_event_quantiles": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "uri": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "type": "string",
+              "minLength": 1
+            },
+            "shape": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "dtype": {
+              "type": "string",
+              "minLength": 1
+            },
+            "units": {
+              "type": "string",
+              "minLength": 1
+            },
+            "provenance_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "uri",
+            "format",
+            "shape",
+            "dtype",
+            "units",
+            "provenance_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "posterior_quantile_definition": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resolved_ambiguities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "remaining_ambiguities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "calibration_risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "missing_support_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "measurement_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "switching_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "energy_joules": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "financial_cost": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "compute_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxwell_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "factorizations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rhs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "setup_amortization_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cost_status": {
+          "enum": [
+            "measured",
+            "estimated",
+            "not_available"
+          ]
+        }
+      },
+      "required": [
+        "measurement_seconds",
+        "switching_seconds",
+        "energy_joules",
+        "financial_cost",
+        "currency",
+        "compute_seconds",
+        "maxwell_attempts",
+        "factorizations",
+        "rhs",
+        "setup_amortization_count",
+        "cost_status"
+      ],
+      "additionalProperties": false
+    },
+    "utility_error_components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "certified_bound",
+              "finite_empirical_audit",
+              "mc_only",
+              "unquantified"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metric": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "status",
+          "value",
+          "metric",
+          "scope",
+          "confidence",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "action_ranking_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stop_reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "update": {
+      "type": "object",
+      "properties": {
+        "joint_likelihood_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "persistent_nuisance_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_refresh_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "normalization_and_remainder_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reuse_or_new_data_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "failure_action": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "joint_likelihood_rule",
+        "persistent_nuisance_rule",
+        "candidate_refresh_rule",
+        "normalization_and_remainder_rule",
+        "reuse_or_new_data_ids",
+        "failure_action"
+      ],
+      "additionalProperties": false
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "input_package_id",
+    "input_data_history_id",
+    "status",
+    "selected_action_ids",
+    "criterion",
+    "criterion_probability_status",
+    "planning_horizon",
+    "loss_definition",
+    "current_risk",
+    "expected_future_risk",
+    "risk_reduction",
+    "event_eig",
+    "posterior_event_quantiles",
+    "posterior_quantile_definition",
+    "resolved_ambiguities",
+    "remaining_ambiguities",
+    "calibration_risks",
+    "missing_support_status",
+    "cost",
+    "utility_error_components",
+    "action_ranking_scope",
+    "stop_reason",
+    "update",
+    "limitations"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/research-b/AcquisitionRecommendation.schema.json",
+  "title": "AcquisitionRecommendation"
+}

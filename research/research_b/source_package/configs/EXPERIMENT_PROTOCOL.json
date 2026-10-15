@@ -1,0 +1,99 @@
+{
+  "protocol_id": "RESEARCH-B-DESIGN-20261014-v1",
+  "status": "SPECIFICATION_NOT_EXECUTED",
+  "E0": {
+    "maxwell_attempt_cap": 0,
+    "training_enabled": false,
+    "allowed_kR": [
+      1.6,
+      2.4
+    ],
+    "rules": [
+      "Only existing responses; cache misses fail closed.",
+      "Existing observed channels are not new independent measurements.",
+      "A retrospective subset test must recompute its conditioning posterior.",
+      "Every new-noise simulation is labeled simulated, not observed hardware data."
+    ]
+  },
+  "E1": {
+    "execution_authorized": false,
+    "proposed_attempt_cap": 4096,
+    "proposed_kR_menu": [
+      1.2,
+      1.6,
+      2.0,
+      2.4,
+      2.8,
+      3.2
+    ],
+    "already_cached_kR": [
+      1.6,
+      2.4
+    ],
+    "new_kR": [
+      1.2,
+      2.0,
+      2.8,
+      3.2
+    ],
+    "allocation": {
+      "new_tensor_bank_4x625": 2500,
+      "independent_field_audit_64x4": 256,
+      "new_truth_material_frequency_32x4": 128,
+      "selected_full_field_checks": 512,
+      "failure_and_reference_refinement_reserve": 700
+    },
+    "fresh_parents": 32,
+    "noise_replicates_per_parent": 2,
+    "shared_gain": "one persistent proper truncated real gain per episode; never per frequency",
+    "noise_convention": "P2 real variance sigma^2, complex total variance 2*sigma^2",
+    "frequency_dispersion": "constant epsilon radial calibration benchmark only; separate causal-model stress target",
+    "polarization": "existing two transverse channels; span/redundancy control only on radial isotropic support",
+    "nonconcentric_vector_branch": "separate approval and budget; not auto-started",
+    "historical_joint_p2_balance_reused": false
+  },
+  "E2": {
+    "execution_authorized": false,
+    "max_new_measurement_blocks": 3,
+    "lookahead_depth": 2,
+    "require_independent_budget": true,
+    "keep_unresolved_worlds": true
+  },
+  "E3": {
+    "execution_authorized": false,
+    "arms": [
+      "B1_reference",
+      "A_candidates",
+      "A_plus_limited_full_correction",
+      "TSOM_base_only"
+    ],
+    "primary_endpoint": "true full material MAE at matched total cost",
+    "require_known_proposal_for_importance_weights": true,
+    "require_independent_budget": true
+  },
+  "policies": [
+    "stop_no_new_data",
+    "preset_kR_2.4",
+    "random",
+    "uniform_sweep",
+    "raw_candidate_separation",
+    "classical_Fisher_D",
+    "joint_nuisance_projected_Fisher",
+    "event_EIG",
+    "expected_material_risk",
+    "compensation_aware_robust"
+  ],
+  "statistics": {
+    "unit": "parent object",
+    "paired_bootstrap": 2000,
+    "primary_material_metric": "volume-weighted componentwise complex-permittivity MAE",
+    "mae_normalization": "fixed prespecified physical scale, never truth-dependent",
+    "model_mismatch_panels": "reported separately, not pooled with in-model performance"
+  },
+  "go_no_go_proposals": {
+    "E1": "same cost >=10% relative MAE improvement OR >=20% acquisition-cost saving at matched MAE, paired interval excludes zero; no meaningful coverage deterioration",
+    "ROM": "same accepted utility/decision quality, >=20% inclusive end-to-end savings including refresh, or disable ROM",
+    "graph": "retain only if measurable quality/cost benefit over direct risk computation",
+    "notes": "Engineering relevance thresholds proposed before experiments, not physical laws or already passed gates."
+  }
+}

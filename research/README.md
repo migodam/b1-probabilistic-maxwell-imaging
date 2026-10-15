@@ -2,6 +2,8 @@
 
 [网页总览](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/) · [GitHub主页](https://github.com/migodam)
 
+2026-10-15两条独立路线：[Research A 多材料世界发现](research_a_20261015/START_HERE.md) · [Research B 主动测量与候选修正](research_b/START_HERE.md)。各自的原始结果、费用和负结论独立保留。
+
 ## 主项目
 
 |项目|内容|入口|
