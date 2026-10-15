@@ -240,8 +240,8 @@ A17 paired只有在明确低秩修正成本瓶颈并建成固定活动face的等
 |资格Q，两臂8case|16|448|5.217s|
 |机制v1，16编辑＋base重分解|68|2112|80.830s|
 |机制v2，同16编辑|68|2112|83.836s|
-|机制v3，8编辑|36|1088|以JOB_END原值为准|
-|实际Jacobian/独立直接解核验|4|72|以JOB_END原值为准|
+|机制v3，8编辑|36|1088|42.550s|
+|实际Jacobian/独立直接解核验|4|72|0.779s|
 |**合计**|**{res['new_full_state_attempts']}**|**{res['complex_full_solver_RHS']}**|**{res['controlled_execution_wall']:.6f}s**|
 
 RHS独立核算：192×8=1536 forward；8个Q初始Jacobian＋40编辑×3刷新＋1核验Jacobian=4128adjoint；21次缓存LU核对×8=168，合计5832。没有免费adjoint或失败重试。
