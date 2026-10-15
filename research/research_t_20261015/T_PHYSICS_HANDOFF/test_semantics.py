@@ -8,13 +8,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
 
 import numpy as np
 
 from research_t.structure import (absolute_masks, cavity_birth, check_protected,
                                   material_distances, protected_bounds, topology)
-from research_t.handoff import (new_measurement, pack_complex_per_source,
+from research_t.handoff import (FrozenPhysicsInterface, new_measurement, pack_complex_per_source,
                                validate_bundle, whitened_residual, write_bundle)
 
 
@@ -80,6 +81,25 @@ class ExchangeSemantics(unittest.TestCase):
                 raise AssertionError("a solver must not be touched")
         with self.assertRaises(ValueError):
             new_measurement(NoPhysics(), np.zeros(576), budget=None, acquisition={})
+
+    def test_g_cannot_borrow_producer_budget_or_change_acquisition(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            book = SimpleNamespace(root=root, check=lambda: None)
+            model = SimpleNamespace(book=book)
+            args = dict(target_identity="frozen", observation_id="original", tau=10,
+                        fixed_corrector_config=None, authorization_identity="fixture_only")
+            with self.assertRaises(ValueError):
+                FrozenPhysicsInterface(model, book, np.ones((32, 8)), .1,
+                                       consumer_role="G", producer_ledger_root=root, **args)
+            interface = FrozenPhysicsInterface(model, book, np.ones((32, 8)), .1, **args)
+            with self.assertRaises(ValueError):
+                interface.predict(np.ones(576), budget=book, acquisition={"frequency": 2})
+            with self.assertRaises(ValueError):
+                interface.predict(np.ones(576), budget=object())
+            (root/"RUN_CLOSED.json").write_text("{}")
+            with self.assertRaises(ValueError):
+                interface.predict(np.ones(576), budget=book)
 
     def test_saved_array_roundtrip_and_fixture_rejection(self):
         chi = np.full((24, 24), 1.2 + .03j)
