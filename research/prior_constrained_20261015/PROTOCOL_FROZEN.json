@@ -1,0 +1,115 @@
+{
+  "identity": "A25-A30-P0-EXACT-PCSP-20261015-v1",
+  "prior": "original four-family TRAIN generator; original parameters and per-image maximum normalization; no hole-count labels",
+  "physics": {
+    "grid": 24,
+    "sources": 8,
+    "receivers": 32,
+    "real_channels": 512,
+    "gain": 1,
+    "precision": "complex128",
+    "packing": "source-major Re32 then Im32",
+    "whitening": "sqrt(2)/original complex-RMS sigma",
+    "noise": "original differential RMS at20dB, fixed from anchor, never candidate rescaled"
+  },
+  "structure": {
+    "calibration": {
+      "status": "FROZEN_BEFORE_RESPONSE_SCREEN",
+      "source": "64 distinct TRAIN parents; no y, clean response, dev truth, MAE, or test metadata used",
+      "thresholds_normalized_rho": [
+        0.1,
+        0.25,
+        0.5,
+        0.75,
+        0.9
+      ],
+      "gaussian_scales_cells": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "foreground_connectivity": 4,
+      "background_connectivity": 8,
+      "small_component_cutoff_cells": 4,
+      "metric_order": [
+        "shape_multiscale_rms",
+        "occupancy_multithreshold_mean",
+        "boundary_multithreshold_mean"
+      ],
+      "TRAIN_nearest_neighbor_p10": [
+        0.06316232688281462,
+        0.01766203703703704,
+        0.01971064814814815
+      ],
+      "half_cell_interpolation_jitter_p95": [
+        0.08796801446026997,
+        0.02549189814814815,
+        0.03399884259259259
+      ],
+      "recommended_minima_max_of_scales": {
+        "shape_multiscale_rms": 0.08796801446026997,
+        "occupancy_multithreshold_mean": 0.02549189814814815,
+        "boundary_multithreshold_mean": 0.03399884259259259
+      },
+      "persistent_structure_rule": "At least three of five normalized excursion thresholds have mean-over-scales occupancy disagreement >=0.05. Report components/holes separately; no forced topology-count difference.",
+      "dc_policy": "DC is reported independently and removed from continuous shape metric; DC alone cannot qualify novelty.",
+      "jitter_status": "256 existing TRAIN image diagnostic transforms, non-generator interpolation, not P0_EXACT and excluded from proposal reservoir",
+      "threshold_role": "Parent must freeze exact joint acceptance semantics before E1; these are data-independent calibration scales, not an existence certificate"
+    },
+    "joint_rule": "all three calibrated minima AND persistent disagreement >=.05 on >=3/5 thresholds AND >=6 cells of normalized rho change >=.1; DC excluded from centered shape"
+  },
+  "E1": {
+    "purpose": "offline benchmark construction, not free online discoveries",
+    "anchors": "first fresh reservoir parent of each family: shell/ring, asymmetric/weak, smooth/weak, mixed/ring",
+    "proposal_seed": 2026101531,
+    "local_material_proposals_per_anchor_per_round": 128,
+    "rounds": 2,
+    "round1": "rank 128 exact local generator secants using paid exact material J; full-evaluate 3 local +3 independent global reservoir endpoints",
+    "round2": "refresh exact J at closest structurally qualified first-round local endpoint; rank128 local parameter changes relative fixed original anchor; full-evaluate6",
+    "parameter_scale_fractions": [
+      0.08,
+      0.16,
+      0.32,
+      0.48
+    ],
+    "full_state_cap": 64,
+    "RHS_cap": 2048,
+    "main_search_planned_states": 52,
+    "remaining12": "only nonzero .02 parameter-range prior-local perturbation of an actually qualifying closest pair",
+    "preferred_d_pred_max": 2,
+    "noise_replays_per_truth": 32,
+    "noise_seed_domain": [
+      20261015,
+      3201
+    ],
+    "repeat_competition": "both noise balls and |Delta ell|<=log(10) on at least16/32 fixed noises separately for each endpoint truth; log100 sensitivity only",
+    "E2_requires": "two parent-disjoint exact-P0 pairs satisfying structural, d_pred<=2 and repeated competition; no obvious extreme-parameter or numerical defect"
+  },
+  "E2": {
+    "status": "CONDITIONAL_NOT_ACTIVE",
+    "full_state_cap": 192,
+    "RHS_cap": 8192,
+    "arms": [
+      "prior-respecting multistart",
+      "T-soft+C_P",
+      "QD adapted+C_P",
+      "PC-SP+C_P"
+    ],
+    "max_observations": 4,
+    "max_states_per_arm_observation": 10,
+    "max_proposals_per_arm": 3,
+    "max_accepted_corrections": 2,
+    "eta": 0.5
+  },
+  "all_stage_caps": {
+    "states": 256,
+    "RHS": 10240,
+    "GPU_training": 0
+  },
+  "material_only_cap": 2048,
+  "material_accounting": "256 fresh generator parents +256 diagnostic transforms +up to1024 generator secants +up to12 robustness perturbations <=1548; repeated rendering of an identical rho in another known background is not a new parent",
+  "source": "CODEX_NEXT_ROUND_ZH.md",
+  "posterior_mass": null,
+  "locked_access": false,
+  "new_noise_relaxation": false
+}
