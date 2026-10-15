@@ -22,7 +22,7 @@ def mutate(row,rng,scale,index):
     r['parent_seed']=None; r['proposal_provenance']={'source_parent':row['parent_id'],'scale_fraction':scale,'index':index}
     for key,(lo,hi) in LIMITS.items():
         x=np.asarray(row['geometry'][key]); low=np.maximum(lo+1e-9,x-scale*(hi-lo)); high=np.minimum(hi-1e-9,x+scale*(hi-lo))
-        r['geometry'][key]=rng.uniform(low,high).tolist()
+        r['geometry'][key]=np.asarray(rng.uniform(low,high)).tolist()
     if rng.uniform()<.15: r['geometry']['subtype']=1-int(r['geometry']['subtype'])
     return r
 
@@ -82,7 +82,10 @@ def run():
     if not isinstance(reservoir,list): raise ValueError('reservoir parent list required')
     rows=[]; replays=[]; pairs=[]; models={}; emitted=0; cache={}
     configs=[(0,'ring'),(1,'weak'),(2,'weak'),(3,'ring')]
-    dest=OUT/'offline_only/E1'; dest.mkdir(parents=True,exist_ok=True)
+    # Resume uses the SAME authorization/ledger and preserves failed arrays.
+    dest=OUT/'offline_only/E1_completion'; dest.mkdir(parents=True,exist_ok=True)
+    if any(dest.glob('*.npz')): raise RuntimeError('completion arrays exist; explicit array-safe resume required')
+    book.append(dict(event='JOB_BEGIN',name='E1_bounded_original_P0_search_completion',failure_history_preserved=True))
     def full(model,row,bg,tag):
         nonlocal emitted
         material=prior.decode(row,background_id=bg)
