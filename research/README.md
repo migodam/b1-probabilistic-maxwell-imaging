@@ -6,6 +6,8 @@
 
 2026-10-15两条独立路线：[Research A 多材料世界发现](research_a_20261015/START_HERE.md) · [Research B 主动测量与候选修正](research_b/START_HERE.md)。各自的原始结果、费用和负结论独立保留。
 
+2026-10-15 Research G：[统一材料下一解搜索](research_g_20261015/START_HERE.md) · [实际图库](research_g_20261015/MULTISOLUTION_GALLERY/index.html)。新增一个近门槛合法边界结构，Best-of-K无改善，保留负结果；与T的物理工作独立计费。
+
 ## 主项目
 
 |项目|内容|入口|

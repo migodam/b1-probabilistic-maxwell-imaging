@@ -1,3 +1,5 @@
+> 2026-10-15 Research G：[下一解搜索中文报告](research/research_g_20261015/START_HERE.md) · [材料图与网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_g_20261015/)。三个观测新增一个合法边界结构；Best-of-K未改善，历史引导无稳定优势。291states/6936复RHS，暂不扩大。
+
 > 2026-10-15 Research T：[物理、基础解与补偿成核](research/research_t_20261015/START_HERE.md) · [公开成像页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_t_20261015/)。8/8合格默认base，15/16首轮补偿成核；材料MAE没有改善，成本192states封口。
 
 > 2026-10-15 独立Research B：[主动Maxwell测量报告](research/research_b/START_HERE.md) · [中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_b/) · [完整证据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-b-20261015)。E0/E1/E2及四例真实A交接已执行；复杂选测的负结果、候选补全收益及参考未收敛均保留。
