@@ -79,7 +79,7 @@ def mechanism(book):
             np.savez_compressed(folder/'edit_geometry.npz',core=edit.core,guard=edit.guard,lower=low,upper=high)
             raw=model.full_state(edit.chi.ravel(),purpose='ResearchT_fixed_structural_edit')
             save_state(folder/'raw.npz',raw);rv=validate(raw,y,sigma)
-            cfg=CorrectorConfig(mode='full',max_steps=3,max_full_attempts=5,trust_radius=.6,damping=.001,tau=TAU)
+            cfg=CorrectorConfig(mode='full',max_steps=3,max_full_attempts=3,trust_radius=.6,damping=.001,tau=TAU)
             score=bounded_compensation_score(model,raw,y,sigma,cfg,protected)
             cache=score.pop('jacobian_cache');score.pop('linear_delta')
             # Scoring does not change the ordinary corrector or its starting point.
