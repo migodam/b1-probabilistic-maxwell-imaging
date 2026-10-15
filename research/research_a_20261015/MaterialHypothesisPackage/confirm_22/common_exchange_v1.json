@@ -1,0 +1,2700 @@
+{
+  "exchange_version": "research-a-common-exchange/1.0.0",
+  "source_profile": "research-a-native-1.0.0-execution-no-digest-v1",
+  "source_native_version": "1.0.0",
+  "package_id": "Research-A-20261015-confirm_22-finite-static",
+  "created_utc": "2026-10-15T07:33:03.262042Z",
+  "target_identity": "Research-A-original-P2-vector-Mie-n14-C",
+  "acquisition_identity": "Research-A-P2-kR1.6-angle20to160-polarization-S1S2-Re16Im16",
+  "noise_identity": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+  "physics": {
+    "hash": "Research-A-original-P2-vector-Mie-n14-C",
+    "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+    "time_convention": "exp(-i omega t)",
+    "grid": {
+      "path": "assets/grid.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "backend_commit": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+    "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+    "self_term_convention": "not applicable: analytic spherical boundary matching",
+    "polarizability_map": "direct relative-epsilon layers; no voxel polarizability approximation",
+    "boundary_conditions": "regular at origin, tangential electric/magnetic continuity, outgoing radiation",
+    "material_support": {
+      "path": "assets/material_support.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "nuisance_support": {
+      "path": "assets/nuisance_support.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "prior_manifest": null,
+    "dispersion_model": "shared frequency-independent complex epsilon over the declared finite band"
+  },
+  "acquisition": {
+    "id": "Research-A-P2-kR1.6-angle20to160-polarization-S1S2-Re16Im16",
+    "frequencies": [
+      1.6
+    ],
+    "frequency_units": "kR",
+    "n_sources": 2,
+    "n_real_measurements": 32,
+    "manifest": {
+      "path": "assets/acquisition.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    }
+  },
+  "observation": {
+    "path": "assets/observation.npy",
+    "sha256": null,
+    "format": "npy",
+    "key": null,
+    "shape": [
+      32
+    ],
+    "dtype": "float64"
+  },
+  "noise": {
+    "id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+    "realification_order": "all-real-then-all-imaginary",
+    "covariance": {
+      "path": "assets/noise_covariance.npy",
+      "sha256": null,
+      "format": "npy",
+      "key": null,
+      "shape": [
+        32,
+        32
+      ],
+      "dtype": "float64"
+    },
+    "whitener": {
+      "path": "assets/noise_whitener.npy",
+      "sha256": null,
+      "format": "npy",
+      "key": null,
+      "shape": [
+        32,
+        32
+      ],
+      "dtype": "float64"
+    },
+    "units": "dimensionless scattering amplitude",
+    "model_discrepancy_policy": "Numerical full-Mie target only; model discrepancy outside concentric finite-band support is unquantified"
+  },
+  "material_worlds": [
+    {
+      "id": "world_00",
+      "full_material_array": {
+        "path": "assets/world_00_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          9
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9814550865884254,
+        "cavity_count": 1,
+        "component_count": 2,
+        "feature_scale": 0.014630477708027638,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_00"
+        ],
+        "event_ids": [
+          "radial-event-1"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_00_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "old_measurement_prediction": {
+        "path": "assets/world_00_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.14337921722823,
+        "squared_residual": 26.454349772215284,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9752608682448849
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "full_maxwell_validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 3.170134491456839e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 3.170134491456839e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:03.262042Z"
+      },
+      "compensation": {
+        "parent_candidate_id": null,
+        "edit_family": "shared-coarse-reconstruction",
+        "edit_parameters": {
+          "proposal_p": null,
+          "edit_id": null,
+          "protected_geometry": null,
+          "parent_p": null,
+          "source": "shared-coarse-reconstruction"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.783631313489204,
+          "epsilon_imag": 0.0812656507200688,
+          "central_radius": 0.0,
+          "annular_halfwidth": 0.007315238854013819
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9752608682448849,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_00_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.0,
+      "measurement_distance_to_base": 0.0,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "generation_history": [
+        {
+          "origin": "actual CONFIRM_CAMPAIGN finite_static",
+          "parent_id": "confirm_22",
+          "candidate_index": 0,
+          "generation": {
+            "method": "four proxy bounded conventional multistarts from best96prior",
+            "corrector": {
+              "proxy_residual": 5.143405517214136,
+              "nfev": 25,
+              "proxy_evaluations": 81,
+              "wall_seconds": 0.00858450005762279,
+              "converged": false,
+              "protected_geometry": null
+            }
+          },
+          "optimizer_requested_p": [
+            2.925518253046813e-11,
+            0.00731523885401372,
+            2.783631313489204,
+            0.0812656507200688
+          ],
+          "canonical_decoded_geometry": {
+            "central_radius": 0.0,
+            "annular_halfwidth": 0.007315238854013819
+          },
+          "discovery_status": "SHARED_BASE",
+          "cost_receipt": {
+            "begin": {
+              "stage": "E1",
+              "utc": 1792048466.647317,
+              "event": "BEGIN",
+              "attempt": 1652,
+              "kind": "SHARED_COARSE_ENDPOINT",
+              "parameters": {
+                "H": -1,
+                "er": 2.783631313489204,
+                "ei": 0.0812656507200688,
+                "radii": [
+                  0.6426847611459862,
+                  0.6573152388540139,
+                  1.0
+                ],
+                "eps_layers": [
+                  [
+                    2.783631313489204,
+                    0.0812656507200688
+                  ],
+                  [
+                    1.0,
+                    0.0
+                  ],
+                  [
+                    2.783631313489204,
+                    0.0812656507200688
+                  ]
+                ],
+                "k": 1.6,
+                "nmax": 14,
+                "implementation": "matching",
+                "angles": [
+                  20,
+                  40,
+                  60,
+                  80,
+                  100,
+                  120,
+                  140,
+                  160
+                ]
+              },
+              "job": "confirm",
+              "context": {
+                "parent": "confirm_22",
+                "role": "coarse_reconstruction"
+              }
+            },
+            "end": {
+              "stage": "E1",
+              "utc": 1792048466.650883,
+              "event": "END",
+              "attempt": 1652,
+              "status": "PASS",
+              "wall_seconds": 0.0031787080224603415,
+              "boundary_RHS": 28
+            }
+          },
+          "proxy_corrector_cost_scope": "saved per-candidate corrector wall plus charged endpoint wall; shared proposal/setup costs remain in global ledger"
+        },
+        {
+          "method_search_history": [
+            {
+              "step": 1,
+              "distinct_worlds": 2,
+              "structural_worlds": 1,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 1,
+              "wall_seconds": 0.04690433293581009
+            },
+            {
+              "step": 2,
+              "distinct_worlds": 3,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 2,
+              "wall_seconds": 0.11977925000246614
+            },
+            {
+              "step": 3,
+              "distinct_worlds": 4,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 3,
+              "wall_seconds": 0.1645661249058321
+            },
+            {
+              "step": 4,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 4,
+              "wall_seconds": 0.2105688329320401
+            },
+            {
+              "step": 5,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 5,
+              "wall_seconds": 0.2682483328972012
+            },
+            {
+              "step": 6,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 6,
+              "wall_seconds": 0.3423928329721093
+            },
+            {
+              "step": 7,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 7,
+              "wall_seconds": 0.39002729090861976
+            },
+            {
+              "step": 8,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 8,
+              "wall_seconds": 0.43606545799411833
+            },
+            {
+              "step": 9,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 9,
+              "wall_seconds": 0.47860312496777624
+            },
+            {
+              "step": 10,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 10,
+              "wall_seconds": 0.5336978749837726
+            },
+            {
+              "step": 11,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 11,
+              "wall_seconds": 0.6084585409844294
+            },
+            {
+              "step": 12,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 12,
+              "wall_seconds": 0.6561095409560949
+            }
+          ],
+          "prior_support_unchanged": true
+        }
+      ],
+      "posterior_weight": null,
+      "physical_legality": true,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.011763208080083132,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      }
+    },
+    {
+      "id": "world_01",
+      "full_material_array": {
+        "path": "assets/world_01_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          9
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 1.0,
+        "cavity_count": 0,
+        "component_count": 1,
+        "feature_scale": 1.0,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_01"
+        ],
+        "event_ids": [
+          "radial-event-0"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_01_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "old_measurement_prediction": {
+        "path": "assets/world_01_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.163812148003345,
+        "squared_residual": 26.664955899866918,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9548476384257534
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "full_maxwell_validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 6.534536030563182e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 6.534536030563182e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:03.262042Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_00",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.0,
+            0.0,
+            2.783631313489204,
+            0.0812656507200688
+          ],
+          "edit_id": 0,
+          "protected_geometry": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "parent_p": [
+            2.925518253046813e-11,
+            0.00731523885401372,
+            2.783631313489204,
+            0.0812656507200688
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.7616695065410037,
+          "epsilon_imag": 0.0649355112644665,
+          "central_radius": 0.0,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9548476384257534,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_01_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.16070510965265458,
+      "measurement_distance_to_base": 0.46082801070644347,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "generation_history": [
+        {
+          "origin": "actual CONFIRM_CAMPAIGN finite_static",
+          "parent_id": "confirm_22",
+          "candidate_index": 1,
+          "generation": {
+            "parent_p": [
+              2.925518253046813e-11,
+              0.00731523885401372,
+              2.783631313489204,
+              0.0812656507200688
+            ],
+            "proposal_p": [
+              0.0,
+              0.0,
+              2.783631313489204,
+              0.0812656507200688
+            ],
+            "source": "protected-finite-edit",
+            "edit_id": 0,
+            "corrector": {
+              "proxy_residual": 5.163826455495575,
+              "nfev": 6,
+              "proxy_evaluations": 18,
+              "wall_seconds": 0.0019398749573156238,
+              "converged": true,
+              "protected_geometry": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "raw_proxy_residual": 5.27548515164098,
+            "step": 0,
+            "revision": 3,
+            "prior_support_unchanged": true
+          },
+          "optimizer_requested_p": [
+            0.0,
+            0.0,
+            2.7616695065410037,
+            0.0649355112644665
+          ],
+          "canonical_decoded_geometry": {
+            "central_radius": 0.0,
+            "annular_halfwidth": 0.0
+          },
+          "discovery_status": "NEW_MATERIAL",
+          "cost_receipt": {
+            "begin": {
+              "stage": "E1",
+              "utc": 1792048466.696335,
+              "event": "BEGIN",
+              "attempt": 1653,
+              "kind": "SEARCH_ENDPOINT",
+              "parameters": {
+                "H": -1,
+                "er": 2.7616695065410037,
+                "ei": 0.0649355112644665,
+                "radii": [
+                  1.0
+                ],
+                "eps_layers": [
+                  [
+                    2.7616695065410037,
+                    0.0649355112644665
+                  ]
+                ],
+                "k": 1.6,
+                "nmax": 14,
+                "implementation": "matching",
+                "angles": [
+                  20,
+                  40,
+                  60,
+                  80,
+                  100,
+                  120,
+                  140,
+                  160
+                ]
+              },
+              "job": "confirm",
+              "context": {
+                "arm": "finite_static",
+                "step": 0
+              }
+            },
+            "end": {
+              "stage": "E1",
+              "utc": 1792048466.698907,
+              "event": "END",
+              "attempt": 1653,
+              "status": "PASS",
+              "wall_seconds": 0.0022640409879386425,
+              "boundary_RHS": 28
+            }
+          },
+          "proxy_corrector_cost_scope": "saved per-candidate corrector wall plus charged endpoint wall; shared proposal/setup costs remain in global ledger"
+        },
+        {
+          "method_search_history": [
+            {
+              "step": 1,
+              "distinct_worlds": 2,
+              "structural_worlds": 1,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 1,
+              "wall_seconds": 0.04690433293581009
+            },
+            {
+              "step": 2,
+              "distinct_worlds": 3,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 2,
+              "wall_seconds": 0.11977925000246614
+            },
+            {
+              "step": 3,
+              "distinct_worlds": 4,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 3,
+              "wall_seconds": 0.1645661249058321
+            },
+            {
+              "step": 4,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 4,
+              "wall_seconds": 0.2105688329320401
+            },
+            {
+              "step": 5,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 5,
+              "wall_seconds": 0.2682483328972012
+            },
+            {
+              "step": 6,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 6,
+              "wall_seconds": 0.3423928329721093
+            },
+            {
+              "step": 7,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 7,
+              "wall_seconds": 0.39002729090861976
+            },
+            {
+              "step": 8,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 8,
+              "wall_seconds": 0.43606545799411833
+            },
+            {
+              "step": 9,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 9,
+              "wall_seconds": 0.47860312496777624
+            },
+            {
+              "step": 10,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 10,
+              "wall_seconds": 0.5336978749837726
+            },
+            {
+              "step": 11,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 11,
+              "wall_seconds": 0.6084585409844294
+            },
+            {
+              "step": 12,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 12,
+              "wall_seconds": 0.6561095409560949
+            }
+          ],
+          "prior_support_unchanged": true
+        }
+      ],
+      "posterior_weight": null,
+      "physical_legality": true,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.004203915945254266,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      }
+    },
+    {
+      "id": "world_02",
+      "full_material_array": {
+        "path": "assets/world_02_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          9
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.997803,
+        "cavity_count": 1,
+        "component_count": 1,
+        "feature_scale": 0.1299999999999999,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_02"
+        ],
+        "event_ids": [
+          "radial-event-6"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_02_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "old_measurement_prediction": {
+        "path": "assets/world_02_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.154566979813156,
+        "squared_residual": 26.56956074938012,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9625258045798678
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "full_maxwell_validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 1.67726883584129e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 1.67726883584129e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:03.262042Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_01",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.07766712768316737,
+            0.0,
+            2.7616695065410037,
+            0.0649355112644665
+          ],
+          "edit_id": 1,
+          "protected_geometry": [
+            0.05,
+            0.13,
+            0,
+            0
+          ],
+          "parent_p": [
+            0.0,
+            0.0,
+            2.7616695065410037,
+            0.0649355112644665
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.7567586030305042,
+          "epsilon_imag": 0.07056397488112442,
+          "central_radius": 0.1299999999999999,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9625258045798678,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_02_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.1697849962743692,
+      "measurement_distance_to_base": 0.2854147837410992,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "generation_history": [
+        {
+          "origin": "actual CONFIRM_CAMPAIGN finite_static",
+          "parent_id": "confirm_22",
+          "candidate_index": 2,
+          "generation": {
+            "parent_p": [
+              0.0,
+              0.0,
+              2.7616695065410037,
+              0.0649355112644665
+            ],
+            "proposal_p": [
+              0.07766712768316737,
+              0.0,
+              2.7616695065410037,
+              0.0649355112644665
+            ],
+            "source": "protected-finite-edit",
+            "edit_id": 1,
+            "corrector": {
+              "proxy_residual": 5.15458058956778,
+              "nfev": 5,
+              "proxy_evaluations": 20,
+              "wall_seconds": 0.0022319169947877526,
+              "converged": true,
+              "protected_geometry": [
+                0.05,
+                0.13,
+                0,
+                0
+              ]
+            },
+            "raw_proxy_residual": 5.161354284186031,
+            "step": 1,
+            "revision": 3,
+            "prior_support_unchanged": true
+          },
+          "optimizer_requested_p": [
+            0.1299999999999999,
+            0.0,
+            2.7567586030305042,
+            0.07056397488112442
+          ],
+          "canonical_decoded_geometry": {
+            "central_radius": 0.1299999999999999,
+            "annular_halfwidth": 0.0
+          },
+          "discovery_status": "NEW_MATERIAL",
+          "cost_receipt": {
+            "begin": {
+              "stage": "E1",
+              "utc": 1792048466.767762,
+              "event": "BEGIN",
+              "attempt": 1654,
+              "kind": "SEARCH_ENDPOINT",
+              "parameters": {
+                "H": -1,
+                "er": 2.7567586030305042,
+                "ei": 0.07056397488112442,
+                "radii": [
+                  0.1299999999999999,
+                  1.0
+                ],
+                "eps_layers": [
+                  [
+                    1.0,
+                    0.0
+                  ],
+                  [
+                    2.7567586030305042,
+                    0.07056397488112442
+                  ]
+                ],
+                "k": 1.6,
+                "nmax": 14,
+                "implementation": "matching",
+                "angles": [
+                  20,
+                  40,
+                  60,
+                  80,
+                  100,
+                  120,
+                  140,
+                  160
+                ]
+              },
+              "job": "confirm",
+              "context": {
+                "arm": "finite_static",
+                "step": 1
+              }
+            },
+            "end": {
+              "stage": "E1",
+              "utc": 1792048466.7714372,
+              "event": "END",
+              "attempt": 1654,
+              "status": "PASS",
+              "wall_seconds": 0.0032870840514078736,
+              "boundary_RHS": 28
+            }
+          },
+          "proxy_corrector_cost_scope": "saved per-candidate corrector wall plus charged endpoint wall; shared proposal/setup costs remain in global ledger"
+        },
+        {
+          "method_search_history": [
+            {
+              "step": 1,
+              "distinct_worlds": 2,
+              "structural_worlds": 1,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 1,
+              "wall_seconds": 0.04690433293581009
+            },
+            {
+              "step": 2,
+              "distinct_worlds": 3,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 2,
+              "wall_seconds": 0.11977925000246614
+            },
+            {
+              "step": 3,
+              "distinct_worlds": 4,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 3,
+              "wall_seconds": 0.1645661249058321
+            },
+            {
+              "step": 4,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 4,
+              "wall_seconds": 0.2105688329320401
+            },
+            {
+              "step": 5,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 5,
+              "wall_seconds": 0.2682483328972012
+            },
+            {
+              "step": 6,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 6,
+              "wall_seconds": 0.3423928329721093
+            },
+            {
+              "step": 7,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 7,
+              "wall_seconds": 0.39002729090861976
+            },
+            {
+              "step": 8,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 8,
+              "wall_seconds": 0.43606545799411833
+            },
+            {
+              "step": 9,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 9,
+              "wall_seconds": 0.47860312496777624
+            },
+            {
+              "step": 10,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 10,
+              "wall_seconds": 0.5336978749837726
+            },
+            {
+              "step": 11,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 11,
+              "wall_seconds": 0.6084585409844294
+            },
+            {
+              "step": 12,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 12,
+              "wall_seconds": 0.6561095409560949
+            }
+          ],
+          "prior_support_unchanged": true
+        }
+      ],
+      "posterior_weight": null,
+      "physical_legality": true,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.005519001046195626,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      }
+    },
+    {
+      "id": "world_03",
+      "full_material_array": {
+        "path": "assets/world_03_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          9
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9956191837904181,
+        "cavity_count": 1,
+        "component_count": 1,
+        "feature_scale": 0.1636257603955676,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_03"
+        ],
+        "event_ids": [
+          "radial-event-6"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_03_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "old_measurement_prediction": {
+        "path": "assets/world_03_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.151795386760178,
+        "squared_residual": 26.540995707043447,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9698124618618601
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "full_maxwell_validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 1.3303516364516614e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 1.3303516364516614e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:03.262042Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_02",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.17019985317017394,
+            0.0,
+            2.7567586030305042,
+            0.07056397488112442
+          ],
+          "edit_id": 2,
+          "protected_geometry": [
+            0.14,
+            0.21,
+            0,
+            0
+          ],
+          "parent_p": [
+            0.1299999999999999,
+            0.0,
+            2.7567586030305042,
+            0.07056397488112442
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.752243902368323,
+          "epsilon_imag": 0.07586577255550989,
+          "central_radius": 0.1636257603955676,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9698124618618601,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_03_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.1784931367063409,
+      "measurement_distance_to_base": 0.14505623475510235,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "generation_history": [
+        {
+          "origin": "actual CONFIRM_CAMPAIGN finite_static",
+          "parent_id": "confirm_22",
+          "candidate_index": 3,
+          "generation": {
+            "parent_p": [
+              0.1299999999999999,
+              0.0,
+              2.7567586030305042,
+              0.07056397488112442
+            ],
+            "proposal_p": [
+              0.17019985317017394,
+              0.0,
+              2.7567586030305042,
+              0.07056397488112442
+            ],
+            "source": "protected-finite-edit",
+            "edit_id": 2,
+            "corrector": {
+              "proxy_residual": 5.1517917151473025,
+              "nfev": 5,
+              "proxy_evaluations": 20,
+              "wall_seconds": 0.0019517079927027225,
+              "converged": true,
+              "protected_geometry": [
+                0.14,
+                0.21,
+                0,
+                0
+              ]
+            },
+            "raw_proxy_residual": 5.15483812036005,
+            "step": 2,
+            "revision": 3,
+            "prior_support_unchanged": true
+          },
+          "optimizer_requested_p": [
+            0.1636257603955675,
+            0.0,
+            2.752243902368323,
+            0.07586577255550989
+          ],
+          "canonical_decoded_geometry": {
+            "central_radius": 0.1636257603955676,
+            "annular_halfwidth": 0.0
+          },
+          "discovery_status": "NEW_MATERIAL",
+          "cost_receipt": {
+            "begin": {
+              "stage": "E1",
+              "utc": 1792048466.8127732,
+              "event": "BEGIN",
+              "attempt": 1655,
+              "kind": "SEARCH_ENDPOINT",
+              "parameters": {
+                "H": -1,
+                "er": 2.752243902368323,
+                "ei": 0.07586577255550989,
+                "radii": [
+                  0.1636257603955676,
+                  1.0
+                ],
+                "eps_layers": [
+                  [
+                    1.0,
+                    0.0
+                  ],
+                  [
+                    2.752243902368323,
+                    0.07586577255550989
+                  ]
+                ],
+                "k": 1.6,
+                "nmax": 14,
+                "implementation": "matching",
+                "angles": [
+                  20,
+                  40,
+                  60,
+                  80,
+                  100,
+                  120,
+                  140,
+                  160
+                ]
+              },
+              "job": "confirm",
+              "context": {
+                "arm": "finite_static",
+                "step": 2
+              }
+            },
+            "end": {
+              "stage": "E1",
+              "utc": 1792048466.815935,
+              "event": "END",
+              "attempt": 1655,
+              "status": "PASS",
+              "wall_seconds": 0.002834166050888598,
+              "boundary_RHS": 28
+            }
+          },
+          "proxy_corrector_cost_scope": "saved per-candidate corrector wall plus charged endpoint wall; shared proposal/setup costs remain in global ledger"
+        },
+        {
+          "method_search_history": [
+            {
+              "step": 1,
+              "distinct_worlds": 2,
+              "structural_worlds": 1,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 1,
+              "wall_seconds": 0.04690433293581009
+            },
+            {
+              "step": 2,
+              "distinct_worlds": 3,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 2,
+              "wall_seconds": 0.11977925000246614
+            },
+            {
+              "step": 3,
+              "distinct_worlds": 4,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 3,
+              "wall_seconds": 0.1645661249058321
+            },
+            {
+              "step": 4,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 4,
+              "wall_seconds": 0.2105688329320401
+            },
+            {
+              "step": 5,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 5,
+              "wall_seconds": 0.2682483328972012
+            },
+            {
+              "step": 6,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 6,
+              "wall_seconds": 0.3423928329721093
+            },
+            {
+              "step": 7,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 7,
+              "wall_seconds": 0.39002729090861976
+            },
+            {
+              "step": 8,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 8,
+              "wall_seconds": 0.43606545799411833
+            },
+            {
+              "step": 9,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 9,
+              "wall_seconds": 0.47860312496777624
+            },
+            {
+              "step": 10,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 10,
+              "wall_seconds": 0.5336978749837726
+            },
+            {
+              "step": 11,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 11,
+              "wall_seconds": 0.6084585409844294
+            },
+            {
+              "step": 12,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 12,
+              "wall_seconds": 0.6561095409560949
+            }
+          ],
+          "prior_support_unchanged": true
+        }
+      ],
+      "posterior_weight": null,
+      "physical_legality": true,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.0047858740435913205,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      }
+    },
+    {
+      "id": "world_04",
+      "full_material_array": {
+        "path": "assets/world_04_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          9
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.989352,
+        "cavity_count": 1,
+        "component_count": 1,
+        "feature_scale": 0.2200000000000004,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_04"
+        ],
+        "event_ids": [
+          "radial-event-9"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_04_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "old_measurement_prediction": {
+        "path": "assets/world_04_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.170543065478629,
+        "squared_residual": 26.73451559196914,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9896075129538033
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "full_maxwell_validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 3.3911599234619164e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 3.3911599234619164e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:03.262042Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_03",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.236479830442395,
+            0.0,
+            2.752243902368323,
+            0.07586577255550989
+          ],
+          "edit_id": 3,
+          "protected_geometry": [
+            0.22,
+            0.2925518253046813,
+            0,
+            0
+          ],
+          "parent_p": [
+            0.1636257603955675,
+            0.0,
+            2.752243902368323,
+            0.07586577255550989
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.7405368410848103,
+          "epsilon_imag": 0.09006928321364005,
+          "central_radius": 0.2200000000000004,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9896075129538033,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_04_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.20193211837317734,
+      "measurement_distance_to_base": 0.3680625400188984,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "generation_history": [
+        {
+          "origin": "actual CONFIRM_CAMPAIGN finite_static",
+          "parent_id": "confirm_22",
+          "candidate_index": 4,
+          "generation": {
+            "parent_p": [
+              0.1636257603955675,
+              0.0,
+              2.752243902368323,
+              0.07586577255550989
+            ],
+            "proposal_p": [
+              0.236479830442395,
+              0.0,
+              2.752243902368323,
+              0.07586577255550989
+            ],
+            "source": "protected-finite-edit",
+            "edit_id": 3,
+            "corrector": {
+              "proxy_residual": 5.170539573503056,
+              "nfev": 6,
+              "proxy_evaluations": 24,
+              "wall_seconds": 0.0026030410081148148,
+              "converged": true,
+              "protected_geometry": [
+                0.22,
+                0.2925518253046813,
+                0,
+                0
+              ]
+            },
+            "raw_proxy_residual": 5.213140600227989,
+            "step": 3,
+            "revision": 3,
+            "prior_support_unchanged": true
+          },
+          "optimizer_requested_p": [
+            0.22000000000000036,
+            0.0,
+            2.7405368410848103,
+            0.09006928321364005
+          ],
+          "canonical_decoded_geometry": {
+            "central_radius": 0.2200000000000004,
+            "annular_halfwidth": 0.0
+          },
+          "discovery_status": "NEW_MATERIAL",
+          "cost_receipt": {
+            "begin": {
+              "stage": "E1",
+              "utc": 1792048466.8586261,
+              "event": "BEGIN",
+              "attempt": 1656,
+              "kind": "SEARCH_ENDPOINT",
+              "parameters": {
+                "H": -1,
+                "er": 2.7405368410848103,
+                "ei": 0.09006928321364005,
+                "radii": [
+                  0.2200000000000004,
+                  1.0
+                ],
+                "eps_layers": [
+                  [
+                    1.0,
+                    0.0
+                  ],
+                  [
+                    2.7405368410848103,
+                    0.09006928321364005
+                  ]
+                ],
+                "k": 1.6,
+                "nmax": 14,
+                "implementation": "matching",
+                "angles": [
+                  20,
+                  40,
+                  60,
+                  80,
+                  100,
+                  120,
+                  140,
+                  160
+                ]
+              },
+              "job": "confirm",
+              "context": {
+                "arm": "finite_static",
+                "step": 3
+              }
+            },
+            "end": {
+              "stage": "E1",
+              "utc": 1792048466.861669,
+              "event": "END",
+              "attempt": 1656,
+              "status": "PASS",
+              "wall_seconds": 0.002778375055640936,
+              "boundary_RHS": 28
+            }
+          },
+          "proxy_corrector_cost_scope": "saved per-candidate corrector wall plus charged endpoint wall; shared proposal/setup costs remain in global ledger"
+        },
+        {
+          "method_search_history": [
+            {
+              "step": 1,
+              "distinct_worlds": 2,
+              "structural_worlds": 1,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 1,
+              "wall_seconds": 0.04690433293581009
+            },
+            {
+              "step": 2,
+              "distinct_worlds": 3,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 2,
+              "wall_seconds": 0.11977925000246614
+            },
+            {
+              "step": 3,
+              "distinct_worlds": 4,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 3,
+              "wall_seconds": 0.1645661249058321
+            },
+            {
+              "step": 4,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 4,
+              "wall_seconds": 0.2105688329320401
+            },
+            {
+              "step": 5,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 5,
+              "wall_seconds": 0.2682483328972012
+            },
+            {
+              "step": 6,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 6,
+              "wall_seconds": 0.3423928329721093
+            },
+            {
+              "step": 7,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 7,
+              "wall_seconds": 0.39002729090861976
+            },
+            {
+              "step": 8,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 8,
+              "wall_seconds": 0.43606545799411833
+            },
+            {
+              "step": 9,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 9,
+              "wall_seconds": 0.47860312496777624
+            },
+            {
+              "step": 10,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 10,
+              "wall_seconds": 0.5336978749837726
+            },
+            {
+              "step": 11,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 11,
+              "wall_seconds": 0.6084585409844294
+            },
+            {
+              "step": 12,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 12,
+              "wall_seconds": 0.6561095409560949
+            }
+          ],
+          "prior_support_unchanged": true
+        }
+      ],
+      "posterior_weight": null,
+      "physical_legality": true,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.005381416063755751,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      }
+    },
+    {
+      "id": "world_05",
+      "full_material_array": {
+        "path": "assets/world_05_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          9
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9338497499998646,
+        "cavity_count": 2,
+        "component_count": 2,
+        "feature_scale": 0.05000000000010608,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_05"
+        ],
+        "event_ids": [
+          "radial-event-7"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_05_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "old_measurement_prediction": {
+        "path": "assets/world_05_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.317733287647964,
+        "squared_residual": 28.278287318559222,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 1.0571513080269979
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "full_maxwell_validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 2.7125666886119592e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 2.7125666886119592e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:03.262042Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_01",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.19648075287481095,
+            0.04508201914475842,
+            2.7616695065410037,
+            0.0649355112644665
+          ],
+          "edit_id": 6,
+          "protected_geometry": [
+            0.14,
+            0.2925518253046813,
+            0.025,
+            0.06
+          ],
+          "parent_p": [
+            0.0,
+            0.0,
+            2.7616695065410037,
+            0.0649355112644665
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.7999999999996965,
+          "epsilon_imag": 0.14477491605266,
+          "central_radius": 0.1400000000000116,
+          "annular_halfwidth": 0.02500000000005304
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 1.0571513080269979,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_05_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.26254372440258367,
+      "measurement_distance_to_base": 1.3398939305945914,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "generation_history": [
+        {
+          "origin": "actual CONFIRM_CAMPAIGN finite_static",
+          "parent_id": "confirm_22",
+          "candidate_index": 5,
+          "generation": {
+            "parent_p": [
+              0.0,
+              0.0,
+              2.7616695065410037,
+              0.0649355112644665
+            ],
+            "proposal_p": [
+              0.19648075287481095,
+              0.04508201914475842,
+              2.7616695065410037,
+              0.0649355112644665
+            ],
+            "source": "protected-finite-edit",
+            "edit_id": 6,
+            "corrector": {
+              "proxy_residual": 5.317842521266225,
+              "nfev": 9,
+              "proxy_evaluations": 45,
+              "wall_seconds": 0.004215709050185978,
+              "converged": true,
+              "protected_geometry": [
+                0.14,
+                0.2925518253046813,
+                0.025,
+                0.06
+              ]
+            },
+            "raw_proxy_residual": 8.32648332491808,
+            "step": 6,
+            "revision": 3,
+            "prior_support_unchanged": true
+          },
+          "optimizer_requested_p": [
+            0.1400000000000116,
+            0.025000000000053008,
+            2.7999999999996965,
+            0.14477491605266
+          ],
+          "canonical_decoded_geometry": {
+            "central_radius": 0.1400000000000116,
+            "annular_halfwidth": 0.02500000000005304
+          },
+          "discovery_status": "NEW_MATERIAL",
+          "cost_receipt": {
+            "begin": {
+              "stage": "E1",
+              "utc": 1792048467.037625,
+              "event": "BEGIN",
+              "attempt": 1659,
+              "kind": "SEARCH_ENDPOINT",
+              "parameters": {
+                "H": -1,
+                "er": 2.7999999999996965,
+                "ei": 0.14477491605266,
+                "radii": [
+                  0.1400000000000116,
+                  0.6249999999999469,
+                  0.6750000000000531,
+                  1.0
+                ],
+                "eps_layers": [
+                  [
+                    1.0,
+                    0.0
+                  ],
+                  [
+                    2.7999999999996965,
+                    0.14477491605266
+                  ],
+                  [
+                    1.0,
+                    0.0
+                  ],
+                  [
+                    2.7999999999996965,
+                    0.14477491605266
+                  ]
+                ],
+                "k": 1.6,
+                "nmax": 14,
+                "implementation": "matching",
+                "angles": [
+                  20,
+                  40,
+                  60,
+                  80,
+                  100,
+                  120,
+                  140,
+                  160
+                ]
+              },
+              "job": "confirm",
+              "context": {
+                "arm": "finite_static",
+                "step": 6
+              }
+            },
+            "end": {
+              "stage": "E1",
+              "utc": 1792048467.041515,
+              "event": "END",
+              "attempt": 1659,
+              "status": "PASS",
+              "wall_seconds": 0.0035463750828057528,
+              "boundary_RHS": 28
+            }
+          },
+          "proxy_corrector_cost_scope": "saved per-candidate corrector wall plus charged endpoint wall; shared proposal/setup costs remain in global ledger"
+        },
+        {
+          "method_search_history": [
+            {
+              "step": 1,
+              "distinct_worlds": 2,
+              "structural_worlds": 1,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 1,
+              "wall_seconds": 0.04690433293581009
+            },
+            {
+              "step": 2,
+              "distinct_worlds": 3,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 2,
+              "wall_seconds": 0.11977925000246614
+            },
+            {
+              "step": 3,
+              "distinct_worlds": 4,
+              "structural_worlds": 2,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 3,
+              "wall_seconds": 0.1645661249058321
+            },
+            {
+              "step": 4,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 4,
+              "wall_seconds": 0.2105688329320401
+            },
+            {
+              "step": 5,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 5,
+              "wall_seconds": 0.2682483328972012
+            },
+            {
+              "step": 6,
+              "distinct_worlds": 5,
+              "structural_worlds": 3,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 6,
+              "wall_seconds": 0.3423928329721093
+            },
+            {
+              "step": 7,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "NEW_MATERIAL",
+              "cumulative_endpoint_calls": 7,
+              "wall_seconds": 0.39002729090861976
+            },
+            {
+              "step": 8,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DATA_INCOMPATIBLE",
+              "cumulative_endpoint_calls": 8,
+              "wall_seconds": 0.43606545799411833
+            },
+            {
+              "step": 9,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 9,
+              "wall_seconds": 0.47860312496777624
+            },
+            {
+              "step": 10,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 10,
+              "wall_seconds": 0.5336978749837726
+            },
+            {
+              "step": 11,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 11,
+              "wall_seconds": 0.6084585409844294
+            },
+            {
+              "step": 12,
+              "distinct_worlds": 6,
+              "structural_worlds": 4,
+              "status": "DUPLICATE_MATERIAL",
+              "cumulative_endpoint_calls": 12,
+              "wall_seconds": 0.6561095409560949
+            }
+          ],
+          "prior_support_unchanged": true
+        }
+      ],
+      "posterior_weight": null,
+      "physical_legality": true,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.007762084132991731,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      }
+    }
+  ],
+  "pair_relations": [
+    {
+      "candidate_i": "world_01",
+      "candidate_j": "world_00",
+      "material_distance": 0.16070510965265458,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.46082801070644347,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_02",
+      "candidate_j": "world_00",
+      "material_distance": 0.1697849962743692,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.2854147837410992,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_02",
+      "candidate_j": "world_01",
+      "material_distance": 0.0551878620210316,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.18427822779301523,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_03",
+      "candidate_j": "world_00",
+      "material_distance": 0.1784931367063409,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.14505623475510235,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_03",
+      "candidate_j": "world_01",
+      "material_distance": 0.07820340329497992,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.3543199823388561,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_03",
+      "candidate_j": "world_02",
+      "material_distance": 0.05484833585526637,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.17004819451555614,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_00",
+      "material_distance": 0.20193211837317734,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.3680625400188984,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_01",
+      "material_distance": 0.12293886909628808,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.796690103222659,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_02",
+      "material_distance": 0.10881565204332246,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.612453576927312,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_03",
+      "material_distance": 0.0931593012935398,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.44242361071105607,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_00",
+      "material_distance": 0.26254372440258367,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.3398939305945914,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_01",
+      "material_distance": 0.3069256460828495,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.7722649292562234,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_02",
+      "material_distance": 0.30086901994660403,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.6005588398311676,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_03",
+      "material_distance": 0.3025957732945926,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.4444211409789085,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_04",
+      "material_distance": 0.31512137669109874,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.0573969754889352,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    }
+  ],
+  "probability_semantics": {
+    "status": "candidate_only",
+    "weights": null,
+    "represented_mass": null,
+    "unshown_modeled_mass": null,
+    "unexplored_mass": "unquantified",
+    "outside_model_support_mass": null,
+    "likelihood_profile_is_posterior": false
+  },
+  "shared_calibration": {
+    "rule": "One declared nuisance value per material world, shared by all specified frequencies/sources; never independent per channel",
+    "support": {
+      "path": "assets/nuisance_support.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    }
+  },
+  "unexplored_structures": {
+    "within_support": "partially_audited",
+    "outside_support": "unquantified",
+    "unexplored_regions": [
+      "Undiscovered radial material worlds within declared support",
+      "Nonconcentric and outside-support materials are unquantified"
+    ],
+    "modeled_residual_status": "Not assigned a posterior mass; finite search archive only",
+    "modeled_residual_asset": null,
+    "known_search_restrictions": [
+      "Finite declared radial representation and bounded CPU search budget"
+    ],
+    "coverage_guarantee": "none"
+  },
+  "measurement_evaluation": {
+    "entrypoint": "research_a.contracts.evaluate_new_action with caller-supplied budget-enforced original B1 full-Mie callback",
+    "input_fields": [
+      "material_world_id",
+      "action_id",
+      "budget_authorization"
+    ],
+    "output_fields": [
+      "target_identity",
+      "action_id",
+      "realification_order",
+      "prediction",
+      "cost_receipt",
+      "validation_status"
+    ],
+    "allowed_actions_asset": {
+      "path": "assets/allowed_actions.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "allowed_action_ids": [
+      "kR-1.6",
+      "kR-2.4"
+    ],
+    "requires_new_explicit_budget": true,
+    "auto_evaluation": false,
+    "evaluator_calls_made_by_adapter": 0,
+    "probability_design": "not available: candidate-only archive",
+    "callable_contract": "evaluate(candidate_material_array, action_dict, budget_authorization) -> prediction + cost_receipt; caller owns authorization and physics accounting"
+  },
+  "total_cost": {
+    "new_full_state_frequency_attempts": 2301,
+    "vector_rhs": 64368,
+    "forward_rhs": 64368,
+    "adjoint_rhs": 0,
+    "tangent_rhs": 0,
+    "cache_hits": 0,
+    "proposal_count": 2176,
+    "rejected_count": 62,
+    "failed_count": 0,
+    "wall_seconds": 171.08452579111326,
+    "peak_memory_bytes": null,
+    "setup_allocation_seconds": 0.0,
+    "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+  },
+  "upstream_manifest": {
+    "path": "assets/upstream_manifest.json",
+    "sha256": null,
+    "format": "json",
+    "key": null,
+    "shape": [],
+    "dtype": "json"
+  },
+  "failed_attempts": {
+    "path": "assets/failed_attempts.json",
+    "sha256": null,
+    "format": "json",
+    "key": null,
+    "shape": [],
+    "dtype": "json"
+  },
+  "provenance": {
+    "native_manifest": "manifest.json",
+    "original_schema": "Research A 1.0.0 (preserved in repository)",
+    "execution_overlay": "research-a-native-1.0.0-execution-no-digest-v1",
+    "digest_policy": "not computed or checked; null digests are explicit",
+    "b_native_schema_compatibility": "not asserted; Research B must explicitly import this versioned common exchange"
+  }
+}

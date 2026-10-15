@@ -1,0 +1,1581 @@
+{
+  "version": "1.0.0",
+  "package_id": "Research-A-20261015-confirm_02-finite-static",
+  "created_utc": "2026-10-15T07:33:02.396034Z",
+  "status": "handoff_ready",
+  "observation": {
+    "path": "assets/observation.npy",
+    "sha256": null,
+    "format": "npy",
+    "key": null,
+    "shape": [
+      32
+    ],
+    "dtype": "float64"
+  },
+  "noise": {
+    "id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+    "realification_order": "all-real-then-all-imaginary",
+    "covariance": {
+      "path": "assets/noise_covariance.npy",
+      "sha256": null,
+      "format": "npy",
+      "key": null,
+      "shape": [
+        32,
+        32
+      ],
+      "dtype": "float64"
+    },
+    "whitener": {
+      "path": "assets/noise_whitener.npy",
+      "sha256": null,
+      "format": "npy",
+      "key": null,
+      "shape": [
+        32,
+        32
+      ],
+      "dtype": "float64"
+    },
+    "units": "dimensionless scattering amplitude",
+    "model_discrepancy_policy": "Numerical full-Mie target only; model discrepancy outside concentric finite-band support is unquantified"
+  },
+  "acquisition": {
+    "id": "Research-A-P2-kR1.6-angle20to160-polarization-S1S2-Re16Im16",
+    "frequencies": [
+      1.6
+    ],
+    "frequency_units": "kR",
+    "n_sources": 2,
+    "n_real_measurements": 32,
+    "manifest": {
+      "path": "assets/acquisition.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    }
+  },
+  "physics_target": {
+    "hash": "Research-A-original-P2-vector-Mie-n14-C",
+    "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+    "time_convention": "exp(-i omega t)",
+    "grid": {
+      "path": "assets/grid.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "backend_commit": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+    "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+    "self_term_convention": "not applicable: analytic spherical boundary matching",
+    "polarizability_map": "direct relative-epsilon layers; no voxel polarizability approximation",
+    "boundary_conditions": "regular at origin, tangential electric/magnetic continuity, outgoing radiation",
+    "material_support": {
+      "path": "assets/material_support.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "nuisance_support": {
+      "path": "assets/nuisance_support.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "prior_manifest": null,
+    "dispersion_model": "shared frequency-independent complex epsilon over the declared finite band"
+  },
+  "base_reconstruction": {
+    "material_field": {
+      "path": "assets/world_00_material.npy",
+      "sha256": null,
+      "format": "npy",
+      "key": null,
+      "shape": [
+        10
+      ],
+      "dtype": "complex128"
+    },
+    "nuisance_parameters": {
+      "gain": 0.9323082372554432
+    },
+    "method": "shared-coarse-reconstruction",
+    "full_validation_passed": true,
+    "cost": {
+      "new_full_state_frequency_attempts": 1,
+      "vector_rhs": 28,
+      "forward_rhs": 28,
+      "adjoint_rhs": 0,
+      "tangent_rhs": 0,
+      "cache_hits": 0,
+      "proposal_count": 1,
+      "rejected_count": 0,
+      "failed_count": 0,
+      "wall_seconds": 0.008122332976199687,
+      "peak_memory_bytes": null,
+      "setup_allocation_seconds": 0.0,
+      "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+    }
+  },
+  "requested_k": 6,
+  "valid_k": 6,
+  "candidate_ordering_rule": "discovery order under material-space deduplication; no truth used",
+  "candidates": [
+    {
+      "id": "world_00",
+      "material_field": {
+        "path": "assets/world_00_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          10
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9884690310763286,
+        "cavity_count": 2,
+        "component_count": 2,
+        "feature_scale": 6.7055225372314455e-09,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_00"
+        ],
+        "event_ids": [
+          "radial-event-4"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_00_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "full_predicted_measurement": {
+        "path": "assets/world_00_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.972077687622714,
+        "squared_residual": 35.66571190700106,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9323082372554432
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 4.5921693550065645e-32,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 4.5921693550065645e-32,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:02.396034Z"
+      },
+      "compensation": {
+        "parent_candidate_id": null,
+        "edit_family": "shared-coarse-reconstruction",
+        "edit_parameters": {
+          "proposal_p": null,
+          "edit_id": null,
+          "protected_geometry": null,
+          "parent_p": null,
+          "source": "shared-coarse-reconstruction"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.709719828366431,
+          "epsilon_imag": 0.040000000000002096,
+          "central_radius": 6.7055225372314455e-09,
+          "annular_halfwidth": 0.004548631440183819
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9323082372554432,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_00_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.0,
+      "measurement_distance_to_base": 0.0,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "proper_log_prior": null,
+      "prior_score_is_normalized_density": false,
+      "proposal_log_density": null,
+      "posterior_weight": null,
+      "conditional_samples_asset": null,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.008122332976199687,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      },
+      "rom": {
+        "used": false,
+        "engine": "full_solver",
+        "anchor_id": null,
+        "rank": null,
+        "modified_current_rank": null,
+        "refresh_count": 0,
+        "validity": "not_applicable",
+        "numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "uniform_certificate_claimed": false
+      }
+    },
+    {
+      "id": "world_01",
+      "material_field": {
+        "path": "assets/world_01_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          10
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 1.0,
+        "cavity_count": 0,
+        "component_count": 1,
+        "feature_scale": 1.0,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_01"
+        ],
+        "event_ids": [
+          "radial-event-0"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_01_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "full_predicted_measurement": {
+        "path": "assets/world_01_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.981604490896932,
+        "squared_residual": 35.77959228551834,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9277264516399238
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 6.109409496058506e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 6.109409496058506e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:02.396034Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_00",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.0,
+            0.0,
+            2.709719828366431,
+            0.040000000000002096
+          ],
+          "edit_id": 0,
+          "protected_geometry": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "parent_p": [
+            7.458517858627246e-09,
+            0.004548631440183688,
+            2.709719828366431,
+            0.040000000000002096
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.689147082038686,
+          "epsilon_imag": 0.040000000000000036,
+          "central_radius": 0.0,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9277264516399238,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_01_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.12145353754867803,
+      "measurement_distance_to_base": 0.34856801519129077,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "proper_log_prior": null,
+      "prior_score_is_normalized_density": false,
+      "proposal_log_density": null,
+      "posterior_weight": null,
+      "conditional_samples_asset": null,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.0037097500171512365,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      },
+      "rom": {
+        "used": false,
+        "engine": "full_solver",
+        "anchor_id": null,
+        "rank": null,
+        "modified_current_rank": null,
+        "refresh_count": 0,
+        "validity": "not_applicable",
+        "numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "uniform_certificate_claimed": false
+      }
+    },
+    {
+      "id": "world_02",
+      "material_field": {
+        "path": "assets/world_02_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          10
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9984489200399342,
+        "cavity_count": 1,
+        "component_count": 1,
+        "feature_scale": 0.11575632459109553,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_02"
+        ],
+        "event_ids": [
+          "radial-event-6"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_02_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "full_predicted_measurement": {
+        "path": "assets/world_02_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.9797373040469415,
+        "squared_residual": 35.75725822541058,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9298383464501818
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 1.1324627177194137e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 1.1324627177194137e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:02.396034Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_01",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.07507595235162469,
+            0.0,
+            2.689147082038686,
+            0.040000000000000036
+          ],
+          "edit_id": 1,
+          "protected_geometry": [
+            0.05,
+            0.13,
+            0,
+            0
+          ],
+          "parent_p": [
+            0.0,
+            0.0,
+            2.689147082038686,
+            0.040000000000000036
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.6889090948769843,
+          "epsilon_imag": 0.04,
+          "central_radius": 0.11575632459109553,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9298383464501818,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_02_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.12945336989346273,
+      "measurement_distance_to_base": 0.1990564867270779,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "proper_log_prior": null,
+      "prior_score_is_normalized_density": false,
+      "proposal_log_density": null,
+      "posterior_weight": null,
+      "conditional_samples_asset": null,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.005001001060009003,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      },
+      "rom": {
+        "used": false,
+        "engine": "full_solver",
+        "anchor_id": null,
+        "rank": null,
+        "modified_current_rank": null,
+        "refresh_count": 0,
+        "validity": "not_applicable",
+        "numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "uniform_certificate_claimed": false
+      }
+    },
+    {
+      "id": "world_03",
+      "material_field": {
+        "path": "assets/world_03_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          10
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9972559999999699,
+        "cavity_count": 1,
+        "component_count": 1,
+        "feature_scale": 0.14000000000051044,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_03"
+        ],
+        "event_ids": [
+          "radial-event-6"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_03_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "full_predicted_measurement": {
+        "path": "assets/world_03_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 5.9806979150138835,
+        "squared_residual": 35.76874755065141,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9314099746538415
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 1.7130769572560267e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 1.7130769572560267e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:02.396034Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_02",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.1545260640688367,
+            0.0,
+            2.6889090948769843,
+            0.04
+          ],
+          "edit_id": 2,
+          "protected_geometry": [
+            0.14,
+            0.21,
+            0,
+            0
+          ],
+          "parent_p": [
+            0.11575632459109557,
+            0.0,
+            2.6889090948769843,
+            0.04
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.6887755033503664,
+          "epsilon_imag": 0.04,
+          "central_radius": 0.14000000000051044,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9314099746538415,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_03_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.1352844224410901,
+      "measurement_distance_to_base": 0.09954208904329133,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "proper_log_prior": null,
+      "prior_score_is_normalized_density": false,
+      "proposal_log_density": null,
+      "posterior_weight": null,
+      "conditional_samples_asset": null,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.005071708932518959,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      },
+      "rom": {
+        "used": false,
+        "engine": "full_solver",
+        "anchor_id": null,
+        "rank": null,
+        "modified_current_rank": null,
+        "refresh_count": 0,
+        "validity": "not_applicable",
+        "numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "uniform_certificate_claimed": false
+      }
+    },
+    {
+      "id": "world_04",
+      "material_field": {
+        "path": "assets/world_04_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          10
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9893519999999907,
+        "cavity_count": 1,
+        "component_count": 1,
+        "feature_scale": 0.22000000000006428,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_04"
+        ],
+        "event_ids": [
+          "radial-event-9"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_04_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "full_predicted_measurement": {
+        "path": "assets/world_04_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 6.028394678754076,
+        "squared_residual": 36.341542402830456,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9411349505246338
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 2.3565616739289405e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 2.3565616739289405e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:02.396034Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_03",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.27977194104325753,
+            0.0,
+            2.6887755033503664,
+            0.04
+          ],
+          "edit_id": 3,
+          "protected_geometry": [
+            0.22,
+            0.2925518253046813,
+            0,
+            0
+          ],
+          "parent_p": [
+            0.1400000000005105,
+            0.0,
+            2.6887755033503664,
+            0.04
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.6886430383302775,
+          "epsilon_imag": 0.04,
+          "central_radius": 0.22000000000006428,
+          "annular_halfwidth": 0.0
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9411349505246338,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_04_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.16890618192030354,
+      "measurement_distance_to_base": 0.6130641744194123,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "proper_log_prior": null,
+      "prior_score_is_normalized_density": false,
+      "proposal_log_density": null,
+      "posterior_weight": null,
+      "conditional_samples_asset": null,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.005554083967581391,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      },
+      "rom": {
+        "used": false,
+        "engine": "full_solver",
+        "anchor_id": null,
+        "rank": null,
+        "modified_current_rank": null,
+        "refresh_count": 0,
+        "validity": "not_applicable",
+        "numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "uniform_certificate_claimed": false
+      }
+    },
+    {
+      "id": "world_05",
+      "material_field": {
+        "path": "assets/world_05_material.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          10
+        ],
+        "dtype": "complex128"
+      },
+      "material_parameterization_id": "exact-concentric-layer-epsilon-on-package-union-radial-intervals-v1",
+      "structure": {
+        "support_volume": 0.9338497500000003,
+        "cavity_count": 2,
+        "component_count": 2,
+        "feature_scale": 0.04999999999999989,
+        "descriptor_definition_id": "Research-A-radial-geometry-v1",
+        "cluster_ids": [
+          "world_05"
+        ],
+        "event_ids": [
+          "radial-event-7"
+        ],
+        "topology_thresholds": [
+          0.0
+        ],
+        "topology_persistence_rule": "exact nonzero radial intervals, no pixel threshold; structural distinctness requires delta-r>=.05R or delta-h>=.025R",
+        "descriptor_asset": {
+          "path": "assets/world_05_structure.json",
+          "sha256": null,
+          "format": "json",
+          "key": null,
+          "shape": [],
+          "dtype": "json"
+        }
+      },
+      "full_predicted_measurement": {
+        "path": "assets/world_05_prediction.npy",
+        "sha256": null,
+        "format": "npy",
+        "key": null,
+        "shape": [
+          32
+        ],
+        "dtype": "float64"
+      },
+      "fit": {
+        "whitened_residual_l2": 6.226143485936853,
+        "squared_residual": 38.76486270747391,
+        "threshold_l2": 6.796635897286134,
+        "noise_model_id": "P2-frozen-reference-solid-RMS0.12-real-SD-kR1.6",
+        "nuisance_policy": "bounded_profile",
+        "nuisance_parameters": {
+          "gain": 0.9596665767641638
+        },
+        "log_likelihood": null,
+        "likelihood_semantics": "profile_not_marginal",
+        "likelihood_numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "fit_acceptance": true
+      },
+      "validation": {
+        "passed": true,
+        "scope": "full_discrete_maxwell",
+        "solver_id": "B1-vector-Mie-tangential-boundary-matching",
+        "physics_target_hash": "Research-A-original-P2-vector-Mie-n14-C",
+        "all_illuminations_same_material": true,
+        "constitutive_relative_defect": null,
+        "constitutive_relative_defect_status": "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE",
+        "solver_relative_residual": 2.0067392089802248e-17,
+        "material_constraints_passed": true,
+        "material_law_id": "passive-isotropic-relative-permittivity-mu1",
+        "numerical_error": {
+          "value": 2.0067392089802248e-17,
+          "norm": "max per-electric/magnetic multipole boundary-matching linear-system normwise backward residual",
+          "status": "solver_tolerance_only",
+          "method": "Original full vector-Mie n14 endpoint; not an internal current/field constitutive defect; no independent mesh/full-model certificate"
+        },
+        "independent_mesh_checked": false,
+        "independent_mesh_result": null,
+        "timestamp_utc": "2026-10-15T07:33:02.396034Z"
+      },
+      "compensation": {
+        "parent_candidate_id": "world_01",
+        "edit_family": "protected-finite-edit",
+        "edit_parameters": {
+          "proposal_p": [
+            0.22846032840088543,
+            0.02848694479769954,
+            2.689147082038686,
+            0.040000000000000036
+          ],
+          "edit_id": 6,
+          "protected_geometry": [
+            0.14,
+            0.2925518253046813,
+            0.025,
+            0.06
+          ],
+          "parent_p": [
+            0.0,
+            0.0,
+            2.689147082038686,
+            0.040000000000000036
+          ],
+          "source": "protected-finite-edit"
+        },
+        "material_compensation_parameters": {
+          "epsilon_real": 2.799999999916724,
+          "epsilon_imag": 0.04025368710999865,
+          "central_radius": 0.14000000000000004,
+          "annular_halfwidth": 0.024999999999999946
+        },
+        "nuisance_compensation_parameters": {
+          "gain": 0.9596665767641638,
+          "bounds": [
+            0.7,
+            1.3
+          ],
+          "shared_across_frequencies_and_sources": true
+        },
+        "protected_structure_constraints": [
+          "The finite edit protected geometry cell is stored in edit_parameters.protected_geometry",
+          "Candidate is archived only after independent full-Mie endpoint data-fit and material-space deduplication"
+        ],
+        "active_material_coordinates": {
+          "path": "assets/world_05_coordinates.npy",
+          "sha256": null,
+          "format": "npy",
+          "key": null,
+          "shape": [
+            4
+          ],
+          "dtype": "float64"
+        },
+        "path_asset": null
+      },
+      "material_distance_to_base": 0.2721259393261262,
+      "measurement_distance_to_base": 1.7853994535791429,
+      "distance_definition_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "proper_log_prior": null,
+      "prior_score_is_normalized_density": false,
+      "proposal_log_density": null,
+      "posterior_weight": null,
+      "conditional_samples_asset": null,
+      "cost": {
+        "new_full_state_frequency_attempts": 1,
+        "vector_rhs": 28,
+        "forward_rhs": 28,
+        "adjoint_rhs": 0,
+        "tangent_rhs": 0,
+        "cache_hits": 0,
+        "proposal_count": 1,
+        "rejected_count": 0,
+        "failed_count": 0,
+        "wall_seconds": 0.00917008297983557,
+        "peak_memory_bytes": null,
+        "setup_allocation_seconds": 0.0,
+        "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+      },
+      "rom": {
+        "used": false,
+        "engine": "full_solver",
+        "anchor_id": null,
+        "rank": null,
+        "modified_current_rank": null,
+        "refresh_count": 0,
+        "validity": "not_applicable",
+        "numerical_error": {
+          "value": null,
+          "norm": "relative_l2",
+          "status": "unknown",
+          "method": "not quantified"
+        },
+        "uniform_certificate_claimed": false
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "candidate_i": "world_01",
+      "candidate_j": "world_00",
+      "material_distance": 0.12145353754867803,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.34856801519129077,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_02",
+      "candidate_j": "world_00",
+      "material_distance": 0.12945336989346273,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.1990564867270779,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_02",
+      "candidate_j": "world_01",
+      "material_distance": 0.0442644273250942,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.1545013356601571,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_03",
+      "candidate_j": "world_00",
+      "material_distance": 0.1352844224410901,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.09954208904329133,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_03",
+      "candidate_j": "world_01",
+      "material_distance": 0.058874990982627676,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.2679007203788954,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_03",
+      "candidate_j": "world_02",
+      "material_distance": 0.03881330518417644,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.11340208996674113,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_00",
+      "material_distance": 0.16890618192030354,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.6130641744194123,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_01",
+      "material_distance": 0.11597671413139676,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.9515078732022338,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_02",
+      "material_distance": 0.10718193645144444,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.7970573447469559,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_04",
+      "candidate_j": "world_03",
+      "material_distance": 0.09989945597339574,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 0.6836798584989295,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_00",
+      "material_distance": 0.2721259393261262,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.7853994535791429,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_01",
+      "material_distance": 0.29772178187640136,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 2.13250812795743,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_02",
+      "material_distance": 0.2944109220737871,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.9802257951946431,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_03",
+      "material_distance": 0.2918406048712946,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.8686052135681248,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    },
+    {
+      "candidate_i": "world_05",
+      "candidate_j": "world_04",
+      "material_distance": 0.310586970826219,
+      "material_metric_id": "volume-weighted-complex-epsilon-L2-div-abs(1.5+.1i)",
+      "measurement_distance": 1.2016726784533478,
+      "measurement_metric_id": "old1.6-full-gain-applied-prediction-difference-whitened-real-L2",
+      "hard_to_distinguish": null,
+      "decision_rule_id": null,
+      "connection_status": "not_tested",
+      "nuisance_policy": "bounded_profile",
+      "comparison_uncertainty": {
+        "value": null,
+        "norm": "relative_l2",
+        "status": "unknown",
+        "method": "not quantified"
+      },
+      "validated_path_asset": null
+    }
+  ],
+  "weight_reliability": "candidate_only",
+  "weights": null,
+  "unexplored_uncertainty": {
+    "within_support": "partially_audited",
+    "outside_support": "unquantified",
+    "unexplored_regions": [
+      "Undiscovered radial material worlds within declared support",
+      "Nonconcentric and outside-support materials are unquantified"
+    ],
+    "modeled_residual_status": "Not assigned a posterior mass; finite search archive only",
+    "modeled_residual_asset": null,
+    "known_search_restrictions": [
+      "Finite declared radial representation and bounded CPU search budget"
+    ],
+    "coverage_guarantee": "none"
+  },
+  "next_measurement_interface": {
+    "evaluator_entrypoint": "research_a.contracts.evaluate_new_action with caller-supplied budget-enforced original B1 full-Mie callback",
+    "environment_manifest": {
+      "path": "assets/environment.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "allowed_actions": {
+      "path": "assets/allowed_actions.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "response_cache_manifest": {
+      "path": "assets/cache_manifest.json",
+      "sha256": null,
+      "format": "json",
+      "key": null,
+      "shape": [],
+      "dtype": "json"
+    },
+    "new_action_calls_require_separate_budget": true,
+    "posterior_information_gain_allowed": false,
+    "candidate_only_design_semantics": "Candidate discrimination/minimax or geometric design only; no posterior information gain without a separately justified probability target."
+  },
+  "total_cost": {
+    "new_full_state_frequency_attempts": 2301,
+    "vector_rhs": 64368,
+    "forward_rhs": 64368,
+    "adjoint_rhs": 0,
+    "tangent_rhs": 0,
+    "cache_hits": 0,
+    "proposal_count": 2176,
+    "rejected_count": 62,
+    "failed_count": 0,
+    "wall_seconds": 171.08452579111326,
+    "peak_memory_bytes": null,
+    "setup_allocation_seconds": 0.0,
+    "historical_cost_ledger": "../../COST_LEDGER.jsonl"
+  },
+  "upstream_manifest": {
+    "path": "assets/upstream_manifest.json",
+    "sha256": null,
+    "format": "json",
+    "key": null,
+    "shape": [],
+    "dtype": "json"
+  },
+  "failed_attempts_ledger": {
+    "path": "assets/failed_attempts.json",
+    "sha256": null,
+    "format": "json",
+    "key": null,
+    "shape": [],
+    "dtype": "json"
+  }
+}

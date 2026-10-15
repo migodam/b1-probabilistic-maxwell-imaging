@@ -1,0 +1,9 @@
+# 来源与访问边界
+
+研究包内两份主要报告、执行入口、schema/validator和全部已有数值/测试由主线程与原生workers分工完整阅读。原包按收到状态保存在pro_original，不把其中的建议GO当作已跑成像结果。无SHA计算、比较或伪造。
+
+A17 closure_final有本地source与materialized快照，无独立Git；旧initializer会自动hash，本轮未调用。A23早期部分源码snapshot缺口保留，不重跑掩盖。A24读取实际Gate，未以理论目录的早期GO替代实验NO_GO。A30/C1-P1/P2资产路径、可访问范围与精确证据见delegated/history与delegated/a30。经典TSOM/部分文献全文访问缺口继承研究包；本轮不新开文献综述，不宣称穷尽检索或首次。
+
+B原生schema及工作目录未访问，版本化common exchange是独立协商接口，不宣称与B原格式等同。A的原生schema另留原样；无摘要与Mie未暴露本构缺陷用明确execution overlay表达，不谎称完全满足原strictschema。
+
+连续P2acceptedreference保留其数值/暴露范围，既有fresh现为历史exposed。ResearchA新32parent在当前协议冻结后生成；其真值仅离线评分，本轮完成后同样成为exposed，不能再作下一轮盲测。未读旧locked truth。

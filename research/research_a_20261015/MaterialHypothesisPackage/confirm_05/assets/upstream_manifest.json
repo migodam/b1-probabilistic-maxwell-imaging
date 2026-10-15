@@ -1,0 +1,131 @@
+{
+  "source_campaign": "research/research_a_20261015/results/CONFIRM_CAMPAIGN.json",
+  "source_parent_id": "confirm_05",
+  "source_method": "finite_static",
+  "backend_commit": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+  "protocol": {
+    "protocol_version": "Research-A-20261015-v1",
+    "upstream_commit": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+    "physics": "original full-vector Mie matching n14, R=1",
+    "latent_bounds": [
+      [
+        -3,
+        1
+      ],
+      [
+        -3,
+        1
+      ],
+      [
+        2.2,
+        2.8
+      ],
+      [
+        0.04,
+        0.16
+      ]
+    ],
+    "frequencies": [
+      1.6,
+      2.4
+    ],
+    "primary_frequencies": [
+      1.6
+    ],
+    "noise": "original P2 .12 fixed-solid real RMS, unchanged",
+    "packing": "Re16 then Im16",
+    "gain": {
+      "bounds": [
+        0.7,
+        1.3
+      ],
+      "prior": "proper truncated N(1,.15^2)",
+      "online": "bounded real least-squares profile; not evidence"
+    },
+    "arms": [
+      "finite_static",
+      "multistart",
+      "population",
+      "mdn",
+      "adaptive"
+    ],
+    "development": [
+      "solid",
+      "large_cavity",
+      "annular_cavity",
+      "combined"
+    ],
+    "development_calls_per_arm": 8,
+    "confirmation_parents": 32,
+    "confirmation_calls_per_arm": 12,
+    "primary_k": 4,
+    "k": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "tau": "sqrt(chi2.ppf(.95,32))",
+    "material_dedup_l2": 0.03,
+    "structure_minimum_radius_difference": 0.05,
+    "structure_minimum_ring_halfwidth_difference": 0.025,
+    "selector": "base included, then farthest material-field distance; selected lowest full residual",
+    "proxy_corrector": {
+      "max_nfev": 25,
+      "geometry_protection": "finite/static/adaptive protect edit cells; shared bounded least_squares",
+      "finite_difference": "proxy only"
+    },
+    "exploration_fraction": 0.2,
+    "seed": {
+      "proposal": 261015101,
+      "truth_parent": 261015102,
+      "noise": 261015103,
+      "bootstrap": 261015104
+    },
+    "E2_entry": "E0 and interface PASS; E1 compensation produces full-valid structural worlds; Best4 not wholly dominated by multistart; empirical positive improvement signal. Final superiority remains frozen10pct+CI and coverage/cost criteria",
+    "E3": false,
+    "newbank": false,
+    "training": false,
+    "truth_access": "separate offline scoring module only",
+    "authorization_overlay": "human Research A request; E1 2304 attempts/1800executionwall s; E2conditional384states/9216RHS/3600s; stagecaps nontransferable",
+    "no_sha256": true
+  },
+  "confirmation_freeze": {
+    "version": "confirm-v1-revision3",
+    "frozen_before_fresh_truth": true,
+    "coverage_normalized_mae": 0.15464083564008957,
+    "threshold_derivation": "0.9 times development conventional multistart median Best4 normalizedMAE; structuralerrors<=.05/.025",
+    "nparents": 32,
+    "arms": [
+      "finite_static",
+      "multistart",
+      "population",
+      "mdn",
+      "adaptive"
+    ],
+    "calls_per_parent_per_arm": 12,
+    "revision": 3,
+    "adaptive_revision": "activate history+proxyforecast after2steps; revision2n8neveractivatedforecast, retainednegativeengineeringattempt",
+    "strong_claim": "10percentBest4 improvement with parentpaired95CI excludingzero and10percentagepointcoverage or20percent matchedcostimprovement; no severeRe/Im degradation",
+    "E2_entry": "mathematics+interface consistent;fullvalidstructuralfamilies;improvement signal versusmultistart, nofrontierdomination",
+    "all_failed_development_costs_retained": true
+  },
+  "global_ledger_scope": "total_cost is one GLOBAL E1 snapshot, repeated for provenance; NEVER sum it over packages or candidates",
+  "global_budget_snapshot": {
+    "stage": "E1",
+    "attempts": 2301,
+    "cap": 2304,
+    "remaining": 3,
+    "controlled_execution_wall": 171.08452579111326,
+    "wall_cap": 1800,
+    "failed": 0,
+    "boundary_RHS": 64368,
+    "kernel_wall": 7.472999041550793,
+    "GPU": 0,
+    "old_P2_budget_adopted": false
+  },
+  "global_rejected_count_scope": "confirmation DATA_INCOMPATIBLE attempts only; complete physical setup/failure/repetition costs are in append-only global ledger",
+  "per_candidate_cost_scope": "one saved full endpoint plus its saved proxy-corrector wall; shared coarse endpoint/setup are not to be charged again",
+  "rhs_scope": "boundary_RHS means 2*nmax spherical electric/magnetic boundary systems, not voxel illumination RHS",
+  "candidate_generation_history": "actual candidate history and complete finite_static step/discovery history in common exchange; unsuccessful attempts retained as assets"
+}

@@ -1,0 +1,1378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:research-a:common-material-exchange:1.0.0",
+  "title": "Research A independent common exchange v1 \u2014 not Research B native format",
+  "description": "Explicit adapter contract for actual full-discrete-Maxwell validated candidates. Truth and posterior probabilities are absent. No solver is invoked by validation.",
+  "type": "object",
+  "properties": {
+    "exchange_version": {
+      "const": "research-a-common-exchange/1.0.0"
+    },
+    "source_profile": {
+      "const": "research-a-native-1.0.0-execution-no-digest-v1"
+    },
+    "source_native_version": {
+      "const": "1.0.0"
+    },
+    "package_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_utc": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acquisition_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "noise_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "physics": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_law_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "time_convention": {
+          "enum": [
+            "exp(-i omega t)",
+            "exp(+i omega t)"
+          ]
+        },
+        "grid": {
+          "$ref": "#/$defs/asset"
+        },
+        "backend_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "solver_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "self_term_convention": {
+          "type": "string",
+          "minLength": 1
+        },
+        "polarizability_map": {
+          "type": "string",
+          "minLength": 1
+        },
+        "boundary_conditions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_support": {
+          "$ref": "#/$defs/asset"
+        },
+        "nuisance_support": {
+          "$ref": "#/$defs/asset"
+        },
+        "prior_manifest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/asset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dispersion_model": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "hash",
+        "material_law_id",
+        "time_convention",
+        "grid",
+        "backend_commit",
+        "solver_id",
+        "self_term_convention",
+        "polarizability_map",
+        "boundary_conditions",
+        "material_support",
+        "nuisance_support",
+        "prior_manifest",
+        "dispersion_model"
+      ],
+      "additionalProperties": false
+    },
+    "acquisition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest": {
+          "$ref": "#/$defs/asset"
+        },
+        "frequencies": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "frequency_units": {
+          "type": "string",
+          "minLength": 1
+        },
+        "n_sources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "n_real_measurements": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id",
+        "manifest",
+        "frequencies",
+        "frequency_units",
+        "n_sources",
+        "n_real_measurements"
+      ],
+      "additionalProperties": false
+    },
+    "observation": {
+      "$ref": "#/$defs/asset"
+    },
+    "noise": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "realification_order": {
+          "type": "string",
+          "minLength": 1
+        },
+        "covariance": {
+          "$ref": "#/$defs/asset"
+        },
+        "whitener": {
+          "$ref": "#/$defs/asset"
+        },
+        "units": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_discrepancy_policy": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "realification_order",
+        "covariance",
+        "whitener",
+        "units",
+        "model_discrepancy_policy"
+      ],
+      "additionalProperties": false
+    },
+    "material_worlds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "full_material_array": {
+            "$ref": "#/$defs/asset"
+          },
+          "material_parameterization_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "structure": {
+            "$ref": "#/$defs/structure"
+          },
+          "old_measurement_prediction": {
+            "$ref": "#/$defs/asset"
+          },
+          "fit": {
+            "$ref": "#/$defs/fit"
+          },
+          "full_maxwell_validation": {
+            "$ref": "#/$defs/validation"
+          },
+          "compensation": {
+            "$ref": "#/$defs/compensation"
+          },
+          "material_distance_to_base": {
+            "type": "number",
+            "minimum": 0
+          },
+          "measurement_distance_to_base": {
+            "type": "number",
+            "minimum": 0
+          },
+          "distance_definition_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "generation_history": {
+            "type": "array"
+          },
+          "posterior_weight": {
+            "type": "null"
+          },
+          "physical_legality": {
+            "const": true
+          },
+          "cost": {
+            "$ref": "#/$defs/cost"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "full_material_array",
+          "material_parameterization_id",
+          "structure",
+          "old_measurement_prediction",
+          "fit",
+          "full_maxwell_validation",
+          "compensation",
+          "material_distance_to_base",
+          "measurement_distance_to_base",
+          "distance_definition_id",
+          "generation_history",
+          "posterior_weight",
+          "physical_legality",
+          "cost"
+        ]
+      }
+    },
+    "pair_relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pair"
+      }
+    },
+    "probability_semantics": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "candidate_only"
+        },
+        "weights": {
+          "type": "null"
+        },
+        "represented_mass": {
+          "type": "null"
+        },
+        "unshown_modeled_mass": {
+          "type": "null"
+        },
+        "unexplored_mass": {
+          "const": "unquantified"
+        },
+        "outside_model_support_mass": {
+          "type": "null"
+        },
+        "likelihood_profile_is_posterior": {
+          "const": false
+        }
+      },
+      "required": [
+        "status",
+        "weights",
+        "represented_mass",
+        "unshown_modeled_mass",
+        "unexplored_mass",
+        "outside_model_support_mass",
+        "likelihood_profile_is_posterior"
+      ],
+      "additionalProperties": false
+    },
+    "shared_calibration": {
+      "type": "object",
+      "properties": {
+        "rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "support": {
+          "$ref": "#/$defs/asset"
+        }
+      },
+      "required": [
+        "rule",
+        "support"
+      ],
+      "additionalProperties": false
+    },
+    "unexplored_structures": {
+      "type": "object",
+      "properties": {
+        "within_support": {
+          "enum": [
+            "unknown",
+            "partially_audited",
+            "reference_quantified"
+          ]
+        },
+        "outside_support": {
+          "enum": [
+            "unquantified",
+            "modeled"
+          ]
+        },
+        "unexplored_regions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "modeled_residual_status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "modeled_residual_asset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/asset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "known_search_restrictions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "coverage_guarantee": {
+          "enum": [
+            "none",
+            "finite_declared_reference_only"
+          ]
+        }
+      },
+      "required": [
+        "within_support",
+        "outside_support",
+        "unexplored_regions",
+        "modeled_residual_status",
+        "modeled_residual_asset",
+        "known_search_restrictions",
+        "coverage_guarantee"
+      ],
+      "additionalProperties": false
+    },
+    "measurement_evaluation": {
+      "type": "object",
+      "properties": {
+        "entrypoint": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "output_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "allowed_actions_asset": {
+          "$ref": "#/$defs/asset"
+        },
+        "allowed_action_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "requires_new_explicit_budget": {
+          "const": true
+        },
+        "auto_evaluation": {
+          "const": false
+        },
+        "evaluator_calls_made_by_adapter": {
+          "const": 0
+        },
+        "probability_design": {
+          "type": "string",
+          "minLength": 1
+        },
+        "callable_contract": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "entrypoint",
+        "input_fields",
+        "output_fields",
+        "allowed_actions_asset",
+        "allowed_action_ids",
+        "requires_new_explicit_budget",
+        "auto_evaluation",
+        "evaluator_calls_made_by_adapter",
+        "probability_design",
+        "callable_contract"
+      ]
+    },
+    "total_cost": {
+      "$ref": "#/$defs/cost"
+    },
+    "upstream_manifest": {
+      "$ref": "#/$defs/asset"
+    },
+    "failed_attempts": {
+      "$ref": "#/$defs/asset"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "native_manifest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_overlay": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "b_native_schema_compatibility": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "native_manifest",
+        "original_schema",
+        "execution_overlay",
+        "digest_policy",
+        "b_native_schema_compatibility"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "exchange_version",
+    "source_profile",
+    "source_native_version",
+    "package_id",
+    "created_utc",
+    "target_identity",
+    "acquisition_identity",
+    "noise_identity",
+    "physics",
+    "acquisition",
+    "observation",
+    "noise",
+    "material_worlds",
+    "pair_relations",
+    "probability_semantics",
+    "shared_calibration",
+    "unexplored_structures",
+    "measurement_evaluation",
+    "total_cost",
+    "upstream_manifest",
+    "failed_attempts",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "asset": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "format": {
+          "enum": [
+            "npy",
+            "npz",
+            "hdf5",
+            "zarr",
+            "json"
+          ]
+        },
+        "key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shape": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "dtype": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "format",
+        "key",
+        "shape",
+        "dtype"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "norm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "certified_bound",
+            "empirical_estimate",
+            "solver_tolerance_only",
+            "unknown"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "value",
+        "norm",
+        "status",
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "new_full_state_frequency_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "vector_rhs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "forward_rhs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "adjoint_rhs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tangent_rhs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cache_hits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "proposal_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wall_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "peak_memory_bytes": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "setup_allocation_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "historical_cost_ledger": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "new_full_state_frequency_attempts",
+        "vector_rhs",
+        "forward_rhs",
+        "adjoint_rhs",
+        "tangent_rhs",
+        "cache_hits",
+        "proposal_count",
+        "rejected_count",
+        "failed_count",
+        "wall_seconds",
+        "peak_memory_bytes",
+        "setup_allocation_seconds",
+        "historical_cost_ledger"
+      ],
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "passed": {
+          "const": true
+        },
+        "scope": {
+          "enum": [
+            "full_discrete_maxwell"
+          ]
+        },
+        "solver_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "physics_target_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "all_illuminations_same_material": {
+          "const": true
+        },
+        "constitutive_relative_defect": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "solver_relative_residual": {
+          "type": "number",
+          "minimum": 0
+        },
+        "material_constraints_passed": {
+          "const": true
+        },
+        "material_law_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "numerical_error": {
+          "$ref": "#/$defs/error"
+        },
+        "independent_mesh_checked": {
+          "type": "boolean"
+        },
+        "independent_mesh_result": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timestamp_utc": {
+          "type": "string",
+          "minLength": 1
+        },
+        "constitutive_relative_defect_status": {
+          "enum": [
+            "measured",
+            "NOT_EXPOSED_BY_ANALYTIC_MIE_INTERFACE"
+          ]
+        }
+      },
+      "required": [
+        "passed",
+        "scope",
+        "solver_id",
+        "physics_target_hash",
+        "all_illuminations_same_material",
+        "constitutive_relative_defect",
+        "solver_relative_residual",
+        "material_constraints_passed",
+        "material_law_id",
+        "numerical_error",
+        "independent_mesh_checked",
+        "independent_mesh_result",
+        "timestamp_utc",
+        "constitutive_relative_defect_status"
+      ],
+      "additionalProperties": false
+    },
+    "fit": {
+      "type": "object",
+      "properties": {
+        "whitened_residual_l2": {
+          "type": "number",
+          "minimum": 0
+        },
+        "squared_residual": {
+          "type": "number",
+          "minimum": 0
+        },
+        "threshold_l2": {
+          "type": "number",
+          "minimum": 0
+        },
+        "noise_model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nuisance_policy": {
+          "enum": [
+            "fixed",
+            "bounded_profile",
+            "marginalized"
+          ]
+        },
+        "nuisance_parameters": {
+          "type": "object"
+        },
+        "log_likelihood": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "likelihood_semantics": {
+          "enum": [
+            "fixed_gaussian",
+            "profile_not_marginal",
+            "proper_marginal",
+            "not_assigned"
+          ]
+        },
+        "likelihood_numerical_error": {
+          "$ref": "#/$defs/error"
+        },
+        "fit_acceptance": {
+          "const": true
+        }
+      },
+      "required": [
+        "whitened_residual_l2",
+        "squared_residual",
+        "threshold_l2",
+        "noise_model_id",
+        "nuisance_policy",
+        "nuisance_parameters",
+        "log_likelihood",
+        "likelihood_semantics",
+        "likelihood_numerical_error",
+        "fit_acceptance"
+      ],
+      "additionalProperties": false
+    },
+    "structure": {
+      "type": "object",
+      "properties": {
+        "support_volume": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cavity_count": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "component_count": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feature_scale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "descriptor_asset": {
+          "$ref": "#/$defs/asset"
+        },
+        "descriptor_definition_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cluster_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "event_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "topology_thresholds": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "topology_persistence_rule": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "support_volume",
+        "cavity_count",
+        "component_count",
+        "feature_scale",
+        "descriptor_asset",
+        "descriptor_definition_id",
+        "cluster_ids",
+        "event_ids",
+        "topology_thresholds",
+        "topology_persistence_rule"
+      ],
+      "additionalProperties": false
+    },
+    "compensation": {
+      "type": "object",
+      "properties": {
+        "parent_candidate_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "edit_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edit_parameters": {
+          "type": "object"
+        },
+        "material_compensation_parameters": {
+          "type": "object"
+        },
+        "nuisance_compensation_parameters": {
+          "type": "object"
+        },
+        "active_material_coordinates": {
+          "$ref": "#/$defs/asset"
+        },
+        "protected_structure_constraints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "path_asset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/asset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "parent_candidate_id",
+        "edit_family",
+        "edit_parameters",
+        "material_compensation_parameters",
+        "nuisance_compensation_parameters",
+        "active_material_coordinates",
+        "protected_structure_constraints",
+        "path_asset"
+      ],
+      "additionalProperties": false
+    },
+    "rom": {
+      "type": "object",
+      "properties": {
+        "used": {
+          "type": "boolean"
+        },
+        "engine": {
+          "enum": [
+            "full_solver",
+            "exact_local_schur",
+            "approximate_rom",
+            "mixed"
+          ]
+        },
+        "anchor_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rank": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modified_current_rank": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "refresh_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "validity": {
+          "enum": [
+            "not_applicable",
+            "exact_discrete_identity",
+            "empirically_audited",
+            "pointwise_bound",
+            "unknown"
+          ]
+        },
+        "numerical_error": {
+          "$ref": "#/$defs/error"
+        },
+        "uniform_certificate_claimed": {
+          "const": false
+        }
+      },
+      "required": [
+        "used",
+        "engine",
+        "anchor_id",
+        "rank",
+        "modified_current_rank",
+        "refresh_count",
+        "validity",
+        "numerical_error",
+        "uniform_certificate_claimed"
+      ],
+      "additionalProperties": false
+    },
+    "candidate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_field": {
+          "$ref": "#/$defs/asset"
+        },
+        "material_parameterization_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "structure": {
+          "$ref": "#/$defs/structure"
+        },
+        "full_predicted_measurement": {
+          "$ref": "#/$defs/asset"
+        },
+        "fit": {
+          "$ref": "#/$defs/fit"
+        },
+        "validation": {
+          "$ref": "#/$defs/validation"
+        },
+        "compensation": {
+          "$ref": "#/$defs/compensation"
+        },
+        "material_distance_to_base": {
+          "type": "number",
+          "minimum": 0
+        },
+        "measurement_distance_to_base": {
+          "type": "number",
+          "minimum": 0
+        },
+        "distance_definition_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "proper_log_prior": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prior_score_is_normalized_density": {
+          "type": "boolean"
+        },
+        "proposal_log_density": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "posterior_weight": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "conditional_samples_asset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/asset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost": {
+          "$ref": "#/$defs/cost"
+        },
+        "rom": {
+          "$ref": "#/$defs/rom"
+        }
+      },
+      "required": [
+        "id",
+        "material_field",
+        "material_parameterization_id",
+        "structure",
+        "full_predicted_measurement",
+        "fit",
+        "validation",
+        "compensation",
+        "material_distance_to_base",
+        "measurement_distance_to_base",
+        "distance_definition_id",
+        "proper_log_prior",
+        "prior_score_is_normalized_density",
+        "proposal_log_density",
+        "posterior_weight",
+        "conditional_samples_asset",
+        "cost",
+        "rom"
+      ],
+      "additionalProperties": false
+    },
+    "pair": {
+      "type": "object",
+      "properties": {
+        "candidate_i": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_j": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_distance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "material_metric_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "measurement_distance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "measurement_metric_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nuisance_policy": {
+          "enum": [
+            "fixed",
+            "bounded_profile",
+            "marginalized_distribution"
+          ]
+        },
+        "comparison_uncertainty": {
+          "$ref": "#/$defs/error"
+        },
+        "hard_to_distinguish": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision_rule_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "connection_status": {
+          "enum": [
+            "verified_path",
+            "attempted_no_path_found",
+            "not_tested"
+          ]
+        },
+        "validated_path_asset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/asset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "candidate_i",
+        "candidate_j",
+        "material_distance",
+        "material_metric_id",
+        "measurement_distance",
+        "measurement_metric_id",
+        "nuisance_policy",
+        "comparison_uncertainty",
+        "hard_to_distinguish",
+        "decision_rule_id",
+        "connection_status",
+        "validated_path_asset"
+      ],
+      "additionalProperties": false
+    },
+    "weights": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "semantics": {
+          "enum": [
+            "representative_region_mass",
+            "weighted_samples",
+            "finite_hypothesis_probability"
+          ]
+        },
+        "normalization_domain": {
+          "enum": [
+            "declared_full_support",
+            "candidate_pool_only"
+          ]
+        },
+        "represented_mass": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unrepresented_mass": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reliability_notes": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correction_method": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_sample_size": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "values",
+        "semantics",
+        "normalization_domain",
+        "represented_mass",
+        "unrepresented_mass",
+        "reliability_notes",
+        "correction_method",
+        "effective_sample_size"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

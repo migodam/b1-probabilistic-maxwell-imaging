@@ -1,0 +1,138 @@
+{
+  "E0_package_algebra": {
+    "scope": "8-dipole CPU algebra verification; not reconstruction, topology coverage, runtime comparison, or a continuum certificate",
+    "seed": 261014,
+    "n_cells": 8,
+    "n_complex_current": 24,
+    "n_sources": 6,
+    "n_receiver_channels_per_source": 6,
+    "backend": "self-contained electric dyadic dipole matrix; CM plus radiation reaction; diagonal Green excluded",
+    "physical_convention": "exp(-i omega t), scalar isotropic passive chi in real free-space background",
+    "finite_edit": "one cell removed to vacuum, one contrast changed; fixed Green matrix",
+    "condition_L0": 1.123074477536779,
+    "condition_L1": 1.1301934322522735,
+    "relative_feedback_norm": 0.03785963884660024,
+    "finite_relative_identity_relative_error": 8.97627115922912e-16,
+    "localized_schur_relative_error": 8.741660175882405e-16,
+    "localized_output_relative_error": 9.786932902732466e-16,
+    "exact_current_material_consistency_relative_defect": 2.921001959630803e-16,
+    "recovered_alpha_relative_error": 1.5814699649120498e-16,
+    "dark_current_receiver_relative_error": 1.7987996425212304e-16,
+    "dark_current_material_consistency_relative_defect": 0.1874525580318445,
+    "dark_tangent_common_material_relative_defect": 0.9475335286656915,
+    "dual_corrected_residual_identity_relative_error": 6.038809480689907e-16,
+    "neumann_remainder_observed": 2.3402970713076916e-07,
+    "neumann_remainder_upper_bound_if_eta_lt_1": 4.597042833291389e-05,
+    "linear_response_error_slope": 1.999890415613857,
+    "quadratic_response_error_slope": 3.0005509417154808,
+    "two_illumination_inconsistent_current_best_scalar_residual": 0.4472135954999579,
+    "one_parameter_global_matrix_update_rank": 24,
+    "two_fixed_Gaussian_hypotheses_equal_prior_errors": {
+      "1.529652": 0.22218758167174252,
+      "1.295221": 0.2586184521599804,
+      "0.90017": 0.3263245760822218,
+      "2.467944": 0.10860666903142147,
+      "8.84": 4.935045062533268e-06
+    },
+    "sphere_cavity_r_0_25_relative_volume": 0.015625,
+    "runtime_seconds": 0.014319874928332865,
+    "versions": {
+      "python": "3.13.13",
+      "numpy": "2.5.3"
+    },
+    "all_assertions_passed": true
+  },
+  "E0_interface": {
+    "status": "PASS",
+    "new_full_physics": 0,
+    "inactive_latent_material_dedup": true,
+    "bank_response_and_packing_replay": true,
+    "original_noise_replay": true,
+    "prior_event_partition": true,
+    "online_signature_and_import_truth_isolation": true,
+    "scope": "reused vector-Mie bank interface; package8dipolealgebra separate. New full backend checks belong to E1 audit.",
+    "historical_cost": "P2 bank1250 prior material-frequency solves; notfreefirstsetup"
+  },
+  "zero_physics_contract": {
+    "scope": "SYNTHETIC interface/semantic checks only; no actual candidate discoveries",
+    "passed": 16,
+    "tests_run": 16,
+    "failures": [],
+    "errors": [],
+    "new_physics_evaluations": 0,
+    "digest_computation": "NOT_RUN_BY_USER_POLICY",
+    "original_validator_dependency": "jsonschema unavailable in existing runtime; original files preserved unchanged; equivalent required semantics checked by dependency-free schema-subset validator"
+  },
+  "Mie_actual_backend": {
+    "status": "PASS",
+    "checks": [
+      {
+        "p": [
+          0.0,
+          0.0,
+          2.5,
+          0.1
+        ],
+        "recursive_relative": 3.0551638040900007e-16,
+        "n14_n18_whitened": 0.0,
+        "boundary_backward_residual": 8.349262125734516e-17,
+        "Qabs": 0.2137312049698279
+      },
+      {
+        "p": [
+          0.25,
+          0.0,
+          2.5,
+          0.1
+        ],
+        "recursive_relative": 2.413354898827655e-16,
+        "n14_n18_whitened": 0.0,
+        "boundary_backward_residual": 3.4635586336440747e-17,
+        "Qabs": 0.2091129589931615
+      },
+      {
+        "p": [
+          0.0,
+          0.08,
+          2.5,
+          0.1
+        ],
+        "recursive_relative": 3.3207388513883733e-16,
+        "n14_n18_whitened": 0.0,
+        "boundary_backward_residual": 3.522459163604706e-17,
+        "Qabs": 0.14210705141973878
+      }
+    ],
+    "new_attempts": 9,
+    "scope": "numericalMietargetcheck; notcurrentVIESchurreplay"
+  },
+  "TM_actual_backend": {
+    "status": "PASS",
+    "errors": {
+      "finite_current_secant": 6.516854671602777e-14,
+      "finite_data_secant": 2.0684372944829315e-13,
+      "exact_nonlinear_remainder": 5.578446994419469e-11,
+      "exact_local_Schur": 1.8098635495885593e-15,
+      "dual_correction": 3.215500557366026e-13,
+      "material_mass_adjoint": 3.2526065174565133e-19,
+      "material_realizability": 1.3269660979403256e-15,
+      "backward_residual": 1.390972204780147e-15
+    },
+    "physics": "Actual saved24x24TM geometry; one newlycharged3cell changed state",
+    "source_law": "chi linear; c=sqrt(v)j, field=sqrt(v)E, v=1/576",
+    "affected_cells": [
+      122,
+      276,
+      425
+    ],
+    "newlycharged_states": 1,
+    "newlycharged_RHS": 51,
+    "synthetic_fixture": false,
+    "gain": "fixed1",
+    "whitening": "sqrt(2)/sigma; no renoising"
+  },
+  "failed_first_TM_audit": "results/E2/attempt_1_failed_audit/RESULTS.json",
+  "actual_export_semantics": "results/ACTUAL_PACKAGE_EXPORT.json",
+  "new_action_evaluator": "implemented but not executed; externally authorizedphysics only",
+  "unnecessary_smoke_tests": 0
+}

@@ -1,0 +1,87 @@
+{
+  "protocol_version": "Research-A-20261015-v1",
+  "upstream_commit": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+  "physics": "original full-vector Mie matching n14, R=1",
+  "latent_bounds": [
+    [
+      -3,
+      1
+    ],
+    [
+      -3,
+      1
+    ],
+    [
+      2.2,
+      2.8
+    ],
+    [
+      0.04,
+      0.16
+    ]
+  ],
+  "frequencies": [
+    1.6,
+    2.4
+  ],
+  "primary_frequencies": [
+    1.6
+  ],
+  "noise": "original P2 .12 fixed-solid real RMS, unchanged",
+  "packing": "Re16 then Im16",
+  "gain": {
+    "bounds": [
+      0.7,
+      1.3
+    ],
+    "prior": "proper truncated N(1,.15^2)",
+    "online": "bounded real least-squares profile; not evidence"
+  },
+  "arms": [
+    "finite_static",
+    "multistart",
+    "population",
+    "mdn",
+    "adaptive"
+  ],
+  "development": [
+    "solid",
+    "large_cavity",
+    "annular_cavity",
+    "combined"
+  ],
+  "development_calls_per_arm": 8,
+  "confirmation_parents": 32,
+  "confirmation_calls_per_arm": 12,
+  "primary_k": 4,
+  "k": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "tau": "sqrt(chi2.ppf(.95,32))",
+  "material_dedup_l2": 0.03,
+  "structure_minimum_radius_difference": 0.05,
+  "structure_minimum_ring_halfwidth_difference": 0.025,
+  "selector": "base included, then farthest material-field distance; selected lowest full residual",
+  "proxy_corrector": {
+    "max_nfev": 25,
+    "geometry_protection": "finite/static/adaptive protect edit cells; shared bounded least_squares",
+    "finite_difference": "proxy only"
+  },
+  "exploration_fraction": 0.2,
+  "seed": {
+    "proposal": 261015101,
+    "truth_parent": 261015102,
+    "noise": 261015103,
+    "bootstrap": 261015104
+  },
+  "E2_entry": "E0 and interface PASS; E1 compensation produces full-valid structural worlds; Best4 not wholly dominated by multistart; empirical positive improvement signal. Final superiority remains frozen10pct+CI and coverage/cost criteria",
+  "E3": false,
+  "newbank": false,
+  "training": false,
+  "truth_access": "separate offline scoring module only",
+  "authorization_overlay": "human Research A request; E1 2304 attempts/1800executionwall s; E2conditional384states/9216RHS/3600s; stagecaps nontransferable",
+  "no_sha256": true
+}
