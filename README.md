@@ -1,3 +1,5 @@
+> 2026-10-15 独立Research B：[主动Maxwell测量报告](research/research_b/START_HERE.md) · [中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_b/) · [完整证据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-b-20261015)。E0/E1/E2及四例真实A交接已执行；复杂选测的负结果、候选补全收益及参考未收敛均保留。
+
 > 2026-10-15 新研究：[Research A 多解材料成像](research/research_a_20261015/START_HERE.md) · [实际图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_a_20261015/)。每观测3–10个径向候选；Best-of-4有改善，A30反证与机制限制完整保留。
 
 # 最新研究：B1 × C1 Joint P2

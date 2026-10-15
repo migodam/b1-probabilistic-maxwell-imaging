@@ -1,0 +1,43 @@
+{
+  "id": "research-b-E0-v1",
+  "new_maxwell_cap": 0,
+  "source_revision": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+  "material_loss": "exact R=1 volume-weighted componentwise relative-permittivity L1, s_ref=1",
+  "reference_target": "continuous coefficient prior, tensor Chebyshev approximation to full-Mie n14; finite conditional sample utility",
+  "development_cases": [
+    "solid",
+    "small_cavity",
+    "large_cavity",
+    "annular_cavity",
+    "combined",
+    "prior_boundary",
+    "gain_negative_control"
+  ],
+  "case_selection": "all existing development cases in original order; exposed",
+  "inner_particles": 2048,
+  "outer_predictive_draws": 256,
+  "outer_refinement_draws": 512,
+  "decisions": 96,
+  "seed": 26101530,
+  "actions": [
+    "no_measurement",
+    "repeat_1.6",
+    "frequency_2.4",
+    "frequency_2.4_pol0",
+    "frequency_2.4_front",
+    "reference_calibration"
+  ],
+  "calibration": {
+    "response": "gain only, material-independent unit known reference",
+    "sigma": 0.03,
+    "feasibility": "analytic simulation design, no actual hardware observation",
+    "cost_blocks": 1
+  },
+  "measurement_cost": "one normalized acquisition block at common dwell; parallel channel readout assumed; no seconds/energy claim",
+  "probability_scope": "reference-based uses original continuous prior and proper shared truncated gain; candidate-only has no probabilities",
+  "retrospective_old_channels": "not counted as new evidence; retrospective removal experiment NOT_RUN",
+  "raw_candidate_set": "per-case package full64 predictions; 37 paid representatives over all cases",
+  "Fisher": "derivatives of saved continuous response at online candidates, parameter-width scaled, never truth-state",
+  "truth_usage": "offline realized MAE only; selection module takes no truth",
+  "model_mismatch": "separate intentionally independent-gain negative control"
+}

@@ -1,0 +1,19 @@
+# 独立physical-coordinate history审计
+
+固定16唯一history；完成adaptive估计16，满足原heuristic relative准则2，未稳/未完成14。
+原13/17审计、全部旧UNRESOLVED、算法与主MAE/配对表均保持原样。
+
+总阶段状态：BOUNDED_DIAGNOSTIC_COMPLETED。max_cells512、relative2e-6未放宽。
+新增Maxwell0、GPU0；最终计费以COMPUTE_LEDGER中本job receipt为准。
+
+- maximum_event_mass_max_difference_vs13: 0.12574375801663182
+- maximum_mean_fraction_prior_width_difference_vs13: 0.10050275645362335
+- maximum_SD_relative_difference_vs13: 0.48343154219122075
+- maximum_event_mass_max_difference_vs17: 0.07595893202891024
+- maximum_mean_fraction_prior_width_difference_vs17: 0.044220672896563264
+- maximum_SD_relative_difference_vs17: 1.0906227322547313
+- maximum_event_mass_max_difference_vsfinite2048: 0.18678922915688634
+- maximum_mean_fraction_prior_width_difference_vsfinite2048: 0.10533164597335622
+- maximum_SD_relative_difference_vsfinite2048: 165.00038042254997
+
+这些差异只属于同一连续proxy target的独立数值诊断。即使heuristic收敛，也不是certificate或full posterior calibration；未重选policy或更新reference-based风险结论。

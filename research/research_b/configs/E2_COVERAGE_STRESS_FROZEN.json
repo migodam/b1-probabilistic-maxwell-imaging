@@ -1,0 +1,36 @@
+{
+  "id": "research-b-E2-coverage-stress-v1",
+  "purpose": "Diagnose candidate incompleteness and a separate intentional instrument mismatch using already-paid E1 fields",
+  "scientific_iteration": "E2 diagnosis within the current stage; no new scientific iteration or physical campaign",
+  "new_Maxwell_attempt_cap": 0,
+  "source": "E1_RESPONSE_BANK.npz and E1_FRESH_SIMULATOR.npz",
+  "population": "all32 existing E1 parents, both noise episodes; explicitly exposed followup",
+  "support_groups": ["full", "central_deleted", "annular_deleted", "combined_deleted"],
+  "support_definitions": {
+    "full": "all625 full-Mie bank materials",
+    "central_deleted": "retain central radius exactly zero",
+    "annular_deleted": "retain annular halfwidth exactly zero",
+    "combined_deleted": "exclude candidates with both central radius and annular halfwidth positive"
+  },
+  "policies": ["none", "fixed2.4", "fixed3.2", "raw", "robust", "sentinel_first3.2"],
+  "action_menu": "six frozen E1 frequencies plus paid-reference calibration statistic; one new block at most",
+  "recompute_acquisition_after_deletion": true,
+  "candidate_weights_kind": "none",
+  "selection": "joint bounded-gain profile over retained candidates; one gain per material across complete observation history",
+  "sentinel": "fixed3.2 acquisition plus diagnostic abstention if minimum joint residual exceeds heuristic chi2(.99,D-1); same measurement as fixed3.2, not a new ranking algorithm",
+  "scenarios": {
+    "in_model": "original E1 persistent real gain and independent potential-outcome noise",
+    "instrument_gain_drift": "future scattering gain = old_gain*(1+.03*(k-1.6)); unchanged Maxwell field and same saved noise, calibration at1.6 unchanged; fitted model intentionally still assumes one shared bounded gain"
+  },
+  "material_metric": "exact R=1 volume-weighted componentwise relative-epsilon L1, s_ref1",
+  "coverage_threshold": 0.05,
+  "nominal_sentinel_alpha": 0.01,
+  "sentinel_is_exact_test": false,
+  "statistical_unit": "32 parents; average both noise episodes before paired comparisons",
+  "bootstrap": 2000,
+  "statistical_seed": 26101593,
+  "expected_CPU_seconds": 10,
+  "expected_wall_seconds": 30,
+  "ledger_job": "e2-coverage-stress-v1",
+  "prohibited": ["solver calls", "Cost.evaluate", "truth passed to acquisition", "rewriting E1 results", "writing Research A directory"]
+}
