@@ -69,6 +69,10 @@ class StructureSemantics(unittest.TestCase):
 
 
 class ExchangeSemantics(unittest.TestCase):
+    def test_material_array_is_not_state(self):
+        self.assertFalse(FrozenPhysicsInterface._is_endpoint(np.zeros(576, complex)))
+        self.assertTrue(FrozenPhysicsInterface._is_endpoint(SimpleNamespace(chi=1, current=1, field=1, data=1)))
+
     def test_source_packing_and_complex_rms_noise(self):
         z = np.array([[1+3j, 2+4j], [5+7j, 6+8j]])
         np.testing.assert_array_equal(pack_complex_per_source(z), [1, 5, 3, 7, 2, 6, 4, 8])

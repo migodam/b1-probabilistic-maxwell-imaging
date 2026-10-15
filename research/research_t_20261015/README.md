@@ -25,3 +25,5 @@ PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python -m research_t.verify_actual
 各付费阶段代码冻结commit为c752aa6、439773b、1e1b613、a42845f；原协议与收到的Pro包保留。默认Targets通过A30_ROOT指向现有A30或证据中的T_PHYSICS_HANDOFF/vendor_backend/a30_root。任何新物理都需要新的真实用户授权与独立enforcing book，不可删除RUN_CLOSED/重命名job重置预算。
 
 原始cache、truth和offline摘要只作历史/离线证据。G的在线接口加载sanitized背景和默认base，不加载teacher J、truth或oracle step。具体用法见T_PHYSICS_HANDOFF/README.md；它不是另一套Maxwell solver。
+
+证据解压请使用`unzip -n`保留当前checkout源码；旧执行代码快照与当前G接口修复说明见[DELIVERY_NOTES](DELIVERY_NOTES.md)。同Release的interface-overlay.zip可直接应用于只下载主证据的使用者。

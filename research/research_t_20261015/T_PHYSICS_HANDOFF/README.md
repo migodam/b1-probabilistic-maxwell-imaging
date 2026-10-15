@@ -131,3 +131,7 @@ protected edit的`correction_constraints.npz`保存实际`lower/upper/core/guard
 `e0/OFFLINE_AUDIT_MATERIAL_ARRAYS.npz`、离线评分脚本和truth图属于隔离的审计材料，
 不是G在线接口输入。G在线加载应仅使用本目录candidate、固定known-background assets与原观测。
 所有权重为`candidate_only/null`，没有posterior mass或complete coverage声称。
+
+## 当前接口代码版本
+
+G应使用仓库当前src/research_t。主证据zip保留旧执行快照，若直接提取全部源文件，请最后应用同Release的interface-overlay.zip；或用unzip -n不覆盖已有checkout文件。详见[交付说明](../DELIVERY_NOTES.md)。NumPy材料数组的.data buffer不被当作full endpoint；这一纯类型修复未重跑任何物理。

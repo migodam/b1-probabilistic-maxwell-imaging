@@ -113,6 +113,11 @@ class FrozenPhysicsInterface:
             raise ValueError("state and observation acquisition disagree")
         return state
 
+    @staticmethod
+    def _is_endpoint(candidate: Any) -> bool:
+        # ndarray also has .data: it is a buffer, never an owned full endpoint.
+        return all(hasattr(candidate, key) for key in ("chi", "current", "field", "data"))
+
     def _cost(self, first_row: int) -> dict[str, Any]:
         rows = self.book.rows()[first_row:]
         actions = [r for r in rows if r.get("event") == "ACTION"]
@@ -154,11 +159,11 @@ class FrozenPhysicsInterface:
             self._cost(first)
 
     def validate(self, candidate: Any, *, budget: Any) -> dict[str, Any]:
-        self._budget(budget, may_launch_physics=not hasattr(candidate, "data"))
+        self._budget(budget, may_launch_physics=not self._is_endpoint(candidate))
         first = len(self.book.rows())
         # A caller-supplied material needs one paid matching full endpoint;
         # an actual owned endpoint can be replayed without repeating physics.
-        state = self._owned(candidate) if hasattr(candidate, "data") else self.predict(candidate, budget=budget)
+        state = self._owned(candidate) if self._is_endpoint(candidate) else self.predict(candidate, budget=budget)
         x = np.asarray(state.chi, complex)
         residual = float(np.linalg.norm(whitened_residual(state.data, self.observation, sigma=self.sigma)))
         defect = float(np.linalg.norm(state.current-x[:, None]*state.field) / max(np.linalg.norm(state.current), 1e-300))
@@ -183,7 +188,7 @@ class FrozenPhysicsInterface:
         self._budget(budget)
         from .corrector import correct
         first = len(self.book.rows())
-        state = self._owned(candidate) if hasattr(candidate, "data") else self.predict(candidate, budget=budget)
+        state = self._owned(candidate) if self._is_endpoint(candidate) else self.predict(candidate, budget=budget)
         try:
             return correct(self.model, state, self.observation, self.sigma, self.book,
                            self.corrector_config, protected_geometry, cache=cache)
@@ -196,7 +201,7 @@ class FrozenPhysicsInterface:
         self._budget(budget)
         from .corrector import bounded_compensation_score
         first = len(self.book.rows())
-        state = self._owned(candidate) if hasattr(candidate, "data") else self.predict(candidate, budget=budget)
+        state = self._owned(candidate) if self._is_endpoint(candidate) else self.predict(candidate, budget=budget)
         try:
             return bounded_compensation_score(self.model, state, self.observation,
                                                self.sigma, self.corrector_config,
