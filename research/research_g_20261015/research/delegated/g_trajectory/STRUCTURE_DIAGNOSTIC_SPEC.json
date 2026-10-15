@@ -1,0 +1,45 @@
+{
+  "version": "G-multiscale-support-v1 (2D) / g-e0-radial-support-v1",
+  "primary_threshold": {
+    "A30_2D": 0.08,
+    "radial": 0.025
+  },
+  "multipliers": [
+    0.5,
+    1.0,
+    2.0
+  ],
+  "radial": {
+    "grid": "512 midpoint uniform radius samples, R=1",
+    "radii_smoothing_R": [
+      0.01,
+      0.025,
+      0.05
+    ],
+    "weights": "exact spherical shell volume",
+    "support": "decoded epsilon != vacuum; exact r/h decoding",
+    "boundary": "nearest extension at r=0 and R"
+  },
+  "A30": {
+    "grid": [
+      24,
+      24
+    ],
+    "smoothing_pixels": [
+      0.0,
+      1.0,
+      2.0
+    ],
+    "contrast_amplitude": "abs(chi-background)/1.2",
+    "occupancy": "clip((gaussian_smoothed_amplitude-.20)/.10,0,1)",
+    "boundary": "constant zero",
+    "additional_distinctness_requirement": "unsmoothed abs(chi-background)/1.2>.25 masks XOR >=6 cells",
+    "foreground_connectivity": 4,
+    "background_connectivity": 8,
+    "minimum_feature_cells": 6,
+    "new_material_distance": "sqrt(mean((delta_real/4.5)^2+(delta_imag/.5)^2)), epsilon .03"
+  },
+  "distance": "2D RMS of three occupancy views plus mandatory >=6 mask XOR; radial shell-volume-weighted RMS of smoothed support",
+  "interpretation": "E0 diagnostic separation only; finite sampled descriptor, not topology certification or G E1 discovery threshold",
+  "connectivity": "support descriptor does not count components/holes; no digital topology claim"
+}

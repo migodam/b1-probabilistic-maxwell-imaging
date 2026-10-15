@@ -1,0 +1,36 @@
+{
+  "purpose": "E0 cached-only attribution of raw proposal -> corrected endpoint -> full validation -> historical archive, separating radial Mie and A30 2D TM",
+  "expected_execution_wall_seconds_max": 120,
+  "new_full_states": 0,
+  "new_complex_full_solver_RHS": 0,
+  "solver_import_or_instantiation": false,
+  "optimizer_rerun": false,
+  "source_truth_arrays_read": false,
+  "source_revision_declared": "f1b674eb4893e39126701ed48f3d3dcef3098c3c",
+  "inputs": [
+    "research/research_a_20261015/results/CONFIRM_CAMPAIGN.json",
+    "research/research_a_20261015/results/STRATIFICATION_ATTRIBUTION.json",
+    "research/research_a_20261015/results/PAIRWISE_AMBIGUITY.json",
+    "research/research_a_20261015/results/E2/SEARCH_HISTORY.json",
+    "research/research_a_20261015/results/E2/MATERIAL_AND_PREDICTION_ARRAYS.npz",
+    "research/research_a_20261015/results/E2/RESULT_SUMMARY.json"
+  ],
+  "original_metrics": {
+    "radial_material": "exact volume L2 / abs(1.5+.1i), epsilon .03",
+    "radial_geometry": "abs(delta r)>=.05 R OR abs(delta h)>=.025 R",
+    "A30_material": "sqrt(mean(abs(chi_a-chi_b)^2))/1.2, epsilon .03",
+    "A30_structure": "abs(chi-background)>.18 with >=6 changed cells"
+  },
+  "missing_information_policy": "null with MISSING reason; proxy raw residual never relabeled full residual",
+  "process_configuration": {
+    "BLAS_threads": 1,
+    "nice": 10
+  },
+  "notes": "No new scientific comparison, no frozen historical archive rewrite, no test/locked data. New structural descriptor, if needed, is an E0 sensitivity diagnostic only.",
+  "implementation_revisions": [
+    "v0 baseline cached replay",
+    "v1 integrator-specified 2D G-multiscale-support-v1 and bounds-scaled material distance",
+    "v2 exact inherited chi-square threshold and complementary digital-hole diagnostics",
+    "v3 independent protected-mask equality from saved arrays"
+  ]
+}

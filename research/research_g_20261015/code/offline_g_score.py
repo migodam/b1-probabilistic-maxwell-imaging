@@ -91,7 +91,12 @@ def load_exposed_truth(a30_root, case_ids):
 
 def _path(value):
     value=Path(value)
-    return value.resolve() if value.is_absolute() else (ROOT/value).resolve()
+    if value.is_absolute():
+        return value.resolve()
+    # Online locations are phase-relative; permit repository-prefixed paths
+    # only when their prefix is explicitly present, without probing fallbacks.
+    base = ROOT if value.parts and value.parts[0] == 'research' else STAGE
+    return (base/value).resolve()
 
 
 def _flatten_csv(path,rows):

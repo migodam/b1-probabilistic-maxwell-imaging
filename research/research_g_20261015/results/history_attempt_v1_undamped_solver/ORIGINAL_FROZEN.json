@@ -1,0 +1,21 @@
+{
+  "purpose": "Distinguish prefix-history predictive association from current material/observation/action information on frozen Research A logs, without solver calls or policy-value claims.",
+  "freeze_date": "2026-10-15",
+  "source": "research/research_a_20261015/results/CONFIRM_CAMPAIGN.json",
+  "source_revision": "f1b674eb4893e39126701ed48f3d3dcef3098c3c",
+  "scope": "32 exposed material parents, 5 methods, 12 chronological proposals each; one noise condition per parent",
+  "labels": ["full corrected validity", "full-valid archive novelty under the historical radial structural predicate"],
+  "comparison": {"A": "measurement + current material + proposed action + remaining endpoint budget + raw pre-correction proxy residual", "B": "A + strict-prefix success/failure summaries", "C": "B with prefix histories permuted between matched observations within train/test splits, same policy and step", "D": "strict-prefix summaries only", "intercept": "training-fold event rate"},
+  "model": "numpy logistic ridge L2=1; train-fold-only scaling; fixed max35 Newton steps; no hyperparameter search",
+  "cv": "5 parent-grouped folds; seed261015410; no material parent appears in both train and validation",
+  "metrics": ["log loss", "Brier", "ROC-AUC", "ten-bin calibration error", "2000 parent-paired descriptive bootstrap of loss differences"],
+  "forbidden": ["truth-derived features", "current/future outcomes in history", "policy superiority from predictive association", "unlogged off-policy evaluation", "new physical solve"],
+  "new_full_state_attempts": 0,
+  "new_complex_full_solver_RHS": 0,
+  "GPU_seconds": 0,
+  "estimated_CPU_seconds": 20,
+  "hard_controlled_wall_seconds": 120,
+  "threads": 1,
+  "priority": "nice+10",
+  "A30_supplement": "Do not pool different physical targets; if new-structure labels are all zero, report non-identifiability rather than fabricated predictive performance."
+}

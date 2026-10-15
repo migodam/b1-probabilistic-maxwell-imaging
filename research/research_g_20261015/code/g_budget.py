@@ -216,7 +216,7 @@ class GBudget:
                     state_cap=384, RHS_cap=12288, controlled_wall_cap=10800,
                     controlled_wall_seconds=sum(r.get('wall_seconds', 0.) for r in jobs),
                     CPU_seconds=sum(r.get('cpu_seconds', 0.) for r in jobs),
-                    failed_jobs=sum(r.get('status') == 'FAIL' for r in jobs),
+                    failed_jobs=sum(r.get('status') in {'FAIL', 'FAILED'} for r in jobs),
                     action_counts=dict(action_counts),
                     GPU=0, T_states_borrowed=0, historical_ledgers_modified=False,
                     time_scope='Only JOB_END/unique zero-physics receipts; nested ACTION timings not summed')
