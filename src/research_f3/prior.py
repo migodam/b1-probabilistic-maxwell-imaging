@@ -20,7 +20,7 @@ class QuotientPrior:
         q=np.asarray(q);r=copy.deepcopy(self.row)
         if q.shape!=(7,) or np.any(q<0) or np.any(q>1):raise ValueError('outside original quotient support')
         x=self.lo+(self.hi-self.lo)*q[:6];rho=(2*q[6]-1)*LIMIT
-        w=np.array([.6*np.exp(rho/2),.6*np.exp(-rho/2)])
+        w=np.clip(np.array([.6*np.exp(rho/2),.6*np.exp(-rho/2)]),.4,.9)
         if q[6]==0:w=np.array([.4,.9])
         if q[6]==1:w=np.array([.9,.4])
         d=r['geometry'];d['gaussian_centers'][:2]=x[:4].reshape(2,2).tolist();d['gaussian_widths'][:2]=x[4:].tolist();d['gaussian_weights'][:2]=w.tolist()
@@ -28,7 +28,7 @@ class QuotientPrior:
     def logprior(self,q):
         q=np.asarray(q)
         if np.any(q<0) or np.any(q>1):return -np.inf
-        r=abs((2*q[6]-1)*LIMIT);gap=LIMIT-r
+        gap=2*LIMIT*min(q[6],1-q[6]);r=LIMIT-gap
         if gap<=0:return -np.inf
         return float(np.log(2*LIMIT)+2*np.log(.9)-r+np.log(-np.expm1(-2*gap))-np.log(2*.5**2))
     def derivative(self,q):

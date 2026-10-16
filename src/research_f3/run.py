@@ -30,8 +30,8 @@ def kkt(q,A,D,r):
         qualified=bool(np.max(abs(pg))<=.001 and step<=SCALE/1000 and pred<=1e-6)),delta
 
 class Run:
-    def __init__(self):
-        self.cfg=json.loads((OUT/'configs/PROTOCOL.json').read_text());self.book=Book('F3_PILOT');self.records=[];self.models={};self.pool={};self.jacs={};self.anchors=[];self.paths={}
+    def __init__(self,recover=False):
+        self.recover=recover;self.cfg=json.loads((OUT/'configs/PROTOCOL.json').read_text());self.book=Book('F3_RECOVERY_1' if recover else 'F3_PILOT');self.records=json.loads((OUT/'results/RECORDS.json').read_text()) if recover else [];self.models={};self.pool={};self.jacs={};self.anchors=[];self.paths={}
     def model(self,bg):
         if bg not in self.models:self.models[bg]=FrozenMaxwellAdapter.from_background_npz(prior.INPUTS/'background'/f'{bg}.npz',self.book,purpose_prefix='RESEARCH_F3')
         return self.models[bg]
@@ -74,6 +74,8 @@ class Run:
         return self.jacs[k]
     def phi(self,ctx,ss):return float(np.linalg.norm(whiten(ss.data-ctx['y'],ctx['sigma']))**2/2)
     def record(self,ctx,q,ss,method,phase,baseq,base,**extra):
+        for existing in self.records:
+            if existing['case']==ctx['case'] and existing['method']==method and existing['phase']==phase and np.array_equal(existing['q'],q):return existing
         delta=ss.chi-base.chi;lp=ctx['P'].logprior(q);phi=self.phi(ctx,ss);x0=ctx['P'].decode(baseq)[0]
         D0=ctx['P'].derivative(baseq);D=ctx['P'].derivative(q);Q0=np.linalg.svd(np.r_[D0.real,D0.imag]/24,full_matrices=False)[0][:,:7];Q=np.linalg.svd(np.r_[D.real,D.imag]/24,full_matrices=False)[0][:,:7]
         dr=rms(delta);smooth=rms(gaussian_filter(delta.real.reshape(24,24),1)+1j*gaussian_filter(delta.imag.reshape(24,24),1));cells=int(np.sum(abs(delta)>=.012))
@@ -165,6 +167,11 @@ class Run:
                     np.savez_compressed(OUT/f'results/{ctx["case"]}_INTRINSIC.npz',w=w,v=v,CM=CM,II=II,Cprior=cp,Cintrinsic=CM+cp,stencil_step=eps,
                         central_stencil=central,D2_coarse=coarse,D2_fine=fine,D2_extrapolated=d2)
                 for j,target in enumerate(targets):
+                    completed=next((r for r in self.records if r['case']==ctx['case'] and r['method']==method and r['phase']=='F2_C1' and abs(r.get('target_RMS',-1)-target)<1e-14),None)
+                    if self.recover and completed is not None:
+                        q=np.array(completed['q']);ss=self.pool[(ctx['case'],q.tobytes())]
+                        if method=='C_native':native[j]=(q,ss,completed)
+                        continue
                     if method=='B_updated' and j:
                         _,Ci=self.jac(ctx,q,ss,'F2_C1',method);geo=geometry(P,q,Ci,ctx['sigma'])
                         if np.real(np.vdot(geo['w'],w))<0:geo['v']=-geo['v'];geo['w']=-geo['w']
@@ -237,12 +244,26 @@ class Run:
         try:
             oldrows=json.loads((OLD/'results/F1/SUMMARY.json').read_text())
             for row in oldrows:
-                ctx=self.load(row);self.optimize(ctx);contexts.append(ctx)
+                ctx=self.load(row)
+                if self.recover:
+                    # Reload exact paid states and paid receiver transfers.
+                    # No LU application, no repeated full state, no new budget.
+                    case=ctx['case'];model=ctx['model']
+                    for path in sorted((OUT/'results/endpoints').glob(case+'*.npz')):
+                        with np.load(path) as z:
+                            qq=z['q'];chi=z['chi'];native=_cpu.FullState(chi,z['current'],z['field'],z['prediction'],np.eye(576)-chi[:,None]*model.G,(z['LU'],z['pivots']),float(z['backward_residual']))
+                        self.pool[(case,qq.tobytes())]=model._export_state(native,cached=True,path=path);self.paths[(case,qq.tobytes())]=str(path.relative_to(ROOT))
+                        self.book.append(dict(event='PAID_STATE_RECOVERY',source=str(path.relative_to(ROOT)),new_states=0,new_RHS=0))
+                    for path in sorted((OUT/'results/jacobians').glob(case+'*.npz')):
+                        with np.load(path) as z:self.jacs[(case,z['q'].tobytes())]=(z['T'],z['C'])
+                    result=json.loads((OUT/f'results/F15/{case}_FINAL.json').read_text());qq=np.array(result['q']);ctx.update(explore_q=qq,explore_state=self.pool[(case,qq.tobytes())],stationary=result['qualified']);self.anchors.append(result)
+                else:self.optimize(ctx)
+                contexts.append(ctx)
             dump(OUT/'results/F15/SUMMARY.json',self.anchors)
             for ctx in contexts:self.candidates(ctx);print(json.dumps(dict(case=ctx['case'],phase='F2_complete',cost=self.book.totals())),flush=True)
         except BaseException as e:
-            error=repr(e);dump(OUT/'FAILURE.json',dict(error=error,traceback=traceback.format_exc(),cost=self.book.totals()));raise
+            error=repr(e);dump(OUT/('FAILURE_RECOVERY.json' if self.recover else 'FAILURE.json'),dict(error=error,traceback=traceback.format_exc(),cost=self.book.totals()));raise
         finally:
-            self.book.end(error);dump(OUT/'RUN_CLOSED.json',dict(status='CLOSED',error=error,cost=self.book.totals(),no_more_physics=True));dump(OUT/'results/RECORDS.json',self.records)
+            self.book.end(error);dump(OUT/('RUN_FINAL_CLOSED.json' if self.recover else 'RUN_CLOSED.json'),dict(status='CLOSED',error=error,cost=self.book.totals(),no_more_physics=True));dump(OUT/'results/RECORDS.json',self.records)
 
-if __name__=='__main__':Run().run()
+if __name__=='__main__':Run(recover='--recover' in sys.argv).run()
