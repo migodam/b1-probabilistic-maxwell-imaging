@@ -36,7 +36,11 @@ def main():
     body='''<h1>LXZ · Maxwell 局部–全局多解研究</h1><p>2026-10-16 · 已运行、预算封账。N3强Top-1基线和历史T/G结果保持。</p><section><h2>先看实际结论</h2><div class="metrics"><span><b>0</b>新增显著结构world</span><span><b>0.00436</b>global MH proxy事件MAE</span><span><b>96 / 96</b>二维full states</span><span><b>896 / 3072</b>complex RHS</span></div><p>已有C1提案经正确MH，在本次径向proxy上优于local–global混合。复杂二维只得到公开TRAIN已知材料附近的小幅连续变化；N3附近的合法fiber与分离mode仍未证实。</p><p><a href="report.html">阅读完整中文报告 →</a> · <a href="gallery.html">看材料图和比较图 →</a></p></section><section><h2>概率机制</h2><img src="figures/e1_proxy_event_cdf.png" alt="同调用预算的概率误差"><p>四个暴露观测、四个seed；已排除两次错误geometry结果。它是proxy target机制实验，不是新full-Mie posterior。</p></section><section><h2>真实二维局部材料</h2><img src="figures/e2_materials_250034_ring.png" alt="公开TRAIN校准材料"><p>相同材料色标。小幅材料位移不等于显著结构新解；候选概率为null。首失败任务35个状态原始endpoint数组缺失已披露，费用全部保留。</p></section><section><h2>继续与停止</h2><p>保留normalized proposal+正确MH基准；停止当前复杂混合、A17、Flow优越性主张。不启动E3：没有独立分离mode证据。现在不足以支持强TAP算法论文。</p><p><a href="GO_NO_GO_DECISION.md">机器可读裁决与依据</a> · <a href="TARGET_REGISTRY.json">目标身份</a> · <a href="RESOURCE_SUMMARY.json">完整费用</a> · <a href="START_HERE.md">GPT阅读入口</a></p></section>'''
     (OUT/'index.html').write_text(header+body+'</main></html>')
     (OUT/'report.html').write_text(header+'<article>'+render((OUT/'RESEARCH_REPORT_ZH.md').read_text())+'</article></main></html>')
-    gallery=(OUT/'GALLERY.html').read_text();(OUT/'gallery.html').write_text(gallery.replace('<h1>',nav+'<h1>',1))
+    gallery_source=OUT/'GALLERY.html'
+    if not gallery_source.exists():gallery_source=OUT/'gallery.html'
+    gallery=gallery_source.read_text()
+    if nav not in gallery:gallery=gallery.replace('<h1>',nav+'<h1>',1)
+    (OUT/'gallery.html').write_text(gallery)
     notice='## 最新研究：LXZ 局部–全局多解验证\n\n[中文报告](research/research_lxz_20261016/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_lxz_20261016/)\n\n96个二维states封账，未发现显著结构新world；已有C1提案经正确MH为本次proxy基线最佳。N3合法anchor与分离mode仍未证实。\n\n'
     for name in ['README.md','START_HERE.md']:
         p=ROOT/name;s=p.read_text()

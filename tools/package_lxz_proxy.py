@@ -63,7 +63,9 @@ def main():
         fig.savefig(OUT/f'figures/proxy_{case}.png',dpi=150);fig.savefig(OUT/f'figures/proxy_{case}.pdf');plt.close(fig)
     with (OUT/'COST_LEDGER.jsonl').open('a') as f:f.write(json.dumps(dict(event='DISPLAY_PROXY_RESPONSE',auxiliary_proxy_response_attempts=count,proxy_likelihood_attempts=0,new_full_states=0,new_RHS=0,wall_seconds=time.perf_counter()-start))+'\n')
     dump(OUT/'PROXY_PACKAGE_RECEIPT.json',dict(auxiliary_proxy_responses=count,new_full=0,posterior_resampling=0,source='savedcorrectedchains',wall_seconds=time.perf_counter()-start))
-    p=OUT/'GALLERY.html';s=p.read_text()
+    p=OUT/'GALLERY.html'
+    if not p.exists():p=OUT/'gallery.html'
+    s=p.read_text()
     for case in ['solid','large_cavity','annular_cavity','combined']:
         s=s.replace('</html>',f'<section><h2>{case}：proxy材料事件代表</h2><p>有事件质量不等于分离mode，未展示质量保留，fullMie未新增验证。<a href="MaterialHypothesisPackage/PROXY_{case}.json">机器可读概率与样本</a></p><img src="figures/proxy_{case}.png" alt="proxy材料事件"></section></html>')
     p.write_text(s)

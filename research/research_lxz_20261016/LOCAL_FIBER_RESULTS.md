@@ -19,3 +19,5 @@
 第一例相对full中心差分误差8.097%，减小步长10倍后为.08097%，与二阶截断一致；精确含peak归一化Dg与原FD整体差仅8.44e−9。这说明是有限步高曲率放大，不是凭小整体Jacobian误差便可保证weak方向有限延拓。最后5个状态只做此诊断，没有重跑搜索。
 
 E2不是N3附近反演结果；N3的合法anchor缺口仍然存在。5步链不足以估计条件posterior质量。Best-of4/SelectedMAE相对N3：NOT_RUN，而不是0改善的独立试验证明。
+
+E2 continuation有5个predictor+5个corrector端点，而每个MH arm只有5次proposal，不能将continuation较大位移说成同成本胜出。Jacobian的32个receiver-adjoint RHS/anchor由本次共享setup实际支付；普通local/prior若单独部署无需该几何setup。这里不是严格同wall的E2算法优越性试验。
