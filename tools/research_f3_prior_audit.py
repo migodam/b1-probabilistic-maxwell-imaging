@@ -2,7 +2,7 @@
 Reads online generator JSON, cached F1 p/C/D, never truth, LU, field or RHS.
 """
 from pathlib import Path
-import copy, json, sys, time
+import copy, json, sys, time, os
 import numpy as np
 from scipy.integrate import quad
 from scipy.stats import kstest
@@ -49,9 +49,10 @@ def main():
     start=time.perf_counter();rng=np.random.default_rng(20261017);out=ROOT/'research/research_f3_quotient_exploration';out.mkdir(parents=True,exist_ok=True)
     weights=rng.uniform(.4,.9,(400000,2));rs=np.log(weights[:,0]/weights[:,1]);ks=kstest(rs,cdf);integ=quad(lambda x:float(density(x)),-A,A,points=[0],epsabs=1e-13)
     eps=np.array([1e-2,1e-3,1e-4,1e-5]);checks={'scope':'ZERO_PHYSICS_DECODER_AND_CACHED_C_D_ONLY','seed':20261017,'monte_carlo_n':len(rs),'quadrature_mass':integ[0],'quadrature_error_estimate':integ[1],'cdf_endpoints':cdf(np.array([-A,0,A])).tolist(),'cdf_derivative_max_error':float(max(abs((cdf(x+1e-6)-cdf(x-1e-6))/2e-6-density(x)) for x in np.linspace(-A+1e-3,A-1e-3,1000))),'monte_carlo_KS':{'statistic':float(ks.statistic),'pvalue':float(ks.pvalue),'DKW_99pct_bound':float(np.sqrt(np.log(200)/2/len(rs)))},'boundary':{'epsilon':eps.tolist(),'density_over_distance':(density(A-eps)/eps).tolist(),'limit':1.44,'tail_mass_over_distance_squared':((1-cdf(A-eps))/eps**2).tolist(),'tail_limit':.72},'normalized_t_density_jacobian':float(2*A),'t_density_integral':quad(lambda t:float(2*A*density(2*A*t-A)),0,1,points=[.5])[0],'canonical_endpoint_weights':[physical(np.r_[np.full(6,.5),t])[6:].tolist() for t in (0,1)],'cases':{},'reads':[],'new_full_states':0,'new_LU_factorizations':0,'new_LU_solves':0,'new_complex_RHS':0,'new_Mie_calls':0,'GT_arrays_read':False}
-    old=ROOT.parent/'b1-research-f/research/research_f_intrinsic_transport/results/F1'
+    legacy=Path(os.environ.get('B1_F3_LEGACY_ROOT',str(ROOT.parent/'b1-research-f/research/research_f_intrinsic_transport')))
+    old=legacy/'results/F1'
     for bg in ('weak','ring'):
-        case=f'p250073_{bg}_a1_snr20';mp=ROOT/'research/research_f_intrinsic_transport/inputs/online'/f'{case}.json';meta=json.loads(mp.read_text());checks['reads'].append(str(mp));rr=[];endpoint={}
+        case=f'p250073_{bg}_a1_snr20';mp=legacy/'inputs/online'/f'{case}.json';meta=json.loads(mp.read_text());checks['reads'].append(str(mp));rr=[];endpoint={}
         for j in (0,11):
             sp=old/case/f'state_{j:02}.npz';jp=sp.with_name(sp.stem+'_JAC.npz')
             with np.load(sp) as z:p=z['p']

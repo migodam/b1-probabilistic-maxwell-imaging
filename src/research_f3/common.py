@@ -9,7 +9,7 @@ from lxz.local2d import MaterialPrior, TAU
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'research/research_f3_quotient_exploration'
-OLD=ROOT.parent/'b1-research-f/research/research_f_intrinsic_transport'
+OLD=Path(os.environ.get('B1_F3_LEGACY_ROOT',str(ROOT.parent/'b1-research-f/research/research_f_intrinsic_transport')))
 
 class BudgetStop(RuntimeError): pass
 

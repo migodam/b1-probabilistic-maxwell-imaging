@@ -33,14 +33,17 @@ class Run:
     def __init__(self,recover=False):
         self.recover=recover;self.cfg=json.loads((OUT/'configs/PROTOCOL.json').read_text());self.book=Book('F3_RECOVERY_1' if recover else 'F3_PILOT');self.records=json.loads((OUT/'results/RECORDS.json').read_text()) if recover else [];self.models={};self.pool={};self.jacs={};self.anchors=[];self.paths={}
     def model(self,bg):
-        if bg not in self.models:self.models[bg]=FrozenMaxwellAdapter.from_background_npz(prior.INPUTS/'background'/f'{bg}.npz',self.book,purpose_prefix='RESEARCH_F3')
+        if bg not in self.models:
+            path=OUT/f'inputs/background/{bg}.npz'
+            if not path.exists():path=prior.INPUTS/'background'/f'{bg}.npz'
+            self.models[bg]=FrozenMaxwellAdapter.from_background_npz(path,self.book,purpose_prefix='RESEARCH_F3')
         return self.models[bg]
     def load(self,row):
         case=row['case'];meta=json.loads((OLD/f'inputs/online/{case}.json').read_text());P=QuotientPrior(meta)
         with np.load(OLD/f'inputs/online/{case}.npz') as z:
             if set(z.files)!={'observation','sigma'}:raise RuntimeError('online input contract')
             y=z['observation'];sigma=float(z['sigma'])
-        q=P.from_eight(np.array(row['final_p']));model=self.model(meta['background_id']);path=ROOT.parent/'b1-research-f'/row['final_array']
+        q=P.from_eight(np.array(row['final_p']));model=self.model(meta['background_id']);path=OLD/f'results/F1/{case}/state_11.npz'
         with np.load(path) as z:chi=z['chi'];current=z['current'];field=z['field'];pred=z['prediction'];factor=(z['LU'],z['pivots']);res=float(z['backward_residual'])
         if np.max(abs(P.decode(q)[0]-chi))>1e-12:raise RuntimeError('quotient material image mismatch')
         L=np.eye(576)-chi[:,None]*model.G

@@ -1,4 +1,10 @@
-## 最新：Research F 材料几何与独立物理反演
+## 最新：Research F3 商坐标与有限噪声探索
+
+[中文报告](research/research_f3_quotient_exploration/RESEARCH_REPORT_ZH.md) · [网页与实际材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_f3_quotient_exploration/)
+
+55 states / 712 RHS封账：两个新资格物理驻点，weak小幅竞争端点，无新拓扑、高阶方法无同成本增量。结束原P0局部Explorer路线，不训练NN。
+
+## 历史：Research F 材料几何与独立物理反演
 
 [中文报告](research/research_f_intrinsic_transport/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_f_intrinsic_transport/)
 
