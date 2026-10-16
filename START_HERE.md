@@ -1,4 +1,10 @@
-## 最新研究：LXZ 局部–全局多解验证
+## 最新诊断：有限Maxwell反馈与GT差量
+
+[中文报告](research/finite_feedback_fiber_diagnostic_20261016/DIAGNOSTIC_REPORT_ZH.md) · [网页与数值图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/finite_feedback_fiber_diagnostic_20261016/)
+
+45个二维states、1880个complex RHS；高阶响应已核验，GT合法局部路径未建立。材料decoder曲率是当前关键限制。
+
+## 历史研究：LXZ 局部–全局多解验证
 
 [中文报告](research/research_lxz_20261016/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_lxz_20261016/)
 

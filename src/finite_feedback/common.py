@@ -1,7 +1,7 @@
 from pathlib import Path
 from collections import Counter
 from contextlib import contextmanager
-import json,os,time,fcntl
+import json,os,time,fcntl,signal
 import numpy as np
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -26,6 +26,8 @@ class Book:
         if (OUT/'RUN_CLOSED.json').exists():raise RuntimeError('diagnostic authorization closed')
         if self.path.exists() and any(json.loads(s).get('event')=='JOB_START' for s in self.path.read_text().splitlines()):raise RuntimeError('existing physical job: explicit recovery required, no reset')
         self.append(dict(event='JOB_START',caps=dict(states=48,RHS=2048,wall_seconds=1200)))
+        def deadline(signum,frame):raise TimeoutError('independent diagnostic 1200-second wall deadline')
+        signal.signal(signal.SIGALRM,deadline);signal.setitimer(signal.ITIMER_REAL,1200)
     def append(self,row):
         with self.path.open('a') as f:f.write(json.dumps(plain(dict(utc=time.time(),**row)),allow_nan=False)+'\n');f.flush();os.fsync(f.fileno())
     def totals(self):

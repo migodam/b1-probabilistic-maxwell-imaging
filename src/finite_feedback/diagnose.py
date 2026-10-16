@@ -39,7 +39,9 @@ class Run:
         self.book=Book();self.start=time.perf_counter();self.models={};self.states={};self.endpoints=[];self.metrics=dict(decomposition=[],feedback=[],paths=[],geometry=[])
         self.dest=OUT/'results';self.dest.mkdir(exist_ok=True)
     def model(self,bg):
-        if bg not in self.models:self.models[bg]=FrozenMaxwellAdapter.from_background_npz(prior.INPUTS/'background'/f'{bg}.npz',self.book,purpose_prefix='FINITE_FEEDBACK_DIAGNOSTIC')
+        saved=OUT/'inputs/background'/f'{bg}.npz'
+        if not saved.exists():saved=prior.INPUTS/'background'/f'{bg}.npz'
+        if bg not in self.models:self.models[bg]=FrozenMaxwellAdapter.from_background_npz(saved,self.book,purpose_prefix='FINITE_FEEDBACK_DIAGNOSTIC')
         return self.models[bg]
     def full(self,model,chi,key,**metadata):
         if key in self.states:return self.states[key]
@@ -181,11 +183,13 @@ class Run:
         for t in [.25,.5,.75,1.]:
             u=u0+t*v0;ep=self.full(model,chart.decode(u)[0],f'{key}_weak_t{t:g}',role='LEGAL_CHART_FROZEN_WEAK',t=t,anchor=key)
             record(ep,u,'frozen_weak',t);self.finite(model,base,T,ep,f'{key}_weak_t{t:g}',sigma,op)
-        # Exact second response derivative: material decoder curvature + Maxwell
+        # Second derivative identity, with numerically differenced decoder curvature.
         # feedback. Normal correction is a diagnostic, not a density transform.
+        center=chart.decode(u0)[0]
+        if np.max(abs(center-base.chi))>1e-12:raise RuntimeError('chart/base mismatch before curvature')
         eps=1e-3;xp=chart.decode(u0+eps*v0)[0];xm=chart.decode(u0-eps*v0)[0]
-        D2=(xp-2*base.chi+xm)/eps**2
-        eps2=eps/2;D2fine=(chart.decode(u0+eps2*v0)[0]-2*base.chi+chart.decode(u0-eps2*v0)[0])/eps2**2
+        D2=(xp-2*center+xm)/eps**2
+        eps2=eps/2;D2fine=(chart.decode(u0+eps2*v0)[0]-2*center+chart.decode(u0-eps2*v0)[0])/eps2**2
         d=geo['D']@v0;self.book.context=dict(anchor=key,operation='chart_curvature_feedback')
         q=model.solve_anchor(d[:,None]*base.field,base,role='chart_curvature_first_current')
         bmax=T@(2*d[:,None]*model._cpu.green(q));bchart=T@(D2fine[:,None]*base.field)
@@ -197,14 +201,14 @@ class Run:
             delta=self.correct(geo['A'],v0,.5*t*t*curvature,t/2);u=u0+t*v0+delta
             ep=self.full(model,chart.decode(u)[0],f'{key}_curvature_t{t:g}',role='LEGAL_SECOND_ORDER_CANDIDATE_ONLY',t=t,anchor=key)
             row=record(ep,u,'second_order_curvature',t);row['normal_correction_norm']=float(np.linalg.norm(delta))
-        u=u0.copy();state=base;prev=v0;g=geo;distance=0.;status='COMPLETE_THREE_STEPS'
+        u=u0.copy();state=base;prev=v0;prev_tangent=geo['D']@v0;g=geo;distance=0.;status='COMPLETE_THREE_STEPS'
         for step in range(1,4):
             if step>1:
                 _,Ci,_=self.build_jac(model,state,f'{key}_updated_{step}',sigma);g=geometry(Ci,chart,u,sigma)
                 if g['rank']!=geo['rank']:status='STOP_CHART_RANK_CHANGE';break
                 if g['max_cell']!=geo['max_cell']:status='STOP_MAX_NORMALIZATION_CELL_CHANGE';break
             v=g['v']
-            if np.real(np.vdot(g['D']@v,geo['D']@prev))<0:v=-v
+            if np.real(np.vdot(g['D']@v,prev_tangent))<0:v=-v
             up=u+.25*v
             ep=self.full(model,chart.decode(up)[0],f'{key}_pc_{step}_predict',role='LEGAL_UPDATED_J_PREDICTOR',anchor=key,step=step)
             raw=record(ep,up,'updated_J_predictor',step*.25)
@@ -213,7 +217,7 @@ class Run:
             rr=record(cp,uc,'updated_J_corrector',step*.25,parent=f'{key}_pc_{step}_predict')
             rr['direction_cosine_prior']=float(v@prev);rr['normal_correction_norm']=float(np.linalg.norm(delta))
             if not rr['noise_compatible'] or rr['prior_status']!='P0_EXACT':status='STOP_INCOMPATIBLE_ENDPOINT';break
-            distance+=rms(cp.chi-state.chi);u=uc;state=cp;prev=v
+            distance+=rms(cp.chi-state.chi);u=uc;state=cp;prev=v;prev_tangent=g['D']@v
         self.metrics['paths'].append(dict(anchor=key,scope='KNOWN_TRAIN_CALIBRATION_ONLY_NOT_INVERSE_SUCCESS',
             updated_J_status=status,updated_J_material_path_length=distance,rows=rows,
             same_data_path_tolerance='original observation 95% noise ball; prediction difference separately reported',posterior_samples=False))
