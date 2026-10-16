@@ -1,0 +1,74 @@
+{
+  "stage": "LXZ-20261016",
+  "source_commit": "0b9024b11b1bbb338ae334a873e731fb46e4bb66",
+  "prior_change_allowed": false,
+  "GPU_training": 0,
+  "locked_access": false,
+  "C1_root": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2",
+  "E0": {
+    "full_states": 0,
+    "RHS": 0,
+    "read_only_cached_assets": true
+  },
+  "E1": {
+    "target": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1",
+    "observations": [
+      "solid",
+      "large_cavity",
+      "annular_cavity",
+      "combined"
+    ],
+    "seeds": [
+      26101601,
+      26101602,
+      26101603,
+      26101604
+    ],
+    "checkpoints": [
+      1024,
+      4096
+    ],
+    "methods": [
+      "local",
+      "geometry",
+      "global",
+      "hybrid",
+      "tempered",
+      "prior"
+    ],
+    "initial_prior_pool": 64,
+    "burnin_fraction": 0.25,
+    "local_rate": 0.35,
+    "geometry_rate": ".45/sqrt(1+eigenvalue), floor.025",
+    "global_fraction": 0.25,
+    "global_density": ".9 C1-full_distill seed26101321 +.1 original prior",
+    "reference": "ADAPTIVE_PHYSICAL_REFERENCE.json, PILOT_REFERENCE.json C continuous",
+    "round1_proxy_cap": 393216,
+    "round2_proxy_cap": 65536,
+    "round2_trigger": "geometry loses material CDF/event accuracy to ordinary local; replace full response metric with bounded-gain Schur proposal metric, target unchanged",
+    "round2_only_method": "geometry",
+    "reference_not_fit_proposal": true
+  },
+  "E2": {
+    "states_cap": 96,
+    "RHS_cap": 3072,
+    "max_anchors": 2,
+    "condition": "prequalified original-P0 anchor; exposed paired TRAIN calibration permitted only with explicit distinction from reconstructed N3; no offline_only hidden anchors",
+    "arms": [
+      "prior-coordinate local",
+      "Jacobian-informed local",
+      "predictor-corrector candidate-only",
+      "independent prior"
+    ],
+    "no_P1": true
+  },
+  "E3": {
+    "Mie_endpoint_cap": 64,
+    "condition": "evidence for two separated important material regions of SAME frozen target; event labels alone insufficient"
+  },
+  "physics_wall_cap_seconds": 3600,
+  "new_nonspherical_3D": 0,
+  "historical_budget_credit": 0,
+  "statistical_scope": "finite proxy-target estimates; no all-mode or continuum guarantee",
+  "package_instruction_override": "LXZ user budget replaces older X zero-physics-only suggestion; no other package budget stacked"
+}
