@@ -1,0 +1,54 @@
+{
+  "authorization": "2026-10-17 user Research F3 independentbudget",
+  "historical_B1_commit": "8b620b315b2b4b212d0f1e4c143ced49f22f02e0",
+  "caps": {
+    "new_2D_states": 64,
+    "complex_RHS": 2048,
+    "controlled_physics_wall_seconds": 1200,
+    "GPU_training": 0,
+    "new_Mie": 0,
+    "new_3D": 0
+  },
+  "F15_state_cap": 16,
+  "F15_per_case_state_cap": 8,
+  "cases": [
+    "p250073_ring_a1_snr20",
+    "p250073_weak_a1_snr20"
+  ],
+  "known_conditions": "originalconditionalP0 twoGaussians, sameexposedparent250073 two backgrounds; fixedfamily/global geometry",
+  "target_identity": "A30_P0_conditional_smooth_complex8src32rcv_SNR20_gain1_original_measure_quotient_rho_v1",
+  "noise_and_likelihood": "packsourceRe32Im32; sqrt2/sigma; Phi=.5||r||²; nohardnoiseballtruncationinMH",
+  "prior": "sixoriginalshapeuniformq; t=(rho+log(9/4))/(2log(9/4)), p_t=2log(9/4)*p_rho. NoGramdeterminantinMH",
+  "original_P0_measure_unchanged": true,
+  "F15_objective": "likelihoodonlyboundedquotientGN; priorlegalityrequired, notposteriorMAP",
+  "F15_step": "lsq_linear exactbounds, qinftrust.1, fullforwardbacktrack1,.5,.25; clip/snaptoexactboundifdistance<1e-8, chargeeachtrial",
+  "F15_qualification": {
+    "all7_sign_aware_projected_gradient_inf_max": 0.001,
+    "numerical_active_set_tolerance": 1e-08,
+    "material_GN_RMS_max": 5.275550000000001e-06,
+    "linear_predicted_Phi_gain_max": 1e-06,
+    "interpretation": "newfiniteprecisionstationarity; doesnotchangeoldGate2; notglobaloptimum"
+  },
+  "task_RMS": 0.00527555,
+  "target_levels": [
+    0.00527555527555,
+    0.0105511105511
+  ],
+  "distance_matching_rtol": 0.02,
+  "data_feasible": "originaltau23.785449004057032",
+  "likelihood_competitive": "deltaPhi<=2 relativeoriginalResearchFfinalbeforeF3",
+  "positive_prior_density_required_for_candidate_support": true,
+  "structure_check": "sameprior stage: >=4cells |dchi|>=.012 plus1pixelsmoothedRMS>=.002; nottopologymodecriterion",
+  "C1": "runonlynewstationarityqualifiedanchors; A_frozen,B_updated,C_native,D_intrinsic_feedback;2endpointbudgeteach atmatchedradii",
+  "C2": "runregardlessstationarity; sameF15bestlegalnoisecompatiblestart;8nativecandidates/8reflectedMHproposals eachcase",
+  "MH": "fixeddiagonalGaussianin7qcoords followedcoordinatewisereflection; symmetricproposal, acceptlogprior-Phi; noadaptation, nogainchange",
+  "MH_sd": "inverseinitialAcolumnnorm, scaledexpectedmaterialRMS=task, maximumcoordinateSD.15; frozen peranchor",
+  "MH_boundary_initialization": "possiblelikelihoodboundaryhasprior0; initializationisnotposterior. firstfinitecandidatefromlogtarget-inf accepts1; thereafterstandardMH. Reportall8steps/rejections, nocrediblecoverageclaim",
+  "seeds": {
+    "native": 26101762,
+    "MH": 26101771
+  },
+  "D_feedback": "one8sourceRHSMaxwellHessiancurrent, cachedreceiverT;priornormalD2decoder;secondradiususesmeasuredfirstendpointcorrectionandrefreshedJac. Noresolventidentityreverification",
+  "matched_RHS_comparison": "Dtwoendpoints56RHS inclHessian8/Jrefresh32 versusfirst7nativeorMH56RHS cold; sameanchor andnoise, sharedsetupcountedsymmetrically. All4armactualcostsalsoreported",
+  "stop_rule": "singlefrozenpilot; nonewNN/noP1/noadditionalcampaignrescue"
+}
