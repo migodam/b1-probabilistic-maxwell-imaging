@@ -113,8 +113,51 @@ rho=0 为尖点，端点 prior 密度为零、log prior=-infinity；不能直接
 - 初始 -infinity log target 到有限 log target 的接受分支显式处理；没有 inf-inf 运算。接受后正常使用有限比率。
 - ledger 在付费动作前预留；新增阶段与旧 F 账本路径分离。此处为静态读取，不独立验证物理解算器和账本运行结果。
 
-运行前已向父线程提出三项修正：anchor qualification 还须包含 noise-ball、材料/响应秩与物理残差；D 的差分 stencil 必须整段在合法盒内，不能以 clipping 代替固定方向二阶导数；MH 提议记录不得把被拒绝的候选标为 posterior sample。修正后的源码和实际结果待复核。
+运行前已向父线程提出三项修正：anchor qualification 还须包含 noise-ball、材料/响应秩与物理残差；D 的差分 stencil 必须整段在合法盒内，不能以 clipping 代替固定方向二阶导数；MH 提议记录不得把被拒绝的候选标为 posterior sample。这些修正已在实际执行/恢复源码中复核：最终 qualification 包含原 noise-ball、材料秩7、响应秩7及物理 backward residual；D 在付费 Hessian 前检查合法差分 stencil，必要时缩小步长；提议记录明确 `posterior_samples=false`、`posterior_chain_proposal=true`。
 
 ### 6.2 实际运行
 
-当前独立复核状态：**NOT_RUN / RESULTS_NOT_REVIEWED**。数学公式与静态代码核对不构成物理结果 PASS。
+已读取最终 `RUN_FINAL_CLOSED.json`、追加式 ledger、48 条候选记录、两份八步 MH chain 及 F1.5 保存数组。独立重算见 `INDEPENDENT_F15_STATIONARITY.json` 和 `INDEPENDENT_MH_AND_LEDGER_AUDIT.json`。这些审查不调用物理解算，也不读取 LU/pivots、GT 或离线评价。
+
+**F1.5 新判据的数值通过得到独立支持。** 两个最终点 t 恰为 0，所以数值 active-set 与精确边界的投影梯度一致；rho 梯度分别为正的 0.0119838821 / 0.1106716306，满足下边界可行符号。
+
+| 新 quotient likelihood 诊断 | ring | weak |
+|---|---:|---:|
+| 新 states | 3 | 1 |
+| 白化残差 | 22.2395547577 | 21.5121122553 |
+| 精确边界 projected-gradient inf | 0.000579260410 | 0.000535627363 |
+| 有界线性 GN 材料 RMS | 5.29818e-8 | 6.76656e-8 |
+| 线性预测 Phi 改善 | 9.30783e-10 | 4.56623e-10 |
+| 材料 / 响应 rank | 7 / 7 | 7 / 7 |
+| backward residual | 1.65076e-15 | 1.52181e-15 |
+| 该点 prior density | 0 | 0 |
+
+重建梯度与报告逐分量完全一致。新 likelihood qualification 不改变旧 F1 Gate2 FAIL，也不构成 posterior MAP。因为两个点均在精确边界，此处的实际通过无需依赖 1e-8 近边界约定。
+
+**MH 公式与实际有限链一致。** 独立使用 `1.44*sinh(2L*min(t,1-t))*2L` 重算先验，重放种子 26101771 的全部高斯增量和接受均匀数。16 次提议的 q 与保存记录完全一致；接受/拒绝、重复保留状态、Phi、log target、初始零密度扩展标志全部一致。log prior 最大差 8.88e-16，链 log target 最大差 2.84e-14。每例接受 3/8 次，五次拒绝均正确保留旧链状态。源码和运行均没有将 noise-ball 作为 posterior 硬截断。
+
+| 八步有限 MH | ring | weak |
+|---|---:|---:|
+| 接受数 | 3 / 8 | 3 / 8 |
+| 达任务 RMS 的提议数 | 1 / 8 | 2 / 8 |
+| 达任务 RMS 的保留链状态数 | 0 / 8 | 0 / 8 |
+| 保留链最大 RMS | 0.00468347 | 0.00475189 |
+
+达到任务位移的提议全部被拒绝，不能当作 MH 链输出的任务级 teacher。两个 chain 都很短，从零密度 likelihood 边界开始且未去 burn-in；目标核正确不等于已平稳或已校准覆盖。chain 文件中逐步字段 `initial_boundary_zero_density` 实际记录更新后当前状态是否仍为零密度，故第一步为 false；真正的初始扩展事件由对应 proposal 的 `boundary_initialization_extension=true` 记录。解释时应以这两个时刻的区别为准。
+
+**四臂比较没有支持 D 优于普通 native。** 本段 teacher 仅指保存的筛选条件同时满足：P0、正 prior density、原 noise-ball、相对冻结原 F1 的 deltaPhi<=2、任务位移及结构检查；不表示 posterior 质量已估计。
+
+- ring 四臂均为 0/2 teacher；C_native 两点的 prior density 均为 0，D 第二点也为 0。
+- weak 的 C_native 与 D 都只有第一个半径通过（各 1/2）：C 的 deltaPhi=1.140604，D=1.632730；第二半径为 3.098031 / 4.230149，均超过 2。因而首半径 C 更好，不能将 D 的存在性结果说成算法优势。
+- weak mixed-native 池有 2/8 teacher，ring 为 0/8。池里包括两个 C_native 确定方向端点的复用及六个随机方向，不能称为八个独立同分布随机提议。
+- B_updated 的第二点在两例都未达到指定第二半径（ring RMS 0.00540745、weak 0.00653120，目标 0.01055111）；ring A_frozen 第二点 RMS 0.01012286，也超出冻结 2% 匹配容差。这些点可以报告，但不能作为严格同位移的二级比较。C_native 与 D 的四个目标距离均匹配。
+
+**RHS 对比须区分真实增量与 cold 等价。** ledger 每例 D 为 2 states / 56 RHS（16 forward +8 Maxwell Hessian current +32 一次 Jacobian refresh）。每例 C_native 为 2/16，A 为 2/16；B 因第一点与 A 共享缓存，实际增量为 1/40。mixed-native 池仅新增 6/48，另两个点复用 C_native，因此其八点 cold forward 成本为 64 RHS；前七点 cold 等价为 56 RHS，与 D 的 56 相同。实际 incremental 48 与 D56 不相等，不能混写。此比较同 anchor、同噪声，公共 anchor 几何对各方同等视为共享设置；如果计入公共设置，须向各方一致添加。前七 mixed-native 点 weak 仍有两个 teacher，D 有一个；同预算结论不支持 D 胜出。MH 前七次提议 cold 为 56 RHS，但 teacher 比较须用实际保留链，不能用被拒绝的 proposals。
+
+**恢复与成本保留完整。** 首次运行在 ring C_native 第二半径因规范权重浮点值 0.39999999999999997 低于严格下界而失败；失败记录及 8 states /224 RHS 均保留。恢复只修复规范权重的浮点边界表达，并用 `gap=2L*min(t,1-t)` 防止极近边界 log prior 的减法消去；没有修改真实支持、q 提议、先验测度或已冻结筛选条件。恢复载入已付费状态/缓存，未重跑 F1.5，并将新增消耗追加同一 ledger。两个 JOB_END 的受控时间合计 16.303935709 秒。
+
+最终累计 **46 states /640 RHS /16.303935709 秒**，F1.5 共 4 states，均在 64/2048/1200 秒与 F1.5<=16 的授权上限内。最终 closure error=null；初次失败没有被擦除。独立审查本身新增 states/LU/RHS/GT 均为 0。
+
+### 6.3 最终审查结论
+
+商先验推导、固定对角反射 MH 的目标核及保存有限链操作均通过本次独立审查；新 likelihood 边界驻点满足冻结数值判据。没有发现支持额外付费运行的必要性。实验证据不支持 D 的优势，不支持任务级 MH 链 teacher，不支持平稳 posterior 或覆盖结论。最终科学方向、novelty 与后续投入由父线程裁决。

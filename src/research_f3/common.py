@@ -17,8 +17,10 @@ class Book:
     """Independent F3 authorization; historical Research F is read-only; reserve before work."""
     def __init__(self,stage):
         self.stage=stage;self.path=OUT/'RESOURCE_LEDGER.jsonl';self.counts=Counter();self.context={}
-        if (OUT/'RUN_CLOSED.json').exists() and not (stage=='F3_RECOVERY_1' and (OUT/'RECOVERY_AUTHORIZATION.json').exists()):raise BudgetStop('Research F3 closed')
-        if (OUT/'RUN_FINAL_CLOSED.json').exists():raise BudgetStop('Research F3 finally closed')
+        path_audit=stage=='F3_PATH_VALIDATION' and (OUT/'configs/PATH_VALIDATION.json').exists()
+        if (OUT/'STAGE_CLOSED.json').exists():raise BudgetStop('F3 authorization fully closed')
+        if (OUT/'RUN_CLOSED.json').exists() and not ((stage=='F3_RECOVERY_1' and (OUT/'RECOVERY_AUTHORIZATION.json').exists()) or path_audit):raise BudgetStop('Research F3 closed')
+        if (OUT/'RUN_FINAL_CLOSED.json').exists() and not path_audit:raise BudgetStop('Research F3 pilot closed')
         rows=self.rows()
         if any(x['event']=='JOB_START' and x['stage']==stage for x in rows):
             raise BudgetStop('stage already attempted: explicit recovery, never reset')
