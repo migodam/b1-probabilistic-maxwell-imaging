@@ -71,18 +71,38 @@ def main():
     # Two reproducible known TRAIN calibration anchors, not inverse-discovered
     # answers to the development y and not hidden prior-stage witness arrays.
     calibration=[]
-    for parent,bgid,fi in [(250001,'weak',0),(250017,'ring',1)]:
+    for parent,bgid,fi,local in [(250033,'weak',2,0),(250034,'ring',2,1)]:
         ii=int(np.flatnonzero((tr['parent_id']==parent)&(tr['background_id']==bgid)&np.isclose(tr['amplitude'],1.2)&np.isclose(tr['noise_db'],20))[0])
-        rr=draw_train_row(251008,fi,0,parent_id=parent)
+        rr=draw_train_row(251008,fi,local,parent_id=parent)
         cert=verify_exact_endpoint(tr['chi'][ii],rr,background_id=bgid)
         residual=float(np.sqrt(2)*np.linalg.norm(tr['clean'][ii]-tr['data'][ii])/float(tr['sigma'][ii]))
         if cert['prior_status']!='P0_EXACT':raise RuntimeError('TRAIN_REPLAY_FAILED')
         if residual>tau:continue  # Do not modify tau or choose a favorable seed.
         name=f'PUBLIC_TRAIN_CALIBRATION_{parent}_{bgid}.npz'
+        backgroundp=RELEASE/'inputs/a25/background'/f'{bgid}.npz'
+        cached=read(backgroundp,['G','S','incident','points','volume'])
+        field=cached['incident']+cached['G']@tr['current'][ii]
+        constitutive=float(np.linalg.norm(tr['current'][ii]-tr['chi'][ii,:,None]*field)/np.linalg.norm(tr['current'][ii]))
+        data_defect=float(np.linalg.norm(cached['S']@tr['current'][ii]-tr['clean'][ii])/np.linalg.norm(tr['clean'][ii]))
         np.savez_compressed(OUT/name,chi=tr['chi'][ii],prediction=tr['clean'][ii],observation=tr['data'][ii],
-            sigma=tr['sigma'][ii],current=tr['current'][ii],background=bg_map[f'p250065_{bgid}_a1_snr20'])
+            sigma=tr['sigma'][ii],current=tr['current'][ii],field=field,points=cached['points'],volume=cached['volume'],
+            background=bg_map[f'p250065_{bgid}_a1_snr20'])
+        gen_path=OUT/name.replace('.npz','.json')
+        dump(gen_path,dict(generator=rr,background_id=bgid,amplitude=1.2,prior_certificate=cert,
+            role='PUBLIC_TRAIN_CALIBRATION_KNOWN_MATERIAL_NOT_INVERSE_DISCOVERY',
+            source=str(trainp),source_index=ii,cached_equation_checks=dict(constitutive_relative=constitutive,prediction_relative=data_defect),
+            target_measure=dict(identity=f'LXZ_P0_CONDITIONAL_SMOOTH_{parent}_{bgid}_A1_SNR20',
+                parent_measure='Original A25 P0 conditioned on family=smooth, amplitude=1.2 and known background; not the original four-family mixture target',
+                original_family_probability=.25,family_condition='smooth',
+                parameter_prior='Original independent uniform TRAIN generator parameters, original support/rasterizer/normalization; inactive parameters marginalized, no field-uniform or geometry-radius-uniform substitution',
+                likelihood='exp(-.5*||sqrt(2)/sigma*(F(chi)-y)||^2);512 real channels;gain=1;proper fixed sigma',
+                posterior_mass_estimation=False),
+            normalization='parent_material computes first two Gaussians in transformed coordinates then divides by actual raster maximum; chi=chi_b+1.2*p/max(p)*(1+.2i)/sqrt(1.04)',
+            continuous_parameter_cautions=['Gaussian common weight scaling cancels under max normalization','Global coordinate transforms and Gaussian local coordinates can be redundant','Unused shell/rectangle/third-Gaussian parameters do not generate material changes; do not call them physical null directions'],
+            no_new_physics=True,cached_matrix_products=dict(G_source_columns=8,S_source_columns=8)))
         calibration.append(dict(anchor_id=f'TRAIN_{parent}_{bgid}',source=str(trainp),source_index=ii,
             source_fields=['chi','clean','data','sigma','current'],copied_arrays=str(OUT/name),
+            generator_json=str(gen_path),family='smooth',
             prior_certificate=cert,whitened_residual=residual,tau=tau,noise_ball_compatible=True,
             allowed_use='PUBLIC_SUPERVISED_TRAIN_CALIBRATION_ONLY',
             online_inverse_discovery=False,development_observation_compatible=False,
@@ -140,6 +160,7 @@ def main():
     if paid_secant_rows:csvwrite(OUT/'PAID_P0_NONLINEAR_SECANTS.csv',paid_secant_rows)
     result=dict(schema='LXZ_E0_2D_ASSETS_V1',new_physics=dict(states=0,RHS=0,LU=0,adjoints=0,JVPs=0,GPU=0),
         no_new_material_generation=True,no_samplers=True,no_new_P1=True,locked_reads=0,
+        existing_material_decoder_replays=2,cached_matrix_products=dict(G_source_columns=16,S_source_columns=16),
         original_development_P0_compatible_anchors_found=sum(r['noise_ball']for r in reservoir),
         N3_noise_pass=sum(r['noise_ball']for r in online),N3_original_phase_pass=sum(r['phase_valid']for r in online),
         N3_prior_exact=0,N3_pass_cases=[r['case_id']for r in online if r['noise_ball']],

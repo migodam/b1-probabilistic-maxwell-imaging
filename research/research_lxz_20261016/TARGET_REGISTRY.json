@@ -1,0 +1,52 @@
+{
+  "version": "LXZ-target-registry-v1",
+  "targets": [
+    {
+      "id": "A25-A30-P0",
+      "prior": "original equal four-family mixture; original uniform parameter law and image peak normalization",
+      "material": "chi_b+1.2*(p/maxp)*(1+.2i)/sqrt1.04",
+      "physics": "24x24 scalarTM/VIE,8sources32receivers,complex128",
+      "noise": "original complex RMS at20dB; fixed sigma; sqrt2/sigma per real channel",
+      "gain": "known shared1",
+      "E0_development_qualified_P0_anchors": 0,
+      "not_same_as_jointP2": true
+    },
+    {
+      "id": "A25-A30-P0-smooth-conditional8",
+      "parent": "A25-A30-P0",
+      "conditional": true,
+      "description": "original smooth-family eight original uniform Gaussian coordinates; all others conditioned on public TRAIN material parameters",
+      "observations": [
+        "PUBLIC_TRAIN_250033_weak",
+        "PUBLIC_TRAIN_250034_ring"
+      ],
+      "known_calibration_only": true,
+      "local_chart_rank": 7,
+      "posterior_probability_claim": false,
+      "new_material_support": false
+    },
+    {
+      "id": "P1",
+      "status": "NOT_DEFINED_NOT_RUN",
+      "reason": "no posthoc support expansion"
+    },
+    {
+      "id": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1",
+      "prior": "dx uniform [-3,1]^2 x[2.2,2.8]x[.04,.16]",
+      "decoder": "original radial compact bumps, strictvacuum u<0; inactivepriorvolume retained",
+      "measurement": "kR1.6 eightangles two polarizations,32 real channels,allRe thenallIm",
+      "noise": "fixed original real sigma .05044714750236199",
+      "gain": "shared real truncatedNormal(1,.15^2), [.7,1.3], exactmarginal logdet+truncation",
+      "forward": "paid 5^4 Chebyshev response, no newfullMie",
+      "reference": "existing adaptivephysical +continuous13/17"
+    },
+    {
+      "id": "full-vector-Mie-matching-n14:C:bounded-shared-gain",
+      "prior": "same radialprior asproxy",
+      "forward": "full3Dvector layered concentric Mie nmax14",
+      "new_evaluations": 0,
+      "reference": "historical full-minus-proxy event correction onlysolid/large_cavity",
+      "not_identical_to_proxy": true
+    }
+  ]
+}

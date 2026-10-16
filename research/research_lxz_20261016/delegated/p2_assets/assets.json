@@ -1,0 +1,4759 @@
+{
+  "audit_id": "LXZ-P2-ASSETS-20261016",
+  "audit_scope": "read-only source/header/JSON/checkpoint inspection; noforward/proxy/inference/trainingcalls",
+  "new_physics": 0,
+  "new_proxy_evaluations": 0,
+  "new_samples": 0,
+  "web_calls": 0,
+  "sha_checks": 0,
+  "B1_worktree": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz",
+  "B1_current_commit": "0b9024b11b1bbb338ae334a873e731fb46e4bb66",
+  "B1_P2_frozen_commit": "7ed4faef9bc3dd214d4de689c2203cc383f7495f",
+  "B1_P2_diff": "gitdiff7ed4fae src/b1_joint research/joint_p2 empty",
+  "C1_worktree": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2",
+  "C1_commit": "83056881e89329212b16f5be47a4d0dbc4465943",
+  "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1",
+  "full_target_identity": "full-vector-Mie-matching-n14:C:bounded-shared-gain",
+  "protocol": {
+    "stage": "B1-C1-JOINT-P2-20261013",
+    "protocol_id": "joint-p2-radial-v1",
+    "date": "2026-10-13",
+    "B1_baseline": "1cd474cbf6e72c6bf9a070a78293664149a472a5",
+    "C1_baseline": "9f2c51882429817db95e5801f5937257eb373b2a",
+    "latent_bounds": [
+      [
+        -3.0,
+        1.0
+      ],
+      [
+        -3.0,
+        1.0
+      ],
+      [
+        2.2,
+        2.8
+      ],
+      [
+        0.04,
+        0.16
+      ]
+    ],
+    "prior": "independent coefficient-uniform product; pushforward material prior",
+    "decoder": "u=1+zc[1-(s/.45)^2]_+^2+zs[1-((s-.65)/.18)^2]_+^2; u<0 vacuum; shared complex eps otherwise",
+    "R": 1.0,
+    "frequencies": [
+      1.6,
+      2.4
+    ],
+    "nmax": 14,
+    "angles": [
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140,
+      160
+    ],
+    "packing": "all16complexRe then all16complexIm, per frequency",
+    "noise_anchor": "0.12 times RMS of fixed solid eps2.5+.1i response, per frequency",
+    "gain_prior": {
+      "distribution": "proper truncated Normal",
+      "mean": 1.0,
+      "sd_untruncated": 0.15,
+      "bounds": [
+        0.7,
+        1.3
+      ],
+      "shared_across_frequencies": true
+    },
+    "RMAX": [
+      0.2925518253046813,
+      0.11702073012187252
+    ],
+    "events": {
+      "central_bins": [
+        "0",
+        "(0,.10]",
+        "(.10,.20]",
+        "(.20,rmax]"
+      ],
+      "annular_halfwidth_bins": [
+        "0",
+        "(0,.06]",
+        "(.06,hmax]"
+      ],
+      "id": "central_bin*3+annular_bin",
+      "prior_masses": [
+        0.25,
+        0.03320312500000003,
+        0.21679687499999997,
+        0.013324337999662678,
+        0.0017696386405802009,
+        0.011554699359082477,
+        0.05578808803584029,
+        0.007409355442260045,
+        0.04837873259358024,
+        0.18088757396449703,
+        0.024024130917159783,
+        0.15686344304733726
+      ],
+      "material_report_scale_R": 0.05
+    },
+    "seed": 26101320,
+    "training_seeds": [
+      26101321,
+      26101322,
+      26101323
+    ],
+    "parents": {
+      "train": 128,
+      "validation": 32,
+      "fresh_final": 64
+    },
+    "noise_per_parent": 2,
+    "fresh_final_created_after_model_freeze": true,
+    "context": {
+      "type": "independent simulated geometry sensor",
+      "c": "normalized vacuum volume plus independent normal noise",
+      "sd": 0.01,
+      "seed": 26101328
+    },
+    "numerical_targets": {
+      "full": "vector-Mie-matching-n14-radial-v1",
+      "surrogate": "tensor-Chebyshev-five-per-physical-axis-radial-v1",
+      "uniform_error_certificate": false
+    },
+    "inference_conditions": {
+      "A": "known eps/gain",
+      "B": "unknown eps known gain",
+      "C": "unknown eps proper shared bounded gain",
+      "D": "C plus frequency2.4"
+    },
+    "reference_tolerances": {
+      "event_mass": 0.01,
+      "CDF": 0.01,
+      "mean_quantile_fraction_prior_width": 0.001,
+      "SD_relative": 0.01
+    },
+    "resource": {
+      "cap": 4000,
+      "wall_cap": 7200,
+      "GPU": 0,
+      "training_wall_cap": 600
+    },
+    "locked_data": false,
+    "DeepSeek": false,
+    "sha256": false,
+    "smoke": false
+  },
+  "closed_P2_resources": {
+    "used": 3459,
+    "cap": 4000,
+    "remaining": 541,
+    "controlled_job_wall_seconds": 2191.3570845818613,
+    "scientific_run_closed": true,
+    "historical_B1_unchanged": 384
+  },
+  "accepted_reference": {
+    "status": "POSITIVE_PARTITION_INTEGRAL_REFERENCE",
+    "refined_observations": [
+      12,
+      39,
+      48
+    ],
+    "unresolved_after21": [],
+    "monotone_violation": 0.0,
+    "important_conditional_monotone_violation": 0.0,
+    "claim_scope": "positiveCDFgrid all128; complete event/mean/SD13/17check all128, three upgraded17 and crosschecked21; CDF13/17 onlyfixed8 plusadaptive refinement3, no uniform/continuum certificate",
+    "max_partition_event_mass_disagreement": 0.00550556950392056,
+    "max_partition_log_evidence_disagreement": 0.009987331120356657
+  },
+  "assets": [
+    {
+      "asset_id": "p2_common_response_bank",
+      "relative_path": "research/joint_p2/results/COMMON_RESPONSE_BANK.npz",
+      "role": "paid physical5^4 bank per frequency; continuous polynomialresponse coefficients, not discrete prior",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/COMMON_RESPONSE_BANK.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/COMMON_RESPONSE_BANK.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/COMMON_RESPONSE_BANK.npz"
+      ],
+      "bytes": 658913,
+      "arrays": {
+        "frequencies": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "axis_0": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "axis_1": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "axis_2": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "axis_3": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "fields_1.6": {
+          "shape": [
+            5,
+            5,
+            5,
+            5,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "fields_2.4": {
+          "shape": [
+            5,
+            5,
+            5,
+            5,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "coeff_1.6": {
+          "shape": [
+            5,
+            5,
+            5,
+            5,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "coeff_2.4": {
+          "shape": [
+            5,
+            5,
+            5,
+            5,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "coarse_coeff_1.6": {
+          "shape": [
+            3,
+            3,
+            3,
+            3,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "coarse_coeff_2.4": {
+          "shape": [
+            3,
+            3,
+            3,
+            3,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "frequencies": [
+          1.6,
+          2.4
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_independent_forward",
+      "relative_path": "research/joint_p2/results/INDEPENDENT_FORWARD_ARRAYS.npz",
+      "role": "112 paid independent prior probes, twofrequency full/proxy fields",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/INDEPENDENT_FORWARD_ARRAYS.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/INDEPENDENT_FORWARD_ARRAYS.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/INDEPENDENT_FORWARD_ARRAYS.npz"
+      ],
+      "bytes": 114072,
+      "arrays": {
+        "latent": {
+          "shape": [
+            112,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_full": {
+          "shape": [
+            112,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_proxy": {
+          "shape": [
+            112,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_train",
+      "relative_path": "research/joint_p2/results/TRAIN_OBSERVATIONS.npz",
+      "role": "128 exposedtrain parents x2 noise",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/TRAIN_OBSERVATIONS.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/TRAIN_OBSERVATIONS.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/TRAIN_OBSERVATIONS.npz"
+      ],
+      "bytes": 199956,
+      "arrays": {
+        "y": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "truth": {
+          "shape": [
+            256,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent": {
+          "shape": [
+            256
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "gain": {
+          "shape": [
+            256
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_parent": {
+          "shape": [
+            128,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent_latent": {
+          "shape": [
+            128,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "seed": {
+          "shape": [],
+          "dtype": "int64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054
+        ],
+        "seed": 261013205
+      }
+    },
+    {
+      "asset_id": "p2_validation",
+      "relative_path": "research/joint_p2/results/VALIDATION_OBSERVATIONS.npz",
+      "role": "32 exposedvalidation parents x2 noise",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/VALIDATION_OBSERVATIONS.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/VALIDATION_OBSERVATIONS.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/VALIDATION_OBSERVATIONS.npz"
+      ],
+      "bytes": 51311,
+      "arrays": {
+        "y": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "truth": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "gain": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_parent": {
+          "shape": [
+            32,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent_latent": {
+          "shape": [
+            32,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "seed": {
+          "shape": [],
+          "dtype": "int64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054
+        ],
+        "seed": 261013206
+      }
+    },
+    {
+      "asset_id": "p2_fresh_now_exposed",
+      "relative_path": "research/joint_p2/results/FRESH_FINAL_OBSERVATIONS.npz",
+      "role": "64 historicalfresh parents x2 noise; now exposed",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/FRESH_FINAL_OBSERVATIONS.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/FRESH_FINAL_OBSERVATIONS.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/FRESH_FINAL_OBSERVATIONS.npz"
+      ],
+      "bytes": 100880,
+      "arrays": {
+        "y": {
+          "shape": [
+            128,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "truth": {
+          "shape": [
+            128,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent": {
+          "shape": [
+            128
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "gain": {
+          "shape": [
+            128
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_parent": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent_latent": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "seed": {
+          "shape": [],
+          "dtype": "int64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054,
+          0.08064376735208054
+        ],
+        "seed": 261013213
+      }
+    },
+    {
+      "asset_id": "p2_teacher_ref13",
+      "relative_path": "research/joint_p2/results/C1_TRAINING_DATA_REF13.npz",
+      "role": "additionalteacher supervision; historical frozenC1 training",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/C1_TRAINING_DATA_REF13.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/C1_TRAINING_DATA_REF13.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/C1_TRAINING_DATA_REF13.npz"
+      ],
+      "bytes": 1869669,
+      "arrays": {
+        "train_y": {
+          "shape": [
+            256,
+            34
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "train_teacher": {
+          "shape": [
+            256,
+            512,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "train_parent": {
+          "shape": [
+            256
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "train_x": {
+          "shape": [
+            256,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "validation_y": {
+          "shape": [
+            64,
+            34
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "validation_teacher": {
+          "shape": [
+            64,
+            512,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "validation_parent": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_C1_final_node_reference",
+      "relative_path": "research/joint_p2/results/C1_FINAL_DATA.npz",
+      "role": "4096 stratifiedcubature resamples perobservation; nodeCDF diagnosticonly",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/C1_FINAL_DATA.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/C1_FINAL_DATA.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/C1_FINAL_DATA.npz"
+      ],
+      "bytes": 7167119,
+      "arrays": {
+        "y": {
+          "shape": [
+            128,
+            34
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "truth": {
+          "shape": [
+            128,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_samples": {
+          "shape": [
+            128,
+            4096,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            128,
+            4096
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_event_mass": {
+          "shape": [
+            128,
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent_ids": {
+          "shape": [
+            128
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_accepted_reference",
+      "relative_path": "research/joint_p2/results/FRESH_CONTINUOUS_REFERENCE_ACCEPTED.npz",
+      "role": "acceptedCDF/moments/events; all128 eventmoment checks; three17/21upgrades",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/FRESH_CONTINUOUS_REFERENCE_ACCEPTED.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/FRESH_CONTINUOUS_REFERENCE_ACCEPTED.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/FRESH_CONTINUOUS_REFERENCE_ACCEPTED.npz"
+      ],
+      "bytes": 2177928,
+      "arrays": {
+        "grid": {
+          "shape": [
+            4,
+            65
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "CDF": {
+          "shape": [
+            128,
+            4,
+            65
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "conditional_CDF": {
+          "shape": [
+            128,
+            12,
+            4,
+            65
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "mean": {
+          "shape": [
+            128,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "SD": {
+          "shape": [
+            128,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            128,
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "parent": {
+          "shape": [
+            128
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        },
+        "partition_log_evidence": {
+          "shape": [
+            128,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "partition_event_mass": {
+          "shape": [
+            128,
+            4,
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_orders": {
+          "shape": [
+            128
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_reference_particles_solid_C",
+      "relative_path": "research/joint_p2/results/solid_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/solid_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/solid_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/solid_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 122779,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_solid",
+      "relative_path": "research/joint_p2/results/packages/solid_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/solid_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/solid_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/solid_samples.npz"
+      ],
+      "bytes": 108722,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8256,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8256
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8256
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_reference_particles_small_cavity_C",
+      "relative_path": "research/joint_p2/results/small_cavity_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/small_cavity_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/small_cavity_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/small_cavity_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 134940,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_small_cavity",
+      "relative_path": "research/joint_p2/results/packages/small_cavity_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/small_cavity_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/small_cavity_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/small_cavity_samples.npz"
+      ],
+      "bytes": 126728,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8320,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8320
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8320
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_reference_particles_large_cavity_C",
+      "relative_path": "research/joint_p2/results/large_cavity_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/large_cavity_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/large_cavity_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/large_cavity_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 107975,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_large_cavity",
+      "relative_path": "research/joint_p2/results/packages/large_cavity_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/large_cavity_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/large_cavity_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/large_cavity_samples.npz"
+      ],
+      "bytes": 94439,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8288,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8288
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8288
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_reference_particles_annular_cavity_C",
+      "relative_path": "research/joint_p2/results/annular_cavity_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/annular_cavity_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/annular_cavity_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/annular_cavity_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 110188,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_annular_cavity",
+      "relative_path": "research/joint_p2/results/packages/annular_cavity_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/annular_cavity_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/annular_cavity_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/annular_cavity_samples.npz"
+      ],
+      "bytes": 70458,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8192
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_reference_particles_combined_C",
+      "relative_path": "research/joint_p2/results/combined_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/combined_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/combined_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/combined_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 107882,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_combined",
+      "relative_path": "research/joint_p2/results/packages/combined_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/combined_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/combined_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/combined_samples.npz"
+      ],
+      "bytes": 68406,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8192
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_reference_particles_prior_boundary_C",
+      "relative_path": "research/joint_p2/results/prior_boundary_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/prior_boundary_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/prior_boundary_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/prior_boundary_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 105235,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_prior_boundary",
+      "relative_path": "research/joint_p2/results/packages/prior_boundary_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/prior_boundary_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/prior_boundary_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/prior_boundary_samples.npz"
+      ],
+      "bytes": 62942,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8224,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8224
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8224
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_reference_particles_gain_negative_control_C",
+      "relative_path": "research/joint_p2/results/gain_negative_control_REFERENCE_PARTICLES.npz",
+      "role": "8192 order17 stratifiednode resamples; inactivecoefficientconditionalprior; Cproxy",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/gain_negative_control_REFERENCE_PARTICLES.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/gain_negative_control_REFERENCE_PARTICLES.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/gain_negative_control_REFERENCE_PARTICLES.npz"
+      ],
+      "bytes": 102933,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "reference_log_density": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ],
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    },
+    {
+      "asset_id": "p2_package_gain_negative_control",
+      "relative_path": "research/joint_p2/results/packages/gain_negative_control_samples.npz",
+      "role": "weightedproxyconditionals; solid/largeeventweightsfullresidualcorrected; notexactfullMieiid",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/gain_negative_control_samples.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/packages/gain_negative_control_samples.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/packages/gain_negative_control_samples.npz"
+      ],
+      "bytes": 66147,
+      "arrays": {
+        "latent": {
+          "shape": [
+            8192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            8192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            8192
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "unrepresented_sample_event_mass": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_full_residual_solid",
+      "relative_path": "research/joint_p2/results/solid_FULL_CORRECTION.npz",
+      "role": "paidfull/proxyresidualeventreference withcomputableq; notfullposterioriiddraws",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/solid_FULL_CORRECTION.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/solid_FULL_CORRECTION.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/solid_FULL_CORRECTION.npz"
+      ],
+      "bytes": 108370,
+      "arrays": {
+        "latent": {
+          "shape": [
+            192,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            192
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "F_full": {
+          "shape": [
+            192,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_proxy": {
+          "shape": [
+            192,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_q_conditional": {
+          "shape": [
+            192
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "residual_weights": {
+          "shape": [
+            12,
+            16
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "full_is_weights": {
+          "shape": [
+            12,
+            16
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "base_event_integrals": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "likelihood_shift": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass_interval95": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": true
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_full_residual_large_cavity",
+      "relative_path": "research/joint_p2/results/large_cavity_FULL_CORRECTION.npz",
+      "role": "paidfull/proxyresidualeventreference withcomputableq; notfullposterioriiddraws",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/large_cavity_FULL_CORRECTION.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/large_cavity_FULL_CORRECTION.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/large_cavity_FULL_CORRECTION.npz"
+      ],
+      "bytes": 212420,
+      "arrays": {
+        "latent": {
+          "shape": [
+            384,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            384
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            384
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "F_full": {
+          "shape": [
+            384,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_proxy": {
+          "shape": [
+            384,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_q_conditional": {
+          "shape": [
+            384
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "residual_weights": {
+          "shape": [
+            12,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "full_is_weights": {
+          "shape": [
+            12,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "base_event_integrals": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "likelihood_shift": {
+          "shape": [],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass_interval95": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": true
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_corrected_full_distill",
+      "relative_path": "research/joint_p2/results/CORRECTED_PROPOSAL_full_distill.npz",
+      "role": "oneexposedlarge_cavityC:64paidfullMieproposalimportancepoints",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/CORRECTED_PROPOSAL_full_distill.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/CORRECTED_PROPOSAL_full_distill.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/CORRECTED_PROPOSAL_full_distill.npz"
+      ],
+      "bytes": 146278,
+      "arrays": {
+        "latent": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "transformed": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "mdn_branch": {
+          "shape": [
+            64
+          ],
+          "dtype": "bool",
+          "fortran_order": false
+        },
+        "mdn_component": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "rounded_endpoint": {
+          "shape": [
+            64
+          ],
+          "dtype": "bool",
+          "fortran_order": false
+        },
+        "log_q_mdn": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_q": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_p0": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "geometry": {
+          "shape": [
+            64,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_full": {
+          "shape": [
+            64,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_likelihood_full": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_importance_weight": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "bootstrap_event_mass": {
+          "shape": [
+            2000,
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_mean_before_truncation": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_variance_before_truncation": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_conditional_mean": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_conditional_variance": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass_interval95": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": true
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_corrected_diag_distill",
+      "relative_path": "research/joint_p2/results/CORRECTED_PROPOSAL_diag_distill.npz",
+      "role": "oneexposedlarge_cavityC:64paidfullMieproposalimportancepoints",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/CORRECTED_PROPOSAL_diag_distill.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/CORRECTED_PROPOSAL_diag_distill.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/CORRECTED_PROPOSAL_diag_distill.npz"
+      ],
+      "bytes": 140165,
+      "arrays": {
+        "latent": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "transformed": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "mdn_branch": {
+          "shape": [
+            64
+          ],
+          "dtype": "bool",
+          "fortran_order": false
+        },
+        "mdn_component": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "rounded_endpoint": {
+          "shape": [
+            64
+          ],
+          "dtype": "bool",
+          "fortran_order": false
+        },
+        "log_q_mdn": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_q": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_p0": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "geometry": {
+          "shape": [
+            64,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_full": {
+          "shape": [
+            64,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_likelihood_full": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_importance_weight": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "bootstrap_event_mass": {
+          "shape": [
+            2000,
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_mean_before_truncation": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_variance_before_truncation": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_conditional_mean": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_conditional_variance": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass_interval95": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": true
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_corrected_gaussian_distill",
+      "relative_path": "research/joint_p2/results/CORRECTED_PROPOSAL_gaussian_distill.npz",
+      "role": "oneexposedlarge_cavityC:64paidfullMieproposalimportancepoints",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/CORRECTED_PROPOSAL_gaussian_distill.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/CORRECTED_PROPOSAL_gaussian_distill.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/CORRECTED_PROPOSAL_gaussian_distill.npz"
+      ],
+      "bytes": 139568,
+      "arrays": {
+        "latent": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "transformed": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "mdn_branch": {
+          "shape": [
+            64
+          ],
+          "dtype": "bool",
+          "fortran_order": false
+        },
+        "mdn_component": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "rounded_endpoint": {
+          "shape": [
+            64
+          ],
+          "dtype": "bool",
+          "fortran_order": false
+        },
+        "log_q_mdn": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_q": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_p0": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_ids": {
+          "shape": [
+            64
+          ],
+          "dtype": "int64",
+          "fortran_order": false
+        },
+        "geometry": {
+          "shape": [
+            64,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "F_full": {
+          "shape": [
+            64,
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "y": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "sigma": {
+          "shape": [
+            32
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_likelihood_full": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_importance_weight": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "bootstrap_event_mass": {
+          "shape": [
+            2000,
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_mean_before_truncation": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_variance_before_truncation": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_conditional_mean": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "gain_conditional_variance": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass": {
+          "shape": [
+            12
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "event_mass_interval95": {
+          "shape": [
+            12,
+            2
+          ],
+          "dtype": "float64",
+          "fortran_order": true
+        }
+      },
+      "saved_identifiers": {
+        "sigma": [
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199,
+          0.05044714750236199
+        ]
+      }
+    },
+    {
+      "asset_id": "p2_smc_261013211",
+      "relative_path": "research/joint_p2/results/SMC_261013211.npz",
+      "role": "savedSMCrealization; notindependentreference",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/SMC_261013211.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/SMC_261013211.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/SMC_261013211.npz"
+      ],
+      "bytes": 2752,
+      "arrays": {
+        "latent": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_likelihood": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "p2_smc_261013212",
+      "relative_path": "research/joint_p2/results/SMC_261013212.npz",
+      "role": "savedSMCrealization; notindependentreference",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/SMC_261013212.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/SMC_261013212.npz",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-joint-p2/research/joint_p2/results/SMC_261013212.npz"
+      ],
+      "bytes": 3617,
+      "arrays": {
+        "latent": {
+          "shape": [
+            64,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "weights": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_likelihood": {
+          "shape": [
+            64
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {}
+    },
+    {
+      "asset_id": "c1_fresh_saved_parameters_full21",
+      "relative_path": "p2/results/evaluation/full_distill-26101321-parameters.npz",
+      "role": "conditionalparameterexportsfor128historicalfreshyonly",
+      "available": true,
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/evaluation/full_distill-26101321-parameters.npz",
+      "inspected_candidates": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/evaluation/full_distill-26101321-parameters.npz"
+      ],
+      "bytes": 82004,
+      "arrays": {
+        "weights": {
+          "shape": [
+            128,
+            8
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "log_weights": {
+          "shape": [
+            128,
+            8
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "means": {
+          "shape": [
+            128,
+            8,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "cholesky": {
+          "shape": [
+            128,
+            8,
+            4,
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "lower": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "upper": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "fortran_order": false
+        },
+        "target_identity": {
+          "shape": [],
+          "dtype": "<U70",
+          "fortran_order": false
+        }
+      },
+      "saved_identifiers": {
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      }
+    }
+  ],
+  "C1_checkpoints": [
+    {
+      "asset_id": "c1_diag_distill-26101321",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/diag_distill-26101321.pt",
+      "bytes": 84678,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "diagonal",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "diag_distill",
+      "seed": 26101321,
+      "updates": 3000,
+      "selected_checkpoint": 3000,
+      "head_weight_shape": [
+        72,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_diag_distill-26101322",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/diag_distill-26101322.pt",
+      "bytes": 84678,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "diagonal",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "diag_distill",
+      "seed": 26101322,
+      "updates": 3000,
+      "selected_checkpoint": 2750,
+      "head_weight_shape": [
+        72,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_diag_distill-26101323",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/diag_distill-26101323.pt",
+      "bytes": 84678,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "diagonal",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "diag_distill",
+      "seed": 26101323,
+      "updates": 3000,
+      "selected_checkpoint": 2500,
+      "head_weight_shape": [
+        72,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_diag_joint-26101321",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/diag_joint-26101321.pt",
+      "bytes": 84640,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "diagonal",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "diag_joint",
+      "seed": 26101321,
+      "updates": 3000,
+      "selected_checkpoint": 250,
+      "head_weight_shape": [
+        72,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_diag_joint-26101322",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/diag_joint-26101322.pt",
+      "bytes": 84640,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "diagonal",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "diag_joint",
+      "seed": 26101322,
+      "updates": 3000,
+      "selected_checkpoint": 250,
+      "head_weight_shape": [
+        72,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_diag_joint-26101323",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/diag_joint-26101323.pt",
+      "bytes": 84640,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "diagonal",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "diag_joint",
+      "seed": 26101323,
+      "updates": 3000,
+      "selected_checkpoint": 250,
+      "head_weight_shape": [
+        72,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_full_distill-26101321",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/full_distill-26101321.pt",
+      "bytes": 103302,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "full_distill",
+      "seed": 26101321,
+      "updates": 3000,
+      "selected_checkpoint": 2500,
+      "head_weight_shape": [
+        120,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_full_distill-26101322",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/full_distill-26101322.pt",
+      "bytes": 103302,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "full_distill",
+      "seed": 26101322,
+      "updates": 3000,
+      "selected_checkpoint": 2750,
+      "head_weight_shape": [
+        120,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_full_distill-26101323",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/full_distill-26101323.pt",
+      "bytes": 103302,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "full_distill",
+      "seed": 26101323,
+      "updates": 3000,
+      "selected_checkpoint": 2250,
+      "head_weight_shape": [
+        120,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_full_joint-26101321",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/full_joint-26101321.pt",
+      "bytes": 103264,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "full_joint",
+      "seed": 26101321,
+      "updates": 3000,
+      "selected_checkpoint": 250,
+      "head_weight_shape": [
+        120,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_full_joint-26101322",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/full_joint-26101322.pt",
+      "bytes": 103264,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "full_joint",
+      "seed": 26101322,
+      "updates": 3000,
+      "selected_checkpoint": 250,
+      "head_weight_shape": [
+        120,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_full_joint-26101323",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/full_joint-26101323.pt",
+      "bytes": 103264,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 8,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "full_joint",
+      "seed": 26101323,
+      "updates": 3000,
+      "selected_checkpoint": 250,
+      "head_weight_shape": [
+        120,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_gaussian_distill-26101321",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/gaussian_distill-26101321.pt",
+      "bytes": 62738,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 1,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "gaussian_distill",
+      "seed": 26101321,
+      "updates": 3000,
+      "selected_checkpoint": 3000,
+      "head_weight_shape": [
+        15,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_gaussian_distill-26101322",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/gaussian_distill-26101322.pt",
+      "bytes": 62738,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 1,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "gaussian_distill",
+      "seed": 26101322,
+      "updates": 3000,
+      "selected_checkpoint": 3000,
+      "head_weight_shape": [
+        15,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    },
+    {
+      "asset_id": "c1_gaussian_distill-26101323",
+      "absolute_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/C1/c1-joint-p2/p2/results/models/gaussian_distill-26101323.pt",
+      "bytes": 62738,
+      "configuration": {
+        "condition_dim": 34,
+        "lower": [
+          -3.0,
+          -3.0,
+          2.2,
+          0.04
+        ],
+        "upper": [
+          1.0,
+          1.0,
+          2.8,
+          0.16
+        ],
+        "covariance": "full",
+        "components": 1,
+        "hidden": 96,
+        "target_identity": "joint-p2-radial-v1:C:tensor-Chebyshev-five-per-physical-axis-radial-v1"
+      },
+      "method": "gaussian_distill",
+      "seed": 26101323,
+      "updates": 3000,
+      "selected_checkpoint": 2750,
+      "head_weight_shape": [
+        15,
+        96
+      ],
+      "condition_mean_shape": [
+        34
+      ],
+      "condition_scale_shape": [
+        34
+      ],
+      "normalization_fitted": true,
+      "latent_lower": [
+        -3.0,
+        -3.0,
+        2.2,
+        0.04
+      ],
+      "latent_upper": [
+        1.0,
+        1.0,
+        2.8,
+        0.16
+      ],
+      "normalization_source": "trainingconditionsonly; checkpointbuffers",
+      "read_only_checkpoint_load": true
+    }
+  ],
+  "recommended_exposed_observations": [
+    {
+      "observation_id": "solid",
+      "source_json": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/DEVELOPMENT_CASES.json",
+      "json_pointer": "/cases/0",
+      "condition": "C",
+      "frequencies": [
+        1.6
+      ],
+      "observation_read": "np.asarray(cases[index]['y'])[:32]",
+      "sigma_read": "np.asarray(cases[index]['sigma'])[:32]",
+      "y_C": [
+        0.9591385757289883,
+        0.9045109843560176,
+        0.8827749744334106,
+        0.7596855107377408,
+        0.6684889717269538,
+        0.44585985839127956,
+        0.4503733495421153,
+        0.27948659487820676,
+        0.3103911692213124,
+        0.05207741393679541,
+        0.05429961678044071,
+        0.020597268441579067,
+        0.11038969659080793,
+        0.013364790118735918,
+        0.08576796171233737,
+        0.11443438204308792,
+        0.5159477796407808,
+        0.6317298667866439,
+        0.5552043426748592,
+        0.4843264924871995,
+        0.4100407165369448,
+        0.3317201518356222,
+        0.3302132697354849,
+        0.27273864379992446,
+        0.2675925070233048,
+        0.14838060500994663,
+        0.23130373415585312,
+        0.08194752666466881,
+        0.15977540502723636,
+        -0.019848552209696852,
+        0.11222490152229561,
+        -0.027147148336093684
+      ],
+      "sigma_C": [
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199
+      ],
+      "sigma_common": 0.05044714750236199,
+      "source_seed": 261013201,
+      "exposure": "preregistered development stress case",
+      "truth_latent_offline_only": [
+        0.0,
+        0.0,
+        2.5,
+        0.1
+      ],
+      "truth_gain_offline_only": 1.0,
+      "proxy_reference_order": 17,
+      "proxy_event_mass": [
+        0.40776922028894885,
+        0.02994525629976809,
+        0.00020860786852400248,
+        0.02239660963647391,
+        0.0015520681226933758,
+        1.0090215730790934e-05,
+        0.11630420011209225,
+        0.004945134376890271,
+        1.8049965976420014e-05,
+        0.4108019710774244,
+        0.006044485884661569,
+        4.306150817843895e-06
+      ],
+      "significant_event_ids": [
+        0,
+        6,
+        9
+      ],
+      "reference_refinement": {
+        "event_mass": 8.152971882724458e-06,
+        "mean_fraction": 1.2382215619268408e-05,
+        "SD_relative": 8.636733222919307e-05,
+        "CDF": 9.140007134977868e-05,
+        "quantile_fraction": 8.209267917062141e-05
+      },
+      "adaptive_reference": {
+        "converged": true,
+        "cells": 310,
+        "estimated_relative_error": 1.97652660850707e-06,
+        "event_mass": [
+          0.40777116919902057,
+          0.029940995177358768,
+          0.00020860893437916233,
+          0.022396714611041885,
+          0.0015518418435087483,
+          1.0090268995851936e-05,
+          0.11630476645380161,
+          0.004944335434688624,
+          1.8050053047781e-05,
+          0.4108039985972693,
+          0.006045123255040917,
+          4.306171846785042e-06
+        ],
+        "tensor17_difference": {
+          "event": 4.261122409320722e-06,
+          "mean_fraction": 2.1321952382075845e-06,
+          "SD_relative": 8.445671869378352e-06
+        },
+        "coordinate": "physical radii, with exact induced prior density and atoms",
+        "certified": false
+      },
+      "particle_asset_id": "p2_reference_particles_solid_C",
+      "mode_status": "materialevents, notprovenseparateddensitymodes"
+    },
+    {
+      "observation_id": "large_cavity",
+      "source_json": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/DEVELOPMENT_CASES.json",
+      "json_pointer": "/cases/2",
+      "condition": "C",
+      "frequencies": [
+        1.6
+      ],
+      "observation_read": "np.asarray(cases[index]['y'])[:32]",
+      "sigma_read": "np.asarray(cases[index]['sigma'])[:32]",
+      "y_C": [
+        1.0029634394769353,
+        0.9208961895854293,
+        0.7768923753848742,
+        0.6844775687239097,
+        0.6893099347516408,
+        0.44546494367804124,
+        0.46746119572776734,
+        0.17986789587884353,
+        0.3137965576379001,
+        0.10761899018477003,
+        0.11296432104668341,
+        0.06449905761082547,
+        -0.07647168665180683,
+        0.03721041351155663,
+        -0.027560681022679515,
+        0.1567240123895739,
+        0.5783863018442406,
+        0.5204433678680868,
+        0.47854202205352464,
+        0.5154542349330409,
+        0.45127887270631517,
+        0.34243746393539154,
+        0.2945349878813046,
+        0.3409063545034624,
+        0.2728600052287663,
+        0.1352577376762792,
+        0.16399089746805257,
+        0.029714563486749848,
+        0.16676969103721306,
+        0.013587207569724365,
+        0.030700880802621885,
+        -0.006822699705312629
+      ],
+      "sigma_C": [
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199
+      ],
+      "sigma_common": 0.05044714750236199,
+      "source_seed": 261013201,
+      "exposure": "preregistered development stress case",
+      "truth_latent_offline_only": [
+        -2.0921556122448983,
+        0.0,
+        2.5,
+        0.1
+      ],
+      "truth_gain_offline_only": 1.0,
+      "proxy_reference_order": 17,
+      "proxy_event_mass": [
+        0.16259103684878068,
+        0.04110930516408443,
+        0.0005648860201993219,
+        0.009316174437390707,
+        0.002209054755918439,
+        2.9147715040951044e-05,
+        0.07186653650079222,
+        0.00955920444108964,
+        8.657190616386589e-05,
+        0.6773772921618187,
+        0.02521736402415927,
+        7.342602456021413e-05
+      ],
+      "significant_event_ids": [
+        0,
+        6,
+        9
+      ],
+      "reference_refinement": {
+        "event_mass": 1.3500758197282359e-05,
+        "mean_fraction": 3.670208988948431e-05,
+        "SD_relative": 0.00013766160605809563,
+        "CDF": 0.00011714124471834397,
+        "quantile_fraction": 4.635428779951878e-05
+      },
+      "adaptive_reference": {
+        "converged": true,
+        "cells": 282,
+        "estimated_relative_error": 1.9790531489494694e-06,
+        "event_mass": [
+          0.16259223352371896,
+          0.04110662044907342,
+          0.0005648900298432737,
+          0.00931624121996664,
+          0.002208903631835531,
+          2.9147741613256808e-05,
+          0.07186705366235109,
+          0.00955826815367753,
+          8.657252907087928e-05,
+          0.6773820920095777,
+          0.025214550729138502,
+          7.34263201333752e-05
+        ],
+        "tensor17_difference": {
+          "event": 4.799847758918396e-06,
+          "mean_fraction": 1.6119121611231117e-06,
+          "SD_relative": 8.482118123700037e-06
+        },
+        "coordinate": "physical radii, with exact induced prior density and atoms",
+        "certified": false
+      },
+      "particle_asset_id": "p2_reference_particles_large_cavity_C",
+      "mode_status": "materialevents, notprovenseparateddensitymodes"
+    },
+    {
+      "observation_id": "annular_cavity",
+      "source_json": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/DEVELOPMENT_CASES.json",
+      "json_pointer": "/cases/3",
+      "condition": "C",
+      "frequencies": [
+        1.6
+      ],
+      "observation_read": "np.asarray(cases[index]['y'])[:32]",
+      "sigma_read": "np.asarray(cases[index]['sigma'])[:32]",
+      "y_C": [
+        0.7475873595980955,
+        0.721241485706119,
+        0.741974813341548,
+        0.580240472476342,
+        0.4660443926841286,
+        0.4834492890187783,
+        0.38332373593815633,
+        0.2584145872805882,
+        0.25431663681074634,
+        0.06294187393986729,
+        0.041427539418524076,
+        0.06915891518411743,
+        0.09169483874807882,
+        -0.0062757528612715635,
+        0.0009047347825652339,
+        -0.10265736153960156,
+        0.2848508431039713,
+        0.38936550363913636,
+        0.2687134737685407,
+        0.2590577283267919,
+        0.35105403760884185,
+        0.1313966474113198,
+        0.19662175419401906,
+        0.11072628710122775,
+        0.20666978820178167,
+        0.1014708935273696,
+        0.10524227640474906,
+        -0.002196509181964649,
+        0.09957402064067197,
+        -0.0531986082060696,
+        0.10555494795890091,
+        -0.05552302793174856
+      ],
+      "sigma_C": [
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199
+      ],
+      "sigma_common": 0.05044714750236199,
+      "source_seed": 261013201,
+      "exposure": "preregistered development stress case",
+      "truth_latent_offline_only": [
+        0.0,
+        -1.5528994082840237,
+        2.5,
+        0.1
+      ],
+      "truth_gain_offline_only": 1.0,
+      "proxy_reference_order": 17,
+      "proxy_event_mass": [
+        0.012267502638951105,
+        0.08539600237236371,
+        0.5199071967581148,
+        0.0006941297898252015,
+        0.004594478261620979,
+        0.026943442500909145,
+        0.004999211564265801,
+        0.02048967035896922,
+        0.08653322362404134,
+        0.055365364603423284,
+        0.06538006331731927,
+        0.11742971421019917
+      ],
+      "significant_event_ids": [
+        1,
+        2,
+        8,
+        9,
+        10,
+        11
+      ],
+      "reference_refinement": {
+        "event_mass": 9.965404163814195e-07,
+        "mean_fraction": 8.920025628197892e-07,
+        "SD_relative": 3.0727515254255445e-06,
+        "CDF": 1.1565728454954183e-06,
+        "quantile_fraction": 1.01989693949515e-06
+      },
+      "adaptive_reference": {
+        "converged": true,
+        "cells": 184,
+        "estimated_relative_error": 1.963529103393093e-06,
+        "event_mass": [
+          0.012267519228745534,
+          0.08539582713794633,
+          0.519907899169353,
+          0.0006941306188529395,
+          0.0045944680666361246,
+          0.026943480822384503,
+          0.004999218318515284,
+          0.02048958915447829,
+          0.08653334062428525,
+          0.05536543939583533,
+          0.06537921488046,
+          0.1174298725825075
+        ],
+        "tensor17_difference": {
+          "event": 8.484368592687197e-07,
+          "mean_fraction": 7.630922223760941e-07,
+          "SD_relative": 2.6322354613776634e-06
+        },
+        "coordinate": "physical radii, with exact induced prior density and atoms",
+        "certified": false
+      },
+      "particle_asset_id": "p2_reference_particles_annular_cavity_C",
+      "mode_status": "materialevents, notprovenseparateddensitymodes"
+    },
+    {
+      "observation_id": "combined",
+      "source_json": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/DEVELOPMENT_CASES.json",
+      "json_pointer": "/cases/4",
+      "condition": "C",
+      "frequencies": [
+        1.6
+      ],
+      "observation_read": "np.asarray(cases[index]['y'])[:32]",
+      "sigma_read": "np.asarray(cases[index]['sigma'])[:32]",
+      "y_C": [
+        0.8479159998716984,
+        0.7454331207435011,
+        0.692691992823503,
+        0.6351274074180686,
+        0.5672819552249118,
+        0.46216974894273644,
+        0.4429941654244951,
+        0.27253449776808325,
+        0.20029292757032421,
+        0.12942509148466305,
+        0.18514552292147224,
+        -0.006443723622590155,
+        0.08786663526664286,
+        -0.010600198209597365,
+        -0.06962525582411824,
+        0.01165792763868849,
+        0.3731168141814575,
+        0.3039995690774642,
+        0.3687052231936956,
+        0.3319016411178538,
+        0.2754234267410666,
+        0.172229318787828,
+        0.2446434170319346,
+        0.057619894529911994,
+        0.22422836397211907,
+        0.07461023952416408,
+        0.12558601118180707,
+        0.04519756092795773,
+        0.10897644606622697,
+        0.032534602475611164,
+        0.10264226382096858,
+        -0.0902256849163603
+      ],
+      "sigma_C": [
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199,
+        0.05044714750236199
+      ],
+      "sigma_common": 0.05044714750236199,
+      "source_seed": 261013201,
+      "exposure": "preregistered development stress case",
+      "truth_latent_offline_only": [
+        -1.5528994082840237,
+        -1.2656250000000002,
+        2.5,
+        0.1
+      ],
+      "truth_gain_offline_only": 1.0,
+      "proxy_reference_order": 17,
+      "proxy_event_mass": [
+        0.007233249260293627,
+        0.08534574960732766,
+        0.501669385477853,
+        0.00041656994191495206,
+        0.004623960642276894,
+        0.026095694804697527,
+        0.0035534922339479024,
+        0.021901172053581813,
+        0.08633105627627745,
+        0.05842588905991159,
+        0.07998222462912111,
+        0.12442155601279581
+      ],
+      "significant_event_ids": [
+        1,
+        2,
+        8,
+        9,
+        10,
+        11
+      ],
+      "reference_refinement": {
+        "event_mass": 1.05586504628441e-06,
+        "mean_fraction": 1.0804459559848965e-06,
+        "SD_relative": 3.92362594871746e-06,
+        "CDF": 1.2365061874131111e-06,
+        "quantile_fraction": 1.3065090261517773e-06
+      },
+      "adaptive_reference": {
+        "converged": true,
+        "cells": 203,
+        "estimated_relative_error": 1.9548433792176784e-06,
+        "event_mass": [
+          0.0072332587014846995,
+          0.08534567673848763,
+          0.5016700373156876,
+          0.0004165703929691272,
+          0.0046239559794034185,
+          0.026095730373684876,
+          0.003553496871656643,
+          0.021901118091560715,
+          0.08633116911106022,
+          0.05842596515247484,
+          0.0799813034907702,
+          0.12442171778076005
+        ],
+        "tensor17_difference": {
+          "event": 9.211383509011295e-07,
+          "mean_fraction": 8.108327497408409e-07,
+          "SD_relative": 2.6260289647640012e-06
+        },
+        "coordinate": "physical radii, with exact induced prior density and atoms",
+        "certified": false
+      },
+      "particle_asset_id": "p2_reference_particles_combined_C",
+      "mode_status": "materialevents, notprovenseparateddensitymodes"
+    }
+  ],
+  "mode_caution": "Bins are measurableevents, notmodecertificates. Solidhasageometryatomwithcontinuousepsilon. Inactivecoefficientsgiveflatfibers. Nosaveddensityvalley/pathcertificatefound.",
+  "audit_read_failure": "InitialNPZheaderinspectionusedunavailableNumPyprivate_read_array_header; replacedwithpublicversionedheaderreaders; nooldfileschangedandnophysical/proxycalls",
+  "initial_audit_recommendation": [
+    "solid",
+    "large_cavity",
+    "annular_cavity",
+    "prior_boundary"
+  ],
+  "alternate_exposed_observation": {
+    "observation_id": "prior_boundary",
+    "source_json": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/joint_p2/results/DEVELOPMENT_CASES.json",
+    "json_pointer": "/cases/5",
+    "condition": "C",
+    "frequencies": [
+      1.6
+    ],
+    "observation_read": "np.asarray(cases[index]['y'])[:32]",
+    "sigma_read": "np.asarray(cases[index]['sigma'])[:32]",
+    "y_C": [
+      0.5547041440906455,
+      0.5843849530643513,
+      0.4740429871207298,
+      0.36031872289184697,
+      0.3934853868249863,
+      0.1804340588605663,
+      0.19985179891296218,
+      0.12448859093216494,
+      0.2134840201943889,
+      0.07438112546538535,
+      0.06393323479167073,
+      -0.03442272059479821,
+      0.05316160253815876,
+      -0.021955207678369684,
+      0.0240750504018302,
+      -0.017264556869683395,
+      0.22547002437604657,
+      0.25235408338057574,
+      0.20477745454730975,
+      0.2275705293652977,
+      0.13801058029141056,
+      0.22290970742093652,
+      0.03445593841851588,
+      0.0959859334162896,
+      0.18626431589391756,
+      0.011489626733144808,
+      0.18342488421820446,
+      -0.03467109522532317,
+      -0.07353288304421744,
+      -0.06869462125964891,
+      0.0534724554173564,
+      -0.0824511356849882
+    ],
+    "sigma_C": [
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199,
+      0.05044714750236199
+    ],
+    "sigma_common": 0.05044714750236199,
+    "source_seed": 261013201,
+    "exposure": "preregistered development stress case",
+    "truth_latent_offline_only": [
+      -2.925139957313731,
+      -2.5474046931495558,
+      2.21,
+      0.159
+    ],
+    "truth_gain_offline_only": 1.0,
+    "proxy_reference_order": 17,
+    "proxy_event_mass": [
+      0.00016116313013871998,
+      0.024101894073247126,
+      0.5190228909287492,
+      9.281551675660539e-06,
+      0.001308468266398741,
+      0.02754672927294128,
+      8.091176893939507e-05,
+      0.0064159076138908915,
+      0.1097060224944774,
+      0.0016746616154286855,
+      0.029023281308394776,
+      0.28094878797571476
+    ],
+    "significant_event_ids": [
+      2,
+      8,
+      11
+    ],
+    "reference_refinement": {
+      "event_mass": 6.265751802125852e-08,
+      "mean_fraction": 2.6581632620170374e-07,
+      "SD_relative": 7.886789062772927e-07,
+      "CDF": 6.134937627355619e-08,
+      "quantile_fraction": 1.0740960886998917e-07
+    },
+    "adaptive_reference": {
+      "converged": true,
+      "cells": 152,
+      "estimated_relative_error": 1.911074501983808e-06,
+      "event_mass": [
+        0.000161163138735882,
+        0.024101888355334514,
+        0.5190229273637293,
+        9.281580632144405e-06,
+        0.0013084679243486471,
+        0.027546732103272697,
+        8.091180492058209e-05,
+        0.006415904633172026,
+        0.10970603014255689,
+        0.0016746617527887404,
+        0.029023223561108785,
+        0.2809488076393998
+      ],
+      "tensor17_difference": {
+        "event": 5.774728599125534e-08,
+        "mean_fraction": 2.3087460525102087e-07,
+        "SD_relative": 7.736134149588399e-07
+      },
+      "coordinate": "physical radii, with exact induced prior density and atoms",
+      "certified": false
+    },
+    "particle_asset_id": "p2_reference_particles_prior_boundary_C",
+    "mode_status": "materialevents, notprovenseparateddensitymodes"
+  },
+  "LXZ_frozen_protocol": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-research-lxz/research/research_lxz_20261016/configs/PROTOCOL.json",
+  "selection_note": "Parent has frozen solid/large_cavity/annular_cavity/combined. This audit adopts those four and preserves prior_boundary as an optional alternate, without changing or rerunning campaign.",
+  "coordinate_registry": {
+    "material_x": "coefficient-uniform bounded x=(zc,zs,epsRe,epsIm)",
+    "prior_u": "u_j=Phi^{-1}((x_j-lower_j)/width_j); independent standard Gaussian prior only",
+    "C1_t": "t_j=log(x_j-lower_j)-log(upper_j-x_j); learned Gaussian mixture, NOT the standard Gaussian prior"
+  }
+}

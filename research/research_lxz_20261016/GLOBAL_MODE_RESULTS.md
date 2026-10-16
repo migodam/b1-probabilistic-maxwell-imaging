@@ -1,0 +1,5 @@
+# 全局材料区域与分离mode
+
+E1在四个历史暴露观测上完成原radial C proxy target。固定twelve events的质量与CDF可以可靠对照，C1经合法MH后明显改善有限预算event误差。但这些events可能处于连续ridge，inactive系数还产生材料原像flat方向。没有保存路径barrier/独立mode证据，不能说global proposals已经跨越已证分离mode。
+
+E3：NOT_RUN，新增Mie端点0/64。原P0没有找到观察相容的development anchor，更没有两个重要结构区域。本轮不改prior、不放宽noise、不以TRAIN已知材料冒称未知物体多模态。停止扩大Flow/Diffusion，不用额外物理寻找正结果。

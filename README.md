@@ -1,3 +1,9 @@
+## 最新研究：LXZ 局部–全局多解验证
+
+[中文报告](research/research_lxz_20261016/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_lxz_20261016/)
+
+96个二维states封账，未发现显著结构新world；已有C1提案经正确MH为本次proxy基线最佳。N3合法anchor与分离mode仍未证实。
+
 > 2026-10-15 原先验竞争解释：[本轮入口](research/prior_constrained_20261015/START_HERE.md) · [中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/prior_constrained_20261015/)。E0/E1已执行，原先验内0组合格竞争见证；45states/680复RHS封账，E2未启动，N3保留。
 
 > 2026-10-15 Research G：[下一解搜索中文报告](research/research_g_20261015/START_HERE.md) · [材料图与网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_g_20261015/)。三个观测新增一个合法边界结构；Best-of-K未改善，历史引导无稳定优势。291states/6936复RHS，暂不扩大。

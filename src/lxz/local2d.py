@@ -26,9 +26,16 @@ class Book:
         a=[json.loads(s) for s in self.path.read_text().splitlines()]
         return dict(states=sum(r.get('amount',0) for r in a if r.get('event')=='STATE'),RHS=sum(r.get('amount',0) for r in a if r.get('event')=='RHS'))
     def reserve(self,event,n,**extra):
+        if (OUT/'RUN_CLOSED.json').exists():raise RuntimeError('LXZ stage closed; no automatic new physical authorization')
         with (OUT/'budget.lock').open('a') as f:
             fcntl.flock(f,fcntl.LOCK_EX);t=self.totals();k='states' if event=='STATE' else 'RHS'
-            if time.perf_counter()-self.start>3600 or t[k]+n>{'states':96,'RHS':3072}[k]:raise RuntimeError('LXZ user hard physics cap')
+            entries=[json.loads(s) for s in self.path.read_text().splitlines()]
+            past_wall=sum(r.get('controlled_wall_seconds',0) for r in entries if r.get('event')=='JOB_END')
+            failed=[r for r in entries if r.get('event')=='E2_JOB_FAILURE']
+            if failed:
+                first=min(r['utc'] for r in entries if r.get('stage')=='E2')
+                past_wall+=max(r['utc'] for r in failed)-first
+            if time.perf_counter()-self.start+past_wall>3600 or t[k]+n>{'states':96,'RHS':3072}[k]:raise RuntimeError('LXZ user hard physics cap')
             self.append(dict(event=event,amount=n,cumulative=t[k]+n,context=self.context,**extra))
     def reserve_state(self,material,*,resolution,purpose):self.reserve('STATE',1,resolution=resolution,purpose=purpose)
     def reserve_rhs(self,count,role):self.reserve('RHS',int(count),role=role)
@@ -57,11 +64,27 @@ class MaterialPrior:
         for i in range(8):
             e=np.eye(8)[i]*h;D.append((self.decode(u+e)[0]-self.decode(u-e)[0])/(2*h))
         return np.column_stack(D)
+    def analytic_derivative(self,u):
+        # Exact derivative within a fixed maximum cell; includes original
+        # per-image max normalization and the real-coordinate prior map.
+        _,r=self.decode(u);d=r['geometry'];p=prior.geometry_points()-np.array(d['center'])
+        c,s=np.cos(d['rotation']),np.sin(d['rotation'])
+        xx=(c*p[:,0]+s*p[:,1])/d['scale'];yy=(-s*p[:,0]+c*p[:,1])/(d['scale']*d['axis_ratio'])
+        values=[];Dv=np.zeros((len(p),8))
+        for i in range(2):
+            gx,gy=d['gaussian_centers'][i];w=d['gaussian_weights'][i];a=d['gaussian_widths'][i]
+            dx,dy=xx-gx,yy-gy;dist=dx*dx+dy*dy
+            g=w*np.exp(-dist/(2*a*a));values.append(g)
+            Dv[:,2*i]=g*dx/(a*a);Dv[:,2*i+1]=g*dy/(a*a)
+            Dv[:,4+i]=g*dist/a**3;Dv[:,6+i]=g/w
+        values=np.sum(values,axis=0);idx=np.argmax(values);peak=values[idx]
+        Dv*=((self.hi-self.lo)*np.exp(-.5*u*u)/np.sqrt(2*np.pi))[None,:]
+        return 1.2*prior.V*(Dv/peak-values[:,None]*Dv[idx][None,:]/peak**2)
 
 def run():
-    dest=OUT/'results/E2';dest.mkdir(parents=True,exist_ok=True)
+    dest=OUT/'results/E2_completion';dest.mkdir(parents=True,exist_ok=True)
     if (dest/'COMPLETE.json').exists():raise RuntimeError('E2 already complete; no silent repeat')
-    protocol=json.loads((OUT/'configs/E2_LOCAL_CALIBRATION.json').read_text())
+    protocol=json.loads((OUT/'configs/E2_COMPLETION_ERRATUM.json').read_text())
     sys.path.insert(0,str(prior.A30/'src'));from a30.physics import FrozenMaxwellAdapter
     book=Book();allrows=[];allgeom=[];start=time.perf_counter()
     assets=OUT/'delegated/e0_2d'
@@ -100,16 +123,19 @@ def run():
                 prior_status=support['prior_status'],compatible=bool(okay),backward_residual=ss.residual,
                 wall_seconds=elapsed,posterior_mass=None,candidate_only=method=='continuation',parent=parent,**sep)
             arrays[f'chi_{counter}']=x;arrays[f'prediction_{counter}']=ss.data;arrays[f'u_{counter}']=u
-            rows.append(record);counter+=1;return ss,record
+            # Persist every paid endpoint before any later proposal can fail.
+            np.savez_compressed(dest/f'{anchor_id}_trial_{counter}.npz',chi=x,prediction=ss.data,u=u,current=ss.current,field=ss.field)
+            rows.append(record);dump(dest/f'{anchor_id}_partial_records.json',rows)
+            counter+=1;return ss,record
         # Two paid endpoints check actual derivative versus secant. Their values
         # cannot tune the frozen step sizes or select a different target.
-        audit=[];h=1e-3
+        audit=[];h=min(1e-3,.02/np.linalg.norm(v))
         for sign in [-1,1]:audit.append(full(u0+sign*h*v,'derivative_audit','fd',sign)[0])
         fd=(audit[1].data-audit[0].data)/(2*h)
         jv=(C@v).reshape(32,8);derror=float(np.linalg.norm(fd-jv)/max(np.linalg.norm(jv),1e-300))
         for method in ['local','geometry','prior']:
             rng=np.random.default_rng(26101621);u=u0.copy();state=base;en=e0;accepted=[]
-            for i in range(10):
+            for i in range(protocol['completion_proposals_per_arm']):
                 z=rng.normal(size=8)
                 if method=='prior':up=z
                 elif method=='geometry':up=R@u+B@z
@@ -122,7 +148,11 @@ def run():
             # explicitly too short for a posterior mass/mixing claim.
         Q=np.eye(8)-np.outer(v,v)/(v@v)
         for i,displacement in enumerate([.003,.006,.012,.024,.048]):
-            up=u0+displacement*v;raw,rec=full(up,'continuation','predictor',i)
+            rawstep=displacement*v;factor=min(1,.5/max(np.linalg.norm(rawstep),1e-300))
+            up=u0+factor*rawstep;raw,rec=full(up,'continuation','predictor',i)
+            rec['requested_linear_material_displacement']=displacement
+            rec['prior_coordinate_trust_factor']=factor
+            rec['actual_prior_coordinate_step_norm']=float(np.linalg.norm(up-u0))
             # One normal repair in original parameter coordinates. Keep the
             # selected exploration coordinate; never optimize arbitrary pixels.
             rr=pack(raw.data-y)*np.sqrt(2)/sigma
@@ -137,6 +167,7 @@ def run():
         info=dict(anchor=anchor_id,scope='PUBLIC_TRAIN_KNOWN_MATERIAL_LOCAL_CALIBRATION_ONLY',target='conditional originalP0 smooth chart, eight original uniform parameters; others conditioned fixed',
             cold_setup_seconds=cold,material_chart_rank=rank,latent_dimension=8,material_gauges=8-rank,material_singular_values=s,
             response_per_material_singular_values=sv,prior_response_eigenvalues=vals,derivative_full_secant_relative_error=derror,
+            weak_direction_parameter_norm=float(np.linalg.norm(v)),derivative_step=h,
             base_ell=e0,base_residual=np.sqrt(2*e0),noise_sigma=sigma,source_parameters=meta['generator'],
             topology_not_generator_label=True,noise_changed=False,posterior_mass_estimated=False)
         allrows.extend(rows);allgeom.append(info)

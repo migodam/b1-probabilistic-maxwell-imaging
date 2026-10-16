@@ -1,0 +1,5 @@
+# 下一步
+
+优先解决原P0内高质量可复现inverse anchor；对hard raster family需要分层/离散prior导航，而不能假装光滑流形。另一个可授权方向是独立构造具有真mode/路径reference的Maxwell ambiguity benchmark或event-aware主动测量。必须物理说明support/noise，不能因本轮负结果临时扩宽prior。
+
+不建议现在训练Flow/Diffusion、扩current-ROM rank或启动非同心3D。C1现有density经MH已足够解释本轮有限预算收益，先证明更复杂模块有不可替代的材料价值。任何新campaign需要新的明确授权，本轮96/96封口。

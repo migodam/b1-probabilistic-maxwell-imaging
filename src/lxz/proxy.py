@@ -184,6 +184,18 @@ def tempered(target,initial,initial_ll,seed,round_id):
         accepted=accepted,global_trials=0,global_accepted=0,beta=beta,trace=trace)
     return meta,store,snapshots
 
+class LocalGlobalSampler:
+    """The inference boundary: fixed proposals, fixed material, metered target.
+
+    Discovery correctors are intentionally absent. The output retains rejected
+    states; archive images or event labels never alter the transition density.
+    """
+    def __init__(self,method,proposal,seed,round_id=1):
+        self.method,self.proposal,self.seed,self.round_id=method,proposal,seed,round_id
+    def run(self,target,initial,initial_ll):
+        if self.method=='tempered':return tempered(target,initial,initial_ll,self.seed,self.round_id)
+        return local_global(self.method,target,initial,initial_ll,self.proposal,self.seed,self.round_id)
+
 def controls():
     """Deterministic finite-state probability mechanism checks, no physics."""
     p=np.array([.1,.15,.2,.25,.3]);n=len(p)
@@ -233,8 +245,7 @@ def run(round_id=1,repair=False):
             shift=seed%len(methods);methods=methods[shift:]+methods[:shift]
             for method in methods:
                 target=MaxwellTarget(response,y,sigma);st=time.perf_counter();initial_ll=target(initial)
-                if method=='tempered':meta,arrays,snaps=tempered(target,initial,initial_ll,seed,round_id)
-                else:meta,arrays,snaps=local_global(method,target,initial,initial_ll,q,seed,round_id)
+                meta,arrays,snaps=LocalGlobalSampler(method,q,seed,round_id).run(target,initial,initial_ll)
                 meta['inclusive_seconds']=time.perf_counter()-st
                 total+=target.calls;np.savez_compressed(dest/f'{name}_{method}_{seed}.npz',**arrays)
                 for calls,count in snaps:
