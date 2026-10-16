@@ -1,0 +1,71 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research F · Maxwell材料几何与物理反演</title><style>body{font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#20323e;background:#f6f8fa;margin:0}main{max-width:1100px;margin:auto;padding:42px 24px}h1,h2{line-height:1.4}h2{margin-top:2em}a{color:#126c93}p{overflow-wrap:anywhere}nav{display:flex;gap:18px;flex-wrap:wrap}article,section{background:#fff;border:1px solid #dce4e8;padding:24px;border-radius:12px;margin:22px 0}img{max-width:100%;height:auto}.scroll{overflow-x:auto}table{border-collapse:collapse;font-size:15px;width:100%}td,th{border:1px solid #d3dce1;padding:8px;text-align:left}th{background:#eaf2f5}.metrics{display:flex;gap:24px;flex-wrap:wrap}.metrics b{font-size:28px;display:block}code{background:#edf2f5;padding:2px 4px}.math{overflow-x:auto;padding:8px}figcaption{color:#516672;font-size:15px}</style><script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><main><nav><a href="../../">B1</a><a href="index.html">本轮入口</a><a href="report.html">中文报告</a><a href="gallery.html">材料图集</a><a href="START_HERE.md">GPT入口</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-f-intrinsic-20261017">完整数组</a></nav><article><h1>Research F：巨大参数曲率不等于巨大物理曲率，但有限材料探索仍未建立</h1>
+<p>2026-10-17。独立CPU研究阶段，原P0、原Maxwell求解器与原noise不变；已执行、已封账。</p>
+<p><strong>裁决：F0几何审计通过限定范围检查；独立反演已获得两份合法且数据相容的材料，但未达到事前冻结的驻点资格，F2四臂实验未启动。learned Explorer当前NO-GO；材料原生坐标和边界处理研究CONDITIONAL GO。</strong> 不把本轮停止解释为不存在局部不确定性。</p>
+<h2>1. 这轮实际回答了什么</h2>
+<p>上轮在合法TRAIN材料附近看到：原Gaussian参数走一步，实际散射变化会比初始切向预测大很多。可能有三种原因：参数坐标走弯了；合法材料集合本身弯了；Maxwell高阶反馈很强。这三者需要不同算法，不能都交给一个“高阶物理网络”去学。</p>
+<p>本轮首先用保存的Jacobian和decoder区分前两者，再使用新的独立物理反演补上anchor实验。没有重跑上轮45个state，没有训练NN，也没有为了凑多解改变prior/noise/gain。</p>
+<div class="scroll"><table><tr><th>实际执行</th><th>新states</th><th>新complex RHS</th><th>主要结果</th></tr><tr><td>F0缓存几何、解析/三步差分/重参数化</td><td>0</td><td>0</td><td>大坐标项与非零真实先验曲率得以区分</td></tr><tr><td>F1两个development条件的独立物理反演</td><td>24</td><td>960</td><td>两例合法、噪声相容；冻结驻点标准未过</td></tr><tr><td>F2同材料距离四臂传输</td><td>0</td><td>0</td><td>NOT_RUN，遵守前置依赖</td></tr></table></div>
+<p>F1受控执行wall为<strong>5.5342895秒</strong>，24份材料、电流、内部场、prediction、LU和24份Jacobian均落盘。预算上限64states/2048RHS/1200s，未用额度保持未用；没有借用任何旧账。</p>
+<h2>2. 原材料集合、数据与度量</h2>
+<p>复用A30原24×24 scalar-TM/VIE、8sources、32receivers和原背景数组。二维本构为 (X=operatorname{diag}chi)，状态 (L=I-XG)，观测 (S j)。源共享同一个合法材料。固定gain=1，原复高斯噪声每实部方差为 (sigma^2/2)，按每源Re32后Im32打包，再乘 (sqrt2/sigma)，总512实通道。</p>
+<p>材料质量坐标 (m(chi)=[Rechi;Imchi]/24)，其欧氏范数就是复材料RMS。合法增量相位、amplitude1.2、Gaussian栅格化及peak normalization均沿用原P0。背景ring不被解释为空洞，增量零不等于绝对空气。</p>
+<p>F0沿用旧公开TRAIN数学点250033_weak/250034_ring；它们的已知材料不称未知成像成功。F1按元数据顺序选前两个暴露development smooth/ID条件：p250073_ring_a1_snr20和p250073_weak_a1_snr20，原rows67/71，<strong>同一parent、两个背景，不是两个独立物体</strong>。</p>
+<p>F1只估计两Gaussian的中心、宽度、权重，共8原uniform参数；家族与global中心/rotation/scale/axis-ratio是显式已知条件。因此它是受限的条件材料反演，不能冒称一般未知结构恢复。</p>
+<h2>3. F0：坐标加速度与真实材料曲率</h2>
+<p>对原decoder微分 (D_m) 做SVD，去掉Gaussian权重共同缩放的同材料gauge，得到材料正交frame (Q)。令</p>
+<p>[</p>
+<p>d_2=D^2m[v,v],quad d_{2,parallel}=QQ^T d_2,quad d_{2,perp}=(I-QQ^T)d_2.</p>
+<p>]</p>
+<p>其中切向项是可以通过参数加速度抵消的坐标效应；法向项是prior image在材料空间的第二基本形式。再映射到白化数据得到 (C_{</p>
+<p>m coordinate}=Jd_{2,parallel})、(C_{</p>
+<p>m prior}=Jd_{2,perp})。这里“intrinsic audit”不意味着在计算Riemann内蕴曲率张量。</p>
+<div class="scroll"><table><tr><th>旧TRAIN条件</th><th>坐标响应范数</th><th>真实prior响应范数</th><th>raw decoder响应</th><th>二者cosine</th><th>材料二阶能量中法向比例</th></tr><tr><td>weak</td><td>3.64871074</td><td>.008391183</td><td>3.65231450</td><td>.428532</td><td>.0032863%</td></tr><tr><td>ring</td><td>9.25251040</td><td>3.50531456</td><td>7.52726016</td><td>−.635720</td><td>14.77154%</td></tr></table></div>
+<p>表中响应对应原保存的参数单位速度，各例材料速度不同；CSV另外给出单位材料速度平方归一化值。<strong>不能把两个范数加起来当作总响应，也不能把材料能量占比当作数据响应占比。</strong> ring存在明显向量抵消，weak几乎全部材料二阶能量来自坐标加速度，但其较小真实prior曲率仍非零。</p>
+<p>这改变了对旧“decoder/Maxwell=38361或42.4”的解释：那些比值混合了坐标和真实先验几何，不能用于证明强Maxwell非线性或学习困难。</p>
+<h2>4. F0缺什么，哪些结论仍可靠</h2>
+<p><strong>旧Maxwell方向Hessian向量MISSING。</strong> 原执行代码只保留了其norm，q/bmax未落盘。本轮检查了相关NPZ headers及旧源码，不调用保存LU、不新增RHS、不从粗端点拟合一个“exact Hessian”。因此Maxwell与另外两项的cosine、完整三向量总和、实际intrinsic向量范数都未独立恢复。</p>
+<p>利用同方向、同白化的历史Maxwell norm可以给出保守区间。令 (Q_{</p>
+<p>m out}) 为 (JQ) 的数据余核投影：</p>
+<div class="scroll"><table><tr><th>条件</th><th>(</th><th></th><th>Q_{</th></tr></table></div>
+<p>m out}C_{</p>
+<p>m prior}||) | 历史Maxwell norm | 总intrinsic余核范数条件区间 |</p>
+<div class="scroll"><table><tr><th>weak</th><th>.000648559834</th><th>.000095209015</th><th>[.000553350820,.000743768849]</th></tr><tr><td>ring</td><td>1.435993714</td><td>.177677343</td><td>[1.258316372,1.613671057]</td></tr></table></div>
+<p>这是三角不等式，<strong>依赖历史norm计算正确</strong>，并非新求解或完整向量重现。它说明不能由已知大小的Maxwell项完全消掉该固定速度下的prior余核项；它不证明所有有限步都不可补偿。</p>
+<p>三个固定差分步长1e−3/5e−4/2.5e−4与固定active-max解析D²g交叉核对。raw D²相对误差最多3.90e−7；weak余核小量受到舍入影响，误差最多1.23e−4。相同material velocity的非线性重参数化可以大幅改变raw项，但解析prior法向及其数据余核投影保持约1e−12/1e−14量级一致。三步结果全部保存，没有选最漂亮一步。</p>
+<p>两例去gauge的材料rank和响应rank均为7，最小每单位材料RMS响应12.8487/297.076。<strong>当前方向是近似弱方向，不是非零exact tangent kernel。</strong> 因而正余核系数是固定速度的有限噪声诊断，不能把exact-null二阶必要条件直接用于宣告不存在路径。数值满列秩也不等于全局唯一性证明。</p>
+<p>Gate1只允许据可靠材料几何推进条件finite-noise实验，缺失向量仍缺失；没有将不完整三向量审计标PASS。</p>
+<h2>5. F1：真正独立、合法、非神经网络的物理反演</h2>
+<p>固定初始Gaussian中心(−.052,0)/(.052,0)，宽度.0725、权重.65。在线工件只含观测/sigma与已知条件；八个未知真参数被替换，原seed移除。反演源码不读取GT/N3；操作系统层面没有另设文件权限隔离，隔离证据来自输入和代码路径审查。</p>
+<p>使用原uniform坐标 (p=Phi(u)) 的有界trust-region least squares，每一步均full-forward+32receiver adjoint RHS求完整参数Jacobian。uniform prior在此坐标中为常密度，因此目标是其条件参数likelihood最大化；不声称材料空间MAP或posterior。</p>
+<div class="scroll"><table><tr><th>条件</th><th>初始残差</th><th>最终残差</th><th>bound-scaled最优性</th><th>阈值</th><th>结果</th></tr><tr><td>ring</td><td>91.360919</td><td>22.239555</td><td>.045273396</td><td>.001</td><td>FAIL，12次额度耗尽</td></tr><tr><td>weak</td><td>71.360219</td><td>21.512112</td><td>.002000989</td><td>.001</td><td>FAIL，ftol停止但驻点未过</td></tr></table></div>
+<p>两例残差均小于原tau23.785449且材料P0_EXACT；这比旧一步ROM初值更接近所需物理anchor。不过预登记资格还要求驻点标准，两例都失败，<strong>没有事后放宽到.05或.003继续F2</strong>。F1分配24states已用完，余40states不自动挪给更多反演迭代。</p>
+<p>噪声球不是posterior硬支持。原真值在本轮两例的历史clean-prediction残差22.3441/21.7180；不同案例真值偶尔超95%球也不会被宣布材料非法。</p>
+<h2>6. 根因不是只看“梯度还大”</h2>
+<p>保存数组独立审查确认 (C=Todot E)、实化白化及随机Jv收缩相符至约1e−15；未发现包装/共轭错误。两例最终材料与响应仍有7个非零方向，但都逼近原Gaussian权重比.4/.9边界。</p>
+<p>共同weight scaling不改变材料，却不能改变权重<strong>比例</strong>边界。忽略支撑的GN会提出减小该比例的非法步；大参数步还受gauge和材料坐标条件数影响。</p>
+<div class="scroll"><table><tr><th>已存线性化诊断</th><th>ring</th><th>weak</th></tr><tr><td>无约束GN的材料RMS</td><td>.000172171</td><td>.011847063</td></tr><tr><td>遵守原参数box的线性步材料RMS</td><td>.00000329631</td><td>.000000495416</td></tr><tr><td>有界线性预测残差降低</td><td>2.19e−7</td><td>8.56e−10</td></tr></table></div>
+<p>这是<strong>零新增物理的线性模型诊断</strong>，不是新endpoint、不是非线性最优性证明，也不用于追认Gate通过。它表明应先处理真实prior边界/商几何，而不是把无约束GN的大步当成可以学习的隐藏自由度。最大的绑定scaled-gradient分量仍出现在shape参数，不能简单删除weight梯度救Gate。</p>
+<p>此外，numerical search将p限制在[1e−10,1−1e−10]，排除极薄边界条带；这是搜索数值保护，未生成posterior，不声称精确采样整个原prior。</p>
+<h2>7. 离线材料质量与N3</h2>
+<div class="scroll"><table><tr><th>条件</th><th>初始复MAE</th><th>physics final复MAE</th><th>N3复MAE</th><th>physics final复RMS</th></tr><tr><td>ring</td><td>.03218134</td><td>.0007283783</td><td>.03870807</td><td>.002242914</td></tr><tr><td>weak</td><td>.03218134</td><td>.001554472</td><td>.03147809</td><td>.004913129</td></tr></table></div>
+<p>物理反演在这两个条件下恢复了很好的材料图；这是有效的正面结果。但额外已知家族/global geometry，且只有同一parent，不能宣称普遍击败N3。N3预测数组来自原缓存，未重算forward，其full-Maxwell residual仍MISSING。GT只在本节离线评分和图集使用，不控制初始化、优化和停止。</p>
+<p><img alt="ring材料对照" src="figures/01_material_ring.png"></p>
+<p><img alt="weak材料对照" src="figures/01_material_weak.png"></p>
+<p>每行跨方法与条件共享色标。图中为contrast chi，复介电常数为1+chi；绝对背景材料不能与增量结构混读。</p>
+<h2>8. F2为何未运行，以及本轮不能声称什么</h2>
+<p>按依赖关系Gate2失败后，Frozen/Updated/Material-Retraction/Intrinsic+Feedback四臂全部NOT_RUN。预先冻结的有效材料RMS阈值.00527554628、结构检查与同成本规格仍保留，未改成更小尺度；没有可评价的有限transport样本。</p>
+<p>所以本轮不能回答哪种方法走得更远、full feedback是否帮助发现新材料、补偿NN能否摊销、是否存在显著模式。候选概率为null；反演中间图不拿来拼成Top-K posterior。A17可用双侧有限残差思想仍是候选接口，没有新同成本消融，既不宣称A17增量，也不否定其原局部GN理论。</p>
+<h2>9. 最终十问</h2>
+<p>1. <strong>巨大decoder曲率来自哪里？</strong> weak材料二阶能量99.9967%为坐标项，ring85.2285%；映射到数据后有不同抵消。真实prior项仍非零，且历史Maxwell norm不足以完全抵消其余核响应。完整Maxwell向量缺失，不能分配精确三项响应百分比。</p>
+<p>2. <strong>原P0是否有local fiber？</strong> 所查两旧点及两新最终点都数值满列秩，未确认非零exact tangent。仅支持局部数值可辨识证据，不排除有限噪声宽度或远分支。</p>
+<p>3. <strong>不用N3/GT能否重建合法anchor？</strong> 已得到两份原先验合法且噪声相容的条件物理解；严格驻点资格未过，不能称完整合格anchor。</p>
+<p>4. <strong>材料retraction/曲率补偿能否走更远？</strong> NOT_RUN。不能由F0预测效果代替配对实验。</p>
+<p>5. <strong>finite feedback有发现价值吗？</strong> 本轮未验证；其历史价值是准确forward prediction，尚无新的发现收益。</p>
+<p>6. <strong>已找到非平凡局部探索区域吗？</strong> 没有新证据；F1是反演，F2未执行，不能混用旧已知TRAIN微位移。</p>
+<p>7. <strong>障碍是什么？</strong> 已测：坐标/gauge病态、真实prior比例边界、有限反演分配未过驻点标准。局部可辨识/狭窄prior有数值支持；不能把未探索归因成强Maxwell非线性或物理多解不存在。</p>
+<p>8. <strong>已存在可学习的finite transport函数吗？</strong> 正式非平凡teacher pairs=0。当前不训练；未来优先考虑合法可行法向补偿/有限初猜，并验证no-op和摊销成本。</p>
+<p>9. <strong>支持强IEEE TAP了吗？</strong> 尚不支持。可靠几何拆分有价值，仍缺独立合格anchor上的同材料距离、同完整成本的非平凡有限探索正结果。</p>
+<p>10. <strong>下一步怎么选？</strong> CONDITIONAL GO：先把权重比例商坐标/可行切锥和物理驻点做好；NO-GO：现阶段训练learned Explorer或声称exact-fiber。不要放宽P1救结果，也不在未确认其他高支持区时追加global generator。</p>
+<h2>10. 交付与复现边界</h2>
+<p>完整SOURCE_INVENTORY、固定配置、F0三步/解析向量和CSV、24paid states/Jacobian、原始probability-null状态、成本/失败记录、独立review、图集与运行源码均已保留。大数组放现有B1的独立Release，不建新repo，不改历史T/G/LXZ/45state结果或A17冻结稿。</p>
+<p><a href="INTRINSIC_GEOMETRY_AUDIT.md">几何审计</a> · <a href="PHYSICS_ANCHOR_RESULTS.md">物理反演</a> · <a href="FINITE_TRANSPORT_RESULTS.md">未运行传输说明</a> · <a href="MATCHED_COST_COMPARISON.md">完整成本</a> · <a href="evidence/INDEPENDENT_MATH_REVIEW.md">独立审查</a> · <a href="REPRODUCE.md">复现</a></p></article></main></html>

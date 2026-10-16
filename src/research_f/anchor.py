@@ -1,4 +1,8 @@
-"""F1: prior-only initialization; online loader cannot access truth arrays."""
+"""F1: prior-only initialization; reviewed online path does not read truth.
+
+The sanitized artifact contract is code-path isolation, not an OS permission
+boundary. Executed revision is preserved separately in the evidence snapshot.
+"""
 import json, sys, time, traceback
 import numpy as np
 from scipy.optimize import least_squares

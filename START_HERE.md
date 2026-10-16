@@ -1,4 +1,10 @@
-## 最新诊断：有限Maxwell反馈与GT差量
+## 最新：Research F 材料几何与独立物理反演
+
+[中文报告](research/research_f_intrinsic_transport/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_f_intrinsic_transport/)
+
+24 states / 960 RHS封账：分离坐标与真实prior曲率；独立物理反演合法且噪声相容，但驻点资格未过，F2未运行。不训练NN。
+
+## 历史诊断：有限Maxwell反馈与GT差量
 
 [中文报告](research/finite_feedback_fiber_diagnostic_20261016/DIAGNOSTIC_REPORT_ZH.md) · [网页与数值图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/finite_feedback_fiber_diagnostic_20261016/)
 

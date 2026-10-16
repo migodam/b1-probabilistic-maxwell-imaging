@@ -25,9 +25,18 @@
 
 因而 C_Maxwell 与 C_coordinate/C_prior 的 cosine、三项总和、总 intrinsic 响应和总余核响应均缺失。旧 Maxwell scalar norm 仅提供三角不等式界：max(0,||Qout C_prior||-||C_Maxwell||) ≤ ||Qout(C_Maxwell+C_prior)|| ≤ ||Qout C_prior||+||C_Maxwell||；该界依赖旧 norm 的正确性，不是独立重算。
 
+| anchor | ||C_Maxwell+C_prior|| 范数界 | ||Qout(C_Maxwell+C_prior)|| 范数界 |
+|---|---:|---:|
+| 250033_weak | [0.00829597379, 0.00848639182] | [0.00055335082, 0.000743768849] |
+| 250034_ring | [3.32763722, 3.6829919] | [1.25831637, 1.61367106] |
+
+上述界为参数单位下的保守区间；CSV 同时保存除以 ||w||² 的材料单位结果。这些区间并不恢复缺失向量，也不验证旧 bmax norm 的物理计算。
+
 ## 差分、gauge 与重参数化
 
 执行前固定 h=1e-3,5e-4,2.5e-4，全部报告，不筛选最漂亮一步；另独立推导 fixed active-max 的解析 D²g 交叉验证。JSON 给出每步解析误差、相邻变化、减法消去估计、CDF 饱和、active-max cell、侧点 rank。有限点一致不构成整个邻域无边界或恒秩的严格证明。
+
+三个步长的误差并非严格单调下降：最小步长开始受到减法消去影响，因此最终摘要使用独立解析 fixed-max D²，三步 FD 全量保留。特别是 weak anchor 的 prior normal 项很小，其误差应相对该小项评估，而不能只看 raw D² 的误差。JSON 同时保存 normal、J normal 和其余核投影相对解析结果的误差。
 
 同 image 局部坐标变换 u=u0+z+0.5*(0.25e0)*(v^Tz)^2 在原点导数为 I；固定相同材料速度。raw D²g 增加 Dg(0.25e0)，法向项和其数据余核投影不变。已同时执行解析和三步 FD 对照；映射 Jacobian 行列式在所检查点非零。不声称概率目标在新坐标下自动均匀。
 
@@ -37,10 +46,10 @@
 
 ## 历史边界与交付
 
-anchor 是公开且已暴露的 TRAIN 已知材料，自己的 GT 就是起点；本次没有独立 anchor、GT 恢复或新反演结果。保留旧 sign-tracking bug 与已发布的轨迹重放说明：此次没有重跑旧轨迹。
+anchor 是公开且已暴露的 TRAIN 已知材料，自己的 GT 就是起点；本F0子阶段没有独立anchor或新反演；之后F1的实际结果单独见PHYSICS_ANCHOR_RESULTS。保留旧 sign-tracking bug 与已发布的轨迹重放说明：此次没有重跑旧轨迹。
 
 geometry numerical checks 与完整科学 gate 分开：本脚本只给数值一致性结果，父线程负责 Gate1 与下一阶段裁决。
 
-新增时间 0.113618 秒；计数 {"npz_files_read": 6, "decoder_evaluations": 26, "analytic_decoder_first_derivatives": 14, "svds": 16, "matrix_products": 168, "analytic_decoder_second_derivatives": 2}。
+新增时间 0.076896 秒；计数 {"npz_header_reads": 153, "npz_files_read": 6, "decoder_evaluations": 40, "analytic_decoder_first_derivatives": 14, "svds": 16, "matrix_products": 240, "analytic_decoder_second_derivatives": 2}。
 
 来源路径、完整缓存 key inventory、数值误差、条件数和所有 FAIL/MISSING 均在 GEOMETRY_TESTS.json；衍生向量在 GEOMETRY_VECTORS.npz。

@@ -40,11 +40,14 @@ def load_chart_class():
     cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'MaterialPrior')
     ns = dict(np=np, ndtr=ndtr, ndtri=ndtri, prior=prior, copy=__import__('copy'))
     exec(compile(ast.fix_missing_locations(ast.Module(body=[cls], type_ignores=[])), str(src), 'exec'), ns)
-    return ns['MaterialPrior']
+    class InstrumentedChart(ns['MaterialPrior']):
+        def decode(self, u):
+            COUNTS['decoder_evaluations'] += 1
+            return super().decode(u)
+    return InstrumentedChart
 
 
 def evaluate(chart, u):
-    COUNTS['decoder_evaluations'] += 1
     x, row = chart.decode(u)
     vals = np.asarray(prior.rho_field(x, prior.background(chart.bg)))
     a = ndtr(u)
@@ -103,10 +106,21 @@ def main():
         with zipfile.ZipFile(p) as z:
             keys = [Path(n).stem for n in z.namelist()]
         inventory.append(dict(path=str(p), keys=keys, bytes=p.stat().st_size))
+        COUNTS['npz_header_reads'] += 1
+    additional_inventory=[]
+    for root in (ROOT.parent/'b1-research-lxz/research/research_lxz_20261016',
+                 ROOT/'research/research_lxz_20261016', ROOT.parents[1]/'A17/N3_APPLICATION_R1/raw'):
+        paths=sorted(p for p in root.rglob('*.npz') if any(k in p.name for k in ('250033','250034'))) if root.exists() else []
+        entries=[]
+        for p in paths:
+            with zipfile.ZipFile(p) as z: keys=[Path(n).stem for n in z.namelist()]
+            entries.append(dict(path=str(p),keys=keys));COUNTS['npz_header_reads'] += 1
+        additional_inventory.append(dict(root=str(root),scope='known_TRAIN_named_NPZ_headers_only',files=entries))
     tests = dict(scope='F0_DECODER_AND_CACHED_J_ONLY', steps=STEPS, rank_rtol=RANK_RTOL,
                  material_metric='[Re chi; Im chi]/24',
                  packing='source-major Re32 then Im32; sqrt(2)/sigma whitening', anchors={},
                  cache_header_inventory=inventory,
+                 additional_hessian_cache_search=additional_inventory,
                  forbidden_physics_imports=[], new_full_states=0, new_complex_rhs=0,
                  new_lu_factorizations=0, new_mie_calls=0, gpu_training=0)
     rows = []; arrays = {}; report_rows = []
@@ -154,12 +168,14 @@ def main():
             gauge_material_relative_defect=material_gauge_defect,
             gram_effective_condition=float((s[0]/s[rank-1])**2),
             response_material_orthonormal_spectrum=sa, response_rank=arank,
+            material_rank_tolerance_sensitivity={str(rt):int(np.sum(s>s[0]*rt)) for rt in (1e-6,1e-7,1e-8)},
+            response_rank_tolerance_sensitivity={str(rt):int(np.sum(sa>sa[0]*rt)) for rt in (1e-6,1e-7,1e-8)},
             exact_prior_kernel_dimension=rank-arank, approximate_weak_direction=True,
             exact_fiber_obstruction_instance=False, center=state0,
             maxwell_hessian_status='CACHED' if cm is not None else 'MISSING',
             historical_Maxwell_norm_prior_unit=hist[key]['Maxwell_curvature_norm'],
             historical_decoder_norm_prior_unit=hist[key]['decoder_curvature_norm'],
-            hessian_missing_reason='Original executed diagnose.py retained bmax only as local variable; scalar norm persisted in METRICS. No vector/current q key in historical result NPZ headers.',
+            hessian_missing_reason='Original executed diagnose.py retained bmax only as local variable; scalar norm persisted in METRICS. No vector/current q key in historical result NPZ headers or known-TRAIN named LXZ caches. A17 raw has no matching known-TRAIN files; its N3-centered material derivative cannot substitute.',
             finite_difference=[], reparameterization={})
         d2s=[]
         for step in STEPS:
@@ -170,7 +186,12 @@ def main():
                 ss=np.linalg.svd(mass(chart.analytic_derivative(uu)),compute_uv=False)
                 COUNTS['svds'] += 1; COUNTS['analytic_decoder_first_derivatives'] += 1
                 ranks.append(int(np.sum(ss>ss[0]*RANK_RTOL)))
-            fd=dict(step=step,analytic_D2_relative_error=rel(d2,d2exact),plus=sp,minus=sm,
+            normal_fd=d2-pprior(d2); normal_exact=d2exact-pprior(d2exact)
+            fd=dict(step=step,analytic_D2_relative_error=rel(d2,d2exact),
+                analytic_normal_D2_relative_error=rel(normal_fd,normal_exact),
+                analytic_prior_response_relative_error=rel(matmul(J,normal_fd),matmul(J,normal_exact)),
+                analytic_prior_cokernel_relative_error=rel(pout(matmul(J,normal_fd)),pout(matmul(J,normal_exact))),
+                plus=sp,minus=sm,
                 side_material_ranks=ranks,
                 subtraction_roundoff_scale=float(np.finfo(float).eps*(norm(xp)+2*norm(x0)+norm(xm))/max(norm(numerator),1e-300)),
                 max_cell_constant=sp['active_max_cell']==sm['active_max_cell']==state0['active_max_cell'])
@@ -201,7 +222,14 @@ def main():
                 total_intrinsic_cokernel_prior_unit=norm(pout(cm+cp)) if cm is not None else 'MISSING',
                 full_curvature_vector_reproduction='MISSING' if cm is None else 'DERIVED_NO_OLD_TOTAL_VECTOR',
                 historical_norm_only_intrinsic_cokernel_lower=max(0,norm(op)-oldcm),
-                historical_norm_only_intrinsic_cokernel_upper=norm(op)+oldcm)
+                historical_norm_only_intrinsic_cokernel_upper=norm(op)+oldcm,
+                historical_norm_only_intrinsic_response_lower=max(0,norm(cp)-oldcm),
+                historical_norm_only_intrinsic_response_upper=norm(cp)+oldcm,
+                historical_norm_only_intrinsic_cokernel_lower_material_unit=max(0,norm(op)-oldcm)/speed**2,
+                historical_norm_only_intrinsic_cokernel_upper_material_unit=(norm(op)+oldcm)/speed**2,
+                historical_norm_only_intrinsic_response_lower_material_unit=max(0,norm(cp)-oldcm)/speed**2,
+                historical_norm_only_intrinsic_response_upper_material_unit=(norm(cp)+oldcm)/speed**2,
+                historical_decoder_norm_relative_reproduction=abs(norm(raw)-hist[key]['decoder_curvature_norm'])/hist[key]['decoder_curvature_norm'])
             rows.append(row)
             for name,vec in dict(d2=d2,d2_parallel=tangent,d2_perp=normal,C_coordinate=cc,C_prior=cp,
                 C_raw=raw,Qout_C_prior=op,Qout_C_coordinate=oc).items(): arrays[f'{key}__{label}__{name}']=vec
@@ -213,7 +241,7 @@ def main():
         normal0=d2exact-pprior(d2exact); reexact=d2exact+added
         normal1=reexact-pprior(reexact)
         rp=dict(map='u=u0+z+0.5*(0.25 e0)*(v^T z)^2',
-            derivative_at_origin='identity',original_parameter_measure_preserved_for_audit_only=True,
+            derivative_at_origin='identity',no_sampling_no_prior_measure_redefinition=True,
             same_material_velocity_relative_error=0.,
             analytic_intrinsic_material_relative_error=rel(normal1,normal0),
             analytic_intrinsic_cokernel_relative_error=rel(pout(matmul(J,normal1)),pout(matmul(J,normal0))),
@@ -232,9 +260,10 @@ def main():
         t['geometry_numerical_checks_pass']=bool(rank==7 and arank==7 and material_gauge_defect<1e-12
             and t['anchor_replay_max_abs']<1e-12 and t['analytic_first_cache_relative_error']<1e-12
             and t['cached_JDg_relative_error']<1e-10
-            and all(d['analytic_D2_relative_error']<1e-5 and d['max_cell_constant'] and d['side_material_ranks']==[7,7] for d in t['finite_difference'])
+            and all(d['analytic_D2_relative_error']<1e-5 and d['analytic_prior_cokernel_relative_error']<1e-3
+                    and d['max_cell_constant'] and d['side_material_ranks']==[7,7] for d in t['finite_difference'])
             and rp['analytic_intrinsic_material_relative_error']<1e-10
-            and all(d['intrinsic_material_relative_error']<1e-3 for d in rp['finite_difference']))
+            and all(d['intrinsic_material_relative_error']<1e-3 and d['intrinsic_cokernel_relative_error']<1e-3 for d in rp['finite_difference']))
         arrays[f'{key}__material_tangent_Q']=Q; arrays[f'{key}__material_velocity']=w
         arrays[f'{key}__reparam_D2']=reexact; arrays[f'{key}__reparam_intrinsic_D2']=normal1
         tests['anchors'][key]=t
@@ -245,6 +274,7 @@ def main():
         geodesic_coordinate_acceleration=[-2*c,0.],corrected_material_acceleration=[0.,0.],pass_test=norm(flatii)==0)
     tests['forbidden_physics_imports']=[m for m in sys.modules if m in ('a30.physics','a25.physics','finite_feedback.diagnose')]
     tests['counts']=dict(COUNTS); tests['wall_seconds']=time.perf_counter()-start
+    tests['cost_scope']='Computation and cache-read wall time; writing artifacts follows. Decoder count includes internal decode calls made by analytic_derivative. Matrix product count covers explicit cached-J/projection helper calls, excluding Gaussian scalar/vector contractions and BLAS inside SVD.'
     tests['numerical_geometry_checks_pass']=all(t['geometry_numerical_checks_pass'] for t in tests['anchors'].values()) and not tests['forbidden_physics_imports']
     tests['scientific_gate_decision']='PARENT_REVIEW_REQUIRED'
     with (out/'CURVATURE_DECOMPOSITION.csv').open('w',newline='') as f:
@@ -269,6 +299,7 @@ def main():
         '', '因而 C_Maxwell 与 C_coordinate/C_prior 的 cosine、三项总和、总 intrinsic 响应和总余核响应均缺失。旧 Maxwell scalar norm 仅提供三角不等式界：max(0,||Qout C_prior||-||C_Maxwell||) ≤ ||Qout(C_Maxwell+C_prior)|| ≤ ||Qout C_prior||+||C_Maxwell||；该界依赖旧 norm 的正确性，不是独立重算。',
         '', '## 差分、gauge 与重参数化','',
         '执行前固定 h=1e-3,5e-4,2.5e-4，全部报告，不筛选最漂亮一步；另独立推导 fixed active-max 的解析 D²g 交叉验证。JSON 给出每步解析误差、相邻变化、减法消去估计、CDF 饱和、active-max cell、侧点 rank。有限点一致不构成整个邻域无边界或恒秩的严格证明。',
+        '', '三个步长的误差并非严格单调下降：最小步长开始受到减法消去影响，因此最终摘要使用独立解析 fixed-max D²，三步 FD 全量保留。特别是 weak anchor 的 prior normal 项很小，其误差应相对该小项评估，而不能只看 raw D² 的误差。JSON 同时保存 normal、J normal 和其余核投影相对解析结果的误差。',
         '', '同 image 局部坐标变换 u=u0+z+0.5*(0.25e0)*(v^Tz)^2 在原点导数为 I；固定相同材料速度。raw D²g 增加 Dg(0.25e0)，法向项和其数据余核投影不变。已同时执行解析和三步 FD 对照；映射 Jacobian 行列式在所检查点非零。不声称概率目标在新坐标下自动均匀。',
         '', '两个 prior 材料 rank 都是 7，JQ 也满列秩；当前不存在非零 exact prior tangent kernel。所查缓存 v 是 approximate weak direction，余核二阶响应只能称 fixed-velocity finite-noise 几何诊断，不能称已证实 exact fiber 障碍实例。',
         '', '平坦 image 弯曲坐标控制 g(u,v)=(u+1000v²,v) 给 raw curvature=2000、prior normal curvature=0；geodesic 参数加速度消去材料伪曲率。',
@@ -277,6 +308,13 @@ def main():
         '', 'geometry numerical checks 与完整科学 gate 分开：本脚本只给数值一致性结果，父线程负责 Gate1 与下一阶段裁决。',
         '', f"新增时间 {tests['wall_seconds']:.6f} 秒；计数 {json.dumps(tests['counts'],ensure_ascii=False)}。",
         '', '来源路径、完整缓存 key inventory、数值误差、条件数和所有 FAIL/MISSING 均在 GEOMETRY_TESTS.json；衍生向量在 GEOMETRY_VECTORS.npz。']
+    interval_lines=['', '| anchor | ||C_Maxwell+C_prior|| 范数界 | ||Qout(C_Maxwell+C_prior)|| 范数界 |',
+        '|---|---:|---:|']
+    for r in report_rows:
+        interval_lines.append(f"| {r['anchor']} | [{r['historical_norm_only_intrinsic_response_lower']:.9g}, {r['historical_norm_only_intrinsic_response_upper']:.9g}] | [{r['historical_norm_only_intrinsic_cokernel_lower']:.9g}, {r['historical_norm_only_intrinsic_cokernel_upper']:.9g}] |")
+    interval_lines += ['', '上述界为参数单位下的保守区间；CSV 同时保存除以 ||w||² 的材料单位结果。这些区间并不恢复缺失向量，也不验证旧 bmax norm 的物理计算。']
+    loc=lines.index('## 差分、gauge 与重参数化')-1
+    lines[loc:loc]=interval_lines
     (out/'INTRINSIC_GEOMETRY_AUDIT.md').write_text('\n'.join(lines)+'\n')
     print(json.dumps(dict(status='NUMERICAL_GEOMETRY_PASS' if tests['numerical_geometry_checks_pass'] else 'CHECK_FAILURE',
         Maxwell_Hessian='MISSING',new_states=0,new_RHS=0,output=str(out),wall_seconds=tests['wall_seconds'])))
