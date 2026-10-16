@@ -68,7 +68,7 @@ class MaxwellTarget:
         f=self.response.predict(xx,(1.6,))
         # All response evaluations count even though only derivatives are needed.
         log_likelihood(f,self.y,self.sigma,.15)
-        A=np.column_stack([(f[2*j+1]-f[2*j-1])/(2*h)/self.sigma for j in range(4)])
+        A=np.column_stack([(f[2*j+1]-f[2*j])/(2*h)/self.sigma for j in range(4)])
         H=A.T@A
         if nuisance_projected:
             # Local Gaussian gain geometry is a proposal metric ONLY. The target
@@ -214,9 +214,9 @@ def controls():
     assert result['selector_uncorrected_bias']>.001 and result['global_omitted_q_bias']>.001
     dump(OUT/'results/PROBABILITY_CONTROLS.json',result)
 
-def run(round_id=1):
+def run(round_id=1,repair=False):
     protocol=json.loads((OUT/'configs/PROTOCOL.json').read_text());cases=protocol['E1']['observations'];seeds=protocol['E1']['seeds']
-    dest=OUT/'results'/f'round{round_id}';dest.mkdir(parents=True,exist_ok=True)
+    dest=OUT/'results'/f'round{round_id}{"_geometry_repair" if repair else ""}';dest.mkdir(parents=True,exist_ok=True)
     if (dest/'COMPLETE.json').exists():raise RuntimeError('completed campaign cannot silently repeat')
     response=Response(PAID/'COMMON_RESPONSE_BANK.npz');data=json.loads((PAID/'DEVELOPMENT_CASES.json').read_text())['cases']
     reference=json.loads((PAID/'ADAPTIVE_PHYSICAL_REFERENCE.json').read_text())['cases']
@@ -228,7 +228,7 @@ def run(round_id=1):
         dump(dest/f'{name}_PROPOSAL.json',dict(receipt=q.receipt,cold_model_seconds=time.perf_counter()-loadstart,parameters=q.p))
         for seed in seeds:
             initial=prior_sample(np.random.default_rng(seed),64)
-            methods=protocol['E1']['methods'] if round_id==1 else ['geometry']
+            methods=protocol['E1']['methods'] if round_id==1 and not repair else ['geometry']
             # Rotate order; each arm repeats and pays its own 64-point setup.
             shift=seed%len(methods);methods=methods[shift:]+methods[:shift]
             for method in methods:
@@ -253,12 +253,12 @@ def run(round_id=1):
                     records.append(r)
                 dump(dest/'METRICS.json',dict(rows=records,target=IDENTITY,scope='PROXY_TARGET_MECHANISM_ONLY'))
                 with (OUT/'COST_LEDGER.jsonl').open('a') as f:
-                    f.write(json.dumps(plain(dict(event='E1_CHAIN_COMPLETE',round=round_id,observation=name,method=method,seed=seed,
+                    f.write(json.dumps(plain(dict(event='E1_CHAIN_COMPLETE',round=round_id,repair=repair,observation=name,method=method,seed=seed,
                         proxy_likelihood_attempts=target.calls,failures=target.failures,new_full_states=0,new_RHS=0,
                         wall_seconds=meta['inclusive_seconds'])))+'\n')
                 print(json.dumps(dict(round=round_id,observation=name,method=method,seed=seed,calls=target.calls,event_MAE=records[-1]['event_MAE'])),flush=True)
     dump(dest/'COMPLETE.json',dict(proxy_calls=total,wall_seconds=time.perf_counter()-t0,full_states=0,RHS=0))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('task',choices=['controls','run']);p.add_argument('--round',type=int,default=1);args=p.parse_args()
-    controls() if args.task=='controls' else run(args.round)
+    p=argparse.ArgumentParser();p.add_argument('task',choices=['controls','run']);p.add_argument('--round',type=int,default=1);p.add_argument('--repair',action='store_true');args=p.parse_args()
+    controls() if args.task=='controls' else run(args.round,args.repair)
