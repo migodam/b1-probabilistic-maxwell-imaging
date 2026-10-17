@@ -1,0 +1,13 @@
+# 零物理复现与原始缓存
+
+源码src/a17x/finite.py仅依赖NumPy；tools/a17x_zero_audit.py的synthetic函数只求18维以内合成系统，cached函数仅做数组读取和矩阵乘法。没有A30/backend导入、LU应用、RHS计费回调或GT读取。原包脚本原样保存在pro_source和checks，历史结果不改写。
+
+实际使用已有Gaussian/.venv_nn Python，NumPy/SciPy；不安装CUDA、服务或新框架。复现包包含选出的17个已付费F3 endpoint切片、两个anchor/C/Jacobian及G/S，均标reused_f3，不含LU/pivots/GT。没有新物理candidate。选中slice用于复现本轮代数；完整F3原数组仍在其固定Release。
+
+在B1 repo根目录使用PYTHONPATH=src，并设置OPENBLAS_NUM_THREADS=1、OMP_NUM_THREADS=1、MKL_NUM_THREADS=1。原包重放命令为python research/a17x_f3_competition_audit/checks/check_finite_source_transport.py（会写该checks输出，建议先复制到新的分析目录）。
+
+独立重放请将B1_A17X_AUDIT_OUT设为一个新的输出目录，再运行python tools/a17x_zero_audit.py；原AUDIT_CLOSED阻止覆盖本次结果。已有F3原始目录可由B1_F3_ROOT指定；若不存在完整旧worktree，脚本使用本Release的thin cache与仓库固定F3 JSON。发布前仅增加路径fallback，未重新执行本次科学计算。
+
+物理Maxwell执行入口未开放；当前EXECUTION_OVERLAY明确0 states/0 RHS。P1准备与新预算必须先单独成立，不能删除封账文件或把下一轮预算建议当当前额度。
+
+逐端点误差在results/CACHED_PORT_AND_SOURCE_AUDIT.json，源切片npz在证据Release；原包replay与独立synthetic结果分别保留。没有SHA256核对、额外smoke或P0重复实验。公开成功与科学机制成功分别记录。

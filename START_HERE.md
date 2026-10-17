@@ -1,4 +1,10 @@
-## 最新：Research F3 商坐标与有限噪声探索
+## 最新：A17-X × F3 竞争审计
+
+[中文报告](research/a17x_f3_competition_audit/RESEARCH_REPORT_ZH.md) · [网页与数值图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/a17x_f3_competition_audit/)
+
+零新增物理：17份旧F3增量均rank575；小端口假设不能由七维latent推出。合成机制修订完成，真实P1及新预算未就绪，比较NOT_RUN。
+
+## 历史：Research F3 商坐标与有限噪声探索
 
 [中文报告](research/research_f3_quotient_exploration/RESEARCH_REPORT_ZH.md) · [网页与实际材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_f3_quotient_exploration/)
 
