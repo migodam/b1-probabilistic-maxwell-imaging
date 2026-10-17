@@ -4,6 +4,8 @@
 
 包内程序重放wall约.3703s，独立合成与缓存审计合计约.3316s，实际source-RHS修订合成约.0340s。网络取来源、交互写代码/文档及出图不属于这些计时，不把约.736s当全部host研究成本。逐项receipt和RESOURCE_LEDGER保留。
 
+缓存算子应用也不是免费部署：实际代码对应136列G、136列L、136列S动作及306次缓存C向量积，已包含在上述缓存审计wall；这是按执行源码与17条记录回算的动作数，不是额外物理解算。详见[CACHE_COST_ACCOUNTING.json](CACHE_COST_ACCOUNTING.json)。该补充单独加入Release，原证据ZIP快照保留，不回写已上传的原始实验账本。
+
 | 缺失项 | 当前状态 | 对执行的影响 |
 |---|---|---|
 | 新P1正式prior/decoder/law | UNKNOWN/本次检查未找到 | 无法绑定公平target及合法端口 |
