@@ -45,7 +45,7 @@ proposal主要终点为相同材料距离、prior合法、原noise及固定likel
 
 ## 最小后续预算建议：尚未授权
 
-前提是**P1的两份合格付费anchor和prior已经交付**；本建议不包含从零构造P1、重建anchor、posterior reference或NN。两个anchor端口数为s1,s2时：
+前提是**P1的两份合格付费anchor和prior已经交付**；本建议不包含从零构造P1、重建anchor、posterior reference或NN。s1,s2指在每个anchor下覆盖全部比较提案及其失败尝试的预声明共同端口支持，不是每次择取一个有利小支持。新提案离开该支持时必须另付传播列或停止，不能免费刷新。两个anchor端口数为s1,s2时：
 
 | 用途 | 新state cap | complex RHS cap |
 |---|---:|---:|
