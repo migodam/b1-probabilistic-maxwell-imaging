@@ -41,6 +41,8 @@ class PhysicsBook:
         cap_s=self.a.get('max_new_Maxwell_states',0);cap_r=self.a.get('max_new_complex_RHS',0)
         if cap_s<=0 or cap_r<=0:raise BudgetDenied('No new P1 physics allocation; zero backend imports/solves permitted')
         if not self.a.get('explicit_user_physics_authorization',False):raise BudgetDenied('Numeric allocation must be accompanied by explicit user authorization')
+        target_id=json.loads((OUT/'configs/ONLINE_TARGET.json').read_text())['target_id']
+        if self.a.get('target_id')!=target_id or self.a.get('stage')!='P1_physics_qualification_20261018':raise BudgetDenied('allocation belongs to a different target or stage')
         t=self.totals()
         if t['states']+states>cap_s or t['RHS']+RHS>cap_r:raise BudgetDenied('P1 total hard cap; no old-stage balances')
         if self.start is None:
@@ -71,7 +73,7 @@ class PhysicsBook:
 
 class MaxwellTarget:
     def __init__(self,book=None):
-        self.config=json.loads((OUT/'configs/PROTOCOL.json').read_text());points=json.loads((OUT/'inputs/geometry.json').read_text())['points']
+        self.config=json.loads((OUT/'configs/ONLINE_TARGET.json').read_text());points=json.loads((OUT/'inputs/geometry.json').read_text())['points']
         self.prior=MaterialPrior(self.config,points);self.book=book or PhysicsBook();self.model=None;self.serial=0
         self.sigma=self.config['noise']['sigma'];self.target_id=self.config['target_id']
     def _model(self,states=0,RHS=0):

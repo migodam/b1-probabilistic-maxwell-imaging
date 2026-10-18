@@ -1,0 +1,42 @@
+{
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "previous_audit": "research/a17x_f3_competition_audit",
+  "model_prior_material_ready": true,
+  "measurement_contract_ready": true,
+  "noise_contract_ready": true,
+  "actual_observations": "NOT_RUN",
+  "physics_only_anchors": "NOT_RUN",
+  "common_prior_id": "P1-Gaussian64-Uniform2-C2-volume-fraction-v1",
+  "latent_measure": "dz64 du2, Gaussian64 x Uniform[0,1]^2, material pushforward not material-volume density",
+  "material_scale": 0.02,
+  "secondary_scale": 0.04,
+  "port_support": "all 256 known ROI cells; supports union of all prior proposals",
+  "max_exact_ports_per_anchor": 256,
+  "original_F3_unchanged": true,
+  "NN": "NOT_RUN",
+  "future_qualification_budget": {
+    "authorized": false,
+    "states": 32,
+    "RHS": 1024,
+    "CPU_wall_seconds": 600,
+    "allocation": "2 truth states + 2x12 independent inversion states + 6 failure states; up to 24 receiver Jacobians"
+  },
+  "future_A17_competition": {
+    "authorized": false,
+    "requires_qualified_anchors": true,
+    "states": 24,
+    "RHS": 1024,
+    "CPU_wall_seconds": 600,
+    "proposal_arms": [
+      "P1-native adaptation of F3",
+      "X-rational with full P1 prior check",
+      "optimized Full-J"
+    ],
+    "evaluation_arms": [
+      "full",
+      "exact T-matrix/Woodbury",
+      "ordinary goal-ROM",
+      "A17 finite-state exchange"
+    ]
+  }
+}
