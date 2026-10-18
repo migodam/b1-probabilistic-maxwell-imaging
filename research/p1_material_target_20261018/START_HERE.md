@@ -1,3 +1,9 @@
+## 2026-10-18更新：真实P1资格已运行
+
+[真实物理报告](PHYSICS_QUALIFICATION_REPORT_ZH.md) · [网页](physics_report.html) · [实际重建图](physics_gallery.html)
+
+26states / 976RHS / 5.477s封账：两个固定对象取得1个合法且数据相容的physics-only基础解，另1个未收敛。没有新发现替代world；A17-X比较未运行。下面保留原零物理材料构造记录，不能把历史状态当最新结果。
+
 # P1 已实现：相关被动材料先验与共同 Maxwell target
 
 2026-10-18。**P1现在有可运行生成器、明确prior law、192份实际材料样本、固定采集/noise、材料运动代码及计费的观测/反演入口。真实Maxwell观测和合格物理anchor尚未运行。**

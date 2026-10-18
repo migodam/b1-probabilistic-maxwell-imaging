@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P1 · 真实Maxwell资格实验</title><style>body{font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#20323e;background:#f6f8fa;margin:0}main{max-width:1100px;margin:auto;padding:42px 24px}h1,h2{line-height:1.4}h2{margin-top:2em}a{color:#126c93}p{overflow-wrap:anywhere}nav{display:flex;gap:18px;flex-wrap:wrap}article,section{background:#fff;border:1px solid #dce4e8;padding:24px;border-radius:12px;margin:22px 0}img{max-width:100%;height:auto}.scroll{overflow-x:auto}table{border-collapse:collapse;font-size:15px;width:100%}td,th{border:1px solid #d3dce1;padding:8px;text-align:left}th{background:#eaf2f5}.metrics{display:flex;gap:24px;flex-wrap:wrap}.metrics b{font-size:28px;display:block}code{background:#edf2f5;padding:2px 4px}</style><main><nav><a href="../../">B1首页</a><a href="index.html">P1入口</a><a href="physics_report.html">真实物理报告</a><a href="physics_gallery.html">实际重建图</a><a href="report.html">材料模型报告</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p1-physics-qualification-20261018">物理证据</a></nav><h1>P1真实Maxwell资格：取得1个合格基础解，另1个优化未完成</h1>
+<p>2026-10-18。本轮已按新增明确授权真实运行，不再只是材料生成。模型、prior、sigma、gain、两个parent与12states/parent限制均沿用已发布协议。未重跑旧P0/F3，未训练NN。</p>
+<h2>实际结果</h2>
+<div class="scroll"><table><tr><th>条件</th><th>初始白化残差</th><th>最终白化残差</th><th>noise-ball上限</th><th>资格</th><th>最后投影梯度∞范数</th></tr><tr><td>A / dev000</td><td>259.9264</td><td>22.2923</td><td>23.7854</td><td>PASS：合法且数据相容</td><td>0.911215</td></tr><tr><td>B / dev001</td><td>551.3996</td><td>309.7873</td><td>23.7854</td><td>FAIL：未相容</td><td>223974</td></tr></table></div>
+<p>两者均从z=0、u=.5的共同先验均值开始。在线反演只读取y、sigma和target identity，不读真实latent、GT、N3或结构标签。两份观测按事先保存的noise生成，无挑选seed或放大噪声。</p>
+<p><strong>目前有1个合格P1 physics-only基础材料、0个新发现的替代世界。</strong> A不是认证MAP，noise-ball也不是posterior支持边界；没有posterior概率或多模式结论。</p>
+<p><img alt="A实际重建" src="figures/04_physics_P1_obs_A.png"></p>
+<p><img alt="B失败保留" src="figures/04_physics_P1_obs_B.png"></p>
+<h2>B为什么失败，当前能排除什么？</h2>
+<p>B的Φ由152020.76降至47984.08，投影梯度仍约2.24e5；每一步都降低目标，全部11次Gaussian更新长度均触及.5上限，但12states限额先到，不能视为收敛。固定Gaussian步长限幅与复杂材料形状的优化是当前瓶颈候选，尚未隔离各自影响；这也不保证追加迭代必然成功。</p>
+<p>生成材料与反演使用同一P1、同一full-forward、mesh、source、receiver和固定gain/noise。闭账后仅用已保存数组检查：真实生成材料的白化噪声范数为A=23.085207、B=23.757422，均低于固定阈值。因此B的本轮失败不支持“先验里没有可行解”或“物理唯一性阻止反演”的结论。没有用这些GT信息修改在线初始化或重跑。</p>
+<p>sigma仍为.00119211798514519，没有为新物体重新定标。按总散射响应RMS/sigma定义的实际SNR分别32.754/34.215dB，不是每物体固定20dB；总散射包含已知宿主响应。</p>
+<p><img alt="真实收敛轨迹" src="figures/05_physics_convergence.png"></p>
+<h2>物理与材料质量</h2>
+<p>26个端点全已立即保存，最大状态backward residual为1.54e-15；多源共享材料本构误差最大1.77e-15。完整白化J来自32个receiver共享adjoint，共24份，原数组均保留。</p>
+<p>离线复材料MAE：A由0.162177降至0.042536，B由0.310640降至0.186809。这只用于评分，不用于选择endpoint。A与GT的材料RMS仍为0.080712，说明数据相容不等于精确材料恢复；不能因此将真实生成材料和逆解自动称两个已发现的重要posterior世界。</p>
+<p>A损耗参数处于允许上界，投影梯度与active bounds在PHYSICS_METRICS中记录；未认证驻点。两例末端Dg数值rank均66，不把这些材料维数或小奇异值当exact-fiber存在证据。</p>
+<p><img alt="实际散射拟合" src="figures/06_physics_predictions.png"></p>
+<h2>全部成本与停止</h2>
+<p>新增26/32个full-material states、976/1024个complex full-solver RHS：208 forward RHS + 768 receiver-adjoint RHS；26次LU。受控job wall=5.476945s，含两truth、初始化、全部反演、导数、检查与端点持久化。不是算法独立cold/warm计时，也不是完整研究/上传host时间。旧paid背景导入单列，历史setup不当作免费。</p>
+<p>没有数值异常或line-search拒绝；B属于科学/优化资格失败，仍计费。剩余6states/48RHS是原失败预留，不转用来追加迭代或寻找正例，阶段封账。物理之后的分析只读已有数组，没有新LU/RHS/forward。</p>
+<h2>科学决定</h2>
+<p>继续保留A作为真实P1物理anchor；B标记NONCONVERGED_AT_FROZEN_LIMIT。P1比旧双Gaussian chart更丰富，但现在不足以证明多解机制或NN价值。</p>
+<p>F3-native、A17-X finite feedback、exact T-matrix、普通Full-J和goal-oriented ROM的共同机制比较仍NOT_RUN：本次授权只覆盖观测与独立物理资格，不以预留额度启动另一campaign。下一有价值的实验是在已合格A上冻结同材料位移/同成本对照；B应先做零新增物理的步长、局部模型与已有Jacobian分析，不能无限增加迭代。没有A17增量或强TAP算法贡献结论。</p>
+<p><a href="PHYSICS_METRICS.json">机器可读结果</a> · <a href="PHYSICS_DECISION.json">裁决</a> · <a href="PHYSICS_LEDGER.jsonl">逐项账本</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p1-physics-qualification-20261018">原始数组</a></p></main></html>

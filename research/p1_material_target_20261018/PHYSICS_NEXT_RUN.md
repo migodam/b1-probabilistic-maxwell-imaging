@@ -1,3 +1,5 @@
+> 历史冻结建议：用户随后明确授权，本资格阶段现已完成并封账。实际结果为26states/976RHS、1/2合格；见[真实物理报告](PHYSICS_QUALIFICATION_REPORT_ZH.md)。以下原预算建议保留，不代表当前仍未授权，也不授予后续比较额度。
+
 # 第一轮P1真实物理：代码已具备，预算尚未授权
 
 本阶段只生成材料和冻结target，Maxwell新增硬上限0。EXECUTION_AUTHORIZATION保持0。PHYSICS_AUTHORIZATION_TEMPLATE内的32/1024仅为建议，explicit_user_physics_authorization=false，不能直接运行。

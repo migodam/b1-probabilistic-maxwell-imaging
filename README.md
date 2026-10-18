@@ -2,7 +2,7 @@
 
 [中文报告](research/p1_material_target_20261018/RESEARCH_REPORT_ZH.md) · [网页与先验材料](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p1_material_target_20261018/)
 
-192份先验材料、24个材料侧运动端点已保存；真实P1观测和物理anchor尚未运行。新增Maxwell states/RHS均0，不训练NN。
+材料构造已完成；新增真实物理资格26states/976RHS：1/2基础材料合格，B未收敛。无新替代world，不训练NN。[真实物理报告](research/p1_material_target_20261018/PHYSICS_QUALIFICATION_REPORT_ZH.md)。
 
 ## 历史：A17-X × F3 竞争审计
 
