@@ -1,7 +1,7 @@
-"""Future paid P1 observation/physics-anchor stage; current allocation is ZERO.
+"""Paid P1 observation/physics-anchor stage; default allocation remains ZERO.
 
 No call is authorized by this file's existence. It exits before importing a
-physical backend or reading offline materials unless an explicit new user
+physical backend or reading offline materials unless an explicit user
 allocation is present. No network or neural model is involved.
 """
 from pathlib import Path
