@@ -1,4 +1,10 @@
-## 最新：P1材料先验与Maxwell target实现
+## 最新：P1零新增物理审计与下一最小实验
+
+[中文报告](research/p1_zero_physics_audit_20261018/RESEARCH_REPORT_ZH.md) · [网页与冻结协议](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p1_zero_physics_audit_20261018/)
+
+新物理0：材料尺度弱方向仍在；A/GT不是重要模式见证；B支持标准trust-region修复。A 12states/288RHS与B 16states/640RHS仅为建议，未授权、未运行。
+
+## 历史：P1材料先验与Maxwell target实现
 
 [中文报告](research/p1_material_target_20261018/RESEARCH_REPORT_ZH.md) · [网页与先验材料](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p1_material_target_20261018/)
 

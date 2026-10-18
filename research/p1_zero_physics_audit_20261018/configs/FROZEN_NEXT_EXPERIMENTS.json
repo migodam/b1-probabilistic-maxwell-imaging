@@ -1,0 +1,58 @@
+{
+  "protocol_version": "P1-minimal-A-B-v1-20261018",
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "status": "FROZEN_PROPOSAL_NOT_AUTHORIZED_NOT_RUN",
+  "new_physics_authorized": false,
+  "prior_noise_gain_background_mesh_acquisition_changed": false,
+  "GT_online": false,
+  "A": {
+    "purpose": "task-scale finite-noise candidate exploration, not assumed topology modes or posterior sampling",
+    "anchor": "P1_obs_A saved qualified state_0024",
+    "directions": ["prior_aware_material_weak_0", "prior_aware_material_weak_1", "prior_aware_material_weak_2"],
+    "direction_source": "A_ONLINE_GEOMETRY.npz frozen before offline GT evaluation",
+    "target_material_RMS": 0.02,
+    "arms": ["ordinary bounded Full-J constrained proposal", "material-native retraction proposal"],
+    "common_constraints": "original legal decoder; inward loss-bound half-ray; |actual RMS - .02| <= .0004, task floor .02 with 1e-10 numerical tolerance; signed material progress >= .01; Gaussian latent displacement <= 1; original property bounds",
+    "proposal_objectives": {
+      "Full-J": "minimize frozen-anchor quadratic latent posterior objective subject to common exact-decoder constraints",
+      "native": "minimize material goal error plus 1e-8 latent tie-breaker subject to the same constraints"
+    },
+    "common_corrector": "one bounded Full-J local quadratic correction after the first measured proposal; same exact-decoder distance/progress constraints; no return-to-anchor counted",
+    "each_arm_direction_cap": {"full_states": 2, "complex_RHS": 48, "breakdown": "proposal F 8 + shared receiver J 32 + corrected F 8"},
+    "failures_and_rejections_within_cap": true,
+    "data_feasible": "original white residual <= 23.785449004057032; backward residual <=1e-10; prior legal",
+    "likelihood_competitive": "DeltaPhi <=2 relative to the fixed A anchor; declared heuristic, not credible region",
+    "prior_reporting": "exact frozen latent logprior and change; no material-volume-density conversion or residual softmax",
+    "deduplication": "fixed arm/direction order; pairwise material RMS >=.02 for distinct task-scale candidates, numerical tolerance 1e-10",
+    "structure_reporting": "original P1 fraction change >=.15 in >=4 connected cells plus smoothed fraction RMS>=.01; topology separately; none of the currently generated rays pass this structure test",
+    "endpoint_selection": "lowest actual Phi among measured legal radius/progress-matched endpoints; never GT",
+    "max_new_states": 12,
+    "max_new_complex_RHS": 288,
+    "max_controlled_CPU_physics_wall_seconds": 300,
+    "terminal_Jacobian_required": false,
+    "secondary_RMS_0p04": "decoder-only negative/stress result retained; no paid .04 extension in this minimal proposal"
+  },
+  "B": {
+    "purpose": "restore independent physics-only anchor from its saved nonconverged endpoint",
+    "start": "P1_obs_B saved state_0048 and paid last Jacobian, not N3/GT reinitialization",
+    "arms": ["continue original bounded LM + fixed post-solve .5 Gaussian cap", "direct bounded adaptive trust-region quadratic subproblem"],
+    "target_objective": "Phi + .5 norm(z64)^2, frozen latent prior and likelihood",
+    "adaptive_TR": {"initial_Gaussian_radius": 0.5,"minimum_radius":0.03125,"maximum_radius":2.0,"property_step_infinity_cap":0.2,"acceptance":"actual posterior-objective decrease with positive predicted reduction","expand":"rho>.75 and step at >=.9 radius: radius x2 up to2","shrink":"rho<.25 or rejection: radius /2 down to .03125","subproblem":"optimize quadratic under radius and original property bounds directly; do not uniformly shrink an unconstrained solution"},
+    "per_arm_cap": {"new_states":8,"new_complex_RHS":320,"breakdown":"8 forward x8 + at most8 refreshed receiver Jacobians x32, including terminal KKT diagnostics"},
+    "failed_trials_consume_cap": true,
+    "qualification": "unchanged prior legality, white residual<=23.785449004057032, backward residual<=1e-10; stationarity reported separately, not required for a feasible base",
+    "max_new_states": 16,
+    "max_new_complex_RHS": 640,
+    "max_controlled_CPU_physics_wall_seconds": 600
+  },
+  "combined_request_only": {"states":28,"complex_RHS":928,"CPU_physics_wall_seconds":900,"GPU_NN_Mie_new3D":0},
+  "A17_X": {
+    "status":"DEFERRED_SEPARATE_MECHANISM_NOT_AUTHORIZED",
+    "meaning":"fixed legal material, finite-state/current enrichment; separate from decoder retraction and Full-J optimization",
+    "required_controls":["optimized full","exact T-matrix/Woodbury","ordinary Full-J","ordinary goal-oriented ROM with same reuse rights","A17 finite-state enrichment"],
+    "same_space_control":"ordinary Galerkin and A17 must agree at the same V,C; no intrinsic accuracy gain claim",
+    "exact_port_cost":"common prior ROI support up to256 cells per anchor; latent66 is not port66; propagate columns charged separately",
+    "new_Maxwell_budget_in_this_proposal":0
+  },
+  "stop_rules": ["No automatic authorization from this file", "No use of closed 6-state/48-RHS reserve", "No added iterations or lower material scale to rescue results", "No GT in proposal/correction/stopping/ranking", "No NN or mode/probability claims without reference"]
+}
