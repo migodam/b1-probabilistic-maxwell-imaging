@@ -1,0 +1,13 @@
+# 代码、数组与复现
+
+核心模型与protocol在1674a7f、测量语义在4f71c0a826f9db6217e5081bd56300716152db24固定，均早于材料输出。执行脚本/线上隔离接口及后续报告由本阶段最终commit保存。原数据生成seeds和任务尺度没有按结果修改。
+
+src/p1_material/prior.py为独立先验及解析Dg；proposals.py为prior可逆提案和candidate-only retraction；target.py为proper likelihood及受控A30接口。无需NN、GPU或新框架。沿用已有NumPy/SciPy/Matplotlib环境Gaussian/.venv_nn。
+
+已经执行：`PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python tools/prepare_p1_material_target.py`。原目录MATERIAL_STAGE_CLOSED阻止覆盖本轮样本；分析复现应复制配置/结果到新目录。该脚本不导入物理backend。
+
+Release包含calibration/dev/material_check三个192样本数组、noise draws、24个材料运动数组、128步prior-only proposal、原已付费背景以及所有记录。offline_materials中q与材料只属于数据生成/离线分析；线上反演只读configs/ONLINE_TARGET和inputs/online。当前online observation目录为空，不能从空目录推定已做过成像。
+
+旧F3只读取sigma metadata与已支付背景，没有重算旧P0、读取旧locked truth、执行SHA256或额外smoke。首次记录字段冲突的失败保留；恢复复用原材料/noise数组，未重新抽取有利parent。
+
+目标、测度和原始定义见MODEL_AND_PRIOR；真实阶段命令和费用见PHYSICS_NEXT_RUN。P1的材料law可以独立复用，但若改prior/noise/支持或采集，要新建target/protocol，不混合概率和实验结果。

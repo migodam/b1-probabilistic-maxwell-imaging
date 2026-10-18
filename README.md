@@ -1,4 +1,10 @@
-## 最新：A17-X × F3 竞争审计
+## 最新：P1材料先验与Maxwell target实现
+
+[中文报告](research/p1_material_target_20261018/RESEARCH_REPORT_ZH.md) · [网页与先验材料](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p1_material_target_20261018/)
+
+192份先验材料、24个材料侧运动端点已保存；真实P1观测和物理anchor尚未运行。新增Maxwell states/RHS均0，不训练NN。
+
+## 历史：A17-X × F3 竞争审计
 
 [中文报告](research/a17x_f3_competition_audit/RESEARCH_REPORT_ZH.md) · [网页与数值图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/a17x_f3_competition_audit/)
 

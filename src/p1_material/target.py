@@ -85,7 +85,9 @@ class MaxwellTarget:
         return self.model
     def forward(self,q,purpose='candidate'):
         model=self._model(states=1,RHS=8);chi,_=self.prior.decode(q);self.book.context=dict(purpose=purpose)
-        state=model.full_state(chi,purpose=purpose);path=OUT/f'results/physical/endpoints/state_{self.serial:04}.npz';self.serial+=1;path.parent.mkdir(parents=True,exist_ok=True)
+        index=self.serial;self.serial+=1;attempt=OUT/f'results/physical/attempts/input_{index:04}.npz';attempt.parent.mkdir(parents=True,exist_ok=True)
+        with attempt.open('wb') as f:np.savez_compressed(f,q=q,chi=chi,purpose=np.array(purpose));f.flush();os.fsync(f.fileno())
+        state=model.full_state(chi,purpose=purpose);path=OUT/f'results/physical/endpoints/state_{index:04}.npz';path.parent.mkdir(parents=True,exist_ok=True)
         with path.open('wb') as f:
             np.savez_compressed(f,q=q,chi=state.chi,current=state.current,field=state.field,prediction=state.data,LU=state.factor[0],pivots=state.factor[1],backward_residual=state.residual);f.flush();os.fsync(f.fileno())
         self.book.append(dict(event='ENDPOINT_PERSISTED',array=str(path.relative_to(ROOT)),purpose=purpose))

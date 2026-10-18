@@ -1,0 +1,37 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P1 · 相关被动材料先验与Maxwell target</title><style>body{font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif;color:#20323e;background:#f6f8fa;margin:0}main{max-width:1100px;margin:auto;padding:42px 24px}h1,h2{line-height:1.4}h2{margin-top:2em}a{color:#126c93}p{overflow-wrap:anywhere}nav{display:flex;gap:18px;flex-wrap:wrap}article,section{background:#fff;border:1px solid #dce4e8;padding:24px;border-radius:12px;margin:22px 0}img{max-width:100%;height:auto}.scroll{overflow-x:auto}table{border-collapse:collapse;font-size:15px;width:100%}td,th{border:1px solid #d3dce1;padding:8px;text-align:left}th{background:#eaf2f5}.metrics{display:flex;gap:24px;flex-wrap:wrap}.metrics b{font-size:28px;display:block}code{background:#edf2f5;padding:2px 4px}figcaption{color:#516672;font-size:15px}</style><main><nav><a href="../../">B1首页</a><a href="index.html">P1入口</a><a href="report.html">中文报告</a><a href="gallery.html">先验材料图</a><a href="START_HERE.md">GPT入口</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p1-material-target-20261018">原始数组</a></nav><article><h1>P1从建议变成实现：材料支持已建立，Maxwell辨识仍待实验</h1>
+<p>2026-10-18。本轮实际完成P1生成器、prior/likelihood、材料侧数值运行和后续physics入口。原P0、F3、T/G、LXZ及A17-X报告保持原样；没有训练NN，也没有新增Maxwell求解。</p>
+<h2>1. 现在具备什么</h2>
+<div class="scroll"><table><tr><th>对象</th><th>当前状态</th></tr><tr><td>P1 prior law、decoder、解析材料导数</td><td>已实现并冻结</td></tr><tr><td>采集、host、噪声、gain、物理材料定义</td><td>已冻结，复用原24×24 TM合同</td></tr><tr><td>材料数据</td><td>192份实际生成并保存</td></tr><tr><td>独立材料运动</td><td>frozen/native各12个实际端点，无Maxwell验证</td></tr><tr><td>观测与physics-only inversion代码</td><td>已实现，默认0预算、禁止物理导入</td></tr><tr><td>真实P1观测、合格anchor、ambiguity witness</td><td>NOT_RUN</td></tr><tr><td>Full-J / exact-port / goal-ROM / A17物理比较</td><td>NOT_RUN</td></tr><tr><td>posterior reference、概率校准、NN</td><td>NOT_RUN</td></tr></table></div>
+<p>这填补了上一轮“P1只有建议、没有prior实现”的缺口。不能把材料图当成同一观测的多个重建，也不能提前认定存在值得学习的fiber。</p>
+<h2>2. 物理与概率设计</h2>
+<p>P1用相关Gaussian场自然决定内部形状，C2饱和混合分数形成宿主/材料/过渡区。64个空间Gaussian变量与2个uniform材料参数，共66维。不输入孔洞数量或family label，不做peak normalization。</p>
+<p>材料为chi=.1+.04i+phi(a+ib)，a在.8–1.8、b在.03–.18。它是被动有效TM材料模型；宿主区不是绝对空气。已知r≤.38包络含256cells，内部形状与混合分数未知。</p>
+<p>prior在latent上明确正规化，饱和的多对一与可能原子质量保留为推前law。pCN+固定对角反射提案可保持该prior；material retraction是candidate-only，不是posterior sampler。详细定义见MODEL_AND_PRIOR。</p>
+<p>仪器sigma固定.00119211798514519，与原已暴露尺度相同；未按新图像增大噪声或保持每parent20dB。32组noise draws在任何forward前保存，前两个白化噪声范数23.0852/23.7574；没有择seed。95%噪声球tau23.78545仅为相容性诊断，不是Gaussian支持边界。</p>
+<h2>3. 真正运行的材料结果</h2>
+<p>固定独立seeds生成128 calibration、32 development、32 material-check，共192份。所有样本现已检查，后续不称blind Maxwell validation。两个拟用于物理资格阶段的parent在生成前固定为dev000/dev001，不根据图像或真值误差挑选。</p>
+<p>全材料Re chi范围.1–1.89873，Im chi .04–.21954；phase fraction数值为0到1（最多7e−16舍入）。独立校准parent配对的材料RMS中位数.55273，范围.26278–.93695，说明prior材料确有区别；尚未检查它们的散射是否可区分。</p>
+<p>在128个calibration样本上，phi≥.5的事件：</p>
+<div class="scroll"><table><tr><th>输出事件</th><th>count</th><th>prior频率</th></tr><tr><td>多个component</td><td>71</td><td>.55469</td></tr><tr><td>单component、无闭合宿主区</td><td>44</td><td>.34375</td></tr><tr><td>单component、一个闭合宿主区</td><td>6</td><td>.04688</td></tr><tr><td>单component、多个闭合宿主区</td><td>4</td><td>.03125</td></tr><tr><td>无≥4cells的threshold component</td><td>3</td><td>.02344</td></tr></table></div>
+<p>这是已定义prior事件的抽样估计，Wilson区间在METRICS；不是后验质量，也不给展示图逐张赋概率。最后一项不等于整张图为纯宿主；192份中完全纯宿主样本为0，理论law仍允许饱和原子。</p>
+<p><img alt="实际P1先验材料" src="figures/01_material_prior.png"></p>
+<h2>4. 材料几何与有限运动</h2>
+<p>6个固定calibration材料点，三个中心差分步长1e−3/3e−4/1e−4检查66坐标解析材料导数，最大相对误差1.66e−7。是decoder导数，不是Maxwell Jacobian。</p>
+<p>在1e−8相对阈值下，6个材料切空间数值rank依次65/66/59/17/60/63。饱和会产生inactive方向和rank变化，不能把latent66维直接当可移动材料维数，更不能把Dg的kernel当Maxwell nullspace。</p>
+<p>同6个已知prior点、相同方向，分别申请实际材料RMS .02/.04。frozen和material-native各12个端点，均达到申请距离；平均目标材料误差分别.004249/.002379。native按该decoder目标优化，本结果只说明代码和合法材料retraction可运行；没有数据相容、A17增量或物理teacher结论。</p>
+<p>进一步逐端点复核发现：native只有2/12次优化器正常收敛，其余10/12均触及150次迭代上限。达到材料距离不等于优化驻点成立。两方法各仅1/12通过事前定义的结构变化尺度，因此不能把24个数组称为24种结构或24个新物理解。原始优化状态和失败消息保存在RETRACTION_RESULTS.json，汇总见evidence/RETRACTION_STATUS_AUDIT.json；没有为得到更好结果追加优化。</p>
+<p><img alt="材料有限运动" src="figures/03_material_motion.png"></p>
+<h2>5. 后续真实运行入口已写好</h2>
+<p>tools/run_p1_physics.py包含数据生成和独立受约束物理反演：</p>
+<p>- 数据生成模块单独读取dev000/dev001材料并付两次truth forward；在线文件只含observation、sigma、target_id。</p>
+<p>- 反演模块从z=0、u=.5起步，只接收y及target；不读GT/种子、不用N3或truth warm start。</p>
+<p>- 复用原A30 full solver和32receiver共享adjoint，使用完整latent J与proper Gaussian prior的bounded GN/LM。</p>
+<p>- 每个返回endpoint立即保存q、材料、current/field/prediction/LU；失败前输入也单独持久化。state、RHS、adjoint、LU/action、wall及拒绝全部进入新账本。</p>
+<p>- noise-compatible可行anchor与MAP驻点分开，不把优化ftol或低材料误差当资格。</p>
+<p>当前预算为0，真实调用在A30 import之前被拒绝；实际材料运行确认backend modules为空。在线target配置删除数据生成seeds和隐含truth参数。没有用cached affine response冒充P1观测。</p>
+<h2>6. 成本、失败与决定</h2>
+<p>成功材料分析受控wall约.976s，包括样本恢复读取、数值导数、24个运动端点和持久化；它不是全部host研究时间。首attempt在记录字段合并处失败，192原材料及noise已保存；修复序列化后复用同一批数据，没有改prior/noise/seed。失败attempt的wall未测，明确保留，不将.976s冒充总费用。</p>
+<p>本轮Maxwell states/RHS/LU均0，GPU/NN/Mie/新3D均0。旧paid背景cache继续复用，历史setup成本不当作免费部署；从零准备完整仪器的成本本轮未重新测量。</p>
+<p><strong>决定：P1模型与材料实现READY；进入真实物理资格实验所需资产已具体化，但新物理预算仍未授权。</strong> 下一阶段建议独立32states/1024RHS/600s CPU，覆盖2个truth、每parent最多12次独立反演state及6次失败预留。不能自动启动，也不借旧余额。</p>
+<p>合格anchors取得后，才按A17X_P1_BINDING比较native/Full-J/X提案及full/exact-port/goal-ROM/A17求值；P1共同固定端口支持上限256，不将66latent当66port。现在仍没有新的同测量竞争世界、posterior模式或论文算法增量。</p>
+<p><a href="PHYSICS_NEXT_RUN.md">下一物理阶段</a> · <a href="METRICS.json">实际数组与指标</a> · <a href="RESOURCE_LEDGER.jsonl">账本</a> · <a href="REPRODUCE.md">复现</a></p></article></main></html>

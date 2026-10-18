@@ -20,6 +20,7 @@ def generate_observations(target,protocol):
     for i in [0,1]:
         name=['P1_obs_A','P1_obs_B'][i];path=OUT/f'inputs/online/{name}.npz'
         if path.exists():raise RuntimeError('observation already generated: no repeat truth payment')
+        path.parent.mkdir(parents=True,exist_ok=True)
         state=target.forward(latents[i],purpose='dataset_truth_'+name)
         with path.open('wb') as f:np.savez_compressed(f,observation=state.data+noise[i],sigma=target.sigma,target_id=np.array(target.target_id))
         write_json(OUT/f'inputs/offline_materials/{name}_provenance.json',dict(parent_id=protocol['preselected_physics_parent_ids'][i],development_index=i,noise_index=i,exposed_development=True,online_q_or_seed=False))
