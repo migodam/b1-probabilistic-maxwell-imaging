@@ -13,3 +13,5 @@ C原始ERROR、CLOSED、BOUNDARY_ERROR_DIAGNOSIS及恢复receipt都保留。机�
 11个原archive拓扑标签变化中，只有1个同时通过结构检查；没有同时在三个阈值稳定的结构拓扑改变。主held-out无拓扑改变。不能以阈值闪烁制造多解。
 
 Semantic Scholar focused collect返回429，保留访问缺口；后续只核对少量原始arXiv/出版方记录，不称穷尽新颖性搜索。原生subagent因已有线程槽位满未启动；核心全部由主Codex执行，无DeepSeek。
+
+逐solve RHS、LU与总wall完整记录。cached restore矩阵audit次数可由CACHE_REUSE准确推回；dense surrogate/SLSQP callback的逐次矩阵作用计数未全面记录，只包含在受控总wall中。不声称完整FLOP账本。

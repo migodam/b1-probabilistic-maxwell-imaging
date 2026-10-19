@@ -121,7 +121,7 @@ exact_T表中的1056 RHS包含四个anchor及256列传播；不是query-only的0
 | D | 240/700 | 7200/20000 | 65.645 |
 | E | 284/500 | 2016/18000 | 6.844 |
 
-最终 **2236计费states / 4000、46728 complex RHS /132000、319.243秒受控执行wall**。其中2012次真实fresh native full-forward/LU；E另保守计费固定材料ROM与factor-reuse尝试。物理operation spans合计166.339秒；它不含完整人机研究、编码、发布时间。NN训练CPU、GPU0。所有余量封账，不借旧余额。
+最终 **2236计费states / 4000、46728 complex RHS /132000、319.243秒受控执行wall**。其中2012次真实fresh native full-forward/LU；E另保守计费固定材料ROM与factor-reuse尝试。物理operation spans合计166.339秒；它不含完整人机研究、编码、发布时间。NN训练CPU、GPU0。所有余量封账，不借旧余额。逐solve RHS、LU与总wall已对账；dense surrogate/SLSQP矩阵作用只包含在总wall，未全面保存逐callback次数，不声称完整FLOP账本。
 
 C曾因property=-6.94e-18触发严格检查。原8states/320RHS及失败保持；只读回放确认机器精度误差后，以显式latent边界恢复继续，同一总账不重置。基础反演的subproblem failure、局部distance失败、重复点、短MH混合失败和无收益NN均保存。
 

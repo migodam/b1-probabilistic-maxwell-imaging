@@ -13,6 +13,9 @@ def main():
         return len(rel.parts)>1 and rel.parts[0] in 'ABCDE' and rel.parts[1] in ['endpoints','attempts','evaluations']
     for kind,name in [('reports','P2_Material_Fiber_Code_Reports_20261019.zip'),('raw','P2_Material_Fiber_Raw_Maxwell_20261019.zip')]:
         archive=dest/name;n=0
+        if kind=='raw' and '--reports-only' in sys.argv and archive.exists():
+            with zipfile.ZipFile(archive) as z:n=len(z.infolist())
+            assets.append(dict(file=archive.name,bytes=archive.stat().st_size,files=n));continue
         with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=3,allowZip64=True) as z:
             for p in sorted(OUT.rglob('*')):
                 if not p.is_file() or p.name=='executor.lock' or p.name.endswith('.log') or p.name in ['PUBLICATION_RECEIPT.json','WEB_READBACK.json','EVIDENCE_RELEASE.json']:continue

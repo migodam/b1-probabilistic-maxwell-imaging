@@ -10,6 +10,6 @@
 
 总计2236计费states、46728 complex RHS、319.243s受控wall、166.339s物理operation wall，GPU0。
 
-2012次fresh full-state/LU与224次保守计费的ROM/factor-reuse尝试分开。small-core RHS、矩阵动作、pool构造、训练CPU和缓存读写在RESOURCE_LEDGER逐项记录。历史26states/976RHS与其他研究均未改。端口setup1056 RHS不能从exact-T query-only列中隐藏。
+2012次fresh full-state/LU与224次保守计费的ROM/factor-reuse尝试分开。small-core、pool和训练CPU有action或wall记录；cached audit次数可推回，dense surrogate callback未全面逐次计数，时间包含在受控总wall。历史26states/976RHS与其他研究均未改。端口setup1056 RHS不能从exact-T query-only列中隐藏。
 
 RESOURCE_SUMMARY.json保留主分析时的2152states/44552RHS；RESOURCE_SUMMARY_FINAL.json包含后续84states/2176RHS强基线审查，不是重复授权。

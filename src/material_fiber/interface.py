@@ -18,6 +18,7 @@ def correct(target,parent,measured_point,origin,velocity,radius,seed):
 
 def transition(target,current,observation,rng,temperature=1.,beta=.02,property_sd=.01):
     """Prior-reversible pCN/reflection: full-likelihood MH, without correction."""
+    if not 0<=temperature<=1:raise ValueError('registered temperatures must lie in [0,1]')
     q=target.prior.local_prior_reversible(current.q,rng,beta,property_sd)
     proposed=target.evaluate(q,'standalone_prior_reversible_MH')
     ratio=-temperature*(target.phi(proposed,observation)-target.phi(current,observation))
