@@ -111,6 +111,12 @@ exact_T表中的1056 RHS包含四个anchor及256列传播；不是query-only的0
 
 本轮可检验的新机制候选是：在材料任务尺度下分离decoder secant与Maxwell余项，决定何时付费刷新并保持有限进度。然而本次soft/dynamic并未在完整成本上明确优于hard split与强Full-J，因此尚不能将它升级为强IEEE TAP贡献。
 
+## 进程隔离偏差
+
+已执行A版本e5bd9d3将dataset生成与反演放在同一OS进程，未满足计划中的进程隔离。反演函数只接收观测、prior与物理接口；调用链未使用truth初始化、方向、排序或停止，但这不能替代OS隔离。独立offline评分是另一个进程。该偏差削弱隔离保证，不追认PASS。
+
+封账后已新增独立generate_material_fiber_observations.py入口：先单独生成观测并保留同一A账本，退出后再启动反演进程。新入口未执行真实物理，不据此改写本轮结果；当前CAMPAIGN_CLOSED继续禁止新调用。
+
 ## 9. 全部成本、失败与下一步
 
 | 阶段 | 计费states / 上限 | complex RHS / 上限 | 受控wall秒 |

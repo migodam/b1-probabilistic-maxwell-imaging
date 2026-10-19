@@ -14,3 +14,5 @@
 阅读顺序：RESEARCH_REPORT_ZH.md → GO_NO_GO_DECISION.md → METHOD_COMPARISON.md → THEORY_REFINEMENTS.md → RESOURCE_SUMMARY_FINAL.json。
 
 METRICS.json是补充对照前的预冻结主分析；SUPPLEMENT_RESULTS.json是评分后EXPOSED强基线审查，二者不混为新的盲测。MaterialHypothesisPackage/FINAL为最终交接包；不相容base留在failed_baseline，绝不作为合格假设。原始payload和所有失败保留。
+
+[进程隔离偏差与封账后代码修正](PROTOCOL_DEVIATIONS.md)：本次A生成/反演同进程，函数输入隔离，未实现计划的OS隔离；新独立入口NOT_RUN，不追认本轮隔离验证。

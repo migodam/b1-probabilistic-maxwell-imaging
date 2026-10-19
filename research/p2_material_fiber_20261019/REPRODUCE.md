@@ -9,3 +9,5 @@ tools/analyze_material_fiber.py为隔离GT评价；它在封账后拒绝覆盖�
 主要代码：src/material_fiber/core.py、optimize.py、explore.py、global_search.py、learn.py、acceleration.py、baseline_audit.py。所有随机种子与已暴露补充协议在configs。模型checkpoint小于1MB/个；生成过程候选/失败日志与raw endpoints保留。
 
 Release保留所有raw材料/current/field/prediction、训练weights、原prior与背景、选中anchor的LU/receiver transfer；未交接的其余LU属于可重建计算缓存，仍在本地保存，未作为免费部署成本。任何重新分解、RHS或额外频率都应按新预算计费。
+
+[进程隔离偏差与封账后代码修正](PROTOCOL_DEVIATIONS.md)：本次A生成/反演同进程，函数输入隔离，未实现计划的OS隔离；新独立入口NOT_RUN，不追认本轮隔离验证。

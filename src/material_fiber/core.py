@@ -110,11 +110,12 @@ class Book:
         try:yield
         finally:self.block=previous
 
-    def close(self,status='COMPLETE',error=None):
+    def close(self,status='COMPLETE',error=None,final_phase=True):
         if self.finished:return
         self.finished=True;signal.setitimer(signal.ITIMER_REAL,0)
         receipt=dict(status=status,error=error,counts=dict(self.counts),consumed=dict(self.used[self.stage]),controlled_wall_seconds=time.perf_counter()-self.start,physics_operation_wall_seconds=self.physics_seconds)
-        self.append('JOB_END',**receipt);write(self.close_path,receipt)
+        self.append('JOB_END',**receipt)
+        write(self.close_path if final_phase else OUT/f'{self.stage}/OBSERVATION_JOB_CLOSED.json',receipt)
         fcntl.flock(self.lock,fcntl.LOCK_UN);self.lock.close()
 
 

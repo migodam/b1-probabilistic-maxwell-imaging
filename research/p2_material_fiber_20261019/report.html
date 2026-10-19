@@ -43,6 +43,9 @@
 <h2>8. 数学贡献与先验工作的边界</h2>
 <p>材料尺度归一化与soft matrix filter可避免单看latent弱奇异值；线性重参数化并正确变换prior Hessian后，材料空间滤波相对差为5.27e-14。这是实现与几何一致性，不是新首创定理。LIS/DILI早已利用prior/likelihood谱结构；Riemannian MCMC已有位置依赖几何。</p>
 <p>本轮可检验的新机制候选是：在材料任务尺度下分离decoder secant与Maxwell余项，决定何时付费刷新并保持有限进度。然而本次soft/dynamic并未在完整成本上明确优于hard split与强Full-J，因此尚不能将它升级为强IEEE TAP贡献。</p>
+<h2>进程隔离偏差</h2>
+<p>已执行A版本e5bd9d3将dataset生成与反演放在同一OS进程，未满足计划中的进程隔离。反演函数只接收观测、prior与物理接口；调用链未使用truth初始化、方向、排序或停止，但这不能替代OS隔离。独立offline评分是另一个进程。该偏差削弱隔离保证，不追认PASS。</p>
+<p>封账后已新增独立generate_material_fiber_observations.py入口：先单独生成观测并保留同一A账本，退出后再启动反演进程。新入口未执行真实物理，不据此改写本轮结果；当前CAMPAIGN_CLOSED继续禁止新调用。</p>
 <h2>9. 全部成本、失败与下一步</h2>
 <div class="scroll"><table><tr><th>阶段</th><th>计费states / 上限</th><th>complex RHS / 上限</th><th>受控wall秒</th></tr><tr><td>A</td><td>383/600</td><td>12728/24000</td><td>66.594</td></tr><tr><td>B</td><td>482/1000</td><td>8312/34000</td><td>96.625</td></tr><tr><td>C</td><td>847/1200</td><td>16472/36000</td><td>83.535</td></tr><tr><td>D</td><td>240/700</td><td>7200/20000</td><td>65.645</td></tr><tr><td>E</td><td>284/500</td><td>2016/18000</td><td>6.844</td></tr></table></div>
 <p>最终 <strong>2236计费states / 4000、46728 complex RHS /132000、319.243秒受控执行wall</strong>。其中2012次真实fresh native full-forward/LU；E另保守计费固定材料ROM与factor-reuse尝试。物理operation spans合计166.339秒；它不含完整人机研究、编码、发布时间。NN训练CPU、GPU0。所有余量封账，不借旧余额。逐solve RHS、LU与总wall已对账；dense surrogate/SLSQP矩阵作用只包含在总wall，未全面保存逐callback次数，不声称完整FLOP账本。</p>

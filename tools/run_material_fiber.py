@@ -7,14 +7,10 @@ from material_fiber.optimize import reconstruct
 
 def stage_A(t):
     parents=json.loads((OUT/'configs/PARENTS.json').read_text());records=[];points={};methods=['fixed_LM','adaptive_TR','material_TR','coarse_TR']
-    # Only this dataset process reads fresh generation coordinates. Inversion sees sanitized y only.
-    for r in parents:
-        parent=r['parent']
-        with np.load(OUT/f'inputs/offline_only/{parent}.npz') as a:q=a['q'].copy();noise=a['noise'].copy()
-        truth=t.evaluate(q,'DATASET_TRUTH_'+parent)
-        save(OUT/f'inputs/online/{parent}.npz',observation=truth.state.data+noise,target_id=np.array(t.target_id),sigma=t.sigma)
-        write(OUT/f'offline_only/{parent}_truth.json',dict(key=truth.key,split=r['split']))
-    del q,noise,truth
+    # Post-closure hardening: generation must finish in a different OS process.
+    # The executed A version e5bd9d3 used same-process function isolation; disclosed.
+    if not (OUT/'A/OBSERVATIONS_GENERATED.json').exists():
+        raise RuntimeError('Run the separately budgeted observation process first; no online truth reads')
     dev=[r['parent'] for r in parents if r['split']=='train'][:4]+['P1_obs_B']
     for parent in dev:
         for method in methods:
