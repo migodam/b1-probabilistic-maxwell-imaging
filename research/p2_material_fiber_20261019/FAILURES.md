@@ -17,3 +17,5 @@ Semantic Scholar focused collect返回429，保留访问缺口；后续只核对
 逐solve RHS、LU与总wall完整记录。cached restore矩阵audit次数可由CACHE_REUSE准确推回；dense surrogate/SLSQP callback的逐次矩阵作用计数未全面记录，只包含在受控总wall中。不声称完整FLOP账本。
 
 [进程隔离偏差与封账后代码修正](PROTOCOL_DEVIATIONS.md)：本次A生成/反演同进程，函数输入隔离，未实现计划的OS隔离；新独立入口NOT_RUN，不追认本轮隔离验证。
+
+E fallback采用已付费offline reference误差审查，非可部署在线误差界；耗时表标为oracle-assisted benchmark，不作为在线速度保证。

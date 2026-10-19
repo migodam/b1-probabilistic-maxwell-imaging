@@ -31,3 +31,5 @@ Full-J sphere-only发现held-out10个替代，hard-prior sphere-only9个。该�
 | goal_ROM | 192 | 4 | 13.635 | 28.911 | 38.249 |
 
 所有setup纳入，full允许自有factor重用，普通ROM允许增量basis，固定材料不被corrector改变。
+
+E fallback采用已付费offline reference误差审查，非可部署在线误差界；耗时表标为oracle-assisted benchmark，不作为在线速度保证。

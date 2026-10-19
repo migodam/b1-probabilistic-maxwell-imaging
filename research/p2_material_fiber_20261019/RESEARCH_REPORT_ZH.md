@@ -105,6 +105,11 @@ exact_T表中的1056 RHS包含四个anchor及256列传播；不是query-only的0
 
 ![评价器实际成本](figures/acceleration.png)
 
+
+## E的fallback仅为离线审查
+
+E使用B已付费的完整prediction测量真实误差，再决定是否支付full fallback。该reference不进入ROM/A17候选方向选择，但误差检查本身是offline oracle；没有实现可部署的在线误差界。因而E表是oracle-assisted accuracy/cost audit，不是在线可靠fallback控制器的速度证明。B的reference生成费用已在总账支付，并非免费新增物理。A17即使在这种有利审查条件下仍慢于full，负面集成结论保留。
+
 ## 8. 数学贡献与先验工作的边界
 
 材料尺度归一化与soft matrix filter可避免单看latent弱奇异值；线性重参数化并正确变换prior Hessian后，材料空间滤波相对差为5.27e-14。这是实现与几何一致性，不是新首创定理。LIS/DILI早已利用prior/likelihood谱结构；Riemannian MCMC已有位置依赖几何。
