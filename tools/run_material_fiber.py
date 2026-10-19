@@ -61,8 +61,12 @@ def main():
     try:
         if args.stage=='A':stage_A(t)
         elif args.stage=='B':
-            from material_fiber.explore import stage_B
-            stage_B(t)
+            if args.recover:
+                from material_fiber.baseline_audit import run
+                run(t)
+            else:
+                from material_fiber.explore import stage_B
+                stage_B(t)
         elif args.stage=='C':
             from material_fiber.global_search import stage_C
             stage_C(t)

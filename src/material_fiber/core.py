@@ -55,7 +55,8 @@ class Book:
             r=json.loads((OUT/f'configs/{stage}_RECOVERY_{recovery}.json').read_text())
             old=json.loads(self.close_path.read_text())
             self.close_path=OUT/f'{stage}/CLOSED_RECOVERY_{recovery}.json'
-            if self.close_path.exists() or old['status']!='ERROR' or r['consumed_before']!=dict(self.used[stage]) or not r['same_authorization_and_remaining_caps']:raise BudgetStop('invalid/reused recovery; no reset')
+            permitted=old['status']=='ERROR' or (r.get('baseline_completion',False) and old['status']=='COMPLETE')
+            if self.close_path.exists() or not permitted or r['consumed_before']!=dict(self.used[stage]) or not r['same_authorization_and_remaining_caps']:raise BudgetStop('invalid/reused recovery; no reset')
         starts=sum(r['event']=='JOB_START' and r.get('stage')==stage for r in self.rows)
         ends=sum(r['event']=='JOB_END' and r.get('stage')==stage for r in self.rows)
         if starts!=ends:raise BudgetStop('unclosed executor: reconcile recorded attempts before explicit recovery')

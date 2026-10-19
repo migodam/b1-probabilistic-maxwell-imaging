@@ -34,7 +34,7 @@ def direction(t,p,g,method,rng):
         v=g['T']@(g['V']@(np.sqrt(weight)*z))
     return feasible_direction(t,p,v)
 
-def constrained_fit(t,model,origin,velocity,s,seed,objective='data',g=None,corrector=False):
+def constrained_fit(t,model,origin,velocity,s,seed,objective='data',g=None,corrector=False,progress_required=True):
     """Same exact decoder/progress constraints; no arbitrary material clipping."""
     P=t.prior;x0=origin.state.chi;goal=x0+s*velocity;q0=origin.q;local=max(1.,s/.02)
     y=t.observation(t.parent);r=t.white(model.state.data-y);scale=max(1.,.5*r@r)
@@ -69,8 +69,10 @@ def constrained_fit(t,model,origin,velocity,s,seed,objective='data',g=None,corre
     def jp(q):return np.real(values(q)['D'].conj().T@velocity)/(576*s)
     def ball(q):return float(1-np.sum((q[:64]-q0[:64])**2)/(local*local))
     def jb(q):return np.r_[-2*(q[:64]-q0[:64])/(local*local),0.,0.]
-    fit=minimize(f,seed,jac=jf,bounds=[(None,None)]*64+[(0,1)]*2,constraints=[dict(type='eq',fun=sphere,jac=js),dict(type='ineq',fun=prog,jac=jp),dict(type='ineq',fun=ball,jac=jb)],method='SLSQP',options=dict(ftol=1e-8,maxiter=70))
-    valid=lambda q:P.legal(q) and abs(sphere(q))<=.0404 and prog(q)>=-1e-7 and ball(q)>=-1e-7
+    constraints=[dict(type='eq',fun=sphere,jac=js),dict(type='ineq',fun=ball,jac=jb)]
+    if progress_required:constraints.append(dict(type='ineq',fun=prog,jac=jp))
+    fit=minimize(f,seed,jac=jf,bounds=[(None,None)]*64+[(0,1)]*2,constraints=constraints,method='SLSQP',options=dict(ftol=1e-8,maxiter=70))
+    valid=lambda q:P.legal(q) and abs(sphere(q))<=.0404 and (not progress_required or prog(q)>=-1e-7) and ball(q)>=-1e-7
     q=fit.x
     fallback=False
     if not valid(q) and valid(seed):q=seed.copy();fallback=True
