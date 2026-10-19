@@ -41,6 +41,7 @@ class BlockStop(RuntimeError):pass
 class Book:
     """Single paid executor; reservation is durable before every native solve."""
     def __init__(self,stage,recovery=None):
+        if (OUT/'CAMPAIGN_CLOSED.json').exists():raise BudgetStop('P2 campaign closed; unused allocation cannot be revived')
         self.stage=stage;self.recovery_id=recovery;self.counts=Counter();self.path=OUT/'RESOURCE_LEDGER.jsonl';self.path.parent.mkdir(parents=True,exist_ok=True)
         self.lock=(OUT/'executor.lock').open('a');fcntl.flock(self.lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         self.rows=[json.loads(x) for x in self.path.read_text().splitlines()] if self.path.exists() else []
@@ -135,7 +136,7 @@ class Target:
 
     def backend(self):
         if self.model is None:
-            p=ROOT.parents[1]/'A30/a30-maxwell-material-manifold';sys.path.insert(0,str(p/'src'))
+            p=Path(os.environ.get('B1_P2_A30_ROOT',str(ROOT.parents[1]/'A30/a30-maxwell-material-manifold')));sys.path.insert(0,str(p/'src'))
             from a30.physics import FrozenMaxwellAdapter
             with self.book.physical('saved_background_setup'):
                 self.model=FrozenMaxwellAdapter.from_background_npz(OUT/'inputs/background/weak.npz',self.book,purpose_prefix='P2_'+self.book.stage)

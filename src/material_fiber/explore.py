@@ -69,8 +69,9 @@ def constrained_fit(t,model,origin,velocity,s,seed,objective='data',g=None,corre
     def jp(q):return np.real(values(q)['D'].conj().T@velocity)/(576*s)
     def ball(q):return float(1-np.sum((q[:64]-q0[:64])**2)/(local*local))
     def jb(q):return np.r_[-2*(q[:64]-q0[:64])/(local*local),0.,0.]
-    constraints=[dict(type='eq',fun=sphere,jac=js),dict(type='ineq',fun=ball,jac=jb)]
+    constraints=[dict(type='eq',fun=sphere,jac=js)]
     if progress_required:constraints.append(dict(type='ineq',fun=prog,jac=jp))
+    constraints.append(dict(type='ineq',fun=ball,jac=jb))
     fit=minimize(f,seed,jac=jf,bounds=[(None,None)]*64+[(0,1)]*2,constraints=constraints,method='SLSQP',options=dict(ftol=1e-8,maxiter=70))
     valid=lambda q:P.legal(q) and abs(sphere(q))<=.0404 and (not progress_required or prog(q)>=-1e-7) and ball(q)>=-1e-7
     q=fit.x

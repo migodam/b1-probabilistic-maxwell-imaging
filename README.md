@@ -1,3 +1,9 @@
+## 最新：P2材料探索完整Campaign
+
+[中文报告](research/p2_material_fiber_20261019/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p2_material_fiber_20261019/)
+
+24个新物体，15个合格anchor；有限噪声替代存在，强基线削弱软谱优势。整体REDIRECT，概率不估计；2236states/46728RHS封账。
+
 ## 最新：P1零新增物理审计与下一最小实验
 
 [中文报告](research/p1_zero_physics_audit_20261018/RESEARCH_REPORT_ZH.md) · [网页与冻结协议](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p1_zero_physics_audit_20261018/)
