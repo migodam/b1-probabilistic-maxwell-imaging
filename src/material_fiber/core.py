@@ -40,8 +40,8 @@ class BlockStop(RuntimeError):pass
 
 class Book:
     """Single paid executor; reservation is durable before every native solve."""
-    def __init__(self,stage):
-        self.stage=stage;self.counts=Counter();self.path=OUT/'RESOURCE_LEDGER.jsonl';self.path.parent.mkdir(parents=True,exist_ok=True)
+    def __init__(self,stage,recovery=None):
+        self.stage=stage;self.recovery_id=recovery;self.counts=Counter();self.path=OUT/'RESOURCE_LEDGER.jsonl';self.path.parent.mkdir(parents=True,exist_ok=True)
         self.lock=(OUT/'executor.lock').open('a');fcntl.flock(self.lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         self.rows=[json.loads(x) for x in self.path.read_text().splitlines()] if self.path.exists() else []
         self.used={s:Counter() for s in CAPS};self.previous_wall=Counter();self.context={};self.block=None
@@ -49,14 +49,20 @@ class Book:
             s=r.get('stage')
             if s in self.used and r['event'] in ['STATE','RHS']:self.used[s][r['event']]+=r['amount']
             if s in self.used and r['event']=='JOB_END':self.previous_wall[s]+=r['controlled_wall_seconds']
-        if (OUT/f'{stage}/CLOSED.json').exists():raise BudgetStop('stage already closed; no reset')
+        self.close_path=OUT/f'{stage}/CLOSED.json'
+        if self.close_path.exists():
+            if recovery is None:raise BudgetStop('stage already closed; no reset')
+            r=json.loads((OUT/f'configs/{stage}_RECOVERY_{recovery}.json').read_text())
+            old=json.loads(self.close_path.read_text())
+            self.close_path=OUT/f'{stage}/CLOSED_RECOVERY_{recovery}.json'
+            if self.close_path.exists() or old['status']!='ERROR' or r['consumed_before']!=dict(self.used[stage]) or not r['same_authorization_and_remaining_caps']:raise BudgetStop('invalid/reused recovery; no reset')
         starts=sum(r['event']=='JOB_START' and r.get('stage')==stage for r in self.rows)
         ends=sum(r['event']=='JOB_END' and r.get('stage')==stage for r in self.rows)
         if starts!=ends:raise BudgetStop('unclosed executor: reconcile recorded attempts before explicit recovery')
         a=json.loads((OUT/'configs/AUTHORIZATION.json').read_text())
         if not a['explicit_user_authorization'] or a['campaign_id']!='P2-material-fiber-20261019':raise BudgetStop('authorization mismatch')
         self.start=time.perf_counter();self.physics_seconds=0.;self.finished=False;self.physical_depth=0
-        self.append('JOB_START',authorization='configs/AUTHORIZATION.json')
+        self.append('JOB_START',authorization='configs/AUTHORIZATION.json',recovery=recovery)
         signal.signal(signal.SIGALRM,lambda a,b:(_ for _ in ()).throw(BudgetStop('controlled stage wall cap')))
         signal.setitimer(signal.ITIMER_REAL,max(.001,CAPS[stage][2]-self.previous_wall[stage]))
 
@@ -106,7 +112,7 @@ class Book:
         if self.finished:return
         self.finished=True;signal.setitimer(signal.ITIMER_REAL,0)
         receipt=dict(status=status,error=error,counts=dict(self.counts),consumed=dict(self.used[self.stage]),controlled_wall_seconds=time.perf_counter()-self.start,physics_operation_wall_seconds=self.physics_seconds)
-        self.append('JOB_END',**receipt);write(OUT/f'{self.stage}/CLOSED.json',receipt)
+        self.append('JOB_END',**receipt);write(self.close_path,receipt)
         fcntl.flock(self.lock,fcntl.LOCK_UN);self.lock.close()
 
 

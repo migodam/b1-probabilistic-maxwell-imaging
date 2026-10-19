@@ -6,6 +6,7 @@ from .optimize import reconstruct
 from .explore import block
 
 def independent(t,parent,anchor,method,seed,states=32,version='v1'):
+    if t.book.recovery_id:version=version+'_recovery'+t.book.recovery_id
     rng=np.random.default_rng(seed);before=t.book.used['C'].copy();records=[];points=[]
     with t.book.scope(states,40*states+64):
         for j in range(2 if states>=16 else 1):

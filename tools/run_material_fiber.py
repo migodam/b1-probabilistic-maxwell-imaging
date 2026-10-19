@@ -56,8 +56,8 @@ def stage_A(t):
     print(json.dumps(dict(stage='A',qualified=sum(r['data_feasible'] for r in report),parents=len(report),winner=winner,consumed=dict(t.book.used['A']))),flush=True)
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('stage',choices=list('ABCDE'));args=ap.parse_args()
-    b=Book(args.stage);t=Target(b);status='COMPLETE';error=None
+    ap=argparse.ArgumentParser();ap.add_argument('stage',choices=list('ABCDE'));ap.add_argument('--recover');args=ap.parse_args()
+    b=Book(args.stage,args.recover);t=Target(b);status='COMPLETE';error=None
     try:
         if args.stage=='A':stage_A(t)
         elif args.stage=='B':

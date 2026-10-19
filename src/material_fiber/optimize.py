@@ -67,6 +67,12 @@ def reconstruct(target,parent,method,max_states=16,initial=None,run=None,iterati
             for alpha in ([1.,.5,.25] if method=='fixed_LM' else [1.]):
                 if book.used[book.stage]['STATE']-u0['STATE']>=max_states:break
                 q=p.q+alpha*d
+                violation=max(0.,float(-min(q[64:])),float(max(q[64:])-1))
+                if violation and violation<=64*np.finfo(float).eps:
+                    # Only numerical active-bound restoration in latent coordinates.
+                    # The original prior and physical material bounds are unchanged.
+                    old=q[64:].copy();q[64:]=np.maximum(0.,np.minimum(1.,q[64:]))
+                    book.append('ROUND_OFF_BOUND_RESTORATION',max_latent_change=float(max(abs(q[64:]-old))),threshold=float(64*np.finfo(float).eps))
                 if not target.prior.legal(q):raise RuntimeError('optimizer outside original P1 support')
                 try:new=target.evaluate(q,run+f'_trial{k}_alpha{alpha}')
                 except BlockStop:break
