@@ -104,6 +104,7 @@ def stage_E(t):
                         f=t.evaluate(q,f'E_fallback_{parent}_{query["key"]}_{method}_{repetition}');delivered=f.state.data
                     else:delivered=pred
                     row=dict(parent=parent,query=query['key'],method=method,repetition=repetition,cache='cold_sequence' if repetition==0 else 'warm_factors_and_own_basis_no_prediction_memoization',approximation_seconds=approximation_seconds,total_seconds=time.perf_counter()-start,white_prediction_error=white,absolute_Phi_error=phi_error,full_fallback=fallback,error=error,delivered_white_error=float(np.linalg.norm(t.white(delivered-ref))),states=t.book.used['E']['STATE']-before['STATE'],RHS=t.book.used['E']['RHS']-before['RHS'],**detail)
+                    save(OUT/f'E/evaluations/{parent}_{query["key"]}_{method}_{repetition}.npz',q=q,chi=chi,prediction=delivered,approximation=np.zeros((0,0),complex) if pred is None else pred,reference_prediction=ref)
                     rows.append(row)
         details.append(dict(parent=parent,setup_seconds={m:s.get('cold_setup_seconds',0) for m,s in setups.items()},exact_port_count=len(indices),latent_dimension=66,port_count_not_latent_dimension=True))
         write(OUT/'E/RESULTS.json',dict(rows=rows,setups=details,same_space_identity_is_control=True,certified_rejection=False));print(json.dumps(dict(stage='E',parent=parent,consumed=dict(t.book.used['E']))),flush=True)
