@@ -20,6 +20,24 @@ def figure(fig,name):
     plt.close(fig)
 def table(header,rows):return '| '+' | '.join(header)+' |\n| '+' | '.join(['---']*len(header))+' |\n'+'\n'.join('| '+' | '.join(map(str,r))+' |' for r in rows)
 
+def preserve_execution_disclosures():
+    """Regenerated reports must retain the recorded execution limitations."""
+    isolation = "本次A生成与反演在同一OS进程，未达到计划中的进程隔离；反演调用链没有使用GT初始化、方向、排序或停止。封账后独立生成入口NOT_RUN，不追认本轮隔离PASS。详见[执行偏差](PROTOCOL_DEVIATIONS.md)。"
+    oracle = "E fallback使用B已付费full prediction作为offline accuracy oracle，未实现可部署在线误差界。因此E是oracle-assisted accuracy/cost audit，不构成在线可靠fallback速度证明；reference不进入ROM/A17方向选择，费用保留在B。"
+    for name, title, note in [
+        ('START_HERE.md', '执行限制', isolation+'\n\n'+oracle),
+        ('RESEARCH_REPORT_ZH.md', '执行限制与审计范围', isolation+'\n\n'+oracle),
+        ('REPRODUCE.md', '执行限制', isolation),
+        ('METHOD_COMPARISON.md', 'E误差审查范围', oracle),
+        ('FAILURES.md', '执行限制', isolation+'\n\n'+oracle),
+    ]:
+        path=OUT/name
+        content=path.read_text()
+        marker='## '+title
+        if marker not in content:
+            path.write_text(content.rstrip()+'\n\n'+marker+'\n\n'+note+'\n')
+
+
 def main():
     m=json.loads((OUT/'METRICS.json').read_text());s=json.loads((OUT/'SUPPLEMENT_RESULTS.json').read_text());r=json.loads((OUT/'RESOURCE_SUMMARY_FINAL.json').read_text());ac=json.loads((OUT/'ACCELERATION_FULL_COST.json').read_text());checks=json.loads((OUT/'SCIENTIFIC_NUMERICAL_CHECKS.json').read_text());parents=json.loads((OUT/'configs/PARENTS.json').read_text());anchors=json.loads((OUT/'A/ANCHORS.json').read_text());metrics=json.loads((OUT/'OFFLINE_PARENT_METRICS.json').read_text());cfg=json.loads((OUT/'configs/TARGET.json').read_text());P=MaterialPrior(cfg,json.loads((ROOT/'research/p1_material_target_20261018/inputs/geometry.json').read_text())['points']);selection=json.loads((OUT/'ONLINE_SELECTED_CANDIDATES.json').read_text());(OUT/'figures').mkdir(exist_ok=True)
     gallery=[]
@@ -334,7 +352,12 @@ Release保留所有raw材料/current/field/prediction、训练weights、原prior
     body=f'''<h1>材料确实能动，但“多拓扑世界”尚未建立</h1><p>Research P2 · 2026-10-19 · A–E已真实运行 · 最终REDIRECT</p><section><h2>这次得到的真实结果</h2><div class="metrics"><span><b>15 / 24</b>合格物理基础解</span><span><b>29</b>held-out材料去重替代</span><span><b>1.35%</b>联合Best-of-4 MAE下降</span><span><b>0</b>held-out拓扑改变</span></div><p>29个替代来自4个合格held-out对象，1个通过结构变化检查；它们不是29个posterior modes。另4个基础恢复失败仍计入全部8对象统计。概率全部未估计。</p><p><strong>更强Full-J同样找到替代，削弱了软谱独占机制的主张；小Flow和A17没有独立收益。</strong></p><a href="report.html">完整结论、失败和对照 →</a></section><section><h2>同一观测下的实际材料解释</h2><img src="figures/materials_{parent}.png"><p>GT只离线评分；其余材料由在线探索生成并经完整Maxwell验证。相同色标，2D scalar TM。不是多张图片的概率生成。</p><a href="gallery.html">全部8个held-out及失败图 →</a></section><section><h2>强基线决定研究方向</h2><img src="figures/cost_accuracy_discovery.png"><p>hard-prior更便宜；dynamic相对hard的配对MAE区间跨0。sphere-only Full-J补充审查标记为exposed，原主分析保持。</p></section><section><h2>完整费用与明确停止</h2><p>{r['total']['states']} /4000计费states；{r['total']['RHS']} /132000 complex RHS；受控执行{r['total']['controlled_wall_seconds']:.3f}秒；GPU0。编码、研究与发布时间不包含在物理执行wall里。</p><p>停止当前Flow和A17优势主张；保留低成本材料不确定性基准，下一步需要稳定结构ambiguity或主动测量正例。</p></section>'''
     (OUT/'index.html').write_text(top+body+'</main></html>');(OUT/'report.html').write_text(top+'<article>'+rendered(mainreport)+'</article></main></html>')
     gal=top+'<h1>全部held-out：真值、基础解与候选</h1><p>相同材料色标；GT只用于离线评分。不合格base明确标INVALID，不展示为合格候选。候选不等于posterior模式。</p>'
-    for par in gallery:gal+=f'<section><h2>{par}</h2><img src="figures/materials_{par}.png"><p><a href="MaterialHypothesisPackage/FINAL/{par}.json">机器可读候选及完整物理prediction引用</a></p></section>'
+    for par in gallery:
+        package=json.loads((OUT/f'MaterialHypothesisPackage/FINAL/{par}.json').read_text())
+        labels=['GT（仅离线）']+[f"{v['endpoint_key']}：{v['source_method']}" for v in package['hypotheses'][:5]]
+        caption=html.escape('；'.join(labels))
+        gal+=f'<section><h2>{par}</h2><img src="figures/materials_{par}.png"><p>{caption}</p><p><a href="MaterialHypothesisPackage/FINAL/{par}.json">机器可读候选及完整物理prediction引用</a></p></section>'
+
     for name in ['optimizer_B','cost_accuracy_discovery','measured_transport','forward_predictions','acceleration']:gal+=f'<section><h2>{name}</h2><img src="figures/{name}.png"><a href="figures/{name}.pdf">PDF</a></section>'
     (OUT/'gallery.html').write_text(gal+'</main></html>')
     notice=f'## 最新：P2材料探索完整Campaign\n\n[中文报告]({REL}RESEARCH_REPORT_ZH.md) · [网页与材料图]({WEB})\n\n24个新物体，15个合格anchor；有限噪声替代存在，强基线削弱软谱优势。整体REDIRECT，概率不估计；{r["total"]["states"]}states/{r["total"]["RHS"]}RHS封账。\n\n'
@@ -345,6 +368,8 @@ Release保留所有raw材料/current/field/prediction、训练weights、原prior
     if REL not in text:path.write_text(text.replace('<div class="grid">','<div class="grid"><section class="card"><h2>最新：P2材料探索</h2><p>24物体完整campaign；有限噪声替代存在，软谱、学习及A17优势未建立。</p><a href="'+REL+'">报告与实际材料图 →</a></section>',1))
     path=ROOT/'research/index.html';text=path.read_text()
     if 'p2_material_fiber_20261019/' not in text:path.write_text(text.replace('<main>','<main><section><h2>最新：P2材料探索</h2><p>整体REDIRECT；完整强基线、负结果与资源账本。</p><a href="p2_material_fiber_20261019/">报告与图库 →</a></section>',1))
+    preserve_execution_disclosures()
+    (OUT/'report.html').write_text(top+'<article>'+rendered((OUT/'RESEARCH_REPORT_ZH.md').read_text())+'</article></main></html>')
     print(json.dumps(dict(web_prepared=True,physics_calls=0,figures=len(list((OUT/'figures').glob('*.png'))),overall='REDIRECT')))
 
 if __name__=='__main__':main()
