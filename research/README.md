@@ -51,3 +51,9 @@
 [执行入口](research_w_p0_20261022/START_HERE.md) · [中文报告](research_w_p0_20261022/RESEARCH_REPORT_ZH.md) · [图文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_p0_20261022/)
 
 一维解析回归PASS；二维前向网格资格未过，P0-B为UNRESOLVED。没有合格墙体歧义见证、搜索优势或P1结论。
+
+## Research W continuation — 2026-10-23
+
+[图文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_continuation/) · [完整中文报告](research_w_continuation/RESEARCH_W_CONTINUATION_REPORT_ZH.md) · [复现与原始数组](research_w_continuation/REPRODUCE.md)
+
+P0-Q通过，限定为QUALIFIED_DISCRETE_FULLWAVE；原两墙体8项完整观测细化差0.0065–0.0332。P0-B完成3/4组四方法搜索，最小cal距离19.91，未达到1，未发现合格歧义对；搜索另有0.1最小特征未严格执行的实施缺口。joint与P1未运行；不把搜索失败说成唯一性。旧P0及其结论保持原样。
