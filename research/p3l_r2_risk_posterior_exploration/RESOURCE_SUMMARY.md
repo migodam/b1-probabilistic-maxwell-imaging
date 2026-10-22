@@ -1,3 +1,15 @@
+# 最终封账费用
+
+本轮已封账，新增 **5,956,328 complex RHS**；受控CPU墙钟 **3.8630小时**（含训练、分析、完整证据打包），记录物理求解墙钟 **0.8320小时**，GPU **0.0000小时**。states/LU预留均为 **322,717**，实际完成操作及失败差异保留在独立审计，不混作完全成功的求解计数。
+
+最终sequence **866751**，无活动预留。总额20,000,000RHS/24hCPU/24GPU-hours未扩张；剩余配额不继续使用。历史P3-L8,374,472RHS保持原封账。最终JSON/JSONL.GZ和`CAMPAIGN_CLOSED.json`在同一Release作为独立资产。
+
+原始tar分卷是封账前文件快照，明确不含最终ledger。先流式恢复全部分卷，再将`FINALIZATION.zip`解到同一新目录、把独立`RESOURCE_LEDGER.jsonl.gz`解压到本研究目录；不能把快照的报告费用当最终总量。小型Pro交接包是不同的精选证据，不要求下载全部分卷。
+
+最终ledger压缩和网络交付的I/O墙钟另列publication receipts，新增Maxwell/RHS/LU/GPU为0；不得将网络等待说成物理加速或算法运行时间。
+
+## 封账前独立审计快照（原文保留）
+
 # R2 资源审计
 
 审计状态：**PASS_INTERNAL_ACCOUNTING**；发现 0 个账本/回执不一致。

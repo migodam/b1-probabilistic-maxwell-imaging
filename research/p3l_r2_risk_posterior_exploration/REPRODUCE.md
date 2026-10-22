@@ -181,3 +181,16 @@ Book 的权威记录是 `RESOURCE_LEDGER.jsonl` 的最后一条 `after`，JSON s
 ## 8. 独立机制确认的附加源码
 
 `src/p3r2_mechanism/` 保存第二批256对象的7家族21模型协议。9个新增训练运行与首批77个工件分开；随机decoder包络使用固定QR seed 2026102303，不根据测试结果重选。`MECHANISM_CONFIRMATION_FROZEN.json` 与源提交5d5332a1在第一份新观测前冻结。两批结果不可混成事前512人检验；第二批没有执行matched16。这里不提供绕过新授权和旧封账的重跑入口。
+
+## 9. 已封账交付及可选依赖覆盖包
+
+本轮已封账：5,956,328新增complex RHS、3.86296588小时受控CPU墙钟、GPU0。完整原始档为51个gzip字节分卷，receipt状态COMPLETE；最终ledger明确另交。恢复全部分卷后，覆盖FINALIZATION.zip，并把独立RESOURCE_LEDGER.jsonl.gz解压到本研究目录。不得移除CAMPAIGN_CLOSED标记来复用余额。网络上传与ledger压缩I/O有独立publication回执，不算作新Maxwell。
+
+同一[Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr2-risk-posterior-20261023)另提供两个可选包，补齐主原始档故意未跟随的外部依赖：
+
+- A30_FROZEN_SOURCE.zip：固定717d3d26a290248bd2b9aeb55f3d03694b407b84的既有src/a30及原许可文件；无需下载整个外部仓库。解压后新授权物理重算可设B1_P3L_A30_ROOT为A30_FROZEN。仅保存材料重放不需要它。
+- HISTORICAL_DEV_PREREQUISITES.zip：32个已暴露DEV的80个原本符号链接目标，约176.6MB，作为同一新恢复目录的普通文件覆盖层。只复制既有字节、未解读数组、没有新增物理，也不含旧LOCKED文件。offline_only标签继续只供离线评价，不能用于online提案。这些是已付历史证据，不是新测试对象或新teacher。
+
+pro_handoff.zip约22.25MB，是面向GPT Pro的精选理论与实际证据；不需要下载约95GB完整分卷便可先研究。其生成概要名为HANDOFF_README.md，另保留原仓库README.md，无重复成员。最初存在README同名的本地V1包已保留并标为交付替代，公开只采用V2。
+
+原始分卷包含封账前报告快照；以本网页、最终账本、封账覆盖层及公开发布回执为最新交付状态。可用性与科学资格分开：FULL posterior始终未合格，不因下载或重放成功而改变。
