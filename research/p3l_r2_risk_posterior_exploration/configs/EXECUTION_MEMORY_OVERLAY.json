@@ -6,7 +6,7 @@
   "reason": "Advance independent A/B/C work without sharing LU caches. Physics Book lock remains exclusive. Current training is CPU-only and stores bounded arrays/minibatches.",
   "observed_aggregate_training_and_physics_RSS_MiB": 1200,
   "per_physics_process_RSS_stop_MiB": 2000,
-  "neural_data_bound": "16384 training and2048 validation; minibatch256; full one-split arrays, no historical LU/current cache references",
+  "neural_data_bound": "32768 training and2048validation, minibatch256; no LU/current references in training",
   "transfer_cache_entries": 4,
   "training_controlled_wall": "Each concurrent child is independently reserved and charged; sums conservatively count overlap twice.",
   "GPU": "Zero in current execution; CPU wrapper rejects MPS without an independently billed GPU worker.",
@@ -15,5 +15,6 @@
     "fresh_locked_primary_baseline": "native96 plus incremental probit64, frozen later before new locked generation",
     "different_optimization_budget_is_disclosed": true
   },
-  "implementation_fix": "Missing json import in newly extracted anchors.py caught by independent review and fixed before first new A-anchor call; no failed physics or overwritten endpoints."
+  "implementation_fix": "Missing json import in newly extracted anchors.py caught by independent review and fixed before first new A-anchor call; no failed physics or overwritten endpoints.",
+  "observed_training_RSS_MiB": 1105.0
 }

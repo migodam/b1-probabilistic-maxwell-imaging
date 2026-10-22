@@ -10,11 +10,11 @@ import time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
-from p3r2.residual_risk import MODELS,read_anchor,subset,fit_geometry,train_residual
+from p3r2.residual_risk import MODELS,DEFAULT_MODELS,read_anchor,subset,fit_geometry,train_residual
 from p3r2.risk_training import write_json
 
 
-def main():
+def main(argv=None,default_models=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--train',required=True,type=Path); p.add_argument('--validation',required=True,type=Path)
     p.add_argument('--output',required=True,type=Path)
@@ -22,14 +22,14 @@ def main():
     p.add_argument('--geometry',type=Path,default=ROOT/'research/p1_material_target_20261018/inputs/geometry.json')
     p.add_argument('--sizes',nargs='+',type=int,default=[512])
     p.add_argument('--seeds',nargs='+',type=int,default=[11,22,33])
-    p.add_argument('--models',nargs='+',choices=MODELS,default=list(MODELS))
+    p.add_argument('--models',nargs='+',choices=MODELS,default=list(DEFAULT_MODELS if default_models is None else default_models))
     p.add_argument('--epochs',type=int,default=100); p.add_argument('--batch-size',type=int,default=128)
     p.add_argument('--patience',type=int,default=15); p.add_argument('--max-seconds',type=float,default=600)
     p.add_argument('--learning-rate',type=float,default=5e-4); p.add_argument('--weight-decay',type=float,default=1e-3)
     p.add_argument('--weak-rank',type=int,default=16); p.add_argument('--strong-rank',type=int,default=12)
     p.add_argument('--j-unwhitened',action='store_true',help='J is raw measurement derivative; whiten it internally')
     p.add_argument('--device',choices=['cpu','mps'],default='cpu'); p.add_argument('--resume',action='store_true')
-    a=p.parse_args()
+    a=p.parse_args(argv)
     if not 0<a.epochs<=100 or not 0<a.max_seconds<=600 or min(a.sizes)<1 or a.batch_size<1:
         p.error('positive sizes/batch and epochs<=100, max-seconds<=600 required')
     if min(a.weak_rank,a.strong_rank)<1 or a.weak_rank+a.strong_rank>64:

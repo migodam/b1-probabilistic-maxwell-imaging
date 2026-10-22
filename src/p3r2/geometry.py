@@ -259,7 +259,12 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
     directory.mkdir(parents=True, exist_ok=True)
     y = target.observation(parent)
     _persist(target, anchor, directory)
-    frozen = material_frame(target.jacobian(anchor), target.prior.derivative(anchor.q), weak_dimension)
+    try:
+        frozen = material_frame(target.jacobian(anchor), target.prior.derivative(anchor.q), weak_dimension)
+    except ValueError as error:
+        if 'insufficient identifiable material tangent dimension' not in str(error):raise
+        result=dict(parent=parent,arm=arm,rows=[],completed_steps=0,requested_steps=int(steps),status='STOPPED_INSUFFICIENT_MATERIAL_TANGENT_RANK',error=str(error),cost={'full_forward_calls':0,'linear_solve_rhs':0},GT_used_online=False,posterior_samples=False,exact_fiber_claim=False,continuous_path_verified=False,candidate_probabilities=None)
+        write(directory/'RESULTS.json',result);return result
     save(directory/"BASE_FRAME.npz", **frozen)
     current = anchor
     previous_error = previous_rotation = 0.
@@ -341,7 +346,11 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
         actual_response = target.white(accepted.state.data-current.state.data)
         model_response = _white_material(target, C, delta)
         previous_error = float(np.linalg.norm(actual_response-model_response)/max(1., np.linalg.norm(actual_response)))
-        new_frame = material_frame(target.jacobian(accepted), target.prior.derivative(accepted.q), weak_dimension)
+        rank_collapsed=False
+        try:new_frame = material_frame(target.jacobian(accepted), target.prior.derivative(accepted.q), weak_dimension)
+        except ValueError as error:
+            if 'insufficient identifiable material tangent dimension' not in str(error):raise
+            new_frame=frame;rank_collapsed=True
         previous_rotation = float(np.linalg.norm(new_frame["projector"]-dynamic["projector"], ord=2))
         strata, f = _strata(target.prior, accepted.q)
         full_cost = {k:float(target.book.counts.get(k, 0)-before.get(k, 0)) for k in ("full_forward_calls", "linear_solve_rhs")}
@@ -370,6 +379,7 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
             Maxwell_secant_relative_error=previous_error, cost=full_cost,
             wall_seconds=time.perf_counter()-start,
             posterior_sample=False, continuous_path_verified=False)
+        row['material_tangent_rank_collapsed']=rank_collapsed
         save(directory/f"step_{step:03d}_FRAME.npz", **new_frame)
         with (directory/"TRACE.jsonl").open("a") as stream:
             from .core import plain
@@ -378,8 +388,9 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
         current = accepted
         write(directory/"RESULTS.json", dict(parent=parent, arm=arm, rows=rows,
             completed_steps=len(rows), status="IN_PROGRESS", GT_used_online=False, posterior_samples=False))
+        if rank_collapsed:break
     result = dict(parent=parent, arm=arm, rows=rows, completed_steps=sum("endpoint" in r for r in rows),
-        requested_steps=int(steps), status="COMPLETE" if len(rows) == steps and "endpoint" in rows[-1] else "STOPPED_NO_FEASIBLE_DIRECTION",
+        requested_steps=int(steps), status="COMPLETE" if len(rows) == steps and "endpoint" in rows[-1] and not rows[-1].get('material_tangent_rank_collapsed') else "STOPPED_NO_FEASIBLE_DIRECTION",
         wall_seconds=time.perf_counter()-start,
         cost={k:float(target.book.counts.get(k, 0)-initial_counts.get(k, 0)) for k in ("full_forward_calls", "linear_solve_rhs")},
         GT_used_online=False, posterior_samples=False, exact_fiber_claim=False,

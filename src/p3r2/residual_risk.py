@@ -14,8 +14,14 @@ from p1_material.prior import MaterialPrior, saturation_prime
 from .risk_models import observation_features
 from .risk_training import material_targets, risk_rows, risk_summary, write_json
 
-MODELS = ('anchor', 'residual_ridge', 'residual_mlp', 'geometry_mlp', 'physics_cnn',
+DEFAULT_MODELS = ('anchor', 'residual_ridge', 'residual_mlp', 'geometry_mlp', 'physics_cnn',
           'weak_decoder', 'weak_strong_decoder', 'local_anchor_cnn', 'local_geometry_cnn')
+DEFAULT_CONTROL_MODELS = ('all_decoder','random_decoder','u2_decoder')
+CONTROL_MODELS = DEFAULT_CONTROL_MODELS + ('all_decoder_matched',)
+LOCAL_CONTROL_MODELS = ('local_capacity_cnn','local_permuted_geometry_cnn')
+MODELS = DEFAULT_MODELS + CONTROL_MODELS + LOCAL_CONTROL_MODELS
+RANDOM_DECODER_FRAME_SEED = 2026102303
+LOCAL_GEOMETRY_PERMUTATION_SEED = 2026102304
 
 
 def read_anchor(path, supervised=False):
@@ -135,8 +141,21 @@ class ResidualNet(nn.Module):
         self.register_buffer('roi',torch.as_tensor(geometry['roi'],dtype=torch.long))
         self.register_buffer('weak',torch.as_tensor(geometry['weak']))
         self.register_buffer('strong',torch.as_tensor(geometry['strong']))
+        if kind=='random_decoder':
+            # Only the output correction frame changes. Context features retain
+            # the identical train-J geometry used by weak_strong_decoder.
+            frame,tri=np.linalg.qr(np.random.default_rng(RANDOM_DECODER_FRAME_SEED).normal(size=(64,64)))
+            frame*=np.where(np.diag(tri)<0,-1.,1.)[None,:]
+            w,s=self.weak.shape[1],self.strong.shape[1]
+            self.register_buffer('random_weak',torch.as_tensor(frame[:,:w].astype('float32')))
+            self.register_buffer('random_strong',torch.as_tensor(frame[:,w:w+s].astype('float32')))
+        if kind=='local_permuted_geometry_cnn':
+            # Same parent's normalized geometry information, fixed permutation;
+            # no labels, foreign parents, or new normalization are introduced.
+            permutation=np.random.default_rng(LOCAL_GEOMETRY_PERMUTATION_SEED).permutation(576)
+            self.register_buffer('geometry_permutation',torch.as_tensor(permutation,dtype=torch.long))
         output=2*len(geometry['roi'])
-        if kind in ('local_anchor_cnn','local_geometry_cnn'):
+        if kind in ('local_anchor_cnn','local_geometry_cnn')+LOCAL_CONTROL_MODELS:
             # Shared local filters impose a translation-shared material-risk bias.
             # Anchor-only: chi0 Re/Im and broadcast u2. Geometry: those inputs plus
             # weak/strong sensitivity and complex residual-backprojection images.
@@ -157,7 +176,9 @@ class ResidualNet(nn.Module):
             if kind=='geometry_mlp':
                 ins+=6*24*24
             if kind=='weak_decoder': output=self.weak.shape[1]+2
-            if kind=='weak_strong_decoder': output=self.weak.shape[1]+self.strong.shape[1]+2
+            if kind in ('weak_strong_decoder','random_decoder'): output=self.weak.shape[1]+self.strong.shape[1]+2
+            if kind in ('all_decoder','all_decoder_matched'): output=66
+            if kind=='u2_decoder': output=2
             self.head=nn.Sequential(nn.Linear(ins,width or 128),nn.GELU(),nn.Dropout(.05),
                                    nn.Linear(width or 128,128),nn.GELU(),nn.Linear(128,output))
         last=self.head if isinstance(self.head,nn.Conv2d) else self.head[-1]
@@ -174,8 +195,13 @@ class ResidualNet(nn.Module):
         return torch.cat((cfg['host_chi'][0]+dr*fraction,cfg['host_chi'][1]+di*fraction),dim=1)
 
     def forward(self,base,geometry,image,q0,anchor):
-        if self.kind in ('local_anchor_cnn','local_geometry_cnn'):
+        if self.kind in ('local_anchor_cnn','local_geometry_cnn')+LOCAL_CONTROL_MODELS:
             material=image[:,:2] if self.kind=='local_anchor_cnn' else image
+            if self.kind=='local_capacity_cnn':
+                material=torch.cat((image[:,:2],torch.zeros_like(image[:,2:])),dim=1)
+            elif self.kind=='local_permuted_geometry_cnn':
+                shuffled=image[:,2:].flatten(2)[:,:,self.geometry_permutation].reshape(-1,4,24,24)
+                material=torch.cat((image[:,:2],shuffled),dim=1)
             # The last two base features are u2, standardized from train only.
             properties=base[:,-2:,None,None].expand(-1,-1,24,24)
             local_image=torch.cat((material,properties),dim=1)
@@ -188,15 +214,32 @@ class ResidualNet(nn.Module):
         else: raw=self.head(geometry)
         if 'decoder' not in self.kind:
             return anchor+raw*self.residual_scale
-        w=self.weak.shape[1]
-        dz=3*torch.tanh(raw[:,:w])@self.weak.T
-        offset=w
-        if self.kind=='weak_strong_decoder':
-            s=self.strong.shape[1]
-            # Smoothly bounded smaller strong correction; factorized weak/strong
-            # heads share context but do not assert probabilistic independence.
-            dz=dz+.75*torch.tanh(raw[:,w:w+s])@self.strong.T
-            offset+=s
+        if self.kind in ('all_decoder','all_decoder_matched'):
+            gaussian=raw[:,:64]
+            # The historical all_decoder retains radius3. The separate matched
+            # variant matches the weak+strong worst-case L2 radius, not their
+            # directional box: sqrt(16*3^2+12*0.75^2)=sqrt150.75 by default.
+            radius=3. if self.kind=='all_decoder' else float(np.sqrt(9*self.weak.shape[1]+.75**2*self.strong.shape[1]))
+            if self.kind=='all_decoder':
+                dz=3*gaussian/torch.sqrt(1+torch.sum(gaussian*gaussian,dim=1,keepdim=True))
+            else:
+                # Preserve initial gain3; only the saturation radius changes.
+                dz=3*gaussian/torch.sqrt(1+(9/radius**2)*torch.sum(gaussian*gaussian,dim=1,keepdim=True))
+            offset=64
+        elif self.kind=='u2_decoder':
+            dz=torch.zeros_like(q0[:,:64]);offset=0
+        else:
+            weak=self.random_weak if self.kind=='random_decoder' else self.weak
+            strong=self.random_strong if self.kind=='random_decoder' else self.strong
+            w=weak.shape[1]
+            dz=3*torch.tanh(raw[:,:w])@weak.T
+            offset=w
+            if self.kind in ('weak_strong_decoder','random_decoder'):
+                s=strong.shape[1]
+                # Smoothly bounded smaller strong correction; factorized weak/strong
+                # heads share context but do not assert probabilistic independence.
+                dz=dz+.75*torch.tanh(raw[:,w:w+s])@strong.T
+                offset+=s
         odds_factor=torch.exp(2*torch.tanh(raw[:,offset:offset+2]))
         u=q0[:,64:]*odds_factor/(1-q0[:,64:]+q0[:,64:]*odds_factor)
         q=torch.cat((q0[:,:64]+dz,u),dim=1)
@@ -354,7 +397,29 @@ def train_residual(kind,seed,train,validation,geometry,output,epochs=100,batch_s
                      'chi0 real/imag + broadcast u2 + normalized weak/strong sensitivity and complex residual-backprojection images'
                      if kind=='local_geometry_cnn' else 'see model kind and checkpoint feature normalization'),
                  architecture=('3 shared 3x3 convolution blocks, 16 channels; zero-init 1x1 two-component material residual head'
-                     if kind in ('local_anchor_cnn','local_geometry_cnn') else kind),
+                     if kind in ('local_anchor_cnn','local_geometry_cnn')+LOCAL_CONTROL_MODELS else kind),
                  estimator_type=payload['estimator_type'],calibrated_density='NOT_CLAIMED',history=history)
+    if kind in CONTROL_MODELS:
+        control_output=66 if kind in ('all_decoder','all_decoder_matched') else 2 if kind=='u2_decoder' else geometry['weak'].shape[1]+geometry['strong'].shape[1]+2
+        reference_output=geometry['weak'].shape[1]+geometry['strong'].shape[1]+2
+        summary['control_contract']=dict(
+            context='identical current train-J geometry features and train-only normalization; only decoder correction action differs',
+            hidden_width=width,hidden_second_width=128,property_odds='exp(2*tanh(raw_u2)); same as weak_strong_decoder',
+            random_frame_seed=RANDOM_DECODER_FRAME_SEED if kind=='random_decoder' else None,
+            random_frame_fit='fixed Gaussian QR, first weak_rank and next strong_rank axes; no J or GT used in correction frame' if kind=='random_decoder' else None,
+            gaussian_bound='aggregate L2 norm<3: 3*r/sqrt(1+||r||^2)' if kind=='all_decoder' else
+                           f"aggregate L2 norm<{np.sqrt(9*geometry['weak'].shape[1]+.75**2*geometry['strong'].shape[1])}: 3*r/sqrt(1+9*||r||^2/R^2), initial gain3 preserved; worst-case radius matched, radial ball instead of directional box" if kind=='all_decoder_matched' else
+                           'z fixed exactly' if kind=='u2_decoder' else f"{geometry['weak'].shape[1]} coefficients bounded3,{geometry['strong'].shape[1]} coefficients bounded0.75 in fixed random orthonormal frame",
+            output_dimension=control_output,weak_strong_reference_parameter_count=count+(reference_output-control_output)*129,
+            parameter_count_difference_vs_weak_strong=(control_output-reference_output)*129,
+            scientific_scope='legal-decoder inductive-bias/property/correction-frame control; not a posterior or geometry benefit claim')
+    if kind in LOCAL_CONTROL_MODELS:
+        summary['local_control_contract']=dict(parameter_count=5842,
+            reference='original local_geometry_cnn; identical8-channel convolution architecture and exact trainable parameter count',
+            input='original anchor Re/Im and broadcast u2 with4zero channels' if kind=='local_capacity_cnn' else
+                  'original anchor Re/Im and broadcast u2; same-parent4geometry channels permuted jointly over576 cells',
+            permutation_seed=LOCAL_GEOMETRY_PERMUTATION_SEED if kind=='local_permuted_geometry_cnn' else None,
+            normalization='unchanged train-only saved normalization; permutation applied after normalization',
+            scientific_scope='capacity or spatial-alignment control; no foreign-parent information or posterior claim')
     write_json(out/'RESULT.json',summary)
     return summary

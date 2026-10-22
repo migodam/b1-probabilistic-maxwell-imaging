@@ -29,19 +29,22 @@ def landscape(prior,q,weights,energies,anchor_energies=None):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--job',required=True);parser.add_argument('--parent',default='DEV_030')
-    parser.add_argument('--anchor',type=Path,default=ROOT.parent/'b1-p3l-local-posterior/research/p3l_local_posterior_imaging/A/anchors/DEV_030.npz')
+    parser.add_argument('--anchor',type=Path,default=None)
     parser.add_argument('--particles',type=int,default=64);parser.add_argument('--mutation-steps',type=int,default=2)
     parser.add_argument('--pcn-beta',type=float,default=.04);parser.add_argument('--property-sd',type=float,default=.02)
     parser.add_argument('--rhs-cap',type=int,default=262144);parser.add_argument('--max-stages',type=int,default=256)
     parser.add_argument('--max-wall',type=int,default=7200);parser.add_argument('--seed',type=int,default=2026102293)
     args=parser.parse_args()
+    if args.anchor is None:
+        args.anchor=ROOT.parent/'b1-p3l-local-posterior/research/p3l_local_posterior_imaging/A/anchors'/f'{args.parent}.npz'
     if args.rhs_cap>262144 or args.rhs_cap<args.particles*8: raise ValueError('bounded new source-SMC pilot required')
     book=Book('B',args.job,max_wall=args.max_wall);status='COMPLETE';error=None;calls=0;events=None
     try:
         target=Target(book);y=target.observation(args.parent);dest=book.jobdir
         anchor_energies=None
         if args.anchor.exists():
-            if args.parent!='DEV_030': raise ValueError('DEV030 paid baseline must not be applied to another observation')
+            if args.anchor.stem!=args.parent:
+                raise ValueError('paid baseline parent must match the observation identity')
             with np.load(args.anchor,allow_pickle=False) as z:
                 q=z['q'].copy();prediction=z['prediction'].copy();chi=z['chi'].copy()
             if not np.allclose(target.prior.decode(q)[0],chi,atol=1e-12,rtol=0): raise ValueError('paid baseline decoder identity')
