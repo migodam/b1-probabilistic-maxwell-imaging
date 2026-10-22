@@ -1,0 +1,218 @@
+Fetching docs: /kinnala/scikit-fem
+Mode: code | Topic: BilinearForm complex dtype quadrature MeshTri ElementTriP3 Basis probes
+---
+### Access derivatives in BilinearForm
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/api.rst
+
+Accesses gradient components directly via the .grad attribute of basis function arrays.
+
+```pycon
+>>> @BilinearForm
+... def form(u, v, _):
+...     # u.grad[0] is first derivative with respect to x, and so on
+...     return u.grad[0] * v.grad[0] + u.grad[1] * v.grad[1]  # laplacian
+```
+
+--------------------------------
+
+### Mapping Quadrature Points to Global Coordinates
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/extended.rst
+
+Transform local quadrature points to global mesh coordinates using the mapping object.
+
+```python
+global_points = basis_p1.mapping.F(points)
+plt.subplots(figsize=(5,5))
+plt.plot(global_points[0], global_points[1], 'or')
+skfem.visuals.matplotlib.draw(mesh, ax=plt.gca())
+plt.xlabel('x[0]'); plt.ylabel('x[1]');
+```
+
+--------------------------------
+
+### Derive P0 Basis from P1
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/extended.rst
+
+Constructs a P0 basis from an existing P1 basis to ensure shared quadrature points.
+
+```python
+basis_p0 = basis_p1.with_element(skfem.ElementTriP0())
+```
+
+--------------------------------
+
+### Plotting Quadrature Points on Reference Triangle
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/extended.rst
+
+Access quadrature points from the basis object to visualize their locations on the reference triangle.
+
+```python
+plt.subplots(figsize=(5,5))
+plt.plot([0,1,0,0], [0,0,1,0], 'k')
+points, weights = basis_p1.quadrature
+plt.plot(points[0], points[1], 'or')
+plt.xlabel('x[0] (local coords)'); plt.ylabel('x[1] (local coords)');
+```
+
+--------------------------------
+
+### Inspecting Quadrature Point Array Shape
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/extended.rst
+
+Check the dimensions of the global quadrature points array.
+
+```python
+>>> global_points.shape  # 2 dimensional, 8 elements, 3 points/element
+(2, 8, 3)
+```
+
+--------------------------------
+
+### Project and probe functions on a mesh
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/extended.rst
+
+Projects a function onto P1 and P0 bases and visualizes the results alongside probe values along a line.
+
+```python
+N_query_pts = 100
+x1_value = 0.25
+query_pts = np.vstack([
+    np.linspace(0,1,N_query_pts),  # x[0] coordinate values
+    x1_value*np.ones(N_query_pts),  # x[1] coordinate values
+])
+p1_probes = basis_p1.probes(query_pts)
+p0_probes = basis_p0.probes(query_pts)
+
+def f(x):
+    return 4 * abs(x[0] - 0.5)
+
+projection_p1 = basis_p1.project(f)
+projection_p0 = basis_p0.project(f)
+
+fig, ax = plt.subplots(2, 2, figsize=(12,12))
+skfem.visuals.matplotlib.plot(basis_p1, projection_p1, vmin=0, vmax=2, ax=ax[0][0], shading='gouraud')
+skfem.visuals.matplotlib.draw(mesh, ax=ax[0][0])
+ax[0][0].plot(query_pts[0], query_pts[1], '--r')
+skfem.visuals.matplotlib.plot(basis_p0, projection_p0, vmin=0, vmax=2, ax=ax[0][1], shading='gouraud')
+skfem.visuals.matplotlib.draw(mesh, ax=ax[0][1])
+ax[0][1].plot(query_pts[0], query_pts[1], '--r')
+ax[0][0].set_xlabel('x[0]'); ax[0][0].set_ylabel('x[1]')
+ax[0][1].set_xlabel('x[0]'); ax[0][1].set_ylabel('x[1]')
+ax[0][0].set_title('projection_p1'); ax[0][1].set_title('projection_p0');
+
+ax[1][0].plot(query_pts[0], p1_probes @ projection_p1)
+ax[1][0].set_xlabel('x[0]'); ax[1][0].set_ylabel('f')
+ax[1][1].plot(query_pts[0], p0_probes @ projection_p0)
+ax[1][1].set_xlabel('x[0]'); ax[1][1].set_ylabel('f');
+```
+
+```python
+mesh = skfem.MeshTri().refined(5)
+basis_p1 = skfem.Basis(mesh, skfem.ElementTriP1())
+basis_p0 = basis_p1.with_element(skfem.ElementTriP0())
+
+N_query_pts = 200
+x0_value = .5
+query_pts = np.vstack([
+    x0_value * np.ones(N_query_pts),  # x[0] coordinate values
+    np.linspace(0,1,N_query_pts),  # x[1] coordinate values
+])
+p1_probes = basis_p1.probes(query_pts)
+p0_probes = basis_p0.probes(query_pts)
+
+def f(x):
+    return np.sin(2 * np.pi * x[1])
+
+projection_p1 = basis_p1.project(f)
+projection_p0 = basis_p0.project(f)
+
+fig, ax = plt.subplots(2, 2, figsize=(12,12))
+skfem.visuals.matplotlib.plot(basis_p1, projection_p1, vmin=0, vmax=2, ax=ax[0][0], shading='gouraud')
+skfem.visuals.matplotlib.draw(mesh, ax=ax[0][0])
+ax[0][0].plot(query_pts[0], query_pts[1], '--r')
+skfem.visuals.matplotlib.plot(basis_p0, projection_p0, vmin=0, vmax=2, ax=ax[0][1], shading='gouraud')
+skfem.visuals.matplotlib.draw(mesh, ax=ax[0][1])
+ax[0][1].plot(query_pts[0], query_pts[1], '--r')
+ax[0][0].set_xlabel('x[0]'); ax[0][0].set_ylabel('x[1]')
+ax[0][1].set_xlabel('x[0]'); ax[0][1].set_ylabel('x[1]')
+ax[0][0].set_title('projection_p1'); ax[0][1].set_title('projection_p0');
+
+ax[1][0].plot(query_pts[1], p1_probes @ projection_p1)
+ax[1][0].set_xlabel('x[1]'); ax[1][0].set_ylabel('f')
+ax[1][1].plot(query_pts[1], p0_probes @ projection_p0)
+ax[1][1].set_xlabel('x[1]'); ax[1][1].set_ylabel('f');
+```
+
+--------------------------------
+
+### Define and assemble a BilinearForm
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/api.rst
+
+Demonstrates creating a BilinearForm using a lambda function and assembling it with a basis.
+
+```pycon
+>>> from skfem import BilinearForm, Basis, MeshTri, ElementTriP1
+>>> form = BilinearForm(lambda u, v, _: u * v)
+>>> form.assemble(Basis(MeshTri(), ElementTriP1())).toarray()
+array([[0.08333333, 0.04166667, 0.04166667, 0.        ],
+       [0.04166667, 0.16666667, 0.08333333, 0.04166667],
+       [0.04166667, 0.08333333, 0.16666667, 0.04166667],
+       [0.        , 0.04166667, 0.04166667, 0.08333333]])
+```
+
+--------------------------------
+
+### Assemble with CellBasis
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/api.rst
+
+Use the initialized basis object to perform assembly of a bilinear form.
+
+```pycon
+>>> from skfem.models.poisson import laplace
+>>> K = asm(laplace, basis)
+>>> K.shape
+(5, 5)
+```
+
+--------------------------------
+
+### interpolate(w)
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/api.rst
+
+Interpolates a solution vector to quadrature points, which is useful for evaluating functionals or solving nonlinear problems.
+
+```APIDOC
+## interpolate(w)
+
+### Description
+Interpolate a solution vector to quadrature points.
+
+### Parameters
+- **w** (ndarray) - Required - A solution vector.
+```
+
+--------------------------------
+
+### Get all boundary DOFs
+
+Source: https://github.com/kinnala/scikit-fem/blob/master/docs/api.rst
+
+Retrieve all boundary degrees of freedom for a triangular mesh basis.
+
+```pycon
+>>> import numpy as np
+>>> from skfem import MeshTri, Basis, ElementTriP1
+>>> m = MeshTri().refined()
+>>> basis = Basis(m, ElementTriP1())
+>>> basis.get_dofs().flatten()
+array([0, 1, 2, 3, 4, 5, 7, 8], dtype=int32)
+```
