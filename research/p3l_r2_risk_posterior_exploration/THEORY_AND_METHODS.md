@@ -41,3 +41,33 @@
 - [Greenberg 等，2019，APT](https://arxiv.org/abs/1905.07488)：联合模拟下的归一化 density learning 与 proposal correction 有明确先例。弱坐标预测正确不等于 FULL posterior 正确。
 
 三条记录已通过 ScholarQA 批量核验；本次发现查询部分429，保留原始返回。上述定位不是穷尽新颖性审查。独立 Maxwell 算法贡献取决于真实风险/统计精度及总成本的结果。
+
+## 实际风险动作的数学范围
+
+本轮选定的网络输出先经过一个包含全部 P1 材料的凸矩形投影。令 C 为 ROI 内实部/虚部合法范围的直积，ROI 外固定为原背景。对任意合法真值 χ∈C，Hilbert 投影性质给出
+
+`||P_C(T)−χ||² ≤ ||T−χ||² − ||T−P_C(T)||²`。
+
+所以这个投影不会增加任何合法 P1 真值下的材料平方误差。这是一个逐材料的数学性质，不是网络泛化保证。C 严格大于整个非线性 decoder 的材料 image；逐像素落在 C 内不能证明存在单个合法 q 产生它，也不能证明该图像与观测相容。网络输出以及若干轨迹的平均图统一称为 **材料风险动作**，不称为发现的物理材料世界。
+
+对非线性 Maxwell 算子，`F(E[χ|y])` 通常不等于 `E[F(χ)|y]`。因此本轮对风险动作另做真实 forward 检查，其 residual 是部署诊断；它既不等于 posterior predictive check，也不能单独否定该动作的材料风险价值。真正 posterior predictive 需要一份有资格的材料 posterior 及其 pushforward，本轮 FULL 未合格时不作此声明。
+
+## 为什么风险排序与信息排序不同
+
+若仅为分析而取一个局部 Gaussian covariance C_q，线性化材料的不确定性为 `D C_q D*`。在 prior-whitened 参数中，能最大限度保留这份近似材料方差的 d 维子空间由 `C_q^(1/2) D*D C_q^(1/2)` 的最大特征方向给出；这与 J 的最小奇异向量一般不同。两个排序只有在材料度量、先验和 likelihood 几何同时具有相应共同特征向量等条件下才可能一致。
+
+这里的 C_q 只是已声明的局部近似或一个有资格的条件 covariance；用 GN 逆矩阵代入不会使它自动成为真实 posterior covariance。实际监督风险以新 parent 的 GT 损失评价，完整 posterior 的资格另行检查。这个线性代数结论是研究工具，不能作为独立原创定理。
+
+## 有限响应的两类余项与抵消
+
+令 Δχ=g(q+h)−g(q)，D=Dg(q)，C_χ=DF(g(q))，J=C_χD，所有数据量沿用原 whitening。则有精确记账分解
+
+`F(g(q+h))−F(g(q)) = Jh + C_χ(Δχ−Dh) + [F(g(q)+Δχ)−F(g(q))−C_χΔχ]`。
+
+第二项是 decoder secant 对数据的影响，第三项是 Maxwell 有限响应余项。这两项通常既不正交，也不具有相同符号。总平方误差包含交叉项 `2 Re⟨e_decoder,e_Maxwell⟩`；不能把各自范数占比称作可相加的因果百分比。本轮保存的拒绝提案和离线 GT secant 采用此分解，不用任意一个余项的大小证明另一个机制不存在。
+
+## 动态弱方向与可积性
+
+新增局部诊断用谱 projector P(q) 定义向量场，并在材料 RMS 下归一化，避免任意特征向量符号进入比较。在光滑、秩固定及谱分离条件下，两个场的 Lie bracket 是否仍属于所选分布，是 Frobenius 可积性的局部必要检查。decoder Hessian 的对称项在 pushforward bracket 中抵消，因此可将 `Dg(q)[X,Y]` 投影到材料弱切空间的正交余部，检查 normal leakage。
+
+本轮只对两个已暴露 anchor、两个预定差分尺度进行真实物理检查。有限差分误差、谱隙变化、材料导数数值核及回路离散误差均保留；一个不收敛的 leakage 数字不能证明不可积，一个小数字也不能证明存在完整流形。这项诊断不改变轨迹的 candidate-only 或监督风险含义。
