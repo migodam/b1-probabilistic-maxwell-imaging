@@ -1,0 +1,157 @@
+% Research W supplementary mathematical audit. Include after the main text.
+% Requires standard amsmath/amssymb and a Chinese-capable document class.
+\section*{数学审查补遗：概率压缩、误差分解与统计约定}
+\addcontentsline{toc}{section}{数学审查补遗：概率压缩、误差分解与统计约定}
+
+本补遗只明确主结论成立所需的测度、误差及量纲条件。下列概率扰动界和隐函数论证属于已有数学工具的应用；不能单独据此宣称原创 Maxwell 定理。
+
+\subsection*{A. 保持联合先验时的后验压缩界}
+
+令 $\theta=(W,X,\gamma)$，允许先验 $\pi_0(d\theta)$ 含墙体、目标与仪器之间的相关性。精确后验及近似后验定义在\emph{同一个参数空间、同一个先验}上：
+\[
+ d\mu=Z^{-1}e^{-\Phi}\,d\pi_0,
+ \qquad d\widetilde\mu=\widetilde Z^{-1}e^{-\widetilde\Phi}\,d\pi_0.
+\]
+例如，代表环境映射 $c(W)$ 可以只用于计算
+$\widetilde\Phi(W,X,\gamma)=\Phi(c(W),X,\gamma)$；原始先验质量及条件先验不随之替换成代表点的先验。
+
+\paragraph{命题 A1（保守的统一界）。}
+若 $|\Phi-\widetilde\Phi|\le\varepsilon$ 先验几乎处处成立，则
+\[
+ e^{-\varepsilon}\le \widetilde Z/Z\le e^{\varepsilon},\qquad
+ e^{-2\varepsilon}\le \frac{d\mu}{d\widetilde\mu}\le e^{2\varepsilon},
+ \qquad
+ \boxed{\lVert\mu-\widetilde\mu\rVert_{\rm TV}\le\tanh\varepsilon.}
+\]
+这里 $\lVert P-Q\rVert_{\rm TV}=\sup_A|P(A)-Q(A)|$，该常数不声明最优。
+证明如下：令 $r=d\mu/d\widetilde\mu$，$a=e^{-2\varepsilon}$、$b=e^{2\varepsilon}$。
+因为 $E_{\widetilde\mu}r=1$，而 $(r-1)_+$ 在 $[a,b]$ 上不超过连接端点的割线，故
+\[
+ \lVert\mu-\widetilde\mu\rVert_{\rm TV}
+ =E_{\widetilde\mu}(r-1)_+
+ \le\frac{(b-1)(1-a)}{b-a}
+ =\frac{e^{2\varepsilon}-1}{e^{2\varepsilon}+1}.
+\]
+边缘化收缩 TV，因此该界同时控制目标后验、拓扑事件概率，以及使用相同预测核的后验预测分布。对 $0\le\ell\le L$ 的任务损失，期望损失差不超过 $L\tanh\varepsilon$。
+
+\paragraph{不同先验不能悄悄代入同一界。}
+若压缩另外改变了 prior volume、条件目标先验或拓扑复杂度权重，上述证明不再直接适用。若两先验相互绝对连续，且其 log density ratio 的一致误差另有界 $\kappa$，可将其计入总 log-weight 误差；若删除了部分支持，则必须处理被删除的\emph{后验}质量。小先验质量不自动意味着小后验质量。
+
+\subsection*{B. 分支近似与数值近似的误差必须逐项传递}
+
+记 $f(\theta)$ 为精确离散 Maxwell 响应，$f_c(\theta)$ 为代表传播分支的精确响应，$\widetilde f_c(\theta)$ 为该分支的数值近似。所有范数均已按测量协方差白化。若
+\[
+ \lVert f-f_c\rVert\le\delta_b,
+ \qquad\lVert f_c-\widetilde f_c\rVert\le\delta_n,
+ \qquad\lVert y-f\rVert\le R,
+\]
+则 $\delta=\delta_b+\delta_n$ 给出
+\[
+ |\Phi(f)-\Phi(\widetilde f_c)|
+ \le R\delta+\frac{\delta^2}{2},
+ \qquad\Phi(f)=\frac12\lVert y-f\rVert^2.
+\]
+若逐项计算，则
+\[
+ \varepsilon_b=R\delta_b+\tfrac12\delta_b^2,
+ \qquad
+ \varepsilon_n=(R+\delta_b)\delta_n+\tfrac12\delta_n^2,
+\]
+其和恰为 $R(\delta_b+\delta_n)+(\delta_b+\delta_n)^2/2$。
+第二项中的 $R+\delta_b$ 不应误写成 $R$；否则漏掉交叉项。
+结合命题 A1 得到 $\tanh(\varepsilon_b+\varepsilon_n)$ 的保守联合后验界。
+
+数值残差可以控制 $\delta_n$，前提是有合法的稳定常数或对偶证书；它不控制 $\delta_b$。未知真实墙体与当前材料世界之间的差别属于后验不确定性；前向物理失配和未建模结构属于模型误差，也不能由同一个线性求解 tolerance 替代。
+
+\paragraph{可信集外的质量。}
+若所有界只在集合 $C$ 上成立，对两后验条件于 $C$ 应用命题 A1，可得安全界
+\[
+ \lVert\mu-\widetilde\mu\rVert_{\rm TV}
+ \le\mu(C^c)+\widetilde\mu(C^c)+\tanh\varepsilon.
+\]
+如果近似后验被明确截断到 $C$，则右侧为 $\mu(C^c)+\tanh\varepsilon$。
+候选集合没有发现某种传播模式，不能据此把 $\mu(C^c)$ 设为零。
+靠近环境--目标共振时，四元签名的响应界中稳定因子 $\beta^{-1}$ 或 $\beta^{-2}$ 发散；即使签名矩阵误差很小，也未必能得到有效的 $\varepsilon$。
+
+\subsection*{C. 条件依赖、同一数据与确定性固定}
+
+令 $v=(X,\gamma)$。正确的目标边缘是
+\[
+ \mu_v(dv\mid y)=\int\mu(dv\mid W,y)\,\mu_W(dW\mid y).
+\]
+其中条件后验必须归一化。事实上若
+$m(y\mid W)=\int L(y\mid W,v)\,\pi_0(dv\mid W)$，则
+\[
+ \mu(dv\mid W,y)=
+ \frac{L(y\mid W,v)\,\pi_0(dv\mid W)}{m(y\mid W)}.
+\]
+将已经使用 $y$ 的墙体边缘后验 $\mu_W(dW\mid y)$ 再乘未经该分母归一化的 $L(y\mid W,v)\pi_0(dv\mid W)$，会额外引入 $m(y\mid W)$，并非原联合后验。
+
+对于墙体簇 $C_j$，可保持簇概率
+$p_j=\mu_W(C_j\mid y)$ 和精确簇内条件混合
+\[
+ \mu_j(dv)=\frac{1}{p_j}\int_{C_j}\mu(dv\mid W,y)\,\mu_W(dW\mid y).
+\]
+此时 $\mu_v=\sum_jp_j\mu_j$ 完全成立。用代表墙体的
+$\mu(dv\mid W_j,y)$ 替换 $\mu_j$ 会产生另一项条件分布近似误差。
+因此最稳妥的算法是保留联合粒子，只共享已获证书的传播计算，并以原联合 likelihood 校正。
+
+\paragraph{``安全固定''只能是任务层面的声明。}
+若 $\mu_W$ 无原子，而近似方法把 $W$ 固定为 $\widehat W$，那么事件
+$\{W=\widehat W\}$ 在两模型中的概率分别为 0 和 1，故完整联合后验的 TV 距离为 1。
+但若许多墙体具有相同任务响应，任务推送分布仍可相同或很接近。
+因此接受确定性传播模型的证书应明确针对目标风险、预测分布或任务边缘；它不能声称逼近了完整材料后验。
+
+合法固定数据推断可使用 block Gibbs、同一目标上的校正或 tempering。
+若采用 $\pi_\beta\propto\pi_0L^\beta$，各阶段增量指数最终必须和为 1。
+重复乘完整 $L$ 会产生 $L^k$；对高斯噪声相当于虚构协方差 $\Sigma/k$。
+
+\subsection*{D. 危险传播方向与 likelihood-informed 方向不同}
+
+以实参数向量表示实部、虚部与 nuisance；复数据先堆叠实部和虚部。
+令 $J=DF$、$K=DH$，材料先验局部尺度为 $C_0$，测量协方差为 $\Sigma$，任务容差尺度为 $\Gamma_T$。
+定义无量纲导数
+\[
+ \overline A=P_\perp\Sigma^{-1/2}JC_0^{1/2},
+ \qquad
+ \overline B=\Gamma_T^{-1/2}KC_0^{1/2},
+\]
+其中 nuisance 投影 $P_\perp$ 必须在\emph{白化后的}数据空间中构造。
+如果 nuisance 有有限先验代价，应使用其 Schur 信息度量，不能假装仍为正交投影。
+
+likelihood-informed 方向研究 $\overline A^*\overline A$ 相对于先验的强信息方向；传播歧义诊断可研究
+\[
+ \lambda_{\rm risk}
+ =\sup_{\xi\ne0}
+ \frac{\lVert\overline B\xi\rVert^2}
+ {\lVert\overline A\xi\rVert^2+\eta\lVert\xi\rVert^2},\qquad\eta>0.
+\]
+大比值表示相对于当前数据变化具有较大任务影响，不能解释为大后验概率、重要拓扑模式或最优采集收益。
+不做这些尺度归一化时，该比值会随介电常数、长度、增益或任务单位的选择而改变。
+还需用有限扰动检查材料合法性及非线性数据相容性。
+
+若 $DF$ 在邻域恒秩，合法参数处于内点，且存在 $v\in\ker DF$ 而 $DHv\ne0$，常秩定理保证可将 $v$ 延拓为局部精确 $F$-fiber 曲线。
+若只在一点发现数值小奇异值，不能得出这一结论；$F(t)=t^2$ 在零点就是反例。
+
+\subsection*{E. 本次解析实验的统计与物理审查}
+
+已核对 \texttt{analytic\_witness.py} 与 \texttt{results.json} 的传输矩阵、左右反射、同参考面透射及 PEC 级联公式。未发现相位符号或往返平方抵消错误。
+两块非磁板在中心频率的单侧反射模小于 $1.7\times10^{-16}$；同参考面的往返响应相位差为 $\pi/3$。
+PEC 位置相差 $\lambda_0/12$ 后，中心联合反射差为 $2.45\times10^{-16}$。
+
+实验约定每个复数据的实部和虚部具有独立噪声，二者标准差均为
+$\sigma=0.01$。因此实数化协方差是 $\sigma^2I$，
+\[
+ d=\frac{\lVert f_1-f_2\rVert_{\mathbb C^m}}{\sigma},
+ \qquad P_e=\Phi_{\rm N}(-d/2)
+\]
+适用于两个已知均值、相同协方差与相等先验的最优检验。
+若采用 $\mathcal{CN}(0,\sigma_c^2)$ 且 $E|n|^2=\sigma_c^2$ 的约定，则
+$\sigma_c=\sqrt2\,\sigma$；二者不能混用。
+
+表中的有限带宽结果同时给出限制：0.5\% 相对带宽下，墙体校准距离为
+$0.887$，但选定的墙体--PEC 联合世界距离已为 $3.038$；1\% 下后者为
+$6.055$。因此目标存在的完整联合数据会击破这组特定补偿世界，不能拿
+wall-only 距离代替联合可辨识性。这是有效负面结果，不应隐去。
+每档带宽均使用九个频点；配置之间不嵌套，故数值距离不必随带宽严格单调。
+零带宽行相当于九次同频独立重复。该实验只验证无限平面、法向入射的一维解析机制；没有执行二维或三维成像、后验校准或加速基准。

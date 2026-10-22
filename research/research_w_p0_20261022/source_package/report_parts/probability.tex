@@ -1,0 +1,223 @@
+\section{传播后验、等价类与概率压缩}
+\subsection{强目标所需的传播对象：四块签名}
+选择计算任务域注入 $U$，发射 $Q$，物理接收算子 $R$。在固定离散化和参考介质下写
+\[
+L(W,X)=L_W-U V_XU^*,\qquad G_W=L_W^{-1}.
+\]
+$V_X$ 是任务域内相对参考材料的对比，包含必要频率因子和质量矩阵；不是任意将物理材料值直接代入。定义
+\[
+\boxed{\Psi_T(W)=(d_W,A_W,B_W,C_W)}
+\]
+\[
+d_{W,\gamma}=b(\gamma)+R(\gamma)G_WQ(\gamma),\quad A_W=RG_WU,\quad
+B_W=U^*G_WQ,\quad C_W=U^*G_WU.
+\]
+由 resolvent 得精确响应
+\[
+\boxed{\mathcal F(W,X)=
+d_W+A_W V_X(I-C_WV_X)^{-1}B_W.}
+\]
+后文为简洁将 $d_{W,\gamma}$ 记为 $d_W$；其余各块也隐含相同的 nuisance。不同 $\gamma$ 不能在压缩时被忽略。先用物理复线性算子构造四块，再对最终观测实化白化；一般实协方差的白化未必为复线性。若把白化吸收进 $R$，则全部相关算子须采用一致实化表示。
+
+四块分别描述已有背景响应、任务域到接收、发射到任务域及任务域经环境返回的自反馈。只保留 $RG_WQ$ 或某个单程 Green action，不能控制强目标造成的反复散射；只保留 Born 核 $A_W V B_W$ 则对应弱目标近似。这里的分式响应属于标准 T-matrix/Schur 结构，A17-X 已研究相近端口对象与有限反馈，本报告不作恒等式原创声明。\cite{L_Tmatrix,R_A17X}
+
+\begin{proposition}[强目标传播误差的条件上界]
+对两个环境及声明任务类中的每一个 $V$，假定
+\[
+\|V\|\le v,\quad\|(I-C_iV)^{-1}\|\le\beta^{-1},\quad
+\|A_i\|\le a,\quad \|B_i\|\le b,\qquad \beta>0.
+\]
+记各签名块差异为 $\delta_d,\delta_A,\delta_B,\delta_C$。则
+\[
+\boxed{\|\mathcal F_1(V)-\mathcal F_2(V)\|
+\le \delta_d+\frac{bv}{\beta}\delta_A+
+\frac{av}{\beta}\delta_B+
+\frac{abv^2}{\beta^2}\delta_C.}
+\]
+\end{proposition}
+\begin{proof}
+令 $T_i=V(I-C_iV)^{-1}$。精确恒等式
+\[
+T_1-T_2=T_1(C_1-C_2)T_2
+\]
+与分解
+\[
+A_1T_1B_1-A_2T_2B_2
+=(A_1-A_2)T_1B_1+A_2(T_1-T_2)B_1+
+A_2T_2(B_1-B_2)
+\]
+给出结论。
+\end{proof}
+该上界的物理限制比公式本身更重要：$\beta$ 必须对正在压缩的目标类有效。接近墙--目标耦合共振时，$\beta\to0$，内部块误差可按 $\beta^{-2}$ 放大。小材料距离、接收小残差或一个 well-conditioned reduced core 均不能替代这一条件。本命题处理共同计算域上的有界体对比；PEC、阻抗或实体边界变化需要相应 trace/边界版本，不能直接令 $v=\infty$ 沿用此界。前述 PEC 解析反例有独立的精确级联推导。
+
+若任务输出有物理单位，上界各范数必须使用相容的源/场/材料 metric；白化可吸收进 $R$。多频多源可用加权直和范数。仅保存有限探针的响应时，上述 $\delta$ 只有探针意义，推广到连续任务类另需覆盖或概率嵌入界。
+
+\subsection{材料后验向传播响应的推送}
+\[
+W\sim\mu_W^y\quad\Longrightarrow\quad
+\Psi_T(W)\sim(\Psi_T)_\#\mu_W^y.
+\]
+这比存储完整稠密 Green 矩阵更符合任务，但必须保留其与 $X,\gamma$ 的联合依赖。$\Psi_T$ 的维数仍可能很大，尤其 $C_W$ 覆盖任务域内部全部场自由度时。
+
+一般有
+\[
+G_{\E[W]}\ne\E[G_W],\qquad
+\E[\mathcal F(W,X)]\ne
+\mathcal F(\E[\Psi_T(W)],X).
+\]
+第一式来自求逆非线性；第二式还含 $V(I-CV)^{-1}$。即使未来观测对 $H$ 线性，平均响应也仅给出均值，遗漏
+\[
+\operatorname{Cov}(Y\mid y)
+=\E[\operatorname{Cov}(Y\mid W,y)\mid y]
++\operatorname{Cov}(\E[Y\mid W,y]\mid y)
+\]
+中的分支间项。多峰分布不能由均值矩阵完整表示。
+
+平均 Green 不一定对应原材料类中的任何局部本构。它在某些共同边界条件下可能仍有线性、互易等性质，不能笼统宣称平均一定违反物理；真正问题是它一般不能代表原来的非线性混合测度。
+
+\subsection{任务等价与近似聚类}
+固定目标类 $\mathcal V$、收发配置和噪声，定义
+\[
+d_T(W_1,W_2)=\sup_{V\in\mathcal V}
+\|\mathcal F(W_1,V)-\mathcal F(W_2,V)\|_{\Sigma^{-1}}.
+\]
+这是一种伪度量。$d_T=0$ 给出真正等价关系；$d_T\le\varepsilon$ 不具传递性，不能把阈值近邻自动命名为数学商空间。实践中应使用半径或直径受控的覆盖、聚类或量化。
+
+相同四块签名是任务等价的充分条件，未必是必要条件：未被任务激发/观测的端口自由度和内部表示变换可能不影响任何允许响应。以任务响应定义等价可避免把内部 gauge 错当物理区别。
+
+对固定弱目标类，只保留有限 Born response kernel 可能足够；对强目标类则需要内部反馈或直接的全非线性任务响应。因此“材料结构不同、传播等效”依赖任务，不存在对所有目标、频率和极化通用的廉价标签。
+
+\subsection{保持原联合先验的后验压缩界}
+令 $v=(X,\gamma)$，允许原先验 $\pi_0(dw,dv)$ 相关。真实及近似后验定义为
+\[
+d\mu=Z^{-1}e^{-\Phi(w,v)}d\pi_0,\qquad
+d\widetilde\mu=\widetilde Z^{-1}e^{-\widetilde\Phi(w,v)}d\pi_0.
+\]
+例如用代表 $c(w)$ 的传播签名计算 $\widetilde\Phi(w,v)$，但仍保留每个原始 $w$ 的 prior 质量和 $v\mid w$ 条件结构。
+
+\begin{proposition}[联合测度不变时的概率误差]
+若 $|\Phi-\widetilde\Phi|\le\varepsilon$ 在原先验几乎处处成立，则
+\[
+e^{-\varepsilon}\le\frac{\widetilde Z}{Z}\le e^\varepsilon,
+\qquad e^{-2\varepsilon}\le\frac{d\mu}{d\widetilde\mu}\le e^{2\varepsilon},
+\]
+从而有保守界
+\[
+\boxed{\|\mu-\widetilde\mu\|_{\TV}\le\tanh\varepsilon.}
+\]
+同一界控制目标边缘分布、任何目标事件的概率，以及使用相同未来预测核的预测分布。
+\end{proposition}
+证明及尾部处理见附录。该概率扰动原理已有成熟先例；Research W 可争取的贡献在于 Maxwell 任务误差是否能有效、低成本地进入该界。\cite{L_Cotter,L_Lie,L_Zahm}
+
+对于白化 Gaussian likelihood，若
+$\|F-\widetilde F\|\le\delta$ 且 $\|y-F\|\le R$，则
+\[
+|\Phi-\widetilde\Phi|\le R\delta+\tfrac12\delta^2.
+\]
+结合四块签名界得到一条可证明但条件性的链：
+\[
+\text{传播块误差与稳定裕度}
+\ \Longrightarrow\ \delta_F
+\ \Longrightarrow\ \varepsilon_{\log L}
+\ \Longrightarrow\ \text{目标后验误差}.
+\]
+残差 $R$ 在高维白化空间通常与 $\sqrt{\dim y}$ 同阶，因此简单 uniform 界可能非常保守。只有证书在实际噪声和预算下有非平凡宽度，才有算法价值。
+
+若误差界仅在 $C$ 内成立，必须保留
+\[
+\|\mu-\widetilde\mu\|_{\TV}\le
+\mu(C^c)+\widetilde\mu(C^c)+\tanh\varepsilon.
+\]
+候选库之外的质量不能凭“没有找到”设为零。若不掌握两侧尾质量，就只能报告条件误差证书。
+
+\subsection{联合相关性为何不能被聚类丢掉}
+若
+\[
+\mu(dw,dv)=\mu_W(dw)\mu(dv\mid w),
+\]
+对墙体分簇 $C_j$，定义
+\[
+p_j=\mu_W(C_j),\qquad
+\mu_j(dv)=p_j^{-1}\!\int_{C_j}\mu(dv\mid w)\mu_W(dw).
+\]
+则
+\[
+\mu_v=\sum_jp_j\mu_j
+\]
+完全精确。用一个代表墙体 $w_j$ 的条件分布替代整个 $\mu_j$，会产生额外误差
+\[
+\left\|\mu_v-\sum_jp_j\mu(\cdot\mid w_j)\right\|_{\TV}
+\le\sum_jp_j\|\mu_j-\mu(\cdot\mid w_j)\|_{\TV}.
+\]
+相近 Green 签名不自动控制这个项，尤其当 $p(v\mid w)$ 有结构相关性。最稳妥的实现是保留联合粒子 $(W_i,X_i,\gamma_i)$，只共享数值传播表示，随后用一致 likelihood 校正。
+
+另一个常见错误是先用同一 $y$ 得到 $p(W\mid y)$，再计算
+\[
+p(W\mid y)\,p(y\mid W,X)\,p(X\mid W).
+\]
+这会比正确 joint posterior 多乘一个 $p(y\mid W)$。正确条件分解包含
+\[
+p(X\mid W,y)=
+\frac{p(y\mid W,X)p(X\mid W)}{p(y\mid W)}.
+\]
+若初始墙体来自真正独立的校准数据，则可以按条件 Bayes 顺序吸收后续新数据；不能把同一观测换名字后当独立校准。
+
+\subsection{“写入传播模型”的决策应是任务风险}
+给定任务签名 $H$ 的平方损失，
+\[
+R(h\mid y)=\E[\|H(W)-h\|_T^2\mid y].
+\]
+不要求 $h$ 可由某个材料实现时，最优为 $\bar h=\E[H\mid y]$，且
+\[
+R(h\mid y)=\operatorname{Var}_T(H\mid y)+\|h-\bar h\|_T^2.
+\]
+若必须选择合法环境 $\widehat W$，则求到 $\bar h$ 最近的可实现签名，或选择 posterior medoid。它不会消除不可约的传播方差。
+
+“安全固定”应限定为：对声明目标任务，使用 $\widehat W$ 的额外风险不超过预算。若 $R\le\epsilon^2$，仅由 Markov 可得
+\[
+\Prob(\|H-H(\widehat W)\|_T>t\mid y)\le\epsilon^2/t^2.
+\]
+它不是无条件频率覆盖保证。低概率而高损失的分支宜用事件损失、尾风险或 CVaR；材料逐像素 $95\%$ 置信不控制此类联合尾事件。
+
+如果一个遗漏传播模式有真实后验质量 $\alpha$，且与固定模型任务距离至少 $b$，则风险至少为 $\alpha b^2$。但从未校准的候选库中无法可靠计算 $\alpha$。这解释了残差很小却过度自信的机制，也解释了为什么事后只重加权不能恢复被置零的模式。
+
+\begin{longtable}{p{28mm}p{120mm}}
+\toprule
+动作 & 合理触发条件\\
+\midrule
+Accept & 对当前任务，数值、传播压缩与尾风险均在预定预算内；接受的是受限制的传播近似。\\
+Keep branches & 当前数据难分，而下游响应差异超过容差；保留联合分支与条件目标样本。\\
+Revisit & 新的全模型核验发现偏差、共振裕度失效、出现新传播模式，或任务区域改变；恢复自由度并重建表示。\\
+Acquire & 用户允许新增观测时，期望任务风险下降超过采集和计算成本；新数据不参与当前被动结果的选择。\\
+\bottomrule
+\end{longtable}
+
+\subsection{概率体积、局部强方向与未知拓扑权重}
+优化残差给的是点值。对局部弱坐标 $z$ 和强坐标 $s$，真正的边缘后验为
+\[
+p(z\mid y)\propto\int
+e^{-\Phi(s,z)}p_0(s,z)\,ds.
+\]
+定义 $\Psi(s,z)=\Phi(s,z)-\log p_0(s,z)$、$s_*(z)=\argmin_s\Psi(s,z)$ 及 $H_{ss}=\partial_s^2\Psi(s_*(z),z)$。若强方向有单个内点极小值、近似 Gaussian 且高阶余项受控，Laplace 近似才给
+\[
+p(z\mid y)\approx
+e^{-\Phi(s_*(z),z)}p_0(s_*(z),z)
+(2\pi)^{d_s/2}\det H_{ss}(z)^{-1/2}.
+\]
+只优化 $s$ 会漏掉条件厚度及 determinant；边界、多极小值或奇异方向下须重新积分，不能自动取“半 Gaussian”。参数变换的体积因子取决于所声明 prior 的基准测度；如果在 latent 中已有正确 prior，不能再凭直觉乘一个 Gram determinant。
+
+固定 continuation 轨迹在高维连续 posterior 中通常是零测度对象。端点残差接近并不赋予相同概率，也不证明连接轨迹有重要质量。F3 已验证自然参数线段可在端点合格时仍离开竞争似然范围；P2 未建立稳定跨拓扑模式，均应作为本研究约束。\cite{R_F3,R_P2}
+
+\subsection{同一份数据可以迭代使用，但不能重复计证据}
+合法方法包括以同一 posterior 为不变分布的 block Gibbs/MH、同一目标的坐标优化，以及 tempering SMC：
+\[
+\pi_\beta(u)\propto\pi_0(u)e^{-\beta\Phi(u)},\qquad
+w_i^{\,k+1}\propto w_i^{\,k}
+e^{-(\beta_{k+1}-\beta_k)\Phi(u_i)}.
+\]
+最终 $\beta=1$，各增量和为 1。相反，反复 $\pi_{k+1}\propto\pi_k e^{-\Phi}$ 会得到 $\pi_0e^{-(k+1)\Phi}$，相当于虚构更小噪声。
+
+将数据按频率、时间窗拆块时，只有条件独立或明确使用联合条件密度，才能直接乘 likelihood。由相同原始数据得到的早/晚门控结果往往相关；需要联合协方差。由 $y$ 确定的初步图 $\widehat m(y)$ 不是新的传感器证据。
+
+在精确推断、同一 prior、同一数据和合法计算下，联合反演、Gibbs 交替、分块消元或多假设递进应指向同一个后验。不同效果只能来自近似、求解稳定性、模式混合、算力分配或新增采集。
+

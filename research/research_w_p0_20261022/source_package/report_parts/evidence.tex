@@ -1,0 +1,180 @@
+\section{既有研究证据、可复用接口与不可跨越的边界}
+\label{sec:prior-evidence}
+
+\subsection{证据版本与本轮实际读取范围}
+
+本轮以五个用户仓库的原始文档为证据，读取日为2026年10月22日。读取源为GitHub文件接口；没有重新运行这些历史物理实验，也没有将仓库发布、软件检查或代数回放等同于独立Maxwell验证。下表固定本轮引用版本；正文的数值结论是对原始记录的核验与归纳。\cite{R_A17,R_A26,R_A30,R_B1,R_C1}
+
+\begin{longtable}{p{1.2cm}p{5.3cm}p{6.85cm}}
+\hline
+简称 & 仓库 & 固定commit\\
+\hline
+\endfirsthead
+\hline 简称 & 仓库 & 固定commit\\\hline
+\endhead
+A17 & a17-maxwell-certified-exchange & {\scriptsize\texttt{df61a1b533682a883cdaf65259b4528c354bd832}}\\
+A26 & a26-om-feedback-prior-completion & {\scriptsize\texttt{2603f3bd16c48e48587fedc4363975779def17f5}}\\
+A30 & a30-maxwell-observable-material-manifold & {\scriptsize\texttt{717d3d26a290248bd2b9aeb55f3d03694b407b84}}\\
+B1 & b1-probabilistic-maxwell-imaging & {\scriptsize\texttt{064d0aaed9772cadd573866eec84f159895b317b}}\\
+C1 & c1-physics-state-generative-imaging & {\scriptsize\texttt{83056881e89329212b16f5be47a4d0dbc4465943}}\\
+\hline
+\end{longtable}
+
+\textbf{完整审读的核心记录。}
+A17的旧决策、closure入口、最终中文closure报告、论文主文件、CORE\_THEORY和CONDITIONAL\_EXCHANGE\_THEORY，以及最新效率报告；A26的README和最终决策；A30的E0/E1决策；B1总入口、Joint P2决策、最新P2材料fiber报告与理论修订、F与F3实施报告、Research A/B/T/G实施报告、LXZ实施报告、A17-X/F3竞争审计；C1入口与P2决策均已全文审读。长文件首次输出有截断时，补读相关原文后才采用结论。
+
+\textbf{取得全文但只审读重点章节。}
+A17技术补充主文件未展开审读全部输入子文件。Joint P2完整报告的物理目标、补偿、概率参考、C1和下游交接主体已读，核心数值再用完整决策交叉核对。A17-X原Pro报告已取得，重点复核第4--5节有限端口与双重反馈、第7节多源材料可实现性、第9节动态误差；Research F原Pro报告重点复核第6--7节材料几何与有限延拓、第9节目标残差、第11节概率测度。这些重点阅读不写成整份原报告逐段独立验证。\cite{R_A17X,R_F}
+
+\textbf{未取得独立原文的部分。}
+本轮未直接取得Research L/Z/X各自完整ZIP及P3-L完整报告；B1中以P3-L和strong-direction搜索未找到相应原稿。LXZ实施报告已经直接读到，其上游阅读记录不能代替本轮读取。A12、A24--A25、A27--A29、A31的独立全稿也未逐一取得；A12的paired结论可由A17正式理论与历史对照核验，其余只按用户任务书及已读实施报告的历史引用使用。P3-L仅作为用户指定的理论方向，不能补造其证明或实验数字。
+
+\subsection{必须更新的A17判断：有限重建正例已经出现，但仍未建立加速}
+
+根目录旧A17\_DECISION把非线性重建列为NOT\_RUN；这不能再概括后来的closure。最终closure在十个完整额外对象上报告：对象汇总的完整GN二次gap中位比为0.492818，即下降约50.7\%。99个计划单元中96个有审计结果，95改善、1相同；1个失败和2个未运行保留在计划分母中。额外对象有历史研究暴露，准确描述是规则锁定后的额外对象验证，不能写成完全新盲测。\cite{R_A17}
+
+三组完整受约束反演中，receiver与exchange采用相同初始化、材料表示、先验、LM调度、可行域和完整非线性Armijo检验；测得结果如下。它们提供有限重建后果，不能从局部gap自动推出。\cite{R_A17}
+
+\begin{longtable}{p{3.1cm}p{3.9cm}p{2.5cm}p{3.1cm}}
+\hline
+对象／表示 & 复材料相对误差 & 相对下降 & 完整耗时比\\
+\hline
+\endfirsthead
+\hline 对象／表示 & 复材料相对误差 & 相对下降 & 完整耗时比\\\hline
+\endhead
+平滑／voxel & \(0.3027\to0.2699\) & \(10.84\%\) & \(2.68\)\\
+近接触／Gaussian & \(0.6722\to0.6707\) & \(0.22\%\) & \(1.74\)\\
+壳体／Gaussian & \(0.6096\to0.5660\) & \(7.16\%\) & \(1.46\)\\
+\hline
+\end{longtable}
+
+近接触的实部稍差；第四对象没有完成成对基线，不能把失败前缀当作完整比较。有限噪声检查72个单元中71改善、1不动，仍只支持指定对象、状态与噪声范围。严格输出误差半径尚不存在，原论文已经将实现定位为verified conditional exchange，而非确定性认证。
+
+最新效率后续采用每轮只检查第一名、最多三次接受和精确geometry-only缓存，在两个规定对象上相对原exchange减少26.89\%和9.64\%耗时；相对receiver-only仍为1.958和1.318倍，结论保持CONDITIONAL。更值得Research W吸取的是成本归因：完整\(Jd\)只占原exchange净增量的1.19\%和3.82\%，反复构建bank、anchor及工作空间才是主要费用之一。因而再造一个verification ROM不一定击中瓶颈。\cite{R_A17eff}
+
+历史负结果没有被覆盖：paired材料修复胜过指定direct current enlargement，但同实秩材料Krylov更强；paid paired耗时约为匹配PCG的1.416倍，记录的RHS从66增至342；宽域从零选择材料相关电流也没有普遍超过receiver起点。Research W可以借用条件设计思想，必须重新证明其对传播任务的效用与完整费用。\cite{R_A17}
+
+\subsection{A26、A30与最新P2：容量、可行性、选择与速度必须分开}
+
+\textbf{A26的负结果是网络增量负结果。}
+三个CNN相对各自物理初值，在复杂三家族上有约23--24\%材料改善；匹配31,810参数和2,000次更新时，显式feedback模型N2相对N1、N3的改善分别约为\(-0.225\%\)、\(-0.273\%\)，区间跨零。完整warm推理为较快对照的3.274倍。这个事实不能抹去A17后来的有限重建正例，两者检验的机制不同；也不能将N3视为后验采样器、原材料先验内合法anchor或未知墙体的已验证重建器。\cite{R_A26}
+
+\textbf{A30严格区分表示容量与在线选择。}
+Sparse-64的35.69\%、PCA-64的21.91\%是读取truth进行参数拟合的离线容量；完整candidate convex hull有13.12\%改善，但同bank的实际L-weighted mean恶化3.32\%。29个合法补偿对的最小完整白化距离为8.84，复杂条件最小9.18，未达到原协议的清晰到模糊转变；uniform误差证书也未通过。这些是已实现搜索与参数化的负结果，不是全局补偿不存在的证明。\cite{R_A30}
+
+\textbf{最新P2支持有限噪声替代，不支持新拓扑生成优势。}
+24个新对象只有15个得到相容physics-only anchor，held-out为4/8。69个替代解释是跨24份观测的archive计数；held-out只有1个达到原结构尺度的替代，稳定拓扑事件改变为0。全部8个held-out的基础MAE为0.06513030，联合archive的Best-of-4为0.06424926，约1.35\%只是oracle诊断，在线默认Selected仍是基础图。更强的sphere-only Full-J及hard-prior对照也能找到替代材料，削弱了软谱机制的独特性；小Gaussian/Flow没有独立收益。\cite{R_P2}
+
+P2还直接检验了A17-X求值。相同空间的Schur和直接Galerkin差约\(1.91\times10^{-15}\)；A17的setup摊销耗时59.490ms，optimized full为5.346ms，约11.1倍。A17的fallback为17/48，goal-ROM为4/48；该fallback使用已保存full prediction检查误差，是离线oracle辅助审计，不能描述为可部署的在线误差控制。exact T使用真实256-cell ROI，66维latent不被当成66个物理端口。\cite{R_P2}
+
+\subsection{从A12到P3-L的用途映射}
+
+\begin{longtable}{p{1.7cm}p{5.7cm}p{5.7cm}}
+\hline
+方向 & 已核实结果／可复用内容 & Research W的限制\\
+\hline
+\endfirsthead
+\hline 方向 & 已核实结果／可复用内容 & Research W的限制\\\hline
+\endhead
+A12/A17 & 指定current改变的双侧材料步差；受条件核验的同秩设计。 & 固定quadratic包含关系不保证truth风险、posterior质量或等成本优势。\\
+A24--A29/N3 & A26直接支持廉价先验网络作为强对照；历史反馈增量失败保留。 & 未直接重读全部各代原稿；known-background二维结果不直接覆盖未知墙。\\
+A30 & 35.69\%离线容量与在线选择失败并存。 & 不得truth-selected candidate、oracle weights或未来观测泄漏。\\
+A31 & 用户指定的被动性、能量、互易性与材料风险区分。 & 本轮未直接核验A31全文；物理约束不等于结构唯一性。\\
+B1/Joint P2 & 同一连续先验中的事件积分、共享gain与条件样本交接；径向补偿见证。 & 四维同心支持不是任意未知拓扑；多个事件不一定是分离modes。\\
+C1 & 小型蒸馏MDN事件MAE约0.0132，条件CDF误差约0.142--0.162。 & 完整连续后验目标未达；state/memory无稳定增量，先不扩训练。\\
+Research A & 每观测3--10个径向候选；静态结构分层有离线Best4收益。 & 在线最小residual不改善；正例主要来自结构分层，非A17归因。\\
+Research B & 正确joint-history、跨频共享nuisance与候选缺漏stress。 & 复杂选测未稳定胜过固定3.2；漏中心孔family后29/30未报警。\\
+Research T & 不预设总孔数的局部空气成核可被full-grid补偿为相容端点。 & 32相容端点记录不等于32独立模式；候选材料MAE约0.49--0.51，成像未改善。\\
+Research G & post-corrector novelty、archive与失败记录可复用。 & 仅一个近阈值支撑扩张，非新洞；Best4未改善，不支持现在训练RL。\\
+Research F/F3 & 正确商先验、材料几何、有限反馈、非零进度corrector。 & 三个weak端点彼此很近；九个插值中点均超竞争阈值；高阶方法无同成本增量。\\
+Research L/Z/X & LXZ实施区分局部与全局核，C1提案经正确MH可用。 & 新显著结构为0；hybrid不优于简单global；独立原ZIP未在本轮取得。\\
+A17-X & 有限端口、双重反馈、source-shared材料可实现性及tail界。 & 七维latent可产生575秩更新；同空间不能优于ordinary Galerkin精度。\\
+P3-L & 局部弱几何与strong-direction概率厚度是用户指定后续问题。 & 未找到原报告，不能补造已证明定理或已执行实验。\\
+\hline
+\end{longtable}
+
+上述映射分别依托A17/A26/A30、Joint P2/C1、A/B/T/G、F/F3、LXZ和最新P2原文。\cite{R_A17,R_A26,R_A30,R_B1,R_C1,R_A,R_B,R_T,R_G,R_F,R_F3,R_LXZ,R_A17X,R_P2}
+
+其中有两条对Research W特别重要的教训。第一，T的不同候选都进入同一95\%噪声球，但与base之间仍相差约6.24--14.27个白化单位；数据相容不等于两世界统计不可区分。第二，F3的合法端点不能保证连接路径相容，局部弱方向也不能自动跨拓扑。传播分支探索必须重新验证有限完整响应，不能由Jacobian核或漂亮材料图推断成功。\cite{R_T,R_F3}
+
+T的记录跨轮相关，而且使用更宽的full-grid复材料box。LXZ实施报告明确指出，相应补偿破坏了旧P0的固定phase约束；所以不能把这些端点当成原固定相位prior内已发现的重要后验模式。允许拓扑变化、满足宽材料box、保持同一个概率prior，是三项不同要求。\cite{R_T,R_LXZ}
+
+\subsection{A17可迁移的精确内容，以及Research W新增的误差项}
+
+在固定材料、总场注入、残差与先验下，A17定义
+\[
+R_V=V(V^*LV)^{-1}V^*,\qquad
+\bar C=(I-R_VL)C,
+\]
+\[
+Y_C=S\bar C,\quad
+N_C=C^*(B-LR_VB),\quad
+\Gamma_C=C^*L\bar C.
+\]
+当core与Schur可逆、使用严格Galerkin及一致实化时，
+\[
+J_C-J_0=Y_C\Gamma_C^{-1}N_C,\qquad
+s_C-s_0\in H_0^{-1}\operatorname{Range}[J_0^*Y_C,N_C^*].
+\]
+这里\(B\)包含真实材料本构导数与当前total field；所有照明共享实材料变量。该结果适用于同一个固定、无约束材料quadratic，不能无说明地推广到active constraints改变。\cite{R_A17core}
+
+任意任务输入\(B_{\mathcal T}\)和输出\(O_{\mathcal T}\)可替代原注入与receiver：
+\[
+H_{\mathcal T,V+C}-H_{\mathcal T,V}
+=
+O_{\mathcal T}\bar C\,\Gamma_C^{-1}
+C^*(B_{\mathcal T}-LR_VB_{\mathcal T}).
+\]
+这是标准Schur推论。它提供一个清楚接口：以目标区域、未来探测源及目标风险选择current空间；单凭换成任务输出，不构成独立新定理，也不比同空间ordinary Galerkin更准。
+
+\textbf{墙体材料更新还改变残差与注入。}
+若真实背景改变导致\(J_1=J_0+D\)、\(r_1=r_0+\delta r\)，则
+\[
+\Delta h
+=D^*r_0+J_0^*\delta r+D^*\delta r+\delta\ell,
+\]
+\[
+\Delta H=J_0^*D+D^*J_0+D^*D+\delta\Lambda,\qquad
+s_1-s_0=-H_1^{-1}(\Delta h+\Delta Hs_0).
+\]
+因此即使\(D\)具有A17的低秩因子形式，旧paired支撑还一般需要加入\(H_0^{-1}J_0^*\delta r\)；先验变化再产生额外方向。固定current表示的改善，不能替代错误墙假设、传播后验分歧或模型外误差的控制。
+
+\subsection{避免与自己已有A17-X/F报告重复}
+
+A17-X原Pro已把局部材料端口写成
+\[
+P=R_0U,\quad H=U^*GP,\quad O=SP,\quad B=U^*E_0,\qquad
+\Delta F=O(I-DH)^{-1}DB.
+\]
+本段\(R_0=L_0^{-1}\)是完整anchor逆，\(G\)是内部背景Green，不能与上一节Galerkin算子混同。这里四个端口对象和局部T-matrix已经存在；一维latent也可能使材料算子变化满秩。它还已给出双重反馈修饰的有限exchange：
+\[
+\Delta F_{V+C}(D)-\Delta F_V(D)
+=[S+O_VQ_VU^*G]\bar C\Gamma_C^{-1}N_UQ_nB,
+\]
+其中\(Q_V=(I-DH_V)^{-1}D\)，\(N_U=C^*(U-L_0R_VU)\)，\(R_U=U-L_0R_VU\)，新空间的相应有限反馈记为\(Q_n\)。其端口残差
+\[
+\rho_D=R_UQ_VB,\qquad
+\Delta F_F-\Delta F_V=SL_1^{-1}\rho_D
+\]
+及在\(\|Q_V\|\epsilon_H<1\)下的有限误差上界，也已在旧报告第5节提出。W可以将这些对象用于wall--target接口，但不能重新命名为首次发现。\cite{R_A17X}
+
+Research F原报告第9节同样已有primal/dual恒等式。若近似状态\(Z\)的残差为\(R=B-LZ\)，近似dual为\(\widetilde\Psi\)，
+\[
+R_d=O^*-L^*\widetilde\Psi,\qquad
+OL^{-1}B-OZ
+=\widetilde\Psi^*R+R_d^*L^{-1}R.
+\]
+若已验证完整算子的稳定性下界\(\beta\leq1/\|L^{-1}\|\)，余项不超过
+\[
+\|R_d\|\,\|R\|/\beta.
+\]
+这只控制数值近似误差。Reduced core条件数、浮点backward residual、经验留出误差不能代替完整Maxwell稳定性界，也不能控制漏掉的墙体后验模式。\cite{R_F}
+
+因此Research W真正可能独立的问题是：\textbf{当前有限观测所保留的材料等价类，是否决定完整目标相互作用所需的传播对象；若不决定，如何量化不能消除的任务风险，并压缩其联合后验。} 同一套resolvent代数可作工具，新的科学结论必须来自可辨识性、概率压缩或同完整费用的任务效用。
+
+\subsection{对下一轮实验的直接约束}
+
+最小实验应先用固定材料支持、频率、孔径、噪声和nuisance构造两世界，检验当前数据近等价是否伴随\emph{完整墙加同一目标}响应差异。单程Green差别可能在往返中抵消；仅画单程差不能证明墙后成像风险。多解marginalization与递进调度必须分开消融。所有方法允许相同factorization、多RHS、Schur复用及合理Krylov策略；计入basis准备、拒绝、dual、fallback与端到端费用。
+
+如果只能形成candidate archive，则报告candidate-only；只有明确目标测度、权重、校准与覆盖诊断之后才报告后验近似。正确MH形式不意味着短链已经混合。Joint \(p(W,X,\gamma\mid y)\)压缩时必须保留传播变量与\(X,\gamma\)的相关性；不能先以同一\(y\)生成\(p(W\mid y)\)，又将同一likelihood不经条件分解地乘一次。这些要求直接来自既有B1/F3/P2失败，已经足以排除“先扩大网络、再期待自动出现多解与加速”的实施顺序。\cite{R_B1,R_F3,R_P2}
+

@@ -1,0 +1,158 @@
+\section{递进的合理定义：可回退的计算前沿}
+\subsection{场消元与材料推断是不同操作}
+对一个固定合法材料世界，把场自由度分成被消元集合 $A$ 和保留集合 $B$：
+\[
+\begin{bmatrix}L_{AA}&L_{AB}\\L_{BA}&L_{BB}\end{bmatrix}
+\begin{bmatrix}E_A\\E_B\end{bmatrix}
+=\begin{bmatrix}Q_A\\Q_B\end{bmatrix}.
+\]
+在 $L_{AA}$ 可逆时，
+\[
+S_B=L_{BB}-L_{BA}L_{AA}^{-1}L_{AB},\qquad
+Q_{\rm eff}=Q_B-L_{BA}L_{AA}^{-1}Q_A.
+\]
+接收也必须同步更新：
+\[
+R_{\rm eff}=R_B-R_A L_{AA}^{-1}L_{AB},\qquad
+d_{\rm eff}=R_A L_{AA}^{-1}Q_A,
+\]
+所以
+\[
+y=d_{\rm eff}+R_{\rm eff}S_B^{-1}Q_{\rm eff}.
+\]
+只更新 Schur 矩阵而忽略有效源和测量偏置会改变物理问题。
+
+精确场消元是代数重排，合法消元顺序不会改变最终响应。未知材料使
+$(S_B,Q_{\rm eff},R_{\rm eff},d_{\rm eff})$ 成为相关随机对象。若还要消去未知材料 $m_A$，则须积分
+\[
+p(y\mid m_B)=\int p(y\mid m_A,m_B)\,\pi_0(dm_A\mid m_B),
+\]
+而非把 $m_A$ 固定为一次重建。场自由度消元与材料后验边缘化不能混为同一步。
+
+\subsection{与坐标弱相关的可信任务区域}
+为每个物理查询区域 $T$ 及其任务类定义传播风险 $R_T$、数值误差 $\epsilon_{n,T}$、压缩误差 $\epsilon_{b,T}$ 和尾质量上界 $\eta_T$。在指定损失与容差下，定义
+\[
+\mathfrak F(y)=
+\{T:\ R_T\le r_T,\ 
+\epsilon_{n,T}+\epsilon_{b,T}\le e_T,\ 
+\eta_T\le\eta_{\max}\}.
+\]
+$\mathfrak F$ 是\textbf{可信任务集合}，不是必然存在的光滑曲面。它可以不连通，可以绕过高损耗区域，也可以因新的全模型核验而收缩。使用物理域、坐标变换后的场范数与材料测度，可避免依赖任意像素编号；有限网格实现仍有离散化误差。
+
+这一构造并未证明可以从有限数据计算出所有风险。若 $\mu^y$ 只由短链或候选库近似、尾质量未知，$\mathfrak F$ 必须标为经验可信集。不能把近似推断的低方差误称严格可观测性。
+
+前沿无需满足 $\Omega_1\subseteq\Omega_2\subseteq\cdots$。材料模式分裂、任务改变、共振出现或新增数据揭露旧模型错误，都可能要求回退。即使真实新增观测存在，Bayes 风险也是在对未来观测取期望意义下非增；某个具体观测可使局部 posterior 更分散。
+
+\subsection{按深度推进何时有额外物理意义}
+如果介质几何、源/接收边界与到时满足因果分离，初期响应确实只依赖一个可确定的近层区域，那么 layer stripping 可利用这种三角结构。高空间频率边界恢复、严格凸 foliation、已知初始 focusing function 等都是实质假设。\cite{L_Somersalo,L_Zhai,L_Marchenko22}
+
+在未知倾斜空腔、钢筋网络和折角墙中，散射路径的时间顺序一般不同于 Cartesian 深度。一个近层角反射可以比深层直达回波晚；有限带宽窗有旁瓣与泄漏；墙--目标反复交互使所谓“近层数据”仍包含深层材料。因此本报告不建议预设固定层数和单向锁定。
+
+如果保持全部材料自由度，仅逐步改变分辨率、频率权重或块更新次序，这通常是 FWI 的优化策略。若同时保留后验分支、控制传播压缩和允许回退，则可能有独立计算价值，但必须与直接 joint inference 做消融，而非把所有收益归为“递进”。
+
+\section{推荐算法：联合概率目标不变的传播分支推断}
+\subsection{完整目标和两种运行模式}
+推荐的算法先以完整总材料 posterior 为目标，再将传播表示作为可替换的数值缓存。它有两种明确输出身份：
+\begin{enumerate}
+\item \textbf{发现模式：} 有界 multistart、成核和受保护 corrector，输出 full-validated weighted hypotheses 或 candidate ensemble；不提供未经建立的 posterior 概率。
+\item \textbf{概率模式：} 在一个可被独立参考检验的先验上运行 SMC/MH，保持正确权重和 nuisance 相关性；有限粒子仍需混合、模式覆盖与校准检查。
+\end{enumerate}
+首轮 P0 采用第一种，P1 的小维概率基准采用第二种。复杂拓扑全网格 posterior 不是第一轮必须解决的目标。
+
+\subsection{初始化与不固定拓扑的材料表达}
+在包含所有可能材料的有限域内使用连续被动场或随机 level-set prior。设候选任务域 $T_j$，不把它们称为已知墙后 mask。未知边界和空气可出现于整个域中；发射接收附近的已知空气区域属于设备几何先验，应单独披露。
+
+确定性初值可采用 free-space/BP、低频正则 joint FWI 或 N3 的合法投影。N3 只在其训练支持和物理接口一致时作为 proposal；原模型针对已知背景，不能直接当未知墙先验 sampler。\cite{R_A26}
+
+概率模式最稳妥的是从原 prior 抽样。如果使用由数据拟合的初始分布 $q_0(u\mid y)$，必须能计算密度、满足 $\pi_0\ll q_0$，并用 $\pi_0/q_0$ 初始化权重，或从明确的 posterior 桥开始。可加入已知正权重的 prior 混合分量保护支持。漏掉 prior 支持的 $q_0$ 不能靠后续 importance correction 自动修复。把数据生成的候选端点等权当 prior 粒子会改变目标。
+
+\subsection{提案：局部、全局与拓扑事件各自承担作用}
+在 Gaussian latent 中可用 pCN 保持参考 prior，再由正确 likelihood 接受；对物性/校准参数使用声明坐标中的 MH。局部 GN 或弱方向只用于提高 proposal 的方向性，不宣称正维 exact fiber。
+
+全局提案可使用独立 prior、coarse multiscale block move、随机占据场更新或有显式密度的 birth/death。空腔生成不需预定义 cavity count；连续潜在场穿越临界零水平可改变拓扑，RJMCMC 只是可变维几何表示的一种选择。
+
+物理 corrector 可解
+\[
+\min_u\ \Phi(u)+\lambda\mathcal R(u)
+\quad\text{s.t.}\quad
+d_T(\Psi_T(u),\Psi_T(u_{\rm old}))\ge s_T,
+\]
+并保持一个事先选定的成核核心、材料合法性和进度，防止所有提案被拉回旧点。它适合候选发现；任意多对一投影后的端点不是正确 MH proposal，除非计算其密度、Jacobian 或设计扩展状态可逆核。
+
+\subsection{传播风险驱动搜索}
+对已有库 $\mathcal A_K$，一个发现目标可定义为
+\[
+\max_{u\in\Theta_{\rm admissible}}
+\min_{a\in\mathcal A_K}d_T(\Psi_T(u),\Psi_T(a))
+\]
+并约束完整数据竞争度、prior 合法性及物理尺度。它鼓励发现新传播行为而非仅新外观。不能只最大化几何距离或像素差异。
+
+这个目标搜索的可能是低概率极端世界。若要声称发现“重要模式”，还需邻域质量积分或独立 posterior 样本，而不是只看点 prior 密度或 $\Delta\Phi$。QD/RL 分数可影响提案与预算，不能替换 Bayes 权重。\cite{R_G,R_F3,R_P2}
+
+为防止指标过拟合，应有与构建库不同的任务 probes 做核验；若这些 probe 依赖未来真实观测，则只能作为后续采集评估，不能进入当前被动在线选择。对模拟 probe 可预测但无观测，这属于计算任务定义，不是新增信息。
+
+\subsection{完整伪代码}
+\begin{quote}
+\textbf{输入：} 原始多静态观测 $y$、联合噪声 $\Sigma$、总材料与 nuisance prior $\pi_0$、任务类 $\mathcal T$、完整求解器及固定费用上限 $B$。\\
+\textbf{输出：} 当前目标推断、传播代表、原联合样本/候选身份、误差与未覆盖质量状态。
+
+\begin{enumerate}
+\item 固定所有物理约定、任务损失、prior、频率和审计协议；保存同一 observation identity。
+\item 获取廉价确定性 anchor 供提案使用。概率模式另从 $\pi_0$ 抽样，或正确加权已知 $q_0$；记录所有初始化费用。
+\item 建立 $\pi_{\beta_k}\propto\pi_0e^{-\beta_k\Phi}$ 的温度序列，$0=\beta_0<\cdots<\beta_K=1$。用增量 $\Delta\beta$ 更新权重；条件 ESS 仅决定数值调度，不当模式覆盖证明。
+\item 对每个联合粒子/候选求完整共享材料 Maxwell 状态，或使用有界数值替代；对所有源、频率、极化使用同一材料世界。
+\item 计算 task-restricted $\Psi_T$ actions 及稳定裕度。选择少量物理代表，使估计的加权传播误差最小；保留原联合粒子与簇内条件分布。
+\item 运行局部 pCN/MH、全局提案与可选拓扑事件。candidate corrector 的结果单独入发现库；未经密度修正，不直接并入 posterior 粒子权重。
+\item 用传播近似加速 likelihood 计算；若证书不能决定接受/拒绝则付费 full solve。无严格证书时使用合法 delayed acceptance 或完整 likelihood，保留近似误差记录。
+\item 以任务风险执行 Accept / Keep branches / Revisit。Accept 只共享当前任务的数值传播表示，不删除原 prior 支持；Revisit 恢复被缓存的完整状态或产生全局提案。
+\item 每次材料、任务域或稳定裕度显著变化后重建传播表示；以相同原始数据进行联合全 Maxwell 校正。若有新增观测，另按联合条件 likelihood 更新。
+\item 达到 $\beta=1$ 后检查目标统计量的链间一致性、重要模式与参考误差、独立预测及完整费用。预算到达仍未收敛则输出候选/近似状态及未解决项。
+\end{enumerate}
+\end{quote}
+
+\subsection{数值近似怎样不破坏概率目标}
+若每个状态的 $\Phi$ 有可验证区间，可用同一个随机阈值 $\log U$ 与包含 prior 和 proposal 项的\emph{对数 MH 比}上下界比较：下界足以接受或上界足以拒绝时结束，否则提高求解精度。对固定离散目标，这种 lazy evaluation 不改变接受决策；连续 PDE 与离散化误差仍须另审。
+
+没有严格误差界时，固定 surrogate 的 delayed acceptance 也可保持完整离散 posterior，要求 $\widetilde\pi$ 在 $\pi$ 支持上为正。两阶段比率分别为
+\[
+r_1=\frac{\widetilde\pi(u')q(u\mid u')}
+{\widetilde\pi(u)q(u'\mid u)},\qquad
+r_2=\frac{\pi(u')\widetilde\pi(u)}
+{\pi(u)\widetilde\pi(u')},
+\]
+总接受概率为 $\min(1,r_1)\min(1,r_2)$；proposal 只在第一阶段计入一次。每次通过第二阶段仍需 full likelihood；不能声称无代价。若 surrogate 随链状态自适应，必须满足相应自适应 MCMC 条件或分阶段冻结，不得随意忽略适应性。
+
+SMC 使用 surrogate 权重时必须明确每阶段 target。若
+\[
+\widetilde\pi_k\propto\pi_0e^{-\beta_k\widetilde\Phi_k},
+\]
+则阶段权重应乘
+\[
+\exp[-\beta_{k+1}\widetilde\Phi_{k+1}
++\beta_k\widetilde\Phi_k],
+\]
+而非在 surrogate 改变后仍只乘 $\exp[-\Delta\beta\,\widetilde\Phi_{k+1}]$。最终转到完整 target 再乘
+$\exp[-\Phi+\beta_K\widetilde\Phi_K]$。只有中间粒子确实正确加权到声明 target 时，这一校正才成立；不能靠最后一次 full likelihood 补救任意历史权重错误。高 ESS 不证明先前遗漏模式已恢复。最初 hard discard 的模式如果 proposal 无正支持，最后校正无法找回。
+
+\subsection{停止条件与开销控制}
+固定数据下，停止不是“已经看到所有深度”。合理停止条件是：任务 posterior/候选覆盖在预算内不再有经核验改进；压缩风险低于任务容差；或者现有数据已给出无法降低的任务歧义见证。
+
+每个阶段都可触发 NO-GO：full solver 已比 ROM 更便宜；任务稳定裕度过小导致证书无用；posterior 模式质量无法参考验证；发现的传播差异对实际目标损失无影响。遇到这些结果应收紧研究问题或结束分支，不能自动扩大 rank、网络、带宽或 prior 来制造成功。
+
+在有限 $K_p$ 粒子、$K_g$ 传播代表、$N_f$ 频率、$M_T$ task probe 下，昂贵项约为
+\[
+K_pN_f\left(C_{\rm fact}+N_sC_{\rm rhs}\right)
++K_gN_f C_{\rm port}(M_T)
++C_{\rm proposals}+C_{\rm verification}.
+\]
+压缩只有在 $K_g\ll K_p$ 且传播差异允许共享、setup 可摊销时才可能节约。这个条件本身就是需要测量的假设。
+
+\subsection{主动测量作为独立扩展}
+真正新增采集设计 $a$ 可用期望任务 Bayes risk 减少量
+\[
+U(a)=R^*(y)-\E_{y_a\mid y,a}R^*(y,y_a)-C_{\rm acquisition}(a).
+\]
+它针对目标损失，而非单纯墙像素 entropy。跨频 gain、位置和材料色散应共享 nuisance；不能为每个候选未来频率选择不同物理世界来伪造不可区分性。
+
+主动策略必须与固定较高频、固定极化/位置以及简单等预算扫描比较。Research B 已显示复杂选测未稳定超过强固定频率对照。\cite{R_B} 因此它是可选后续，不应拿新增观测收益替被动递进算法背书。
+

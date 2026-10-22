@@ -44,3 +44,10 @@
 |[a32-material-risk-directed-feedback](https://github.com/migodam/a32-material-risk-directed-feedback)|连续材料风险反馈|历史快照，原证据与负结果保留|
 
 后续B1、C1分别复用本项目仓库，阶段放在目录/Release，不再为每轮新建repo。[发布规则](../RESEARCH_PUBLICATION_POLICY.md)。
+
+
+## Research W P0 — 2026-10-22
+
+[执行入口](research_w_p0_20261022/START_HERE.md) · [中文报告](research_w_p0_20261022/RESEARCH_REPORT_ZH.md) · [图文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_p0_20261022/)
+
+一维解析回归PASS；二维前向网格资格未过，P0-B为UNRESOLVED。没有合格墙体歧义见证、搜索优势或P1结论。

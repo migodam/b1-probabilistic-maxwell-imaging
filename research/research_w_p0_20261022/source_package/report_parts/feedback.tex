@@ -1,0 +1,154 @@
+\section{Green 更新、A17 接口与四类误差}
+\subsection{精确背景更新及其真实计算条件}
+令 $L'=L+\Delta L$，$G=L^{-1}$。在相关逆存在时，
+\[
+G'=G-G\Delta L(I+G\Delta L)^{-1}G.
+\]
+它不需要 Neumann 级数收敛；若使用级数截断才需要相应小量条件。接近极点时，有限逆仍可能存在但条件数很大，截断或低秩近似可能失效。
+
+若 $\Delta L=U K V^*$，则可使用 Woodbury 小核
+\[
+G'=G-GU(I+K V^*GU)^{-1}K V^*G.
+\]
+秩为 $r$ 时，需要相应 $r$ 个传播作用及 $r\times r$ 的小系统。若变更涉及 $q$ 个材料体素，标量离散的秩通常至多 $q$，三维矢量场可能约为 $3q$ 或由边/面自由度决定。一个标量同时改变全域介电率可使 $\Delta L=\alpha M$ 满秩；\textbf{材料 latent 的维数不是算子更新秩}。
+
+小支撑、远场端口分离、窄任务类和重复查询可能带来可压缩结构；强共振、金属网络、细皮肤层及频率变化可能破坏它。低秩是否存在需在实际 input/output 与误差范数中测量，不能由“局部更新”直接推出。
+
+通常只需要 $GQ,GU,G^*R^*$ 等 actions，而非完整 $N\times N$ Green 矩阵。尤其四块签名的 $C=U^*GU$ 会成为大成本：若 $U$ 覆盖任意未知目标的整个域，端口数可与场自由度同阶。此时全矩阵缓存并没有降阶。
+
+\subsection{局部墙变化怎样同时改变四种任务传播}
+在同一固定 nuisance 下，令 $U_S$ 注入被修改区域，$U_T$ 注入任务域，$\Delta L=U_SKU_S^*$，定义
+\[
+M_S=K(I+C_{SS}K)^{-1},\qquad C_{SS}=U_S^*GU_S.
+\]
+再令 $R_S=RGU_S$、$B_S=U_S^*GQ$、$C_{TS}=U_T^*GU_S$、$C_{ST}=U_S^*GU_T$。四块签名的有限更新精确满足
+\[
+\boxed{
+\begin{bmatrix}\Delta d&\Delta A\\\Delta B&\Delta C\end{bmatrix}
+=-\begin{bmatrix}R_S\\C_{TS}\end{bmatrix}
+M_S\begin{bmatrix}B_S&C_{ST}\end{bmatrix}.}
+\]
+此式是标准 resolvent 的任务端口限制，也是理解 A17 双侧反馈的自然接口；其代数并非新颖。当前无目标数据只检验 $R_SM_SB_S$，而强目标还需要另外三个乘积。因此 $R_SM_SB_S$ 很小不控制 $C_{TS}M_SC_{ST}$；局部区域可以在当前照明/接收下较暗，却经任务域返回的场参与内部反馈。
+
+若有人在任意矩阵空间中找到 $M_S$ 使第一个乘积为零、其他乘积非零，这仍不是合法墙体反例：$K$ 必须来自允许的局部、共享频率、被动 Maxwell 材料更新，且 $M_S$ 与 $K$ 的非线性关系不能被忽略。完整反例必须同时满足这些约束。若只在一阶取 $M_S\approx K$，结论也只能是一阶的。
+
+对一个固定强目标，可把上述 $G$ 换成含该目标的 $G_X$ 再求墙变化。目标会改变两侧的激发和接收场，所以 wall-only 与 target-present 的可见性不一致；这既可能形成传播风险，也可能让联合观测更容易区分墙体。本轮带宽实验显示了后一种情况。潜在设计原则是同时筛查当前数据项与任务反馈项，不是只寻找辐射弱的材料方向。
+
+\subsection{A17 的可迁移内容及其限度}
+在固定材料状态下，令 current basis 为 $V$，
+\[
+R_V=V(V^*LV)^{-1}V^*,\qquad
+\bar C=(I-R_VL)C,\qquad\Gamma_C=C^*L\bar C.
+\]
+对任意任务输入 $B_T$ 与输出 $O_T$，同一 Galerkin 增广给出
+\[
+\boxed{
+H_{V+C}-H_V=
+O_T\bar C\,\Gamma_C^{-1}
+C^*(B_T-LR_VB_T).}
+\]
+这是 A17 的 $Y_C\Gamma_C^{-1}N_C$ 的直接 input/output 泛化。它解释新增电流须同时被任务激发并返回任务输出，才对该任务有效。原始输入、保留空间反馈与输出可见性各自不同。\cite{R_A17,R_A17core}
+
+要区分两种“暗”：
+\begin{enumerate}
+\item $SC$ 很小而 $S\bar C$ 显著：原 current 直接辐射弱，但经保留反馈可见。这是 A17 的具体机制。
+\item 某材料方向 $h$ 满足 $DF(m)h\approx0$，而 $DH_T(m)h$ 显著：这是观测任务与下游任务不一致。必须包括材料注入及传播，不能仅由 current 列 $O_TC$ 推出；它不是同一个定理。
+\end{enumerate}
+
+同一个 $[V,C]$ 上，Schur 写法与普通 Galerkin 的解相同；A17-X/P2 已有机器精度核验。\cite{R_A17X,R_P2} 因而不可能普遍证明“A17 的代数写法在同空间上比最优 Galerkin 更准”。潜在贡献只能来自空间选择、数值稳定性、误差估计或计算组织，并与允许相同缓存和输入信息的对照比较。
+
+\subsection{真实墙体更新不能直接套用冻结 paired support}
+A17/A12 的 paired material support 对共同 $L,B,r,\Lambda$ 下的指定 current 近似改变成立。墙体材料真正改变时，$L$、总场依赖的材料注入 $B$、残差 $r$ 都改变。
+
+在共同实材料坐标的无约束 GN 二次子问题中，定义
+\[
+h_i=J_i^*r_i+\ell_i,\qquad
+H_i=J_i^*J_i+\Lambda_i,\qquad s_i=-H_i^{-1}h_i.
+\]
+若 $J_1=J_0+D$、$r_1=r_0+\delta r$，则
+\[
+\Delta h=D^*r_0+J_0^*\delta r+D^*\delta r+\delta\ell,
+\]
+\[
+\Delta H=J_0^*D+D^*J_0+D^*D+\delta\Lambda,\qquad
+s_1-s_0=-H_1^{-1}(\Delta h+\Delta Hs_0).
+\]
+这些是 GN 二次模型的差分，不是完整非线性目标 Hessian 的公式。即便 $D=Y\Gamma^{-1}N$，还会出现 $J_0^*\delta r$ 等新作用；active set 变化也需重新处理 KKT 条件。原 paired support 描述局部更新差在哪里，不是错误墙体锁定的安全保证。
+
+原 A17-X 已推导有限局部材料提案下的双侧反馈修饰、端口残差和小核扰动界；Research F 已给 primal--dual 与 likelihood 误差接口。\cite{R_A17X,R_F} Research W 再次写出这些代数只能作为复用，不构成新章节的原创核心。
+
+\subsection{数值传播误差：可检验的 primal--dual 界}
+求解 $LE=Q$，近似为 $\widetilde E$，令
+\[
+r_p=Q-L\widetilde E,\qquad
+r_d=O^*-L^*\widetilde Z.
+\]
+则精确恒等式
+\[
+OE-O\widetilde E=
+\widetilde Z^*r_p+r_d^*L^{-1}r_p.
+\]
+若已验证 $\sigma_{\min}(L)\ge\alpha>0$，经 dual 修正后的误差满足
+\[
+\|OE-O\widetilde E-\widetilde Z^*r_p\|
+\le\frac{\|r_d\|\|r_p\|}{\alpha}.
+\]
+这是既有 goal-oriented residual 代数。它可用于四块签名的 task-restricted action，不必估计整个 Green 算子。
+
+关键是 $\alpha$ 是否有可靠又便宜的下界。一个可能入口是预条件算子 $M$ 满足经验证的 $\|I-ML\|<1$，从而
+\[
+\|L^{-1}\|\le \frac{\|M\|}{1-\|I-ML\|}.
+\]
+只抽查几个向量、观察 reduced core 条件数或用经验 held-out 误差，不能给出这个 uniform 上界。用完整 SVD 获得下界也可能比直接求解更贵。条件失败表示该证书无效，不代表完整 Maxwell 解不存在。
+
+\subsection{四类误差必须分账}
+\begin{longtable}{p{27mm}p{54mm}p{67mm}}
+\toprule
+误差 & 数学对象 & 可用控制与不可替代项\\
+\midrule
+数值近似 & 同一 $m$ 下的离散、迭代、ROM、截断误差 & 网格收敛、后向残差、dual/inf-sup；不能核验材料是否真实。\\
+错误固定模型 & $\mathcal F(m_*)-\mathcal F(\widehat m)$ & 需要真实世界或有覆盖意义的不确定集合；小求解残差不控制。\\
+材料后验不确定性 & $\Psi_T{}_\#\mu^y$ 的分散与多模式 & 联合推断、任务 Bayes risk；它不是数值误差。\\
+未建模结构 & 偏离所声明材料/天线/色散类的真实差异 & 独立验证、模型扩展、受约束 discrepancy；不能靠更小迭代 tolerance 消除。\\
+\bottomrule
+\end{longtable}
+可对已明确的两种前向近似使用三角不等式组合，但不能把未知真实模型偏差默认计为零。如果数值误差 $\delta_n$ 和分支压缩误差 $\delta_b$ 都有界，likelihood 误差应使用
+\[
+R(\delta_b+\delta_n)+\tfrac12(\delta_b+\delta_n)^2,
+\]
+而非漏掉 $\delta_b\delta_n$ 的两个独立半平方。详见附录。
+
+残差模型 $y=F(m,\gamma)+\xi+n$ 可表达 discrepancy，但任意高自由度 $\xi$ 也能吸收目标信号。应有物理支持或独立数据确定其先验；增大噪声直到候选相容不属于科学验证。
+
+\subsection{值得检验的任务导向 current exchange}
+定义一组明确任务及其分布 $\nu_T$，如在查询域内放置不同位置、材料强度和极化响应的合法测试目标。可考虑
+\[
+\mathcal E(V)=
+\E_{\mu_W^y,\nu_T}
+\|F_W^{\rm full}(X)-F_{W,V}(X)\|_{\Sigma^{-1}}^2.
+\]
+选择固定实际 current 秩下的替换 $V\to V'$，以单位完整计算成本的风险下降为准：
+\[
+\frac{\mathcal E(V)-\mathcal E(V')}{C(V\to V')}.
+\]
+这与改善某一步材料 GN gap 的目标不同，也与材料 MAE 不等价。
+
+但 $\mathcal E$ 需要 full reference 或可靠误差界，不能免费使用 oracle。可从小候选池出发，用近似评分提出 finalist，再以付费任务 actions 和上下界决定接受；无法证实下降时 no-op。对给定有限候选池，若分数区间可靠且旧空间保留，可保证只接受经证实有正收益的动作；它不保证候选池覆盖全局最优，也不保证同成本胜过普通 task-POD/Krylov。
+
+A17 最新效率审计显示原本预想的 $Jd$ 不是全部瓶颈；bank/anchor/workspace 构建和非线性路径也重要。\cite{R_A17eff} 因而这个分支的第一步应测费用，不应先推测将某个公式降秩就能加速。
+
+\subsection{成本模型与强对照}
+设场自由度 $N$、频率数 $N_f$、发射数 $N_s$、更新端口数 $r$。以 $C_{\rm fact}(N),C_{\rm rhs}(N)$ 表示实际后端一次分解与单 RHS 代价。
+\[
+C_{\rm full}\approx
+N_f\big[C_{\rm fact}(N)+N_sC_{\rm rhs}(N)\big].
+\]
+端口更新需支付 $G U$、接收/伴随 actions、$r$ 核构建与 $r^3$ 解；典型 setup 为 $N_frC_{\rm rhs}$，存储可能为 $O(N_frN)$。dense LU、稀疏 FEM 与迭代 FMM 的成本结构不同，不能一律写成 $O(N^3)$。
+
+ROM 还要付离线快照、基生成、正交化、每个材料下 reduced operator 组装、误差检查和 fallback。总账至少包含：
+\[
+C_{\rm total}=C_{\rm setup}+C_{\rm proposals}+C_{\rm rejected}
++C_{\rm checks}+C_{\rm fallback}+C_{\rm inference}.
+\]
+对照必须允许 direct solve 复用 LU 和多 RHS，Krylov 使用合理预条件与 warm start，ordinary Galerkin 使用相同空间，T-matrix 使用真实端口。比较同 current rank 有机制意义，但不等于同费用性能。
+

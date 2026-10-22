@@ -1,0 +1,97 @@
+\section{文献与原创性审计：Research W 的可成立边界}
+
+本节核验截止于 2026 年 10 月 22 日。定向检索尚未核实一篇同时完成“未知复杂墙体拓扑、完整 Maxwell 墙--目标多次散射、联合多模态后验、概率传播更新、任务风险控制推进”的论文；这不是穷尽检索或不存在证明。模块组合本身也不足以支撑强原创。最接近本课题的已有工作分别集中在 corrected Green 穿墙反演、Marchenko 单侧重定基面、反射--透射歧义以及目标导向 Bayesian 降维。
+
+\subsection{用户指定十项文献：核验内容与读取范围}
+
+下表明确区分全文核查与摘要核查。关于未取得全文的论文，本报告不据题名外推其定理范围；完整题名、作者和可核验入口列于参考文献。
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{p{2.45cm}p{6.05cm}p{5.5cm}}
+\hline
+文献与读取范围 & 已核实内容 & 对 Research W 的直接限制 \\
+\hline
+\endfirsthead
+\hline
+文献与读取范围 & 已核实内容 & 对 Research W 的直接限制 \\
+\hline
+\endhead
+Somersalo 1994\cite{L_Somersalo}；出版社摘要 & 高频时谐 Maxwell；以高空间振荡的边界激励确定表层电磁参数，利用 invariant embedding 向内传递边界数据。摘要指出耗散使方法适于近边界区域。 & 连续边界算子与特殊激励不等于有限单侧天线数据。更新传播边界后继续成像已有明确先例。 \\
+\hline
+Hesford--Chew 2010\cite{L_DBIM}；作者机构详细摘要 & DBIM 以更新的不均匀背景连续线性化，MLFMA 加速反复正演。指定 PMC 入口受访问限制。 & “反演材料、更新背景、再次反演”属于既有 DBIM/FWI 思想；必须另证任务风险或计算收益。 \\
+\hline
+Marks 等 2017\cite{L_Marks}；全文 & sparse blind deconvolution 同时恢复目标与圆对称 Green，不必预知平面层厚度及材料；包含 K-band 建材实验。 & 利用层状介质横向对称和目标稀疏性。既非任意墙体拓扑，也非完整非线性联合后验。 \\
+\hline
+Jakobsen--Tveit 2018\cite{L_Tmatrix}；出版社正文检索 & 频域各向异性导电介质的 DBI T-matrix，体积分方程与背景更新。直接页面访问间歇失败，正文由出版检索入口取得。 & resolvent、动态 Green 和局部 T-matrix 更新不构成新恒等式。2015 年相关工作已比较固定及动态背景\cite{L_Tmatrix15}。 \\
+\hline
+Watson 等 2024\cite{L_Watson}；全文，重点第 3--7 节 & BEM corrected Green、ROM 与 variable projection；处理 corner-wall 传播及墙介电率 nuisance，保留墙体多次散射。 & 墙形近似已知、标量模型、目标采用 Born 近似；未包含目标间反复散射。是最接近的应用 baseline，不能忽略。 \\
+\hline
+Zeng 等 2025\cite{L_Lidar}；IEEE 摘要/引言及 BIT 记录 & LiDAR、SLAM、轮廓拟合补偿门窗、柱和凸出结构导致的不规则墙传播；实验改善建筑布局恢复。 & 使用外部精确几何信息，适合作为额外信息对照，不符合本课题无外部墙几何的输入条件。 \\
+\hline
+Yang 等 2025\cite{L_Building}；IEEE 摘要及作者记录 & 以墙和墙角等结构的连续性建立 Bayesian 建筑内部感知；采用结构变分推断。 & 未核全文；目前核实的规范散射单元模型不足以支持“任意拓扑完整 Maxwell posterior”解读。 \\
+\hline
+Abugattas 等 2025\cite{L_LayerUQ}；全文重点第 1、2、4、5 节 & 已知层背景的纵波散射，低维参数夹杂，MCMC 展示单频多模态；增加频率可减少部分次模式。 & 是纵波模型，非全矢量 Maxwell；层背景已知。大量正演采样的成本不能直接外推为全网格复杂墙后验可行。 \\
+\hline
+Minsley 2011\cite{L_Minsley}；USGS 详细摘要 & FDEM 地球物理跨维 MCMC，层数未知，考虑先验及仪器高度不确定性。 & 未知层数已有 Bayesian 解法，但不等价于任意三维孔洞及连通结构；低频导电勘探与 GHz 穿墙条件不同。 \\
+\hline
+Le Louër--Rapún 2017\cite{L_Topology}；出版社摘要/补充说明 & 三维 Maxwell 拓扑敏感性，分别处理 PEC、腔、阻抗及介质传输问题；检测不预知的个数、位置和形状。 & 拓扑成核已存在；拓扑导数既不是 posterior 权重，也不保证探索重要的全局拓扑模式。本轮未逐页阅读全文。 \\
+\hline
+\end{longtable}
+\endgroup
+
+\subsection{最重要的遗漏先例：Marchenko、前向散射与电磁重定基面}
+
+Marchenko 的目的之一正是从地表反射构造内部虚拟源/接收点及 Green 响应，而无需先精确恢复全部内部材料。Wapenaar--Slob 的多分量单侧表示包含电磁与弹性波框架\cite{L_Marchenko14}。其反射响应是一个具有空间、时间及分量完备要求的算子；初始聚焦场与截断介质的逆透射有关。不能将这个条件替换为“有限单侧数据完全决定内部传播”。原文对因果分离的详细分析与示例主要在一维弹性情形，三维、复杂界面及大偏移下需要额外判断。Diekmann--Vasconcelos 的全波表示进一步处理早期上下行分解的限制；实际求解仍需要初至波估计\cite{L_Marchenko21}。
+
+\textbf{前向散射是 Research W 最相关的缺失信息之一。}van der Neut 等指出，平滑模型直达波代替初始聚焦场会丢失某些前向散射及关联多次反射，并以额外透射数据补回\cite{L_Marchenko22}。其论证与数值例子属于特定声学场景，不能直接升级为普适 Maxwell 非唯一性定理。但它表明“可拟合反射”与“具备正确的下游聚焦场”之间的落差已被明确研究；Research W 必须给出更具体的材料类、有限观测及风险结果。
+
+已有电磁版本也必须纳入审计。Slob--Wapenaar 2017 给出无损三维介质中由单侧地表 GPR 反射构造两个内部点间 Green 的表示，数值例子为一维\cite{L_EM2017}。Slob--Zhang 2016 的有耗三维推导需要两个平行面上的反射与透射，以构造负耗散辅助响应，亦以一维示例验证\cite{L_EM2016}。Yang--Slob 2021 的一维有耗 GPR 反演使用双侧数据，并对反射中的弱耗散作假设\cite{L_EM2021}。有耗声学实验版本同样使用双侧访问\cite{L_Dissipative18}。本轮对这四项核实了作者机构或期刊摘要，不把三维表示存在等同为三维复杂墙实验成功。
+
+因此应将本课题定位为：\emph{当完整反射响应、初始聚焦场、无损性或双侧透射条件不可满足时，识别有限单侧数据仍能确定的下游传播量，并保留无法排除的传播分支。}有限带宽、有限孔径以及未知天线响应不仅是数值截断，也改变可辨识性问题。不能用理想 Marchenko 恒等式替代这些条件下的稳定性证明；也不能将已有单侧 Green 学习重新命名为原创哲学。
+
+\subsection{反射相同而传输不同：已有结论及可争取的新结果}
+
+Waagaard--Skaar 2007 的多模逆散射直接讨论这种歧义\cite{L_Waagaard}。全文第 2 节把一般无损互易单元分解为反射元件与两侧同向模态耦合；若允许反射元件远侧的附加耦合，反射不能唯一确定传输。作者为了实施逆算法，排除该自由度。第 3 节讨论相位及 Takagi 分解歧义；多维类比还带有窄带、耦合结构等限制。它没有解决本课题的一般有限支撑复杂墙问题，但已经覆盖“相同反射不必相同传输”的广泛定性主张。
+
+更早的 Golden 等电磁海冰研究，在一维非磁有耗标量化模型下讨论折射率 $n(x)$ 与电导率 $\sigma(x)$ 联合未知：单个平面波的回波一般不足，底部跳变可提供类似透射的信息\cite{L_Golden}。这里本轮核查的是论文第 II 节及其引用关系，未重新证明所引旧定理。尤其不能照抄其书目误差：Chaderjian 的相应论文实际发表于 1994 年；出版社摘要的唯一性假设是固定波速及点源响应，使用两个平面波分量\cite{L_Chaderjian}。不同激励集、已知参数及界面假设改变结论。
+
+据此，以下内容只能列为数学工具或明确假设下的推论：数据纤维上任务量恒定的因子化判据；局部条件 $\ker DF\subseteq\ker DH$；线性分式的墙--目标反馈表示；一般两点统计下界。它们不能仅因套用于 Green 就宣称为新的 Maxwell 定理。较强贡献需要在\textbf{普通非磁、被动、有界、有限支撑材料类}中完成以下至少一项：有限非线性且物理可实现的近数据等价构造；对带宽、孔径、噪声和 nuisance 显式敏感的任务传播模数；或在实际采集设计下可检验的充分条件。任务应覆盖目标的完整反馈响应，而不只比较一次源到目标传播。
+
+\subsection{目标导向概率、降维与自适应前沿的已有基础}
+
+Lieberman--Willcox 2014 已直接针对预测量而非完整参数场进行非线性 Bayesian inference\cite{L_NonlinearGoal}；Spantini 等 2017 在线性高斯问题中给出目标后验均值、协方差及风险意义下的最优低秩近似\cite{L_Goal}。因此“材料不同但任务等价”和“只保存任务重要方向”不是新理念。Cui--Marzouk--Willcox 的 likelihood-informed parameter and state reduction 同时压缩参数与 PDE 状态\cite{L_Cui}；A17 的 paired material/current space 不能以“双空间”本身作为独立性依据。
+
+Zahm 等以 log-likelihood 梯度统计及适当测度不等式认证非线性后验降维误差\cite{L_Zahm}。Cotter--Dashti--Stuart 以及 Lie--Sullivan--Teckentrup 已建立确定性或随机前向误差到后验误差的理论\cite{L_Cotter,L_Lie}。Research W 可贡献的是可计算、目标相关的 Maxwell 误差证书及其应用条件，而不是重新发现通用 Bayesian 稳定性。数值误差证书也不能认证未被采样到的真实墙体模式。
+
+Calvetti--Nakkireddy--Somersalo 2020 的题目即为 Bayesian filtering layer stripping\cite{L_BayesStrip}。本轮核实其出版记录，未取得全文，因而仅据此否定“概率化剥层从未出现”这一宽泛说法。未知 Green 的跨维 Bayesian 估计也已用于地震多通道反卷积\cite{L_GreenBayes}；不应声称 Green posterior 本身首次出现。
+
+几何推进同样有边界控制与凸叶状分解先例。Zhai 2026 的 dynamical Maxwell 局部唯一性使用严格凸波速 foliation\cite{L_Zhai}；Brown--Marletta--Reyes 的部分边界唯一性对系数边界邻域等条件有明确要求\cite{L_Partial}。本轮核查了相应摘要，不能将连续局部边界 Cauchy 数据与有限天线阵列混同。若本课题的“可信前沿”允许分裂、回退，它更适合作为全局后验的计算预算分配规则；除非另有新数据，不能声称推进创造了信息。SOM 本身也早有二维层状穿墙应用\cite{L_SOM}。
+
+\subsection{四条论文路线：独立性、成本与停止门槛}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{p{2.0cm}p{4.25cm}p{4.05cm}p{3.7cm}}
+\hline
+路线 & 值得争取的主贡献 & 已被覆盖的弱版本 & 实验门槛与主要风险 \\
+\hline
+\endfirsthead
+\hline
+路线 & 值得争取的主贡献 & 已被覆盖的弱版本 & 实验门槛与主要风险 \\
+\hline
+\endhead
+I：传播可辨识性与不可能性 & 合法复杂墙类的有限非线性反例、任务传播模数及 nuisance 补偿后的定位风险界；给出何时任务可辨的条件。 & 两端口相位歧义、一般纤维/kernel 判据、通用 Le Cam 及理想匹配磁性平板。 & 优先 P0。必须用普通材料且经独立全波核验；只有单频教具反例不足。理论独立性最好，TAP 价值取决于 EM 具体结果。 \\
+\hline
+II：概率 Green 与递进推断 & 受预算约束的分支保留、压缩和回退，改善目标风险/覆盖率，并分离多解与推进的增量。 & DBIM 加 ensemble、SMC 换名；多次使用同一 likelihood；像素置信度硬固定。 & 待 I 支持。须同数据、先验和正演成本比较直接联合推断；模式覆盖与校准最难。大网络不是第一步。 \\
+\hline
+III：A17 任务反馈计算电磁 & 目标激励、观测及内部反馈共同决定 current enrichment；以传播误差证书和同成本 Pareto 为依据。 & Schur/Woodbury 改名；把 full-GN 指标换名为任务；低维 latent 被误当低秩更新。 & 与现有 A17 最连续，但独立性风险高。须胜 Krylov、标准 goal-ROM、T-matrix；共振/非正规性可能消除低秩收益。 \\
+\hline
+IV：概率 redatuming & 对无法从单侧数据固定的 direct/forward focusing field 保留物理分支，只输出可辨的内部任务响应。 & 对已有 Marchenko 输出简单蒙特卡洛，未处理聚焦场缺失信息。 & 可作 I 的应用路线；必须显式处理有限孔径、损耗及未知目标，不引入不可获得的双侧数据。 \\
+\hline
+\end{longtable}
+\endgroup
+
+\textbf{推荐顺序。}先检验路线 I 的物理命题，再决定是否值得发展路线 II 或 III。路线 I 的可发表主张应写成“指定材料类和实际有限测量设计下，给出目标传输函数的不可辨识构造或可计算稳定性边界”，而非“首次发现反射不能决定传播”。若现实先验与完整联合数据使所有高概率墙体解释在目标任务上几乎等价，则多墙传播学习不再是主要瓶颈，适宜停止扩大算法规模；若差异确实存在但在线搜索无法覆盖，应先报告可辨识性或搜索负结果，不能以 oracle candidate/weight 替代成像性能。
