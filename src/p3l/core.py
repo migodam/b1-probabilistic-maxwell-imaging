@@ -122,6 +122,7 @@ class Point:
     T:np.ndarray|None=None
     J:np.ndarray|None=None
     gradient:np.ndarray|None=None
+    gradient_observation:np.ndarray|None=None
 
 class Target:
     def __init__(self,book,*,keep_fields=False):
@@ -160,33 +161,66 @@ class Target:
     def jacobian(self,p):
         if p.J is None:
             with self.book.physical('receiver_J_32_RHS'):
-                p.T=self.backend().receiver_transfer(p.state)
+                if p.T is None:p.T=self.backend().receiver_transfer(p.state)
                 C=np.einsum('qp,ps->qsp',p.T,p.state.field).reshape(256,576)
                 a=C@self.prior.derivative(p.q)
                 p.J=np.column_stack([self.white(a[:,k].reshape(32,8)) for k in range(66)])
         return p.J
 
     def phi_gradient(self,p,y):
-        if p.gradient is None:
+        y=np.asarray(y)
+        if y.shape!=(32,8) or not np.isfinite(y).all():raise ValueError('gradient observation layout')
+        if p.gradient is None or p.gradient_observation is None or not np.array_equal(p.gradient_observation,y):
             model=self.backend();res=p.state.data-y
-            with self.book.physical('source_adjoint_gradient_8_RHS'):
-                a=model.solve_anchor(model.S.conj().T@res,p.state,adjoint=True,role='likelihood_gradient')
-                h=np.sum(np.conj(a)*p.state.field,axis=1)
-                p.gradient=2*np.real(self.prior.derivative(p.q).T@h)/self.sigma**2
+            if p.J is not None:
+                p.gradient=p.J.T@self.white(res);self.book.counts['cached_J_gradient_actions']+=1
+            else:
+                with self.book.physical('source_adjoint_gradient_8_RHS'):
+                    a=model.solve_anchor(model.S.conj().T@res,p.state,adjoint=True,role='likelihood_gradient')
+                    h=np.sum(np.conj(a)*p.state.field,axis=1)
+                    p.gradient=2*np.real(self.prior.derivative(p.q).T@h)/self.sigma**2
+            p.gradient_observation=y.copy()
+            self.book.counts['gradient_arrays_persisted']+=1
+            save(self.book.jobdir/'derivatives'/f'{p.key}_{self.book.counts["gradient_arrays_persisted"]:07d}.npz',q=p.q,gradient_Phi=p.gradient,observation=y)
         return p.gradient
 
     def persist_cache(self,p,path):
         save(path,q=p.q,chi=p.state.chi,current=p.state.current,field=p.state.field,prediction=p.state.data,LU=p.state.factor[0],pivots=p.state.factor[1],backward_residual=p.state.residual,receiver_T=np.zeros((0,0),complex) if p.T is None else p.T)
+
+    def load_cache(self,path,owner):
+        """Paid full-state cache; arithmetic audits add no LU-solver RHS."""
+        path=Path(path);model=self.backend()
+        with np.load(path,allow_pickle=False) as z:a={k:z[k].copy() for k in z.files}
+        from a30.physics import _cpu
+        chi=self.prior.decode(a['q'])[0]
+        if not np.array_equal(chi,a['chi']):raise ValueError('cache material differs from target decoder')
+        L=np.eye(576)-chi[:,None]*model.G;rhs=chi[:,None]*model.incident
+        errors=[np.linalg.norm(L@a['current']-rhs)/max(1e-30,np.linalg.norm(rhs)),np.linalg.norm(model.S@a['current']-a['prediction'])/max(1e-30,np.linalg.norm(a['prediction'])),np.linalg.norm(model.incident+model.G@a['current']-a['field'])/max(1e-30,np.linalg.norm(a['field']))]
+        if max(errors)>1e-10:raise ValueError('cache Maxwell equations')
+        native=_cpu.FullState(chi,a['current'],a['field'],a['prediction'],L,(a['LU'],a['pivots']),float(a['backward_residual']))
+        p=Point(a['q'],model._export_state(native,cached=True,path=path),path.stem)
+        if a.get('receiver_T',np.zeros((0,0))).size:
+            T=a['receiver_T'];error=np.linalg.norm(T@L-model.S)/max(1e-30,np.linalg.norm(model.S))
+            if error>1e-10:raise ValueError('cache receiver transfer equation')
+            p.T=T;model._transfers[p.state]=T
+        self.book.counts['paid_cache_loads']+=1
+        self.book._update('CACHE_REUSE',owner=owner,path=str(path),equation_error=max(errors),cold_forward_RHS=8,cold_J_RHS=32 if p.T is not None else 0)
+        return p
 
     def observation(self,parent):
         with np.load(OUT/f'inputs/online/{parent}.npz',allow_pickle=False) as a:
             if set(a.files)!={'observation','target_id','sigma'} or str(a['target_id'])!=self.cfg['target_id'] or float(a['sigma'])!=self.sigma:raise ValueError('observation metadata')
             return a['observation'].copy()
 
-def to_probit(q):
-    x=np.asarray(q).copy();x[64:]=ndtri(np.clip(x[64:],1e-4,1-1e-4));return x
+def to_probit(q,*,initialization=False):
+    """Exact interior transform; bounded inward move only when explicitly initializing."""
+    x=np.array(q,dtype=float,copy=True)
+    if x.shape!=(66,) or np.any(x[64:]<0) or np.any(x[64:]>1):raise ValueError('probit input')
+    if initialization:x[64:]=np.clip(x[64:],1e-4,1-1e-4)
+    elif np.any((x[64:]==0)|(x[64:]==1)):raise ValueError('boundary has infinite probit coordinate')
+    x[64:]=ndtri(x[64:]);return x
 
 def from_probit(x):
-    q=np.asarray(x).copy();q[64:]=ndtr(q[64:]);return q
+    q=np.array(x,dtype=float,copy=True);q[64:]=ndtr(q[64:]);return q
 
 def probit_derivative(x):return np.r_[np.ones(64),np.exp(-.5*np.asarray(x)[64:]**2)/np.sqrt(2*np.pi)]
