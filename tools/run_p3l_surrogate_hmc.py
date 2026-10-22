@@ -108,7 +108,7 @@ def main():
             warmup=WARMUP,production=PRODUCTION,trajectory_lengths=[16,32,64],
             seed=2026102341+chain,initial_step_size=.05,target_acceptance=.8,
             refresh=REFRESH,refresh_actions='true current Full endpoint J/T and GN inverse mass; force/current-gradient/dual-averaging reset',
-            production='surrogate, mass, and step size frozen',
+            production_policy='surrogate, mass, and step size frozen',
             full_target='-Phi(from_probit(x))-.5*x@x in physical probit66 coordinates',
             material_response='Fhat=F0+(Cchi@(chi(q)-chi0)).reshape(32,8)',
             Cchi='einsum(qp,ps->qsp,T,field).reshape(256,576)',

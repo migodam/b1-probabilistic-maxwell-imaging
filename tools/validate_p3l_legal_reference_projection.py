@@ -19,7 +19,7 @@ def main():
     source=json.loads((folder/'SUMMARY.json').read_text())
     parents=[f'DEV_{i:03d}' for i in range(32)]
     if source['parents']!=parents:raise RuntimeError('exact all32 projection cohort required')
-    closure=json.loads((OUT/'schedules/surrogate_force_hmc/CLOSED.json').read_text())
+    closure=json.loads((OUT/'schedules/surrogate_force_hmc_fix1/CLOSED.json').read_text())
     if closure.get('status')!='COMPLETE':raise RuntimeError('existing physical sequence must finish first')
     book=Book('B','validate_legal_reference_projection_all32',max_wall=600)
     status,error='ERROR',None
