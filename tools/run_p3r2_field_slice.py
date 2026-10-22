@@ -6,7 +6,7 @@ both native properties remain fixed. This is never a FULL marginal/reference.
 No physics runs at import; the parent explicitly queues a registered job.
 """
 from pathlib import Path
-import argparse,gc,json,os,sys,time
+import argparse,gc,json,os,subprocess,sys,time
 for name in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS'): os.environ.setdefault(name,'1')
 import numpy as np
 from numpy.polynomial.hermite import hermgauss
@@ -136,13 +136,24 @@ def main():
     book=SliceBook('B',args.job,max_wall=args.max_wall,pilot_rhs_cap=args.rhs_cap)
     status='COMPLETE';error=None;stream=None;start=time.perf_counter();rows=[]
     try:
-        target=Target(book);y=target.observation(args.parent);dest=book.jobdir
+        dest=book.jobdir
+        git_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+        own_status=subprocess.check_output(['git','status','--porcelain','--','tools/run_p3r2_field_slice.py'],cwd=ROOT,text=True).strip()
+        source_files=['tools/run_p3r2_field_slice.py','src/p3r2/core.py','src/p3l/diagnostics.py','tools/run_p3r2_posterior.py','src/p1_material/prior.py']
+        for name in source_files:
+            copied=dest/'source'/name;copied.parent.mkdir(parents=True,exist_ok=True);copied.write_bytes((ROOT/name).read_bytes())
+        write(dest/'SOURCE_PROVENANCE.json',dict(git_revision=git_revision,executed_script_worktree_status=own_status,source_files=source_files,
+            exact_executed_script_copy=str(dest/'source/tools/run_p3r2_field_slice.py'),
+            source_of_truth='Exact copied script bytes; a dirty script is not claimed identical to Git HEAD',
+            python=sys.version,numpy=np.__version__,no_hash_check=True))
+        target=Target(book);y=target.observation(args.parent)
         anchor=target.load_cache(args.anchor,owner='Historical P3L paid A DEV030 anchor; original observation, old ledger immutable')
         q0=anchor.q.copy();Jz=target.jacobian(anchor)[:,:64].copy();Dz=target.prior.derivative(q0)[:,:64]
         V,geometry=risk_span(Jz,Dz);a0=V.T@q0[:64];rest=q0[:64]-V@a0
         if np.linalg.norm(V.T@rest)>1e-11 or np.linalg.norm(rest+V@a0-q0[:64])>1e-11: raise RuntimeError('absolute orthogonal conditional coordinates')
         cdf_grid=np.linspace(-6.,6.,241)
         protocol=dict(job=args.job,parent=args.parent,stage='B',target_id=target.cfg['target_id'],
+            git_revision=git_revision,executed_script_worktree_status=own_status,executed_source_snapshot='source/tools/run_p3r2_field_slice.py',
             target_family='SLICE_GAUSSIAN_FIELD2_FIXED_ORTHOGONAL62_AND_PROPERTIES',original_FULL_posterior=False,original_P1_target_unchanged=True,
             anchor=str(args.anchor.resolve()),q0=q0,V=V,rest=rest,a0=a0,
             span='C=(I+Jz.TJz)^-1; leading2 eigvectors of C^.5 Re(Dz.H Dz/576) C^.5; Euclidean QR(C^.5 eigvectors)',
