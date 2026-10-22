@@ -14,7 +14,7 @@ from scipy.optimize import brentq, minimize
 
 from .core import save, write
 
-ARMS = ("frozen_fixed", "dynamic_fixed", "dynamic_curvature", "dynamic_bandit", "ordinary_random")
+ARMS = ("frozen_fixed", "dynamic_fixed", "dynamic_curvature", "dynamic_bandit", "ordinary_random", "dynamic_mbrl")
 FEATURES = ("bias", "radius", "step_fraction", "direction_fraction", "sign",
     "log_generalized_cost", "predicted_Phi_change", "prior_change",
     "latent_step", "saturation_fraction", "seam_fraction",
@@ -182,14 +182,16 @@ def feature_vector(target, origin, seed, frame, action, radius, step, steps,
 
 def load_policy(path):
     obj = json.loads(Path(path).read_text())
-    if obj.get("feature_names") != list(FEATURES) or obj.get("kind") != "ridge_contextual_bandit":
+    if obj.get("feature_names") != list(FEATURES) or obj.get("kind") not in ("ridge_contextual_bandit", "linear_model_based_policy"):
         raise ValueError("policy schema mismatch")
     if obj.get("training_split") != "train" or not obj.get("frozen_before_evaluation"):
         raise ValueError("policy not frozen train-only")
     # This exported inference object contains no truth arrays or rewards.
     allowed = {"kind", "feature_names", "mean", "scale", "coefficients",
         "ridge", "training_split", "frozen_before_evaluation", "fit_rows", "fit_parents",
-        "reward_definition", "no_posterior_claim", "schema_version"}
+        "reward_definition", "no_posterior_claim", "schema_version", "transition_coefficients",
+        "context_indices", "context_min", "context_max", "horizon", "discount", "step_increment",
+        "transition_pairs", "behavior_action_counts", "planning_limits"}
     if set(obj)-allowed:
         raise ValueError("unexpected inference policy fields")
     return obj
@@ -198,6 +200,40 @@ def load_policy(path):
 def policy_score(policy, features):
     x = (np.asarray(features)-np.asarray(policy["mean"]))/np.asarray(policy["scale"])
     return x@np.asarray(policy["coefficients"])
+
+
+def model_based_scores(policy, candidate_features):
+    """Finite-horizon deterministic planning with a learned context transition.
+
+    The current bank contains exact-decoder-feasible actions. Future candidate
+    geometry is held locally fixed while online context is forecast by the
+    learned model. Future feasibility is checked by the real decoder only when
+    the next real decision occurs; this approximation is not a value guarantee.
+    """
+    if policy["kind"] != "linear_model_based_policy":
+        raise ValueError("model-based arm requires its separate transition model")
+    bank = np.asarray(candidate_features, float)
+    indices = np.asarray(policy["context_indices"], int)
+    coefficients = np.asarray(policy["transition_coefficients"], float)
+    lower, upper = np.asarray(policy["context_min"]), np.asarray(policy["context_max"])
+    discount = float(policy["discount"])
+    horizon = int(policy["horizon"])
+    if not 2 <= horizon <= 3:
+        raise ValueError("frozen short horizon must be two or three")
+    def value(features, depth):
+        reward = float(policy_score(policy, features))
+        if depth <= 1:
+            return reward
+        z = (features-np.asarray(policy["mean"]))/np.asarray(policy["scale"])
+        context = np.clip(z@coefficients, lower, upper)
+        next_bank = bank.copy()
+        next_bank[:, indices] = context
+        next_bank[:, 2] = min(1., features[2]+float(policy["step_increment"]))
+        next_radius = .04 if features[1] < .03 else .02
+        next_bank[:, 6] *= (next_radius/next_bank[:, 1])**2
+        next_bank[:, 1] = next_radius
+        return reward+discount*max(value(row, depth-1) for row in next_bank)
+    return np.array([value(row, horizon) for row in bank])
 
 
 def _persist(target, p, directory):
@@ -253,7 +289,12 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
         if not candidates:
             rows.append(dict(step=step, status="NO_FEASIBLE_TASK_SCALE_DIRECTION", target_RMS=radius))
             break
-        if arm == "dynamic_bandit" and policy is not None:
+        if arm == "dynamic_mbrl" and policy is not None:
+            scores = model_based_scores(policy, [c["features"] for c in candidates]).tolist()
+            chosen = int(np.argmax(scores)); rule = "frozen_train_learned_reward_and_context_horizon_planner"
+        elif arm == "dynamic_bandit" and policy is not None:
+            if policy["kind"] != "ridge_contextual_bandit":
+                raise ValueError("bandit arm requires its separate one-step model")
             scores = [float(policy_score(policy, c["features"])) for c in candidates]
             chosen = int(np.argmax(scores)); rule = "frozen_train_contextual_reward_model"
         elif arm == "dynamic_curvature":
@@ -261,8 +302,9 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
             chosen = int(np.argmax(scores)); rule = "linear_data_prior_and_decoder_curvature"
         else:
             # Development behavior coverage is deterministic and independent of GT.
-            chosen = (int(seed)+step) % len(candidates) if arm == "dynamic_bandit" else step % len(candidates)
-            scores = None; rule = "deterministic_exploration" if arm == "dynamic_bandit" else "fixed_direction_cycle"
+            learning_arm = arm in ("dynamic_bandit", "dynamic_mbrl")
+            chosen = (int(seed)+step) % len(candidates) if learning_arm else step % len(candidates)
+            scores = None; rule = "deterministic_exploration" if learning_arm else "fixed_direction_cycle"
         selected = candidates[chosen]
         q, velocity, _ = selected["seed"]
         before = dict(target.book.counts)
@@ -274,13 +316,26 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
         write(directory/f"step_{step:03d}_DECISION.json", decision)
         predictor = target.evaluate(q, purpose=f"{parent}_{arm}_step{step}_predictor")
         predictor_cache = _persist(target, predictor, directory)
+        write(directory/f"step_{step:03d}_PREDICTOR_MEASURED.json", dict(
+            **decision, endpoint=predictor.key, cache_path=predictor_cache,
+            Phi=target.phi(predictor, y),
+            actual_RMS=target.prior.material_rms(predictor.state.chi, current.state.chi),
+            signed_progress=_progress(target.prior, predictor.q, current, velocity)[1],
+            cost={k:float(target.book.counts.get(k, 0)-before.get(k, 0)) for k in ("full_forward_calls", "linear_solve_rhs")}))
         model = anchor if arm == "frozen_fixed" else predictor
         cq, correction = strong_correct(target, current, predictor, model, frame, velocity, radius, y,
             maxiter=max_corrector_iterations)
         endpoints = [(predictor, "predictor", predictor_cache)]
         if correction["radius_and_progress_retained"] and np.linalg.norm(cq-predictor.q) > 1e-9:
+            correction_before = dict(target.book.counts)
             corrected = target.evaluate(cq, purpose=f"{parent}_{arm}_step{step}_strong_corrector")
             endpoints.append((corrected, "strong_corrector", _persist(target, corrected, directory)))
+            write(directory/f"step_{step:03d}_CORRECTOR_MEASURED.json", dict(
+                **decision, endpoint=corrected.key, cache_path=endpoints[-1][2],
+                Phi=target.phi(corrected, y), corrector=correction,
+                actual_RMS=target.prior.material_rms(corrected.state.chi, current.state.chi),
+                signed_progress=_progress(target.prior, corrected.q, current, velocity)[1],
+                cost={k:float(target.book.counts.get(k, 0)-correction_before.get(k, 0)) for k in ("full_forward_calls", "linear_solve_rhs")}))
         accepted, role, cache_path = min(endpoints, key=lambda item: target.phi(item[0], y)+.5*item[0].q[:64]@item[0].q[:64])
         delta = accepted.state.chi-current.state.chi
         actual_response = target.white(accepted.state.data-current.state.data)
@@ -313,7 +368,7 @@ def run_trajectory(target, parent, anchor, *, arm, directory, steps=8,
             projector_rotation_from_anchor=float(np.linalg.norm(new_frame["projector"]-frozen["projector"], ord=2)),
             frozen_dynamic_projector_difference=float(np.linalg.norm(dynamic["projector"]-frozen["projector"], ord=2)),
             Maxwell_secant_relative_error=previous_error, cost=full_cost,
-            wall_seconds=time.perf_counter()-start, GT_used_online=False,
+            wall_seconds=time.perf_counter()-start,
             posterior_sample=False, continuous_path_verified=False)
         save(directory/f"step_{step:03d}_FRAME.npz", **new_frame)
         with (directory/"TRACE.jsonl").open("a") as stream:

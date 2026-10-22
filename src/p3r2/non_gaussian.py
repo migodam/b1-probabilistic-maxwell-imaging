@@ -179,3 +179,97 @@ def mixture_from_quadrature(reference, *, components=9, inflation=1.6,df=7.):
     C=reference['coordinate_covariance'];ev=np.linalg.eigvalsh(C)
     C=C+max(1e-12,1e-9*float(ev.max()))*np.eye(2)
     return StudentMixture(centers,inflation*np.linalg.cholesky(C),np.ones(components),df=df)
+
+
+def source_sequential_smc(sampler_prior,source_energies,*,rng,N=64,source_count=8,
+                          mutation_steps=2,pcn_beta=.04,property_sd=.02,
+                          cess_target=.8,resample_threshold=.6,max_stages=256,
+                          max_evaluations=32768,callback=None):
+    """Proper-prior native-coordinate SMC, assimilating exact sources in order.
+
+    Each source is adaptively tempered to one before the next is introduced.
+    All exact full-forward calls return all source energies. Mutation uses
+    Gaussian64 pCN and symmetric property reflection, so the Gaussian prior
+    cancels analytically. This is an approximate finite-particle mechanism,
+    distinct from all-source power tempering; no mode/teacher qualification.
+    """
+    from p3l.tempered import choose_beta,systematic_resample
+    if N<2 or source_count<1 or mutation_steps<1 or max_stages<1 or max_evaluations<N:
+        raise ValueError('positive bounded SMC configuration required')
+    if not 0<pcn_beta<=1 or property_sd<=0 or not 0<cess_target<1 or not 0<=resample_threshold<=1:
+        raise ValueError('invalid frozen SMC proposal or ESS setting')
+    x=np.asarray(sampler_prior(rng,N),float).copy()
+    if x.shape!=(N,66) or not np.isfinite(x).all() or np.any((x[:,64:]<0)|(x[:,64:]>1)):
+        raise ValueError('proper prior samples must be finite native66 with Uniform2 support')
+    energies=np.empty((N,source_count));roots=np.arange(N);lw=np.full(N,-np.log(N))
+    evaluations=0;stage=0;source=0;beta=0.;logZ=0.;history=[];coefs=np.zeros(source_count)
+    def emit(event,**row):
+        if callback: callback(dict(event=event,stage=stage,source=source,beta=beta,evaluations=evaluations,**row))
+    def evaluate(q):
+        nonlocal evaluations
+        if evaluations>=max_evaluations: raise RuntimeError('SOURCE_SMC_LOCAL_EVALUATION_CAP')
+        evaluations+=1;a=np.asarray(source_energies(q),float)
+        if a.shape!=(source_count,) or not np.isfinite(a).all() or np.any(a<0):
+            raise ValueError('nonnegative finite exact energies, one per source, required')
+        return a
+    for i in range(N): energies[i]=evaluate(x[i])
+    emit('INITIALIZED',particles=x.copy(),source_energies=energies.copy(),logweights=lw.copy(),ancestor_ids=roots.copy(),target_coefficients=coefs.copy(),normalized_proper_prior=True)
+    status='RUNNING'
+    while source<source_count and stage<max_stages:
+        selection=choose_beta(beta,lw,-energies[:,source],target_fraction=cess_target)
+        if selection['status']!='OK': status=selection['status'];break
+        stage+=1;previous=beta;beta=float(selection['beta']);coefs[source]=beta
+        inc=-(beta-previous)*energies[:,source];log_increment=float(logsumexp(lw+inc));lw+=inc-log_increment;logZ+=log_increment
+        weights=np.exp(lw);ess=float(1/(weights@weights));resampled=ess<resample_threshold*N
+        parents=systematic_resample(weights,rng) if resampled else np.arange(N)
+        if resampled:
+            x=x[parents].copy();energies=energies[parents].copy();roots=roots[parents].copy();lw=np.full(N,-np.log(N))
+        accepted=0;attempted=0;stage_energy_deltas=[];budget_stop=False
+        # Persist the newly weighted target before mutation, so a stop always
+        # has an explicit valid terminal target rather than a stale beta.
+        emit('TARGET_UPDATED',particles=x.copy(),source_energies=energies.copy(),logweights=lw.copy(),ancestor_ids=roots.copy(),parent_indices=parents.copy(),target_coefficients=coefs.copy(),weight_ESS_before_resampling=ess)
+        for i in range(N):
+            if budget_stop: break
+            for move in range(mutation_steps):
+                if evaluations>=max_evaluations: budget_stop=True;break
+                proposed=x[i].copy();proposed[:64]=np.sqrt(1-pcn_beta**2)*x[i,:64]+pcn_beta*rng.normal(size=64)
+                proposed[64:]=1-np.abs(1-np.remainder(proposed[64:]+property_sd*rng.normal(size=2),2.))
+                e= evaluate(proposed);attempted+=1;old=energies[i].copy()
+                ratio=-float(coefs@(e-old));yes=bool(np.log(max(rng.random(),np.finfo(float).tiny))<min(0.,ratio))
+                oldlog=-.5*float(x[i,:64]@x[i,:64])-32*np.log(2*np.pi)-float(coefs@old)
+                newlog=-.5*float(proposed[:64]@proposed[:64])-32*np.log(2*np.pi)-float(coefs@e)
+                correction=.5*float(proposed[:64]@proposed[:64]-x[i,:64]@x[i,:64])
+                if yes: x[i]=proposed;energies[i]=e;accepted+=1
+                stage_energy_deltas.append(float(e.sum()-old.sum()))
+                emit('MUTATION',particle=i,move=move,accepted=yes,proposed_q=proposed,
+                     source_energy_before=old,source_energy_proposed=e,state_q=x[i].copy(),
+                     state_source_energies=energies[i].copy(),old_logtarget=oldlog,proposed_logtarget=newlog,
+                     log_proposal_correction=correction,log_mh_ratio=ratio,
+                     target_coefficients=coefs.copy(),ancestor_id=int(roots[i]))
+        row=dict(stage=stage,source=source,beta_before=previous,beta=beta,target_coefficients=coefs.copy(),
+                 conditional_ESS=selection['conditional_ess'],weight_ESS_before_resampling=ess,
+                 resampled=resampled,parent_indices=parents.copy(),ancestor_ids=roots.copy(),
+                 distinct_prior_ancestors=int(np.unique(roots).size),log_evidence_increment=log_increment,log_evidence=logZ,
+                 mutation=dict(accepted=accepted,attempted=attempted,acceptance=accepted/attempted if attempted else None),
+                 proposal_delta_total_energy_quantiles=None if not stage_energy_deltas else np.quantile(stage_energy_deltas,[0,.25,.5,.75,1]),
+                 exact_energy_minimum_per_source=energies.min(axis=0),weighted_energy_per_source=np.exp(lw)@energies,
+                 evaluations=evaluations,partial_mutation_due_budget=budget_stop)
+        history.append(row)
+        emit('STAGE_COMPLETE',history=row,particles=x.copy(),source_energies=energies.copy(),logweights=lw.copy(),ancestor_ids=roots.copy(),target_coefficients=coefs.copy())
+        if budget_stop: status='LOCAL_BUDGET_REACHED_AT_EXPLICIT_PARTIAL_SOURCE_TARGET';break
+        if beta==1.:
+            source+=1;beta=0.
+            if source<source_count: coefs[source]=0.
+    if source==source_count: status='FULL_TARGET_REACHED_FINITE_N_UNQUALIFIED'
+    elif status=='RUNNING': status='MAXIMUM_STAGES_AT_EXPLICIT_PARTIAL_SOURCE_TARGET'
+    weights=np.exp(lw)
+    result=dict(status=status,particles=x,source_energies=energies,weights=weights,logweights=lw,
+                ancestor_ids=roots,target_coefficients=coefs,full_target_reached=bool(np.all(coefs==1)),
+                source=source,beta=beta,history=history,evaluations=evaluations,log_evidence=logZ,
+                weight_ESS=float(1/(weights@weights)),distinct_prior_ancestors=int(np.unique(roots).size),
+                logtarget=-.5*np.sum(x[:,:64]**2,axis=1)-32*np.log(2*np.pi)-energies@coefs,
+                posterior_qualification=False,reference_qualification=False,
+                approximation_status='FINITE_N_ADAPTIVE_SOURCE_SEQUENTIAL_SMC_NOT_EXACT_POSTERIOR_DRAWS',
+                caution='Weight ESS does not restore lost ancestry or establish global exploration; partial source targets are not original FULL posterior')
+    emit('FINISHED',status=status,particles=x.copy(),source_energies=energies.copy(),logweights=lw.copy(),ancestor_ids=roots.copy(),target_coefficients=coefs.copy())
+    return result
