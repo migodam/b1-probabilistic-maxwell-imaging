@@ -1,6 +1,6 @@
 # 失败说明与不能排除的解释
 
-本文件区分已经观察到的失败与尚未证明的原因。最终数值、费用和结束状态以 METRICS、参考资格审计及主线程裁决为准。
+本文件区分已经观察到的失败与尚未证明的原因。最终数值、费用和结束状态以 RESULTS_AND_METRICS.json、参考资格审计及主线程裁决为准。
 
 ## 不能把混合失败说成物理没有不确定性
 
@@ -37,3 +37,7 @@ native MAP 与 probit-coordinate mode 是不同点估计器。后者变好不等
 ## 文献与新颖性
 
 ScholarQA 的两条发现查询都返回 429，已知主文献的定向核验不能代替全面 prior-art 搜索。LIS、Rao–Blackwell、Laplace、非线性传输、代理梯度 HMC 和 goal-ROM 均有成熟先例。本轮没有因为检索缺口就宣布原创，也不以失败回顾包装强 IEEE TAP 算法贡献。
+
+## 最终状态
+
+11组四链全部未合格；128对象主风险MSE增加457.5%；两臂代理力没有material MCSE收益；合法reference投影未修复风险。当前Gaussian成像与NN/A17增量路线NO-GO，整体REDIRECT至可靠参考与非Gaussian条件。

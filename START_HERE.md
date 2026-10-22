@@ -1,9 +1,9 @@
 <!-- P3L_CURRENT -->
-## 正在运行：P3-L 非线性材料概率成像
+## 已完成：P3-L 非线性材料概率成像 · REDIRECT
 
-[中文报告](research/p3l_local_posterior_imaging/RESEARCH_REPORT_ZH.md) · [实验网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_local_posterior_imaging/)
+[中文报告](research/p3l_local_posterior_imaging/RESEARCH_REPORT_ZH.md) · [实验网页与图像](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_local_posterior_imaging/)
 
-32 个物理基础解；FULL posterior 参考仍未合格。固定属性 Gaussian 材料均值的 development MSE 恶化约 49.7%，受限 SLICE 积分已收敛。联合补偿和完整概率修正继续检验；不是已完成的 Bayesian 成像结论。
+128独立对象：当前近似材料均值MSE .0615021，对应点基线 .0110309，显著恶化。11组四链Full参考均未合格，15次神经训练无验证增益；8,374,472 complex RHS封账，GPU0。保留负结果，停止当前Gaussian/NN/A17增量路线；不把近似失败等同于真正Bayes成像无益。
 <!-- /P3L_CURRENT -->
 
 ## 最新：P2材料探索完整Campaign

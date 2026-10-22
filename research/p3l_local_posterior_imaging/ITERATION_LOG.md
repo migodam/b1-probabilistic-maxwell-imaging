@@ -39,3 +39,11 @@
 ## 内存中断的处理
 
 中断前 109,488 RHS、失败和缺失尾部 wall 的保守上界均保留。修复的是 campaign 适配器的 transfer/LU 强引用与并发；没有修改历史 solver、物理目标或旧账本。恢复后的 context 和采样进程均在受控内存内运行。网络、代理或缓存速度不构成概率正确性证据。
+
+## 最后实际结果与停止
+
+两臂实际完成：每臂164384 RHS。decoder材料代理的平均绝对Phi预测误差从8.27591降至.545205，但material MCSE .0168920未优于linear .0166675，wall393.749s高于245.671s，仍未合格。128独立对象的Gaussian近似均值MSE .0615021，点基线 .0110309，负区间明确。DEV32合法投影MSE .0208401也未改善。没有据此调大noise/prior、改变locked模型或继续训练RL。
+
+首次代理入口在Book前因重复metadata关键字报错，0RHS；原ERROR/stdout/SOURCE保留。最小parser修复后沿用同一paid job ID/ledger，Cfix1不是新campaign或新预算。
+
+最终REDIRECT，所有未用额度封账，不为寻找正结果追加实验。

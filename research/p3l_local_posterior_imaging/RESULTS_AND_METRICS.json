@@ -1,10 +1,22 @@
 {
-  "status": "RUNNING",
-  "generated_at_utc": "2026-10-22T10:59:37.854733+00:00",
-  "final_scientific_judgment": "PENDING_PARENT_REVIEW",
-  "parent_authored_closure": null,
-  "closure_source": null,
-  "active_reservations_present": true,
+  "status": "CLOSED",
+  "generated_at_utc": "2026-10-22T11:16:33.628107+00:00",
+  "final_scientific_judgment": "REDIRECT",
+  "parent_authored_closure": {
+    "scientific_verdict": "REDIRECT",
+    "closed_at_utc": "2026-10-22T11:15:45.615897+00:00",
+    "probability_reference_status": "FULL_REFERENCE_UNQUALIFIED",
+    "headline": "当前条件Gaussian与学习弱密度未改善Bayesian成像；转向可靠Full参考，不扩大神经网络",
+    "findings": [
+      "128独立parent主比较MSE0.0615021，对应点基线0.0110309，恶化457.5%，配对区间确认负结果",
+      "11组四链Full参考均未合格，不能作teacher或校准posterior",
+      "材料代理力降低forward误差，但同RHS下MCSE不改善且更慢",
+      "原prior、noise、physics与历史账本保持不变；GPU训练0"
+    ],
+    "evidence_release_url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3l-local-posterior-20261022"
+  },
+  "closure_source": "CAMPAIGN_CLOSURE.json",
+  "active_reservations_present": false,
   "semantics": {
     "original_target": "Original P1 Gaussian64 × Uniform2, scalar-TM/VIE; unchanged target law",
     "FULL": "original full target; source qualification retained, never inferred from PIT or ESS",
@@ -17,7 +29,7 @@
     "status": "SAVED_EVIDENCE",
     "source": "RESOURCE_LEDGER.json",
     "evidence": {
-      "sequence": 1872226,
+      "sequence": 1947305,
       "stages": {
         "A": {
           "RHS": 5542136,
@@ -28,19 +40,19 @@
           "GPU_seconds": 0.0
         },
         "B": {
-          "RHS": 1131880,
-          "states": 85764,
-          "LU": 85764,
-          "controlled_wall_seconds": 1444.3769929576665,
-          "physics_wall_seconds": 683.5484826681204,
+          "RHS": 1132136,
+          "states": 85796,
+          "LU": 85796,
+          "controlled_wall_seconds": 1453.464383374434,
+          "physics_wall_seconds": 683.7972242487594,
           "GPU_seconds": 0.0
         },
         "C": {
-          "RHS": 358960,
-          "states": 24086,
-          "LU": 24070,
-          "controlled_wall_seconds": 559.3197702092584,
-          "physics_wall_seconds": 396.9851475690957,
+          "RHS": 659584,
+          "states": 61552,
+          "LU": 61536,
+          "controlled_wall_seconds": 1199.5967740849592,
+          "physics_wall_seconds": 640.0812481518369,
           "GPU_seconds": 0.0
         },
         "D": {
@@ -60,10 +72,7 @@
           "GPU_seconds": 0.0
         }
       },
-      "active_wall": {
-        "surrogate_force_linear_DEV030_c0": 7200.0,
-        "render_locked_risk_checkpoint": 600.0
-      }
+      "active_wall": {}
     }
   },
   "evidence": {
@@ -64374,6 +64383,219 @@
               "forward_RHS": 41024,
               "receiver_RHS": 256,
               "controlled_wall_seconds": 137.57205187506042,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            }
+          ]
+        },
+        "interpretation": "Source diagnostics only; no automatic qualification from ESS or marginal PIT"
+      },
+      {
+        "stage": "C",
+        "parent": "DEV_030",
+        "mechanism": "surrogate_force_linear",
+        "source": "C/references/DEV_030/surrogate_force_linear/REFERENCE_STATS.json",
+        "status": "UNQUALIFIED_WITHIN_MECHANISM_DIAGNOSTICS",
+        "target_family": "FULL",
+        "source_reference_qualified": false,
+        "cross_mechanism_status": "NOT_EVALUATED_SEPARATE_INDEPENDENT_MECHANISM_REQUIRED",
+        "warmup_removed": 1024,
+        "chain_count": 4,
+        "production_draws_per_chain": 4096,
+        "summaries": {
+          "latent": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 64
+            },
+            "maximum_rhat": 3.1678870951222446,
+            "minimum_bulk_ess": 4.462587393788065,
+            "minimum_tail_ess": 10.754476768365112,
+            "minimum_mean_ess": 4.262300277171697,
+            "all_diagnostics_assessed": true
+          },
+          "properties": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 2
+            },
+            "maximum_rhat": 2.3758630014592375,
+            "minimum_bulk_ess": 4.9076145437812935,
+            "minimum_tail_ess": 12.600752737386248,
+            "minimum_mean_ess": 4.8000204525595445,
+            "all_diagnostics_assessed": true
+          },
+          "Phi": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 1
+            },
+            "maximum_rhat": 2.032728872713263,
+            "minimum_bulk_ess": 5.3207695494829155,
+            "minimum_tail_ess": 11.177115339467703,
+            "minimum_mean_ess": 4.916641258179955,
+            "all_diagnostics_assessed": true
+          },
+          "material_functions": {
+            "status_counts": {
+              "CONSTANT_UNASSESSED": 2,
+              "DIAGNOSTICS_ONLY": 50
+            },
+            "maximum_rhat": null,
+            "minimum_bulk_ess": null,
+            "minimum_tail_ess": null,
+            "minimum_mean_ess": null,
+            "all_diagnostics_assessed": false
+          }
+        },
+        "gates": {
+          "target_metadata_full": true,
+          "all_named_rhat_below_limit": false,
+          "roi_pixel_rhat_below_limit": false,
+          "all_roi_components_assessed": false,
+          "all_material_function_bulk_and_tail_ess_at_least_minimum": false,
+          "full_grid_mean_rms_mcse_at_most_limit": false
+        },
+        "full_grid_mean_rms_mcse": 0.016667463551642493,
+        "cost": {
+          "RHS": 164384,
+          "chains": [
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_linear_DEV030_c0/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 60.41068566706963,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            },
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_linear_DEV030_c1/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 61.32740666717291,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            },
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_linear_DEV030_c2/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 61.865633291890845,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            },
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_linear_DEV030_c3/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 58.673064375063404,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            }
+          ]
+        },
+        "interpretation": "Source diagnostics only; no automatic qualification from ESS or marginal PIT"
+      },
+      {
+        "stage": "C",
+        "parent": "DEV_030",
+        "mechanism": "surrogate_force_material",
+        "source": "C/references/DEV_030/surrogate_force_material/REFERENCE_STATS.json",
+        "status": "UNQUALIFIED_WITHIN_MECHANISM_DIAGNOSTICS",
+        "target_family": "FULL",
+        "source_reference_qualified": false,
+        "cross_mechanism_status": "NOT_EVALUATED_SEPARATE_INDEPENDENT_MECHANISM_REQUIRED",
+        "warmup_removed": 1024,
+        "chain_count": 4,
+        "production_draws_per_chain": 4096,
+        "summaries": {
+          "latent": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 64
+            },
+            "maximum_rhat": 1.4919744604098937,
+            "minimum_bulk_ess": 7.782244199064072,
+            "minimum_tail_ess": 13.010225270837122,
+            "minimum_mean_ess": 6.512024985808486,
+            "all_diagnostics_assessed": true
+          },
+          "properties": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 2
+            },
+            "maximum_rhat": 1.9695416104837584,
+            "minimum_bulk_ess": 5.45629968137122,
+            "minimum_tail_ess": 13.523256477928415,
+            "minimum_mean_ess": 5.268299456401555,
+            "all_diagnostics_assessed": true
+          },
+          "Phi": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 1
+            },
+            "maximum_rhat": 1.083520162573195,
+            "minimum_bulk_ess": 37.25697204861013,
+            "minimum_tail_ess": 225.52739119656567,
+            "minimum_mean_ess": 41.115509465529406,
+            "all_diagnostics_assessed": true
+          },
+          "material_functions": {
+            "status_counts": {
+              "DIAGNOSTICS_ONLY": 52
+            },
+            "maximum_rhat": 1.6315569618587018,
+            "minimum_bulk_ess": 6.6618653581722365,
+            "minimum_tail_ess": 7.447759521087192,
+            "minimum_mean_ess": 6.068191483567592,
+            "all_diagnostics_assessed": true
+          }
+        },
+        "gates": {
+          "target_metadata_full": true,
+          "all_named_rhat_below_limit": false,
+          "roi_pixel_rhat_below_limit": false,
+          "all_roi_components_assessed": true,
+          "all_material_function_bulk_and_tail_ess_at_least_minimum": false,
+          "full_grid_mean_rms_mcse_at_most_limit": false
+        },
+        "full_grid_mean_rms_mcse": 0.016891954125138674,
+        "cost": {
+          "RHS": 164384,
+          "chains": [
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_material_DEV030_c0/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 98.52480408293195,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            },
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_material_DEV030_c1/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 96.73303324985318,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            },
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_material_DEV030_c2/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 98.31472433381714,
+              "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
+            },
+            {
+              "status": "COMPLETE",
+              "source": "C/jobs/surrogate_force_material_DEV030_c3/CLOSED.json",
+              "RHS": 41096,
+              "forward_RHS": 40968,
+              "receiver_RHS": 128,
+              "controlled_wall_seconds": 97.18566887499765,
               "cost_scope": "saved per-job linear_solve_rhs; stage cumulative excluded"
             }
           ]

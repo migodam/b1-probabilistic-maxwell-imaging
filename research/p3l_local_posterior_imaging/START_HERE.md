@@ -1,36 +1,19 @@
-# Research P3-L：非线性 Maxwell 材料概率成像
+# P3-L：已完成并封账 · REDIRECT
 
-**运行中，2026-10-22。完整 P1 posterior reference 尚未合格，不能宣称已实现可信 Bayesian 成像或概率校准。**
+**当前近似概率成像没有改善重建。** 128个冻结新对象全部保留：材料均值MSE **0.0615021**，probit点估计 **0.0110309**，误差增加 **457.5%**；配对差95%区间 **[0.0427873,0.0582865]**。
 
-本轮在原 P1 的 66 维 prior、TM24 full-Maxwell、噪声和观测合同下运行。研究目标是降低材料风险；候选数量、低 residual、接受率和单点图像都不代替 posterior 正确性。
+这不是对真正posterior mean的否定。**11组四链Full参考全部未合格**，不能提供校准posterior、teacher或材料credible coverage。
 
+实际完成800个独立parent的观测、32个development基础反演、128个冻结成像评估、44条链、SMC、40组强条件实验、解析材料矩、受限SLICE积分、15次神经训练、简单密度与Full校正、两臂物理代理力、合法投影及A17/普通求值对照。未执行的teacher distillation、RL与完整trajectory-tube概率研究均保留NOT_RUN，不冒充完成。
 
-128 个冻结的新对象已完成独立评分，全部保留、无 fallback：近似 `weak density × strong Gaussian` 材料均值 MSE **0.0615021**，probit 坐标点估计 **0.0110309**。主比较差为 **+0.0504712**，配对 95% 区间 **[0.0427873, 0.0582865]**，风险增加约 **457.5%**。这否定当前近似成像路线的收益，不是否定真正 posterior mean 的 Bayes 最优性。
+点估计的probit坐标修订有11.71%独立MSE改善，但它不是native MAP或Bayesian平均。15次神经训练均选中初始化；Full-SNIS的128个对象均ESS<2。保留decoder降低代理误差，却没有改善材料MCSE且更慢。
 
-同一批对象的 native 点估计 MSE 为 0.0124938；probit 点估计低约11.71%，这是坐标与优化后的点估计收益。native 的79/128、probit 的115/128达到各自冻结驻点标准，不能把它们叫作全局 MAP。所有128个有限 Full-SNIS 的 ESS 都小于2，因此不提供校准 posterior。
+实际费用 **8,374,472 complex RHS、707,328 state attempts、3.805h受控wall，GPU0**。历史账本不变，中断/失败计费，剩余3,625,528RHS封账。
 
-[128 对象原始风险、CI 与失败表](D/LOCKED_IMAGE_RISK.json) · [独立统计复核](AUDIT/locked_results_review/REVIEW.md)
+[中文完整报告](RESEARCH_REPORT_ZH.md) · [网页版报告](report.html) · [逐列图像说明](IMAGE_READING_GUIDE.md) · [实部图](D/locked_evaluation/figures/fixed_first4_epsilon_real.png) · [损耗图](D/locked_evaluation/figures/fixed_first4_epsilon_imag.png)
 
-已经实际完成：
+[原始128对象风险与CI](D/LOCKED_IMAGE_RISK.json) · [独立审计](AUDIT/locked_results_review/REVIEW.md) · [参考资格](POSTERIOR_REFERENCE_AUDIT.md) · [最终裁决](GO_NO_GO.md) · [成本](RESOURCE_SUMMARY.md) · [复现](REPRODUCTION.md)
 
-- 32 个独立 development 对象的 full-physics 基础反演：32 个进入原 noise-ball，27 个达到冻结驻点标准。
-- 24 条完整 66 维采样链，每条 1,024 warmup + 4,096 production；已保存拒绝时的重复状态。目前六组四链参考全部未通过混合诊断。
-- 另完成四条 HMC pilot，每条 512 warmup + 1,024 production。材料函数最大 Rhat 为 1.26968，最小 bulk ESS 为 11.47，材料均值 RMS MCSE 为 0.01015；比先前 MALA 更好，仍未合格。
-- 4 个对象、5 种弱维数、两种外层坐标，共 40 个强条件实验。128 点 full-likelihood 重要性校正中，38 组 ESS 小于 2，不能作 teacher。
-- 独立 128 粒子 tempered SMC 到达完整 likelihood，但祖先退化到 1；有限粒子结果仍未合格。
-- 同一原物理模型上的三维受限条件积分：最终两阶材料均值 RMS 差约 `8.46e-10`，log-normalizer 差约 `6.64e-8`。这是 **SLICE3_BOX**，不是积分其余 63 维后的 FULL marginal。
-- 全部 32 个 development 对象的离线成像对照：固定属性 GN Gaussian 参考的材料均值 MSE 为 `0.0206962`，优化基础图为 `0.0138212`。近似均值反而恶化约 49.7%；这不是对真正 posterior mean 的否定。
-- 联合属性修订也已完成：坐标 mode 图为 `0.0120131`，联合 GN Gaussian 材料均值为 `0.0185700`。四个 Full importance 诊断 ESS 均约 1。坐标 mode 改善与 Bayesian 材料平均必须分开。
-- 512 train / 128 validation 的独立观测、在线物理 context 与合法 joint-supervision 标签。128 个 locked parent 后来按冻结协议独立生成与评分；没有使用旧 locked truth。
+[同一B1的证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3l-local-posterior-20261022)：大数组、原始chains、模型权重与完整追加ledger。上传/匿名读取状态单独记录，不以网页可达替代科学通过。
 
-内存中断已单独记账。上游缓存对旧 LU 的强引用导致增长；本轮适配器现只保留 4 个 transfer，完成对象后释放引用，全局锁限制一次一个 worker。640 个在线 context 已恢复完成，实测约 443–448 MiB。中断前的 109,488 RHS 和失败不删除、不重新归零。
-
-保留完整 66 维支持的非线性三角补偿坐标已完成四条 HMC：材料 Rhat 1.6054、MCSE 0.01082，未优于普通 HMC。15 次 joint-supervised Gaussian、MDN、Flow、CNN 训练也完成，验证集均选择未经训练的初始化；该训练路线暂不具备收益。独立 ESS 四链也未合格；简单条件/无条件密度在四对象各256步 Full-MH 均0接受。当前只继续保留 decoder 的两臂代理力机制对照与暴露 DEV 的合法投影检查；未合格链绝不用于 distillation。
-
-16 份固定提案的实际求值对照也已完成：普通 Galerkin 与同空间 A17 的差异仅为浮点误差；rank-16 条件误差区间可提前判定 5/16 次接受决定，但 setup、界计算与 fallback 均需计费，尚无总成本加速结论。这里的区间基于浮点误差模型，不是定向区间运算认证。
-
-[中文研究记录](RESEARCH_REPORT_ZH.md) · [概率合同与算法](THEORY_AND_ALGORITHM.md) · [冻结配置](configs/PROTOCOL.json) · [资源快照](RESOURCE_LEDGER.json) · [内存恢复证据](AUDIT/MEMORY_INTERRUPTION_RECOVERY.json)
-
-[实际材料图与不合格 Gaussian 方差图](B/joint_gaussian_figures/index.html) · [32 对象联合属性成像风险](B/JOINT_GAUSSIAN_IMAGE_RISK.json)
-
-原始 chains、端点、LU cache 和追加账本保留在独立目录，待形成证据 Release。当前不是最终结论，也未将正在运行的模块标为 PASS。
+本轮是二维scalar-TM/VIE、原P1 prior；没有新Mie、三维vector-Maxwell或外部云计算。停止当前Gaussian成像与无收益NN/A17整合，转向可信Full参考及非Gaussian条件机制；当前不具备强IEEE TAP算法证据。

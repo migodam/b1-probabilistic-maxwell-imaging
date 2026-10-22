@@ -1,75 +1,143 @@
-# 从合格材料重建到可信 posterior：P3-L 实验记录
+# P3-L：非线性 Maxwell 材料概率成像的实际实验与裁决
 
-本报告是正在运行的独立 campaign 检查点。历史 P0/P1/P2、F3、A17-X 的结果和账本保持原样。这里的新结果均来自原 P1 二维 scalar TM/VIE；没有三维 vector-Maxwell、Mie 或新大型网络的证据。
+**最终裁决：REDIRECT。当前“弱密度 × strong Gaussian”成像路线 NO-GO；没有建立合格 FULL posterior，也没有得到可信 Bayesian 成像改善。**
 
-## 为什么基础图已经不错，概率成像仍然困难
+128个事前冻结的新对象全部进入统计。近似材料均值的complex MSE为**0.0615021**，probit坐标点估计为**0.0110309**：MSE增加**457.5%**，配对差的95%区间**[0.0427873,0.0582865]**完全为正。原P1、噪声和Maxwell模型均未改变；没有通过放宽先验或筛选漂亮案例挽救结论。
 
-本轮 32 个新对象都已得到满足原数据资格的物理基础图，其中 27 个达到预注册的驻点标准。这建立了一个较强的单点基线。可是，找到一份能拟合观测的材料，与知道其周围材料的概率质量，是不同的任务。
+这不反驳真正posterior mean的Bayes最优性。当前失败的是具体近似和有限采样；没有可靠FULL参考，就不能证明正确Bayes材料平均无益，也不能宣称问题已达到信息论极限。
 
-原 prior 是 64 个 Gaussian field 系数和两个独立 uniform 属性。它们经过饱和的非线性 decoder 形成被动复材料。一个 Gaussian 参数扰动可能在当前位置看起来很弱，有限移动后却激活原来饱和的像素，使完整 Maxwell likelihood 急剧变化。于是局部线性化得到的椭球，可以给很多实际低 likelihood 的材料过多权重。
+## 1. 问题、物理与概率目标
 
-## 已执行的完整 posterior 参考尝试
+本轮要回答：在物理重建已恢复敏感信息后，把剩余不确定性正确平均，是否能比单点重建得到更低材料风险？强方向的概率厚度与弱方向的分布必须共同保留，不能把优化后的中心面当完整后验。
 
-已执行固定度量 MALA、条件初始化后的 MALA、变化 decoder 度量的 MALA、正确 probit 初始化后的 MALA，以及 canonical pCN 对照。六组各有四条链，每条保留 1,024 warmup 和 4,096 production。接受率提高没有自动带来混合：变化 decoder 度量的配对实验多用了约 15.9% job wall，材料函数 Rhat 仍显著不合格。
+沿用P1的64维标准Gaussian场坐标和2维独立uniform属性，经原C²饱和decoder形成24×24被动材料、256-cell ROI。8个照明共享同一材料，32个complex receivers；gain固定1。host不是空气，拓扑不是generator标签。Full仅指原生二维scalar-TM/VIE的完整离散求解，不是三维vector-Maxwell或连续介质认证。
 
-这不是把 uniform prior 改成 Gaussian。我们使用精确坐标变换 `u=normal_CDF(eta)`，并把变换 Jacobian 纳入目标。在这些坐标中，原 uniform 的推送恰为标准 Gaussian。生产阶段不再按历史自适应；变化度量提案使用两端的 Gaussian determinant、drift 与二次型，likelihood 和梯度始终来自真实 full-Maxwell。
+噪声sigma=0.00119211798514519固定，Re/Im各方差sigma²/2，不随对象重标定。Phi=||F-y||²/sigma²=.5||white(F-y)||²；pi(q|y)正比exp(-Phi-||z||²/2)。每个source按Re32后Im32 packing。u=normalCDF(eta)使原Gaussian64×uniform2精确变成Gaussian66测度，保留正确Jacobian；这不允许在原uniform坐标里随意添加Gaussian Hessian。
 
-独立 tempered SMC 也已跑到 beta=1。128 个粒子在退火中只剩一个初始祖先，并未形成可信独立 reference。祖先数本身不是错误的定理证明，但结合有限 mutation、局部链分歧和缺失交叉验证，不能把它的权重 ESS 当成全局后验质量证明。
+noise-ball是反演资格诊断，不是Gaussian posterior硬支持。数学上合格的采样核、经验混合、物理相容与Bayes风险是四个不同结论。
 
-另完成四条 HMC pilot，每条 512 warmup 和 1,024 production。它使用完整 66 维目标、正确质量矩阵约定、leapfrog 和 Hamiltonian MH；有限能量误差不会被任意截断成“成功”。实际材料函数最大 Rhat 为 1.26968，最小 bulk ESS 为 11.47，材料均值 RMS MCSE 为 0.01015。性质坐标的最大 Rhat 仍为 1.51447。因此它改善了局部混合，却仍不足以回答完整 posterior 的材料风险。
+## 2. 对象、隔离与基线
 
-下一项修订不扩大网络，而是使用非线性、全局可逆的三角坐标：在性质坐标改变时，预先拟合空间场的条件补偿中心，保留中心周围全部 64 个残余坐标。该变换行列式为 1，但先验必须在变换后的真实材料坐标中求值，不能另用标准 Gaussian 代替。它是采样预条件器，不是把零厚度中心面当作 posterior。
+固定800个独立parent：32个development、512个joint-supervision train、128个validation和128个新locked。development内24/8用于几何与方法开发；网络的128validation是另外的独立集合。仅依赖y的anchor特征选择16个深参考条件，实际深入3个，其余未完成深采样。
 
-## 强方向积分的实际失败
+数据生成、在线反演和离线评分分进程。所有locked模型、原始parent ID、预算、失败fallback和主比较在观测生成前冻结；预观察的报告合同修复另有记录。128份在线结果和Full-IS全部关闭后，独立evaluator才读取GT。后来这128个对象已经暴露，不能供下一轮调参后继续称新held-out。
 
-四个事前按观测特征选定的对象，分别取弱维数 2、4、8、16、24，在零位移及固定 seed 位移处计算强条件 GN 参考，再做 128 次真实 likelihood 重要性校正。40 组中有 38 组 ESS 小于 2，最大 ESS 也只有约 5.27。它们都不具备 teacher 资格。
+32个development基础解全部进入原noise-ball，27个达到冻结KKT标准。128个新对象的native96有79个、probit64有115个达到各自驻点标准，所有失败与未驻点对象均保留。这里不是全局MAP证明。
 
-有限优化未完全达到 mode 标准时，单纯 `profile - logdet/2` 还缺少局部线性梯度项。我们保留了这个问题，而没有改写旧结果。进一步的零物理分析发现，10 组的该项 log-normalizer 修正上界小于 0.01，但权重仍发生明显退化；因此失败不能仅归因于优化没有再多走几步。更关键的是目标在所用 GN Gaussian 范围内强烈偏离二次近似。这个偏差包含 decoder、非 GN 曲率和更高阶响应，不能全部归为 Maxwell feedback。
+probit坐标点的MSE比native点低11.71%，配对相对改善95%区间[10.57%,12.85%]。这是坐标与额外优化后的点估计收益，不是Bayesian平均或新增观测信息。MAP不是重参数化不变量，不能把两个点估计器混叫同一MAP。
 
-解析饱和 decoder 矩已经通过独立高精度积分和 Monte Carlo 验证。它准确回答的是“给定这个 Gaussian 参考，材料均值是什么”。它没有把一个错误的 Gaussian 参考变成正确 posterior。
+## 3. Full posterior reference实际做到了什么
 
-## 对材料图像有何后果
+| 对象 / 方法 | 每链 production | 材料函数最大 Rhat | 最小 bulk ESS | 均值 RMS MCSE | 资格 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| [DEV_000/mala](A/references/DEV_000/mala/REFERENCE_STATS.json) | 4096 | 3.20089 | 4.45452 | 0.0556548 | UNQUALIFIED |
+| [DEV_028/mala](A/references/DEV_028/mala/REFERENCE_STATS.json) | 4096 | 5.39208 | 4.17595 | 0.105155 | UNQUALIFIED |
+| [DEV_030/ess_mode](A/references/DEV_030/ess_mode/REFERENCE_STATS.json) | 4096 | UNASSESSED | UNASSESSED | 0.0114013 | UNQUALIFIED |
+| [DEV_030/hmc_pilot](A/references/DEV_030/hmc_pilot/REFERENCE_STATS.json) | 1024 | 1.26968 | 11.4748 | 0.0101516 | UNQUALIFIED |
+| [DEV_030/mala_mode](A/references/DEV_030/mala_mode/REFERENCE_STATS.json) | 4096 | 1.92985 | 5.55516 | 0.0182821 | UNQUALIFIED |
+| [DEV_030/mala_retracted](A/references/DEV_030/mala_retracted/REFERENCE_STATS.json) | 4096 | 2.29 | 5.00098 | 0.0239059 | UNQUALIFIED |
+| [DEV_030/pcn_mode](A/references/DEV_030/pcn_mode/REFERENCE_STATS.json) | 4096 | UNASSESSED | UNASSESSED | 0.010337 | UNQUALIFIED |
+| [DEV_030/spine_hmc_pilot](B/references/DEV_030/spine_hmc_pilot/REFERENCE_STATS.json) | 1024 | 1.6054 | 6.85148 | 0.0108156 | UNQUALIFIED |
+| [DEV_030/mala_decoder](C/references/DEV_030/mala_decoder/REFERENCE_STATS.json) | 4096 | 4.18571 | 4.26597 | 0.0230438 | UNQUALIFIED |
+| [DEV_030/surrogate_force_linear](C/references/DEV_030/surrogate_force_linear/REFERENCE_STATS.json) | 4096 | UNASSESSED | UNASSESSED | 0.0166675 | UNQUALIFIED |
+| [DEV_030/surrogate_force_material](C/references/DEV_030/surrogate_force_material/REFERENCE_STATS.json) | 4096 | 1.63156 | 6.66187 | 0.016892 | UNQUALIFIED |
 
-我们先冻结全部 32 个 development 对象的估计器、保存材料图，再在独立离线步骤读取 GT。优化基础图的平均 complex MSE 为 0.0138212；固定属性 GN Gaussian 的解析材料均值为 0.0206962，差为 +0.00687494，parent paired bootstrap 的 95% 区间为 `[0.0029612, 0.0120149]`。因此这一近似在本 development 总体上明显恶化成像。Gaussian 参考下的几何中位数接近基础图，平均 MSE 约 0.0138410。
+全部11组均未达到原参考标准。共44条链、155,648个保留production状态，包含所有拒绝重复；这个数量不等于有效样本数。原生Elliptical Slice提供独立机制核验，也未合格。SMC的128粒子只剩1个祖先，不能作为teacher。
 
-这是一项对具体近似的负结果。它没有比较已知正确的 FULL posterior mean，不能证明 Bayes 成像本身无益。数据仍是 development，不能称为 locked 泛化结果。
+这说明目前的主要瓶颈仍是sampling/reference，而不是已经证明不存在材料不确定性。较稳定的Phi轨迹、较高接受率或无数值异常都不能替代材料函数混合。
 
-随后完成全部 32 对象的联合属性修订。我们先在正确 probit 目标中重新优化，再以完整 66 维 GN Gaussian 为参考，通过两属性条件化及解析场材料矩，计算联合材料均值。GH 阶数 5、9、17 的材料均值已稳定，最大后两阶 RMS 差约 2.90e-6。这排除了本次观察由粗 quadrature 引起的解释。
+## 4. 条件积分、材料矩与近似误差
 
-新的坐标 mode 材料图平均 MSE 为 0.0120131，较原 native-q MAP 低约 13.1%；可是联合 Gaussian 材料均值仍为 0.0185700，较同一新 mode 高约 54.6%。四份固定对象上的 64 点 Full importance correction 都退化至约一个有效样本。因此，仅加入 property-field 相关性并未修复 Gaussian 参考；不能把坐标 mode 改善写成 posterior mean 改善。
+对Gaussian64采用完整正交frame，属性显式保留。FULL弱marginal必须积分strong方向的概率体积；冻结是SLICE，优化是PROFILE，有限区域条件化是LOCAL-C，它们不是同一目标。
 
-这里还存在重要的数学区别：posterior 概率律在 probit 变换下保持不变，但 density mode 不是坐标不变量。在原 u 坐标中，该坐标 mode 等效于额外加入 `0.5*||normal_CDF_inverse(u)||²` 的点估计惩罚；它并非原 uniform-measure MAP，也不是 Bayes action。若将其作为实际估计器，需要独立新对象验证，不能用这组 development 数字宣称概率方法获胜。
+40组强条件实验覆盖4个对象、弱维数2/4/8/16/24及两个外层坐标。无一达到严格strong-gradient驻点标准；128点Full重要性核验中38组ESS<2，27组最大权重>.99。10组的局部线性梯度logZ修正上界<.01，仍无法消除非二次范围上的权重退化，因此不能把失败全部归因于中心未优化。
 
-[四份事前固定对象的实际材料对照](B/joint_gaussian_figures/index.html) 采用共同实部、损耗色标。方差图仅属于声明的 Gaussian 参考，未通过 posterior 校准。
+实现了原饱和多项式decoder在声明Gaussian条件下的解析一、二阶材料矩，经过独立quadrature/MC与tail/小方差检查。它准确积分supplied Gaussian，只消除内层材料统计费用；并不证明该Gaussian等于Maxwell posterior。
 
-## 一个有正确含义的低维条件参考
+32个development对象中，固定属性Gaussian材料均值MSE .0206962，高于native点 .0138212。联合属性的probit Gaussian修订也运行GH5/9/17，GH9到17最大均值RMS变化2.8963e-6；联合材料均值MSE仍为 .0185700，高于相应坐标点 .0120131，四个Full校正ESS均约1。积分稳定与参考分布正确是两回事。
 
-为区分“物理接口有错”和“高维参考困难”，在第一份冻结对象上构建了两弱一强的三维条件问题。其他 61 个 Gaussian 坐标及两个属性固定；有限 box、原条件 Gaussian prior、Jacobian 和噪声在求值前登记。所有节点都用真实 full-Maxwell 计算。
+独立三维SLICE的阶数细化已收敛，但没有积分其余63个自由度。不能用这项成功给FULL posterior背书。
 
-三阶 tensor quadrature 的最后两阶，材料均值 RMS 差约 8.46e-10，log-normalizer 差约 6.64e-8。这里的数值收敛说明受限条件问题可被准确计算。它不回答 box 外的质量，也不代表完整 posterior 的弱 marginal。没有用节点分箱展宽伪造连续 quantile 或 credible interval。
+## 5. 独立128对象的主要成像结果
 
-## 几何诊断与后续方法
+| 冻结估计器 | 128-parent complex MSE |
+| --- | ---: |
+| 16-state context 点估计 | 0.0128417288 |
+| 独立 native96 点估计 | 0.0124938122 |
+| probit64 坐标点估计 | 0.0110309173 |
+| 弱密度 × strong Gaussian 材料均值 | 0.0615021168 |
+| strong conditional-mode plugin 平均 | 0.0565169523 |
+| 零观测 prior 材料均值 | 0.1754206811 |
+| 有限 Full-SNIS，未合格 | 0.0240009114 |
 
-在两个固定 anchor 上，以三个有限差分步长计算真实 full-J 导出的 rank-8 投影场。所测方向对的坐标法向 Lie bracket 收敛到约 0.0913 和 0.1295；冻结 Maxwell 材料响应、只更新 decoder 的对照已复现大部分数值。它是具体投影场的局部数值诊断，不是任意材料 posterior 不存在、exact fiber 存在或一般不可积性的证明。材料度量解释和谱隙都需要一并保留。
+主比较为材料均值减probit点：MSE差+0.0504712，95%区间[0.0427873,0.0582865]。conditional-mode plugin的差+0.0454860，[0.0376429,0.0537659]；有限Full-SNIS的差+0.0129700，[0.0106119,0.0156354]。三者均未改善主风险。
 
-归一化 CNN/MLP Gaussian、MDN 和 Flow 的实现已完成。512 train 与 128 validation 的 joint-simulation 数据及在线 context 已准备好。这条监督路线与 posterior distillation 分开；尚无合格 posterior teacher。新模型仍需经过实际训练、强基线比较及 full-likelihood 校正检验，不能仅凭架构归一化宣布概率正确。
+所有128对象、7个估计器均有输出，无raw失败或fallback，无truth缺失；不是删除困难对象后的统计。bootstrap以独立parent为单位、2000次、seed2026102299，比较总体平均风险之比，未平均每对象的百分比。独立审计重算所有均值与区间，数值差为零。
 
-实际的 5 个模型族、3 个 seed 共 15 次训练已完成。每次均运行 1,000 updates 后触发预注册 validation patience，验证集都选择 update 0。独立复核恢复了全部 checkpoints：选中权重与各自随机初始化完全相同；训练 minibatch NLL 下降而验证 NLL 迅速变差。未发现 batching、参考测度 Jacobian、frame/sign 或 checkpoint 选择错误，但这不足以证明观测没有信息。我们将其记为本规模下的泛化失败，而不是训练成功。
+128个Full-SNIS的ESS最小/中位数均1、最大1.99706。权重公式正确没有使128-draw近似自动可靠，有限SNIS偏差仍在。不能将这列称合格posterior mean。
 
-进一步的简单密度对照使用同一 512/128 数据、train-only PCA、ridge 均值和收缩 covariance。验证 NLL 为：选中 PCA Gaussian 14.8138，无条件 Gaussian 15.1007，最佳神经初始化 15.2620。它只是归一化 proposal 的验证分数，不是 FULL posterior 校准。后续真实物理校正优先用于这两个已拟合简单模型，停止为验证集已否决的神经训练额外支付查询。
+图像使用冻结前四个对象，共享色标。近似平均在小结构周围出现弥散激活；这不是新发现的高概率材料世界。[实部图](D/locked_evaluation/figures/fixed_first4_epsilon_real.png)、[损耗图](D/locked_evaluation/figures/fixed_first4_epsilon_imag.png)和[逐列说明](IMAGE_READING_GUIDE.md)可直接核验。
 
-## 求值加速的独立实测
+## 6. 学习密度、覆盖与失败
 
-对同一 anchor 的 16 份预先冻结提案，已运行 optimized Full、完整 T-matrix、预条件 GMRES、rank-8/16 普通 Galerkin 以及同空间 A17 表达。所有比较使用同一观测、相同 proposal 和接受随机数，近似决定先于 Full 参考落盘。
+CNN+MLP、MLP diagonal/full Gaussian、MDN和小Flow各3个seed，实际完成15次joint-supervised训练。CNN/full-MLP约467k参数、规模差<.05%。全部在validation patience停止，最佳checkpoint均update0；训练NLL下降而validation恶化。独立审计没有找到已确认的batch、缩放或恢复错误，不能把初始化被选中称作训练收益。
 
-rank-16 的条件误差区间提前判定了 5/16 次决定，其余 11 次需要 Full fallback；rank-8 没有提前判定。同样的随机数下没有观察到决定差异。这个结果基于明确的浮点误差模型，不是定向 interval arithmetic 的形式认证；失去 Neumann 充分条件时只记界不可用，不认定 Maxwell 算子奇异。
+随后运行48个简单Gaussian正则化对照，validation选择PCA32/ridge1000/shrink.5，NLL14.8138，优于无条件Gaussian15.1007。它是冻结128评估的实际密度，不是最后临时选择的神经模型。
 
-新付费成本为 960 RHS：576 RHS 的保存逆 setup、128 T-matrix、128 GMRES、128 Full 验证。后者作为共享 fallback 已计费，没有让 oracle 免费替近似挑选决定。GMRES 的 16 份提案均收敛。相同 current space 内 A17 与普通 Galerkin 的等价性不构成独立算法增量；是否节省总 wall 尚需包含 setup 和界计算后判断。
+新对象的weak8/probit2 proper NLL均值14.3094，parent SE .2091，分量90%coverage在85.94%–92.97%。这只是弱坐标的joint-simulation预测诊断，十个相关分量不是1280个独立对象，也不是材料credible coverage或FULL校准。接近名义的单分量coverage可以与严重错误的材料平均同时出现。
 
-## 中断、费用与证据边界
+在4个development对象上，条件与无条件密度各256步Full-MH均0接受。归一化和稍好的低维NLL没有修复当前strong Gaussian参考的失配。没有不合格teacher distillation；RL、bandit或policy学习没有启动，因为缺少可信material-error奖励参考。
 
-本轮独立上限为 12,000,000 complex RHS、48 小时受控 CPU、24 GPU-hours。按 A–E 独立记账，尚未使用 GPU。每次 full-forward、adjoint、LU、失败和拒绝均保留；原始端点立即落盘。
+## 7. 科学修订：保留decoder的代理力
 
-一次内存中断来自缓存持续强引用旧 dense matrix/LU。六个中断作业的 109,488 RHS 和 3,408 state/LU attempts 均保留。缺失尾部运行时间采用明确标记的保守上界计费。修正后限制 transfer 缓存为 4、逐对象清理并强制一个 worker；640 个在线 context 已恢复，实测约 443–448 MiB。完整恢复审计在 AUDIT 下，不将失败伪装成正常完成。
+Gaussian平均失败后，我们没有继续增大网络，而是检验更具体的物理机制：用相同Full端点预算，比较latent-linear代理力与保留完整非线性decoder的冻结material-response代理力。每条内部轨迹不调用Full梯度；4次真实Jacobian setup照常计费。production代理、质量矩阵和步长冻结，端点使用真正Full Hamiltonian接受判定，目标不变。
 
-目前的科学判断是：简单局部 Gaussian reference 尚不能支持本 P1 的可信材料 Bayes 成像；完整 posterior 参考仍是主要障碍。是否存在值得发表的算法增量，要由后续 HMC、校正 proposal、实际风险和完整成本共同决定。没有证据时不宣称强 IEEE TAP 贡献。
+两臂各4链，每链1024warmup+4096production，每臂164,384 RHS。材料代理把付费端点平均绝对Phi预测误差由8.27591降至.545205，白化响应RMS误差由.114001降至.028495，说明decoder保留确实改善了代理响应。
+
+但材料均值MCSE没有改善：linear .0166675，material .0168920；包含audit的wall由245.671s升至393.749s。材料代理Rhat1.63156、最小bulk ESS6.66，仍未合格。linear有2个常数未评估分量，保留null。更大步长、更准确forward或更高接受率均没有转化成参考资格和成像增益，因此当前成本收益NO-GO。
+
+普通Full-HMC pilot的warmup/长度不同，只作为实际成本背景，不冒称单独替换力的配对消融。通用代理力+真实Hamiltonian MH已有先例，本轮不将其正确性写成原创定理。[完整对照](C/SURROGATE_COMPARISON.md)。
+
+## 8. 合法材料投影与几何
+
+补做32个暴露DEV的合法reference投影，一次固定anchor起点、256decoder迭代上限、零物理/GT。全部32份原prior合法，实际2.089s。随后所有32份Full验证共256 RHS，仅1份进入noise-ball；独立离线MSE .0208401，仍高于原点 .0138212，未修复Gaussian平均问题。它是wrong/unqualified参考均值的局部投影，非全局restricted Bayes action；mean动作本身也不必自动满足noise-ball。
+
+两个真实P1 anchor的投影场Lie-bracket有限差分已经运行，物理材料度量下normal leakage约.002064/.002739；冻结Maxwell、只改变decoder约.002021/.002680。该方向对、阈值、谱隙和步长均保存。它既不是一般Frobenius定理，也不证明存在exact material fiber。
+
+## 9. Maxwell复用与A17
+
+16个固定提案比较Full、exact T-matrix、GMRES与goal-ROM。相同current space的A17/Galerkin差≤2.02e-15；并无额外精度。rank16条件浮点界在5/16次可提前判断，11次fallback、观察到决定不一致0。总960 RHS包含576 RHS inverse setup与各128 RHS的T-matrix/Full/GMRES。
+
+median Full .01303s，T-matrix .01098s，GMRES .009225s，但stability构造 .01476s、bounds+ROM约 .02128s，cold inverse另 .07649s。尚无端到端加速。这些界依赖IEEE/BLAS浮点模型，不是定向区间认证；未声称certified early rejection或A17独立优势。
+
+## 10. 费用、内存恢复与封账
+
+| 阶段 | 实付 complex RHS | state attempts | LU | 受控 wall 小时 | 剩余额度已封账 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| A | 5,542,136 | 514,404 | 514,404 | 1.8512 | 257,864 |
+| B | 1,132,136 | 85,796 | 85,796 | 0.4037 | 1,367,864 |
+| C | 659,584 | 61,552 | 61,536 | 0.3332 | 840,416 |
+| D | 1,040,616 | 45,576 | 45,576 | 1.2165 | 459,384 |
+| E | 0 | 0 | 0 | 0.0000 | 700,000 |
+
+合计 **8,374,472 complex RHS、707,328 state attempts、707,312 LU**。受控wall **3.8046小时**，已记录physics wall **2.0024小时**，GPU训练0；new Mie/3D均0。没有外部付费服务。剩余 **3,625,528 RHS已封账**，不转移、不自动延续。
+
+追加式账本覆盖失败、拒绝、forward、adjoint、J、LU和恢复。旧背景G/S及校准数组已付费共享，读取/审计另记CPU；此次增量费用不能冒称从零建立solver的cold部署成本。controller等待、封包和网络发布时间另列，不当作物理加速。
+
+内存溢出来自transfer对旧LU的强引用与并发context worker。修复为有界4项缓存、单一物理worker，并保留中断前109,488 RHS和缺失尾部wall保守上界。3份已预约attempt缺少终点数组的历史缺口保留，未重跑掩盖。最后代理runner的重复metadata关键字在Book前报错，0物理；原stderr和源码保留，最小parser修复后沿用同一paid job ID与原授权，未清账。
+
+## 11. 对核心问题的回答与下一步
+
+**Probability：** 尚未更准确、可靠地计算原FULL posterior。11组参考不合格、SMC祖先与IS权重退化，不允许可信teacher、FULL credible coverage或escape mass声明。
+
+**Imaging：** 当前近似概率成像明确失败，128对象主风险恶化；只有坐标点估计的11.71% MSE改善有独立统计支持，不能归因Bayesian平均。
+
+**Computation：** 解析Gaussian材料矩保留为实用工具。保留decoder可降低代理误差，但未降低同RHS下的材料MCSE；A17/ROM没有总成本增量。现在没有等统计精度下更便宜的概率成像结论。
+
+**具体裁决：** 停止把weak-density×single-Gaussian strong参考作为本P1的posterior成像器；停止当前训练设置与TM24 A17整合路线，不扩大NN或RL。继续价值只在可靠FULL参考、非Gaussian强条件与材料风险导向的推断机制；下一阶段需独立授权，不能花本次余额继续找正例。
+
+**论文：** 当前不足以支撑强IEEE TAP算法论文。LIS、Rao–Blackwell、Laplace、transport、代理力HMC与goal-ROM有成熟先例；ScholarQA发现查询429和全文缺口均保留，不能据此宣称原创。缺少的决定性实验是：同一Full P1目标下可信独立reference、多个新对象的≥5%材料MSE改善及配对区间排除0，并证明Maxwell专用机制在完整成本上优于强传统方法。
+
+本轮结论限于具体近似、采样和计算机制，不是Bayesian逆散射不可能，也不是原P1没有重要不确定性的证明。
+
+[完整参考审计](POSTERIOR_REFERENCE_AUDIT.md) · [数学合同](THEORY_AND_ALGORITHM.md) · [风险解释](THEORY_RISK_INTERPRETATION.md) · [迭代](ITERATION_LOG.md) · [失败](FAILURE_ANALYSIS.md) · [复现](REPRODUCTION.md) · [账本](RESOURCE_LEDGER.json) · [原始风险](D/LOCKED_IMAGE_RISK.json)

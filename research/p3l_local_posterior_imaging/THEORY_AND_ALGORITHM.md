@@ -47,3 +47,7 @@ primal/dual residual 和 stability lower bound 可以给出 output/likelihood �
 A17 finite-state 表示与普通 Galerkin 在相同 current space 下没有自动的精度优势。本轮保留 optimized Full、exact T-matrix、普通 goal-ROM、Krylov 和相同空间 A17 对照。是否有成本增量由实际 setup、refresh、fallback 与所有 RHS 决定。
 
 以上通用机制都有成熟先例。文献核验、429 及全文缺口在 `AUDIT/assets/literature/` 保留；没有检索到不等于原创。尚无完整 posterior/reference 与独立风险证据时，不提出 IEEE TAP 新颖性结论。
+
+## 最终实验对理论的约束
+
+128独立对象没有支持当前Gaussian条件积分成像收益。保留decoder的代理力显著减少响应误差，但未减少同RHS下material MCSE，且wall更高。数学合法的概率变换、解析矩与MH核不能替代混合与材料风险。详见最终报告、THEORY_RISK_INTERPRETATION与两臂实际对照。
