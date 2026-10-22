@@ -1,0 +1,59 @@
+{
+  "job": "C_train_r0",
+  "stage": "C",
+  "split": "train",
+  "parents": [
+    "DEV_000",
+    "DEV_001",
+    "DEV_002",
+    "DEV_003",
+    "DEV_004",
+    "DEV_005",
+    "DEV_006",
+    "DEV_007"
+  ],
+  "arms": [
+    "frozen_fixed",
+    "dynamic_fixed",
+    "dynamic_curvature",
+    "dynamic_bandit",
+    "ordinary_random"
+  ],
+  "steps": 8,
+  "radii": [
+    0.02,
+    0.04
+  ],
+  "feature_names": [
+    "bias",
+    "radius",
+    "step_fraction",
+    "direction_fraction",
+    "sign",
+    "log_generalized_cost",
+    "predicted_Phi_change",
+    "prior_change",
+    "latent_step",
+    "saturation_fraction",
+    "seam_fraction",
+    "previous_Maxwell_error",
+    "previous_projector_rotation",
+    "material_curve_error"
+  ],
+  "weak_dimension": 4,
+  "Gaussian_properties": "native fixed u",
+  "task_constraints": "actual per-step RMS radius and signed material progress >= half radius",
+  "direction_metric": "unit material RMS; Jdata^T Jdata + original Gaussian I",
+  "predictor_corrector": true,
+  "corrector": "strong complement only; no return to origin",
+  "full_states_max": 640,
+  "fresh_endpoint_RHS_max": 25600,
+  "anchor_J_RHS_max": 256,
+  "max_wall": 1200.0,
+  "policy_path": null,
+  "model_policy_path": null,
+  "GT_used_online": false,
+  "posterior_samples": false,
+  "interpolated_path_verified": false,
+  "historical_exposure": true
+}

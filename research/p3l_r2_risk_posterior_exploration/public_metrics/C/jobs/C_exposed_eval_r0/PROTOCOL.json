@@ -1,0 +1,59 @@
+{
+  "job": "C_exposed_eval_r0",
+  "stage": "C",
+  "split": "exposed_eval",
+  "parents": [
+    "DEV_024",
+    "DEV_025",
+    "DEV_026",
+    "DEV_027",
+    "DEV_028",
+    "DEV_029",
+    "DEV_030",
+    "DEV_031"
+  ],
+  "arms": [
+    "frozen_fixed",
+    "dynamic_fixed",
+    "dynamic_curvature",
+    "dynamic_bandit",
+    "ordinary_random"
+  ],
+  "steps": 8,
+  "radii": [
+    0.02,
+    0.04
+  ],
+  "feature_names": [
+    "bias",
+    "radius",
+    "step_fraction",
+    "direction_fraction",
+    "sign",
+    "log_generalized_cost",
+    "predicted_Phi_change",
+    "prior_change",
+    "latent_step",
+    "saturation_fraction",
+    "seam_fraction",
+    "previous_Maxwell_error",
+    "previous_projector_rotation",
+    "material_curve_error"
+  ],
+  "weak_dimension": 4,
+  "Gaussian_properties": "native fixed u",
+  "task_constraints": "actual per-step RMS radius and signed material progress >= half radius",
+  "direction_metric": "unit material RMS; Jdata^T Jdata + original Gaussian I",
+  "predictor_corrector": true,
+  "corrector": "strong complement only; no return to origin",
+  "full_states_max": 640,
+  "fresh_endpoint_RHS_max": 25600,
+  "anchor_J_RHS_max": 256,
+  "max_wall": 1200.0,
+  "policy_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r2-risk-posterior/research/p3l_r2_risk_posterior_exploration/C/policy/FROZEN_POLICY.json",
+  "model_policy_path": null,
+  "GT_used_online": false,
+  "posterior_samples": false,
+  "interpolated_path_verified": false,
+  "historical_exposure": true
+}

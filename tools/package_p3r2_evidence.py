@@ -78,7 +78,7 @@ def tree(path):
 
 
 def entries():
-    for path in (OUT, ROOT/'src/p3r2', ROOT/'src/p1_material',
+    for path in (OUT, ROOT/'src/p3r2', ROOT/'src/p3r2_mechanism', ROOT/'src/p1_material',
                  ROOT/'research/p1_material_target_20261018/inputs/geometry.json'):
         if not path.exists() or path.is_symlink():
             raise RuntimeError(f'Required real campaign/source/reference path missing: {path}')

@@ -1,0 +1,44 @@
+{
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "master_seed": 2026102202,
+  "independent_tracks": [
+    "A GT-supervised material MSE; no posterior teacher required",
+    "B exact-corrected nonGaussian inference; SLICE separately identified",
+    "C material-native trajectory and supervised risk policy; no reference prerequisite"
+  ],
+  "training_sizes": [
+    4096,
+    16384
+  ],
+  "optional_training_size": 32768,
+  "validation_parents": 2048,
+  "fresh_locked_parents": 256,
+  "old_locked_status": "EXPOSED; never called fresh",
+  "primary_baseline": "native96 plus incremental probit64",
+  "primary_metric": "parent mean full-grid complex material MSE",
+  "primary_comparison": "validation-selected risk estimator versus strong probit point",
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 2026102292
+  },
+  "positive_research_threshold": {
+    "relative_risk_reduction": 0.05,
+    "paired_CI_excludes_zero": true
+  },
+  "GT_isolation": "train supervision permitted; online physics never sees GT; fresh locked truth opened only by separate offline evaluator after allmethods frozen",
+  "memory": {
+    "paid_workers": 1,
+    "transfer_entries": 4,
+    "RSS_stop_MiB": 2000,
+    "numerical_threads": 1
+  },
+  "target_labels": [
+    "FULL",
+    "SLICE",
+    "LOCAL-C",
+    "PROFILE",
+    "SUPERVISED_RISK",
+    "CANDIDATE_ONLY"
+  ],
+  "unqualified_full_does_not_block_risk_or_geometry": true
+}

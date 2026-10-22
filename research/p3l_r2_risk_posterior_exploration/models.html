@@ -1,0 +1,36 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>学习模型、容量与几何控制</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#182b40;font:17px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header,main,footer{max-width:1150px;margin:auto;padding:28px}header{padding-top:56px}h1{font-size:clamp(27px,4vw,43px);line-height:1.35;margin:.4em 0}h2{margin-top:2.3em;border-top:1px solid #dae3eb;padding-top:22px}h3{margin-top:1.8em}a{color:#086ba5;text-decoration:none}a:hover{text-decoration:underline}main{background:white;border-radius:16px;box-shadow:0 8px 32px #1c365510;padding:36px}p{margin:1em 0}nav{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:15px}.badge{display:inline-block;border-radius:20px;padding:4px 14px;background:#dcefe5;color:#1b5b3f;font-size:15px}.scope{background:#edf3f9;border-left:4px solid #739abb;padding:16px 22px}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:15px;margin:22px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #dce4ed;padding:11px 12px}th{background:#edf3f9}img{display:block;max-width:100%;height:auto;margin:20px auto}code{font:14px/1.7 ui-monospace,monospace;background:#f0f4f8;border-radius:4px;padding:2px 5px}pre{overflow:auto;padding:20px;background:#eef3f8;white-space:pre-wrap}blockquote{background:#fff7e8;border-left:4px solid #c9922a;padding:12px 22px;margin:20px 0}footer{font-size:14px;color:#526579}.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:24px 0}.metric{padding:18px;background:#fff;border-radius:10px;border:1px solid #dce5ed}.metric strong{font-size:30px;display:block;color:#135d71}.gallery{display:grid;gap:25px}.gallery figure{margin:0}.gallery figcaption{font-size:14px;color:#526579}@media(max-width:650px){header,main,footer{padding:20px}main{border-radius:0}th,td{padding:8px}}</style></head><body><header><nav><a href="index.html">研究入口</a><a href="report.html">完整中文报告</a><a href="gallery.html">成像图库</a><a href="START_HERE.md">匿名 Markdown</a><a href="REPRODUCE.md">复现</a><a href="GPT_PRO_HANDOFF/START_HERE.md">GPT Pro 交接</a></nav><h1>学习模型、容量与几何控制</h1></header><main><h1>学习模型、容量与几何控制</h1>
+<p>先前P3-L的15次训练全部update0最佳；本轮实际有多个小型模型选择正更新。它说明此前特定训练失败可被改变，不能推导所有NN无效；同样不能把本轮小CNN成功泛化成任意架构都有效。数据规模、模型容量和共享局部归纳偏好均有实际作用。</p>
+<div class="table-scroll"><table><thead><tr><th>首批次级方法</th><th>三训练 seed 平均 MSE</th><th>三个固定 seed 分列 MSE</th></tr></thead><tbody>
+<tr><td>local_anchor_cnn</td><td>0.007943698</td><td>0.007840943 / 0.008023298 / 0.007966852</td></tr>
+<tr><td>local_geometry_cnn</td><td>0.007669394</td><td>0.007678505 / 0.007732527 / 0.007597152</td></tr>
+<tr><td>local_capacity_cnn</td><td>0.007946550</td><td>0.007810349 / 0.008156984 / 0.007872315</td></tr>
+<tr><td>local_permuted_geometry_cnn</td><td>0.007945051</td><td>0.007899995 / 0.008084339 / 0.007850819</td></tr>
+<tr><td>weak_decoder</td><td>0.010122631</td><td>0.010123664 / 0.010123842 / 0.010120386</td></tr>
+<tr><td>weak_strong_decoder</td><td>0.009648023</td><td>0.009670529 / 0.009606455 / 0.009667085</td></tr>
+<tr><td>random_decoder</td><td>0.009731693</td><td>0.009776966 / 0.009730729 / 0.009687385</td></tr>
+<tr><td>all_decoder_matched</td><td>0.009969101</td><td>0.009992061 / 0.009972388 / 0.009942854</td></tr>
+<tr><td>u2_decoder</td><td>0.010118187</td><td>0.010118355 / 0.010117156 / 0.010119050</td></tr>
+</tbody></table></div>
+<p>首批几何CNN相对仅基础图CNN、等参数零通道及固定空间置乱，三seed平均风险改善约3.45%/3.49%/3.47%。这些是次级比较，不是三个额外测试集。零通道控制只匹配名义参数量；固定位置置乱更直接检验空间对应。随机decoder比较的增量很小，调整区间跨零，不得宣称所有表示上几何都优越。</p>
+<h2>第二批独立定向确认</h2>
+<p>发现固定frame灵敏度图可因式分解后，加入两个通道去除控制和随机谱decoder控制。全部参数、旧512/128数据、100epoch及训练规则保持；两个控制六run和随机控制三run均只读TRAIN/validation。新21检查点在新256观测前冻结。</p>
+<p>第二批为raw unprojected、无blend的公平家族比较，不能直接冒称第一批选定的projection动作。每个parent先平均三个固定训练seed的损失，不是先把三张图ensemble，不是n=768。</p>
+<div class="table-scroll"><table><thead><tr><th>第二批固定家族（三 seed 风险均值）</th><th>全网格 MSE</th></tr></thead><tbody>
+<tr><td>完整灵敏度＋回投影</td><td>0.007951131</td></tr>
+<tr><td>仅基础图＋属性</td><td>0.008201364</td></tr>
+<tr><td>同参数、附加通道置零</td><td>0.008203460</td></tr>
+<tr><td>附加图固定空间置乱</td><td>0.008215816</td></tr>
+<tr><td>仅训练谱灵敏度图</td><td>0.007971895</td></tr>
+<tr><td>仅残差回投影图</td><td>0.008217417</td></tr>
+<tr><td>仅随机谱 decoder 灵敏度图</td><td>0.008027756</td></tr>
+</tbody></table></div>
+<div class="table-scroll"><table><thead><tr><th>第二批事前冻结的主比较</th><th>相对风险降低</th><th>98.333% 配对区间</th><th>实际裁决</th></tr></thead><tbody>
+<tr><td>完整灵敏度＋回投影 / 仅残差回投影图</td><td>3.24%</td><td>[2.13%, 4.34%]</td><td>CANDIDATE_LOWER_RISK</td></tr>
+<tr><td>完整灵敏度＋回投影 / 仅训练谱灵敏度图</td><td>0.26%</td><td>[-0.23%, 0.75%]</td><td>UNRESOLVED</td></tr>
+<tr><td>仅训练谱灵敏度图 / 仅随机谱 decoder 灵敏度图</td><td>0.70%</td><td>[0.17%, 1.24%]</td><td>CANDIDATE_LOWER_RISK</td></tr>
+</tbody></table></div>
+<p>完整灵敏度＋回投影 相对 仅残差回投影图在这批确认对象上风险较低。 完整灵敏度＋回投影 相对 仅训练谱灵敏度图的调整后区间跨零，独立增量没有建立。 仅训练谱灵敏度图 相对 仅随机谱 decoder 灵敏度图在这批确认对象上风险较低。</p>
+<p>不论显著性如何，随机控制只检验一个预定frame；它不能证明对全部随机子空间或所有Maxwell几何的定理。不同通道带来的有限样本学习价值，也不等于取得了新增测量信息。86个不同拟合/基线检查点中，首批实际评价77个、第二批评价其21个；完整范围见manifest，不按第二批结果换主模型。</p>
+<h2>归一化坐标密度</h2>
+<p>第一批固定10维informative density NLL为9.957873，自己的原先验基线为14.376896；risk-weak10维为12.433691，自己的先验为14.352745。两坐标不同，不能直接按原始NLL排胜负。</p>
+<p>90%逐分量宏覆盖分别为89.02%和88.48%，风险弱坐标仍显示小幅欠覆盖。它们不是10维联合覆盖率，更不是66维FULL或材料区间校准。把学到10维与独立原先验56维相乘，再合法Full-MH修正，仍没有解决高维耦合。</p></main><footer>固定 P1 · 24×24 二维标量 TM/VIE · 真实 Full Maxwell 数据 · 原始负结果与费用保留。网页可访问性与科研结论分别记录。</footer></body></html>

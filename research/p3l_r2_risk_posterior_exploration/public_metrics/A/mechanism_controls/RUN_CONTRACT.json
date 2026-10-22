@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "objective": "SUPERVISED_RISK",
+  "train": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r2-risk-posterior/research/p3l_r2_risk_posterior_exploration/A/anchor_data/train.npz",
+  "validation": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r2-risk-posterior/research/p3l_r2_risk_posterior_exploration/A/anchor_data/validation.npz",
+  "train_count": 512,
+  "validation_count": 128,
+  "families": [
+    "sensitivity_only",
+    "backprojection_only"
+  ],
+  "seeds": [
+    11,
+    22,
+    33
+  ],
+  "parameter_count": 5842,
+  "epochs": 100,
+  "batch_size": 128,
+  "patience": 15,
+  "max_seconds": 600,
+  "learning_rate": 0.0005,
+  "weight_decay": 0.001,
+  "architecture": "Original ResidualNet(local_geometry_cnn), unchanged",
+  "optimizer_normalization_selection": "Original train_residual unchanged, including validation update0",
+  "masks": {
+    "sensitivity_only": {
+      "version": 1,
+      "family": "sensitivity_only",
+      "feature": "image[N,6,24,24]",
+      "keep_image_channels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "zero_image_channels": [
+        4,
+        5
+      ],
+      "anchor_channels": [
+        0,
+        1
+      ],
+      "broadcast_u2": "Original last two normalized base features; unchanged",
+      "timing": "Zero raw feature channels before original train-only normalization; retained-channel statistics unchanged",
+      "objective": "SUPERVISED_RISK",
+      "posterior_claim": false
+    },
+    "backprojection_only": {
+      "version": 1,
+      "family": "backprojection_only",
+      "feature": "image[N,6,24,24]",
+      "keep_image_channels": [
+        0,
+        1,
+        4,
+        5
+      ],
+      "zero_image_channels": [
+        2,
+        3
+      ],
+      "anchor_channels": [
+        0,
+        1
+      ],
+      "broadcast_u2": "Original last two normalized base features; unchanged",
+      "timing": "Zero raw feature channels before original train-only normalization; retained-channel statistics unchanged",
+      "objective": "SUPERVISED_RISK",
+      "posterior_claim": false
+    }
+  },
+  "physics_calls": 0,
+  "fresh_GT_read": false,
+  "posterior_claim": false
+}

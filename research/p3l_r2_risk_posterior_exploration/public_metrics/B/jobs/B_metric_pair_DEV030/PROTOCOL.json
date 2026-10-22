@@ -1,0 +1,54 @@
+{
+  "job": "B_metric_pair_DEV030",
+  "target_family": "FULL66_ORIGINAL_PROBIT_GAUSSIAN_PRIOR",
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "parent": "DEV_030",
+  "initial_cache": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-local-posterior/research/p3l_local_posterior_imaging/B/joint_gaussian/DEV_030/RAW_MODE_CACHE.npz",
+  "initialization": "Same already-paid finite probit mode for every chain and arm; no new optimization",
+  "shared_initialization_is_not_overdispersed": true,
+  "initialization_is_not_posterior_draws": true,
+  "GT_used": false,
+  "source_isolated_online_observation": true,
+  "dynamic_metric": "H(x)=I+Jx(x).T@Jx(x), Jx=TRUE FullMaxwell receiver-J times exact probit derivative; C=H^-1",
+  "frozen_metric": "H at the common paid initial anchor; subsequent endpoint gradient from true source adjoint, no endpoint J",
+  "drift": "-0.5*eps^2*C(x)*grad U(x)",
+  "noise_covariance": "eps^2*C(x)",
+  "exact_MH": "log pi(y)-log pi(x)+log N(x;mu(y),eps²C(y))-log N(y;mu(x),eps²C(x)); both log determinants included",
+  "Gamma_term": "Not added; exact MH corrects the explicitly evaluated Gaussian proposal",
+  "target_energy": "U=Phi(FullMaxwell(from_probit(x)),y)+0.5*x@x; original exact probit pushforward prior",
+  "arms": [
+    "dynamic",
+    "frozen"
+  ],
+  "comparison": "equal-rhs",
+  "schedules": {
+    "dynamic": {
+      "warmup": 128,
+      "production": 512,
+      "RHS_per_transition": 40
+    },
+    "frozen": {
+      "warmup": 320,
+      "production": 1280,
+      "RHS_per_transition": 16
+    }
+  },
+  "eps": {
+    "dynamic": 0.05,
+    "frozen": 0.05
+  },
+  "eps_fixed_during_warmup_and_production": true,
+  "new_setup_RHS_maximum": 0,
+  "planned_total_new_RHS_maximum": 204800,
+  "pilot_RHS_cap": 262144,
+  "dynamic_RHS_per_endpoint": 40,
+  "frozen_RHS_per_endpoint": 16,
+  "costs": "Actual atomic Book reservations; setup and warmup separately disclosed; all rejected endpoints billed",
+  "coupled_rng": "Identical SeedSequence([seed,chain]) for both arms; same initial normal/uniform stream, different trajectories and draw counts",
+  "seed": 2026102391,
+  "chains": 4,
+  "save_full_J": false,
+  "posterior_qualification": false,
+  "reference_qualification": false,
+  "failure_policy": "A nonfinite state/gradient/metric stops as unqualified numerical failure; no silent clipping, metric flooring, or free rejection"
+}

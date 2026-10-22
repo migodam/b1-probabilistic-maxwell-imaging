@@ -1,0 +1,285 @@
+{
+  "review": "Independent supervised-risk and locked-design review",
+  "utc": "2026-10-22T16:37:37.665080+00:00",
+  "status": "ACTIONABLE_LOCK_DESIGN_AND_SCIENTIFIC_SCOPE_ISSUES; NO_LOCKED_DATA_READ",
+  "scope": [
+    "src/p3r2/residual_risk.py",
+    "tools/train_p3r2_residual_controls.py",
+    "tools/infer_p3r2_locked.py",
+    "tools/evaluate_p3r2_locked.py",
+    "tools/select_p3r2_fusion.py",
+    "A/residual_training/RESULTS.json and SELECTED.json",
+    "A/residual_controls/RESULTS.json and SELECTED.json"
+  ],
+  "issues": [
+    {
+      "id": "L01",
+      "priority": "P1_BEFORE_TRUTH",
+      "title": "Freeze matched176 inclusion and score the saved truth-free estimate",
+      "evidence": "evaluate_p3r2_locked.py101-102 determines method inclusion by any live MATCHED file;123-125 reads raw MATCHED after truth opened at111. infer_p3r2_locked.py234-237 already saves matched_point176 when present.",
+      "action": "Require an explicit manifest include_matched flag and frozen all-parent completion receipts before label access. Score matched_point176 from each saved estimate archive. If absent, apply frozen no-exclusion fallback with counts; do not discover methods from runtime file presence.",
+      "scope": "Does not directly alter fused-vs-probit primary statistic, but current optional matched comparison has weaker isolation and unplanned-subset behavior."
+    },
+    {
+      "id": "L02",
+      "priority": "P2",
+      "title": "Label and count baseline fallbacks separately",
+      "evidence": "infer_p3r2_locked.py178-186 substitutes cache/native/prior if context parsing fails and initializes anchor/probit to that fallback; evaluator174 always calls baseline strong native96+probit64. Per-parent failures are retained but no summary counts/qualification for point baselines.",
+      "action": "Before truth access validate the strong baseline estimate contract or explicitly freeze fallbacks. In results summarize fallback counts for anchor/probit/native and each point method, qualify the strong-baseline label if substitutions occurred. Keep every parent.",
+      "scope": "Potential labeling/fairness failure; no observed locked failure asserted, no locked outputs read."
+    },
+    {
+      "id": "S01",
+      "priority": "CLAIM_SCOPE",
+      "title": "Geometry CNN increment changes inputs and parameter count",
+      "evidence": "residual_risk.py150-158/190-196: local_anchor has4 channels and5266 parameters; local_geometry has8 channels and5842 (+576,+10.94%). Same16-channel/3block convolution family, different contextual inputs.",
+      "action": "Describe as geometry-feature-augmented local CNN, not a parameter-matched geometry-only ablation. State added weak/strong sensitivity and residual-backprojection channels. Existing results support combined feature/capacity comparison only; no required retraining to report this accurately.",
+      "scope": "Mean validation MSE0.0177651 vs0.0171738 (~3.33% extra reduction); selected min/max seeds are not independent test evidence."
+    },
+    {
+      "id": "S02",
+      "priority": "CLAIM_SCOPE",
+      "title": "Most validation gain already appears with small anchor-only local filters",
+      "evidence": "Anchor MSE0.02297525; local_anchor mean0.01776506; local_geometry mean0.01717383. physics_cnn322992 parameters mean0.02297066. Local models5266/5842 parameters; both selected400 updates and hit100epoch limit; large physicsCNN selects8-12updates then validation patience.",
+      "action": "Attribute comparison to architecture/context/optimization package. Report anchor-only local model alongside geometry model and training stopping differences. Do not call the larger physicsCNN a capacity-matched control or infer geometry is the sole cause of gain.",
+      "scope": "All are supervised validation-selected point estimators, not posterior mean/calibration demonstrations."
+    },
+    {
+      "id": "S03",
+      "priority": "CLAIM_SCOPE",
+      "title": "All-coordinate decoder control has different correction radius",
+      "evidence": "residual_risk.py204-208: all_decoder aggregate norm<3; weak_strong204ff uses16 coefficients each bounded3 plus12 bounded0.75, max combined norm sqrt(150.75)=12.278. Head dimensions66 vs30; parameters185154 vs180510.",
+      "action": "Call all_decoder a bounded all-coordinate inductive-bias control, not a matched full-span replacement proving low-rank geometry superiority. Record both radius and parameter differences. random_decoder is cleaner: same context, parameter count180510 and coefficient radii, fixed random frame.",
+      "scope": "Existing random control only tests output correction frame; it retains geometry inputs, so it is not no-geometry control. One frozen random frame supports a conditional comparison, not all random subspaces."
+    },
+    {
+      "id": "S04",
+      "priority": "REPORTING",
+      "title": "Validation reuse and context-budget shift constrain claims",
+      "evidence": "select_p3r2_fusion.py loads validation labels and selects family/projection/alpha; residual selection uses the same128 validation parents over models/seeds/epochs. Fusion metadata explicitly states trained48+48 contexts and future96+64 shift.",
+      "action": "Keep validation risk descriptive and report all searched alternatives. Freeze primary fusion before new locked observations; no locked reselection. Label the anchor-optimization covariate shift and use prespecified locked baseline96+64. Density scores remain fixed10 marginal diagnostics, separate from material-risk estimators.",
+      "scope": "No independent validation significance/GO claim from these summaries; fresh locked evaluation remains necessary."
+    }
+  ],
+  "passes": [
+    "Inference opens a strict allowlist of online fields and never opens offline_only labels; material methods consume observations or observation/anchor/J only.",
+    "Freeze verifier checks source revision, tracked differences, untracked Python files, artifact path/size/mtime registrations, artifact time before freeze, and256 unique fresh parent inputs. This is a concrete ordinary mutation guard; no hash checks requested.",
+    "Evaluator requires inference COMPLETE with exact parents/revision/time, completed generator exact locked cohort, context closure jobs, all256 files, and96/64 truth-free sidecars before its first label archive read.",
+    "Material/density exceptions use explicit anchor/unit-prior fallbacks and preserve failure strings; all256 parents remain in final metrics. Source failure prevents projected/fused branch from silently using a changed learned method.",
+    "Bootstrap resamples paired independent parents with shared indices;2planned co-primary comparisons use97.5% two-sided intervals. Other method comparisons remain labeled secondary.",
+    "Point-estimator and density claims are separated: residual checkpoints say calibrated_density NOT_CLAIMED; fusion says no density/posterior claim and no legal-single-decoder-material claim; evaluation labels fixed10 NLL/coverage without full posterior calibration.",
+    "Random decoder preserves context, width, coefficient radii and total parameters relative to weak_strong; u2-only fixes z exactly and preserves property-odds map. Controls are now available for all3 seeds."
+  ],
+  "summary_statistics": {
+    "anchor": {
+      "n_runs": 1,
+      "parameters": 0,
+      "validation_roi_mse_mean": 0.02297525006590128,
+      "validation_roi_mse_min": 0.02297525006590128,
+      "validation_roi_mse_max": 0.02297525006590128,
+      "selected_updates": [
+        0
+      ],
+      "stop_reasons": [
+        "BASELINE"
+      ]
+    },
+    "residual_ridge": {
+      "n_runs": 1,
+      "parameters": 558080,
+      "validation_roi_mse_mean": 0.022963265727943848,
+      "validation_roi_mse_min": 0.022963265727943848,
+      "validation_roi_mse_max": 0.022963265727943848,
+      "selected_updates": [
+        0
+      ],
+      "stop_reasons": [
+        "VALIDATION_RIDGE_ALPHA_WITH_ANCHOR"
+      ]
+    },
+    "residual_mlp": {
+      "n_runs": 3,
+      "parameters": 323385,
+      "validation_roi_mse_mean": 0.02297003566964821,
+      "validation_roi_mse_min": 0.022966587524537695,
+      "validation_roi_mse_max": 0.02297229810516333,
+      "selected_updates": [
+        12,
+        12,
+        8
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "geometry_mlp": {
+      "n_runs": 3,
+      "parameters": 322431,
+      "validation_roi_mse_mean": 0.02295553382951201,
+      "validation_roi_mse_min": 0.0229252465577155,
+      "validation_roi_mse_max": 0.02297085491232746,
+      "selected_updates": [
+        4,
+        132,
+        4
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "physics_cnn": {
+      "n_runs": 3,
+      "parameters": 322992,
+      "validation_roi_mse_mean": 0.02297065621962341,
+      "validation_roi_mse_min": 0.022969227749805147,
+      "validation_roi_mse_max": 0.022972728218729064,
+      "selected_updates": [
+        12,
+        12,
+        8
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "weak_decoder": {
+      "n_runs": 3,
+      "parameters": 178962,
+      "validation_roi_mse_mean": 0.02295037365480646,
+      "validation_roi_mse_min": 0.02294256819929298,
+      "validation_roi_mse_max": 0.02295552617848035,
+      "selected_updates": [
+        20,
+        20,
+        16
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "weak_strong_decoder": {
+      "n_runs": 3,
+      "parameters": 180510,
+      "validation_roi_mse_mean": 0.021965916710988333,
+      "validation_roi_mse_min": 0.02188813698860207,
+      "validation_roi_mse_max": 0.022017541102180002,
+      "selected_updates": [
+        28,
+        40,
+        24
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "local_anchor_cnn": {
+      "n_runs": 3,
+      "parameters": 5266,
+      "validation_roi_mse_mean": 0.017765063041707378,
+      "validation_roi_mse_min": 0.017594985122880623,
+      "validation_roi_mse_max": 0.01786303806488197,
+      "selected_updates": [
+        400,
+        400,
+        400
+      ],
+      "stop_reasons": [
+        "EPOCH_LIMIT",
+        "EPOCH_LIMIT",
+        "EPOCH_LIMIT"
+      ]
+    },
+    "local_geometry_cnn": {
+      "n_runs": 3,
+      "parameters": 5842,
+      "validation_roi_mse_mean": 0.01717382501202733,
+      "validation_roi_mse_min": 0.016994927164212387,
+      "validation_roi_mse_max": 0.017367731876301036,
+      "selected_updates": [
+        400,
+        400,
+        400
+      ],
+      "stop_reasons": [
+        "EPOCH_LIMIT",
+        "EPOCH_LIMIT",
+        "EPOCH_LIMIT"
+      ]
+    },
+    "all_decoder": {
+      "n_runs": 3,
+      "parameters": 185154,
+      "validation_roi_mse_mean": 0.022689854010557738,
+      "validation_roi_mse_min": 0.022663840281429173,
+      "validation_roi_mse_max": 0.022735014056198113,
+      "selected_updates": [
+        8,
+        8,
+        12
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "random_decoder": {
+      "n_runs": 3,
+      "parameters": 180510,
+      "validation_roi_mse_mean": 0.022232314264485235,
+      "validation_roi_mse_min": 0.022067590639209538,
+      "validation_roi_mse_max": 0.022331458557007494,
+      "selected_updates": [
+        32,
+        32,
+        28
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    },
+    "u2_decoder": {
+      "n_runs": 3,
+      "parameters": 176898,
+      "validation_roi_mse_mean": 0.02293959864121358,
+      "validation_roi_mse_min": 0.02293869541492876,
+      "validation_roi_mse_max": 0.022940339399098227,
+      "selected_updates": [
+        20,
+        20,
+        28
+      ],
+      "stop_reasons": [
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE",
+        "VALIDATION_PATIENCE"
+      ]
+    }
+  },
+  "checks": {
+    "physics_calls": 0,
+    "training_updates": 0,
+    "locked_labels_read": false,
+    "locked_estimates_read": false,
+    "source_edits": 0,
+    "other_agents": 0
+  },
+  "limitations": [
+    "Source may change during parent freeze implementation; line references are this review snapshot.",
+    "Summaries only: no new array experiments, training or significance tests performed.",
+    "Frozen methods marker and actual locked execution were not inspected; review assesses design, not completed lock integrity.",
+    "Parent retains scientific interpretation and final freeze responsibility."
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "objective": "SUPERVISED_RISK",
+  "train": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r2-risk-posterior/research/p3l_r2_risk_posterior_exploration/A/anchor_data/train.npz",
+  "validation": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r2-risk-posterior/research/p3l_r2_risk_posterior_exploration/A/anchor_data/validation.npz",
+  "train_count": 512,
+  "validation_count": 128,
+  "families": [
+    "decoder_random_sensitivity"
+  ],
+  "seeds": [
+    11,
+    22,
+    33
+  ],
+  "parameter_count": 5842,
+  "epochs": 100,
+  "batch_size": 128,
+  "patience": 15,
+  "max_seconds": 600,
+  "learning_rate": 0.0005,
+  "weight_decay": 0.001,
+  "architecture": "Original ResidualNet(local_geometry_cnn), unchanged",
+  "optimizer_normalization_selection": "Original train_residual unchanged, including validation update0",
+  "feature_contract": {
+    "version": 1,
+    "family": "decoder_random_sensitivity",
+    "feature": "image[N,6,24,24]",
+    "keep_image_channels": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "zero_image_channels": [
+      4,
+      5
+    ],
+    "anchor_channels": [
+      0,
+      1
+    ],
+    "broadcast_u2": "Original last two normalized base features; unchanged",
+    "frame_seed": 2026102303,
+    "frame_shape": [
+      64,
+      64
+    ],
+    "frame_method": "NumPy default_rng Gaussian QR; diagonal R signs canonicalized",
+    "first_frame_columns": [
+      0,
+      16
+    ],
+    "second_frame_columns": [
+      16,
+      28
+    ],
+    "sensitivity": "abs(delta)*saturation_prime(field/temperature)/temperature*norm(A_i V); original ROI mask",
+    "frame_fit": "Single fixed random orthonormal64 frame; independent of J and all GT; shared across training seeds",
+    "timing": "Zero raw residual-backprojection channels before original train-only normalization",
+    "objective": "SUPERVISED_RISK",
+    "posterior_claim": false
+  },
+  "physics_calls": 0,
+  "fresh_GT_read": false,
+  "posterior_claim": false
+}

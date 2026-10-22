@@ -1,0 +1,408 @@
+{
+  "protocol": {
+    "job": "B_metric_pair_DEV030",
+    "target_family": "FULL66_ORIGINAL_PROBIT_GAUSSIAN_PRIOR",
+    "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+    "parent": "DEV_030",
+    "initial_cache": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-local-posterior/research/p3l_local_posterior_imaging/B/joint_gaussian/DEV_030/RAW_MODE_CACHE.npz",
+    "initialization": "Same already-paid finite probit mode for every chain and arm; no new optimization",
+    "shared_initialization_is_not_overdispersed": true,
+    "initialization_is_not_posterior_draws": true,
+    "GT_used": false,
+    "source_isolated_online_observation": true,
+    "dynamic_metric": "H(x)=I+Jx(x).T@Jx(x), Jx=TRUE FullMaxwell receiver-J times exact probit derivative; C=H^-1",
+    "frozen_metric": "H at the common paid initial anchor; subsequent endpoint gradient from true source adjoint, no endpoint J",
+    "drift": "-0.5*eps^2*C(x)*grad U(x)",
+    "noise_covariance": "eps^2*C(x)",
+    "exact_MH": "log pi(y)-log pi(x)+log N(x;mu(y),eps²C(y))-log N(y;mu(x),eps²C(x)); both log determinants included",
+    "Gamma_term": "Not added; exact MH corrects the explicitly evaluated Gaussian proposal",
+    "target_energy": "U=Phi(FullMaxwell(from_probit(x)),y)+0.5*x@x; original exact probit pushforward prior",
+    "arms": [
+      "dynamic",
+      "frozen"
+    ],
+    "comparison": "equal-rhs",
+    "schedules": {
+      "dynamic": {
+        "warmup": 128,
+        "production": 512,
+        "RHS_per_transition": 40
+      },
+      "frozen": {
+        "warmup": 320,
+        "production": 1280,
+        "RHS_per_transition": 16
+      }
+    },
+    "eps": {
+      "dynamic": 0.05,
+      "frozen": 0.05
+    },
+    "eps_fixed_during_warmup_and_production": true,
+    "new_setup_RHS_maximum": 0,
+    "planned_total_new_RHS_maximum": 204800,
+    "pilot_RHS_cap": 262144,
+    "dynamic_RHS_per_endpoint": 40,
+    "frozen_RHS_per_endpoint": 16,
+    "costs": "Actual atomic Book reservations; setup and warmup separately disclosed; all rejected endpoints billed",
+    "coupled_rng": "Identical SeedSequence([seed,chain]) for both arms; same initial normal/uniform stream, different trajectories and draw counts",
+    "seed": 2026102391,
+    "chains": 4,
+    "save_full_J": false,
+    "posterior_qualification": false,
+    "reference_qualification": false,
+    "failure_policy": "A nonfinite state/gradient/metric stops as unqualified numerical failure; no silent clipping, metric flooring, or free rejection"
+  },
+  "status": "FULL_METRIC_MALA_COMPARISON_COMPLETE_UNQUALIFIED",
+  "actual_new_RHS": 204800,
+  "cost_receipt_by_arm_chain_phase": {
+    "setup": 0,
+    "dynamic/c0/warmup": 5120,
+    "dynamic/c0/production": 20480,
+    "dynamic/c1/warmup": 5120,
+    "dynamic/c1/production": 20480,
+    "dynamic/c2/warmup": 5120,
+    "dynamic/c2/production": 20480,
+    "dynamic/c3/warmup": 5120,
+    "dynamic/c3/production": 20480,
+    "frozen/c0/warmup": 5120,
+    "frozen/c0/production": 20480,
+    "frozen/c1/warmup": 5120,
+    "frozen/c1/production": 20480,
+    "frozen/c2/warmup": 5120,
+    "frozen/c2/production": 20480,
+    "frozen/c3/warmup": 5120,
+    "frozen/c3/production": 20480
+  },
+  "arms": {
+    "dynamic": {
+      "arm": "dynamic",
+      "actual_RHS": 102400,
+      "chains": [
+        {
+          "chain": 0,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.0546875,
+          "warmup": 128,
+          "production": 512,
+          "proposed_material_RMS_median": 0.003972856150432904,
+          "accepted_material_RMS_mean": 0.00018266902372833795
+        },
+        {
+          "chain": 1,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.0234375,
+          "warmup": 128,
+          "production": 512,
+          "proposed_material_RMS_median": 0.003989040200358613,
+          "accepted_material_RMS_mean": 7.57342060802346e-05
+        },
+        {
+          "chain": 2,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.1015625,
+          "warmup": 128,
+          "production": 512,
+          "proposed_material_RMS_median": 0.003874695011246529,
+          "accepted_material_RMS_mean": 0.00033714100165329946
+        },
+        {
+          "chain": 3,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.07421875,
+          "warmup": 128,
+          "production": 512,
+          "proposed_material_RMS_median": 0.0038955479723581194,
+          "accepted_material_RMS_mean": 0.00025708238171730105
+        }
+      ],
+      "material_functions": {
+        "mean_ESS_minimum_finite": 4.135882594966416,
+        "bulk_ESS_minimum_finite": 4.522246900378889,
+        "tail_ESS_minimum_finite": 4.387683970707011,
+        "rhat_maximum_finite": 2.9989935895043716,
+        "undefined_mean_ESS_functions": 756,
+        "undefined_bulk_ESS_functions": 756,
+        "undefined_tail_ESS_functions": 756,
+        "undefined_rhat_functions": 756,
+        "complex_material_mean_RMS_MCSE": 0.005115013499861477,
+        "constant_unassessed_functions": 756,
+        "chains_stuck_functions": 0,
+        "production_draws_per_chain": 512,
+        "chains": 4,
+        "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+      },
+      "production_RHS_total": 81920,
+      "warmup_RHS_total": 20480,
+      "posterior_qualification": false,
+      "reference_qualification": false,
+      "route": "TRUE_STATE_DEPENDENT_FULL_J_GN"
+    },
+    "frozen": {
+      "arm": "frozen",
+      "actual_RHS": 102400,
+      "chains": [
+        {
+          "chain": 0,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.9078125,
+          "warmup": 320,
+          "production": 1280,
+          "proposed_material_RMS_median": 0.003954471670541675,
+          "accepted_material_RMS_mean": 0.0036179874618139296
+        },
+        {
+          "chain": 1,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.9515625,
+          "warmup": 320,
+          "production": 1280,
+          "proposed_material_RMS_median": 0.003959093635258015,
+          "accepted_material_RMS_mean": 0.0038646022533957254
+        },
+        {
+          "chain": 2,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.90390625,
+          "warmup": 320,
+          "production": 1280,
+          "proposed_material_RMS_median": 0.003916941422160868,
+          "accepted_material_RMS_mean": 0.003598341526766183
+        },
+        {
+          "chain": 3,
+          "actual_RHS": 25600,
+          "warmup_RHS": 5120,
+          "production_RHS": 20480,
+          "production_acceptance": 0.91171875,
+          "warmup": 320,
+          "production": 1280,
+          "proposed_material_RMS_median": 0.003985314774757141,
+          "accepted_material_RMS_mean": 0.00369987000675404
+        }
+      ],
+      "material_functions": {
+        "mean_ESS_minimum_finite": 5.61482314106329,
+        "bulk_ESS_minimum_finite": 5.785903592816439,
+        "tail_ESS_minimum_finite": 6.904424923924146,
+        "rhat_maximum_finite": 1.8575013989961657,
+        "undefined_mean_ESS_functions": 640,
+        "undefined_bulk_ESS_functions": 640,
+        "undefined_tail_ESS_functions": 640,
+        "undefined_rhat_functions": 640,
+        "complex_material_mean_RMS_MCSE": 0.010369949030862762,
+        "constant_unassessed_functions": 640,
+        "chains_stuck_functions": 0,
+        "production_draws_per_chain": 1280,
+        "chains": 4,
+        "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+      },
+      "production_RHS_total": 81920,
+      "warmup_RHS_total": 20480,
+      "posterior_qualification": false,
+      "reference_qualification": false,
+      "route": "FROZEN_ANCHOR_GN_SOURCE_ADJOINT_GRADIENT"
+    }
+  },
+  "matched_production_RHS_checkpoints": [
+    {
+      "production_RHS_per_chain": 5120,
+      "arms": {
+        "dynamic": {
+          "draws_per_chain": 128,
+          "actual_production_RHS_per_chain": 5120,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 4.057835501882936,
+            "bulk_ESS_minimum_finite": 4.117434332720727,
+            "tail_ESS_minimum_finite": 4.585239885257058,
+            "rhat_maximum_finite": 7.289613237981909,
+            "undefined_mean_ESS_functions": 794,
+            "undefined_bulk_ESS_functions": 794,
+            "undefined_tail_ESS_functions": 933,
+            "undefined_rhat_functions": 794,
+            "complex_material_mean_RMS_MCSE": 0.003646560476952595,
+            "constant_unassessed_functions": 794,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 128,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        },
+        "frozen": {
+          "draws_per_chain": 320,
+          "actual_production_RHS_per_chain": 5120,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 4.514989231025768,
+            "bulk_ESS_minimum_finite": 4.781375381588414,
+            "tail_ESS_minimum_finite": 4.892273860173063,
+            "rhat_maximum_finite": 2.6149752507793713,
+            "undefined_mean_ESS_functions": 654,
+            "undefined_bulk_ESS_functions": 654,
+            "undefined_tail_ESS_functions": 654,
+            "undefined_rhat_functions": 654,
+            "complex_material_mean_RMS_MCSE": 0.010473831386853089,
+            "constant_unassessed_functions": 654,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 320,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        }
+      }
+    },
+    {
+      "production_RHS_per_chain": 10240,
+      "arms": {
+        "dynamic": {
+          "draws_per_chain": 256,
+          "actual_production_RHS_per_chain": 10240,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 4.151155030509654,
+            "bulk_ESS_minimum_finite": 4.275670252301211,
+            "tail_ESS_minimum_finite": 4.394232267583551,
+            "rhat_maximum_finite": 4.109592562635085,
+            "undefined_mean_ESS_functions": 778,
+            "undefined_bulk_ESS_functions": 778,
+            "undefined_tail_ESS_functions": 833,
+            "undefined_rhat_functions": 778,
+            "complex_material_mean_RMS_MCSE": 0.00406658152336237,
+            "constant_unassessed_functions": 778,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 256,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        },
+        "frozen": {
+          "draws_per_chain": 640,
+          "actual_production_RHS_per_chain": 10240,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 5.101150520907363,
+            "bulk_ESS_minimum_finite": 5.266792653360279,
+            "tail_ESS_minimum_finite": 5.3198590611667465,
+            "rhat_maximum_finite": 2.121450545405377,
+            "undefined_mean_ESS_functions": 648,
+            "undefined_bulk_ESS_functions": 648,
+            "undefined_tail_ESS_functions": 648,
+            "undefined_rhat_functions": 648,
+            "complex_material_mean_RMS_MCSE": 0.009730466280510936,
+            "constant_unassessed_functions": 648,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 640,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        }
+      }
+    },
+    {
+      "production_RHS_per_chain": 15360,
+      "arms": {
+        "dynamic": {
+          "draws_per_chain": 384,
+          "actual_production_RHS_per_chain": 15360,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 4.130343049290126,
+            "bulk_ESS_minimum_finite": 4.388168620902501,
+            "tail_ESS_minimum_finite": 4.191857521247759,
+            "rhat_maximum_finite": 3.64633763100693,
+            "undefined_mean_ESS_functions": 762,
+            "undefined_bulk_ESS_functions": 762,
+            "undefined_tail_ESS_functions": 780,
+            "undefined_rhat_functions": 762,
+            "complex_material_mean_RMS_MCSE": 0.004509725504415733,
+            "constant_unassessed_functions": 762,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 384,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        },
+        "frozen": {
+          "draws_per_chain": 960,
+          "actual_production_RHS_per_chain": 15360,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 6.075404790048567,
+            "bulk_ESS_minimum_finite": 5.682980054688725,
+            "tail_ESS_minimum_finite": 5.833621999383602,
+            "rhat_maximum_finite": 1.8726117156035103,
+            "undefined_mean_ESS_functions": 640,
+            "undefined_bulk_ESS_functions": 640,
+            "undefined_tail_ESS_functions": 640,
+            "undefined_rhat_functions": 640,
+            "complex_material_mean_RMS_MCSE": 0.009998528282172597,
+            "constant_unassessed_functions": 640,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 960,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        }
+      }
+    },
+    {
+      "production_RHS_per_chain": 20480,
+      "arms": {
+        "dynamic": {
+          "draws_per_chain": 512,
+          "actual_production_RHS_per_chain": 20480,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 4.135882594966416,
+            "bulk_ESS_minimum_finite": 4.522246900378889,
+            "tail_ESS_minimum_finite": 4.387683970707011,
+            "rhat_maximum_finite": 2.9989935895043716,
+            "undefined_mean_ESS_functions": 756,
+            "undefined_bulk_ESS_functions": 756,
+            "undefined_tail_ESS_functions": 756,
+            "undefined_rhat_functions": 756,
+            "complex_material_mean_RMS_MCSE": 0.005115013499861477,
+            "constant_unassessed_functions": 756,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 512,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        },
+        "frozen": {
+          "draws_per_chain": 1280,
+          "actual_production_RHS_per_chain": 20480,
+          "material_functions": {
+            "mean_ESS_minimum_finite": 5.61482314106329,
+            "bulk_ESS_minimum_finite": 5.785903592816439,
+            "tail_ESS_minimum_finite": 6.904424923924146,
+            "rhat_maximum_finite": 1.8575013989961657,
+            "undefined_mean_ESS_functions": 640,
+            "undefined_bulk_ESS_functions": 640,
+            "undefined_tail_ESS_functions": 640,
+            "undefined_rhat_functions": 640,
+            "complex_material_mean_RMS_MCSE": 0.010369949030862762,
+            "constant_unassessed_functions": 640,
+            "chains_stuck_functions": 0,
+            "production_draws_per_chain": 1280,
+            "chains": 4,
+            "diagnostic_scope": "Asymptotic material-function diagnostics; constants/undefined functions remain unassessed; no global mixing certificate"
+          }
+        }
+      }
+    }
+  ],
+  "material_mean_RMS_difference_between_arms": 0.012792588637074593,
+  "elapsed_seconds": 164.18952149990946,
+  "posterior_qualification": false,
+  "reference_qualification": false,
+  "scope": "True Full-J metric versus frozen metric; acceptance alone is not a mixing result. Shared mode starts weaken convergence diagnostics."
+}

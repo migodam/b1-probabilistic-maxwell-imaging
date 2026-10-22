@@ -1,142 +1,72 @@
-<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P3L-R2 研究进行中</title><style>body{margin:40px auto;max-width:1100px;padding:0 20px;font:17px/1.65 system-ui;color:#183146;background:#f7fafc}pre{white-space:pre-wrap;font:15px/1.75 ui-monospace,monospace;background:white;padding:26px;border-radius:12px}a{color:#066b91}</style><h1>P3L-R2 · 研究进行中</h1><p>监督材料风险 · 非 Gaussian posterior · 几何轨迹</p><p><a href="PROGRESS_ZH.md">匿名 Markdown 进度</a> · <a href="THEORY_AND_METHODS.md">数学合同</a> · <a href="../p3l_local_posterior_imaging/">旧P3-L结果</a></p><pre># P3L-R2：材料风险、非 Gaussian 推断与真实轨迹
-
-状态：**RUNNING**。本页是进行中的实际实验，尚未完成新的锁定泛化，不是最终 GO 结论。
-
-原 P1、观测与噪声不变。监督风险、概率与几何三条路线独立推进；不合格 MCMC 不阻断神经或风险策略。
-
-## 已完成证据
-
-已完成32,768个独立train与2,048个validation的联合模拟和数据规模学习；512train+128validation有独立物理上下文。旧128 locked已暴露。
-
-77个checkpoint、原P1与256个fresh parent已在第一份新观测产生前本地冻结，source revision `ccf3987fd3910c656fa515fc076aa636fb89c47e`。
-
-本次新测试当前阶段：`C_fresh_curvature_000`；完成前不报告新泛化成绩。
-
-512训练对象的局部CNN为5842参数；validation128上，物理起点MSE 0.0102112，选定材料风险动作MSE 0.0075294。这个差异经过validation选择，不能当作新测试成绩。
-
-固定10维联合模拟密度：validation NLL 9.56322（无条件 14.19197），最佳更新 6400。它是归一化 proposal/坐标预测，不是已认证 FULL posterior。
-
-材料风险弱 frame 密度：validation NLL 11.93256（无条件 14.14164）。不同坐标的联合NLL不能当成相同材料概率目标。
-
-## 直接材料风险：已完成的 validation 比较
-
-表中为全网格 complex MSE；ROI MSE已乘256/576。未结束的训练不算完成。
-
-| train parents | 模型 | seed | 最佳update | validation MSE |
-
-|---:|---|---:|---:|---:|
-
-|4096|mean|11|0|0.1802209|
-
-|4096|ridge|11|0|0.0286076|
-
-|4096|mlp_small|11|1552|0.0268725|
-
-|4096|mlp_small|22|1520|0.0267747|
-
-|4096|mlp_small|33|1584|0.0266392|
-
-|4096|mlp_medium|11|1584|0.0258772|
-
-|4096|mlp_medium|22|1584|0.0260687|
-
-|4096|mlp_medium|33|1600|0.0263874|
-
-|4096|cnn|11|1568|0.0274567|
-
-|4096|cnn|22|1552|0.0273401|
-
-|4096|cnn|33|1600|0.0276737|
-
-|4096|cnn_context|11|1600|0.0258993|
-
-|4096|cnn_context|22|1568|0.0264170|
-
-|4096|cnn_context|33|1568|0.0260518|
-
-|16384|mean|11|0|0.1801867|
-
-|16384|ridge|11|0|0.0278305|
-
-|16384|mlp_small|11|6400|0.0217684|
-
-|16384|mlp_small|22|6400|0.0215339|
-
-|16384|mlp_small|33|6400|0.0217363|
-
-|16384|mlp_medium|11|6336|0.0167905|
-
-|16384|mlp_medium|22|6400|0.0167843|
-
-|16384|mlp_medium|33|6400|0.0168943|
-
-|16384|cnn|11|6016|0.0212330|
-
-|16384|cnn|22|6080|0.0212356|
-
-|16384|cnn|33|6218|0.0211918|
-
-|16384|cnn_context|11|4470|0.0183715|
-
-|16384|cnn_context|22|3456|0.0194647|
-
-|16384|cnn_context|33|6314|0.0178418|
-
-|32768|mean|11|0|0.1801787|
-
-|32768|ridge|11|0|0.0275089|
-
-|32768|mlp_small|11|12416|0.0193329|
-
-|32768|mlp_small|22|12288|0.0193107|
-
-|32768|mlp_small|33|12800|0.0192994|
-
-|32768|mlp_medium|11|12800|0.0146328|
-
-|32768|mlp_medium|22|12800|0.0145328|
-
-|32768|mlp_medium|33|12288|0.0144470|
-
-## 已暴露8对象的真实轨迹
-
-这是机制开发证据，不是新盲测；轨迹为 candidate-only，不是 posterior samples。
-
-|方法|最终MSE|相对起点差|实付RHS（未含共享anchor setup）|
-
-|---|---:|---:|---:|
-
-|dynamic_bandit|0.0166023|+0.0009069|5120|
-
-|dynamic_curvature|0.0147652|-0.0009302|5120|
-
-|dynamic_fixed|0.0171520|+0.0014566|5080|
-
-|frozen_fixed|0.0171364|+0.0014410|5120|
-
-|ordinary_random|0.0191275|+0.0034321|3280|
-
-## 资源与边界
-
-新上限20,000,000 complex RHS / 24h受控CPU / 24h GPU；本轮当前GPU0，不使用付费外部计算。
-
-|方向|累计RHS|state attempts|已结算受控秒|
-
-|---|---:|---:|---:|
-
-|A|2109800|86961|6029.74|
-
-|B|1023176|111257|1435.56|
-
-|C|67040|1676|396.47|
-
-|D|147456|18432|171.09|
-
-|L|1078048|30644|750.96|
-
-进行中的作业另有预留，不把尚未结算的wall记作零成本。
-
-[概率与数学合同](THEORY_AND_METHODS.md) · [冻结方法](METHODS_FROZEN_FOR_LOCKED.json) · [迭代记录](ITERATION_LOG.md) · [资源快照](RESOURCE_LEDGER.json) · [原P3-L封账报告](../p3l_local_posterior_imaging/)
-
-下一步：完成256个全新parent上的固定在线推断、轨迹与独立评分；不再调参或重新选择模型。FULL posterior仍不能凭这些结果称为合格。
-</pre></html>
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P3L-R2：材料风险、非 Gaussian 推断与局部几何</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#182b40;font:17px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header,main,footer{max-width:1150px;margin:auto;padding:28px}header{padding-top:56px}h1{font-size:clamp(27px,4vw,43px);line-height:1.35;margin:.4em 0}h2{margin-top:2.3em;border-top:1px solid #dae3eb;padding-top:22px}h3{margin-top:1.8em}a{color:#086ba5;text-decoration:none}a:hover{text-decoration:underline}main{background:white;border-radius:16px;box-shadow:0 8px 32px #1c365510;padding:36px}p{margin:1em 0}nav{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:15px}.badge{display:inline-block;border-radius:20px;padding:4px 14px;background:#dcefe5;color:#1b5b3f;font-size:15px}.scope{background:#edf3f9;border-left:4px solid #739abb;padding:16px 22px}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:15px;margin:22px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #dce4ed;padding:11px 12px}th{background:#edf3f9}img{display:block;max-width:100%;height:auto;margin:20px auto}code{font:14px/1.7 ui-monospace,monospace;background:#f0f4f8;border-radius:4px;padding:2px 5px}pre{overflow:auto;padding:20px;background:#eef3f8;white-space:pre-wrap}blockquote{background:#fff7e8;border-left:4px solid #c9922a;padding:12px 22px;margin:20px 0}footer{font-size:14px;color:#526579}.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:24px 0}.metric{padding:18px;background:#fff;border-radius:10px;border:1px solid #dce5ed}.metric strong{font-size:30px;display:block;color:#135d71}.gallery{display:grid;gap:25px}.gallery figure{margin:0}.gallery figcaption{font-size:14px;color:#526579}@media(max-width:650px){header,main,footer{padding:20px}main{border-radius:0}th,td{padding:8px}}</style></head><body><header><nav><a href="index.html">研究入口</a><a href="report.html">完整中文报告</a><a href="gallery.html">成像图库</a><a href="START_HERE.md">匿名 Markdown</a><a href="REPRODUCE.md">复现</a><a href="GPT_PRO_HANDOFF/START_HERE.md">GPT Pro 交接</a></nav><h1>P3L-R2：材料风险、非 Gaussian 推断与局部几何</h1></header><main><h1>P3L-R2：从失败的 Gaussian 平均到可泛化的材料风险估计</h1>
+<h2>本轮回答了什么</h2>
+<p>这轮获得了明确的材料成像风险改善，也保留了完整后验和轨迹方法的失败。首批256个全新独立对象上，验证集冻结的5842参数局部物理上下文CNN，将强Probit点的全网格复材料MSE从 <strong>0.010131196</strong> 降到 <strong>0.007571318</strong>，下降 <strong>25.27%</strong>；两项预注册主比较校正后的97.5%区间为 <strong>[22.34%, 27.99%]</strong>。全部对象、39个变差对象和所有失败均进入分母。</p>
+<p>这项正面结果属于 joint-simulation 监督材料风险；没有合格66维FULL posterior，也未证明学习图等于真实posterior mean。主学习图仅138/256通过原noise-ball，不能把它们称为256个新物理材料世界。冻结弧长轨迹平均风险增加约1.96%，没有获得预期增量。</p>
+<p><a href="figures/main_v2/PRIMARY_RISK.png"><img loading="lazy" src="figures/main_v2/PRIMARY_RISK.png" alt="全新测试的材料风险"></a></p>
+<h2>从上一轮失败中改变了什么</h2>
+<p>原P3-L完成800个独立parent、128个当时全新的测试对象和约837万RHS，但11组FULL参考全部未合格，Gaussian平均MSE0.061502、Probit点0.011031；15次神经训练全部选择update0。这些是封账的具体算法失败，不能推出真实Bayes均值不如MAP或材料概率不可学习。</p>
+<p>本轮把三个目标独立推进：A用真实材料MSE监督条件估计；B使用新的非Gaussian inference并保留概率资格；C实际执行非线性有限轨迹和风险策略。没有让B的失败关闭A/C，也没有将A的成功转写为B的概率正确性。</p>
+<h2>固定的物理与概率合同</h2>
+<p>沿用P1原64维相关Gaussian场＋2维uniform属性、C²饱和decoder、24×24二维标量TM/VIE、256-cell ROI、8 sources×32 complex receivers、原背景与acquisition。σ固定0.00119211798514519，实虚噪声各σ²/2；Φ=||F−y||²/σ²。prior与noise没有为制造成功而放宽。所有Full是这个离散二维模型，不是3D vector或真实测量认证。</p>
+<p>原native目标为Φ+||z||²/2；probit将u=NormalCDF(η)，原prior恰推送为Gaussian66，但该坐标密度的mode与native MAP不同。我们称它“Probit坐标点”，不混淆参数化依赖的MAP。GT仅用于生成、TRAIN监督与闭合后的独立离线评分，未用于在线init、提案、排序、stopping或fallback。</p>
+<p>新32,768train、2,048validation；只有512/128子集建立physics contexts，避免为所有训练材料支付96-step反演。原来暴露过的对象仅作开发诊断。第一批新256个对象比较主风险和轨迹；随后另以固定新256个对象确认通道机制。两批分别冻结、分别评分，不混作一次事前512个对象检验。</p>
+<h2>材料成像的主要实际结果</h2>
+<div class="table-scroll"><table><thead><tr><th>材料估计</th><th>全网格 complex MSE</th><th>complex MAE</th></tr></thead><tbody>
+<tr><td>原先验材料均值</td><td>0.183006369</td><td>0.265802706</td></tr>
+<tr><td>native TRF 点（96-state cap）</td><td>0.011599449</td><td>0.044030327</td></tr>
+<tr><td>强 Probit 点（再64-state cap）</td><td>0.010131196</td><td>0.040596178</td></tr>
+<tr><td>普通额外16-state对照</td><td>0.010135124</td><td>0.040602874</td></tr>
+<tr><td>measurement-only 监督 MLP</td><td>0.014252733</td><td>0.051304448</td></tr>
+<tr><td>冻结的局部几何 CNN＋材料矩形投影</td><td>0.007571318</td><td>0.031025169</td></tr>
+</tbody></table></div>
+<p>普通额外16-state物理优化没有降低材料风险，控制了简单多迭代解释。measurement-only网络有数据规模增益，但仍弱于强点；大物理CNN未必优于小局部卷积。低容量、空间共享和合适物理上下文，而非模型名字或更多参数，解释了最直接的工程差异。</p>
+<p>217/256个对象的风险改善，39个对象变差。主模型在原材料矩形上的投影具有逐真值平方误差不增性质，但矩形大于decoder image。网络和轨迹材料平均都作为<strong>风险动作</strong>评价，不能当posterior samples、事件概率或合法新解。</p>
+<h2>几何究竟贡献多少：两批对照</h2>
+<p>首批三固定训练seed中，几何局部CNN的MSE均值0.00766939，仅基础图CNN为0.00794370，额外收益约3.45%；同参数零通道和固定空间置乱也不能解释这点增量。但大部分主改善已经出现在小型局部anchor CNN中，所以不能说全部25.27%来自弱空间。</p>
+<p>进一步代数检查发现：固定frame V下的sensitivity map恰为 <code>|δ| h&#x27;(Az/τ)/τ · ||A_i V||</code>。当前材料只通过decoder导数进入；Maxwell只通过冻结的TRAIN平均谱形成固定空间包络。这一事实要求拆开sensitivity/backprojection，并用独立J的随机包络作强对照。</p>
+<p>第二批21个模型、7家族、三seed，全部checkpoint和3项比较在新观测前冻结；训练仍只读旧512/128。结果如下，未按新测试换主模型：</p>
+<div class="table-scroll"><table><thead><tr><th>第二批固定家族（三 seed 风险均值）</th><th>全网格 MSE</th></tr></thead><tbody>
+<tr><td>完整灵敏度＋回投影</td><td>0.007951131</td></tr>
+<tr><td>仅基础图＋属性</td><td>0.008201364</td></tr>
+<tr><td>同参数、附加通道置零</td><td>0.008203460</td></tr>
+<tr><td>附加图固定空间置乱</td><td>0.008215816</td></tr>
+<tr><td>仅训练谱灵敏度图</td><td>0.007971895</td></tr>
+<tr><td>仅残差回投影图</td><td>0.008217417</td></tr>
+<tr><td>仅随机谱 decoder 灵敏度图</td><td>0.008027756</td></tr>
+</tbody></table></div>
+<div class="table-scroll"><table><thead><tr><th>第二批事前冻结的主比较</th><th>相对风险降低</th><th>98.333% 配对区间</th><th>实际裁决</th></tr></thead><tbody>
+<tr><td>完整灵敏度＋回投影 / 仅残差回投影图</td><td>3.24%</td><td>[2.13%, 4.34%]</td><td>CANDIDATE_LOWER_RISK</td></tr>
+<tr><td>完整灵敏度＋回投影 / 仅训练谱灵敏度图</td><td>0.26%</td><td>[-0.23%, 0.75%]</td><td>UNRESOLVED</td></tr>
+<tr><td>仅训练谱灵敏度图 / 仅随机谱 decoder 灵敏度图</td><td>0.70%</td><td>[0.17%, 1.24%]</td><td>CANDIDATE_LOWER_RISK</td></tr>
+</tbody></table></div>
+<p>完整灵敏度＋回投影 相对 仅残差回投影图在这批确认对象上风险较低。 完整灵敏度＋回投影 相对 仅训练谱灵敏度图的调整后区间跨零，独立增量没有建立。 仅训练谱灵敏度图 相对 仅随机谱 decoder 灵敏度图在这批确认对象上风险较低。</p>
+<p><a href="figures/confirmation/MECHANISM_CONFIRMATION.png"><img loading="lazy" src="figures/confirmation/MECHANISM_CONFIRMATION.png" alt="独立机制确认"></a></p>
+<p>这个确认所能支持的，是具体输入通道与固定框架的有限样本风险作用；它不自动证明动态Maxwell几何、A17反馈或普遍采样定理。原P1训练先验之外的泛化仍缺证据。</p>
+<p><a href="figures/main_v2/GEOMETRY_CONTROLS.png"><img loading="lazy" src="figures/main_v2/GEOMETRY_CONTROLS.png" alt="首批几何与合法decoder控制"></a></p>
+<h2>风险改善发生在哪里</h2>
+<p>独立离线归因显示，基础点的过渡相单元贡献约99.10%的总风险改善；多数真实纯相在基础图中仍灰化。学习动作更接近纠正这类材料风险偏差，而不是发现一个已经认证的nullspace世界。</p>
+<p>在材料RMS正交切空间分解下，约13.03%的修正能量在局部prior tangent之外，这部分贡献约5.83%的风险收益。大部分收益位于切空间投影；不能把全部改善解释为decoder外在曲率。这是评分后的探索性解释，不用于改变模型。</p>
+<h2>概率路线：独立推进，但不降低资格</h2>
+<p>新的三角Student完整MH4096次production提案全拒；逐源SMC确实到达全部8源，但终点ESS64/57仍只有1个先验祖先。动态Full-J metric MALA和冻结source-adjoint MALA在同102400RHS下都不合格，最大material Rhat约3.00/1.86。两个learned10＋prior56 exact-correction控制仍不能补齐高维conditional；MCSE0停滞函数保留为未评估。</p>
+<p>低维参考也产生了具体新证据。原属性box的两个SLICE分区积分达到其细化停止标准，并与四链核对。真正field2非Gaussian SLICE从GH节点CDF改为同目标的prior-CDF整方框分区积分，切点CDF更稳定；但严格logZ差标准未通过，原UNQUALIFIED保留。条件Jensen gap约0.000749材料RMS，不能转写为FULL后验或解释全部成像收益。</p>
+<p>固定10维联合模拟密度在首批新对象上NLL明显优于自身无条件prior；90%逐分量宏覆盖约89.02%/88.48%，后者仍有小幅欠覆盖。它们是投影坐标概率诊断，不是66维或材料可信区间校准。</p>
+<h2>几何与轨迹：可行移动不等于风险积分</h2>
+<p>动态曲率256条轨迹全部完成，2048个合法选中端点保留0.02/0.04实际RMS步长；1934个同时处于noise-ball且相对基础点ΔΦ≤2。确有任务尺度、prior-supported有限噪声材料运动，但这不是重要posterior mass或整条连续等数据路径证明。</p>
+<p>主弧长动作风险却更差，调整区间不支持改善；次级凸组合和简单策略也未建立稳健收益。训练risk policy不需要MCMC teacher，我们已实际训练bandit及model-based规划并在线运行，失败没有归咎于概率reference门槛。</p>
+<p>两个真实P1 anchor的rank4弱projector bracket诊断进一步显示normal leakage约0.93/0.82，两个差分尺度和反向回路一致到各自数值误差。它是当前动态弱分布非对合的局部数值证据，不能默认把它当单张流形；也不否定更高维finite-noise区域。48个states和1920RHS全计费。</p>
+<p>GT−point离线弱能量随尺度显著变化：0.02/0.04/0.08平均58.19%/25.58%/0.23%。原单对象79.46%不是全体事实，更不是在线找到GT的成功证据。</p>
+<h2>完整费用、内存和复现</h2>
+<div class="table-scroll"><table><thead><tr><th>方向</th><th>新增 complex RHS</th><th>state attempts</th><th>已结算受控 wall 秒</th></tr></thead><tbody>
+<tr><td>A</td><td>2109800</td><td>86961</td><td>6277.66</td></tr>
+<tr><td>B</td><td>1334472</td><td>150169</td><td>1769.78</td></tr>
+<tr><td>C</td><td>311800</td><td>7795</td><td>1981.66</td></tr>
+<tr><td>D</td><td>147456</td><td>18432</td><td>210.34</td></tr>
+<tr><td>L</td><td>2052800</td><td>59360</td><td>1390.60</td></tr>
+</tbody></table></div>
+<p>以上是写报告时的资源快照，共5,956,328RHS；最终打包/分析结算及完整追加式ledger另见<a href="RESOURCE_SUMMARY.md">资源报告</a>。总硬上限20,000,000RHS、24h受控CPU、24GPU-hours未扩张，GPU实际0，不使用付费外部服务。计入truth、forward、receiver adjoint、source gradient、失败、拒绝、line-search和训练；历史已付background/setup与cache复用有单独记录。</p>
+<p>只运行一个物理worker，transfer cache最多4个，原始endpoint立即持久化。可重复材料网络重放已在一份新对象上实际得到0差、0RHS；它只证明保存上下文下的重放，不把完整物理生成或部署setup说成免费。原A30外部源码版本、环境、依赖和大数组恢复方式见<a href="REPRODUCE.md">复现说明</a>。</p>
+<h2>最终判断与下一步</h2>
+<p>本轮是 <strong>监督材料风险 GO，FULL posterior UNQUALIFIED，当前轨迹风险积分 NO-GO</strong>。A17在dense TM24没有已建立独立成本优势，不强行整合；已有负结果继续有效。最值得继续的是低容量材料风险模型及其可解释的decoder/空间物理上下文，而非重复失败Gaussian补齐或盲目扩大网络/policy。</p>
+<p>目前有真实风险结果、定向控制和P1几何现象，但强IEEE TAP贡献尚未成立。需要证明哪些Maxwell特化设计超越普通重建后处理、decoder几何和已有amortized方法，并验证独立采集/噪声/材料支持。不能把CNN、LIS、Frobenius或Schur恒等式本身当原创贡献。</p>
+<p>三个具体新理论问题及必要原始证据已整理为<a href="GPT_PRO_HANDOFF/START_HERE.md">GPT Pro Handoff</a>。它们围绕：材料风险方向与信息方向的差别；饱和decoder下非Gaussian强弱conditional耦合；不对合弱分布如何支持合法、有效且值得计算的探索/积分。下一步须据真实证据重新设计，不自动续烧本轮预算。</p>
+<p><a href="gallery.html">完整固定图库</a> · <a href="LEARNED_MODEL_COMPARISON.md">学习控制</a> · <a href="NON_GAUSSIAN_POSTERIOR_REPORT.md">概率报告</a> · <a href="GEOMETRY_TRAJECTORY_RESULTS.md">几何报告</a> · <a href="LOCKED_GENERALIZATION.md">冻结泛化</a> · <a href="FAILURE_ANALYSIS.md">失败与限制</a> · <a href="THEORY_AND_METHODS.md">数学及文献范围</a></p></main><footer>固定 P1 · 24×24 二维标量 TM/VIE · 真实 Full Maxwell 数据 · 原始负结果与费用保留。网页可访问性与科研结论分别记录。</footer></body></html>

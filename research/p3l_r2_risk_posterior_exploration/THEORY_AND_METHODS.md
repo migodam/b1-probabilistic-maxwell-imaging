@@ -71,3 +71,15 @@
 新增局部诊断用谱 projector P(q) 定义向量场，并在材料 RMS 下归一化，避免任意特征向量符号进入比较。在光滑、秩固定及谱分离条件下，两个场的 Lie bracket 是否仍属于所选分布，是 Frobenius 可积性的局部必要检查。decoder Hessian 的对称项在 pushforward bracket 中抵消，因此可将 `Dg(q)[X,Y]` 投影到材料弱切空间的正交余部，检查 normal leakage。
 
 本轮只对两个已暴露 anchor、两个预定差分尺度进行真实物理检查。有限差分误差、谱隙变化、材料导数数值核及回路离散误差均保留；一个不收敛的 leakage 数字不能证明不可积，一个小数字也不能证明存在完整流形。这项诊断不改变轨迹的 candidate-only 或监督风险含义。
+
+## 定向确认：灵敏度图中的 Maxwell 信息究竟在哪里
+
+原 P1 在 ROI 内具有 `g_i(z,u)=host+δ(u) h((A_i z)/τ)` 的形式。对任意固定正交 frame V，有逐像素恒等式
+
+`||D_z g_i V||_2 = |δ(u)| h'((A_i z)/τ)/τ · ||A_i V||_2`。
+
+因此本轮局部 CNN 的 weak/strong sensitivity 图，由当前 decoder 导数乘两个固定空间包络构成。V 是由 TRAIN 的平均 `J_z^T J_z` 冻结的 frame；它不是每个测试对象上动态更新的弱 projector。对这两个输入图，Maxwell 的作用只通过这份训练 frame 进入。两个包络之间的比例在导数非零处与当前材料无关，还可能为共享局部卷积提供空间位置信息。
+
+这是该 P1 decoder 和本轮具体特征的代数性质，不是否定一切物理特征。它要求更强的反证对照：保持 decoder 导数、通道数、参数量、训练规则和输入边界不变，仅把 V 替换成预先固定、独立于 J/GT 的随机正交 frame，同时分别去掉 sensitivity 与 residual-backprojection 通道。
+
+第二批新对象确认据此冻结七个模型家族、三项主比较。即使真实训练谱胜过这个随机 frame，也只说明该固定包络对这份有限网络有帮助，不构成在线反馈必要性、完整 posterior 正确性或所有随机空间上的最优性证明。若随机包络同样有效，应将机制归于 decoder/空间风险表征，而非强行归于 Maxwell 谱。

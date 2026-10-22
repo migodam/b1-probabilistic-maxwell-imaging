@@ -1,3 +1,11 @@
+<!-- P3LR2_CURRENT -->
+## P3L-R2 已完成：监督材料风险改善，完整后验仍未合格
+
+[完整中文报告](research/p3l_r2_risk_posterior_exploration/RESEARCH_REPORT_ZH.md) · [网页与固定材料图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r2_risk_posterior_exploration/) · [GPT Pro研究交接](research/p3l_r2_risk_posterior_exploration/GPT_PRO_HANDOFF/START_HERE.md)
+
+32,768独立训练材料、2,048验证材料、两批分别冻结的256全新测试材料。首批相对强Probit点的材料MSE降低25.27%（调整97.5%区间22.34%–27.99%）。第二批确认Maxwell训练谱相对固定随机decoder包络增量约0.70%。FULL posterior仍UNQUALIFIED；轨迹风险平均未改善；不把风险图称为新材料世界或后验样本。
+<!-- /P3LR2_CURRENT -->
+
 <!-- P3L_CURRENT -->
 ## 已完成：P3-L 非线性材料概率成像 · REDIRECT
 
@@ -6,13 +14,13 @@
 128独立对象：当前近似材料均值MSE .0615021，对应点基线 .0110309，显著恶化。11组四链Full参考均未合格，15次神经训练无验证增益；8,374,472 complex RHS封账，GPU0。保留负结果，停止当前Gaussian/NN/A17增量路线；不把近似失败等同于真正Bayes成像无益。
 <!-- /P3L_CURRENT -->
 
-## 最新：P2材料探索完整Campaign
+## 历史：P2材料探索完整Campaign
 
 [中文报告](research/p2_material_fiber_20261019/RESEARCH_REPORT_ZH.md) · [网页与材料图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p2_material_fiber_20261019/)
 
 24个新物体，15个合格anchor；有限噪声替代存在，强基线削弱软谱优势。整体REDIRECT，概率不估计；2236states/46728RHS封账。
 
-## 最新：P1零新增物理审计与下一最小实验
+## 历史：P1零新增物理审计与下一最小实验
 
 [中文报告](research/p1_zero_physics_audit_20261018/RESEARCH_REPORT_ZH.md) · [网页与冻结协议](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p1_zero_physics_audit_20261018/)
 
@@ -64,7 +72,7 @@
 
 > 2026-10-15 新研究：[Research A 多解材料成像](research/research_a_20261015/START_HERE.md) · [实际图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_a_20261015/)。每观测3–10个径向候选；Best-of-4有改善，A30反证与机制限制完整保留。
 
-# 最新研究：B1 × C1 Joint P2
+# 历史研究：B1 × C1 Joint P2
 
 [中文报告](research/joint_p2/RESEARCH_REPORT_ZH.md) · [交互Top-K图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/joint_p2/) · [科学裁决](research/joint_p2/GATE_DECISION.md) · [完整证据下载](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/joint-p2-20261014)
 
@@ -72,7 +80,7 @@
 
 # B1 — Probabilistic Multi-Hypothesis Maxwell Imaging
 
-本仓库最新更新 **B1 E0**：[新入口](research/b1_next/e0/START_HERE.md)、[新中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)。原始公开baseline及数据保持；E0新增物理0，E1未授权，E0已在本仓库公开。`python -m src.b1 e0`是零物理入口，已经完成的output不能原地覆盖。
+历史基准 **B1 E0**：[新入口](research/b1_next/e0/START_HERE.md)、[新中文报告](research/b1_next/e0/RESEARCH_REPORT_ZH.md)。原始公开baseline及数据保持；E0新增物理0，E1未授权，E0已在本仓库公开。`python -m src.b1 e0`是零物理入口，已经完成的output不能原地覆盖。
 
 公开仓库：[https://github.com/migodam/b1-probabilistic-maxwell-imaging](https://github.com/migodam/b1-probabilistic-maxwell-imaging)。重建图网页：[Top-K imaging dashboard](https://migodam.github.io/b1-probabilistic-maxwell-imaging/)。网页版GPT阅读入口：[START_HERE.md](START_HERE.md)。
 

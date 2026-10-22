@@ -1,0 +1,26 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>直接材料风险学习的实际结果</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#182b40;font:17px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header,main,footer{max-width:1150px;margin:auto;padding:28px}header{padding-top:56px}h1{font-size:clamp(27px,4vw,43px);line-height:1.35;margin:.4em 0}h2{margin-top:2.3em;border-top:1px solid #dae3eb;padding-top:22px}h3{margin-top:1.8em}a{color:#086ba5;text-decoration:none}a:hover{text-decoration:underline}main{background:white;border-radius:16px;box-shadow:0 8px 32px #1c365510;padding:36px}p{margin:1em 0}nav{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:15px}.badge{display:inline-block;border-radius:20px;padding:4px 14px;background:#dcefe5;color:#1b5b3f;font-size:15px}.scope{background:#edf3f9;border-left:4px solid #739abb;padding:16px 22px}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:15px;margin:22px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #dce4ed;padding:11px 12px}th{background:#edf3f9}img{display:block;max-width:100%;height:auto;margin:20px auto}code{font:14px/1.7 ui-monospace,monospace;background:#f0f4f8;border-radius:4px;padding:2px 5px}pre{overflow:auto;padding:20px;background:#eef3f8;white-space:pre-wrap}blockquote{background:#fff7e8;border-left:4px solid #c9922a;padding:12px 22px;margin:20px 0}footer{font-size:14px;color:#526579}.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:24px 0}.metric{padding:18px;background:#fff;border-radius:10px;border:1px solid #dce5ed}.metric strong{font-size:30px;display:block;color:#135d71}.gallery{display:grid;gap:25px}.gallery figure{margin:0}.gallery figcaption{font-size:14px;color:#526579}@media(max-width:650px){header,main,footer{padding:20px}main{border-radius:0}th,td{padding:8px}}</style></head><body><header><nav><a href="index.html">研究入口</a><a href="report.html">完整中文报告</a><a href="gallery.html">成像图库</a><a href="START_HERE.md">匿名 Markdown</a><a href="REPRODUCE.md">复现</a><a href="GPT_PRO_HANDOFF/START_HERE.md">GPT Pro 交接</a></nav><h1>直接材料风险学习的实际结果</h1></header><main><h1>直接材料风险学习的实际结果</h1>
+<p>本轮没有等待MCMC teacher。独立原先验材料与原Maxwell noisy observation形成联合模拟数据，实际复数材料MSE直接监督风险估计器。3种数据规模4096/16384/32768、多个网络容量和三个训练seed均实际运行；模型选择只使用既有validation，不能按测试对象换checkpoint。</p>
+<p>measurement-only MLP随独立parent增加而改善，但首批新对象上仍弱于物理点估计：MSE为0.014252733。大网络不自动有优势；仅512train物理上下文的小型共享局部CNN才取得主要风险改善。训练上下文是native48+probit48，测试强上下文native96+probit64；这个budget/covariate shift明确保留。</p>
+<div class="table-scroll"><table><thead><tr><th>材料估计</th><th>全网格 complex MSE</th><th>complex MAE</th></tr></thead><tbody>
+<tr><td>原先验材料均值</td><td>0.183006369</td><td>0.265802706</td></tr>
+<tr><td>native TRF 点（96-state cap）</td><td>0.011599449</td><td>0.044030327</td></tr>
+<tr><td>强 Probit 点（再64-state cap）</td><td>0.010131196</td><td>0.040596178</td></tr>
+<tr><td>普通额外16-state对照</td><td>0.010135124</td><td>0.040602874</td></tr>
+<tr><td>measurement-only 监督 MLP</td><td>0.014252733</td><td>0.051304448</td></tr>
+<tr><td>冻结的局部几何 CNN＋材料矩形投影</td><td>0.007571318</td><td>0.031025169</td></tr>
+</tbody></table></div>
+<p>主模型5842参数，由验证集冻结seed33及材料矩形投影；alpha=1，实质就是选定CNN风险动作，不是测试后再融合。MSE下降25.27%、97.5%区间[22.34%, 27.99%]。全网格MAE也从0.040596178降到0.031025169。训练和研究费用不为免费；线上各方法共享同一实付物理重建，网络本身不新增Maxwell求解。</p>
+<p>217人改善、39个对象变差。总体风险成功不保证每个人正确，也不保证任意新prior/噪声/采集几何泛化。第一个256-parent主结果不因第二批某个控制更好而重选。</p>
+<h2>风险收益不是后验资格</h2>
+<p>平方损失下 E[χ|y] 的最优性是数学事实；有限网络在新对象上风险较低，只支持一个较好的条件材料估计器，不能证明它已经等于该条件均值，更不能赋予候选概率。矩形投影包含所有原P1真值，逐材料平方误差不增加；它并不保证输出在单个decoder image中。</p>
+<div class="table-scroll"><table><thead><tr><th>风险动作（真实 Full forward 检查）</th><th>Φ 中位数</th><th>noise-ball 内数量</th></tr></thead><tbody>
+<tr><td>classical_postprocess</td><td>240.210</td><td>256/256</td></tr>
+<tr><td>fused</td><td>279.634</td><td>138/256</td></tr>
+<tr><td>dynamic_curvature__arc_length_trapezoid</td><td>240.492</td><td>251/256</td></tr>
+<tr><td>projected_direct</td><td>703.962</td><td>0/256</td></tr>
+</tbody></table></div>
+<p>上述是风险图本身的Full prediction，不是posterior predictive分布。强物理点全部位于noise-ball，学习风险图只有138/256位于其中。因此需要物理候选时应继续保留基础点；不能把学习图标为新增合法材料解。</p>
+<h2>后验评分后的机制归因（探索性）</h2>
+<p>在GT材料相分层，误差下降来自宿主、过渡和纯夹杂三个区域，均按parent重采样，未把像素当独立对象。按基础点的decoder相分层，99.10%的总MSE收益来自基础点仍处于过渡带的单元。它更符合修正基础成像的灰化/风险偏差，不是已经证明的饱和nullspace探索。</p>
+<p>学习修正的13.03%能量在基础点先验线性切空间之外，但该部分只贡献5.83%的风险改善；大部分收益在切空间投影分量中。不能用“所有收益都来自曲率”解释本实验。此归因未改变任何在线方法。</p>
+<p><a href="L/saturation_risk/SATURATION_RISK.png"><img loading="lazy" src="L/saturation_risk/SATURATION_RISK.png" alt="实际风险归因"></a></p></main><footer>固定 P1 · 24×24 二维标量 TM/VIE · 真实 Full Maxwell 数据 · 原始负结果与费用保留。网页可访问性与科研结论分别记录。</footer></body></html>

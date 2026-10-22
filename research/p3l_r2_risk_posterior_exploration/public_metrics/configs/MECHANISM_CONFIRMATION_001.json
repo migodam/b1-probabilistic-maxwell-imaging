@@ -1,0 +1,53 @@
+{
+  "status": "DESIGN_FIXED_BEFORE_NEW_TRAINING_AND_NEW_OBSERVATIONS",
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "reason": "First frozen 256-parent study supports combined spatial geometry channels, but does not isolate weak/strong sensitivity from residual backprojection. Test that distinction on a second independent cohort; preserve the first results.",
+  "old_cohort": "R2_locked_00000..R2_locked_00255; completed and now exposed; no estimator/model reselection on those labels",
+  "new_cohort": "R2_locked_00256..R2_locked_00511",
+  "new_parent_count": 256,
+  "parent_seed_rule": "Reuse the unchanged original R2 locked generator with start256,count256; each parent has its own original-prior draw and independent original-noise draw",
+  "training_parents": 512,
+  "validation_parents": 128,
+  "training_source": "Same existing original A packed train/validation physics contexts; no new or test truth for training",
+  "new_controls": {
+    "sensitivity_only": "Same local_geometry_cnn; retain anchor Re/Im, weak/strong sensitivity images and u2; zero complex residual-backprojection image channels before train normalization and at inference",
+    "backprojection_only": "Same local_geometry_cnn; retain anchor Re/Im, complex residual-backprojection images and u2; zero weak/strong sensitivity image channels before train normalization and at inference"
+  },
+  "matched_architecture": "5842 parameters, three shared 16-channel 3x3 convolution blocks and 2-channel output, unchanged zero-initialized output head",
+  "seeds": [
+    11,
+    22,
+    33
+  ],
+  "epochs_cap": 100,
+  "training_rule": "Unchanged train_residual optimizer, minibatches, MSE, train-only normalization, validation stopping and checkpoint selection; no density or posterior claim",
+  "existing_controls": [
+    "local_geometry_cnn",
+    "local_anchor_cnn",
+    "local_capacity_cnn",
+    "local_permuted_geometry_cnn"
+  ],
+  "models_total": 18,
+  "point_baseline": "Unchanged native96+probit64; no new multistart or hidden GT initialization",
+  "primary_metric": "Complex full-grid material MSE; each family uses the mean of its three fixed-seed per-parent losses, not an image ensemble",
+  "primary_comparisons": [
+    "local_geometry_cnn versus backprojection_only",
+    "local_geometry_cnn versus sensitivity_only"
+  ],
+  "statistics": {
+    "unit": "independent parent",
+    "paired_bootstrap_draws": 2000,
+    "seed": 2026102393,
+    "nominal_CI": 0.95,
+    "two_co_primary_adjusted_CI": 0.975,
+    "secondary_comparisons": "Descriptive; do not pick a new main estimator from this test"
+  },
+  "online_completion_before_truth": true,
+  "freeze_before_first_new_observation": "MECHANISM_CONFIRMATION_FROZEN.json registers all 18 checkpoint files, source and parent IDs",
+  "original_methods_frozen_unchanged": true,
+  "probability_target": "SUPERVISED_RISK, not FULL posterior or material event mass",
+  "additional_physics_upper_bound_RHS": 1640448,
+  "budget_scope": "Within original L 3000000 and total20000000 caps; no additional authorization, no old stage balance",
+  "failed_proposals_and_analysis_charged": true,
+  "no_new_GPU_or_NN_architecture": true
+}
