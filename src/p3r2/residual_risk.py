@@ -15,7 +15,7 @@ from .risk_models import observation_features
 from .risk_training import material_targets, risk_rows, risk_summary, write_json
 
 MODELS = ('anchor', 'residual_ridge', 'residual_mlp', 'geometry_mlp', 'physics_cnn',
-          'weak_decoder', 'weak_strong_decoder')
+          'weak_decoder', 'weak_strong_decoder', 'local_anchor_cnn', 'local_geometry_cnn')
 
 
 def read_anchor(path, supervised=False):
@@ -136,7 +136,16 @@ class ResidualNet(nn.Module):
         self.register_buffer('weak',torch.as_tensor(geometry['weak']))
         self.register_buffer('strong',torch.as_tensor(geometry['strong']))
         output=2*len(geometry['roi'])
-        if kind=='physics_cnn':
+        if kind in ('local_anchor_cnn','local_geometry_cnn'):
+            # Shared local filters impose a translation-shared material-risk bias.
+            # Anchor-only: chi0 Re/Im and broadcast u2. Geometry: those inputs plus
+            # weak/strong sensitivity and complex residual-backprojection images.
+            channels=4 if kind=='local_anchor_cnn' else 8
+            self.local=nn.Sequential(nn.Conv2d(channels,16,3,padding=1),nn.GELU(),
+                       nn.Conv2d(16,16,3,padding=1),nn.GELU(),
+                       nn.Conv2d(16,16,3,padding=1),nn.GELU())
+            self.head=nn.Conv2d(16,2,1)
+        elif kind=='physics_cnn':
             self.image=nn.Sequential(nn.Conv2d(6,16,3,padding=1),nn.GELU(),
                        nn.Conv2d(16,32,3,stride=2,padding=1),nn.GELU(),
                        nn.Conv2d(32,32,3,stride=2,padding=1),nn.GELU(),
@@ -151,7 +160,8 @@ class ResidualNet(nn.Module):
             if kind=='weak_strong_decoder': output=self.weak.shape[1]+self.strong.shape[1]+2
             self.head=nn.Sequential(nn.Linear(ins,width or 128),nn.GELU(),nn.Dropout(.05),
                                    nn.Linear(width or 128,128),nn.GELU(),nn.Linear(128,output))
-        nn.init.zeros_(self.head[-1].weight); nn.init.zeros_(self.head[-1].bias)
+        last=self.head if isinstance(self.head,nn.Conv2d) else self.head[-1]
+        nn.init.zeros_(last.weight); nn.init.zeros_(last.bias)
 
     def decode(self,q):
         cfg=self.config
@@ -164,7 +174,14 @@ class ResidualNet(nn.Module):
         return torch.cat((cfg['host_chi'][0]+dr*fraction,cfg['host_chi'][1]+di*fraction),dim=1)
 
     def forward(self,base,geometry,image,q0,anchor):
-        if self.kind=='physics_cnn':
+        if self.kind in ('local_anchor_cnn','local_geometry_cnn'):
+            material=image[:,:2] if self.kind=='local_anchor_cnn' else image
+            # The last two base features are u2, standardized from train only.
+            properties=base[:,-2:,None,None].expand(-1,-1,24,24)
+            local_image=torch.cat((material,properties),dim=1)
+            grid=self.head(self.local(local_image)).flatten(2)
+            raw=grid[:,:,self.roi].reshape(len(base),-1)
+        elif self.kind=='physics_cnn':
             raw=self.head(torch.cat((self.scalar(geometry),self.image(image)),dim=1))
         elif self.kind=='residual_mlp': raw=self.head(base)
         elif self.kind=='geometry_mlp': raw=self.head(torch.cat((geometry,image.flatten(1)),dim=1))
@@ -333,6 +350,11 @@ def train_residual(kind,seed,train,validation,geometry,output,epochs=100,batch_s
                  batch_size=batch_size,epochs_limit=epochs,max_seconds=max_seconds,learning_rate=learning_rate,
                  weight_decay=weight_decay,ridge_alpha=payload.get('alpha'),weak_rank=geometry['weak'].shape[1],
                  strong_rank=geometry['strong'].shape[1],j_is_whitened=geometry['j_is_whitened'],
+                 input_contract=('chi0 real/imag + broadcast u2; train-only normalization' if kind=='local_anchor_cnn' else
+                     'chi0 real/imag + broadcast u2 + normalized weak/strong sensitivity and complex residual-backprojection images'
+                     if kind=='local_geometry_cnn' else 'see model kind and checkpoint feature normalization'),
+                 architecture=('3 shared 3x3 convolution blocks, 16 channels; zero-init 1x1 two-component material residual head'
+                     if kind in ('local_anchor_cnn','local_geometry_cnn') else kind),
                  estimator_type=payload['estimator_type'],calibrated_density='NOT_CLAIMED',history=history)
     write_json(out/'RESULT.json',summary)
     return summary

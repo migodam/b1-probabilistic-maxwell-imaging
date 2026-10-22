@@ -1,0 +1,110 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P3L-R2 研究进行中</title><style>body{margin:40px auto;max-width:1100px;padding:0 20px;font:17px/1.65 system-ui;color:#183146;background:#f7fafc}pre{white-space:pre-wrap;font:15px/1.75 ui-monospace,monospace;background:white;padding:26px;border-radius:12px}a{color:#066b91}</style><h1>P3L-R2 · 研究进行中</h1><p>监督材料风险 · 非 Gaussian posterior · 几何轨迹</p><p><a href="PROGRESS_ZH.md">匿名 Markdown 进度</a> · <a href="THEORY_AND_METHODS.md">数学合同</a> · <a href="../p3l_local_posterior_imaging/">旧P3-L结果</a></p><pre># P3L-R2：材料风险、非 Gaussian 推断与真实轨迹
+
+状态：**RUNNING**。本页是进行中的实际实验，尚未完成新的锁定泛化，不是最终 GO 结论。
+
+原 P1、观测与噪声不变。监督风险、概率与几何三条路线独立推进；不合格 MCMC 不阻断神经或风险策略。
+
+## 已完成证据
+
+已生成 16,384 个独立 train 与 2,048 个 validation；与历史封账严格分开。旧128 locked已暴露，新256 locked尚未生成。
+
+固定10维联合模拟密度：validation NLL 9.56322（无条件 14.19197），最佳更新 6400。它是归一化 proposal/坐标预测，不是已认证 FULL posterior。
+
+材料风险弱 frame 密度：validation NLL 11.93256（无条件 14.14164）。不同坐标的联合NLL不能当成相同材料概率目标。
+
+## 直接材料风险：已完成的 validation 比较
+
+表中为全网格 complex MSE；ROI MSE已乘256/576。未结束的训练不算完成。
+
+| train parents | 模型 | seed | 最佳update | validation MSE |
+
+|---:|---|---:|---:|---:|
+
+|4096|mean|11|0|0.1802209|
+
+|4096|ridge|11|0|0.0286076|
+
+|4096|mlp_small|11|1552|0.0268725|
+
+|4096|mlp_small|22|1520|0.0267747|
+
+|4096|mlp_small|33|1584|0.0266392|
+
+|4096|mlp_medium|11|1584|0.0258772|
+
+|4096|mlp_medium|22|1584|0.0260687|
+
+|4096|mlp_medium|33|1600|0.0263874|
+
+|4096|cnn|11|1568|0.0274567|
+
+|4096|cnn|22|1552|0.0273401|
+
+|4096|cnn|33|1600|0.0276737|
+
+|4096|cnn_context|11|1600|0.0258993|
+
+|4096|cnn_context|22|1568|0.0264170|
+
+|4096|cnn_context|33|1568|0.0260518|
+
+|16384|mean|11|0|0.1801867|
+
+|16384|ridge|11|0|0.0278305|
+
+|16384|mlp_small|11|6400|0.0217684|
+
+|16384|mlp_small|22|6400|0.0215339|
+
+|16384|mlp_small|33|6400|0.0217363|
+
+|16384|mlp_medium|11|6336|0.0167905|
+
+|16384|mlp_medium|22|6400|0.0167843|
+
+|16384|mlp_medium|33|6400|0.0168943|
+
+|16384|cnn|11|6016|0.0212330|
+
+## 已暴露8对象的真实轨迹
+
+这是机制开发证据，不是新盲测；轨迹为 candidate-only，不是 posterior samples。
+
+|方法|最终MSE|相对起点差|实付RHS（未含共享anchor setup）|
+
+|---|---:|---:|---:|
+
+|dynamic_bandit|0.0166023|+0.0009069|5120|
+
+|dynamic_curvature|0.0147652|-0.0009302|5120|
+
+|dynamic_fixed|0.0171520|+0.0014566|5080|
+
+|frozen_fixed|0.0171364|+0.0014410|5120|
+
+|ordinary_random|0.0191275|+0.0034321|3280|
+
+## 资源与边界
+
+新上限20,000,000 complex RHS / 24h受控CPU / 24h GPU；本轮当前GPU0，不使用付费外部计算。
+
+|方向|累计RHS|state attempts|已结算受控秒|
+
+|---|---:|---:|---:|
+
+|A|1270384|50410|406.34|
+
+|B|102088|12761|144.60|
+
+|C|46840|1171|345.71|
+
+|D|0|0|0.82|
+
+|L|0|0|0.00|
+
+进行中的作业另有预留，不把尚未结算的wall记作零成本。
+
+[概率与数学合同](THEORY_AND_METHODS.md) · [协议](configs/PROTOCOL.json) · [资源快照](RESOURCE_LEDGER.json) · [原P3-L封账报告](../p3l_local_posterior_imaging/)
+
+下一步：完成物理上下文监督修正、非Gaussian机制对照与风险轨迹，然后冻结全部方法，生成256份真正新的观测并独立评分。
+</pre></html>

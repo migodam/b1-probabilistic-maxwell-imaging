@@ -1,0 +1,93 @@
+{
+  "review": "READONLY_EXECUTION_PROBABILITY_R2",
+  "utc": "2026-10-22T15:57:22.588080+00:00",
+  "status": "NO_UNRESOLVED_FATAL_DENSITY_OR_LEAKAGE_BUG_FOUND; EXECUTION_AND_CLAIM_LIMITS_LISTED",
+  "modifications": "Only AUDIT/execution_review/REVIEW.md and REVIEW.json written by reviewer",
+  "findings": [
+    {
+      "id": "E01",
+      "severity": "BLOCKER_RESOLVED_DURING_REVIEW",
+      "title": "Missing json import in probit anchor logger",
+      "evidence": "Initial anchors.py lines1-4 lacked json; log line25 used json.dumps. Final reread finds import json at line2 inserted by another actor. Reviewer made no source changes.",
+      "effect": "Parent confirms fix before first A-anchor state, no impact on previous native/physical calls. Source import fixed at final read. No fresh execution validation by reviewer."
+    },
+    {
+      "id": "E02",
+      "severity": "DOCUMENTATION_PENDING",
+      "title": "Training bypasses exclusive worker memory policy",
+      "evidence": "core.py70-74 only locks non-analysis-only; tools/run_p3r2_accounted.py9 constructs analysis_only=True for arbitrary training subprocess. Live process inventory showed material training, density training and C physics concurrently.",
+      "effect": "Parent explicitly authorizes one physics plus two bounded CPU trainings and will formalize aggregate RSS overlay. Existing single-worker phrasing should be corrected; no observed RHS/wall accounting loss solely from concurrent training."
+    },
+    {
+      "id": "E03",
+      "severity": "P2",
+      "title": "MPS path has no GPU receipt",
+      "evidence": "Training CLIs accept --device mps; wrapper uses analysis_only Book, which forbids gpu deltas. Training functions report CPU and wall seconds only.",
+      "effect": "Current live commands use CPU, so no observed GPU underbilling. Future MPS use would bypass authorized GPU accounting unless separately recorded."
+    },
+    {
+      "id": "E04",
+      "severity": "CLAIM_LIMIT",
+      "title": "Anchor ablation uses weaker caps than declared primary baseline",
+      "evidence": "run_p3r2_anchors.py11 defaults48/48; run_p3r2_physics_sequence.py24-25 explicitly requests48/48. PROTOCOL primary_baseline is native96 plus incremental probit64.",
+      "effect": "Deliberate lower-cost train/validation contexts, not the primary baseline. Locked96/64 planned but not reviewed as run; label train/context budget shift before primary locked comparison."
+    },
+    {
+      "id": "E05",
+      "severity": "CLAIM_LIMIT",
+      "title": "ROI risk must be converted to frozen full-grid metric",
+      "evidence": "risk_rows computes256-cell complex ROI MSE; protocol primary_metric is576-cell full-grid complex MSE; predict_full fills known constant host outside ROI.",
+      "effect": "For legal truth and host-filled predictions full-grid MSE=(256/576)*ROI MSE. Relative reductions and paired-sign inference unchanged, absolute MSE/SEM must be labeled or converted."
+    },
+    {
+      "id": "E06",
+      "severity": "HARDENING_LIMIT",
+      "title": "GT isolation is interface discipline, not a process access boundary",
+      "evidence": "Training path guards only reject string locked; pack CLI restricts groups train/validation. Online Target.observation validates exact keys. Same filesystem process can read offline_only; analysis_only wrapper asserts child physics-free but does not enforce subprocess file/import behavior.",
+      "effect": "No actual locked access or online GT leakage found in inspected paths. Do not claim OS-enforced inaccessible truth or use filename checks as independent evidence of provenance."
+    }
+  ],
+  "source_review_passes": [
+    "Core native inversion imports .core and uses supplied Target; runner imports p3r2.inversion, not p3l.inversion. No wrong duplicated-core Target routing found.",
+    "Noise generation is sigma/sqrt(2) complex iid and Phi=||F-y||\u00b2/sigma\u00b2; white=sqrt(2)/sigma packing gives consistent half squared residual likelihood.",
+    "Material supervised loss uses one global target scale and factor2 only between real-component and complex MSE; train normalization only; update0 is eligible; validation used for selection so not fresh evaluation.",
+    "Residual inference explicitly extracts observation/residual/q0/chi0/J only; train-J geometry frame excludes GT and uses ascending/descending singular directions. Decoder outputs are point estimators, not densities.",
+    "Conditional diag/full/MDN/flow log_prob formulas use correct Gaussian constants, mixture normalization and inverse-flow determinant sign. Full covariance diagonal is positive. Frame completion is orthonormal.",
+    "Full66 q density is learned10(z8,eta2|obs)*prior56(z_rest)*|deta/du| wrt dz64 du2; positive .5*sum(eta\u00b2+log2pi) in logdensity is correct. Complement prior is a normalized proposal assumption, not posterior independence evidence.",
+    "Sampling uses same fixed frame and probit map; floating-point u boundaries throw rather than silently introduce atoms. Prior unit model cancels eta density with Jacobian, recovering standard Gaussian64 times uniform2.",
+    "Forward reservation precedes adapter physics; adapter full role becomes full_forward and consumes upfront8 credit. Receiver transfer reserves32 adjoint RHS. Ledger has exclusive update lock, stage/global caps, controlled-wall reservations, and unreconciled jobs fail closed."
+  ],
+  "checks": {
+    "physics_calls": 0,
+    "training_updates": 0,
+    "locked_GT_read": false,
+    "array_check_scope": "Only train/validation parent vectors loaded; NPZ key names inspected; no observation/material/latent arrays loaded by review check.",
+    "train": {
+      "n": 16384,
+      "unique": 16384,
+      "first": "R2_train_00000",
+      "last": "R2_train_16383"
+    },
+    "validation": {
+      "n": 2048,
+      "unique": 2048,
+      "first": "R2_validation_00000",
+      "last": "R2_validation_02047"
+    },
+    "parent_overlap": 0,
+    "R2_target_equals_legacy_default_config": true,
+    "density_normalization": "SOURCE_REVIEW; no numerical integration or fresh training",
+    "initial_check_error": "System python lacks numpy; reran only parent metadata check with existing ../../.venv_nn/bin/python; no installs."
+  },
+  "limitations": [
+    "Concurrent source/results may change during review. Missing json import was repaired externally before final read.",
+    "No posterior calibration or scientific acceptance inferred. No historical exhaustive scan. No fresh physics, training, MCMC, delegation, or locked truth read.",
+    "Final novelty and evidence interpretation remain parent Codex responsibility."
+  ],
+  "parent_clarifications": {
+    "E01": "Parent reports import fixed before first A anchor state while C exposed eval ongoing; no impact to earlier native/physics calls. Reviewer verified import repair only, did not independently poll timing.",
+    "E02": "Parent explicitly accepts concurrent one physics plus two bounded CPU training tracks; reports combined RSS about1.2GB and intends formal memory overlay with aggregate2.5GB limit. Treat prior wording as policy/documentation mismatch pending overlay, not unauthorized execution or RHS underbilling. No further job polling.",
+    "E03": "CPU-only live use confirmed. Parent intends wrapper rejection of unaccounted MPS; future source change not yet rechecked.",
+    "E04": "48/48 is deliberately train/validation context only; locked primary96+64 to be frozen/run later. Report context budget shift explicitly, avoid attributing primary comparison before actual locked run."
+  }
+}

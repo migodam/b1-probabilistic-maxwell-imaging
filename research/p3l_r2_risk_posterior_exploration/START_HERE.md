@@ -1,5 +1,7 @@
-# P3L-R2：材料风险、非 Gaussian 推断与几何轨迹
+# P3L-R2：独立材料风险与非 Gaussian 研究
 
-状态：RUNNING。新独立授权 20,000,000 complex RHS / 24h CPU / 24h GPU 上限；原 P1 不变，旧预算封账。A/B/C 独立推进，未合格参考不阻断监督风险或轨迹。
+状态：RUNNING，未完成新的锁定泛化。
 
-当前不是完成报告；结果按阶段追加。
+[当前实际进度](report.html) · [Markdown](PROGRESS_ZH.md) · [理论合同](THEORY_AND_METHODS.md) · [资源快照](RESOURCE_LEDGER.json)
+
+本轮不覆盖旧数据，不把不合格参考当teacher，也不要求FULL参考通过后才研究监督风险和轨迹。原P1/noise/Maxwell固定。
