@@ -194,3 +194,7 @@ Book 的权威记录是 `RESOURCE_LEDGER.jsonl` 的最后一条 `after`，JSON s
 pro_handoff.zip约22.25MB，是面向GPT Pro的精选理论与实际证据；不需要下载约95GB完整分卷便可先研究。其生成概要名为HANDOFF_README.md，另保留原仓库README.md，无重复成员。最初存在README同名的本地V1包已保留并标为交付替代，公开只采用V2。
 
 原始分卷包含封账前报告快照；以本网页、最终账本、封账覆盖层及公开发布回执为最新交付状态。可用性与科学资格分开：FULL posterior始终未合格，不因下载或重放成功而改变。
+
+## 10. A30源包的必要vendored依赖补充
+
+A30适配层会导入`vendor/frozen_a29/src/a24/physics.py`，因此仅`A30_FROZEN_SOURCE.zip`不足以执行新物理重算。还需将同一固定commit的`A30_FROZEN_VENDOR.zip`解到相同新目录，合成`A30_FROZEN/src/a30`与`A30_FROZEN/vendor/frozen_a29/src`，保留来源和许可。使用新的Python进程避免canonical包版本碰撞。保存材料的零物理重放不受影响。原接口源包及第一次导出回执保留，新V2回执和[依赖补充](DEPENDENCY_ADDENDUM.md)明确纠正该缺口；没有修改solver、没有新LU/RHS，也没有重新运行历史实验。
