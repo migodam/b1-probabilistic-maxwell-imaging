@@ -5,3 +5,5 @@
 本轮给出了监督材料风险的正面结果，同时保留FULL probability与轨迹平均的失败。需要研究具体机制，而不是再做一轮泛化综述或扩大相同失败MCMC。
 
 [真实新现象](ACTUAL_FINDINGS.md) · [三个最值得推导的问题](THREE_THEORY_QUESTIONS.md) · [证据索引](EVIDENCE_INDEX.json) · [复现说明](../REPRODUCE.md)
+
+[可直接上传给GPT Pro的精简证据ZIP](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/p3lr2-risk-posterior-20261023/pro_handoff.zip)：包括主报告、数学、两批统计、关键真实数组、重放上下文/模型与源码。它不是完整原始档；完整分卷及最终账本见同一Release。
