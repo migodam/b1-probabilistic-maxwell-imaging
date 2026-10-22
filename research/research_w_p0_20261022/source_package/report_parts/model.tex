@@ -1,0 +1,105 @@
+\section{数学模型：首先反演总电磁材料世界}
+\subsection{时间约定、材料和前向模型}
+采用 $e^{-i\omega t}$ 时间约定。将导电电流写入复介电常数时，
+\[
+\epsilon_c(\mathbf r,\omega)=\epsilon(\mathbf r,\omega)+
+i\frac{\sigma(\mathbf r,\omega)}{\omega}.
+\]
+因此各向同性被动介质满足 $\operatorname{Im}\epsilon_c\ge0$；对张量需采用对应 Hermitian 耗散部分的半正定条件，并同时处理磁损耗。场方程为
+\[
+\mathcal L(m,\omega)E
+=\nabla\times\mu^{-1}\nabla\times E-\omega^2\epsilon_cE
+=i\omega J.
+\]
+这里 $m$ 表示总本构场以及必要的 PEC/阻抗边界。配以辐射条件，或一致的截断域/PML 实现。后文出现 $\mathcal L^{-1}$ 时，均假定相关正演问题存在唯一解；“被动”不自动提供一个廉价而统一的 resolvent 范数上界。
+
+令 $a$ 标记频率、发射、接收、极化和阵列位置。仪器参数 $\gamma$ 包括复增益、源谱、相位/时间零点、天线方向图、位置误差和背景耦合。可写为
+\[
+f_a(m,\gamma)=b_a(\gamma)+R_a(\gamma)
+\mathcal L(m,\omega_a)^{-1}Q_a(\gamma),\qquad
+y_a=f_a(m,\gamma)+n_a.
+\]
+$Q_a$ 已包含 $i\omega J$ 及源模型。$b_a$ 是被明确建模的直接耦合或偏置，不能无依据把它当成已知。某些校准参数跨频率、跨收发共享；每个数据块单独拟合一个自由复增益，可能把真正材料信息吸收掉。
+
+将全部复观测实化为 $y_{\R}=[\Re y;\Im y]$，令噪声协方差 $\Sigma\succ0$，
+\[
+\Phi(m,\gamma;y)=\tfrac12\|\Sigma^{-1/2}(y_\R-f_\R(m,\gamma))\|^2.
+\]
+若写 $n\sim\mathcal{CN}(0,\sigma_c^2I)$，每个实部/虚部的方差是 $\sigma_c^2/2$，白化因子为 $\sqrt2/\sigma_c$。本报告的一维核验另用“每个实正交分量标准差 $\sigma=0.01$”，两种记号不能混淆。若 $\Sigma$ 也未知，则 likelihood 中的 $\log\det\Sigma$ 不能丢掉。
+
+\subsection{为什么墙与目标不自动是两个可辨识对象}
+若无互斥支撑或生成规则而直接写 $\chi=\chi_W+\chi_X$，那么在合法性允许范围内，
+\[
+(\chi_W,\chi_X)\longmapsto(\chi_W+h,\chi_X-h)
+\]
+保持总场、全部多次散射与全部观测不变。这是\textbf{参数化的 gauge}，不是 Maxwell 的新非唯一性。把两部分分别正则化可以选定一个分解，但选择来自 prior，不等于观测已经识别出“建筑墙体”与“家具”。
+
+电磁数据首先约束 $\epsilon_c,\mu$ 或边界响应。在频段内具有相同有效本构的不同化学材料，不能仅凭这些数据唯一命名为砖、水泥或混凝土。高分辨率拓扑、亚波长混合物的微结构及语义类别分别需要额外尺度或先验。即便总本构场可唯一恢复，语义标签也未必唯一。
+
+\textbf{本报告推荐的无墙体 mask 定义：} 先指定一个计算查询区域 $T$，例如用户希望判断占据/目标位置的空间区域。令 $X=m|_T$ 包含该区域内的\emph{全部}材料，$W=m|_{D\setminus T}$ 为区域外的全部材料；$T$ 内在背景计算中替换为一个明确参考材料。$T$ 可以与实际墙体相交。这是计算分块，不宣称 $T$ 已被证实位于墙后。若算法额外假定 $T$ 内只有稀疏目标或没有墙，必须把它列为新增结构先验。
+
+也可完全不拆 $W/X$，直接计算总场后验上的任务 $q_T(m)$，例如某区域内的占据事件、金属存在事件或材料积分；此时无需给全部像素先分配语义。
+
+\subsection{空腔、有限导体与 PEC 的统一和不统一}
+固定 $\mu$、有限且有界的介电对比时，体积分形式可写为
+\[
+E=E_b+G_b\,V(m)E,
+\]
+其中 $V$ 是与算子差相容的对比注入。空气空腔是相对宿主的负介电对比；它和介质夹杂可在同一总材料场框架中表达。负对比不等于负绝对介电常数，必须检查绝对材料被动性。
+
+有限导电率可进入 $\epsilon_c$，仍可使用体积表示；但趋肤深度
+\[
+\delta_s\simeq\sqrt{\frac{2}{\omega\mu\sigma}}
+\]
+小于网格尺度时，普通粗体素模型不再可靠。高导电钢筋还可能涉及磁性、接触和表面电流，不能只把一个像素的 $\operatorname{Im}\epsilon$ 调大就宣称完成 PEC 建模。
+
+理想 PEC 满足 $n\times E=0$，属于边界条件模型；可用边界积分、混合 FEM/BEM 或经过分析的极限处理。PEC 的域/拓扑变化通常不能在未说明离散表示的情况下直接视为一个小而低秩的体材料 $\Delta L$。拓扑敏感性文献也分别处理介质、PEC、腔与阻抗条件。\cite{L_Topology}
+
+\subsection{合法而不预设孔洞数的先验}
+“未知先验信息”应落实为弱但明确的概率测度，而不是没有 prior 却声称 Bayesian posterior。可在有限支撑 $D$ 上令潜在场 $g_0,g_\epsilon,g_\sigma$ 服从可解释的 Gaussian 随机场，再定义
+\[
+s(\mathbf r)=\mathbf1_{\{g_0(\mathbf r)>0\}},\qquad
+\epsilon_\infty=\epsilon_b+s\,a(g_\epsilon),\qquad
+\sigma_{\rm dc}=s\,b(g_\sigma),
+\]
+其中 $a,b$ 保持声明的有界被动材料范围；相关长度、占据率等设为有范围的超参数。空气作为一个确切相，而非 sigmoid 永远不达到零所造成的“近空气”。零水平集可以出现、合并或消失，因此没有固定 cavity count；但网格、相关长度和阈值仍会限制 topology support，必须公开。
+
+若只需连续混合介质，可直接对全网格的被动参数建模。平滑 phase-field 的亚像素混合不能自动解释成真实微结构。单纯光滑形变一个已有边界通常保持拓扑，需另有成核、临界点穿越或 birth/death 才能产生新孔。
+
+跨频使用例如
+\[
+\epsilon_c(\omega)=\epsilon_\infty+
+\sum_{\ell=1}^L\frac{\Delta\epsilon_\ell}{1-i\omega\tau_\ell}
++i\frac{\sigma_{\rm dc}}{\omega},\qquad
+\Delta\epsilon_\ell\ge0,\ \tau_\ell>0,\ \sigma_{\rm dc}\ge0,
+\]
+可表达一个明确的被动 Debye 模型。固定少量弛豫项是材料色散表示选择，并非预设几何层数。有限频带内近似无色散的模型要注明适用频带；每频率任意独立复参数通常会产生过大的补偿自由度。
+
+\Needspace{19\baselineskip}
+\begin{longtable}{p{28mm}p{43mm}p{77mm}}
+\toprule
+表示 & 实际优点 & 关键限制\\
+\midrule
+全网格连续场 & 不固定层数或孔洞；强基线 & 后验高维，分辨率有限；TV/MAP 并非自动归一化 prior。\\
+随机 level-set & 允许未知连通性与空气成核 & threshold/相关长度决定支持；硬阈值影响梯度，pCN 可在 latent 中定义。\\
+phase-field & 界面变化和梯度优化方便 & 界面宽度与网格偏置；必须写清诱导测度。\\
+多尺度稀疏场 & 易控制维数及 refinement & 固定支持可能漏结构；先验须网格一致，不把 oracle 选支持用于在线。\\
+可变维随机几何 & 层数/对象数可随机 & birth/death proposal、Jacobian、组合计数复杂；形状族仍可能过窄。\\
+学习隐式场 & 潜在有用的 proposal/压缩 & support 与密度难审计；latent 维数不等于传播秩。\\
+\bottomrule
+\end{longtable}
+
+\subsection{联合后验和任务定义}
+设 $\pi_0(dm,d\gamma)$ 是上述合法 prior（可以相关），则
+\[
+\mu^y(dm,d\gamma)
+=\frac{e^{-\Phi(m,\gamma;y)}}{Z(y)}\pi_0(dm,d\gamma).
+\]
+在计算分块下才写 $p(W,X,\gamma\mid y)$。对未来任务输出 $z$ 的预测为
+\[
+p(z\mid y)=\int p(z\mid W,X,\gamma)\,\mu^y(dW,dX,d\gamma).
+\]
+将一组优化端点按残差归一化，不会自动得到这个测度。模式权重是连续邻域的积分；未知维数、结构先验、参数变换、nuisance 边缘化及未覆盖质量都参与权重。
+
+后文始终区分三种任务：当前目标参数 $q(X)$ 的推断；在指定区域插入测试目标后的反事实传播；真正新增测量的预测。这三者可以用相似算子，但信息条件与 probability target 不相同。
+
