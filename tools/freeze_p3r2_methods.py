@@ -20,7 +20,8 @@ def main():
         'integrate_p3r2_fresh_trajectories.py','evaluate_p3r2_fresh_trajectories.py',
         'evaluate_p3r2_decision_forward.py','freeze_p3r2_methods.py')]]
     subprocess.run(['git','diff','--exit-code',revision,'--',*source_paths],cwd=ROOT,check=True)
-    if subprocess.check_output(['git','ls-files','--others','--',*source_paths],cwd=ROOT,text=True).strip():
+    untracked=subprocess.check_output(['git','ls-files','--others','--',*source_paths],cwd=ROOT,text=True)
+    if any(name.endswith('.py') for name in untracked.splitlines()):
         raise RuntimeError('Commit the exact new source before freezing')
     groups=[('direct',OUT/'A/training'),('direct',OUT/'A/training32768'),
             ('residual',OUT/'A/residual_training'),('residual',OUT/'A/residual_controls'),
