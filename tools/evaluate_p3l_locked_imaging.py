@@ -71,7 +71,7 @@ def freeze_config(out,spec):
                 for parent in PARENTS:inside(out/template.format(parent=parent),out)
     config=dict(revision='P3L_LOCKED_IMAGING_OFFLINE_EVALUATION_V1',parents=PARENTS,
         methods=METHODS+(['full_corrected_IS_unqualified_mean'] if optional is not None else []),
-        baselines=['cheap16','independent_native96','original_prior_material_mean'],
+        baselines=['cheap16','independent_native96','probit64_coordinate_mode','original_prior_material_mean'],
         fallback_order=FALLBACK,fallback_scope='each missing/failed method; retain raw failure and effective fallback separately',
         prior_mean_source=dict(path='B/gaussian_images/DEV_000.npz',key='original_prior_material_mean',
             interpretation='same original prior material expectation for every parent; no GT selection'),
@@ -295,6 +295,11 @@ def main():
     closure=json.loads((out/'D/jobs/locked_imaging_frozen_panel/CLOSED.json').read_text())
     if closure.get('status')!='COMPLETE':raise RuntimeError('final COMPLETE online closure required before locked truth')
     frozen=json.loads((out/'METHODS_FROZEN_FOR_LOCKED.json').read_text());spec=frozen['locked_imaging']
+    optional=spec.get('full_corrected_IS_evaluation')
+    if optional is not None:
+        is_closure=json.loads(inside(out/optional['online_job_closure'],out).read_text())
+        if is_closure.get('status')!='COMPLETE' or is_closure.get('error') is not None:
+            raise RuntimeError('registered Full-IS job must close before any offline locked truth')
     if spec.get('parents')!=PARENTS or spec.get('heldout_risk_requirement_registered') is not True:
         raise RuntimeError('exact frozen128locked identities required')
     manifest=json.loads((out/'configs/PARENTS.json').read_text())
