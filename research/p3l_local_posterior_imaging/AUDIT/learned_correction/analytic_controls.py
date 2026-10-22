@@ -65,18 +65,38 @@ def main():
         modefile.write_text(json.dumps(dict(mode_endpoint='mode',mode_history=[dict(endpoint='mode',x=mode.tolist())])))
         got,metadata=module.finite_start('DEV_000',boundary)
         mode_error=float(np.max(np.abs(got-mode)))
+        geometry=module.OUT/'B/joint_gaussian/DEV_000/JOINT_MODE_GEOMETRY.npz'
+        geometry.parent.mkdir(parents=True)
+        joint_mode=mode+.1
+        np.savez(geometry,x_mode=joint_mode)
+        closure=module.OUT/'B/jobs/joint_probit_gaussian/CLOSED.json'
+        closure.parent.mkdir(parents=True)
+        closure.write_text(json.dumps(dict(status='COMPLETE',error=None)))
+        joint_got,joint_metadata=module.finite_start('DEV_000',boundary)
+        joint_mode_error=float(np.max(np.abs(joint_got-joint_mode)))
+        assert joint_metadata['kind']=='COMPLETED_B_JOINT_PROBIT_MODE_NOT_POSTERIOR_DRAW'
         module.OUT=original
+    tree=ast.parse(source.read_text())
+    reconstructions=[node for node in ast.walk(tree) if isinstance(node,ast.Call)
+        and isinstance(node.func,ast.Name) and node.func.id=='reconstruct']
+    assert len(reconstructions)==1
+    context_options={k.arg:ast.literal_eval(k.value) for k in reconstructions[0].keywords}
+    assert context_options==dict(method='coarse_TRF',max_evaluations=16,initial_point=None,polish=False)
     result=dict(status='PASS_PURE_NORMALIZED_MH_AND_CONTEXT_CONTRACT_CONTROLS',
         detailed_balance_log_flux_max_error=float(max(errors)),
         deliberately_omitted_proposal_ratio_flux_max_error=float(max(wrong_errors)),
         scalar_feature_error=feature_error,image_feature_error=image_error,
         inward_anchor_fallback_error=fallback_error,saved_mode_preference_error=mode_error,
+        completed_joint_B_mode_preference_error=joint_mode_error,
+        context_reconstruction_options=context_options,
+        conservative_context_and_MH_RHS_bound=43808,
+        superseded_A96_context_stress_status='NOT_RUN_SUPERSEDED_BEFORE_PHYSICS',
         fixed_parents=list(module.PARENTS),fixed_families=list(module.FAMILIES),
         fixed_training_seed=module.SEED,transitions=module.TRANSITIONS,
         Maxwell_executed=False,Book_constructed=False,Target_constructed=False,
         training=False,real_checkpoints_loaded=False,GT_read=False)
     assert max(errors)<1e-10 and max(wrong_errors)>1e-3
-    assert feature_error==0 and image_error==0 and fallback_error<1e-14 and mode_error==0
+    assert feature_error==0 and image_error==0 and fallback_error<1e-14 and mode_error==0 and joint_mode_error==0
     Path(__file__).with_name('RESULTS.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
     print(json.dumps(result,indent=2,allow_nan=False))
 

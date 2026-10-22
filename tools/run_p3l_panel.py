@@ -5,7 +5,8 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 from p3l.core import OUT,write
 
-def schedule(tasks,name,workers=4):
+def schedule(tasks,name,workers=1):
+    if workers!=1:raise RuntimeError('memory recovery policy requires one physical worker')
     dest=OUT/'schedules'/name;dest.mkdir(parents=True,exist_ok=True)
     manifest=dest/'TASKS.json'
     if manifest.exists() and json.loads(manifest.read_text())!=tasks:raise RuntimeError('cannot change registered schedule')
@@ -40,7 +41,7 @@ def schedule(tasks,name,workers=4):
     write(dest/'CLOSED.json',dict(status='COMPLETE',tasks=len(done),all_exit_zero=True))
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('panel',choices=['anchor_pilot','anchors','reference_pilot','reference_revision_pilot','geometry_pilot','mode_reference_pilot','references','crosschecks']);p.add_argument('--workers',type=int,default=4);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('panel',choices=['anchor_pilot','anchors','reference_pilot','reference_revision_pilot','geometry_pilot','mode_reference_pilot','references','crosschecks']);p.add_argument('--workers',type=int,default=1);a=p.parse_args()
     if a.panel=='anchor_pilot':tasks=[['anchor',f'DEV_{i:03d}','--method',method,'--polish'] for i in range(4) for method in ['full_TRF','coarse_TRF']]
     elif a.panel=='anchors':
         selection=json.loads((OUT/'A/BASELINE_SELECTION.json').read_text());method=selection['method'];tasks=[['anchor',f'DEV_{i:03d}','--method',method,'--polish'] for i in range(4,32)]

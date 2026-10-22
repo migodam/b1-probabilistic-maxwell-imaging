@@ -5,6 +5,7 @@ jobs nor owns ledger reservations. The optimized objective is exactly
 Phi(q;y) + ||q[:64]||^2/2 on Gaussian64 x Uniform[0,1]^2.
 """
 from pathlib import Path
+from collections import OrderedDict
 import json
 import time
 
@@ -75,7 +76,10 @@ def reconstruct(target: Target, y, parent, method="full_TRF", max_evaluations=96
     if trace_path.exists():
         raise FileExistsError(f"optimizer trace already exists: {trace_path}")
     trace = trace_path.open("x")
-    cache, residuals = {}, {}
+    # Keep the best endpoint separately; historical residual vectors are small
+    # but a Point strongly owns a dense LU/matrix. Any genuinely evicted
+    # revisit is a new paid state under the same unchanged fresh-state cap.
+    cache, residuals = OrderedDict(), {}
     best = None
     best_value = np.inf
     fresh = 0
@@ -114,12 +118,21 @@ def reconstruct(target: Target, y, parent, method="full_TRF", max_evaluations=96
             write(directory/"best_point.json", dict(endpoint=p.key, q=p.q,
                 objective=value, phi=target.phi(p,y), fresh_forward_states=fresh))
             log("BEST_OBJECTIVE", endpoint=p.key, objective=value)
+        cache.move_to_end(p.q.tobytes())
+        while len(cache)>4:
+            old=next(iter(cache))
+            if best is not None and old==best.q.tobytes():
+                cache.move_to_end(old)
+                old=next(iter(cache))
+            del cache[old]
         return p
 
     def get(q, purpose):
         nonlocal fresh
         q = _legal(q).copy()
         key = q.tobytes()
+        if best is not None and np.array_equal(q,best.q) and key not in cache:
+            remember(best)
         hit = key in cache
         if not hit:
             if fresh >= max_evaluations or fresh-stage_fresh_start >= phase_cap:
@@ -287,6 +300,7 @@ def reconstruct(target: Target, y, parent, method="full_TRF", max_evaluations=96
         noise_ball_is_stopping_rule=False, polish_requested=bool(polish),
         wall_seconds=time.perf_counter()-start,
         cache_provenance="explicit caller-supplied online point" if initial_point is not None else "zero-field midpoint start",
+        point_cache_policy="four recent Points with best pinned; evicted revisits count as fresh states within original cap",
         truth_used=False, posterior_reference_claim=False)
     target.persist_cache(best, directory/"best_cache.npz")
     write(directory/"result.json", report)

@@ -34,6 +34,14 @@
 
 这是一项对具体近似的负结果。它没有比较已知正确的 FULL posterior mean，不能证明 Bayes 成像本身无益。数据仍是 development，不能称为 locked 泛化结果。
 
+随后完成全部 32 对象的联合属性修订。我们先在正确 probit 目标中重新优化，再以完整 66 维 GN Gaussian 为参考，通过两属性条件化及解析场材料矩，计算联合材料均值。GH 阶数 5、9、17 的材料均值已稳定，最大后两阶 RMS 差约 2.90e-6。这排除了本次观察由粗 quadrature 引起的解释。
+
+新的坐标 mode 材料图平均 MSE 为 0.0120131，较原 native-q MAP 低约 13.1%；可是联合 Gaussian 材料均值仍为 0.0185700，较同一新 mode 高约 54.6%。四份固定对象上的 64 点 Full importance correction 都退化至约一个有效样本。因此，仅加入 property-field 相关性并未修复 Gaussian 参考；不能把坐标 mode 改善写成 posterior mean 改善。
+
+这里还存在重要的数学区别：posterior 概率律在 probit 变换下保持不变，但 density mode 不是坐标不变量。在原 u 坐标中，该坐标 mode 等效于额外加入 `0.5*||normal_CDF_inverse(u)||²` 的点估计惩罚；它并非原 uniform-measure MAP，也不是 Bayes action。若将其作为实际估计器，需要独立新对象验证，不能用这组 development 数字宣称概率方法获胜。
+
+[四份事前固定对象的实际材料对照](B/joint_gaussian_figures/index.html) 采用共同实部、损耗色标。方差图仅属于声明的 Gaussian 参考，未通过 posterior 校准。
+
 ## 一个有正确含义的低维条件参考
 
 为区分“物理接口有错”和“高维参考困难”，在第一份冻结对象上构建了两弱一强的三维条件问题。其他 61 个 Gaussian 坐标及两个属性固定；有限 box、原条件 Gaussian prior、Jacobian 和噪声在求值前登记。所有节点都用真实 full-Maxwell 计算。
@@ -45,6 +53,10 @@
 在两个固定 anchor 上，以三个有限差分步长计算真实 full-J 导出的 rank-8 投影场。所测方向对的坐标法向 Lie bracket 收敛到约 0.0913 和 0.1295；冻结 Maxwell 材料响应、只更新 decoder 的对照已复现大部分数值。它是具体投影场的局部数值诊断，不是任意材料 posterior 不存在、exact fiber 存在或一般不可积性的证明。材料度量解释和谱隙都需要一并保留。
 
 归一化 CNN/MLP Gaussian、MDN 和 Flow 的实现已完成。512 train 与 128 validation 的 joint-simulation 数据及在线 context 已准备好。这条监督路线与 posterior distillation 分开；尚无合格 posterior teacher。新模型仍需经过实际训练、强基线比较及 full-likelihood 校正检验，不能仅凭架构归一化宣布概率正确。
+
+实际的 5 个模型族、3 个 seed 共 15 次训练已完成。每次均运行 1,000 updates 后触发预注册 validation patience，验证集都选择 update 0。独立复核恢复了全部 checkpoints：选中权重与各自随机初始化完全相同；训练 minibatch NLL 下降而验证 NLL 迅速变差。未发现 batching、参考测度 Jacobian、frame/sign 或 checkpoint 选择错误，但这不足以证明观测没有信息。我们将其记为本规模下的泛化失败，而不是训练成功。
+
+进一步的简单密度对照使用同一 512/128 数据、train-only PCA、ridge 均值和收缩 covariance。验证 NLL 为：选中 PCA Gaussian 14.8138，无条件 Gaussian 15.1007，最佳神经初始化 15.2620。它只是归一化 proposal 的验证分数，不是 FULL posterior 校准。后续真实物理校正优先用于这两个已拟合简单模型，停止为验证集已否决的神经训练额外支付查询。
 
 ## 求值加速的独立实测
 

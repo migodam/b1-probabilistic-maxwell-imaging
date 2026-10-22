@@ -1,0 +1,186 @@
+{
+  "revision": "P3L_B_JOINT_GAUSSIAN_OFFLINE_EVALUATION_001",
+  "parents": [
+    {
+      "parent": "DEV_000",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_001",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_002",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_003",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_004",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_005",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_006",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_007",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_008",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_009",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_010",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_011",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_012",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_013",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_014",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_015",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_016",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_017",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_018",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_019",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_020",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_021",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_022",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_023",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_024",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_025",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_026",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_027",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_028",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_029",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_030",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_031",
+      "role": "validation"
+    }
+  ],
+  "estimators": [
+    "historical_native_q_anchor",
+    "decoder_at_x_mode",
+    "fixed_property_gaussian_mean_at_x_mode",
+    "joint_GH5_mean",
+    "joint_GH9_mean",
+    "joint_GH17_mean",
+    "full_target_IS_unqualified_mean"
+  ],
+  "baselines": [
+    "historical_native_q_anchor",
+    "decoder_at_x_mode",
+    "fixed_property_gaussian_mean_at_x_mode"
+  ],
+  "losses": [
+    "complex_MSE",
+    "complex_MAE"
+  ],
+  "masks": [
+    "full_grid",
+    "ROI"
+  ],
+  "difference": "estimator risk minus baseline risk; negative favors estimator",
+  "bootstrap": {
+    "replicates": 2000,
+    "seed": 2026102295,
+    "interval": [
+      0.025,
+      0.975
+    ],
+    "unit": "paired parent resampling within fixed cohort; mean differences",
+    "missing": "Any missing parent makes cohort statistic null; never remove missing parents"
+  },
+  "cohorts": [
+    "all_development",
+    "train",
+    "validation",
+    "fixed_IS_pilot"
+  ],
+  "IS_pilot": [
+    "DEV_000",
+    "DEV_028",
+    "DEV_030",
+    "DEV_026"
+  ],
+  "figures": false,
+  "figure_rules": "first four fixed y-only parents; shared epsilon Re and Im ranges; uncalibrated Gaussian modulus SD separately",
+  "phases": "closed online job -> frozen evaluation config -> all estimates loaded -> truth chi reads -> risks",
+  "qualifications": "GN Gaussian-reference images and unqualified IS only; no posterior/teacher/coverage qualification",
+  "new_physics_RHS": 0,
+  "online_proposals": false,
+  "GT_selection": false,
+  "heldout_access": false
+}

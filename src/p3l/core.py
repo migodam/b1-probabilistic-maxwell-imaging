@@ -59,13 +59,19 @@ class Book:
     starts. The adapter's subsequent full_forward callback consumes that credit,
     so rejected, interrupted and failed attempts cannot disappear or double bill.
     """
-    def __init__(self,stage,job,max_wall=7200):
+    def __init__(self,stage,job,max_wall=7200,*,analysis_only=False):
         if stage not in CAPS:raise ValueError(stage)
         if (OUT/'CAMPAIGN_CLOSED.json').exists():raise BudgetStop('P3-L closed')
-        self.workerlock=(OUT/'paid_worker.lock').open('a')
-        try:fcntl.flock(self.workerlock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-        except BlockingIOError:
-            self.workerlock.close();raise BudgetStop('memory policy: one campaign worker at a time')
+        self.analysis_only=bool(analysis_only)
+        # A zero-physics evaluator may read frozen image arrays in its own
+        # process. It cannot construct Target or reserve physical actions.
+        # Physics/training workers retain the exclusive cache-memory lock.
+        self.workerlock=None
+        if not self.analysis_only:
+            self.workerlock=(OUT/'paid_worker.lock').open('a')
+            try:fcntl.flock(self.workerlock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            except BlockingIOError:
+                self.workerlock.close();raise BudgetStop('memory policy: one campaign worker at a time')
         auth=json.loads((OUT/'configs/AUTHORIZATION.json').read_text())
         if auth['campaign_id']!='P3L-20261022' or not auth['explicit_user_authorization']:raise BudgetStop('authorization')
         self.stage,self.job=stage,job;self.counts=Counter();self.credit=0;self.context={};self.finished=False
@@ -74,7 +80,7 @@ class Book:
         self.joblock=(self.jobdir/'job.lock').open('a');fcntl.flock(self.joblock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if (self.jobdir/'CLOSED.json').exists():raise BudgetStop('job already closed; new experiment needs registered new job')
         self.control=(OUT/'budget.lock').open('a');self.max_wall=float(max_wall);self.start=time.perf_counter()
-        self._update('JOB_START',reserve_wall=self.max_wall)
+        self._update('JOB_START',reserve_wall=self.max_wall,analysis_only=self.analysis_only)
         signal.signal(signal.SIGALRM,lambda a,b:(_ for _ in ()).throw(BudgetStop('job controlled-wall quota')))
         signal.setitimer(signal.ITIMER_REAL,self.max_wall)
 
@@ -85,6 +91,8 @@ class Book:
         return json.loads(lines[-1])['after']
 
     def _update(self,event,*,rhs=0,states=0,lu=0,controlled=0.,physics=0.,gpu=0.,reserve_wall=0.,release_wall=False,**meta):
+        if self.analysis_only and (rhs or states or lu or physics or gpu):
+            raise BudgetStop('analysis-only receipt forbids physics, LU, RHS and GPU')
         fcntl.flock(self.control,fcntl.LOCK_EX)
         try:
             d=self._latest();v=d['stages'][self.stage]
@@ -131,7 +139,8 @@ class Book:
         d=self._update('JOB_END',controlled=seconds,release_wall=True,status=status,error=error,counts=dict(self.counts),unused_forward_credit=self.credit)
         write(self.jobdir/'CLOSED.json',dict(status=status,error=error,controlled_wall_seconds=seconds,counters=dict(self.counts),stage_cumulative=d['stages'][self.stage]))
         fcntl.flock(self.joblock,fcntl.LOCK_UN);self.joblock.close();self.control.close()
-        fcntl.flock(self.workerlock,fcntl.LOCK_UN);self.workerlock.close()
+        if self.workerlock is not None:
+            fcntl.flock(self.workerlock,fcntl.LOCK_UN);self.workerlock.close()
 
 @dataclass
 class Point:
@@ -145,6 +154,8 @@ class Point:
 
 class Target:
     def __init__(self,book,*,keep_fields=False):
+        if getattr(book,'analysis_only',False):
+            raise BudgetStop('analysis-only receipt cannot construct a physics Target')
         self.book=book;self.keep_fields=keep_fields
         self.cfg=json.loads((OUT/'configs/TARGET.json').read_text())
         points=json.loads((ROOT/'research/p1_material_target_20261018/inputs/geometry.json').read_text())['points']

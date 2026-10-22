@@ -16,6 +16,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from p3l.core import OUT,Book,Target,write,save,from_probit,to_probit
 from p3l.learned_proposal import LearnedFullProposal
+from p3l.inversion import reconstruct
 
 PARENTS=('DEV_000','DEV_028','DEV_030','DEV_026')
 FAMILIES=('mlp_diag','mlp_full','mlp_mdn','mlp_flow','cnn_full')
@@ -28,8 +29,8 @@ JOB='learned_correction_exposed_DEV_s2026102270'
 def context_arrays(target,point,y):
     """Exact scalar/image feature law used by run_p3l_contexts.py.
 
-    The current diagnostic explicitly substitutes the saved A anchor for the
-    training context's cheap 16-state estimate; this shift is disclosed.
+    Its point is a separately generated coarse_TRF 16-state/no-polish estimate
+    from the original prior initialization, exactly as in training contexts.
     """
     J=target.jacobian(point)
     singular=np.linalg.svd(J[:,:64],compute_uv=False)
@@ -46,8 +47,21 @@ def context_arrays(target,point,y):
     return scalar,image,J,residual
 
 
-def finite_start(parent,anchor_q):
+def finite_start(parent,anchor_q=None):
     """Deterministic saved-mode preference, then explicit inward anchor start."""
+    geometry=OUT/f'B/joint_gaussian/{parent}/JOINT_MODE_GEOMETRY.npz'
+    closure=OUT/'B/jobs/joint_probit_gaussian/CLOSED.json'
+    if geometry.is_file() and closure.is_file():
+        receipt=json.loads(closure.read_text())
+        if receipt.get('status')=='COMPLETE' and receipt.get('error') is None:
+            with np.load(geometry,allow_pickle=False) as mode:x=mode['x_mode'].copy()
+            if x.shape!=(66,) or not np.isfinite(x).all():
+                raise ValueError(f'nonfinite completed joint probit mode in {geometry}')
+            return x,dict(kind='COMPLETED_B_JOINT_PROBIT_MODE_NOT_POSTERIOR_DRAW',
+                source=str(geometry),source_field='x_mode',closure=str(closure),
+                previous_shared_setup_owner='Book B joint_probit_gaussian',
+                previous_shared_setup_cost='already billed B; disclose as shared initialization setup',
+                current_job_initial_full_state='fresh Full state billed D for every family')
     for chain in range(4):
         path=OUT/f'A/jobs/reference_{parent}_mala_mode_c{chain}/PROBIT_MODE_INITIALIZATION.json'
         if not path.exists():continue
@@ -58,12 +72,21 @@ def finite_start(parent,anchor_q):
         if x.shape!=(66,) or not np.isfinite(x).all():
             raise ValueError(f'nonfinite saved probit mode in {path}; no silent fallback')
         return x,dict(kind='SAVED_FINITE_PROBIT_MODE_NOT_POSTERIOR_DRAW',
-            source=str(path),source_chain=chain,source_endpoint=document['mode_endpoint'])
+            source=str(path),source_chain=chain,source_endpoint=document['mode_endpoint'],
+            previous_shared_setup_owner='Book A saved mode initialization',
+            previous_shared_setup_cost='already billed A; disclose as shared initialization setup',
+            current_job_initial_full_state='fresh Full state billed D for every family')
+    if anchor_q is None:
+        with np.load(OUT/f'A/anchors/{parent}.npz',allow_pickle=False) as saved:
+            anchor_q=saved['q'].copy()
     x=to_probit(anchor_q,initialization=True)
     return x,dict(kind='EXPLICIT_INWARD_ANCHOR_BURN_IN_START_NOT_POSTERIOR_DRAW',
         source=str(OUT/f'A/anchors/{parent}.npz'),inward_property_clip=[1e-4,1-1e-4],
         original_native_properties=np.asarray(anchor_q)[64:].tolist(),
-        represented_native_properties=from_probit(x)[64:].tolist())
+        represented_native_properties=from_probit(x)[64:].tolist(),
+        previous_shared_setup_owner='Book A saved anchor; initialization fallback only',
+        previous_shared_setup_cost='already billed A; not used as model context',
+        current_job_initial_full_state='fresh Full state billed D for every family')
 
 
 def load_frozen_density(path,family):
@@ -115,18 +138,26 @@ def independent_log_ratio(logpi_proposed,logpi_current,logQ_proposed,logQ_curren
     return float(logpi_proposed-logpi_current+logQ_current-logQ_proposed)
 
 
-def save_arrays(folder,chain,proposals):
+def neural_selection_status(metadata):
+    """Actual validation-selected initialization is valid but has no trained gain."""
+    return ('NOT_RUN_VALIDATION_SELECTED_INITIALIZATION_NO_TRAINED_GAIN'
+        if int(metadata['best_update'])==0 else 'AVAILABLE_TRAINED_VALIDATION_SELECTION')
+
+
+def save_arrays(folder,chain,proposals,model_kind='LEARNED_NEURAL_DENSITY'):
     # These are owned checkpoints for this new job, preserving every repeat.
     save(folder/'CHAIN.npz',**{k:np.asarray(v) for k,v in chain.items()},
          warmup=np.array(0),target_family=np.array('FULL'),
-         method=np.array('NORMALIZED_LEARNED_DEFENSIVE_INDEPENDENCE_FULL_MH'),
+         method=np.array('NORMALIZED_DEFENSIVE_INDEPENDENCE_FULL_MH'),model_kind=np.array(model_kind),
          probability_status=np.array('INVARIANT_KERNEL_NOT_A_MIXING_CERTIFICATE'))
     save(folder/'PROPOSALS.npz',**{k:np.asarray(v) for k,v in proposals.items()},
-         distribution=np.array('FROZEN_LEARNED_FULL66_PROPOSAL_WITH_10_PERCENT_STANDARD_PRIOR'),
+         distribution=np.array('FROZEN_MODEL_FULL66_PROPOSAL_WITH_10_PERCENT_STANDARD_PRIOR'),
+         model_kind=np.array(model_kind),
          calibrated_posterior=np.array(False))
 
 
-def run_pair(book,target,parent,family,model,features,start_x,start_meta,index):
+def run_pair(book,target,parent,family,model,features,start_x,start_meta,index,*,
+             model_kind='LEARNED_NEURAL_DENSITY',model_rng_seed=None):
     import torch
     scalar,image,J,residual,q0,Vw,Vs=features
     folder=book.jobdir/'comparisons'/parent/family
@@ -139,11 +170,14 @@ def run_pair(book,target,parent,family,model,features,start_x,start_meta,index):
     uniforms=accept_rng.random(TRANSITIONS)
     save(folder/'RANDOMIZATION.npz',MH_uniforms=uniforms,
          proposal_numpy_seed=np.array([SEED,index,0]),
-         MH_uniform_seed=np.array([SEED,index,1]),torch_seed=np.array(SEED+index))
-    write(folder/'PROTOCOL.json',dict(parent=parent,model=family,training_seed=SEED,
+         MH_uniform_seed=np.array([SEED,index,1]),torch_seed=np.array(SEED+index),
+         numpy_model_seed=np.asarray([] if model_rng_seed is None else model_rng_seed,dtype=np.int64))
+    write(folder/'PROTOCOL.json',dict(parent=parent,model=family,
+        training_seed=SEED if model_kind=='LEARNED_NEURAL_DENSITY' else None,comparison_seed=SEED,
         transitions=TRANSITIONS,initialization=start_meta,initial_x=start_x,
         proposal_numpy_seed=[SEED,index,0],MH_uniform_seed=[SEED,index,1],
         torch_seed=SEED+index,common_MH_uniforms_across_families=True,
+        model_kind=model_kind,numpy_model_seed=model_rng_seed,
         proposal_weight=.9,standard_probit_Gaussian66_prior_weight=.1,
         target='-Phi(from_probit(x))-.5*x@x with respect to dz64 deta2',
         MH_ratio='logpi(xprime)-logpi(x)+logQ(x)-logQ(xprime)',
@@ -221,12 +255,13 @@ def run_pair(book,target,parent,family,model,features,start_x,start_meta,index):
             proposal_material.append(proposed.state.chi.copy())
             save(folder/'transitions'/f'{i:04d}.npz',**entries,
                 MH_uniform=np.array(uniforms[i]),proposal_x=candidate)
-            save_arrays(folder,chain,raw)
+            save_arrays(folder,chain,raw,model_kind)
             # Retain exactly the paid current cache, including on rejections.
-            target.persist_cache(current,folder/'cache/CURRENT.npz')
+            if accepted:target.persist_cache(current,folder/'cache/CURRENT.npz')
             write(folder/'CHECKPOINT.json',dict(iteration=i+1,total=TRANSITIONS,
                 accepted=int(sum(chain['accepted'])),current_endpoint=current_path,
                 current_Phi=current_phi,numpy_proposal_RNG=proposal_rng.bit_generator.state,
+                numpy_model_RNG=model.rng.bit_generator.state if hasattr(model,'rng') else None,
                 torch_RNG_state_saved_separately=True,
                 cost=delta(pair_before,costs(book)),GT_used=False))
             torch.save(torch.get_rng_state(),folder/'TORCH_RNG_STATE.pt')
@@ -240,6 +275,7 @@ def run_pair(book,target,parent,family,model,features,start_x,start_meta,index):
             status=np.array('EMPIRICAL_UNWEIGHTED_DEFENSIVE_MODEL_PROPOSAL_DIAGNOSTIC'),
             calibrated_posterior=np.array(False))
     summary=dict(parent=parent,model=family,status='COMPLETE_EXPOSED_FULL_MH_DIAGNOSTIC',
+        model_kind=model_kind,
         transitions=TRANSITIONS,acceptance=float(np.mean(chain['accepted'])),
         accepted=int(sum(chain['accepted'])),unique_chain_endpoints=len(set(chain['endpoint_key'])),
         cost=delta(pair_before,costs(book)),wall_seconds=time.perf_counter()-started,
@@ -272,11 +308,22 @@ def run(max_wall=7200):
             normalized_proposal=True,defensive_standard_prior_weight=.1,
             family_or_parent_selection='FIXED_EXPOSED_DEV_SET; NO_GT_SELECTION',
             checkpoint_sources=checkpoint_sources,missing_checkpoint='EXPLICIT_NOT_RUN_NO_TRAINING',
-            max_wall_seconds=max_wall,expected_full_forward_states=4*5*(TRANSITIONS+1),
-            conservative_RHS_bound_if_all_run=4*5*(TRANSITIONS+1)*8+4*32,
-            online_context='SAVED_A_ANCHOR; exact run_p3l_contexts scalar/image feature definitions',
-            context_distribution_shift='training used cheap16-state contexts; this uses paid A anchors',
-            feature_order=dict(scalar=['white(y)','white(F(anchor)-y)','native_anchor_q66','log1p(sv(Jz)^2)'],
+            max_wall_seconds=max_wall,MH_fresh_forward_state_cap=4*5*(TRANSITIONS+1),
+            total_context_and_MH_fresh_forward_state_cap=4*5*(TRANSITIONS+1)+4*16,
+            additional_context_fresh_state_cap=4*16,
+            conservative_MH_RHS_bound=41248,context_RHS_upper=4*16*40,
+            conservative_RHS_bound_if_all_run=43808,
+            online_context='INDEPENDENT_FRESH_TRAINING_LAW_COARSE_TRF16_FROM_ORIGINAL_PRIOR_START',
+            context_reconstruction=dict(method='coarse_TRF',max_evaluations=16,
+                initial_point=None,original_native_start=[0.]*64+[.5,.5],polish=False,
+                point_cache='current reconstruct bounded four recent Points with best retained'),
+            context_family_sharing='one independently generated context per parent shared by all five families',
+            initialization_preference=['completed B JOINT_MODE_GEOMETRY.x_mode','old saved A probit mode','explicit inward A-anchor fallback'],
+            initialization_cost='previous B/A setup disclosed as shared; every family rebuilds its initial Full state billed D',
+            superseded_design=dict(status='NOT_RUN_SUPERSEDED_BEFORE_PHYSICS',
+                design='A96-anchor context distribution-shift stress',
+                paid_execution=False,primary_comparison=False),
+            feature_order=dict(scalar=['white(y)','white(F(context)-y)','native_context_q66','log1p(sv(Jz)^2)'],
                 image=['chi.real','chi.imag','A@z','sqrt(sum(abs(Dchi_dz)^2))']),
             scalar_dim=1154,image_shape=[4,24,24],label_coordinates=LABEL_COORDINATES,
             target='UNCHANGED_FULL_PROBIT_GAUSSIAN66_POSTERIOR',
@@ -290,7 +337,11 @@ def run(max_wall=7200):
             shutil.copyfile(ROOT/rel,dest)
         shutil.copyfile(frame_path,book.jobdir/'FIXED_FRAME_FROZEN.npz')
         shutil.copyfile(OUT/'configs/TARGET.json',book.jobdir/'TARGET_FROZEN.json')
-        models={}
+        shutil.copyfile(ROOT/'research/p1_material_target_20261018/inputs/geometry.json',
+            book.jobdir/'GEOMETRY_FROZEN.json')
+        dest=book.jobdir/'SOURCE/src/p3l/inversion.py'
+        shutil.copyfile(ROOT/'src/p3l/inversion.py',dest)
+        models={};context_summaries=[]
         for family,source in checkpoint_sources.items():
             if not source.is_file():
                 for parent in PARENTS:summaries.append(dict(parent=parent,model=family,
@@ -300,27 +351,68 @@ def run(max_wall=7200):
             destination.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,destination)
             try:
                 model,metadata=load_frozen_density(destination,family)
-                models[family]=model
                 write(destination.with_name('VALIDATED_METADATA.json'),metadata)
+                selection_status=neural_selection_status(metadata)
+                if selection_status=='NOT_RUN_VALIDATION_SELECTED_INITIALIZATION_NO_TRAINED_GAIN':
+                    write(destination.with_name('SELECTION_DECISION.json'),dict(status=selection_status,
+                        reason='actual validation selected update0; restored base weights equal seeded initialization in independent training audit',
+                        validation_selection=metadata,
+                        evidence=str(OUT/'AUDIT/neural_training/ACTUAL_TRAINING_REVIEW.json'),
+                        invalid_checkpoint=False,new_physics_RHS=0))
+                    for parent in PARENTS:summaries.append(dict(parent=parent,model=family,
+                        status=selection_status,checkpoint=str(source),best_update=0,new_physics_RHS=0))
+                    continue
+                models[family]=model
             except Exception as exc:
                 write(destination.with_name('VALIDATION_FAILURE.json'),dict(error=repr(exc),status='NOT_RUN_INVALID_CHECKPOINT'))
                 for parent in PARENTS:summaries.append(dict(parent=parent,model=family,
                     status='NOT_RUN_INVALID_CHECKPOINT',checkpoint=str(source),error=repr(exc),new_physics_RHS=0))
         write(book.jobdir/'CHECKPOINT_PREFLIGHT.json',dict(available_families=list(models),not_run=summaries))
+        actual_audit=OUT/'AUDIT/neural_training/ACTUAL_TRAINING_REVIEW.json'
+        if actual_audit.is_file():
+            audit=json.loads(actual_audit.read_text())
+            write(book.jobdir/'STAGE_D_DECISION.json',dict(
+                decision='STOP_PAYING_FULL_MH_FOR_VALIDATION_SELECTED_UNTRAINED_NEURAL_INITIALIZATIONS',
+                basis='actual completed train/validation selection and restored-weight audit, not a new numerical threshold',
+                evidence_source=str(actual_audit),actual_reports=audit.get('reports',[]),
+                inference='selected initialization weights show no trained gain; this does not prove neural architectures cannot learn',
+                available_trained_families=list(models),NOT_RUN=summaries,GT_read=False))
         if models:
+            # Freeze all initialization sources and coordinates before the first
+            # new context query. They never initialize or tune the context TRF.
+            starts={parent:finite_start(parent) for parent in PARENTS}
+            write(book.jobdir/'INITIALIZATIONS.json',dict(
+                parents={p:dict(x=starts[p][0],metadata=starts[p][1]) for p in PARENTS},
+                shared_across_families=True,no_context_initialization_from_modes=True,
+                all_D_initial_full_states_paid=True))
             target=Target(book)
             for index,parent in enumerate(PARENTS):
                 y=target.observation(parent)
-                anchor=target.load_cache(OUT/f'A/anchors/{parent}.npz',owner='saved paid y-only A anchor for learned correction online features')
-                scalar,image,J,residual=context_arrays(target,anchor,y)
-                start_x,start_meta=finite_start(parent,anchor.q)
+                context_before=costs(book)
+                context,report=reconstruct(target,y,parent,method='coarse_TRF',
+                    max_evaluations=16,initial_point=None,polish=False)
+                if report.get('failure') is not None:
+                    raise RuntimeError('context reconstruction failed; preserve its paid best cache and stop')
+                scalar,image,J,residual=context_arrays(target,context,y)
+                start_x,start_meta=starts[parent]
                 save(book.jobdir/'CONTEXTS'/f'{parent}.npz',scalar=scalar,image=image,
-                    q=anchor.q,J=J,residual=residual,initial_x=start_x)
+                    q=context.q,prediction=context.state.data,J=J,residual=residual,
+                    objective=np.array(report['objective']),Phi=np.array(report['phi']),
+                    endpoint_key=np.array(context.key),initial_x=start_x)
+                target.persist_cache(context,book.jobdir/'CONTEXTS/cache'/f'{parent}.npz')
+                context_cost=delta(context_before,costs(book))
                 write(book.jobdir/'CONTEXTS'/f'{parent}.json',dict(parent=parent,
-                    source=str(OUT/f'A/anchors/{parent}.npz'),initialization=start_meta,
-                    GT_used=False,context_distribution_shift='TRAIN_CHEAP16_TO_A_ANCHOR_DISCLOSED'))
-                features=(scalar,image,J,residual,anchor.q.copy(),Vw,Vs)
-                del anchor
+                    source_job=book.job,endpoint=context.key,
+                    reconstruction_report=report,context_evaluation_cap=16,
+                    context_law='MATCHED_TRAINING_COARSE_TRF16_ORIGINAL_PRIOR_START_NO_POLISH',
+                    context_setup_cost=context_cost,
+                    shared_context_cost_scope='one D context shared across all five fixed families',
+                    initialization=start_meta,GT_used=False))
+                context_summaries.append(dict(parent=parent,cost=context_cost,
+                    fresh_states=report['fresh_forward_states'],source_job=book.job,
+                    shared_by=list(FAMILIES),no_per_model_double_billing=True))
+                features=(scalar,image,J,residual,context.q.copy(),Vw,Vs)
+                del context
                 for family in FAMILIES:
                     if family not in models:continue
                     try:summary=run_pair(book,target,parent,family,models[family],features,start_x,start_meta,index)
@@ -331,8 +423,11 @@ def run(max_wall=7200):
                     summaries.append(summary)
                     write(book.jobdir/'PROGRESS.json',dict(comparisons=summaries))
                 target.backend()._transfers.clear()
-        write(book.jobdir/'SUMMARY.json',dict(status='COMPLETE_FIXED_EXPOSED_COMPARISON' if models else 'NOT_RUN_NO_VALID_CHECKPOINTS',
-            comparisons=summaries,GT_read=False,training=False,device='cpu',
+        write(book.jobdir/'SUMMARY.json',dict(status='COMPLETE_FIXED_EXPOSED_COMPARISON' if models else 'NOT_RUN_NO_TRAINED_GAIN_OR_AVAILABLE_MODELS',
+            comparisons=summaries,shared_context_setup=context_summaries,
+            conservative_total_RHS_bound=43808,
+            superseded_A96_context_stress_status='NOT_RUN_SUPERSEDED_BEFORE_PHYSICS',
+            GT_read=False,training=False,device='cpu',
             posterior_certification=False,normalization='architecture-and-affine-exact; not numerical mixing evidence'))
         status='COMPLETE'
     except BaseException as exc:error=repr(exc);raise
