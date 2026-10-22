@@ -1,0 +1,200 @@
+{
+  "revision": "P3L_B_GAUSSIAN_IMAGE_ESTIMATORS_001",
+  "reference": "PROFILE_PROPERTY_PLUGIN_GN_GAUSSIAN_REFERENCE",
+  "parents": [
+    {
+      "parent": "DEV_000",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_001",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_002",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_003",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_004",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_005",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_006",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_007",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_008",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_009",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_010",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_011",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_012",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_013",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_014",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_015",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_016",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_017",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_018",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_019",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_020",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_021",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_022",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_023",
+      "role": "train"
+    },
+    {
+      "parent": "DEV_024",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_025",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_026",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_027",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_028",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_029",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_030",
+      "role": "validation"
+    },
+    {
+      "parent": "DEV_031",
+      "role": "validation"
+    }
+  ],
+  "parent_selection": "ALL_32_DEVELOPMENT_NO_SELECTION_NO_DROPPING_FAILURES",
+  "anchors": "A/anchors/{parent}.npz; q, field, receiver_T required",
+  "covariance": "Cz=(I64+Jz.T@Jz)^-1; stable Cholesky; fixed anchor properties",
+  "field_mean": "TARGET.field_mean + MaterialPrior.A @ anchor_q[:64]",
+  "field_variance": "diag(A @ Cz @ A.T)",
+  "whitening": "source-major Re32 then Im32; multiply sqrt(2)/sigma",
+  "gaussian_center": "paid optimized anchor; no new mode optimization or linear recentering",
+  "estimates": [
+    "gaussian_material_mean",
+    "optimized_anchor",
+    "original_prior_material_mean",
+    "decoder_at_latent_mean",
+    "gaussian_material_geometric_median_mc"
+  ],
+  "geometric_median": {
+    "enabled": true,
+    "samples": 2048,
+    "seed": 2026102281,
+    "parent_rng": "SeedSequence([seed,parent_index])",
+    "tolerance": 1e-10,
+    "max_iterations": 2000,
+    "interpretation": "GAUSSIAN_REFERENCE_MC_NOT_FULL_POSTERIOR"
+  },
+  "risks": {
+    "masks": [
+      "full_grid",
+      "ROI"
+    ],
+    "metrics": [
+      "complex_MSE",
+      "complex_MAE",
+      "complex_RMSE"
+    ],
+    "comparisons": [
+      "optimized_anchor",
+      "original_prior_material_mean"
+    ],
+    "difference": "estimator risk minus baseline risk; negative favors estimator",
+    "aggregation": [
+      "all_development",
+      "train",
+      "validation"
+    ],
+    "bootstrap": {
+      "replicates": 2000,
+      "seed": 2026102295,
+      "interval": [
+        0.025,
+        0.975
+      ],
+      "method": "paired parent resampling within reported role; mean differences",
+      "missing": "retain all parents; full-cohort result null if any missing; no success-only primary"
+    }
+  },
+  "phases": "freeze -> all material arrays and generation manifest -> offline DEV chi reads -> evaluation",
+  "truth_access": "only inputs/offline_only/DEV_000..031.npz chi in evaluation phase",
+  "new_Maxwell_RHS": 0,
+  "new_LU": 0,
+  "new_forward_states": 0,
+  "array_limit_bytes": 134217728,
+  "heldout_access": false,
+  "NN_training": false,
+  "online_proposals": false,
+  "GT_selection": false,
+  "qualified_teacher": false,
+  "qualification": "No full/local posterior, probabilities, credible certification or Gaussian adequacy claim"
+}

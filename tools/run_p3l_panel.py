@@ -40,16 +40,20 @@ def schedule(tasks,name,workers=4):
     write(dest/'CLOSED.json',dict(status='COMPLETE',tasks=len(done),all_exit_zero=True))
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('panel',choices=['anchor_pilot','anchors','reference_pilot','references','crosschecks']);p.add_argument('--workers',type=int,default=4);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('panel',choices=['anchor_pilot','anchors','reference_pilot','reference_revision_pilot','geometry_pilot','mode_reference_pilot','references','crosschecks']);p.add_argument('--workers',type=int,default=4);a=p.parse_args()
     if a.panel=='anchor_pilot':tasks=[['anchor',f'DEV_{i:03d}','--method',method,'--polish'] for i in range(4) for method in ['full_TRF','coarse_TRF']]
     elif a.panel=='anchors':
         selection=json.loads((OUT/'A/BASELINE_SELECTION.json').read_text());method=selection['method'];tasks=[['anchor',f'DEV_{i:03d}','--method',method,'--polish'] for i in range(4,32)]
     else:
         parents=json.loads((OUT/'A/DEEP_REFERENCE_PARENTS.json').read_text())['parents']
         if a.panel=='reference_pilot':parents=parents[:2]
+        elif a.panel=='reference_revision_pilot':parents=parents[2:3]
+        elif a.panel in ['geometry_pilot','mode_reference_pilot']:parents=parents[2:3]
         elif a.panel=='references':parents=parents[2:]
-        if a.panel=='crosschecks':tasks=[['reference',parent,'--method',method,'--chain',str(c),'--warmup','256','--production','512'] for parent in parents[:4] for method in ['pcn','ess'] for c in range(2)]
-        else:tasks=[['reference',parent,'--method','mala','--chain',str(c)] for parent in parents for c in range(4)]
+        if a.panel=='mode_reference_pilot':tasks=[['reference',parent,'--method',method,'--chain',str(c)] for parent in parents for method in ['mala_mode','pcn_mode'] for c in range(4)]
+        elif a.panel=='crosschecks':tasks=[['reference',parent,'--method',method,'--chain',str(c),'--warmup','256','--production','512'] for parent in parents[:4] for method in ['pcn','ess'] for c in range(2)]
+        elif a.panel=='geometry_pilot':tasks=[['reference',parent,'--method','mala_decoder','--chain',str(c),'--stage','C'] for parent in parents for c in range(4)]
+        else:tasks=[['reference',parent,'--method','mala_retracted' if a.panel in ['references','reference_revision_pilot'] else 'mala','--chain',str(c)] for parent in parents for c in range(4)]
     schedule(tasks,a.panel,workers=a.workers)
 
 if __name__=='__main__':main()

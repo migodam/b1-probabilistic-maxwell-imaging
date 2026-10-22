@@ -1,0 +1,75 @@
+[
+  {
+    "name": "conditional_departure",
+    "stage": "B",
+    "job": "conditional_GN_departure_audit",
+    "args": [
+      "analyze_p3l_conditionals.py"
+    ]
+  },
+  {
+    "name": "gaussian_image_diagnostic",
+    "stage": "B",
+    "job": "evaluate_gaussian_reference_images",
+    "args": [
+      "run_p3l_accounted_analysis.py",
+      "gaussian_images"
+    ]
+  },
+  {
+    "name": "true_projector_geometry",
+    "stage": "C",
+    "job": "geometry_projector_DEV000_DEV028",
+    "args": [
+      "run_p3l_geometry.py"
+    ]
+  },
+  {
+    "name": "slice3_quadrature",
+    "stage": "B",
+    "job": "slice3_reference_DEV000",
+    "args": [
+      "run_p3l_slice_reference.py"
+    ]
+  },
+  {
+    "name": "hmc_pilot_c0",
+    "stage": "A",
+    "job": "hmc_DEV_030_pilot_c0",
+    "args": [
+      "run_p3l_hmc.py",
+      "--chain",
+      "0"
+    ]
+  },
+  {
+    "name": "hmc_pilot_c1",
+    "stage": "A",
+    "job": "hmc_DEV_030_pilot_c1",
+    "args": [
+      "run_p3l_hmc.py",
+      "--chain",
+      "1"
+    ]
+  },
+  {
+    "name": "hmc_pilot_c2",
+    "stage": "A",
+    "job": "hmc_DEV_030_pilot_c2",
+    "args": [
+      "run_p3l_hmc.py",
+      "--chain",
+      "2"
+    ]
+  },
+  {
+    "name": "hmc_pilot_c3",
+    "stage": "A",
+    "job": "hmc_DEV_030_pilot_c3",
+    "args": [
+      "run_p3l_hmc.py",
+      "--chain",
+      "3"
+    ]
+  }
+]

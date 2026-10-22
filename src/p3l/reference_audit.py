@@ -168,7 +168,7 @@ def audit_reference(paths, prior, warmup, output_dir):
             if isinstance(value,np.ndarray):
                 pixel_diag.setdefault(key,[]).append(value)
     pixel_diag = {key:np.concatenate(value,axis=0) for key,value in pixel_diag.items()}
-    mean = material.mean(axis=(0,1))
+    mean = material[0,0]+np.mean(material-material[0,0],axis=(0,1))
     variance = np.mean(np.abs(material-mean)**2,axis=(0,1))
     quantile_real = np.quantile(material.real,QUANTILE_LEVELS,axis=(0,1))
     quantile_imag = np.quantile(material.imag,QUANTILE_LEVELS,axis=(0,1))

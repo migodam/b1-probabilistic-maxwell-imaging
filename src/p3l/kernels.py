@@ -6,10 +6,11 @@ Callables own their costs/caches; counts below count invocations, not RHS.
 Freeze all kernel parameters before production. No adaptation is performed.
 """
 from dataclasses import dataclass
+from collections import OrderedDict
 from typing import Callable
 
 import numpy as np
-from scipy.linalg import solve_triangular
+from scipy.linalg import solve_triangular, cho_solve
 
 LogTarget = Callable[[np.ndarray], float]
 
@@ -255,6 +256,119 @@ class PreconditionedMALA:
         if not out.metadata["accepted"]:
             out = Transition(ChainState(current.q, current.log_density, g), out.metadata)
         out.metadata["log_proposal_ratio"] = float(log_proposal_ratio)
+        return out
+
+
+class PositionDependentMALA:
+    """MH-corrected Gaussian proposals with a deterministic position metric.
+
+    precision(q) returns an SPD dxd H(q). Covariance is h*H(q)^-1 and
+    drift is (h/2)*H(q)^-1*gradlogpi(q). Both normalized endpoint proposal
+    densities enter MH, including the varying log determinants. This is a
+    valid MH proposal without a divergence drift; no claim of an ideal
+    Riemannian diffusion is made. Geometry may be an approximation, but it
+    must be deterministic, frozen as a function of q, finite and SPD.
+
+    dimension=66 expects an explicitly declared unbounded transformed target
+    with every Jacobian in log density/gradient. dimension=64 updates only
+    canonical Gaussian64 and leaves the native properties fixed. All proposal
+    parameters and the precision callable must stay frozen during production.
+    A two-entry LRU caches endpoint geometry by exact full-state bytes.
+    Callback events expose geometry evaluations separately from target/gradient
+    counts in transition metadata. Callables own their actual physical costs.
+    """
+    def __init__(self, target: LogTarget, gradient, step_size, precision,
+                 dimension=66, callback=None):
+        if not np.isfinite(step_size) or step_size <= 0:
+            raise ValueError("step_size must be positive")
+        if dimension not in (64,66):
+            raise ValueError("dimension must be 64 (canonical) or 66 (transformed)")
+        if not callable(precision):
+            raise ValueError("precision must be a deterministic callable")
+        self.target, self.gradient, self.precision = target, gradient, precision
+        self.step_size, self.dimension = float(step_size), dimension
+        self.callback = callback
+        self._precision_cache = OrderedDict()
+
+    def clear_geometry_cache(self):
+        """Explicit cache invalidation; changing production geometry is not allowed."""
+        self._precision_cache.clear()
+
+    def _geometry(self,q):
+        key = q.tobytes()
+        if key in self._precision_cache:
+            geometry = self._precision_cache.pop(key)
+            self._precision_cache[key] = geometry
+            return geometry, 0
+        if self.callback is not None:
+            self.callback(dict(event="GEOMETRY_EVALUATION_ATTEMPT",q=q.copy(),
+                               geometry_evaluations=1,target_evaluations=0,gradient_evaluations=0))
+        H = np.array(self.precision(q.copy()),dtype=float,copy=True)
+        d = self.dimension
+        if (H.shape != (d,d) or not np.all(np.isfinite(H)) or
+                not np.allclose(H,H.T,atol=1e-12,rtol=1e-12)):
+            raise ValueError("position precision must be a finite symmetric dxd matrix")
+        H = .5*(H+H.T)
+        L = np.linalg.cholesky(H)
+        logdet = float(2*np.log(np.diag(L)).sum())
+        H.setflags(write=False)
+        L.setflags(write=False)
+        geometry = (H,L,logdet)
+        self._precision_cache[key] = geometry
+        while len(self._precision_cache) > 2:
+            self._precision_cache.popitem(last=False)
+        if self.callback is not None:
+            self.callback(dict(event="GEOMETRY_EVALUATED",q=q.copy(),
+                logdet_precision=logdet,geometry_evaluations=0,
+                target_evaluations=0,gradient_evaluations=0))
+        return geometry, 1
+
+    def step(self,current: ChainState,rng):
+        d,h = self.dimension,self.step_size
+        if d == 64:
+            _q(current.q,property_box=True)
+        ng = 0
+        g = current.gradient
+        if g is None:
+            g = _gradient(self.gradient(current.q.copy()))
+            ng += 1
+        if g.size < d:
+            raise ValueError("gradient is shorter than dynamic MALA dimension")
+        (H,L,logdet), ne = self._geometry(current.q)
+        drift = .5*h*cho_solve((L,True),g[:d])
+        delta = drift+np.sqrt(h)*solve_triangular(L.T,rng.normal(size=d),lower=False)
+        q = current.q.copy()
+        q[:d] += delta
+        lp = _log(self.target(q.copy()))
+        forward_error = delta-drift
+        forward_white = L.T@forward_error
+        logQforward = .5*logdet-.5*d*np.log(2*np.pi*h)-float(forward_white@forward_white)/(2*h)
+        if np.isneginf(lp):
+            out = _mh(current,q,lp,-np.inf,rng,"POSITION_DEPENDENT_MALA",ng)
+            out = Transition(ChainState(current.q,current.log_density,g),out.metadata)
+            out.metadata.update(geometry_evaluations=ne,log_proposal_forward=float(logQforward),
+                                log_proposal_reverse=None,logdet_precision_current=logdet,
+                                logdet_precision_proposed=None,geometry_cache_entries=len(self._precision_cache))
+            return out
+        gp = _gradient(self.gradient(q.copy()))
+        ng += 1
+        if gp.size < d:
+            raise ValueError("gradient is shorter than dynamic MALA dimension")
+        (Hp,Lp,logdetp), np_geometry = self._geometry(q)
+        ne += np_geometry
+        reverse_drift = .5*h*cho_solve((Lp,True),gp[:d])
+        reverse_error = -delta-reverse_drift
+        reverse_white = Lp.T@reverse_error
+        logQreverse = .5*logdetp-.5*d*np.log(2*np.pi*h)-float(reverse_white@reverse_white)/(2*h)
+        log_proposal_ratio = logQreverse-logQforward
+        ratio = lp-current.log_density+log_proposal_ratio
+        out = _mh(current,q,lp,ratio,rng,"POSITION_DEPENDENT_MALA",ng,gp)
+        if not out.metadata["accepted"]:
+            out = Transition(ChainState(current.q,current.log_density,g),out.metadata)
+        out.metadata.update(geometry_evaluations=ne,log_proposal_ratio=float(log_proposal_ratio),
+            log_proposal_forward=float(logQforward),log_proposal_reverse=float(logQreverse),
+            logdet_precision_current=logdet,logdet_precision_proposed=logdetp,
+            geometry_cache_entries=len(self._precision_cache))
         return out
 
 

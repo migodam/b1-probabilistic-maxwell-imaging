@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-from collections import Counter
+from collections import Counter,OrderedDict
 from contextlib import contextmanager
 from dataclasses import dataclass
 import fcntl,json,os,sys,time,signal
@@ -38,6 +38,20 @@ def pack(z):return np.concatenate((z.real.T,z.imag.T),axis=1).ravel()
 
 class BudgetStop(RuntimeError):pass
 
+class BoundedTransfers(OrderedDict):
+    """Bound native cache lifetime without changing a paid Point's T/J.
+
+    The upstream ordinary dict strongly owns AnchorState and hence its dense
+    LU/matrix. Keeping every historical receiver transfer caused campaign
+    memory growth. Eviction removes only a cache reference; Point.T/J remain
+    valid and any later genuinely missing solve is billed normally.
+    """
+    def __init__(self,*args,limit=4,**kwargs):
+        self.limit=limit;super().__init__(*args,**kwargs)
+    def __setitem__(self,key,value):
+        super().__setitem__(key,value);self.move_to_end(key)
+        while len(self)>self.limit:self.popitem(last=False)
+
 class Book:
     """Atomic campaign reservations. JSONL is authoritative, snapshot recoverable.
 
@@ -48,6 +62,10 @@ class Book:
     def __init__(self,stage,job,max_wall=7200):
         if stage not in CAPS:raise ValueError(stage)
         if (OUT/'CAMPAIGN_CLOSED.json').exists():raise BudgetStop('P3-L closed')
+        self.workerlock=(OUT/'paid_worker.lock').open('a')
+        try:fcntl.flock(self.workerlock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:
+            self.workerlock.close();raise BudgetStop('memory policy: one campaign worker at a time')
         auth=json.loads((OUT/'configs/AUTHORIZATION.json').read_text())
         if auth['campaign_id']!='P3L-20261022' or not auth['explicit_user_authorization']:raise BudgetStop('authorization')
         self.stage,self.job=stage,job;self.counts=Counter();self.credit=0;self.context={};self.finished=False
@@ -113,6 +131,7 @@ class Book:
         d=self._update('JOB_END',controlled=seconds,release_wall=True,status=status,error=error,counts=dict(self.counts),unused_forward_credit=self.credit)
         write(self.jobdir/'CLOSED.json',dict(status=status,error=error,controlled_wall_seconds=seconds,counters=dict(self.counts),stage_cumulative=d['stages'][self.stage]))
         fcntl.flock(self.joblock,fcntl.LOCK_UN);self.joblock.close();self.control.close()
+        fcntl.flock(self.workerlock,fcntl.LOCK_UN);self.workerlock.close()
 
 @dataclass
 class Point:
@@ -137,6 +156,7 @@ class Target:
             from a30.physics import FrozenMaxwellAdapter
             with self.book.span('paid_background_array_setup'):
                 self.model=FrozenMaxwellAdapter.from_background_npz(OUT/'inputs/background/weak.npz',self.book,purpose_prefix='P3L_'+self.book.stage)
+                self.model._transfers=BoundedTransfers(self.model._transfers,limit=4)
         return self.model
 
     def evaluate(self,q,purpose='target'):
