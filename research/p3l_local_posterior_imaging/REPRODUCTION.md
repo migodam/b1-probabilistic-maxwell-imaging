@@ -31,3 +31,9 @@ Git 保存报告、配置、图、源码、诊断摘要与小型成本快照。�
 原封账物理作业拒绝覆盖或自动重跑。读取、统计和出图可以从保存数组复现；新的 Full 重算仍需真实新增授权，不能删除 ledger、改 run ID 或新建 checkout 来伪装旧费用未发生。本轮未耗尽额度也不自动延续到下一个研究阶段。
 
 原始中断、数值失败、未合格参考、update0 神经检查点及未执行模块都属于证据。请保留它们，并同时区分数学正确性、数值近似、经验混合诊断和独立材料风险。
+
+## 必需的冻结资产
+
+分卷中另外包含原P1的 `research/p1_material_target_20261018/inputs/geometry.json`，使恢复后的prior坐标与原目标一致。A30后端依赖其仓库内原有vendored A29模块；请使用公开[A30仓库](https://github.com/migodam/a30-maxwell-observable-material-manifold)的 `717d3d26a290248bd2b9aeb55f3d03694b407b84`，保留vendor，不单独复制一个physics.py冒充完整依赖。
+
+实际Python/NumPy/SciPy/Matplotlib/PyTorch版本与线程设置在 [RUNTIME_ENVIRONMENT.json](configs/RUNTIME_ENVIRONMENT.json)。证据恢复后，设置 `B1_P3L_A30_ROOT` 为该A30 checkout、以恢复目录为B1根目录。只读复核现有摘要/链不需要新Maxwell；任何重新求解都继续受真实授权约束。

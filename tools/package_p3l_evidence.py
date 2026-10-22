@@ -69,7 +69,8 @@ def inventory():
                 stat = path.stat()
                 yield dict(path=path.relative_to(ROOT).as_posix(), size=stat.st_size,
                            mtime_ns=stat.st_mtime_ns, mode=stat.st_mode & 0o777)
-    for name in ("pyproject.toml", "requirements.txt", "README.md", "AGENTS.md", "LICENSE"):
+    for name in ("pyproject.toml", "requirements.txt", "README.md", "AGENTS.md", "LICENSE",
+                 "research/p1_material_target_20261018/inputs/geometry.json"):
         path = ROOT/name
         if path.is_file():
             if path.is_symlink():
