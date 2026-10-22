@@ -4,6 +4,13 @@
 
 本轮在原 P1 的 66 维 prior、TM24 full-Maxwell、噪声和观测合同下运行。研究目标是降低材料风险；候选数量、低 residual、接受率和单点图像都不代替 posterior 正确性。
 
+
+128 个冻结的新对象已完成独立评分，全部保留、无 fallback：近似 `weak density × strong Gaussian` 材料均值 MSE **0.0615021**，probit 坐标点估计 **0.0110309**。主比较差为 **+0.0504712**，配对 95% 区间 **[0.0427873, 0.0582865]**，风险增加约 **457.5%**。这否定当前近似成像路线的收益，不是否定真正 posterior mean 的 Bayes 最优性。
+
+同一批对象的 native 点估计 MSE 为 0.0124938；probit 点估计低约11.71%，这是坐标与优化后的点估计收益。native 的79/128、probit 的115/128达到各自冻结驻点标准，不能把它们叫作全局 MAP。所有128个有限 Full-SNIS 的 ESS 都小于2，因此不提供校准 posterior。
+
+[128 对象原始风险、CI 与失败表](D/LOCKED_IMAGE_RISK.json) · [独立统计复核](AUDIT/locked_results_review/REVIEW.md)
+
 已经实际完成：
 
 - 32 个独立 development 对象的 full-physics 基础反演：32 个进入原 noise-ball，27 个达到冻结驻点标准。
@@ -14,11 +21,11 @@
 - 同一原物理模型上的三维受限条件积分：最终两阶材料均值 RMS 差约 `8.46e-10`，log-normalizer 差约 `6.64e-8`。这是 **SLICE3_BOX**，不是积分其余 63 维后的 FULL marginal。
 - 全部 32 个 development 对象的离线成像对照：固定属性 GN Gaussian 参考的材料均值 MSE 为 `0.0206962`，优化基础图为 `0.0138212`。近似均值反而恶化约 49.7%；这不是对真正 posterior mean 的否定。
 - 联合属性修订也已完成：坐标 mode 图为 `0.0120131`，联合 GN Gaussian 材料均值为 `0.0185700`。四个 Full importance 诊断 ESS 均约 1。坐标 mode 改善与 Bayesian 材料平均必须分开。
-- 512 train / 128 validation 的独立观测、在线物理 context 与合法 joint-supervision 标签。128 个 locked parent 尚未读取或生成。
+- 512 train / 128 validation 的独立观测、在线物理 context 与合法 joint-supervision 标签。128 个 locked parent 后来按冻结协议独立生成与评分；没有使用旧 locked truth。
 
 内存中断已单独记账。上游缓存对旧 LU 的强引用导致增长；本轮适配器现只保留 4 个 transfer，完成对象后释放引用，全局锁限制一次一个 worker。640 个在线 context 已恢复完成，实测约 443–448 MiB。中断前的 109,488 RHS 和失败不删除、不重新归零。
 
-保留完整 66 维支持的非线性三角补偿坐标已完成四条 HMC：材料 Rhat 1.6054、MCSE 0.01082，未优于普通 HMC。15 次 joint-supervised Gaussian、MDN、Flow、CNN 训练也完成，验证集均选择未经训练的初始化；该训练路线暂不具备收益。当前继续独立 ESS 核验与已拟合简单密度的 Full-MH 诊断；未合格链绝不用于 distillation。
+保留完整 66 维支持的非线性三角补偿坐标已完成四条 HMC：材料 Rhat 1.6054、MCSE 0.01082，未优于普通 HMC。15 次 joint-supervised Gaussian、MDN、Flow、CNN 训练也完成，验证集均选择未经训练的初始化；该训练路线暂不具备收益。独立 ESS 四链也未合格；简单条件/无条件密度在四对象各256步 Full-MH 均0接受。当前只继续保留 decoder 的两臂代理力机制对照与暴露 DEV 的合法投影检查；未合格链绝不用于 distillation。
 
 16 份固定提案的实际求值对照也已完成：普通 Galerkin 与同空间 A17 的差异仅为浮点误差；rank-16 条件误差区间可提前判定 5/16 次接受决定，但 setup、界计算与 fallback 均需计费，尚无总成本加速结论。这里的区间基于浮点误差模型，不是定向区间运算认证。
 

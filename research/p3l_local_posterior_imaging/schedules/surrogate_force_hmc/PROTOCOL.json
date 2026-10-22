@@ -1,0 +1,222 @@
+{
+  "tasks": [
+    {
+      "name": "linear_c0",
+      "kind": "paid_chain",
+      "arm": "linear",
+      "chain": 0,
+      "job": "surrogate_force_linear_DEV030_c0",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "linear",
+        "--chain",
+        "0"
+      ]
+    },
+    {
+      "name": "linear_c1",
+      "kind": "paid_chain",
+      "arm": "linear",
+      "chain": 1,
+      "job": "surrogate_force_linear_DEV030_c1",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "linear",
+        "--chain",
+        "1"
+      ]
+    },
+    {
+      "name": "linear_c2",
+      "kind": "paid_chain",
+      "arm": "linear",
+      "chain": 2,
+      "job": "surrogate_force_linear_DEV030_c2",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "linear",
+        "--chain",
+        "2"
+      ]
+    },
+    {
+      "name": "linear_c3",
+      "kind": "paid_chain",
+      "arm": "linear",
+      "chain": 3,
+      "job": "surrogate_force_linear_DEV030_c3",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "linear",
+        "--chain",
+        "3"
+      ]
+    },
+    {
+      "name": "audit_linear",
+      "kind": "analysis_only_audit",
+      "arm": "linear",
+      "job": "audit_surrogate_force_linear_DEV030",
+      "destination": "C/references/DEV_030/surrogate_force_linear"
+    },
+    {
+      "name": "material_c0",
+      "kind": "paid_chain",
+      "arm": "material",
+      "chain": 0,
+      "job": "surrogate_force_material_DEV030_c0",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "material",
+        "--chain",
+        "0"
+      ]
+    },
+    {
+      "name": "material_c1",
+      "kind": "paid_chain",
+      "arm": "material",
+      "chain": 1,
+      "job": "surrogate_force_material_DEV030_c1",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "material",
+        "--chain",
+        "1"
+      ]
+    },
+    {
+      "name": "material_c2",
+      "kind": "paid_chain",
+      "arm": "material",
+      "chain": 2,
+      "job": "surrogate_force_material_DEV030_c2",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "material",
+        "--chain",
+        "2"
+      ]
+    },
+    {
+      "name": "material_c3",
+      "kind": "paid_chain",
+      "arm": "material",
+      "chain": 3,
+      "job": "surrogate_force_material_DEV030_c3",
+      "command": [
+        "run_p3l_surrogate_hmc.py",
+        "--arm",
+        "material",
+        "--chain",
+        "3"
+      ]
+    },
+    {
+      "name": "audit_material",
+      "kind": "analysis_only_audit",
+      "arm": "material",
+      "job": "audit_surrogate_force_material_DEV030",
+      "destination": "C/references/DEV_030/surrogate_force_material"
+    }
+  ],
+  "dependency": "schedules/frozen_locked_risk/CLOSED.json",
+  "scientific_method": "CONVENTIONAL_SURROGATE_FORCE_HMC_FULL_ENDPOINT_MH",
+  "novelty_claim": false,
+  "final_scientific_reviewer": "parent Codex",
+  "control_paths": {
+    "results": "AUDIT/surrogate_force/RESULTS.json",
+    "source": "AUDIT/surrogate_force/check_surrogate_force.py",
+    "explanation": "AUDIT/surrogate_force/README.md"
+  },
+  "project_protocol_paths": {
+    "configs/PROTOCOL.json": "configs/PROTOCOL.json",
+    "configs/AUTHORIZATION.json": "configs/AUTHORIZATION.json",
+    "configs/TARGET.json": "configs/TARGET.json",
+    "configs/LOCKED_CODE_VERSION.json": "configs/LOCKED_CODE_VERSION.json",
+    "THEORY_AND_ALGORITHM.md": "THEORY_AND_ALGORITHM.md"
+  },
+  "source_revision": {
+    "git_HEAD": "eb90b62c9784b7f3a25f5e2a5f3f709d9be839b0",
+    "frozen_dependency_commit": "eb90b62c9784b7f3a25f5e2a5f3f709d9be839b0",
+    "dependency_version_path": "configs/LOCKED_CODE_VERSION.json",
+    "frozen_dependency_diff": [],
+    "source_status": [
+      "?? research/p3l_local_posterior_imaging/C/surrogate_code.py",
+      "?? tools/run_p3l_surrogate_hmc.py",
+      "?? tools/run_p3l_surrogate_sequence.py"
+    ],
+    "identity_policy": "Git revision plus exact source snapshots; no digest checks"
+  },
+  "source_files": [
+    "tools/run_p3l_surrogate_sequence.py",
+    "tools/run_p3l_surrogate_hmc.py",
+    "research/p3l_local_posterior_imaging/C/surrogate_code.py",
+    "src/p3l/hmc.py",
+    "src/p3l/kernels.py",
+    "src/p3l/core.py",
+    "src/p3l/reference.py",
+    "src/p3l/reference_audit.py",
+    "src/p3l/diagnostics.py",
+    "src/p1_material/prior.py"
+  ],
+  "interpreter": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "arms": [
+    "linear",
+    "material"
+  ],
+  "chains_per_arm": 4,
+  "warmup": 1024,
+  "production": 4096,
+  "seed_rule": "2026102341+chain, shared across arms",
+  "matched_mechanism_comparison": "linear versus material only; identical new two-arm protocol",
+  "ordinary_HMC_external_context": {
+    "warmup": 512,
+    "production": 1024,
+    "lengths": [
+      4,
+      8,
+      12
+    ],
+    "seed": "SeedSequence([2026102290,chain])",
+    "interpretation": "external cost/Pareto context, NOT a matched sole-force ablation"
+  },
+  "superiority_claim": "none from unequal lengths/warmup; compare statistical errors and actual total RHS/wall only",
+  "qualified_reference_guarantee": false,
+  "audit": {
+    "function": "unchanged p3l.reference_audit.audit_reference",
+    "warmup": 1024,
+    "Book_stage": "C",
+    "analysis_only": true,
+    "Target_constructed": false,
+    "original_MaterialPrior": true,
+    "thresholds": {
+      "rhat_max_exclusive": 1.01,
+      "minimum_material_function_bulk_and_tail_ess": 1000.0,
+      "full_grid_mean_rms_mcse_max_inclusive": 0.001
+    },
+    "qualification": "preserve unchanged reference_qualified=False and crosscheck requirement"
+  },
+  "numerical_events": "preserve all saved divergence/large-energy-error flags and transition summaries",
+  "upper_RHS_per_arm": 164384,
+  "actual_planned_upper_RHS_both_arms": 328768,
+  "setup_source_reuse": "same previously paid A mala-mode initialization as ordinary HMC; each chain rebuilds Full state paid C",
+  "within_job_setup_reuse": "an unchanged paid current endpoint may reuse already paid J/T; ledger remains authoritative",
+  "ledger_cost_policy": "sum actual events by exact C job identity; includes failed/rejected Full8 and J32 setup",
+  "wall_policy": "actual per-job C Book controlled wall plus proxy CPU counters; idle queue wait disclosed separately",
+  "max_wall_per_chain": 7200,
+  "max_wall_per_audit": 600,
+  "wait_poll_seconds": 30,
+  "automatic_retries": false,
+  "failed_or_partial_jobs": "STOP_PRESERVE_NO_REPLAY",
+  "already_COMPLETE_jobs": "reuse explicit receipts and saved outputs; never run twice",
+  "GT_read": false,
+  "training": false
+}

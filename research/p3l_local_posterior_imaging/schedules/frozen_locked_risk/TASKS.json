@@ -1,0 +1,44 @@
+[
+  {
+    "name": "simple_full_MH",
+    "stage": "D",
+    "job": "simple_correction_exposed_DEV",
+    "args": [
+      "run_p3l_simple_correction.py"
+    ]
+  },
+  {
+    "name": "locked_truth",
+    "stage": "D",
+    "job": "dataset_locked",
+    "args": [
+      "generate_p3l_observations.py",
+      "locked"
+    ]
+  },
+  {
+    "name": "locked_online",
+    "stage": "D",
+    "job": "locked_imaging_frozen_panel",
+    "args": [
+      "run_p3l_locked_imaging.py"
+    ]
+  },
+  {
+    "name": "locked_full_IS",
+    "stage": "D",
+    "job": "locked_importance_frozen_128",
+    "args": [
+      "run_p3l_locked_importance.py"
+    ]
+  },
+  {
+    "name": "locked_offline_scoring",
+    "stage": "D",
+    "job": "evaluate_locked_imaging",
+    "args": [
+      "run_p3l_accounted_analysis.py",
+      "locked_imaging"
+    ]
+  }
+]
