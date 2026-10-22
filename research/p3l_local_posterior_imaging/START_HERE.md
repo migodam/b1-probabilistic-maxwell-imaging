@@ -16,4 +16,6 @@
 
 [同一B1的证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3l-local-posterior-20261022)：大数组、原始chains、模型权重与完整追加ledger。上传/匿名读取状态单独记录，不以网页可达替代科学通过。
 
+原始证据61卷已公开，见[发布与恢复说明](EVIDENCE_PUBLICATION.md)及[匿名读取回执](WEB_READBACK.json)。封账记录先于上传，本回执不改变其科学裁决或费用。
+
 本轮是二维scalar-TM/VIE、原P1 prior；没有新Mie、三维vector-Maxwell或外部云计算。停止当前Gaussian成像与无收益NN/A17整合，转向可信Full参考及非Gaussian条件机制；当前不具备强IEEE TAP算法证据。
