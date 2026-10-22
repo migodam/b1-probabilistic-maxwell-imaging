@@ -1,0 +1,624 @@
+schema_version: "1.0"
+protocol_id: "Research_P3L_20261019"
+title: "Geometry-Aware Probabilistic Exploration of Local Maxwell Materials"
+language: "zh-CN"
+source_report: "Research_P3L_Report_ZH.md"
+source_section: "15"
+created_date: "2026-10-19"
+status: "PROPOSED_NOT_EXECUTED"
+execution_authorized: false
+auto_execute: false
+paid_compute_authorized: false
+new_physics_authorized: false
+
+actual_execution_this_research_task:
+  execution_authorized: false
+  new_maxwell_solves: 0
+  new_complex_rhs: 0
+  new_physics_factorizations: 0
+  new_physics_experiments: 0
+  neural_training_runs: 0
+  paid_physics_experiments: 0
+  note: "报告第14章的解析/数值积分核验不属于新Maxwell实验。"
+
+interpretation:
+  execution_authorized: false
+  all_caps_are_proposed: true
+  cap_is_not_a_runtime_forecast: true
+  stop_at_first_reached_cap: true
+  exceeding_cap_requires_new_explicit_authorization: true
+  unresolved_parameters_block_execution: true
+  prior_or_noise_changes_to_obtain_pass_are_prohibited: true
+  allow_partial_or_unqualified_results: true
+  never_treat_ess_target_as_achieved_sample_count: true
+
+model_contract:
+  execution_authorized: false
+  model_id: "P1_TM24_original_prior_noise_acquisition"
+  state_equation: "2D scalar TM/VIE"
+  grid_shape: [24, 24]
+  number_of_grid_cells: 576
+  roi_cell_count: 256
+  roi_definition: "r <= 0.38"
+  number_of_illuminations: 8
+  number_of_complex_receivers_per_illumination: 32
+  complex_measurement_dimension: 256
+  real_measurement_dimension: 512
+  gain: 1.0
+  host_susceptibility:
+    real: 0.1
+    imaginary: 0.04
+  latent:
+    gaussian_dimension: 64
+    gaussian_mean: 0.0
+    gaussian_covariance: "I_64"
+    uniform_dimension: 2
+    uniform_support_each: [0.0, 1.0]
+    total_dimension: 66
+  properties:
+    A: "0.8 + u_1"
+    B: "0.03 + 0.15 * u_2"
+  material_law: "chi = chi_b + phi(z) * (A + i B)"
+  fraction_decoder:
+    smoothness: "C2,1; piecewise polynomial"
+    lower_field_threshold: -0.5
+    upper_field_threshold: 0.5
+    transition_polynomial: "0.5 + 15*f/8 - 5*f^3 + 6*f^5"
+    left_saturation: 0.0
+    right_saturation: 1.0
+  noise:
+    distribution: "circular complex Gaussian"
+    complex_channel_variance: "sigma^2"
+    real_or_imaginary_variance: "sigma^2 / 2"
+    sigma: 0.00119211798514519
+    per_parent_snr_renormalization: false
+    real_whitening_scale: "sqrt(2) / sigma"
+    negative_log_likelihood: "0.5 * norm(real_whitened_residual)^2"
+    equivalent_complex_expression: "norm(F(g(q)) - y)^2 / sigma^2"
+  prior_reference_measure: "dz du"
+  prior_density: "(2*pi)^(-32) * exp(-norm(z)^2/2) * indicator(u in [0,1]^2)"
+  multiply_material_gram_determinant_into_prior: false
+  noise_ball_as_implicit_posterior_support: false
+  reference_prior_material_mean:
+    roi: {real: 0.75, imaginary: 0.0925}
+    outside_roi: {real: 0.1, imaginary: 0.04}
+    requires_new_maxwell: false
+
+target_contract:
+  execution_authorized: false
+  report_target_families:
+    FULL:
+      meaning: "Original prior times original Maxwell likelihood."
+      hard_local_truncation: false
+    LOCAL_C:
+      meaning: "Original posterior conditioned on a frozen, y-defined local region C_y."
+      local_region_definition_required: true
+      unknown_escape_mass_label: "LOCAL_ONLY_ESCAPE_MASS_UNKNOWN"
+      full_posterior_coverage_claim_without_escape_audit: false
+    SLICE_PROFILE:
+      meaning: "Artificial restricted law; exact subtype must be recorded."
+      subtypes: [SLICE, PROFILE]
+      may_be_reported_as_original_weak_marginal: false
+  every_result_requires_fields:
+    - target_family
+    - target_subtype_if_applicable
+    - strong_direction_treatment
+    - reference_measure
+    - local_region_id_if_applicable
+    - approximation_status
+  strong_direction_treatments:
+    - fixed
+    - conditional_optimization
+    - bayesian_marginalization
+    - explicit_joint_sampling
+  exactness_labels:
+    - EXACT_INVARIANT_KERNEL_NOT_A_MIXING_CERTIFICATE
+    - CERTIFIED_DECISION
+    - NUMERICAL_REFERENCE_CROSS_CHECKED
+    - APPROXIMATE_TARGET
+    - HEURISTIC
+    - UNQUALIFIED
+  weak_coordinate_contract:
+    first_implementation: "Euclidean-orthogonal split of the 64 Gaussian coordinates."
+    two_uniform_properties: "Keep explicit and count separately."
+    gaussian_weak_dimension_symbol: "d"
+    default_outer_dimension: "d + 2"
+    remaining_gaussian_dimension: "64 - d"
+    low_dimensional_outer_is_not_full_marginal_integration: true
+    gaussian_decoder_moments_are_exact_only_under_declared_gaussian_reference: true
+    full_importance_proposal_requires_normalized_strong_and_property_densities: true
+  pseudo_marginal_contract:
+    nonnegative_unbiased_normalizer_required_for_outer_target: true
+    initialize_at_positive_normalizer: true
+    preserve_inner_random_variables_and_current_weight_on_rejection: true
+    cv_ratio_observable_requires_strictly_positive_normalizer_almost_surely: true
+    alternative_for_possible_zero_weights: "Prove the CV numerator vanishes on zero-normalizer events, or prove the missing conditional integral is zero."
+    local_region_truncation_may_create_zero_weight_events: true
+    cv_coefficient_must_be_independent_of_its_evaluated_sample: true
+    ordinary_reference_ratio_is_assumed_unbiased: false
+    cv_ratio_observable_is_a_posterior_sample: false
+
+data_governance:
+  execution_authorized: false
+  statistical_unit: "parent"
+  parent_manifest_must_be_frozen_before_anchor_generation: true
+  master_seed: null
+  master_seed_requires_preregistration: true
+  same_parent_items_share_split:
+    - noise_replicas
+    - anchor_contexts
+    - trajectories
+    - posterior_samples
+    - teacher_samples
+  processes:
+    truth_generator:
+      exposes_to_inference: [sanitized_observations, frozen_public_model_metadata]
+      retains_privately: [latent_truth, material_truth]
+    inference:
+      may_read_truth: false
+      may_use_truth_for_initialization_directions_ranking_or_stopping: false
+    oracle_evaluator:
+      separate_process: true
+      may_read_truth_after_method_outputs_are_frozen: true
+      feeds_back_into_locked_inference: false
+  historical_data:
+    P2_24_parents: "Regression/development only."
+    audited_A_B: "Exposed regression conditions only."
+    historical_samples_are_posterior_teacher_by_default: false
+  failure_policy:
+    include_all_parents_in_end_to_end_risk: true
+    report_anchor_success_and_failure_strata: true
+    allowed_fallback_families: [FULL, WIDER_LOCAL_REGION, DETERMINISTIC]
+    selected_fallback_and_cap_must_be_frozen: true
+    delete_failed_parents: false
+    select_training_parents_by_gt_surface_distance: false
+
+dataset_plan:
+  execution_authorized: false
+  principal_pool:
+    train:
+      initial_parents: 2048
+      final_cumulative_parents: 8192
+      noise_realizations_per_parent: 2
+      final_contexts: 16384
+    validation:
+      parents: 1024
+      noise_realizations_per_parent: 1
+      contexts: 1024
+    locked_test:
+      parents: 512
+      noise_realizations_per_parent: 1
+      contexts: 512
+    total_distinct_truth_parents: 9728
+    total_contexts: 17920
+    truth_forward_complex_rhs: 77824
+    truth_forward_formula: "9728 * 8"
+  stage_I_additional_pool:
+    independent_P1_development_parents: 32
+    included_in_principal_pool_total: false
+    truth_forward_complex_rhs_if_all_generated: 256
+    allocation_to_stage_I_budget_must_be_logged: true
+  derived_total_before_optional_generalization:
+    distinct_truth_parents: 9760
+    truth_generation_complex_rhs: 78080
+    scope_note: "Principal pool plus separate 32 Stage-I P1 parents; excludes optional acquisition-shift parents."
+  truth_forward_reuse:
+    multiple_noises_same_parent: true
+    anchor_or_jacobian_reuse_across_distinct_y_as_if_identical: false
+  development_reuse:
+    stage_II_parents_are_subset_of_training_development_pool: true
+    stage_III_parents_are_subset_of_stage_II: true
+    repeated_setup_and_new_queries_remain_billable: true
+
+reference_acceptance:
+  execution_authorized: false
+  minimum_overdispersed_chains: 4
+  initial_warmup_transitions_per_chain: 1024
+  initial_production_transitions_per_chain: 4096
+  minimum_material_function_ess: 1000
+  rank_normalized_split_rhat_max_exclusive: 1.01
+  mean_and_variance_mcse_fraction_of_target_difference_max_exclusive: 0.3333333333333333
+  target_difference_scale_must_be_frozen: true
+  minimum_distinct_sampling_mechanisms_for_cross_check: 2
+  cross_check_candidates:
+    - BLOCKED_PCN_MALA
+    - HMC
+    - TEMPERED_SMC
+  diagnostic_success_is_global_mixing_proof: false
+  on_cap_without_diagnostic_success: "UNQUALIFIED"
+  failed_references_may_be_used_as_true_posterior_teacher: false
+  property_boundary_and_saturation_strata_required: true
+
+cost_contract:
+  execution_authorized: false
+  rhs_unit: "complex right-hand side"
+  formula: "RHS = 8*n_fresh_forward + c_gradient*n_gradient + c_full_J*n_full_J + c_HVP*n_HVP + setup_rhs + fallback_rhs"
+  fresh_forward_rhs: 8
+  gradient_rhs: null
+  hvp_rhs: null
+  full_jacobian_incremental_rhs_assumption: 32
+  full_jacobian_assumption_status: "MUST_VERIFY_RECEIVER_ADJOINT_IMPLEMENTATION_BEFORE_USING_CAP"
+  full_jacobian_assumption_includes_new_forward_rhs: false
+  count_rejected_slice_proposals_and_hmc_internal_steps: true
+  count_current_and_reverse_mala_gradients_as_actually_used: true
+  cache_owner_and_availability_must_be_recorded: true
+  shared_reference_truth_is_not_free_method_specific_oracle: true
+  count_all_new_method_specific_setup: true
+  anchor_cap:
+    execution_authorized: false
+    per_context_fresh_forward_states: 64
+    per_context_incremental_full_jacobian_refreshes: 24
+    per_context_complex_rhs_if_assumption_verified: 1280
+    all_principal_pool_contexts: 17920
+    all_principal_pool_complex_rhs_if_assumption_verified: 22937600
+    all_principal_pool_fresh_forward_state_cap: 1146880
+    formula: "17920 * (64*8 + 24*32)"
+    extra_unledgered_gradient_or_hvp_calls_allowed: false
+    factorization_counts_and_linear_algebra_wall_recorded_separately: true
+
+stages:
+  stage_I:
+    execution_authorized: false
+    status: "NOT_RUN"
+    name: "Low-dimensional controls and reliable probability references"
+    source_section: "15.2"
+    prerequisites:
+      - model_and_target_contract_frozen
+      - parent_manifest_and_seed_frozen
+      - strict_process_isolation_verified
+      - actual_solver_rhs_costs_verified
+      - separate_explicit_execution_authorization
+    sample_plan:
+      analytic_controls: "Separate mathematical controls; not a new prior or physics reference."
+      independent_P1_development_parents: 32
+      deep_reference_parents: 16
+      gaussian_weak_dimensions: [2, 4, 8]
+      default_outer_dimensions_including_uniform_properties: [4, 6, 10]
+      stratification:
+        - anchor_success_failure
+        - property_boundary_proximity
+        - decoder_saturation
+        - observability_spectrum
+    reference_levels:
+      slice_2D:
+        target_family: SLICE_PROFILE
+        target_subtype: SLICE
+        mechanism: "High-order quadrature."
+        other_coordinates_including_properties_must_be_explicitly_fixed: true
+      slice_4D:
+        target_family: SLICE_PROFILE
+        target_subtype: SLICE
+        mechanism: "Sparse/adaptive quadrature plus independent sampling."
+        all_frozen_coordinates_must_be_declared: true
+      slice_or_outer_8D:
+        mechanism: "Long chains cross-checked with SMC."
+        exact_target_dimension_must_be_declared: true
+      original_P1_weak_marginal:
+        required_mechanisms:
+          - full_66_dimensional_numerical_reference
+          - reliable_nested_integration
+          - valid_pseudo_marginal
+        require_at_least_one: true
+        frozen_strong_slice_is_sufficient: false
+    caps:
+      execution_authorized: false
+      per_deep_reference_complex_rhs: 300000
+      number_of_deep_references: 16
+      deep_reference_total_complex_rhs: 4800000
+      controls_and_slices_complex_rhs: 1000000
+      total_complex_rhs: 5800000
+      cpu_node_cores: 64
+      node_wall_hours: 48
+      first_limit_stops: true
+    decision_gates:
+      - "Detectable profile/normal-volume or conditional-material-mean discrepancy."
+      - "Reference posterior-mean risk headroom relative to optimized MAP exceeds Monte Carlo error."
+      - "If no material headroom, stop complex learned-posterior branch and retain UQ/cost questions."
+
+  stage_II:
+    execution_authorized: false
+    status: "NOT_RUN"
+    name: "P1 local posterior benchmark"
+    source_section: "15.3"
+    prerequisites:
+      - stage_I_reference_gate_reviewed
+      - methods_parameters_and_fallback_frozen
+      - separate_explicit_execution_authorization
+    parents: 256
+    parent_pool: "New principal training/development pool."
+    gaussian_weak_dimensions: [8, 16, 24]
+    outer_dimensions_including_uniform_properties: [10, 18, 26]
+    full_factorial_all_methods_all_dimensions_required: false
+    comparison_order:
+      - frozen_sampler_and_strong_treatments_A_B_C
+      - promote_selected_dimension_and_treatment_to_next_stage
+    baselines:
+      - EXACT_PRIOR_MATERIAL_MEAN
+      - PHYSICS_ONLY_ANCHOR
+      - OPTIMIZED_DETERMINISTIC_MAP
+      - FULL_PCN
+      - ELLIPTICAL_SLICE
+      - BLOCKED_PCN_MALA
+      - BOUNDARY_AWARE_LAPLACE
+      - PROFILE
+      - WEAK_MARGINAL_WITH_STRONG_CONDITIONAL_MATERIAL_MOMENTS
+    caps:
+      execution_authorized: false
+      posterior_comparison_complex_rhs_per_parent: 40000
+      posterior_comparison_total_complex_rhs: 10240000
+      per_parent_cap_scope: "All compared posterior methods together, unless a new explicit budget replaces it."
+      anchor_cost_included: false
+      anchor_cap_reference: "cost_contract.anchor_cap"
+    adaptive_dimension_selection:
+      allowed_inputs:
+        - posterior_material_covariance_tail
+        - estimable_gradient_reduction_error
+        - strong_conditional_material_variance
+      gt_projection_allowed: false
+      count_selection_refresh_and_failure_costs: true
+    decision_gates:
+      - "Insufficient ESS at cap requires fewer methods or improved kernels; do not relabel short chains as posterior teachers."
+
+  stage_III:
+    execution_authorized: false
+    status: "NOT_RUN"
+    name: "Geometry and computation reuse"
+    source_section: "15.4"
+    prerequisites:
+      - stage_II_selected_targets_and_baselines_frozen
+      - paired_proposal_and_random_number_manifest_frozen
+      - separate_explicit_execution_authorization
+    parents: 128
+    parent_pool: "Preselected subset of Stage II."
+    comparisons:
+      - FROZEN_GEOMETRY
+      - EVERY_STEP_DYNAMIC_GEOMETRY
+      - CURVATURE_TRIGGERED_REFRESH
+      - MATERIAL_SECANT_PREDICTOR
+      - TRAJECTORY_TUBES
+      - SURFACE_SAMPLER_WITH_CONDITIONAL_THICKNESS
+    evaluator_fairness:
+      same_candidate_and_random_numbers_first: true
+      whole_chain_comparison_after_evaluator_test: true
+      baselines: [OPTIMIZED_FULL, KRYLOV_RECYCLING, GOAL_ROM, A17_SAME_SPACE]
+      offline_full_error_may_be_called_online_certificate: false
+    required_geometry_diagnostics:
+      - projector_rotation
+      - normal_lie_bracket_leakage
+      - spine_and_hessian_conditioning
+      - saturation_events
+      - normal_volume_variation
+      - certificate_interval_width
+      - refinement_and_fallback_frequency
+      - actual_error_to_bound_ratio
+    caps:
+      execution_authorized: false
+      additional_complex_rhs: 5000000
+      cpu_node_cores: 64
+      node_wall_hours: 48
+      first_limit_stops: true
+    promotion_gate:
+      total_cost_reduction_fraction_min: 0.25
+      paired_interval_must_exclude_zero_gain: true
+      probability_quality_may_deteriorate: false
+      alternative_gate: "Improved material ESS/second at the same target and error contract."
+      thresholds_are_proposed_not_observed: true
+    larger_grid_extension:
+      execution_authorized: false
+      candidates: [TM48, TM96, MATRIX_FREE]
+      new_authorization_required: true
+      require_large_scale_complexity_mechanism_before_extension: true
+
+  stage_IV:
+    execution_authorized: false
+    status: "NOT_RUN"
+    name: "Learned probability and RL"
+    source_section: "15.5"
+    prerequisites:
+      - qualified_reference_targets_available
+      - density_reference_measures_and_labels_frozen
+      - learning_curve_and_amortization_gate_reviewed
+      - neural_configuration_matrix_and_seed_manifest_frozen
+      - separate_explicit_execution_authorization
+    initial_train_parents: 2048
+    initial_train_noises_per_parent: 2
+    final_dataset_reference: "dataset_plan.principal_pool"
+    expansion_gate:
+      checks: [NLL, COVERAGE, MATERIAL_RISK, AMORTIZED_TOTAL_COST]
+      locked_test_used_for_expansion_decision: false
+    teachers:
+      execution_authorized: false
+      initial_contexts: 128
+      maximum_cumulative_contexts: 256
+      initial_split_scope: "Training/development only."
+      final_allocation:
+        train: 192
+        validation: 32
+        final_reference_audit: 32
+      final_reference_audit_subset_of_locked_test: true
+      final_reference_audit_read_only_after_model_freeze: true
+      final_reference_audit_may_flow_back_to_training: false
+      per_context_complex_rhs_cap: 300000
+      initial_cumulative_complex_rhs_cap: 38400000
+      final_cumulative_complex_rhs_cap: 76800000
+      reference_acceptance_reference: "reference_acceptance"
+      pooled_production_states_at_initial_schedule: 16384
+      approximate_max_iat_for_ess_1000_at_that_count: 16.384
+      ess_target_is_guaranteed: false
+    neural_training:
+      execution_authorized: false
+      report_configuration_labels: [GAUSSIAN, MDN, MLP, CNN, FLOW]
+      representative_configurations: 5
+      seeds_per_configuration: 3
+      maximum_model_seed_runs: 15
+      gpu_hours_cap_per_model_seed_run: 6
+      representative_runs_cumulative_gpu_hours_cap: 90
+      total_initial_neural_search_gpu_hours_cap: 96
+      first_limit_stops: true
+      configuration_budget_scope: "Five representative configurations, three seeds each, at most six GPU-hours per individual model-seed run."
+      configuration_matrix_must_be_frozen: true
+      ablations_are_full_factorial_by_default: false
+      extra_ablations_require_replacement_within_budget_or_new_authorization: true
+      consistency_note: "5 configurations * 3 seeds * 6 GPU-hours = 90 GPU-hours; the 96-hour global first-round neural-search cap includes any additional in-scope work."
+      training_physics_calls_by_default: 0
+      production_importance_or_mh_correction_cost_counted: true
+    rl_training:
+      execution_authorized: false
+      first_mode: "Offline cache and teacher material-moment reward."
+      new_online_rollout_complex_rhs_cap: 5000000
+      baselines_required: [FIXED_SCHEDULE, CURVATURE_THRESHOLD, CONTEXTUAL_BANDIT]
+      further_budget_requires_baseline_gate_and_new_authorization: true
+      frozen_policy_at_test: true
+      full_forward_and_reverse_proposal_probability_required: true
+      history_adaptation_requires_separate_invariance_analysis: true
+    required_ablation_axes:
+      - diagonal_gaussian_vs_full_gaussian_vs_mdn_vs_flow
+      - mlp_vs_cnn
+      - frozen_frame_vs_ambient_covariance
+      - gt_nll_vs_teacher_distillation
+      - density_only_vs_density_plus_conditional_moments
+      - uncorrected_vs_equal_budget_exact_correction
+      - rl_vs_schedule_vs_curvature_threshold_vs_bandit
+    learning_curve_x_axis: "Independent parent count, not candidate/sample count."
+
+  stage_V:
+    execution_authorized: false
+    status: "NOT_RUN"
+    name: "Locked generalization and paper decision"
+    source_section: "15.6"
+    prerequisites:
+      - model_and_hyperparameters_frozen
+      - local_region_and_target_labels_frozen
+      - stopping_and_failure_fallback_frozen
+      - calibration_tolerances_frozen
+      - cross_method_online_budget_allocation_frozen
+      - separate_explicit_execution_authorization
+    main_locked_test_parents: 512
+    main_locked_test_noise_realizations_per_parent: 1
+    main_locked_test_truth_and_anchor_in_principal_pool_budget: true
+    additional_online_posterior_complex_rhs_cap: 20480000
+    online_posterior_complex_rhs_cap_per_parent: 40000
+    online_budget_formula: "512 * 40000"
+    online_budget_scope: "Across all preregistered test methods, not a separate cap for every method."
+    online_budget_status: "PROPOSED_TOTAL_CAP_FROZEN_IN_REPORT; METHOD_ALLOCATION_TO_PREREGISTER"
+    charge_main_truth_and_anchor_again_to_online_budget: false
+    further_noise_generalization:
+      execution_authorized: false
+      enabled_by_default: false
+      prerequisite: "Main fixed-acquisition P1 task passes."
+      selected_existing_parents: 128
+      selection_frozen_before_unblinding: true
+      additional_noise_replicas_per_parent: null
+      new_truth_forward_required_for_same_parent_same_acquisition: false
+      extra_anchor_and_inference_cost_is_free: false
+      complex_rhs_cap: 5500000
+      cap_includes_new_anchor: true
+      cap_includes_online_inference: true
+      cap_scope: "Total incremental cost across the 128 preselected parents and all new noise replicas."
+      authorization_and_noise_count_preregistration_required: true
+    acquisition_generalization:
+      execution_authorized: false
+      enabled_by_default: false
+      prerequisite: "Main fixed-acquisition P1 task passes."
+      fresh_parents: 128
+      included_in_principal_pool_total: false
+      acquisition_settings: null
+      likelihood_and_context_redefinition_required: true
+      complex_rhs_cap: 5500000
+      cap_includes_new_truth_generation: true
+      cap_includes_new_anchor: true
+      cap_includes_online_inference: true
+      state_and_jacobian_rhs_costs_recomputed_for_new_acquisition: true
+      cap_scope: "Total incremental cost across 128 new acquisition-shift parents."
+      authorization_and_acquisition_preregistration_required: true
+    main_material_risk_gate:
+      comparator: "OPTIMIZED_DETERMINISTIC_INVERSION"
+      metric: "Full-grid complex material MSE"
+      relative_reduction_fraction_min: 0.05
+      paired_confidence_level: 0.95
+      paired_interval_lower_bound_must_exceed_zero: true
+      calibration_tolerance: null
+      calibration_tolerance_must_be_preregistered: true
+      thresholds_are_proposed_not_observed: true
+    statistics:
+      unit: "parent"
+      paired_risk_interval: "Parent-level paired bootstrap or preregistered hierarchical model."
+      coverage_interval: "Binomial for independent parent-level coverage indicators; spatial/repeated-noise dependence requires clustered or hierarchical treatment."
+      multiple_seeds_are_independent_parents: false
+      multiple_noises_are_independent_parents: false
+      report_per_parent_results: true
+      report_spectrum_boundary_anchor_strata: true
+    decision_outcomes:
+      - MATERIAL_RISK_IMPROVEMENT_WITH_CALIBRATION
+      - UQ_IMPROVEMENT_WITHOUT_MSE_GAIN
+      - LOCAL_SUPPORT_FAILURE
+      - PHYSICS_COST_NO_GO
+      - REFERENCE_UNQUALIFIED
+      - RL_OR_NETWORK_NO_INCREMENT
+
+metrics_and_ledger:
+  execution_authorized: false
+  probability_metrics:
+    - posterior_material_mean
+    - posterior_material_covariance
+    - material_and_latent_credible_coverage
+    - data_dependent_sbc
+    - proper_nll
+    - posterior_predictive_checks
+    - local_escape_status
+  sampling_metrics:
+    - material_function_bulk_ess
+    - material_function_tail_ess
+    - mcse
+    - rank_normalized_split_rhat
+    - cross_mechanism_reference_agreement
+    - approximation_bias_estimate
+  imaging_metrics:
+    - full_grid_complex_mse
+    - full_grid_complex_rmse
+    - complex_modulus_mae
+    - posterior_mean
+    - per_pixel_complex_geometric_median
+    - map
+    - legal_constrained_bayes_action
+    - region_uncertainty
+  coverage_diagnostics:
+    - gt_weak_projection_energy_offline_only
+    - gt_surface_distance_offline_only
+    - gt_surface_convex_hull_distance_offline_only
+    - radius_sensitivity
+    - strong_conditional_error
+  prohibited_success_surrogates:
+    - candidate_count_as_probability_quality
+    - candidate_softmax_as_ambient_posterior
+    - parameter_only_sbc_as_sufficient_validation
+    - oracle_best_of_k_as_deployable_risk
+    - neural_forward_time_as_total_inference_cost
+  operation_event_fields:
+    - parent_id
+    - noise_id
+    - target_label
+    - stage
+    - method
+    - iteration
+    - operation_type
+    - complex_rhs
+    - factorization_count
+    - wall_seconds
+    - cache_owner
+    - exact_certified_or_heuristic_status
+    - failure_reason
+
+unresolved_items_that_prevent_execution:
+  execution_authorized: false
+  items:
+    - explicit_user_authorization_for_new_physics_and_paid_compute
+    - master_seed_and_parent_manifest
+    - explicit_local_region_radii_metric_and_stability_rules
+    - actual_gradient_hvp_and_receiver_adjoint_costs
+    - exact_fallback_policy_and_caps
+    - neural_configuration_matrix_and_seed_manifest
+    - calibration_tolerances_and_reference_effect_scale
+    - final_512_parent_cross_method_online_budget_allocation
+    - optional_noise_replica_count_and_budget_allocation
+    - optional_acquisition_shift_definition_and_actual_cost_model
