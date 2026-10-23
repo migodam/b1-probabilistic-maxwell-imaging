@@ -59,7 +59,7 @@ def selected_groups(z,g):
     if np.any(keep):mask=keep[labels]
     return np.argwhere(mask)
 
-def run_one(seed,band,method='TR',iterations=16):
+def run_one(seed,band,method='TR',iterations=16,max_calls_override=None):
     if not (ROOT/'results/R2/COMPLETE.json').exists():raise RuntimeError('derivative audit missing')
     cfg=json.loads((ROOT/'configs/ORIGINAL_P0.json').read_text());freq=cfg['frequencies'][band]
     # This file contains measurement arrays only, not material/GT coordinates.
@@ -70,10 +70,11 @@ def run_one(seed,band,method='TR',iterations=16):
     folder=f'R3/online_{seed}_{band}_{method}';fw=Forward(model,pixel_mesh(g),freq,book,folder,phase='R3_online_FWI',identity='ONLINE_INFERENCE')
     dest=ROOT/'results'/folder;hist=[]
     def callback(row):hist.append(row);write(dest/'ITERATIONS.json',hist)
+    limit=2*iterations+10 if max_calls_override is None else min(2*iterations+10,int(max_calls_override))
     if method=='TR':
-        result=trust_region(fw.residual(y),x0,np.zeros(model.n),np.ones(model.n),prior_lambda=.002,max_iter=iterations,radius=.15,l2_radius=False,max_radius=.5,max_calls=2*iterations+10,callback=callback,objective_floor=.5,fatal_exceptions=(BudgetStop,))
+        result=trust_region(fw.residual(y),x0,np.zeros(model.n),np.ones(model.n),prior_lambda=.002,max_iter=iterations,radius=.15,l2_radius=False,max_radius=.5,max_calls=limit,callback=callback,objective_floor=.5,fatal_exceptions=(BudgetStop,))
     else:
-        result=lbfgsb(fw.residual(y),x0,np.zeros(model.n),np.ones(model.n),prior_lambda=.002,max_iter=iterations,max_calls=2*iterations+10,callback=callback,fatal_exceptions=(BudgetStop,))
+        result=lbfgsb(fw.residual(y),x0,np.zeros(model.n),np.ones(model.n),prior_lambda=.002,max_iter=iterations,max_calls=limit,callback=callback,fatal_exceptions=(BudgetStop,))
     d,_=fw.evaluate(result.x,jac=False)
     np.savez_compressed(dest/'FINAL.npz',x=result.x,full_parameters=model.full(result.x),data=d,initial=x0,groups=groups)
     summary=dict(seed=seed,band=band,method=method,identity='ONLINE_INFERENCE',d_mean=float(np.linalg.norm(d-y)/.01),objective=float(result.fun),projected_gradient=float(result.projected_gradient),iterations=result.nit,success=bool(result.success),stopping=str(result.message),group_count=m,occupied_area_max=float(4*m*g.cell_area),geometry_status='prospective feature-tile validator still required',rhs_totals=book.totals())

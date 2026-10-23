@@ -4,11 +4,11 @@ import numpy as np
 from p0.geometry import probes
 from .physical_witness import ModulatedWorld,mesh_for
 from .physics import Forward,pack,packj
-from .accounting import ROOT,Book,write,BudgetStop
+from .accounting import ROOT,Book,ScopedBook,write,BudgetStop
 from .optimization import trust_region
 
-def main(seed,band='narrow',kind='joint',iterations=16):
-    book=Book('B2');cfg=json.loads((ROOT/'configs/ORIGINAL_P0.json').read_text());freq=cfg['frequencies'][band]
+def main(seed,band='narrow',kind='joint',iterations=14):
+    book=ScopedBook('B2',f'{kind}_{seed}_{band}');cfg=json.loads((ROOT/'configs/ORIGINAL_P0.json').read_text());freq=cfg['frequencies'][band]
     probe=probes()[8];zero=np.zeros(48);folder=f'B2/{kind}_direct_{seed}_{band}'
     base_model=ModulatedWorld(seed,probe if kind=='joint' else None)
     base=Forward(base_model,mesh_for(seed,probe),freq,book,folder+'/base',phase='B2_direct_reference',identity='PHYSICAL_EXISTENCE_SEARCH',h=.145,pml_strength=6)
@@ -18,7 +18,7 @@ def main(seed,band='narrow',kind='joint',iterations=16):
     else:candidate_probe=None;cavities=(((-.85,.85),.06),)
     model=ModulatedWorld(seed,candidate_probe,cavities=cavities)
     mesh=mesh_for(seed,candidate_probe,cavities=cavities)
-    fw=Forward(model,mesh,freq,book,folder+'/edit',phase='B2_direct_nonlinear_compensation',identity='PHYSICAL_EXISTENCE_SEARCH',h=.145,pml_strength=6)
+    fw=Forward(model,mesh,freq,book,folder+'/edit',phase='B2_direct_nonlinear_compensation',identity='PHYSICAL_EXISTENCE_SEARCH',h=.145,pml_strength=6,retain_current=True)
     out=ROOT/'results'/folder;out.mkdir(parents=True,exist_ok=True);rows=[]
     raw,_=fw.evaluate(zero)
     for method in ['FULL_J','RANDOM_MULTISTART']:

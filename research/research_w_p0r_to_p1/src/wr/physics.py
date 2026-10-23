@@ -1,8 +1,9 @@
 """Shared full Maxwell evaluation; no oracle/world-generator imports.
 
 Only a caller-supplied coefficient model and a public mesh are used. Each
-frequency's field/current/prediction is saved before releasing its factor.
-No factor strong references are stored in archives or cross-frequency lists.
+frequency's field/current/prediction is saved immediately. The default streams
+frequencies. Optional bounded live reuse retains at most five frequencies for
+ONE current point; no LU/field is retained by histories or candidate archives.
 """
 import gc,time,json
 import numpy as np
@@ -42,13 +43,28 @@ class PixelModel:
         self.n=len(self.indices)
     def full(self,x):
         q=np.zeros(self.grid.n_parameters);q[self.indices]=np.asarray(x)*self.scale[self.indices];return q
-    def coefficient(self,x,f):return pixel_material(self.full(x),f,self.grid)
+    def coefficient(self,x,f):
+        full=self.full(x)
+        base=pixel_material(full,f,self.grid) # validates physical input sigma <=.15
+        def eps(pts):
+            value=base(pts);ids=self.grid.indices(pts);valid=ids>=0
+            loss=np.zeros(len(pts));loss[valid]=full[self.grid.n_pixels:][ids[valid]]
+            loss[self.grid.calibration_mask(pts)]=0.
+            # Divide real sigma before assigning the imaginary part. Complex
+            # reciprocal multiplication formerly put a legal upper-bound
+            # sigma one ULP outside the backend's strict physical interval.
+            imaginary=np.divide(loss,float(f))
+            bad=float(f)*imaginary>.15
+            if np.any(bad):imaginary[bad]=np.nextafter(imaginary[bad],0.)
+            value.imag=imaginary
+            return value
+        return eps
     def jacobian(self,p,s,x):
         return volume_pixel_jacobian(p,s,self.grid)[:,self.indices]*self.scale[self.indices][None,:],0.
     def material_metadata(self,x):return dict(model='pixel',grid=[self.grid.ny,self.grid.nx],indices=self.indices,physical_parameters=self.full(x))
 
 class Forward:
-    def __init__(self,model,mesh,frequencies,book,folder,*,phase,identity,h=.18,order=3,pml_strength=4,max_dofs=60000,max_factor_bytes=1500000000):
+    def __init__(self,model,mesh,frequencies,book,folder,*,phase,identity,h=.18,order=3,pml_strength=4,max_dofs=60000,max_factor_bytes=1500000000,retain_current=False):
         self.model=model;self.mesh=mesh;self.freq=list(frequencies);self.book=book;self.folder=ROOT/'results'/folder
         self.folder.mkdir(parents=True,exist_ok=True);self.phase=phase;self.identity=identity
         self.h=h;self.order=order;self.pm=PMLConfig(strength=pml_strength)
@@ -56,16 +72,29 @@ class Forward:
         self.tx=np.c_[np.linspace(-1.4,1.4,4),np.full(4,-.3)]
         self.rx=np.c_[np.linspace(-1.5,1.5,12),np.full(12,-.3)]
         self.saved={};self.calls=0;self.last_jac=None
+        self.retain=bool(retain_current)
+        if self.retain and len(self.freq)>5:raise ValueError('live factor cache hard cap is five frequencies')
+        self._live=[];self._livekey=None
     def evaluate(self,x,jac=False):
         x=np.asarray(x,float);key=x.tobytes()
         if key in self.saved:
             prior=self.saved[key]
             if not jac or prior[1] is not None:return prior[0].copy(),None if prior[1] is None else prior[1].copy()
+            if self.retain and self._livekey==key:
+                js=[]
+                for idx,(p,s,dest) in enumerate(self._live):
+                    j,adjres=self.model.jacobian(p,s,x);js.append(j);np.save(dest/f'J_f{idx}.npy',j)
+                j=np.concatenate(js,axis=0)
+                write(prior[2]/'J_UPGRADE.json',dict(reused_exact_current_fields=True,new_forward_rhs=0,new_LU=0,receiver_rhs=len(self.freq)*len(self.rx),totals=self.book.totals()))
+                np.savez_compressed(prior[2]/'RESPONSE_WITH_J.npz',x=x,data=prior[0],jacobian=j)
+                self.saved[key]=(prior[0],j,prior[2]);return prior[0].copy(),j.copy()
+        self._live.clear();self._livekey=None;gc.collect()
         call=self.calls;self.calls+=1;dest=self.folder/f'endpoint_{call:04d}';dest.mkdir(exist_ok=False)
         write(dest/'PARAMETERS.json',dict(x=x,identity=self.identity,jacobian_requested=jac,frequencies=self.freq,phase=self.phase,metadata=self.model.material_metadata(x)))
         data=[];js=[];logs=[]
         for idx,f in enumerate(self.freq):
-            p=FEM(f,self.tx,self.rx,self.book,h=self.h,order=self.order,mesh=self.mesh,pml=self.pm,phase=self.phase,receiver_mode='volume',max_dofs=self.max_dofs,max_factor_bytes=self.max_factor_bytes)
+            p=FEM(f,self.tx,self.rx,self.book,h=self.h,order=self.order,mesh=self.mesh,pml=self.pm,phase=self.phase,receiver_mode='volume',max_dofs=self.max_dofs,max_factor_bytes=self.max_factor_bytes,residual_tolerance=1e-10)
+            self.book.event(event='material_frequency_attempt',phase=self.phase,frequency=f,endpoint=str(dest.relative_to(ROOT)),identity=self.identity,jacobian_requested=jac)
             s=p.solve(self.model.coefficient(x,f));data.append(s.data.copy())
             # Save endpoint before optional derivative or any subsequent solve.
             np.savez_compressed(dest/f'f{idx}.npz',x=x,frequency=f,data=s.data,probe_data=s.probe_data,epsilon=s.epsilon,points=s.material_points,weights=s.material_weights,field=s.field,current=s.current,scattered_dofs=s.scattered_dofs,mesh_p=p.mesh.p,mesh_t=p.mesh.t,residuals=s.residuals)
@@ -75,12 +104,14 @@ class Forward:
             else:adjres=None
             logs.append(dict(frequency=f,residual=s.residual,adjoint_residual=adjres,metadata=s.metadata,timings=s.timings))
             write(dest/'FREQUENCIES.json',logs)
+            if self.retain:self._live.append((p,s,dest))
             del p,s;gc.collect()
         d=np.stack(data);j=np.concatenate(js,axis=0) if jac else None
         np.savez_compressed(dest/'RESPONSE.npz',x=x,data=d,**({'jacobian':j} if j is not None else {}))
         write(dest/'COMPLETE.json',dict(identity=self.identity,frequency_count=len(self.freq),jacobian=jac,totals=self.book.totals()))
         # At most two response/J arrays; never retain LU/field references.
         self.saved[key]=(d.copy(),None if j is None else j.copy(),dest)
+        if self.retain:self._livekey=key
         if len(self.saved)>2:self.saved.pop(next(iter(self.saved)))
         return d,j
     def residual(self,y):

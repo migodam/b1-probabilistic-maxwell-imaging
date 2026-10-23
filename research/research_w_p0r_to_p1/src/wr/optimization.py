@@ -205,7 +205,9 @@ def trust_region(evaluate, x0, lower, upper, prior_lambda=0., prior_center=None,
                         radius=radius, reason='nonpositive_or_failed_model', predicted_reduction=None)
                 radius *= .25
             else:
-                candidate = x + p
+                # Enforce the already-solved box in floating point as well;
+                # this only removes arithmetic overshoot at active bounds.
+                candidate = np.clip(x + p, lo, hi)
                 try:
                     next_state = ev.call(candidate, jac=False, iteration=iteration, trial=trial)
                 except _CallLimit:

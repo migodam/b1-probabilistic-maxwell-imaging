@@ -51,14 +51,16 @@ def _receipt(book, phases):
                 cost_status='real R-stage ledger reservations; confirmed solves reported separately')
 
 
-def _forecast(book, frequency_count, max_calls, source_count, receiver_count):
-    # Every optimizer call is conservatively costed as a full FJ (4 source +
-    # 12 receiver-transpose RHS per frequency). One uncached final F is also
-    # included. This overestimates mixed F/FJ calls and avoids partial stages.
-    forecast = dict(rhs=frequency_count * (max_calls * (source_count + receiver_count)
+def _forecast(book, frequency_count, max_calls, iterations, source_count, receiver_count):
+    # Driver enforces at most 1+iterations full-J calls; every remaining
+    # optimizer call is F-only. One potentially uncached final F is included.
+    max_jacobian_calls = 1 + iterations
+    forecast = dict(rhs=frequency_count * (max_calls * source_count
+                                           + max_jacobian_calls * receiver_count
                                            + source_count),
                     factorizations=frequency_count * (max_calls + 1),
                     max_optimizer_calls=max_calls,
+                    max_full_jacobian_calls=max_jacobian_calls,
                     final_forward_calls_reserved_in_forecast=1)
     totals = book.totals()['R']
     cap = book.config['stages']['R']
@@ -123,11 +125,24 @@ def main(seed, iteration_scale=1., folder=None):
     write(out / 'PLAN.json', dict(seed=seed, identity=IDENTITY, run_id=run_id,
           iteration_scale=iteration_scale, stages=plan,
           original_prior_and_noise='unchanged; stage 4 explicitly removes numerical weak prior',
-          support_exchange='not performed; any proposal requires a separate measurement-only,
-                              bound-aware outer support-exchange study'))
+          support_exchange=('not performed; any proposal requires a separate measurement-only, '
+                            'bound-aware outer support-exchange study')))
+    forecasts = [_forecast(book, st['frequency_count'], 2*st['iterations']+10,
+                           st['iterations'], len(cfg['tx']), len(cfg['rx'])) for st in plan]
+    sequence_required = {key: sum(fc['required'][key] for fc in forecasts)
+                         for key in ('rhs', 'factorizations')}
+    sequence_available = forecasts[0]['available']
+    sequence_reasons = [key for key in sequence_required
+                        if sequence_required[key] > sequence_available[key]]
+    if sequence_available['cpu_seconds'] <= 0:
+        sequence_reasons.append('cpu_seconds_exhausted')
+    sequence_forecast = dict(required=sequence_required, available=sequence_available,
+                             admitted=not sequence_reasons, rejection_reasons=sequence_reasons,
+                             stages=forecasts, no_budget_extension=True)
+    write(out / 'SEQUENCE_BUDGET_FORECAST.json', sequence_forecast)
     stage_rows, phases = [], []
     final_data, final_frequencies = np.empty((0, len(cfg['tx']), len(cfg['rx'])), complex), []
-    all_wide_complete, halted, failure = False, False, None
+    all_wide_complete, halted, failure = False, not sequence_forecast['admitted'], None
     start_cpu = time.process_time()
     try:
         for stage in plan:
@@ -135,10 +150,12 @@ def main(seed, iteration_scale=1., folder=None):
             stage_out = out / f'stage_{k:02d}'
             stage_out.mkdir(exist_ok=False)
             max_calls = 2 * iterations + 10
-            forecast = _forecast(book, count, max_calls, len(cfg['tx']), len(cfg['rx']))
+            forecast = _forecast(book, count, max_calls, iterations, len(cfg['tx']), len(cfg['rx']))
             write(stage_out / 'BUDGET_FORECAST.json', forecast)
             if halted or not forecast['admitted']:
-                status = ('SKIPPED_AFTER_UNAFFORDABLE_OR_FAILED_STAGE' if halted
+                status = ('SKIPPED_WHOLE_SEQUENCE_INSUFFICIENT_R_BUDGET'
+                          if not sequence_forecast['admitted'] else
+                          'SKIPPED_AFTER_UNAFFORDABLE_OR_FAILED_STAGE' if halted
                           else 'SKIPPED_INSUFFICIENT_R_BUDGET')
                 row = dict(**stage, status=status, forecast=forecast, new_rhs=0,
                            new_factorizations=0)
@@ -151,10 +168,6 @@ def main(seed, iteration_scale=1., folder=None):
             phases.append(phase)
             history = []
             last_anchor = x.copy()
-            fw = Forward(model, pixel_mesh(grid), stage['frequencies'], book,
-                         str(relative / f'stage_{k:02d}' / 'forward'),
-                         phase=phase, identity=IDENTITY)
-
             def callback(event):
                 nonlocal last_anchor
                 history.append(event)
@@ -164,11 +177,27 @@ def main(seed, iteration_scale=1., folder=None):
 
             write(stage_out / 'FWI_HISTORY.json', history)
             try:
-                fit = trust_region(fw.residual(y[:count]), x, np.zeros(model.n),
+                fw = Forward(model, pixel_mesh(grid), stage['frequencies'], book,
+                             str(relative / f'stage_{k:02d}' / 'forward'),
+                             phase=phase, identity=IDENTITY)
+                residual = fw.residual(y[:count])
+                full_jacobian_calls = 0
+
+                def evaluate(point, jac=False):
+                    nonlocal full_jacobian_calls
+                    if jac:
+                        if full_jacobian_calls >= 1 + iterations:
+                            # Enforce the forecast before any physical call even
+                            # if an unexpected repeated accepted-refresh occurs.
+                            raise RuntimeError('stage full-J forecast cap reached')
+                        full_jacobian_calls += 1
+                    return residual(point, jac=jac)
+
+                fit = trust_region(evaluate, x, np.zeros(model.n),
                                    np.ones(model.n), prior_lambda=stage['prior_lambda'],
                                    max_iter=iterations, radius=.15, max_radius=.5,
                                    l2_radius=False, max_calls=max_calls,
-                                   callback=callback, fatal_exceptions=(BudgetStop,))
+                                   callback=callback, fatal_exceptions=(Exception,))
                 if fit.residual is None:
                     raise RuntimeError('stage has no fully evaluated accepted anchor: ' + str(fit.message))
                 data, _ = fw.evaluate(fit.x, jac=False)
@@ -215,6 +244,7 @@ def main(seed, iteration_scale=1., folder=None):
                        status=('ALL_FOUR_NUMERICAL_STAGES_COMPLETED' if all_wide_complete
                                else 'INCOMPLETE_CONTINUATION'), stages=stage_rows,
                        all_wide_complete=all_wide_complete,
+                       sequence_budget_forecast=sequence_forecast,
                        all_wide_d_mean=(float(np.linalg.norm(final_data-y)/.01)
                                         if all_wide_complete else None),
                        final_data_frequencies=final_frequencies,
@@ -237,4 +267,6 @@ if __name__ == '__main__':
     parser.add_argument('--iteration-scale', type=float, default=1.)
     parser.add_argument('--folder', default=None)
     args = parser.parse_args()
-    main(args.seed, iteration_scale=args.iteration_scale, folder=args.folder)
+    result = main(args.seed, iteration_scale=args.iteration_scale, folder=args.folder)
+    if not result['all_wide_complete']:
+        raise SystemExit(2)

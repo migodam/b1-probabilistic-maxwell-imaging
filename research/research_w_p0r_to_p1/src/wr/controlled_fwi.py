@@ -19,7 +19,10 @@ class ControlModel:
         return m*(.7+.3*np.cos(2*p[:,0])**2 if self.kind=='smooth_block' else 1.)
     def coefficient(self,x,f):return lambda p:1+self.shape(p)*(8*x[0]+1j*.15*x[1]/f)
     def jacobian(self,p,s,x):
-        return coefficient_jacobian(p,s,lambda pts,f:np.c_[8*self.shape(pts),1j*.15*self.shape(pts)/f])
+        # Two parameter JVPs cost eight RHS, less than twelve receiver solves.
+        real=p.jvp(s,lambda pts:8*self.shape(pts)).ravel()
+        loss=p.jvp(s,lambda pts:1j*.15*self.shape(pts)/p.freq).ravel()
+        return np.c_[real,loss],0.
     def material_metadata(self,x):return dict(model='controlled_known_geometry',shape=self.kind,identity='CONTROLLED_OPTIMIZER_TEST_NOT_UNKNOWN_WALL')
 
 def main():
@@ -30,7 +33,7 @@ def main():
         fw=Forward(model,mesh,[1.],book,f'R3/controls/{kind}/truth',phase='R3_control_generation',identity='CONTROLLED_GENERATION')
         y,_=fw.evaluate(np.asarray(truth))
         for method in ['TR','LBFGSB']:
-            ff=Forward(model,mesh,[1.],book,f'R3/controls/{kind}/{method}',phase='R3_control_inversion',identity='MEASUREMENT_ONLY_WITH_KNOWN_CONTROL_GEOMETRY')
+            ff=Forward(model,mesh,[1.],book,f'R3/controls/{kind}/{method}',phase='R3_control_inversion',identity='MEASUREMENT_ONLY_WITH_KNOWN_CONTROL_GEOMETRY',retain_current=True)
             out=ff.folder;hist=[]
             def cb(row):hist.append(row);write(out/'ITERATIONS.json',hist)
             x0=np.array([.1,.1]);solver=trust_region if method=='TR' else lbfgsb

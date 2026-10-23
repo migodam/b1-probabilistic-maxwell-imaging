@@ -35,6 +35,7 @@ class Book:
             fcntl.flock(f,fcntl.LOCK_EX); f.write(json.dumps(row,default=encode,allow_nan=False)+'\n'); f.flush()
     def reserve(self,phase,label,rhs=0,factorizations=0,**meta):
         if min(rhs,factorizations)<0: raise ValueError('negative budget')
+        if (ROOT/f'{self.stage}_SEALED.json').exists():raise BudgetStop('stage sealed: '+self.stage)
         with self.path.open('a+') as f:
             fcntl.flock(f,fcntl.LOCK_EX); rows=self._rows(f)
             local=[r for r in rows if r.get('stage')==self.stage]
@@ -49,3 +50,17 @@ class Book:
             f.seek(0,2); f.write(json.dumps(row,default=encode,allow_nan=False)+'\n'); f.flush()
             if reason: raise BudgetStop(reason)
         return row['id']
+
+class ScopedBook(Book):
+    """A fixed named allowance within a stage; resume never resets scope usage."""
+    def __init__(self,stage,scope):
+        super().__init__(stage);self.scope=scope
+        self.scope_caps=json.loads((ROOT/'configs/B2_ALLOCATION.json').read_text())['scopes'][scope]
+    def event(self,**row):super().event(scope=self.scope,**row)
+    def reserve(self,phase,label,rhs=0,factorizations=0,**meta):
+        rows=[json.loads(x) for x in self.path.read_text().splitlines()] if self.path.exists() else []
+        local=[r for r in rows if r.get('event')=='reserve' and r.get('scope')==self.scope]
+        if sum(r.get('rhs',0) for r in local)+rhs>self.scope_caps['rhs']:
+            self.event(event='scope_budget_stop',scope_cap=self.scope_caps['rhs'],requested_rhs=rhs)
+            raise BudgetStop('scope_rhs_limit: '+self.scope)
+        return super().reserve(phase,label,rhs,factorizations,scope=self.scope,**meta)
