@@ -40,6 +40,11 @@ def main():
     family=Family.load();book=Book('P1B');out=ROOT/'results/P1B/point_validation';out.mkdir(parents=True,exist_ok=True)
     rule=dict(np.load(ROOT/'results/P1A/rules/full_9.npz'))
     cache={key(b,u,c):dict(F=f,source='P1A/full_9',source_rhs=20,incremental_rhs=0) for b,u,c,f in zip(rule['branches'],rule['u'],rule['contrast'],rule['F'])}
+    physical_rule=ROOT/'results/P1B/full_material_rule/FULL_RULE.npz'
+    if physical_rule.exists():
+        full=dict(np.load(physical_rule))
+        for b,u,c,f in zip(full['branches'],full['u'],full['contrast'],full['F']):
+            cache[key(b,u,c)]=dict(F=f,source='P1B/full_material_rule actual paid Full-Maxwell node',source_rhs=20,incremental_rhs=0)
     results=[];method_files={'direct joint point':'direct_joint_point','progressive block point':'progressive_block_point'}
     for row in rows:
         i=row['observation'];parent=int(observations['parent_ids'][i]);y=observations['y'][i]
@@ -74,6 +79,8 @@ def main():
                 potential_error=potential_error,fallback_used=bool(fallback),new_rhs=increment,
                 physical_source=cache[k]['source'],source_endpoint_rhs=cache[k]['source_rhs'],
                 full_validation_status='FULL_CHECK_PASSED' if not fallback else 'INTERPOLATION_FAILED_FALLBACK_TO_FULL9',
+                independent_grid_validation=False,
+                full_validation_meaning='Exact response at the common qualified production solver; existing paid full nodes are reused, not relabeled as new independent-grid solves.',
                 original_point=point,weight_semantics='POINT_ESTIMATE_NO_POSTERIOR_MASS')
             if fallback:
                 phis,amps,phases=profile_points(rule['F'],y);j=int(np.argmin(phis))

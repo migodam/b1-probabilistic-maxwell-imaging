@@ -1,4 +1,4 @@
-"""Controlled-family progressive inference on a paid-public-bank surrogate.
+"""Controlled-family progressive inference on paid full-Maxwell material nodes.
 
 No function runs at import. No Book/FEM/Family.point or truth input is used.
 main reads observation-only P1B data after the P1A reference gate. Every target
@@ -14,6 +14,7 @@ import numpy as np
 from scipy.special import logsumexp
 from .prob_reference import interpolate,marginal,posterior,cdf_coherence
 from .sequential_particles import smc,make_proposal_library,exact_finite_reference
+from .progressive_full_bank import load_full_rule
 
 ROOT=Path(__file__).resolve().parents[2]
 FAMILY_ID='W_FIXED_SUPPORT_JOINT_V1'
@@ -51,7 +52,7 @@ def _load_rule(path):
     return r
 
 
-def material_grid(nu=97,nc=9):
+def material_grid(nu=65,nc=5):
     """Separable positive quadrature, C order(branch,iu,ic)."""
     zu,wu=np.polynomial.legendre.leggauss(nu);zc,wc=np.polynomial.legendre.leggauss(nc)
     u=.01*zu;c=3+.06*zc
@@ -60,6 +61,12 @@ def material_grid(nu=97,nc=9):
     return dict(branches=branch.ravel(),u=uu.ravel(),contrast=cc.ravel(),
         x=(CENTERS[branch.ravel(),0]+uu.ravel()),weights=weights.ravel(),
         u_axis=u,contrast_axis=c,u_weights=wu/2,contrast_weights=wc/2,shape=(2,nu,nc))
+
+
+def legacy_surrogate_response(full9):
+    """Historical GL97xGL9 interpolation helper; never used by main comparison."""
+    material=material_grid(97,9)
+    return material,interpolate(full9,material['branches'],material['u'],material['contrast'])
 
 
 def gamma_rule(n):
@@ -157,7 +164,7 @@ def profile_shared_gamma(stats,sources=(0,1,2,3)):
     return dict(amplitude=a,phase=p,Phi=phi)
 
 
-def point_baselines(stats,material):
+def point_baselines(stats,material,response_source=None):
     direct_cpu,direct_wall=time.process_time(),time.perf_counter()
     direct_profile=profile_shared_gamma(stats);j=int(np.argmin(direct_profile['Phi']))
     direct=dict(material_index=j,amplitude=float(direct_profile['amplitude'][j]),
@@ -185,7 +192,8 @@ def point_baselines(stats,material):
         idx=row['material_index'];row.update(branch=int(material['branches'][idx]),
             u=float(material['u'][idx]),contrast=float(material['contrast'][idx]),
             x=float(material['x'][idx]),target_y=2.15,
-            validation_status='NEEDS_FULL_VALIDATION',response='branch-specific interpolated rawF approximation',
+            validation_status='NEEDS_FULL_VALIDATION',response=(response_source or {}).get('response_kind','SUPPLIED_RESPONSE_ARRAY'),
+            response_source=response_source,
             objective='Phi only; shared-gamma profile is a point ML/MAP baseline, never posterior/evidence',
             fallback='NOT_RUN; paid full validation/fallback belongs to orchestrator')
     return {'direct joint point':direct,'progressive block point':progressive}
@@ -227,7 +235,7 @@ def _weighted_material_summary(weights,material,cuts):
         CDF={str(c):float(w[x<=c].sum()) for c in cuts})
 
 
-def finite_reference(blocks,prior,material,gamma,continuous,protocol,nuisance_ok):
+def finite_reference(blocks,prior,material,gamma,continuous,protocol,nuisance_ok,response_source=None):
     exact=exact_finite_reference(blocks,prior);w=exact['posterior_weights']
     wm=w.reshape(len(material['x']),gamma['n']**2).sum(axis=1)
     result=_weighted_material_summary(wm,material,protocol['cdf_checkpoints'])
@@ -241,8 +249,8 @@ def finite_reference(blocks,prior,material,gamma,continuous,protocol,nuisance_ok
         status='QUALIFIED_CONTROLLED_FINITE_APPROXIMATION' if qualified else 'UNQUALIFIED',
         grid_shape=[*material['shape'],gamma['n'],gamma['n']],node_count=len(prior),
         physical_prior_changed=False,
-        response_surrogate='branch-specific full9 interpolation; no new Maxwell material nodes',
-        interpretation='exact finite enumeration of surrogate/quadrature target; finite atomic CDF checked at declared cuts against independently truncated continuous reference')
+        response_source=response_source,
+        interpretation='exact finite enumeration of supplied full-Maxwell-node quadrature target; finite atomic CDF checked at declared cuts against independent continuous truncated integrals')
     return result,w
 
 
@@ -319,6 +327,9 @@ def main():
         or any(item['distribution']!='uniform' for item in (prior['target']['offset_x'],prior['target']['contrast'],prior['nuisance']['amplitude'],prior['nuisance']['phase_radians']))):
         raise RuntimeError('Unexpected frozen reference/noise contract')
     settings=protocol['P1B'];seeds=settings['SMC_seeds'];P=settings['SMC_particles'];S=settings['rejuvenation_sweeps_each_bridge']
+    spec=settings['finite_material_rule']
+    if spec['offset_GL_order']!=65 or spec['contrast_GL_order']!=5 or spec['branches']!=2:
+        raise RuntimeError('Active four-arm protocol must specify full GL65xGL5x2 nodes')
     if (len(seeds)!=4 or P!=2048 or S!=4 or settings['resampling_ESS_fraction']!=.5
         or settings['direct_temperatures']!=[0,.25,.5,.75,1]
         or settings['progressive_sources']!=[0,1,2,3]):
@@ -329,29 +340,38 @@ def main():
     if ys.ndim!=4 or ys.shape[1:]!=(5,4,12) or not np.iscomplexobj(ys) or not np.isfinite(ys).all() or parents.shape!=(len(ys),):
         raise ValueError('Malformed observation-only data')
     out=ROOT/'results/P1B/inference';out.mkdir(parents=True,exist_ok=True)
-    contract=dict(family_id=FAMILY_ID,protocol=protocol,public_prior=prior,material_rule=[2,97,9],
+    full_rule,full_metadata=load_full_rule()
+    material=material_grid(65,5)
+    for key in ('branches','u','contrast','x','weights'):
+        if not np.array_equal(full_rule[key],material[key]):raise RuntimeError('Full material rule coordinate/prior mismatch:'+key)
+    response_source=dict(response_kind='FULL_CACHED_NODE',source_rule=full_metadata['source_rule'],
+        material_rule=list(material['shape']),interpolation_used=False,
+        source_metadata='results/P1B/full_material_rule/FULL_RULE.json',
+        meaning='650 paid complete Maxwell material vectors; finite quadrature of unchanged continuous prior')
+    contract=dict(family_id=FAMILY_ID,protocol=protocol,public_prior=prior,material_rule=list(material['shape']),response_source=response_source,
         nuisance_check_orders=[21,41,65],nuisance_selected_rule='lower checked order;65unqualified if no agreement',
         global_proposal_probability=.25,max_array_bytes=MAX_ARRAY_BYTES,
         original_minimum_feature='UNRESOLVED',general_unknown_wall_online_claim=False,
-        physical_prior_changed=False,finite_rule='fixed GL97u/GL9contrast quadrature approximation to the unchanged continuous controlled prior')
+        physical_prior_changed=False,finite_rule='fixed GL65u/GL5contrast full-Maxwell-node quadrature approximation to unchanged continuous controlled prior')
     contract_path=out/'MATH_CONTRACT.json'
     if contract_path.exists() and json.loads(contract_path.read_text())!=contract:raise RuntimeError('Existing inference math contract differs; refusing mixed restart')
     if not contract_path.exists():_write(contract_path,contract)
     setup_cpu,setup_wall=time.process_time(),time.perf_counter()
-    material=material_grid();Fbase=interpolate(rules['full_9'],material['branches'],material['u'],material['contrast'])
-    if Fbase.shape!=(1746,5,4,12) or not np.isfinite(Fbase).all():raise RuntimeError('Invalid public-bank surrogate')
+    Fbase=full_rule['F']
+    if Fbase.shape!=(len(material['weights']),5,4,12) or not np.isfinite(Fbase).all():raise RuntimeError('Invalid full-Maxwell public node bank')
     if (out/'PUBLIC_MATERIAL_GRID.npz').exists():
         with np.load(out/'PUBLIC_MATERIAL_GRID.npz',allow_pickle=False) as archived:
-            if not np.array_equal(archived['F_approx'],Fbase):
-                raise RuntimeError('Public bank/surrogate response changed; refusing stale inference restart')
+            if not np.array_equal(archived['F_full'],Fbase):
+                raise RuntimeError('Paid full-node responses changed; refusing stale inference restart')
             for key in ('branches','u','contrast','weights'):
                 if not np.array_equal(archived[key],material[key]):
                     raise RuntimeError('Public material quadrature changed; refusing mixed restart')
     else:
-        np.savez_compressed(out/'PUBLIC_MATERIAL_GRID.npz',F_approx=Fbase,**{k:v for k,v in material.items()})
+        np.savez_compressed(out/'PUBLIC_MATERIAL_GRID.npz',F_full=Fbase,response_kind='FULL_CACHED_NODE',**{k:v for k,v in material.items()})
+    _write(out/'PUBLIC_MATERIAL_GRID.json',response_source)
     _write(out/'SETUP_COST.json',dict(cpu_seconds=time.process_time()-setup_cpu,wall_seconds=time.perf_counter()-setup_wall,
-        new_Maxwell_RHS=0,public_bank_setup='paid P1A full9; setup/validation/fallback is not free deployment',
-        response_label='branch-specific degree8x8 interpolation, an approximation'))
+        new_Maxwell_RHS=0,public_bank_setup='paid P1B full GL65x5 bank; exact P1A cache reuse and original costs recorded in FULL_RULE.json',
+        response_label='FULL_CACHED_NODE; no response interpolation',response_source=response_source))
     rows=[];run_cpu,run_wall=time.process_time(),time.perf_counter()
     for observation,y in enumerate(ys):
         obsroot=out/f'observation_{observation:03d}';obsroot.mkdir(exist_ok=True)
@@ -372,23 +392,25 @@ def main():
             stats=source_statistics(Fbase,y)
             n,nuisance_ok,history,material_logz=select_gamma(stats,protocol['nuisance_log_evidence_difference_max'])
             blocks,node_prior,gamma=joint_finite_target(stats,material,n)
-            finite,weights=finite_reference(blocks,node_prior,material,gamma,continuous,protocol,nuisance_ok)
+            finite,weights=finite_reference(blocks,node_prior,material,gamma,continuous,protocol,nuisance_ok,response_source)
             finite['nuisance_convergence']=history;finite['gamma_order']=n
-            finite['material_rule_order']=[97,9]
+            finite['material_rule_order']=list(material['shape'][1:])
             np.savez_compressed(attempt/'FINITE_REFERENCE.npz',posterior_weights=weights,
                 material_log_marginal_likelihood=material_logz,material_branches=material['branches'],material_u=material['u'],
                 material_contrast=material['contrast'],material_x=material['x'],material_prior_weights=material['weights'],
                 amplitude_axis=gamma['amplitude_axis'],phase_axis=gamma['phase_axis'],gamma_axis_weights=gamma['axis_weights'],
-                grid_shape=np.asarray(finite['grid_shape']),logZ=finite['logZ'])
+                grid_shape=np.asarray(finite['grid_shape']),logZ=finite['logZ'],response_kind='FULL_CACHED_NODE',
+                source_rule=full_metadata['source_rule'],material_response_key='F_full')
             _write(attempt/'FINITE_REFERENCE.json',finite)
             reference_cost=dict(cpu_seconds=time.process_time()-ref_cpu,wall_seconds=time.perf_counter()-ref_wall,
                 new_Maxwell_RHS=0,teacher_cost='paid bank plus pure inference reference integration; not free method setup')
-            point_cpu,point_wall=time.process_time(),time.perf_counter();points=point_baselines(stats,material)
+            point_cpu,point_wall=time.process_time(),time.perf_counter();points=point_baselines(stats,material,response_source)
             for name,point in points.items():
                 label='direct_joint_point' if name.startswith('direct') else 'progressive_block_point'
                 idx=point['material_index'];np.savez_compressed(attempt/(label+'.npz'),
                     params=[point[k] for k in ('branch','u','contrast','amplitude','phase')],F_approx=Fbase[idx],Phi=point['Phi'],
-                    parameter_order=np.asarray(['branch','u','contrast','amplitude','phase']))
+                    parameter_order=np.asarray(['branch','u','contrast','amplitude','phase']),
+                    response_kind='FULL_CACHED_NODE',source_rule=full_metadata['source_rule'])
                 _write(attempt/(label+'.json'),point)
             point_cost=dict(cpu_seconds=time.process_time()-point_cpu,wall_seconds=time.perf_counter()-point_wall,new_Maxwell_RHS=0)
             runs={'direct':[],'progressive':[]};proposal_costs=[]
@@ -421,7 +443,7 @@ def main():
                 methods=points,SMC_runs=runs,ensemble=ensembles,reference_cost=reference_cost,
                 point_cost=point_cost,shared_proposal_library_cost=proposal_costs,
                 cpu_seconds=time.process_time()-cpu_start,wall_seconds=time.perf_counter()-wall_start,
-                new_Maxwell_RHS=0,point_physics_validation='NEEDS_FULL_VALIDATION',
+                new_Maxwell_RHS=0,point_physics_validation='NEEDS_FULL_VALIDATION',response_source=response_source,
                 numerical_probability_status='QUALIFIED_CONTROLLED_APPROXIMATION' if finite['qualified'] else 'UNQUALIFIED',
                 outside_family_mass=None)
             _write(attempt/'RESULTS.json',row);_write(completion,row)
@@ -437,7 +459,8 @@ def main():
             raise
     _write(out/'COMPLETE.json',dict(observations=len(rows),independent_parents=len(np.unique(parents)),
         all_finite_references_qualified=all(r['finite_ref']['qualified'] for r in rows),
-        points='NEEDS_FULL_VALIDATION; not validated by this algebra/surrogate process',
+        points='NEEDS_FULL_VALIDATION; raw point values are paid full nodes, separate validation remains external',
+        response_source=response_source,
         original_minimum_feature='UNRESOLVED',outside_family_mass=None,
         cpu_seconds=time.process_time()-run_cpu,wall_seconds=time.perf_counter()-run_wall,
         new_Maxwell_RHS=0,Book_events=0,CPU_billing='launcher alone bills process CPU once'))

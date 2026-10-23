@@ -92,7 +92,7 @@ def main(seed,band='narrow'):
         def callback(r):history.append(r);write(out/f'{method}_ITERATIONS.json',history)
         fit=trust_region(ev,proposal,np.full(model.n,-1.),np.full(model.n,1.),
              max_iter=8,max_calls=20,radius=.25,max_radius=.75,l2_radius=False,
-             callback=callback,objective_floor=.05,fatal_exceptions=(BudgetStop,))
+             callback=callback,objective_floor=.05,fatal_exceptions=(Exception,))
         d,_=fw.evaluate(fit.x);td,_=ft.evaluate(fit.x)
         field=model.coefficient(fit.x,1.)(grid)
         dc=float(np.linalg.norm(d-d0)/.01);dt=float(np.linalg.norm(td-t0)/.01)

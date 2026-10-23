@@ -35,3 +35,8 @@
 ### P1 独立观测生成前的强基线登记
 
 在任何 P1A/P1B 新观测生成前，加入直接截断 order3 CDF 对照，防止把较昂贵的参考积分当成弱 direct baseline。正式参考仍为5/9，不改 prior/noise/资格门槛；公开节点678，连同16个生成 parent 为13880 RHS、3470 LU。GL97×9 finite 近似、共享gain、点估计 Full 验证fallback与按16个parent聚合的bootstrap已冻结。此时尚无P1新数值成绩。
+
+
+### P1独立观测前修订：四臂共同使用实际全波节点
+
+主四臂由插值GL97×9改为650个实际Full-Maxwell材料节点（GL65×5×两墙），最多13000 RHS、3250LU；精确缓存复用另列，所有失败仍收费。保留连续prior与5/9截断CDF门槛，不降低误差标准，未生成任何P1A/P1B新观测。目的为加强完整物理共同对照，不以廉价插值冒充Full推断。若有限CDF不合格，保留UNQUALIFIED，不事后把原连续目标改成atomic prior。

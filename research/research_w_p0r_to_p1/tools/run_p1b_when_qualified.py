@@ -22,9 +22,11 @@ def main():
     if record['returncode']!=0 or not gate.exists() or json.loads(gate.read_text()).get('probability_reference_qualified') is not True:
         write(root/'P1B_QUEUE_CHECKPOINT.json',dict(status='NOT_RUN_P1A_REFERENCE_GATE_CLOSED',no_P1B_queries=True));return
     jobs=[
+      ('p1b-actual-Full-material-rule','wr.progressive_full_bank',[]),
       ('p1b-independent-controlled-observations','wr.prob_data',['P1B']),
       ('p1b-four-arm-inference','wr.progressive_inference',[]),
       ('p1b-point-Full-validation','wr.progressive_point_validation',[]),
+      ('p1b-fixed-first-observation-handoff','wr.prob_handoff',[]),
       ('p1b-independent-offline-risk','wr.progressive_offline',[]),
       ('p1b-full-Woodbury-ROM-GMRES-control','wr.green_reuse_control',[]),
     ]

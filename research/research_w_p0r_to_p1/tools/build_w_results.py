@@ -89,6 +89,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--final', action='store_true', help='Use final snapshot label; no stage/gate changes.')
+    parser.add_argument('--probability-figures',action='store_true',help='Optionally render saved P1 reference/inference and completed offline score summaries; never opens truth or observations.')
     parser.add_argument('--online-prior-lambda', type=float, default=.002,
                         help='Frozen online prior weight (.002), used with recorded x and objective; override only with matching run metadata.')
     args = parser.parse_args()
@@ -204,7 +205,9 @@ def main():
     stage_rows.append(dict(stage='R3', saved_status='SAVED_RESULT' if any(r['saved_status'] == 'SAVED_RESULT' for r in runs) else 'IN_PROGRESS' if runs else 'NOT_RUN', records=sum(r['saved_status'] == 'SAVED_RESULT' for r in runs)))
     later_rows = [];b2_rows=[];validation_rows=[];task_rows=[];array_checks=[]
     for stage in ('B2', 'C', 'P1A', 'P1B'):
-        paths = sorted((root / 'results' / stage).glob('**/RESULTS.json'))
+        if stage=='P1A':paths=[p for p in [root/'results/P1A/reference/RESULTS.json'] if p.exists()]
+        elif stage=='P1B':paths=[p for p in [root/'results/P1B/inference/RESULTS.json',root/'results/P1B/point_validation/RESULTS.json'] if p.exists()]
+        else:paths = sorted((root / 'results' / stage).glob('**/RESULTS.json'))
         valid = []
         for path in paths:
             data = read_json(path, root, sources, errors)
@@ -482,13 +485,17 @@ def main():
 
     from w_results_extensions import build_extensions
     extensions=build_extensions(root,sources,errors,finish,table,read_json,atomic,write_csv)
+    probability=dict(data=None,html='')
+    if args.probability_figures:
+        from w_probability_figures import build_probability_figures
+        probability=build_probability_figures(root,sources,errors,finish,table,read_json,atomic,write_csv)
     write_csv(tables_dir/'R3_runs.csv', runs)  # include completed objective/residual checks
     status = 'FINAL_SNAPSHOT' if args.final else 'WORK_IN_PROGRESS'
     now = datetime.now(timezone.utc).isoformat()
     payload = dict(report_status=status, generated_utc=now, physics_actions_by_builder=0,
                    stage_status=stage_rows, R3_runs=runs, projection_distance=projection,
                    later_stages=later_rows,B2_candidates=b2_rows,B2_grid_validation=validation_rows,B2_completed_tasks=task_rows,B2_saved_array_checks=array_checks,R_sealed=sealed,input_sources=sources, parse_errors=errors,
-                   frozen_online_prior_lambda=args.online_prior_lambda,C_B2_extensions=extensions['data'],figures=figures,
+                   frozen_online_prior_lambda=args.online_prior_lambda,C_B2_extensions=extensions['data'],probability_display=probability['data'],figures=figures,
                    limitations=['Saved-record presentation only; no scientific gate/novelty judgment.',
                                 'Syntactically valid iteration snapshots may include unfinished starts; only evaluation_complete is plotted.',
                                 'Residual reconstructed as sqrt(2 fun-lambda ||x||^2): recorded objective/x, zero prior center, frozen oracle lambda0 / online lambda.002. CLI override is explicit.',
@@ -526,7 +533,7 @@ def main():
 <section><h2>后续见证 / 采样阶段</h2>{table(later_rows)}<p class="note">不存在真实结果时，没有 posterior、链、ESS、模态权重或覆盖率图。本页不由优化候选数量构造概率。</p></section>
 <section><h2>B2已保存候选明细</h2>{table(b2_rows,['source','seed','band','method','coefficient_progress','d_cal','d_T','final_distance','d_joint_shifted','target_shift','target_mass_relative_change','material_RMS','incremental_rhs','rhs','cost_new_charged_complex_rhs','status','identity','stop','stopping'])}<p><a href="tables/saved_results/B2_candidates.csv">B2 CSV</a>。支持list、rows及单独dict结果；数值保留字段原义。保留原始status，不从小量局部响应或候选个数推断概率与充分覆盖。</p></section>
 <section><h2>B2独立验证检查点 · 持续更新</h2><p><a href="B2_CHECKPOINT.md">已完成事实说明</a>。ORACLE_EXISTENCE_NOT_ONLINE；原minimum_feature语义UNRESOLVED，conditional fixed support。目标平移0.1、半径/对比/质量不变；不将joint与无目标cal混为一项，不宣布最终GO或P1执行。</p>{table(validation_rows,['validation_id','mode','coarse_distance','fine_distance','world0_grid_distance','world1_grid_distance'])}<p class="note">ALL_TASKS仅按已保存probe列出，缺项不填；不足24项时不是完整任务类supremum。其他seed/分支进度不由此推定。</p>{table(task_rows,['validation_id','probe','center','radius','contrast','distance'])}<p><a href="tables/saved_results/B2_grid_validation.csv">网格数据CSV</a> · <a href="tables/saved_results/B2_completed_tasks.csv">已完成任务CSV</a></p></section>
-{extensions['html']}<section><h2>数据解析与来源</h2><p class="{'error' if errors else 'note'}">{'存在解析错误；相关文件未用于对应图表。' if errors else '当前读取文件均通过 JSON 解析；这不替代科学审阅。'}</p>{table(errors, ['path','kind','message']) if errors else ''}{table(sources, ['path','bytes','modified_utc','role'])}</section></main></html>'''
+{extensions['html']}{probability['html']}<section><h2>数据解析与来源</h2><p class="{'error' if errors else 'note'}">{'存在解析错误；相关文件未用于对应图表。' if errors else '当前读取文件均通过 JSON 解析；这不替代科学审阅。'}</p>{table(errors, ['path','kind','message']) if errors else ''}{table(sources, ['path','bytes','modified_utc','role'])}</section></main></html>'''
     for name in ('report.html', 'index.html'):
         atomic(root/name, document)
     print(json.dumps(dict(status='ERROR' if errors else status, completed_evaluations=len(iteration_rows),
