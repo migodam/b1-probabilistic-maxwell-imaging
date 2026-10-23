@@ -1,0 +1,131 @@
+{
+  "identity": "PROSPECTIVE_W_CONTROLLED_PROBABILITY_V1",
+  "execution_requires": "Independent fine joint witness, then freeze W_CONTROLLED_PRIOR before any new observation. Original undefined minimum_feature is not retroactively PASS.",
+  "independent_parents": 16,
+  "noise_replicas": 2,
+  "data_seeds": {
+    "P1A": 2026102311,
+    "P1B": 2026102312
+  },
+  "full_orders": [
+    3,
+    5,
+    9
+  ],
+  "reference_orders": [
+    5,
+    9
+  ],
+  "cdf_evaluation_orders": [
+    3,
+    5,
+    9
+  ],
+  "direct_adaptive_control": "Before fresh observation generation, add full3 plus directly integrated truncated order3 CDF control. Compare with5/9 under identical tolerances and cache rights. This strengthens the ordinary direct baseline; it does not alter the reference gate or any prior.",
+  "nuisance_orders": [
+    11,
+    21
+  ],
+  "nuisance_refinement_if_needed": [
+    41,
+    65
+  ],
+  "nuisance_log_evidence_difference_max": 0.0002,
+  "cdf_checkpoints": [
+    -0.909,
+    -0.9,
+    -0.85,
+    -0.8,
+    -0.791
+  ],
+  "posterior_event_error_max": 0.02,
+  "posterior_cdf_error_max": 0.02,
+  "reference": "Direct full-Maxwell positive quadrature with one proper shared complex gain marginalized once. Independent order and truncated-CDF checks. Numerical empirical reliability, not general continuous PDE certification.",
+  "compression": "Separate branch-specific tensor response interpolation; retain branch priors and target conditional dependence. Compare direct adaptive quadrature with equal cache rights, including setup, validation and all fallback.",
+  "P1B": {
+    "four_arms": [
+      "direct joint MAP",
+      "progressive block MAP",
+      "direct joint tempered SMC",
+      "progressive source-block SMC"
+    ],
+    "same_final_target": true,
+    "SMC_particles": 2048,
+    "SMC_seeds": [
+      2026102313,
+      2026102314,
+      2026102315,
+      2026102316
+    ],
+    "direct_temperatures": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "progressive_sources": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "rejuvenation_sweeps_each_bridge": 4,
+    "resampling_ESS_fraction": 0.5,
+    "finite_material_rule": {
+      "offset_GL_order": 65,
+      "contrast_GL_order": 5,
+      "branches": 2,
+      "material_vectors": 650,
+      "main_evaluator": "Every node is an actual paid full Maxwell vector; exact tuple reuse permitted with provenance. No response interpolation in the main four-arm comparison.",
+      "purpose": "Finite quadrature of the unchanged continuous controlled prior; independent truncated Full5/9 CDF qualification on EACH new observation."
+    },
+    "nuisance_GL_orders": [
+      21,
+      41,
+      65
+    ],
+    "nuisance_log_marginal_tolerance": 0.0002,
+    "point_full_validation": {
+      "whitened_response_error_max": 0.05,
+      "potential_error_max": 0.05,
+      "failure_fallback": "Global shared-gain profile over the paid full9 nodes; log all failures and actual costs. Main full65x5 point arms normally use already paid actual full-bank responses."
+    },
+    "scoring": {
+      "unit": "independent parent",
+      "replicas": "average two noise replicas within each parent",
+      "paired_bootstrap_replicates": 2000,
+      "bootstrap_seed": 2026102317,
+      "primary_loss": "squared target horizontal-position error",
+      "secondary": [
+        "absolute position error",
+        "branch Brier score",
+        "branch log score",
+        "continuous CDF checkpoint error",
+        "finite-grid SMC error",
+        "missed significant branch",
+        "all setup, correction and validation costs"
+      ]
+    },
+    "posterior_position_mean": "Bayes action for position loss within the controlled prior; may lie between disconnected position intervals and is not a new physical world.",
+    "correctness": "Exact Full-Maxwell likelihood on finite GL65x5 quadrature nodes with shared-gain quadrature. Finite target still requires empirical comparison against independently integrated continuous reference. Correct MH ratios and repeated states retained.",
+    "new_information_from_schedule": false,
+    "full_material_bank_scope_rhs": 15000,
+    "zero_observation_control": {
+      "position_mean": -0.85,
+      "branch_probability": [
+        0.5,
+        0.5
+      ],
+      "scope": "Unconditional controlled-prior Bayes action, not a posterior estimate",
+      "paired_contrasts": [
+        "prior vsdirectSMC",
+        "prior vsqualifiedcontinuousBayesmean"
+      ],
+      "registered_before_new_observations": true
+    }
+  },
+  "truth_use": "Generation and separate offline scoring only; online quadrature/proposal code reads observation-only file.",
+  "outside_controlled_family_mass": "null/unquantified",
+  "stopping": "Unqualified reference cannot support calibrated P1-B claims; retain failures and independent numerical diagnostics. No extra stage budget."
+}

@@ -1,0 +1,1 @@
+本目录为独立的已付费 P1A 数组读回。SUMMARY.json 给出32份观察的总体数值相符结果、CPU/wall、peak RSS及0 RHS；RESULTS.json保留逐观察差异与共享gain求积阶数；RULE_NORMALIZATION.json保存full与直接截断CDF原先验质量检查；MANIFEST.json声明输入白名单；VERIFIER_SOURCE.py是本次验证器原文副本，无hash。未打开GT、Book或物理后端，未改写原始reference/协议/ledger。这不是科学GO或连续PDE认证。

@@ -1,0 +1,153 @@
+{
+  "baseline": {
+    "cost": {
+      "new_rhs": 4,
+      "new_material_frequency_LU": 1,
+      "cpu_seconds": 16.172581000000008,
+      "wall_seconds": 16.534242917085066
+    },
+    "free_dofs": 63712,
+    "actual_factor_bytes": 245214560,
+    "factor_heuristic_bytes": 1582596096
+  },
+  "primal_R0_rhs_unit": {
+    "cost": {
+      "new_rhs": 4,
+      "new_material_frequency_LU": 0,
+      "cpu_seconds": 4.2838199999999915,
+      "wall_seconds": 4.422894041053951
+    },
+    "shared_by": [
+      "ROM",
+      "WOODBURY"
+    ]
+  },
+  "original_volume_duals": {
+    "cost": {
+      "new_rhs": 12,
+      "new_material_frequency_LU": 0,
+      "cpu_seconds": 4.898962999999995,
+      "wall_seconds": 5.013855291996151
+    }
+  },
+  "shared_R0V": {
+    "cost": {
+      "new_rhs": 16,
+      "new_material_frequency_LU": 0,
+      "cpu_seconds": 4.727970999999997,
+      "wall_seconds": 4.83737637498416
+    },
+    "enrichment_rights": "ordinary field enriched ROM and both current-space methods"
+  },
+  "shared_ROM": {
+    "cost": {
+      "new_rhs": 32,
+      "new_material_frequency_LU": 0,
+      "cpu_seconds": 25.833628999999988,
+      "wall_seconds": 26.480565374949947
+    },
+    "V": {
+      "input_columns": 16,
+      "rank": 16,
+      "pivot_order": [
+        11,
+        4,
+        7,
+        13,
+        9,
+        3,
+        15,
+        0,
+        6,
+        1,
+        14,
+        10,
+        5,
+        8,
+        12,
+        2
+      ],
+      "rank_rule": "machine-precision pivoted QR; approximation ROM only, never exact Woodbury"
+    },
+    "W": {
+      "input_columns": 32,
+      "rank": 32,
+      "pivot_order": [
+        13,
+        2,
+        0,
+        5,
+        14,
+        11,
+        7,
+        15,
+        1,
+        4,
+        12,
+        8,
+        10,
+        3,
+        6,
+        9,
+        19,
+        26,
+        27,
+        18,
+        30,
+        28,
+        16,
+        22,
+        20,
+        25,
+        31,
+        24,
+        17,
+        29,
+        23,
+        21
+      ],
+      "rank_rule": "machine-precision pivoted QR; approximation ROM only, never exact Woodbury"
+    },
+    "shared_R0V_RHS": 16,
+    "goal_operator": "baseline original volume functional",
+    "paid_enrichment_available_to_ordinary_ROM": true
+  },
+  "exact_selector_support": {
+    "active_row_count": 1228,
+    "nonzero_column_count": 1228,
+    "columns_outside_active_rows": [],
+    "selector_factorization_valid": true
+  },
+  "exact_resource": {
+    "active_rows": 1228,
+    "estimated_R0U_bytes": 1251813376,
+    "estimated_dense_workspace_peak_bytes": 144766464,
+    "estimated_combined_major_array_peak_bytes": 2265184368,
+    "estimate_excludes_opaque_basis_and_LU_workspaces": true
+  },
+  "exact_R0U": {
+    "cost": {
+      "new_rhs": 1228,
+      "new_material_frequency_LU": 0,
+      "cpu_seconds": 75.01757,
+      "wall_seconds": 77.76529670902528
+    },
+    "rank_bound": 1228,
+    "exact_all_active_rows": true,
+    "no_truncation": true
+  },
+  "exact_status": "READY_EXACT_ALL_ACTIVE_ROWS",
+  "cold_cost_convention": {
+    "geometry_qualification": "all four paid Full endpoints are benchmark validation, never hidden as free",
+    "optimized_full": "fresh candidate LU + four RHS; baseline/ROM setup is not required for standalone deployment",
+    "woodbury": "baseline four RHS/LU + paid four primal R0(rhs_unit) + all r R0U RHS; no goal/ROM setup required",
+    "field_V": "baseline four RHS/LU + four primal R0 RHS + twelve original-volume dual RHS + QR/projections",
+    "field_enriched_and_current": "same field_V setup + rank(V) paid shared R0V RHS + own QR/projections",
+    "Krylov": "baseline four RHS/LU preconditioner + every actual base-LU preconditioner apply paid warm",
+    "standalone_setup_wall": "use separately measured component events; pooled setup is not credited free to any arm",
+    "no_teacher_or_dense_core_cost_exclusion": true,
+    "warm_measurement": "deployment snapshot immediately after real response extraction; Full reuses sf.data",
+    "audit_measurement": "added residual/error/formula checks separately measured after deployment; retained in audited_total_cost and full stage CPU",
+    "backend_required_internal_checks": "existing FEM solve/base-action invariants retained in their actual operation cost"
+  }
+}

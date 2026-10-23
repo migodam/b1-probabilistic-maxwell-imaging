@@ -226,13 +226,31 @@ def continuous_reference(y,rules,protocol):
         nuisance_convergence=nuisance,meaning='continuous controlled-prior integral approximated by independent positive/truncated quadrature; not continuum exact')
 
 
+def _finite_position_interval(x,weights):
+    """Equal-tail quantiles of the supplied atoms, without bin spreading."""
+    x=np.asarray(x,float);w=np.asarray(weights,float)
+    if x.shape!=w.shape or x.ndim!=1 or not np.isfinite(x).all() or not np.isfinite(w).all() or np.any(w<0):
+        raise ValueError('Invalid finite position distribution')
+    order=np.argsort(x,kind='stable');x=x[order];w=w[order]
+    positive=w>0;x=x[positive];w=w[positive]
+    if not len(w) or abs(float(w.sum())-1)>1e-10:raise ValueError('Position weights must sum to one')
+    w=w/w.sum();cdf=np.cumsum(w)
+    values=[float(x[min(int(np.searchsorted(cdf,p,side='left')),len(x)-1)]) for p in (.025,.5,.975)]
+    lo,median,hi=values
+    return dict(lower=lo,median=median,upper=hi,nominal_mass=.95,
+        represented_atomic_mass=float(w[(x>=lo)&(x<=hi)].sum()),
+        measure='equal-tail quantiles of the supplied finite weighted distribution; no prior-bin spreading',
+        continuous_coverage_status='NOT_CERTIFIED_BY_CHECKPOINT_CDF_QUALIFICATION')
+
+
 def _weighted_material_summary(weights,material,cuts):
     w=np.asarray(weights,float)
     if w.shape!=(len(material['x']),) or not np.isfinite(w).all() or np.any(w<0) or abs(float(w.sum())-1)>1e-10:
         raise ValueError('Invalid normalized material posterior masses')
     x=material['x'];mean=float(w@x);branch=[float(w[material['branches']==b].sum()) for b in (0,1)]
     return dict(branch_mass=branch,x_mean=mean,x_sd=float(np.sqrt(w@((x-mean)**2))),
-        CDF={str(c):float(w[x<=c].sum()) for c in cuts})
+        CDF={str(c):float(w[x<=c].sum()) for c in cuts},
+        target_interval95=_finite_position_interval(x,w))
 
 
 def finite_reference(blocks,prior,material,gamma,continuous,protocol,nuisance_ok,response_source=None):
@@ -260,8 +278,20 @@ def _particle_summary(result,material,gamma,finite,continuous,cuts):
     masses=[float(w[b==branch].sum()) for branch in (0,1)]
     cdf={str(c):float(w[x<=c].sum()) for c in cuts}
     eligible=[mass>.05 for mass in finite['branch_mass']]
-    missing=[bool(eligible[branch] and not np.any(b==branch)) for branch in (0,1)]
+    present=[bool(np.any(b==branch)) for branch in (0,1)]
+    positive=[bool(np.any((b==branch)&(w>0))) for branch in (0,1)]
+    # Zero-weight slots are not represented probability mass. Keep occupancy
+    # separately, so a dead slot cannot conceal complete probability exclusion.
+    missing=[bool(eligible[branch] and not positive[branch]) for branch in (0,1)]
+    effective=[]
+    for branch in (0,1):
+        wb=w[b==branch];scale=float(np.max(wb,initial=0.))
+        if scale>0:
+            wb=wb/scale
+            effective.append(float(wb.sum()**2/(wb@wb)))
+        else:effective.append(0.)
     return dict(branch_mass=masses,x_mean=mean,x_sd=float(np.sqrt(w@((x-mean)**2))),CDF=cdf,
+        target_interval95=_finite_position_interval(x,w),
         log_evidence_estimate=float(result['log_evidence_estimate']),
         log_evidence_error=float(result['log_evidence_estimate']-finite['logZ']),
         branch_mass_max_error_vs_finite=max(abs(a-c) for a,c in zip(masses,finite['branch_mass'])),
@@ -269,7 +299,9 @@ def _particle_summary(result,material,gamma,finite,continuous,cuts):
         CDF_max_error_vs_continuous=max(abs(cdf[k]-continuous['CDF'][k]['order9']) for k in cdf),
         x_mean_error_vs_finite=mean-finite['x_mean'],x_sd_error_vs_finite=float(np.sqrt(w@((x-mean)**2)))-finite['x_sd'],
         branch_miss_eligible=eligible,branch_missing=missing,branch_MISS=any(missing),
-        branch_MISS_reference='same-observation exact finite enumeration; criterion mass>.05',
+        branch_MISS_reference='same-observation exact finite enumeration; reference mass>.05 and no positive-weight particle',
+        branch_particle_slot_present=present,branch_positive_weight_present=positive,
+        branch_effective_particle_count=effective,
         missing_branches=sum(missing),eligible_branches=sum(eligible),
         surviving_initial_ancestors=result['surviving_initial_ancestors'],
         probability_claim='FINITE_TARGET_ESTIMATE_REFERENCE_QUALIFIED_METHOD_ACCURACY_NOT_ASSUMED' if finite['qualified'] else 'UNQUALIFIED_NO_PROBABILITY_SUCCESS_CLAIM',
@@ -414,6 +446,7 @@ def main():
                 _write(attempt/(label+'.json'),point)
             point_cost=dict(cpu_seconds=time.process_time()-point_cpu,wall_seconds=time.perf_counter()-point_wall,new_Maxwell_RHS=0)
             runs={'direct':[],'progressive':[]};proposal_costs=[]
+            pooled={name:np.zeros(len(material['x'])) for name in runs}
             for seed in seeds:
                 lib_cpu,lib_wall=time.process_time(),time.perf_counter()
                 library=make_proposal_library(node_prior,finite['grid_shape'],rngseed=seed,nparticles=P,sweeps=S,max_array_bytes=MAX_ARRAY_BYTES)
@@ -425,6 +458,8 @@ def main():
                     sample_cpu,sample_wall=time.process_time(),time.perf_counter()
                     result=smc(blocks,node_prior,finite['grid_shape'],schedule=schedule,nparticles=P,sweeps=S,
                         global_prob=.25,proposal_library=library,max_array_bytes=MAX_ARRAY_BYTES)
+                    pooled[schedule]+=np.bincount(result['particle_indexes']//(gamma['n']**2),
+                        weights=result['weights'],minlength=len(material['x']))/len(seeds)
                     summary=_particle_summary(result,material,gamma,finite,continuous,protocol['cdf_checkpoints'])
                     summary.update(seed=seed,schedule=schedule,cpu_seconds=time.process_time()-sample_cpu,
                         wall_seconds=time.perf_counter()-sample_wall,new_Maxwell_RHS=0,
@@ -437,6 +472,12 @@ def main():
                     del result
                 del library
             ensembles={name:_ensemble(records,finite,continuous,protocol['cdf_checkpoints']) for name,records in runs.items()}
+            for name in ensembles:
+                pooled_summary=_weighted_material_summary(pooled[name],material,protocol['cdf_checkpoints'])
+                if abs(pooled_summary['x_mean']-ensembles[name]['average_x_mean'])>1e-10:
+                    raise RuntimeError('Pooled particle and ensemble position means disagree')
+                ensembles[name]['target_interval95']=pooled_summary['target_interval95']
+                ensembles[name]['interval_pooling']='equal mixture of all seed-weighted particles, never an average of quantiles'
             row=dict(observation=observation,parent=int(parents[observation]),attempt=attempt_name,
                 family_id=FAMILY_ID,scope='new restricted public fixed-support family, not general unknown-wall online',
                 original_minimum_feature='UNRESOLVED',continuous_ref=continuous,finite_ref=finite,
@@ -457,7 +498,8 @@ def main():
                 cpu_seconds=time.process_time()-cpu_start,wall_seconds=time.perf_counter()-wall_start,
                 no_physical_recovery_attempted=True))
             raise
-    _write(out/'COMPLETE.json',dict(observations=len(rows),independent_parents=len(np.unique(parents)),
+    _write(out/'COMPLETE.json',dict(status='FULL_NODE_INFERENCE_COMPLETE',inference_frozen=True,
+        truth_access=False,observations=len(rows),independent_parents=len(np.unique(parents)),
         all_finite_references_qualified=all(r['finite_ref']['qualified'] for r in rows),
         points='NEEDS_FULL_VALIDATION; raw point values are paid full nodes, separate validation remains external',
         response_source=response_source,

@@ -1,0 +1,7 @@
+# 已知家族外候选与概率支持边界
+
+本包两个事件仅穷尽冻结的W_FIXED_SUPPORT_JOINT_V1，不覆盖原宽未知墙体类。本轮另一个严格空气圆腔候选经过实际全波验证，calibration距离0.520776；24个固定任务最大距离1.379061，未达到强任务见证门槛3。它不属于本包prior，也没有被偷偷加入银行或重新赋权。
+
+因此outside_model_support_mass仍为null/unquantified。已知候选的存在不提供其先验邻域质量、相对证据或对本包每份新含噪数据的posterior mass。不得从两个事件质量和1推断所有可能墙体已经被穷尽。该候选的原始观测合同与本包新概率观测分开。
+
+端点与原始数组、完整费用见同仓库W证据Release，正式状态见根P0_B2_GATE_DECISION.json。这里不修改原生EXAMPLE.json或数值概率。

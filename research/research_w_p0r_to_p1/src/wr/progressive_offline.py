@@ -19,11 +19,16 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[2]
 ARMS=('direct_point','progressive_point','direct_SMC_mean','progressive_SMC_mean')
 BAYES='continuous_quadrature_Bayes_mean'
+PRIOR='zero_observation_prior_position_mean'
+CONTROL='full_validated_continuous_point_control'
+ALL_ARMS=(*ARMS,BAYES,PRIOR,CONTROL)
 POINT_NAMES={'direct_point':'direct joint point','progressive_point':'progressive block point'}
 SMC_NAMES={'direct_SMC_mean':'direct','progressive_SMC_mean':'progressive'}
 CONTRASTS={
     'multi_hypothesis':(('direct_point','direct_SMC_mean'),('progressive_point','progressive_SMC_mean')),
-    'progressive_schedule':(('direct_SMC_mean','progressive_SMC_mean'),('direct_point','progressive_point'))}
+    'progressive_schedule':(('direct_SMC_mean','progressive_SMC_mean'),('direct_point','progressive_point')),
+    'observation_information':((PRIOR,'direct_SMC_mean'),(PRIOR,BAYES)),
+    'strong_point_control':(('direct_point',CONTROL),(CONTROL,'direct_SMC_mean'))}
 
 
 def _safe(value):
@@ -95,7 +100,7 @@ def _cdf_values(mapping,cuts,continuous=False):
     return values
 
 
-def score_observation(inference,points,truth_parameters,cuts):
+def score_observation(inference,points,truth_parameters,cuts,control=None):
     """Pure scoring function. Caller supplies truth only AFTER freeze gate."""
     if np.iscomplexobj(truth_parameters):raise ValueError('truth parameters must be real')
     truth=np.asarray(truth_parameters,dtype=float)
@@ -111,7 +116,7 @@ def score_observation(inference,points,truth_parameters,cuts):
                 GT_role='OFFLINE_ONLY',true_branch=branch,true_target_x=target,
                 continuous_reference_qualified=cq,finite_reference_qualified=fq,
                 reference_qualification_population_retained=True,new_rhs=0)
-    for arm in (*ARMS,BAYES):
+    for arm in ALL_ARMS:
         row=dict(**common,arm=arm,estimate_x=None,estimate_sd=None,
                  position_squared_error=None,position_absolute_error=None,
                  scoring_status='SCORED',probability_status='NOT_A_PROBABILITY_ARM')
@@ -130,6 +135,20 @@ def score_observation(inference,points,truth_parameters,cuts):
             prediction=inference['ensemble'][SMC_NAMES[arm]]
             estimate=prediction.get('average_x_mean')
             row['estimate_sd']=prediction.get('ensemble_mixture_x_sd')
+        elif arm==PRIOR:
+            estimate=-.85
+            row['probability_status']='UNCONDITIONAL_PRIOR_NOT_POSTERIOR'
+        elif arm==CONTROL:
+            if control is None:
+                row['scoring_status']='CONTROL_NOT_SUPPLIED_NOT_SCORED'
+                rows.append(row);continue
+            prediction=control['best']
+            estimate=prediction['x']
+            row.update(Phi=prediction['Phi'],actual_full_response=prediction['actual_full_response'],
+                physical_source=prediction['physical_source'],
+                response_error_white=prediction.get('response_error_white'),
+                potential_error=prediction.get('potential_error'),
+                point_scope='Best actual-Phi point among validated continuous proxy proposals and original direct grid point; not a global MAP/KKT certificate')
         else:
             estimate=continuous.get('x_mean')
             row['estimate_sd']=continuous.get('x_sd')
@@ -144,11 +163,25 @@ def score_observation(inference,points,truth_parameters,cuts):
                        position_absolute_error=abs(x-target))
         except ValueError as exc:
             row.update(scoring_status='INVALID_POSITION_PREDICTION_RETAINED',score_error=str(exc))
+        if arm==PRIOR:
+            row.update(proper_branch_scores([.5,.5],branch))
+            row.update(target_interval95=dict(lower=-.909,upper=-.791,nominal_mass=.95,
+                measure='exact continuous unconditional two-branch prior'),
+                interval_coverage=float(-.909<=target<=-.791),interval_width=.118,
+                interval_probability_scope='UNCONDITIONAL_PRIOR_NOT_POSTERIOR')
         if arm in SMC_NAMES:
             row['probability_status']=('QUALIFIED_REFERENCE_CONTROLLED_FAMILY' if fq
                                        else 'REFERENCE_UNQUALIFIED_EMPIRICAL_SCORES_ONLY')
             try:
                 row.update(proper_branch_scores(prediction['average_branch_mass'],branch))
+                interval=prediction.get('target_interval95')
+                if interval is not None:
+                    lower=_number(interval['lower'],'interval lower')
+                    upper=_number(interval['upper'],'interval upper')
+                    if lower>upper:raise ValueError('Interval endpoints are reversed')
+                    row.update(target_interval95=interval,
+                        interval_coverage=float(lower<=target<=upper),interval_width=upper-lower,
+                        interval_probability_scope='FINITE_ATOMIC_APPROXIMATION; continuous coverage is empirical, not certified')
                 cdf=_cdf_values(prediction['average_CDF'],cuts)
                 ordered=[cdf[str(cut)] for cut in cuts]
                 coherent=(all(0<=v<=1 for v in ordered)
@@ -177,14 +210,15 @@ def parent_scores(scores,replicas=2):
     """Keep incomplete/unqualified parents visible; full mean needs both noises."""
     parents=sorted({r['parent'] for r in scores});result=[]
     for parent in parents:
-        for arm in (*ARMS,BAYES):
+        for arm in ALL_ARMS:
             rows=[r for r in scores if r['parent']==parent and r['arm']==arm]
             row=dict(parent=parent,arm=arm,expected_replicas=replicas,observations=len(rows),
                      continuous_qualified_replicas=sum(r['continuous_reference_qualified'] for r in rows),
                      finite_qualified_replicas=sum(r['finite_reference_qualified'] for r in rows))
             for metric in ('position_squared_error','position_absolute_error','branch_Brier',
                            'proper_branch_log_score','branch_log_loss',
-                           'CDF_max_error_vs_continuous','CDF_max_error_vs_finite'):
+                           'CDF_max_error_vs_continuous','CDF_max_error_vs_finite',
+                           'interval_coverage','interval_width'):
                 values=[r.get(metric) for r in rows]
                 valid=[v for v in values if v is not None and not math.isnan(float(v))]
                 complete=len(rows)==replicas and len(valid)==replicas
@@ -218,13 +252,14 @@ def summarize(scores,parents,replicates=2000,seed=2026102317):
     lookup={(r['parent'],r['arm']):r for r in parents}
     summary=dict(parent_count=len(ids),score_rows=len(scores),new_rhs=0,GT_role='OFFLINE_ONLY',
                  decision='NO_AUTOMATIC_GO_PARENT_REVIEW_REQUIRED',arm_summaries={},contrasts={})
-    for arm in (*ARMS,BAYES):
+    for arm in ALL_ARMS:
         rows=[r for r in parents if r['arm']==arm]
         coverage={}
         metrics={}
         for metric in ('position_squared_error','position_absolute_error','branch_Brier',
                        'proper_branch_log_score','branch_log_loss',
-                       'CDF_max_error_vs_continuous','CDF_max_error_vs_finite'):
+                       'CDF_max_error_vs_continuous','CDF_max_error_vs_finite',
+                       'interval_coverage','interval_width'):
             values=[r[metric] for r in rows if r.get(metric) is not None]
             metrics[metric]=float(np.mean(values)) if values else None
             coverage[metric]=len(values)
@@ -248,7 +283,7 @@ def summarize(scores,parents,replicates=2000,seed=2026102317):
                         [lookup[(parent,a)][metric] for parent in ids],
                         [lookup[(parent,b)][metric] for parent in ids],replicates,seed))
                 summary['contrasts'][family].append(row)
-    # One observation contributes five rows; count qualification once only.
+    # One observation contributes several decision arms; count it once only.
     objects={r['observation']:r for r in scores}
     summary['reference_qualification']=dict(
         object_count=len(objects),continuous_qualified=sum(r['continuous_reference_qualified'] for r in objects.values()),
@@ -263,6 +298,7 @@ def summarize(scores,parents,replicates=2000,seed=2026102317):
         position_mean='Bayes action under squared position loss within controlled family, not a new physical world',
         contrast_families='multi-hypothesis gain and progressive-schedule gain reported separately',
         CI_scope='descriptive paired parent bootstrap; no automatic GO or multiplicity-adjusted declaration')
+    summary['definitions']['intervals']='Secondary equal-tail .95 interval from each finite particle mixture; no bin spreading. Continuous coverage is empirical and not certified by five CDF checkpoints. Prior interval is exact under the separate unconditional prior.'
     return summary
 
 
@@ -282,30 +318,46 @@ def _index(rows,name,count):
 
 def _completion_record(record,name,count):
     if not isinstance(record,dict):raise ValueError(name+' marker must be an object')
-    if (record.get('complete') is False or record.get('completed') is False
-            or record.get('inference_frozen') is False
-            or str(record.get('status','')).upper() in ('RUNNING','INCOMPLETE','FAILED','NOT_RUN','PREPARED')):
+    expected={'inference freeze':'FULL_NODE_INFERENCE_COMPLETE',
+              'point validation':'FULL_POINT_VALIDATION_COMPLETE',
+              'continuous point control':'FULL_CONTINUOUS_POINT_CONTROL_COMPLETE'}
+    if name not in expected:raise ValueError('Unknown completion contract: '+name)
+    if (record.get('status')!=expected[name] or record.get('inference_frozen') is not True
+            or record.get('truth_access') is not False):
         raise RuntimeError(name+' marker does not establish a frozen completed process')
-    if 'observations' in record and record['observations']!=count:
+    if record.get('observations')!=count:
         raise RuntimeError(name+' completion count differs from frozen population')
 
 
 def _cost_fields(row):
-    return {key:value for key,value in row.items() if any(word in key.lower()
-            for word in ('cost','cpu','wall_seconds','rhs','maxwell'))}
+    result={}
+    def visit(value,path):
+        if isinstance(value,dict):
+            for key,item in value.items():
+                where=f'{path}.{key}' if path else key
+                if any(word in key.lower() for word in ('cost','cpu','wall_seconds','rhs','maxwell')):
+                    result[where]=item
+                else:visit(item,where)
+        elif isinstance(value,list):
+            for index,item in enumerate(value):visit(item,f'{path}[{index}]')
+    visit(row,'')
+    return result
 
 
 def main():
     """Sole truth-reading scoring entry. Never call before both processes freeze."""
     base=ROOT/'results/P1B'
     inference_dir=base/'inference';validation_dir=base/'point_validation'
+    control_dir=base/'continuous_point_control'
     freeze=next((inference_dir/name for name in ('COMPLETE.json','GATE.json')
                  if (inference_dir/name).exists()),None)
     validation_marker=validation_dir/'COMPLETE.json'
-    if freeze is None or not validation_marker.exists():
-        raise RuntimeError('OFFLINE truth access blocked: inference freeze and point-validation completion required')
+    control_marker=control_dir/'COMPLETE.json'
+    if freeze is None or not validation_marker.exists() or not control_marker.exists():
+        raise RuntimeError('OFFLINE truth access blocked: inference, point validation and stronger continuous-point control must finish')
     freeze_record=json.loads(freeze.read_text())
     validation_record=json.loads(validation_marker.read_text())
+    control_record=json.loads(control_marker.read_text())
     protocol=json.loads((ROOT/'configs/P1_PROBABILITY_PROTOCOL.json').read_text())
     scoring=protocol['P1B']['scoring']
     count=int(protocol['independent_parents'])*int(protocol['noise_replicas'])
@@ -314,11 +366,16 @@ def main():
         raise RuntimeError('frozen 16-parent/two-noise/2000-bootstrap scoring protocol differs')
     _completion_record(freeze_record,'inference freeze',count)
     _completion_record(validation_record,'point validation',count)
+    _completion_record(control_record,'continuous point control',count)
     inference=_index(json.loads((inference_dir/'RESULTS.json').read_text()),'inference',count)
     points=_index(json.loads((validation_dir/'RESULTS.json').read_text()),'point validation',count)
+    controls=_index(json.loads((control_dir/'RESULTS.json').read_text()),'continuous point control',count)
     for observation in range(count):
-        if inference[observation]['parent']!=points[observation]['parent']:
+        if not (inference[observation]['parent']==points[observation]['parent']==controls[observation]['parent']):
             raise ValueError('parent mismatch between frozen inference/validation')
+        best=controls[observation]['best']
+        if best.get('actual_full_response') is not True:
+            raise RuntimeError('Continuous point control lacks actual Full response qualification')
     # No truth path is opened above this line. Only two existing archive keys
     # are loaded; the noiseless F array is deliberately not read or regenerated.
     truth_path=base/'data/OFFLINE_TRUTH.npz'
@@ -342,10 +399,11 @@ def main():
         if inference[observation]['parent']!=parent_ids[observation]:
             raise ValueError('offline parent ordering does not match frozen observations')
         scores.extend(score_observation(inference[observation],points[observation],
-                                        parameters[observation],protocol['cdf_checkpoints']))
+                                        parameters[observation],protocol['cdf_checkpoints'],controls[observation]))
         cost_provenance.append(dict(observation=observation,parent=int(parent_ids[observation]),
             inference_cost_fields=_cost_fields(inference[observation]),
             point_validation_cost_fields=_cost_fields(points[observation]),
+            continuous_point_control_cost_fields=_cost_fields(controls[observation]),
             validated_point_methods=points[observation]['methods']))
     parents=parent_scores(scores,2)
     summary=summarize(scores,parents,2000,2026102317)
@@ -360,12 +418,14 @@ def main():
     _write(out/'TRUTH_ACCESS.json',dict(role='OFFLINE_ONLY',path=str(truth_path),
         keys_read=['parameters','parent_ids'],inference_freeze_marker=str(freeze),
         point_validation_complete_marker=str(validation_marker),new_rhs=0,
+        continuous_point_control_complete_marker=str(control_marker),
         new_truth_generated=False,online_inference_called=False))
     _write(out/'SCORES.json',scores);_csv(out/'SCORES.csv',scores)
     _write(out/'PARENT_SCORES.json',parents);_csv(out/'PARENT_SCORES.csv',parents)
     _write(out/'COST_PROVENANCE.json',dict(inference_marker=freeze_record,
-        point_validation_marker=validation_record,objects=cost_provenance,
-        source_bank_setup_costs_remain_paid=True,scorer_new_rhs=0))
+        point_validation_marker=validation_record,continuous_point_control_marker=control_record,objects=cost_provenance,
+        source_bank_setup_costs_remain_paid=True,scorer_new_rhs=0,
+        field_paths='Nested per-arm, per-seed and point costs retained; paths are raw provenance, not automatically additive subtotals. Root ledger is the charged total.'))
     _write(out/'PAIRED_CI.json',summary['contrasts'])
     _write(out/'SUMMARY.json',summary)
     _write(out/'COMPLETE.json',dict(status='OFFLINE_SCORES_READY_FOR_PARENT_REVIEW',

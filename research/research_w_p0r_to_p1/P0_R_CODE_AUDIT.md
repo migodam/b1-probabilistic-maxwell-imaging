@@ -36,3 +36,8 @@
 ## 4. 资源与没有补做的检查
 
 [R封账](R_SEALED.json)保留12000 RHS、1195 LU及2251.515528 CPU秒，disk/smooth_block controls未完成。本文件没有运行物理程序、重新收费、删除失败或修改历史/新物理源码。控制结果与局部非凸现象见[P0_R_FWI_CONVERGENCE.md](P0_R_FWI_CONVERGENCE.md)。
+
+
+## R阶段封账时点说明
+
+上述保存说明中的WORK_IN_PROGRESS与“后续未运行”描述R封账时点，不是整轮当前状态。R原始数字与阶段Gate保持原样；最终已完成的B2/C/受控P1-A/P1-B及其限制见[整轮裁决](SCIENTIFIC_DECISION.md)和[阶段汇总](GATE_SUMMARY.json)。本补记没有重开R预算或将Online失败改成PASS。

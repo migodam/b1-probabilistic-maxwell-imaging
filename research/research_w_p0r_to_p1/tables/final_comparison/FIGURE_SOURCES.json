@@ -1,0 +1,207 @@
+{
+  "read_inputs": [
+    {
+      "path": "results/P1B/offline_scores/SUMMARY.json",
+      "bytes": 26293,
+      "mtime_ns": "1792775660091121088"
+    },
+    {
+      "path": "results/P1B/offline_scores/PAIRED_CI.json",
+      "bytes": 16097,
+      "mtime_ns": "1792775660090216842"
+    }
+  ],
+  "array_or_GT_input": false,
+  "calculations": "MSE and CI unchanged; axis values only scaled by1000",
+  "figure_sources": [
+    {
+      "files": [
+        "figures/final_comparison/01_seven_arm_MSE.png",
+        "figures/final_comparison/01_seven_arm_MSE.svg"
+      ],
+      "table": "tables/final_comparison/seven_arm_MSE.csv",
+      "rows": [
+        {
+          "arm": "zero_observation_prior_position_mean",
+          "label": "零观测先验均值",
+          "parent_mean_MSE": 0.0023661589336290852,
+          "chart_MSE_times_1000": 2.366158933629085,
+          "complete_parent_count": 16,
+          "qualified_subset_only": false,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/zero_observation_prior_position_mean/parent_means/position_squared_error"
+        },
+        {
+          "arm": "full_validated_continuous_point_control",
+          "label": "Full 验证连续点控制",
+          "parent_mean_MSE": 0.004041812350480549,
+          "chart_MSE_times_1000": 4.041812350480549,
+          "complete_parent_count": 16,
+          "qualified_subset_only": false,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/full_validated_continuous_point_control/parent_means/position_squared_error"
+        },
+        {
+          "arm": "continuous_quadrature_Bayes_mean",
+          "label": "连续求积后验均值",
+          "parent_mean_MSE": 0.0025566111253372023,
+          "chart_MSE_times_1000": 2.556611125337202,
+          "complete_parent_count": 16,
+          "qualified_subset_only": true,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/continuous_quadrature_Bayes_mean/parent_means/position_squared_error"
+        },
+        {
+          "arm": "direct_SMC_mean",
+          "label": "直接 SMC 后验均值",
+          "parent_mean_MSE": 0.0025451075239943783,
+          "chart_MSE_times_1000": 2.5451075239943783,
+          "complete_parent_count": 16,
+          "qualified_subset_only": false,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/direct_SMC_mean/parent_means/position_squared_error"
+        },
+        {
+          "arm": "progressive_SMC_mean",
+          "label": "渐进 SMC 后验均值",
+          "parent_mean_MSE": 0.002546609139413271,
+          "chart_MSE_times_1000": 2.546609139413271,
+          "complete_parent_count": 16,
+          "qualified_subset_only": false,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/progressive_SMC_mean/parent_means/position_squared_error"
+        },
+        {
+          "arm": "direct_point",
+          "label": "直接网格点估计",
+          "parent_mean_MSE": 0.004429382193777966,
+          "chart_MSE_times_1000": 4.429382193777966,
+          "complete_parent_count": 16,
+          "qualified_subset_only": false,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/direct_point/parent_means/position_squared_error"
+        },
+        {
+          "arm": "progressive_point",
+          "label": "渐进网格点估计",
+          "parent_mean_MSE": 0.004429161994906363,
+          "chart_MSE_times_1000": 4.429161994906363,
+          "complete_parent_count": 16,
+          "qualified_subset_only": false,
+          "source": "results/P1B/offline_scores/SUMMARY.json",
+          "source_pointer": "#/arm_summaries/progressive_point/parent_means/position_squared_error"
+        }
+      ]
+    },
+    {
+      "files": [
+        "figures/final_comparison/02_primary_MSE_paired_CI.png",
+        "figures/final_comparison/02_primary_MSE_paired_CI.svg"
+      ],
+      "table": "tables/final_comparison/primary_MSE_paired_CI.csv",
+      "rows": [
+        {
+          "family": "multi_hypothesis",
+          "arm_a": "direct_point",
+          "arm_b": "direct_SMC_mean",
+          "loss": "position_squared_error",
+          "gain_a_minus_b": 0.001884274669783588,
+          "CI95_lower": 0.00043417855174534414,
+          "CI95_upper": 0.0034984395145395077,
+          "contains_zero": false,
+          "parent_count": 16,
+          "bootstrap_replicates": 2000,
+          "bootstrap_seed": 2026102317,
+          "status": "PAIRED_PARENT_DESCRIPTIVE_INTERVAL",
+          "unit": "independent parent; noise replicas averaged first",
+          "source": "results/P1B/offline_scores/PAIRED_CI.json",
+          "source_pointer": "#/multi_hypothesis/0",
+          "plotted_primary": true,
+          "label": "直接网格点 → 直接 SMC 均值"
+        },
+        {
+          "family": "multi_hypothesis",
+          "arm_a": "progressive_point",
+          "arm_b": "progressive_SMC_mean",
+          "loss": "position_squared_error",
+          "gain_a_minus_b": 0.0018825528554930924,
+          "CI95_lower": 0.0004335056298579159,
+          "CI95_upper": 0.0035023891030857316,
+          "contains_zero": false,
+          "parent_count": 16,
+          "bootstrap_replicates": 2000,
+          "bootstrap_seed": 2026102317,
+          "status": "PAIRED_PARENT_DESCRIPTIVE_INTERVAL",
+          "unit": "independent parent; noise replicas averaged first",
+          "source": "results/P1B/offline_scores/PAIRED_CI.json",
+          "source_pointer": "#/multi_hypothesis/2",
+          "plotted_primary": true,
+          "label": "渐进网格点 → 渐进 SMC 均值"
+        },
+        {
+          "family": "strong_point_control",
+          "arm_a": "full_validated_continuous_point_control",
+          "arm_b": "direct_SMC_mean",
+          "loss": "position_squared_error",
+          "gain_a_minus_b": 0.0014967048264861707,
+          "CI95_lower": 0.00029833710995545183,
+          "CI95_upper": 0.0027941375609500966,
+          "contains_zero": false,
+          "parent_count": 16,
+          "bootstrap_replicates": 2000,
+          "bootstrap_seed": 2026102317,
+          "status": "PAIRED_PARENT_DESCRIPTIVE_INTERVAL",
+          "unit": "independent parent; noise replicas averaged first",
+          "source": "results/P1B/offline_scores/PAIRED_CI.json",
+          "source_pointer": "#/strong_point_control/2",
+          "plotted_primary": true,
+          "label": "Full 验证连续点 → 直接 SMC 均值"
+        },
+        {
+          "family": "observation_information",
+          "arm_a": "zero_observation_prior_position_mean",
+          "arm_b": "direct_SMC_mean",
+          "loss": "position_squared_error",
+          "gain_a_minus_b": -0.00017894859036529293,
+          "CI95_lower": -0.000739362424696961,
+          "CI95_upper": 0.00038532434189392505,
+          "contains_zero": true,
+          "parent_count": 16,
+          "bootstrap_replicates": 2000,
+          "bootstrap_seed": 2026102317,
+          "status": "PAIRED_PARENT_DESCRIPTIVE_INTERVAL",
+          "unit": "independent parent; noise replicas averaged first",
+          "source": "results/P1B/offline_scores/PAIRED_CI.json",
+          "source_pointer": "#/observation_information/0",
+          "plotted_primary": true,
+          "label": "零观测先验均值 → 直接 SMC 均值"
+        },
+        {
+          "family": "progressive_schedule",
+          "arm_a": "direct_SMC_mean",
+          "arm_b": "progressive_SMC_mean",
+          "loss": "position_squared_error",
+          "gain_a_minus_b": -1.5016154188923992e-06,
+          "CI95_lower": -1.7841531637676967e-05,
+          "CI95_upper": 1.592213763656574e-05,
+          "contains_zero": true,
+          "parent_count": 16,
+          "bootstrap_replicates": 2000,
+          "bootstrap_seed": 2026102317,
+          "status": "PAIRED_PARENT_DESCRIPTIVE_INTERVAL",
+          "unit": "independent parent; noise replicas averaged first",
+          "source": "results/P1B/offline_scores/PAIRED_CI.json",
+          "source_pointer": "#/progressive_schedule/0",
+          "plotted_primary": true,
+          "label": "直接 SMC 均值 → 渐进 SMC 均值"
+        }
+      ]
+    }
+  ],
+  "all_contrasts_table": "tables/final_comparison/all_saved_paired_CI.csv",
+  "omitted_by_sign": false,
+  "plotted_MSE_arms": 7,
+  "plotted_MSE_contrasts": 5,
+  "all_saved_contrasts_exported": 16,
+  "scope": "受控新 fixed-support prior；原 minimum_feature 未解决；本图不作科学 GO 裁决。"
+}

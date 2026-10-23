@@ -1,0 +1,11 @@
+# 递进与直接推断的完整费用比较
+
+主四臂共享同一个650节点付费Full Maxwell银行、同一新观测、proposal库和缓存权利。Full银行新支付12800 RHS，新数据生成320 RHS，共13120 RHS；连续点控制、Green工程对照等额外费用见最终RESOURCE_SUMMARY，不能混入SMC的零新增物理行后隐藏。
+
+128个SMC run的纯数组CPU合计direct约1.570秒、progressive约1.156秒；相比银行上万秒的setup，此差异不能证明20%的端到端成本下降。两个调度没有减少任何已支付Full节点或独立精度验证。progressive平均初始祖先剩余约1098，direct约1663，且ensemble一个CDF失败，不能用短数组wall单独宣布更高效。
+
+更强的低维direct求积控制，直接三阶full与截断CDF共54物理向量，在新P1B的全部32份观测上最大事件误差0.00063443、CDF误差0.00106966，满足同一0.02门槛。18-node response插值细积分也通过（0.00063618、0.00131979），但两次warm 32观测wall为0.714/0.650秒，direct为0.151/0.127秒。direct本来就很便宜，不能以高阶teacher免费为前提宣称传播压缩节省成本。
+
+这些费用是固定小家族中的响应重用，不是一般Green算子类压缩。所有teacher验证、冷银行、连续点Full核验、失败和缓存复用都保留。对于未来新prior的360对1080 RHS最低bank算术只作条件估算，不是本次实际节省。
+
+因此：P1_B_MULTI_HYPOTHESIS_USEFUL_PROGRESSIVE_NOT_ESTABLISHED。停止当前“递进调度具有独立优势”的主张，保留直接低阶求积作为本受控家族强基线。一般未知墙体推断与空间递进机制仍未解决。

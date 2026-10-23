@@ -1,0 +1,241 @@
+{
+  "family_id": "W_FIXED_SUPPORT_JOINT_V1",
+  "schema_version": 1,
+  "frozen_utc": "2026-10-23T04:39:15Z",
+  "identity": "CONTROLLED_PUBLIC_FIXED_SUPPORT_TWO_WALL_SUBSET",
+  "intended_scope": "independent restricted simulation family; not general unknown-wall online inference",
+  "original_minimum_feature_status": "UNRESOLVED_ORIGINAL_SCALAR_NOT_REDEFINED",
+  "strict_original_prior_membership_claim": false,
+  "wall_support": {
+    "seed": 2026102202,
+    "definition": "original analytic wall support shared by both branches",
+    "chart": "LinearWorld54 nonnegative tensor hats/108 bounded affine parameters",
+    "wall_parameter_file": "inputs/W_FAMILY_WALLS.npz",
+    "npz_keys": [
+      "q0",
+      "q1"
+    ],
+    "wall_probability": [
+      0.5,
+      0.5
+    ],
+    "q0": "zeros108",
+    "q1": "fixed independently validated endpoint copied verbatim",
+    "cavities": []
+  },
+  "target": {
+    "branch_centers": [
+      [
+        -0.9,
+        2.15
+      ],
+      [
+        -0.8,
+        2.15
+      ]
+    ],
+    "radius": 0.12,
+    "offset_x": {
+      "distribution": "uniform",
+      "bounds": [
+        -0.01,
+        0.01
+      ],
+      "independent_of_branch": true
+    },
+    "contrast": {
+      "distribution": "uniform",
+      "bounds": [
+        2.94,
+        3.06
+      ],
+      "independent_of_branch_and_offset": true
+    },
+    "conductivity": 0.02,
+    "law": "epsilon_target=1+contrast+i*.02/f",
+    "geometry": "center=branch_center+(u,0); fixed radius.12"
+  },
+  "nuisance": {
+    "shared": "ONE gamma for every frequency/source/receiver; external multiply only",
+    "amplitude": {
+      "distribution": "uniform",
+      "bounds": [
+        0.99,
+        1.01
+      ]
+    },
+    "phase_radians": {
+      "distribution": "uniform",
+      "bounds": [
+        -0.01,
+        0.01
+      ]
+    },
+    "independent_of_material": true
+  },
+  "acquisition": {
+    "frequencies": [
+      0.9975,
+      0.99875,
+      1.0,
+      1.00125,
+      1.0025
+    ],
+    "band": "narrow",
+    "tx": [
+      [
+        -1.4,
+        -0.3
+      ],
+      [
+        -0.4666666666666667,
+        -0.3
+      ],
+      [
+        0.46666666666666656,
+        -0.3
+      ],
+      [
+        1.4,
+        -0.3
+      ]
+    ],
+    "rx": [
+      [
+        -1.5,
+        -0.3
+      ],
+      [
+        -1.2272727272727273,
+        -0.3
+      ],
+      [
+        -0.9545454545454546,
+        -0.3
+      ],
+      [
+        -0.6818181818181819,
+        -0.3
+      ],
+      [
+        -0.40909090909090917,
+        -0.3
+      ],
+      [
+        -0.13636363636363646,
+        -0.3
+      ],
+      [
+        0.13636363636363624,
+        -0.3
+      ],
+      [
+        0.40909090909090895,
+        -0.3
+      ],
+      [
+        0.6818181818181817,
+        -0.3
+      ],
+      [
+        0.9545454545454541,
+        -0.3
+      ],
+      [
+        1.227272727272727,
+        -0.3
+      ],
+      [
+        1.5,
+        -0.3
+      ]
+    ],
+    "complex_response_shape": [
+      5,
+      4,
+      12
+    ],
+    "sigma_each_real_quadrature": 0.01,
+    "source_normalization": "Unit line-source Green, constant multiplier 1 at every frequency; known calibrated source spectrum",
+    "whitening": "full Re/Im norm divided by.01, no channel-count normalization"
+  },
+  "forward_numerics": {
+    "h": 0.13,
+    "tolerance": 2.5e-05,
+    "contour_resolution": 4,
+    "circle_segments": 512,
+    "order": 3,
+    "pml_strength": 6,
+    "max_dofs": 110000,
+    "max_factor_bytes": 3500000000,
+    "stream_frequencies": true
+  },
+  "provenance": {
+    "nomination": "configs/FIRST_JOINT_NOMINATION.json",
+    "nomination_snapshot": {
+      "id": "joint_seed2_narrow_fullj",
+      "seed": 2026102202,
+      "band": "narrow",
+      "kind": "joint",
+      "chart": "linear",
+      "x_file": "results/B2/native_joint_direct_2026102202_narrow/FULL_J_FINAL.npz",
+      "cavities": [],
+      "identity": "ORACLE_CONSTRUCTED_PHYSICAL_WITNESS",
+      "nomination_rule": "First predeclared seed2 direct-joint ordinaryFullJ point with d<=1; randomized control completed before validation",
+      "gate_before_validation": "PROVISIONAL_ONLY",
+      "geometry_audit": "AUDIT/geometry/FIRST_JOINT_FULLJ_ENDPOINT.json"
+    },
+    "independent_validation": "results/B2/validation/joint_seed2_narrow_fullj",
+    "validation_gate_snapshot": {
+      "identity": "ORACLE_CONSTRUCTED_PHYSICAL_WITNESS",
+      "numerical_status": "PASS_EMPIRICAL_GRID_CHECK",
+      "d_cal": 3.5605119112114565,
+      "d_joint_shifted": 0.7987161019689071,
+      "d_T_sup_24": 4.81819338103861,
+      "task_argmax": 6,
+      "numerical_pass": true,
+      "cal_physics_threshold": false,
+      "joint_physics_threshold": true,
+      "target_shift": 0.1,
+      "mass_relative_change": 0,
+      "original_minimum_feature_status": "UNDEFINED_ORIGINAL_SCALAR; see independent geometry audit",
+      "strict_original_prior_GO": false,
+      "conditional_fixed_support_geometry": true,
+      "likelihood_not_posterior_mass": true,
+      "posterior_probability": null,
+      "totals": {
+        "R": {
+          "rhs": 12000,
+          "factorizations": 1195,
+          "cpu_seconds": 2251.515528
+        },
+        "B2": {
+          "rhs": 7220,
+          "factorizations": 770,
+          "cpu_seconds": 1936.505369
+        },
+        "C": {
+          "rhs": 0,
+          "factorizations": 0,
+          "cpu_seconds": 0
+        },
+        "P1A": {
+          "rhs": 0,
+          "factorizations": 0,
+          "cpu_seconds": 0
+        },
+        "P1B": {
+          "rhs": 0,
+          "factorizations": 0,
+          "cpu_seconds": 0
+        }
+      }
+    },
+    "wall_parameter_source": "results/B2/native_joint_direct_2026102202_narrow/FULL_J_FINAL.npz",
+    "publication_gate": "independent numerical_pass AND joint_physics_threshold",
+    "conditional_fixed_support_scope": true
+  },
+  "observation_or_truth_generation": "NONE; handled only by a separate explicitly authorized process",
+  "probability_origin": "new explicit controlled prior masses; not inferred from witness existence or likelihood fit",
+  "boundary_roundoff": "only one outward float64ULP maps back to its same frozen boundary"
+}

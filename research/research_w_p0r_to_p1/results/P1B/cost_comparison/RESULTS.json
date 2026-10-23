@@ -1,0 +1,156 @@
+{
+  "contract": {
+    "identity": "P1B_SHARED_P1A_F_CACHE_ARRAY_COST_REPLAY_V1",
+    "dataset": "P1B",
+    "target": "CONTROLLED_W_FIXED_SUPPORT_JOINT_V1_CONTINUOUS_APPROXIMATED_BY_POSITIVE_QUADRATURE",
+    "reference": "results/P1B/inference/RESULTS.json continuous_ref only; full5/full9 and directly truncated CDF5/CDF9",
+    "observations": "P1B OBSERVATIONS.npz: y and parent_ids only; all32, fixed before comparison",
+    "observation_scope": "New32 P1B observations relative to P1A setup; observation-only generalization check of unchanged methods; no B adaptation or model/threshold/rule selection",
+    "response_banks": "Only completed P1A full3/5/9 and cdf_i_3/5/9; B650 responses are not loaded",
+    "fixed_minimum_method_nodes": {
+      "direct_order3": 54,
+      "response_interpolation18": 18
+    },
+    "method_and_threshold_changes_on_P1B": false,
+    "reference_missing_policy": "FAIL_CLOSED; never infer qualification",
+    "reference_contrast_scored": false,
+    "thresholds": {
+      "branch_event": 0.02,
+      "CDF": 0.02,
+      "nuisance_max_node_logZ_change": 0.0002
+    },
+    "gain": "ONE shared amplitude U[.99,1.01] and phase U[-.01,.01] across all frequencies/sources/receivers, marginalized by posterior_math; no profiling",
+    "CDF": "Integrate original-density truncated intervals, divide by same method fullZ; never atomic node-count CDF or independently renormalized truncation",
+    "nuisance_orders": [
+      11,
+      21,
+      41,
+      65
+    ],
+    "cache_rights": "Both reuse exact unique F arrays and rule-node index maps. Neither retains per-y likelihood or posterior across passes. Shared teacher/reference is already paid.",
+    "cache_construction": "Once per method, prior-rule coordinates only, before loading y",
+    "cold_definition": "First in-process cache construction plus first full32 inference; not a fresh process or cold OS disk cache. Shared rule loading reported separately.",
+    "warm_definition": "Two complete recomputations of all32 y from persistent F cache; no result memoization",
+    "method_order_by_pass": {
+      "cold": [
+        "direct_order3",
+        "response_interpolation18"
+      ],
+      "warm1": [
+        "response_interpolation18",
+        "direct_order3"
+      ],
+      "warm2": [
+        "direct_order3",
+        "response_interpolation18"
+      ]
+    },
+    "warm2_order_seed": 20261024,
+    "rule_input_load_timing": {
+      "wall_seconds": 0.05329412501305342,
+      "cpu_seconds": 0.030714999999999992
+    },
+    "observation_reference_IO_timing": {
+      "wall_seconds": 0.015736083034425974,
+      "cpu_seconds": 0.012581000000000009
+    },
+    "reference_setup_free": false,
+    "uniform_likelihood_bound": null,
+    "P1B_original_four_arm_extra_bank_cost": "Separately retained in PHYSICAL_SETUP_COSTS.json, not required by either replay method",
+    "original_minimum_feature_semantics": "UNRESOLVED; no qualification of the original broad wall prior",
+    "model_scope": "Only the public controlled fixed-support two-wall family; no general unknown-wall online claim",
+    "new_Maxwell_rhs": 0,
+    "new_Maxwell_LU": 0,
+    "GT_access": false,
+    "plan_access": false,
+    "decision": "NOT_EVALUATED_NO_AUTOMATIC_GO"
+  },
+  "passes": [
+    {
+      "pass_name": "cold",
+      "direct_wall_seconds": 0.1312949168495834,
+      "interpolation_wall_seconds": 0.6756250408943743,
+      "direct_cpu_seconds": 0.12934700000000005,
+      "interpolation_cpu_seconds": 0.6547390000000001,
+      "direct_over_interpolation_wall_ratio": 0.1943310400037552,
+      "direct_over_interpolation_cpu_ratio": 0.1975550562896055,
+      "direct_qualified_count": 32,
+      "interpolation_qualified_count": 32,
+      "meaning": "Array computation only; not avoided physical solves or an automatic GO"
+    },
+    {
+      "pass_name": "warm1",
+      "direct_wall_seconds": 0.1509949997998774,
+      "interpolation_wall_seconds": 0.7136590830050409,
+      "direct_cpu_seconds": 0.14902700000000024,
+      "interpolation_cpu_seconds": 0.6940110000000002,
+      "direct_over_interpolation_wall_ratio": 0.21157861420900723,
+      "direct_over_interpolation_cpu_ratio": 0.21473290769166514,
+      "direct_qualified_count": 32,
+      "interpolation_qualified_count": 32,
+      "meaning": "Array computation only; not avoided physical solves or an automatic GO"
+    },
+    {
+      "pass_name": "warm2",
+      "direct_wall_seconds": 0.12732150009833276,
+      "interpolation_wall_seconds": 0.6500053328927606,
+      "direct_cpu_seconds": 0.12080000000000002,
+      "interpolation_cpu_seconds": 0.6334690000000003,
+      "direct_over_interpolation_wall_ratio": 0.19587762385226237,
+      "direct_over_interpolation_cpu_ratio": 0.19069599301623277,
+      "direct_qualified_count": 32,
+      "interpolation_qualified_count": 32,
+      "meaning": "Array computation only; not avoided physical solves or an automatic GO"
+    }
+  ],
+  "method_accuracy": {
+    "direct_order3": {
+      "observations": 32,
+      "qualified_count": 32,
+      "unqualified": [],
+      "max_branch_event_error": 0.0006344349862854592,
+      "max_CDF_error": 0.0010696631834088421,
+      "max_x_mean_error": 5.3128852289030526e-05,
+      "max_x_SD_error": 2.953001368520558e-05,
+      "max_logZ_absolute_error": 0.0020852151567396504,
+      "all_CDF_coherent": true,
+      "all_nuisance_converged": true,
+      "mathematical_evaluation_counts": {
+        "log_marginal_calls": 64,
+        "material_statistic_row_evaluations": 3456,
+        "complex_channel_statistic_evaluations": 829440,
+        "material_gamma_likelihood_evaluations": 971136
+      },
+      "new_Maxwell_rhs": 0,
+      "new_Maxwell_LU": 0
+    },
+    "response_interpolation18": {
+      "observations": 32,
+      "qualified_count": 32,
+      "unqualified": [],
+      "max_branch_event_error": 0.0006361825988218106,
+      "max_CDF_error": 0.0013197852058313142,
+      "max_x_mean_error": 5.31521213615882e-05,
+      "max_x_SD_error": 2.9589926367500075e-05,
+      "max_logZ_absolute_error": 0.0020863959857706504,
+      "all_CDF_coherent": true,
+      "all_nuisance_converged": true,
+      "mathematical_evaluation_counts": {
+        "log_marginal_calls": 64,
+        "material_statistic_row_evaluations": 31104,
+        "complex_channel_statistic_evaluations": 7464960,
+        "material_gamma_likelihood_evaluations": 8740224
+      },
+      "new_Maxwell_rhs": 0,
+      "new_Maxwell_LU": 0
+    }
+  },
+  "physical_costs": "PHYSICAL_SETUP_COSTS.json",
+  "array_cache_build": "ARRAY_CACHE_BUILD.json",
+  "empirical_scope": "Measured finite set of32 P1B observations with frozen P1A response banks and checked quadrature nodes, not continuous-exact posterior, uniform likelihood bound or proof of future deployment savings.",
+  "shared_reference_and_teacher_free": false,
+  "uniform_likelihood_bound": null,
+  "new_Maxwell_rhs": 0,
+  "new_Maxwell_LU": 0,
+  "scientific_GO": "NOT_EVALUATED"
+}

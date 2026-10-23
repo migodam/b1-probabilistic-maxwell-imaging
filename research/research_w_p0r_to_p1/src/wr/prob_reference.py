@@ -18,8 +18,13 @@ def posterior(rule,ll):
     relative_logz=float(logsumexp(relative));logz=anchor+relative_logz
     w=np.exp(relative-relative_logz);w/=w.sum()
     x=rule['x'];mean=float(w@x)
+    branch_logs=[float(logsumexp(relative[rule['branches']==b])-relative_logz) for b in (0,1)]
+    log_odds=branch_logs[1]-branch_logs[0]
+    odds=float(np.exp(log_odds)) if np.isfinite(log_odds) and log_odds<=np.log(np.finfo(float).max) else None
     return dict(logZ=logz,weights=w,branch1=float(w[rule['branches']==1].sum()),
-        x_mean=mean,x_sd=float(np.sqrt(w@((x-mean)**2))),contrast_mean=float(w@rule['contrast']))
+        x_mean=mean,x_sd=float(np.sqrt(w@((x-mean)**2))),contrast_mean=float(w@rule['contrast']),
+        posterior_log_odds=log_odds,posterior_odds=odds,
+        posterior_odds_status='FINITE' if odds is not None else 'FLOAT_RANGE_EXCEEDED_USE_LOG_ODDS')
 
 def cdf_coherence(values,tolerance=1e-8):
     a=np.asarray(values,float)
@@ -109,7 +114,8 @@ def main():
         response_error=float(np.max(np.linalg.norm((approximation-fine['F']).reshape(len(approximation),-1),axis=1)/.01))
         row=dict(observation=index,parent=int(obs['parent_ids'][index]),
             target='CONTROLLED_W_FIXED_SUPPORT_JOINT_V1_CONTINUOUS',reference_status='QUALIFIED_EMPIRICAL_QUADRATURE' if qualified else 'REFERENCE_UNQUALIFIED',
-            branch1_posterior_mass=ref['branch1'],prior_branch1_mass=.5,posterior_odds=ref['branch1']/max(1-ref['branch1'],1e-300),
+            branch1_posterior_mass=ref['branch1'],prior_branch1_mass=.5,
+            posterior_odds=ref['posterior_odds'],posterior_log_odds=ref['posterior_log_odds'],posterior_odds_status=ref['posterior_odds_status'],
             x_mean=ref['x_mean'],x_sd=ref['x_sd'],contrast_mean=ref['contrast_mean'],log_evidence=ref['logZ'],
             quadrature_event_error=event_error,quadrature_CDF_max_error=cdf_error,CDF=cdf,
             quadrature_x_mean_error=abs(ref['x_mean']-coarse['x_mean']),quadrature_x_SD_error=abs(ref['x_sd']-coarse['x_sd']),

@@ -93,6 +93,7 @@ def main():
     row=rows[0];obsroot=(inference/'observation_000').resolve();attempt=(obsroot/row['attempt']).resolve()
     if attempt.parent!=obsroot or not attempt.is_dir():raise RuntimeError('Invalid fixed observation attempt')
     finite_path=attempt/'FINITE_REFERENCE.npz';grid_path=inference/'PUBLIC_MATERIAL_GRID.npz'
+    with np.load(attempt/'OBSERVATION.npz',allow_pickle=False) as z:observed=z['y'].copy()
     full9_path=ROOT/'results/P1A/rules/full_9.npz'
     with np.load(finite_path,allow_pickle=False) as z:finite={k:z[k].copy() for k in z.files}
     with np.load(grid_path,allow_pickle=False) as z:material={k:z[k].copy() for k in z.files}
@@ -157,6 +158,9 @@ def main():
             selection='existing paid full9 node nearest finite conditional(u,c)mean by prior-width normalized distance',
             normalized_distance_squared=float(np.min(distances)),gamma_definition='E[a|branch]*exp(i*E[phase|branch])',
             representative_not_posterior_mean_material=True,point_probability=None,full9_prediction_source=source)
+        observed_distance=float(np.linalg.norm(gamma*raw-observed)/.01)
+        representative.update(d_observed=observed_distance,Phi=.5*observed_distance**2,
+            residual_scope='Noisy-observation fit, not the two-world mean-distance<=1 criterion')
         representatives.append(dict(metadata=representative,Fraw=raw,gammaF=gamma*raw))
         pred=np.tensordot(factors['gamma_weighted_material_factors'][use],Fmaterial[use],axes=(0,0))/normalizer
         branch_predictives.append(pred);conditionals.append(stats)
@@ -238,6 +242,9 @@ def main():
             historical_witness_role='conditional construction history only; does not assign branch probability',
             current_prior_role='new explicit branch masses .5/.5 plus continuous target/nuisance prior',
             current_shared_gain='marginalized once for all frequencies/sources/receivers',
+            representative_pair_distance_raw_gain1=float(np.linalg.norm(raw[1]-raw[0])/.01),
+            representative_pair_distance_with_branch_representative_gain=float(np.linalg.norm(gained[1]-gained[0])/.01),
+            representative_pair_status='Full paid production-grid predictions, not automatically a newly nominated independently grid-validated witness',
             representative_target_x_difference=representatives[1]['metadata']['target_center'][0]-representatives[0]['metadata']['target_center'][0]),
         downstream=dict(status=status,finite_joint_weights=dict(path=_path(finite_path),key='posterior_weights',grid_shape=list(shape),
                 ravel_order=['branch','iu','ic','ia','iphi'],material_coordinate_keys=['material_branches','material_u','material_contrast','material_x'],

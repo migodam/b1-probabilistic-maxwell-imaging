@@ -31,3 +31,8 @@
 后续概率实验使用另行冻结、可归一化的公开两墙有限材料家族，并生成新的独立观测。它既不把本次搜索频率当成prior，也不声称覆盖原来全部未知墙体。
 
 复现分解：`tools/analyze_w_compensation.py`，只读取已保存数组，新增RHS为0；原始求解费用仍保留在B2账本。
+
+
+## 材料场距离（零新增物理复算）
+
+对公开冻结的两个canonical端点（各分支u=0、contrast=3），在[-2,2]×[0,3]的480×320等面积cell-centre格点上直接解码，f=1。墙支撑union ROI的复材料RMS差为0.466328，整个观测域墙材料RMS差为0.151285，含平移目标的完整材料RMS差为0.239462。两墙支撑相同，目标位置变化0.1λ₀；没有把同支撑介电重分配称为墙拓扑改变。格点材料距离是有限采样诊断，不是连续边界/最小特征证书。原始材料与独立后处理费用见[tables/public_world_distance/RESULTS.json](tables/public_world_distance/RESULTS.json)；新增RHS、LU均0，无GT读入。

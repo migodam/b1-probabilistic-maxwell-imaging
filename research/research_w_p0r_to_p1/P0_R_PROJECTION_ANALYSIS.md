@@ -34,3 +34,8 @@
 ## 读图与文件
 
 [投影图](figures/saved_results/projection_distance.png)、[CSV](tables/saved_results/projection_distance.csv)均由同一R1结果生成。曲线只连接同seed/band的指定离散设置；不据这些点拟合连续误差律、不外推不存在的实验。原结果所有行保留`minimum_feature=NOT_CERTIFIED_BY_PIXEL_PROJECTION`。
+
+
+## R阶段封账时点说明
+
+上述保存说明中的WORK_IN_PROGRESS与“后续未运行”描述R封账时点，不是整轮当前状态。R原始数字与阶段Gate保持原样；最终已完成的B2/C/受控P1-A/P1-B及其限制见[整轮裁决](SCIENTIFIC_DECISION.md)和[阶段汇总](GATE_SUMMARY.json)。本补记没有重开R预算或将Online失败改成PASS。

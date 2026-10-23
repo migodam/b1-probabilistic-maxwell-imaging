@@ -56,3 +56,8 @@ vacuum的两方法达到其记录的投影梯度停止条件。block的数据由
 [生成残差表](tables/saved_results/completed_evaluations.csv)只读取`evaluation_complete`，call ID包括accepted refresh，不是物理RHS或独立材料数。对零中心先验，d由`sqrt(2*fun−λ||x||²)`恢复；固定在线λ=.002、Oracle/controls λ=0，续接阶段按保存λ。开始但未完成或失败的调用不生成残差点。
 
 本页没有重跑任何优化、Maxwell或端点验证，没有扩充已封账R预算。后续B2为独立分支，不能用它替代在线拟合成功。
+
+
+## R阶段封账时点说明
+
+上述保存说明中的WORK_IN_PROGRESS与“后续未运行”描述R封账时点，不是整轮当前状态。R原始数字与阶段Gate保持原样；最终已完成的B2/C/受控P1-A/P1-B及其限制见[整轮裁决](SCIENTIFIC_DECISION.md)和[阶段汇总](GATE_SUMMARY.json)。本补记没有重开R预算或将Online失败改成PASS。

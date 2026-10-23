@@ -57,3 +57,10 @@
 [图文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_continuation/) · [完整中文报告](research_w_continuation/RESEARCH_W_CONTINUATION_REPORT_ZH.md) · [复现与原始数组](research_w_continuation/REPRODUCE.md)
 
 P0-Q通过，限定为QUALIFIED_DISCRETE_FULLWAVE；原两墙体8项完整观测细化差0.0065–0.0332。P0-B完成3/4组四方法搜索，最小cal距离19.91，未达到1，未发现合格歧义对；搜索另有0.1最小特征未严格执行的实施缺口。joint与P1未运行；不把搜索失败说成唯一性。旧P0及其结论保持原样。
+
+
+## Research W P0-R → P1 — 2026-10-24
+
+[中文报告与实际图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_p0r_to_p1/) · [研究报告](research_w_p0r_to_p1/RESEARCH_REPORT_ZH.md) · [概率材料交接包](research_w_p0r_to_p1/MaterialHypothesisPackage/EXAMPLE.json)
+
+从同合同真值回放与FWI诊断推进到条件固定支撑的joint补偿见证（d=0.798716，目标位移0.1λ₀），随后独立新观测的proper两墙概率参考和四格消融。原minimum_feature仍未定义，在线anchor未达标；多假设有受控平方风险收益，progressive与压缩没有独立端到端优势。历史P0/continuation及其负结果保留。

@@ -1,0 +1,186 @@
+{
+  "status": "BUILT_SOURCE_ARRAY_IDENTITIES_CHECKED",
+  "font": "PingFang SC",
+  "source_files": {
+    "compensation_arrays": {
+      "path": "results/B2/compensation_mechanism/FINITE_SECANTS.npz",
+      "bytes": 12013
+    },
+    "compensation_result": {
+      "path": "results/B2/compensation_mechanism/RESULTS.json",
+      "bytes": 1310
+    },
+    "binary_result": {
+      "path": "results/B2/binary_probability_diagnostic/RESULTS.json",
+      "bytes": 1456
+    },
+    "finite_arrays": {
+      "path": "results/B2/task_preserving_2026102202_narrow/finite_response_diagnostic/SECANT_ARRAYS.npz",
+      "bytes": 47313
+    },
+    "finite_result": {
+      "path": "results/B2/task_preserving_2026102202_narrow/finite_response_diagnostic/RESULTS.json",
+      "bytes": 2528
+    }
+  },
+  "figures": [
+    {
+      "figure": "01_compensation_plane",
+      "inputs": {
+        "compensation_arrays": "results/B2/compensation_mechanism/FINITE_SECANTS.npz",
+        "compensation_result": "results/B2/compensation_mechanism/RESULTS.json"
+      },
+      "data_tables": [
+        "tables/mechanism/01_compensation_vectors.csv"
+      ],
+      "new_rhs": 0,
+      "new_lu": 0,
+      "scope": "Completed B2 offline diagnostics only; source physics was already paid in B2.",
+      "p1_data_truth_plan_access": false,
+      "details": {
+        "norms": {
+          "wall": 3.5605119112114565,
+          "target_induced_increment": 3.656622966408321,
+          "joint": 0.7987161019689072
+        },
+        "realified_cosine": -0.9758549671975494,
+        "squared_norm_sum": 26.048136588343446,
+        "interference": -25.410189176799044,
+        "projection_reconstruction_error": 3.107504731736986e-15,
+        "projection_basis": "e1=w/||w||; e2=normalized(t-<t,e1>e1)",
+        "whitening": "Arrays are already divided by sigma_real=.01; no second whitening.",
+        "identity": "DeltaJoint=DeltaWall+[(Joint1-Cal1)-(Joint0-Cal0)]"
+      }
+    },
+    {
+      "figure": "02_binary_decision_risk",
+      "inputs": {
+        "binary_result": "results/B2/binary_probability_diagnostic/RESULTS.json",
+        "compensation_result": "results/B2/compensation_mechanism/RESULTS.json"
+      },
+      "data_tables": [
+        "tables/mechanism/02_binary_risks.csv",
+        "tables/mechanism/02_binary_quadrature.csv"
+      ],
+      "new_rhs": 0,
+      "new_lu": 0,
+      "scope": "Completed B2 offline diagnostics only; source physics was already paid in B2.",
+      "p1_data_truth_plan_access": false,
+      "details": {
+        "white_mean_distance": 0.7987161019689072,
+        "optimal_classification_error": 0.34481469938277365,
+        "risks": {
+          "prior_mean": 0.0025000000000000005,
+          "hard_MAP": 0.003448146993827737,
+          "MMSE": 0.002152602468631986
+        },
+        "quadrature_by_order": {
+          "41": 0.002152602468631986,
+          "81": 0.002152602468631986,
+          "161": 0.002152602468631986
+        },
+        "independent_recomputed_GH_risks": {
+          "41": 0.002152602468631986,
+          "81": 0.0021526024686319856,
+          "161": 0.002152602468631986
+        },
+        "zero_reported_last_order_change_is_not_a_universal_error_bound": true
+      }
+    },
+    {
+      "figure": "03_finite_step_remainders",
+      "inputs": {
+        "finite_arrays": "results/B2/task_preserving_2026102202_narrow/finite_response_diagnostic/SECANT_ARRAYS.npz",
+        "finite_result": "results/B2/task_preserving_2026102202_narrow/finite_response_diagnostic/RESULTS.json"
+      },
+      "data_tables": [
+        "tables/mechanism/03_finite_step_norms.csv"
+      ],
+      "new_rhs": 0,
+      "new_lu": 0,
+      "scope": "Completed B2 offline diagnostics only; source physics was already paid in B2.",
+      "p1_data_truth_plan_access": false,
+      "details": {
+        "scientific_gate": "Final d_cal>1: no calibration witness, notwithstanding d_task>=3.",
+        "material_decoder": "LinearWorld: epsilon and conductivity affine in the same 108 material coefficients on a fixed support.",
+        "decoder_secant_remainder": "Identically zero for this affine chart, a property of the implemented formula; no extra physics test claimed.",
+        "rows": [
+          {
+            "endpoint": "PROPOSAL",
+            "response": "calibration",
+            "linear_white_norm": 0.7999999999999745,
+            "full_secant_white_norm": 3.0920693507450103,
+            "remainder_white_norm": 2.8577018706628796,
+            "linear_full_cosine": 0.4112199342602855,
+            "remainder_fraction_full": 0.9242036793173278,
+            "material_RMS": 0.11999999999999998,
+            "box_max_abs_coordinate": 0.9999999999999925,
+            "threshold": 1.0,
+            "threshold_relation": "<=",
+            "full_response_threshold_pass": false,
+            "norm_unit": "dimensionless_whitened",
+            "material_RMS_unit": "source_material_chart_metric"
+          },
+          {
+            "endpoint": "FINAL",
+            "response": "calibration",
+            "linear_white_norm": 1.668211894700702,
+            "full_secant_white_norm": 1.929980221150512,
+            "remainder_white_norm": 2.574851221566361,
+            "linear_full_cosine": -0.018962546311472445,
+            "remainder_fraction_full": 1.33413347626507,
+            "material_RMS": 0.11279836235361475,
+            "box_max_abs_coordinate": 1.0,
+            "threshold": 1.0,
+            "threshold_relation": "<=",
+            "full_response_threshold_pass": false,
+            "norm_unit": "dimensionless_whitened",
+            "material_RMS_unit": "source_material_chart_metric"
+          },
+          {
+            "endpoint": "PROPOSAL",
+            "response": "task8",
+            "linear_white_norm": 3.1368190509200704,
+            "full_secant_white_norm": 4.426738407927201,
+            "remainder_white_norm": 2.4101669362115854,
+            "linear_full_cosine": 0.850747179960142,
+            "remainder_fraction_full": 0.5444565985411671,
+            "material_RMS": 0.11999999999999998,
+            "box_max_abs_coordinate": 0.9999999999999925,
+            "threshold": 3.0,
+            "threshold_relation": ">=",
+            "full_response_threshold_pass": true,
+            "norm_unit": "dimensionless_whitened",
+            "material_RMS_unit": "source_material_chart_metric"
+          },
+          {
+            "endpoint": "FINAL",
+            "response": "task8",
+            "linear_white_norm": 3.203275480029864,
+            "full_secant_white_norm": 3.471920439341135,
+            "remainder_white_norm": 2.2463949195570514,
+            "linear_full_cosine": 0.7763740438130021,
+            "remainder_fraction_full": 0.6470179714093186,
+            "material_RMS": 0.11279836235361475,
+            "box_max_abs_coordinate": 1.0,
+            "threshold": 3.0,
+            "threshold_relation": ">=",
+            "full_response_threshold_pass": true,
+            "norm_unit": "dimensionless_whitened",
+            "material_RMS_unit": "source_material_chart_metric"
+          }
+        ]
+      }
+    }
+  ],
+  "new_rhs": 0,
+  "new_lu": 0,
+  "read_scope": "Only the five explicitly allowlisted completed B2 artifacts",
+  "uncertainties": [
+    "No new physical validation or P1 posterior qualification.",
+    "Binary risks concern two fixed equal-prior means, not a continuous prior or held-out observations.",
+    "Finite-step failure is one posthoc endpoint diagnostic, not a universal impossibility theorem.",
+    "Native spatial-coordinate units are retained; no unsupported conversion to metres.",
+    "Original minimum_feature scalar semantics remain unresolved; these plots do not resolve them."
+  ]
+}

@@ -110,7 +110,20 @@
     "posterior_position_mean": "Bayes action for position loss within the controlled prior; may lie between disconnected position intervals and is not a new physical world.",
     "correctness": "Exact Full-Maxwell likelihood on finite GL65x5 quadrature nodes with shared-gain quadrature. Finite target still requires empirical comparison against independently integrated continuous reference. Correct MH ratios and repeated states retained.",
     "new_information_from_schedule": false,
-    "full_material_bank_scope_rhs": 15000
+    "full_material_bank_scope_rhs": 15000,
+    "zero_observation_control": {
+      "position_mean": -0.85,
+      "branch_probability": [
+        0.5,
+        0.5
+      ],
+      "scope": "Unconditional controlled-prior Bayes action, not a posterior estimate",
+      "paired_contrasts": [
+        "prior vsdirectSMC",
+        "prior vsqualifiedcontinuousBayesmean"
+      ],
+      "registered_before_new_observations": true
+    }
   },
   "truth_use": "Generation and separate offline scoring only; online quadrature/proposal code reads observation-only file.",
   "outside_controlled_family_mass": "null/unquantified",

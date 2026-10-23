@@ -30,6 +30,14 @@ def build_probability_figures(root,sources,errors,finish,table,read_json,atomic,
             return [value]
         return []
     def num(v):return isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v)
+    def tagged(row,**context):
+        result=dict(row)
+        for key,value in context.items():
+            if key in result and result[key]!=value:
+                if key=='source':result['recorded_source']=result[key]
+                else:errors.append(dict(path=inf_path,kind='DisplayContextMismatch',message=f'{key}: saved row differs from enclosing group'))
+            result[key]=value
+        return result
     def finish_plot(fig,name,title,caption,inputs):
         finish(fig,name,title,caption)
         fig_sources.append(dict(figure=f'figures/saved_results/{name}.png',SVG=f'figures/saved_results/{name}.svg',saved_inputs=inputs))
@@ -61,13 +69,13 @@ def build_probability_figures(root,sources,errors,finish,table,read_json,atomic,
             points.append(dict(observation=obs,method=name,branch=actual.get('branch'),x=actual.get('x'),Phi=actual.get('Phi'),full_validation_status=actual.get('full_validation_status','NEEDS_FULL_VALIDATION'),fallback_used=actual.get('fallback_used'),weight_semantics='POINT_DECISION_NO_POSTERIOR_MASS'))
         for schedule,summary in ensembles.items():
             if not isinstance(summary,dict):continue
-            smc_rows.append(dict(observation=obs,schedule=schedule,**{k:v for k,v in summary.items() if not isinstance(v,(dict,list))}))
+            smc_rows.append(tagged({k:v for k,v in summary.items() if not isinstance(v,(dict,list))},observation=obs,schedule=schedule))
             mass=summary.get('average_branch_mass')
             if isinstance(mass,list) and len(mass)==2 and all(num(v) for v in mass):masses.append(dict(cohort='P1B',observation=obs,reference=schedule+'_SMC_ensemble',branch1_mass=mass[1],status=summary.get('probability_claim')))
         for schedule,runs in r.get('SMC_runs',{}).items():
             if isinstance(runs,list):
                 for run in runs:
-                    if isinstance(run,dict):smc_runs.append(dict(observation=obs,schedule=schedule,**{k:v for k,v in run.items() if not isinstance(v,(dict,list))}))
+                    if isinstance(run,dict):smc_runs.append(tagged({k:v for k,v in run.items() if not isinstance(v,(dict,list))},observation=obs,schedule=schedule))
         for cut,values in continuous.get('CDF',{}).items():
             if not isinstance(values,dict):continue
             try:x=float(cut)
@@ -145,12 +153,12 @@ def build_probability_figures(root,sources,errors,finish,table,read_json,atomic,
     parent_scores=[];contrasts=[];offline_summaries=[]
     for folder in completed:
         prefix=str(folder.relative_to(root));summary=load(prefix+'/SUMMARY.json');parents=records(load(prefix+'/PARENT_SCORES.json'));paired=load(prefix+'/PAIRED_CI.json')
-        if isinstance(summary,dict):offline_summaries.append(dict(source=prefix+'/SUMMARY.json',**summary))
-        parent_scores.extend(dict(source=prefix+'/PARENT_SCORES.json',**r) for r in parents)
+        if isinstance(summary,dict):offline_summaries.append(tagged(summary,source=prefix+'/SUMMARY.json'))
+        parent_scores.extend(tagged(r,source=prefix+'/PARENT_SCORES.json') for r in parents)
         if isinstance(paired,dict):
             for family,values in paired.items():
-                if isinstance(values,list):contrasts.extend(dict(source=prefix+'/PAIRED_CI.json',contrast_family=family,**r) for r in values if isinstance(r,dict))
-        elif isinstance(paired,list):contrasts.extend(dict(source=prefix+'/PAIRED_CI.json',**r) for r in paired if isinstance(r,dict))
+                if isinstance(values,list):contrasts.extend(tagged(r,source=prefix+'/PAIRED_CI.json',contrast_family=family) for r in values if isinstance(r,dict))
+        elif isinstance(paired,list):contrasts.extend(tagged(r,source=prefix+'/PAIRED_CI.json') for r in paired if isinstance(r,dict))
     stage_rows.append(dict(stage='P1B_offline_scoring',status='COMPLETED_SCORER_FILES_ONLY' if completed else 'NOT_RUN',saved_score_folders=len(completed)))
     risk=[r for r in parent_scores if r.get('arm') in ARMS and num(r.get('position_squared_error'))]
     if risk:
@@ -172,7 +180,7 @@ def build_probability_figures(root,sources,errors,finish,table,read_json,atomic,
     else:blank('P_offline_paired_CI','离线paired parent CI',['completed offline/PAIRED_CI.json'],'NOT_RUN / no saved complete paired-parent interval')
     outputs=dict(branch_mass=masses,reference_order_errors=order_errors,profile_points=points,CDF_checkpoints=cdfs,SMC_ensemble=smc_rows,SMC_runs=smc_runs,offline_parent_scores=parent_scores,offline_contrasts=contrasts)
     for name,data in outputs.items():write_csv(root/'tables/saved_results'/f'P_{name}.csv',data)
-    snapshot=dict(status='WORK_IN_PROGRESS',new_physics=0,new_inference=0,truth_access=False,read_whitelist_only=True,stage_status=stage_rows,P1A_saved_gate=gate,offline_score_summaries=offline_summaries,offline_score_folders=[str(p.relative_to(root)) for p in completed],source_files=used,scope='new controlled fixed-support prior only; not arbitrary walls; original minimum_feature UNRESOLVED; outside-family mass unquantified',**outputs)
+    snapshot=dict(status='SEALED_SAVED_RESULTS' if (root/'CLOSED.json').exists() else 'WORK_IN_PROGRESS',new_physics=0,new_inference=0,truth_access=False,read_whitelist_only=True,stage_status=stage_rows,P1A_saved_gate=gate,offline_score_summaries=offline_summaries,offline_score_folders=[str(p.relative_to(root)) for p in completed],source_files=used,scope='new controlled fixed-support prior only; not arbitrary walls; original minimum_feature UNRESOLVED; outside-family mass unquantified',**outputs)
     atomic(root/'tables/saved_results/PROBABILITY_DISPLAY_SNAPSHOT.json',json.dumps(snapshot,ensure_ascii=False,indent=2,allow_nan=False))
     atomic(root/'tables/saved_results/PROBABILITY_FIGURE_SOURCES.json',json.dumps(fig_sources,ensure_ascii=False,indent=2))
     section='<section><h2>概率参考与四臂结果 · 可选保存输出视图</h2><p>只针对受控新fixed-support prior，非任意墙体；原minimum_feature语义UNRESOLVED。profile点不等于marginal/evidence；无GT读取、无推断或PDE执行，无最终科学GO。</p>'+table(stage_rows)+'<h3>保存的参考资格状态</h3>'+table([gate] if isinstance(gate,dict) else [])+'<h3>Profile点与full validation</h3>'+table(points,['observation','method','branch','x','Phi','full_validation_status','fallback_used'])+'<h3>离线CI完整性</h3>'+table(contrasts,['contrast_family','arm_a','arm_b','loss','status','eligible_parent_count','parent_count','gain_a_minus_b','paired_percentile_CI95'])+'<p><a href="tables/saved_results/PROBABILITY_DISPLAY_SNAPSHOT.json">数据及状态快照</a> · <a href="tables/saved_results/PROBABILITY_FIGURE_SOURCES.json">逐图来源</a>。缺失NOT_RUN不表示全阶段完成。</p></section>'

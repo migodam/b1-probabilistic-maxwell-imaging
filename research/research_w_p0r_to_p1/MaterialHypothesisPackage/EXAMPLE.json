@@ -1,0 +1,686 @@
+{
+  "schema": "W_PROBABILITY_HANDOFF_V1",
+  "observation": 0,
+  "example_selection": "fixed observation000 before data; no retrospective selection",
+  "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+  "family_id": "W_FIXED_SUPPORT_JOINT_V1",
+  "acquisition": {
+    "frequencies": [
+      0.9975,
+      0.99875,
+      1.0,
+      1.00125,
+      1.0025
+    ],
+    "band": "narrow",
+    "tx": [
+      [
+        -1.4,
+        -0.3
+      ],
+      [
+        -0.4666666666666667,
+        -0.3
+      ],
+      [
+        0.46666666666666656,
+        -0.3
+      ],
+      [
+        1.4,
+        -0.3
+      ]
+    ],
+    "rx": [
+      [
+        -1.5,
+        -0.3
+      ],
+      [
+        -1.2272727272727273,
+        -0.3
+      ],
+      [
+        -0.9545454545454546,
+        -0.3
+      ],
+      [
+        -0.6818181818181819,
+        -0.3
+      ],
+      [
+        -0.40909090909090917,
+        -0.3
+      ],
+      [
+        -0.13636363636363646,
+        -0.3
+      ],
+      [
+        0.13636363636363624,
+        -0.3
+      ],
+      [
+        0.40909090909090895,
+        -0.3
+      ],
+      [
+        0.6818181818181817,
+        -0.3
+      ],
+      [
+        0.9545454545454541,
+        -0.3
+      ],
+      [
+        1.227272727272727,
+        -0.3
+      ],
+      [
+        1.5,
+        -0.3
+      ]
+    ],
+    "complex_response_shape": [
+      5,
+      4,
+      12
+    ],
+    "sigma_each_real_quadrature": 0.01,
+    "source_normalization": "Unit line-source Green, constant multiplier 1 at every frequency; known calibrated source spectrum",
+    "whitening": "full Re/Im norm divided by.01, no channel-count normalization"
+  },
+  "target_identity": {
+    "branch_centers": [
+      [
+        -0.9,
+        2.15
+      ],
+      [
+        -0.8,
+        2.15
+      ]
+    ],
+    "radius": 0.12,
+    "offset_x": {
+      "distribution": "uniform",
+      "bounds": [
+        -0.01,
+        0.01
+      ],
+      "independent_of_branch": true
+    },
+    "contrast": {
+      "distribution": "uniform",
+      "bounds": [
+        2.94,
+        3.06
+      ],
+      "independent_of_branch_and_offset": true
+    },
+    "conductivity": 0.02,
+    "law": "epsilon_target=1+contrast+i*.02/f",
+    "geometry": "center=branch_center+(u,0); fixed radius.12"
+  },
+  "input_complete_files": [
+    "results/P1B/inference/COMPLETE.json",
+    "results/P1B/point_validation/COMPLETE.json"
+  ],
+  "reference_qualification": {
+    "observation0_continuous": true,
+    "observation0_finite": true,
+    "upstream_P1A": true,
+    "all_P1B_finite_references": true
+  },
+  "event_partition": {
+    "events": [
+      {
+        "event_id": "public_wall_branch_0",
+        "object_type": "PUBLIC_WALL_AND_TARGET_INTERVAL_EVENT",
+        "definition": {
+          "wall_parameter_file": "inputs/W_FAMILY_WALLS.npz",
+          "wall_key": "q0",
+          "target_x_interval": [
+            -0.91,
+            -0.89
+          ],
+          "target_y": 2.15,
+          "target_radius": 0.12,
+          "contrast_interval": [
+            2.94,
+            3.06
+          ],
+          "conductivity": 0.02,
+          "remaining_coordinates": "all declared shared-nuisance prior support"
+        },
+        "prior_mass": 0.5,
+        "posterior_mass": 0.542347633972726,
+        "posterior_mass_source": "same-observation independent full5/full9 continuous-reference integration",
+        "prior_odds_vs_other": 1.0,
+        "posterior_odds_vs_other": {
+          "value": 1.1850646347153477,
+          "log_value": 0.16979731716320579,
+          "status": "FINITE_APPROXIMATION"
+        },
+        "conditional_logZ": 1551.5799743135492,
+        "conditional_logZ_status": "CONTINUOUS_REFERENCE_QUADRATURE_APPROXIMATION",
+        "conditional_logZ_formula": "global_continuous_logZ+log(p_branch)-log(.5)",
+        "numerical_error_diagnostics": {
+          "continuous_order5_vs9_event_abs_change": 0.0002427271445827328,
+          "finite_vs_continuous_branch_abs_error": 7.477818804391134e-06,
+          "not_a_certified_error_bound": true
+        },
+        "finite_conditional_uncertainty": {
+          "x": {
+            "mean": -0.9021017168467609,
+            "SD": 0.005476448935709185,
+            "q05": -0.909480209281684,
+            "q50": -0.9028381545390225,
+            "q95": -0.8920972104250788,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "u": {
+            "mean": -0.002101716846760811,
+            "SD": 0.005476448935709187,
+            "q05": -0.009480209281684075,
+            "q50": -0.002838154539022487,
+            "q95": 0.007902789574921219,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "contrast": {
+            "mean": 3.002884370064753,
+            "SD": 0.034488959631295536,
+            "q05": 2.94562920924368,
+            "q50": 3.0,
+            "q95": 3.05437079075632,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "amplitude": {
+            "mean": 0.9952434144070245,
+            "SD": 0.003658748394624795,
+            "q05": 0.990327731614337,
+            "q50": 0.9944838116411278,
+            "q95": 1.001455618541609,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "phase": {
+            "mean": 0.004937192744233087,
+            "SD": 0.0035950412532001295,
+            "q05": -0.001455618541608951,
+            "q50": 0.0055161883588721984,
+            "q95": 0.009672268385663063,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          }
+        },
+        "uncertainty_status": "FINITE_QUADRATURE",
+        "representative": {
+          "branch": 0,
+          "u": -0.0032425342340380893,
+          "contrast": 3.0,
+          "amplitude": 0.9952434144070245,
+          "phase": 0.004937192744233087,
+          "target_center": [
+            -0.9032425342340381,
+            2.15
+          ],
+          "target_radius": 0.12,
+          "target_conductivity": 0.02,
+          "selection": "existing paid full9 node nearest finite conditional(u,c)mean by prior-width normalized distance",
+          "normalized_distance_squared": 0.003831410129899481,
+          "gamma_definition": "E[a|branch]*exp(i*E[phase|branch])",
+          "representative_not_posterior_mean_material": true,
+          "point_probability": null,
+          "full9_prediction_source": {
+            "rule_file": "results/P1A/rules/full_9.npz",
+            "node_index": 31,
+            "raw_array_key": "F",
+            "source_type": "DIRECT_PAID_FULL_MAXWELL_PUBLIC_PRIOR_NODE",
+            "new_RHS": 0,
+            "original_node_evaluation_RHS": 20,
+            "bank_node_response_path": "results/P1A/bank/physical_00097/FULL_RESPONSE.npz"
+          },
+          "d_observed": 20.800288517041054,
+          "Phi": 216.32600119607497,
+          "residual_scope": "Noisy-observation fit, not the two-world mean-distance<=1 criterion"
+        },
+        "point_probability": null,
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE"
+      },
+      {
+        "event_id": "public_wall_branch_1",
+        "object_type": "PUBLIC_WALL_AND_TARGET_INTERVAL_EVENT",
+        "definition": {
+          "wall_parameter_file": "inputs/W_FAMILY_WALLS.npz",
+          "wall_key": "q1",
+          "target_x_interval": [
+            -0.81,
+            -0.79
+          ],
+          "target_y": 2.15,
+          "target_radius": 0.12,
+          "contrast_interval": [
+            2.94,
+            3.06
+          ],
+          "conductivity": 0.02,
+          "remaining_coordinates": "all declared shared-nuisance prior support"
+        },
+        "prior_mass": 0.5,
+        "posterior_mass": 0.45765236602727394,
+        "posterior_mass_source": "same-observation independent full5/full9 continuous-reference integration",
+        "prior_odds_vs_other": 1.0,
+        "posterior_odds_vs_other": {
+          "value": 0.8438358303049013,
+          "log_value": -0.16979731716320579,
+          "status": "FINITE_APPROXIMATION"
+        },
+        "conditional_logZ": 1551.4101769963859,
+        "conditional_logZ_status": "CONTINUOUS_REFERENCE_QUADRATURE_APPROXIMATION",
+        "conditional_logZ_formula": "global_continuous_logZ+log(p_branch)-log(.5)",
+        "numerical_error_diagnostics": {
+          "continuous_order5_vs9_event_abs_change": 0.0002427271445827328,
+          "finite_vs_continuous_branch_abs_error": 7.477818804224601e-06,
+          "not_a_certified_error_bound": true
+        },
+        "finite_conditional_uncertainty": {
+          "x": {
+            "mean": -0.8021462448765075,
+            "SD": 0.005466237307160121,
+            "q05": -0.8094802092816841,
+            "q50": -0.8028381545390225,
+            "q95": -0.7920972104250789,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "u": {
+            "mean": -0.0021462448765074684,
+            "SD": 0.005466237307160123,
+            "q05": -0.009480209281684075,
+            "q50": -0.002838154539022487,
+            "q95": 0.007902789574921219,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "contrast": {
+            "mean": 3.0033937060961406,
+            "SD": 0.03445759043642607,
+            "q05": 2.94562920924368,
+            "q50": 3.0,
+            "q95": 3.05437079075632,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "amplitude": {
+            "mean": 0.994991369979684,
+            "SD": 0.003555724339613078,
+            "q05": 0.990327731614337,
+            "q50": 0.9944838116411278,
+            "q95": 1.001455618541609,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          },
+          "phase": {
+            "mean": 0.005035738739520554,
+            "SD": 0.003552967021412973,
+            "q05": -0.001455618541608951,
+            "q50": 0.0055161883588721984,
+            "q95": 0.009672268385663063,
+            "semantics": "FINITE_QUADRATURE weighted atomic quantiles; not exact continuous quantiles"
+          }
+        },
+        "uncertainty_status": "FINITE_QUADRATURE",
+        "representative": {
+          "branch": 1,
+          "u": -0.0032425342340380893,
+          "contrast": 3.0,
+          "amplitude": 0.994991369979684,
+          "phase": 0.005035738739520554,
+          "target_center": [
+            -0.8032425342340381,
+            2.15
+          ],
+          "target_radius": 0.12,
+          "target_conductivity": 0.02,
+          "selection": "existing paid full9 node nearest finite conditional(u,c)mean by prior-width normalized distance",
+          "normalized_distance_squared": 0.0038044342960165726,
+          "gamma_definition": "E[a|branch]*exp(i*E[phase|branch])",
+          "representative_not_posterior_mean_material": true,
+          "point_probability": null,
+          "full9_prediction_source": {
+            "rule_file": "results/P1A/rules/full_9.npz",
+            "node_index": 112,
+            "raw_array_key": "F",
+            "source_type": "DIRECT_PAID_FULL_MAXWELL_PUBLIC_PRIOR_NODE",
+            "new_RHS": 0,
+            "original_node_evaluation_RHS": 20,
+            "bank_node_response_path": "results/P1A/bank/physical_00177/FULL_RESPONSE.npz"
+          },
+          "d_observed": 20.806586521414484,
+          "Phi": 216.45702133655345,
+          "residual_scope": "Noisy-observation fit, not the two-world mean-distance<=1 criterion"
+        },
+        "point_probability": null,
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE"
+      }
+    ],
+    "exhaustive_within_controlled_two_wall_family": true,
+    "represented_mass": 1.0,
+    "unshown_mass_within_partition": 0.0,
+    "topK_renormalization": false,
+    "selection": "both declared branch events are shown"
+  },
+  "prior_branch1_vs_branch0_odds": 1.0,
+  "posterior_branch1_vs_branch0_odds": {
+    "value": 0.8438358303049013,
+    "log_value": -0.16979731716320579,
+    "status": "FINITE_APPROXIMATION"
+  },
+  "global_logZ": 1551.4986752250416,
+  "points": {
+    "direct joint point": {
+      "parameters": {
+        "branch": 0,
+        "u": -0.009993260970754128,
+        "contrast": 3.05437079075632,
+        "amplitude": 0.9923292094046895,
+        "phase": 0.00769608679647614
+      },
+      "Phi": 215.59740125553955,
+      "full_validation_status": "FULL_CHECK_PASSED",
+      "fallback_used": false,
+      "physical_source": "P1B/full_material_rule actual paid Full-Maxwell node",
+      "prediction_file": "results/P1B/point_validation/observation_000/direct_joint_point_FINAL.npz",
+      "posterior_probability": null,
+      "meaning": "point estimate only; probability mass of a singleton is not assigned"
+    },
+    "progressive block point": {
+      "parameters": {
+        "branch": 0,
+        "u": -0.009993260970754128,
+        "contrast": 3.05437079075632,
+        "amplitude": 0.9923292094046895,
+        "phase": 0.00769608679647614
+      },
+      "Phi": 215.59740125553955,
+      "full_validation_status": "FULL_CHECK_PASSED",
+      "fallback_used": false,
+      "physical_source": "P1B/full_material_rule actual paid Full-Maxwell node",
+      "prediction_file": "results/P1B/point_validation/observation_000/progressive_block_point_FINAL.npz",
+      "posterior_probability": null,
+      "meaning": "point estimate only; probability mass of a singleton is not assigned"
+    }
+  },
+  "point_plot_probability": null,
+  "prediction_arrays": {
+    "path": "results/P1B/handoff/observation_000/PREDICTIONS_AND_MATERIALS.npz",
+    "Fraw": "direct paid full9 nodes only",
+    "gammaF": "representative gamma times paid Fraw",
+    "posterior_predictive_approx": "sum_m Fmaterial_m * sum_gamma(gamma*w_mgamma), preserving nuisance-material dependence; finite integration approximation",
+    "material_response_source": {
+      "response_kind": "FULL_CACHED_NODE",
+      "source_rule": "results/P1B/full_material_rule/FULL_RULE.npz",
+      "material_rule": [
+        2,
+        65,
+        5
+      ],
+      "interpolation_used": false,
+      "source_metadata": "results/P1B/full_material_rule/FULL_RULE.json",
+      "meaning": "650 paid complete Maxwell material vectors; finite quadrature of unchanged continuous prior"
+    },
+    "branch_conditionals": "same joint finite weights, normalized within branch; not reweighted to continuous branch masses",
+    "factorized_prediction_difference_norm": 5.543715524364626e-07,
+    "factorized_prediction_difference_norm_units": "raw complex-response Euclidean norm; diagnostic only",
+    "loss_definition": "Im(epsilon)=conductivity/f; f1 here, no dissipated-power estimate",
+    "material_grid": {
+      "nx": 400,
+      "ny": 300,
+      "x_domain": [
+        -2,
+        2
+      ],
+      "y_domain": [
+        0,
+        3
+      ],
+      "sampling": "fixed endpoint-inclusive nodal grid"
+    }
+  },
+  "compensation_association": {
+    "historical_target_center_translation": 0.1,
+    "historical_instrument_gain_fixed": 1.0,
+    "historical_witness_role": "conditional construction history only; does not assign branch probability",
+    "current_prior_role": "new explicit branch masses .5/.5 plus continuous target/nuisance prior",
+    "current_shared_gain": "marginalized once for all frequencies/sources/receivers",
+    "representative_pair_distance_raw_gain1": 0.797878005405076,
+    "representative_pair_distance_with_branch_representative_gain": 0.7880684652169402,
+    "representative_pair_status": "Full paid production-grid predictions, not automatically a newly nominated independently grid-validated witness",
+    "representative_target_x_difference": 0.09999999999999998
+  },
+  "downstream": {
+    "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+    "finite_joint_weights": {
+      "path": "results/P1B/inference/observation_000/attempt_000/FINITE_REFERENCE.npz",
+      "key": "posterior_weights",
+      "grid_shape": [
+        2,
+        65,
+        5,
+        21,
+        21
+      ],
+      "ravel_order": [
+        "branch",
+        "iu",
+        "ic",
+        "ia",
+        "iphi"
+      ],
+      "material_coordinate_keys": [
+        "material_branches",
+        "material_u",
+        "material_contrast",
+        "material_x"
+      ],
+      "nuisance_axis_keys": [
+        "amplitude_axis",
+        "phase_axis"
+      ],
+      "prior_factor_keys": [
+        "material_prior_weights",
+        "gamma_axis_weights"
+      ],
+      "prior_factorization": ".5*(wu/2)*(wc/2)*(wa/2)*(wphase/2); same continuous controlled prior"
+    },
+    "public_material_response": {
+      "path": "results/P1B/inference/PUBLIC_MATERIAL_GRID.npz",
+      "key": "F_full",
+      "response_kind": "FULL_CACHED_NODE",
+      "source_metadata": {
+        "response_kind": "FULL_CACHED_NODE",
+        "source_rule": "results/P1B/full_material_rule/FULL_RULE.npz",
+        "material_rule": [
+          2,
+          65,
+          5
+        ],
+        "interpolation_used": false,
+        "source_metadata": "results/P1B/full_material_rule/FULL_RULE.json",
+        "meaning": "650 paid complete Maxwell material vectors; finite quadrature of unchanged continuous prior"
+      },
+      "interpretation": "paid full-Maxwell node vectors"
+    },
+    "correlation_factors": {
+      "path": "results/P1B/handoff/observation_000/PREDICTIONS_AND_MATERIALS.npz",
+      "material_masses_key": "material_posterior_masses",
+      "gamma_weighted_material_key": "gamma_weighted_material_factors"
+    },
+    "weighted_samples": [
+      {
+        "schedule": "direct",
+        "seed": 2026102313,
+        "path": "results/P1B/inference/observation_000/attempt_000/direct_seed2026102313_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "direct",
+        "seed": 2026102314,
+        "path": "results/P1B/inference/observation_000/attempt_000/direct_seed2026102314_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "direct",
+        "seed": 2026102315,
+        "path": "results/P1B/inference/observation_000/attempt_000/direct_seed2026102315_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "direct",
+        "seed": 2026102316,
+        "path": "results/P1B/inference/observation_000/attempt_000/direct_seed2026102316_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "progressive",
+        "seed": 2026102313,
+        "path": "results/P1B/inference/observation_000/attempt_000/progressive_seed2026102313_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "progressive",
+        "seed": 2026102314,
+        "path": "results/P1B/inference/observation_000/attempt_000/progressive_seed2026102314_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "progressive",
+        "seed": 2026102315,
+        "path": "results/P1B/inference/observation_000/attempt_000/progressive_seed2026102315_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      },
+      {
+        "schedule": "progressive",
+        "seed": 2026102316,
+        "path": "results/P1B/inference/observation_000/attempt_000/progressive_seed2026102316_TRAJECTORY.npz",
+        "final_particle_indexes_key": "particle_indexes",
+        "final_weights_key": "weights",
+        "all_repeated_states_key": "trajectory_indexes",
+        "all_stage_weights_key": "trajectory_weights",
+        "acceptance_key": "mutation_accepted",
+        "resampling_key": "resampling_indexes",
+        "grid_shape": [
+          2,
+          65,
+          5,
+          21,
+          21
+        ],
+        "status": "QUALIFIED_CONTROLLED_NUMERICAL_EXAMPLE",
+        "trajectory_scope": "changing stage targets; only final particle_indexes/weights describe the final finite target"
+      }
+    ]
+  },
+  "model_adequacy": "controlled synthetic family only; no external-world adequacy claim",
+  "original_minimum_feature": "UNRESOLVED_ORIGINAL_SCALAR",
+  "outside_family_mass": null,
+  "unexplored_original_wall_prior": "UNQUANTIFIED",
+  "general_unknown_wall_online_claim": false,
+  "new_PDE": 0,
+  "new_RHS": 0,
+  "new_LU": 0,
+  "truth_access": false
+}

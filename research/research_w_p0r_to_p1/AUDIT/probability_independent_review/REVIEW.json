@@ -1,0 +1,211 @@
+{
+  "review_date": "2026-10-23",
+  "status": "IMPLEMENTATION_REVIEW_COMPLETE_SCIENTIFIC_DECISION_NOT_ASSIGNED",
+  "root": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-w-p0r-to-p1/research/research_w_p0r_to_p1",
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "P2",
+      "title": "zero-weight slots concealed a missing significant branch",
+      "status": "CLOSED_LOCAL_SOURCE_AND_SYNTHETIC_READBACK",
+      "before": {
+        "path": "src/wr/progressive_inference.py",
+        "lines": [
+          257,
+          276
+        ],
+        "key_line": 263,
+        "snippet": "missing=[bool(eligible[branch] and not np.any(b==branch)) for branch in (0,1)]",
+        "evidence": "ARRAY_CHECKS.json:zero_weight_branch_counterexample"
+      },
+      "after": {
+        "path": "src/wr/progressive_inference.py",
+        "lines": [
+          263,
+          285
+        ],
+        "evidence": "REPAIR_READBACK_CHECKS.json:parent_repairs.branch_diagnostic"
+      },
+      "limits": "Positive-weight presence is not sampling adequacy; actual inference was not run."
+    },
+    {
+      "id": "F02",
+      "severity": "P2",
+      "title": "negative-list completion guard failed open on absent or unrecognized completion status",
+      "status": "CLOSED_LOCAL_GUARD_AND_INFERENCE_WRITER_READBACK",
+      "before": {
+        "path": "src/wr/progressive_offline.py",
+        "lines": [
+          291,
+          298
+        ],
+        "snippet": "record.get('inference_frozen') is False; status in ('RUNNING','INCOMPLETE','FAILED','NOT_RUN','PREPARED'); observations only checked if present",
+        "evidence": "ARRAY_CHECKS.json:completion_marker_counterexamples"
+      },
+      "after": {
+        "path": "src/wr/progressive_offline.py",
+        "lines": [
+          291,
+          300
+        ],
+        "writer_path": "src/wr/progressive_inference.py",
+        "writer_lines": [
+          473,
+          474
+        ],
+        "evidence": "REPAIR_READBACK_CHECKS.json:parent_repairs.completion_markers"
+      },
+      "limits": "No actual leak demonstrated; old main had other population guards. Point validation writer not in allowed review set."
+    },
+    {
+      "id": "F03",
+      "severity": "P3",
+      "title": "arbitrary probability complement floor generated a misleading finite odds",
+      "status": "CLOSED_LOCAL_SOURCE_AND_SYNTHETIC_READBACK",
+      "before": {
+        "path": "src/wr/prob_reference.py",
+        "lines": [
+          112,
+          112
+        ],
+        "snippet": "posterior_odds=ref['branch1']/max(1-ref['branch1'],1e-300)"
+      },
+      "after": {
+        "path": "src/wr/prob_reference.py",
+        "lines": [
+          21,
+          27
+        ],
+        "evidence": "REPAIR_READBACK_CHECKS.json:parent_repairs.odds"
+      },
+      "limits": "Ordinary odds may still underflow to zero; preserved log odds remains the relevant value."
+    },
+    {
+      "id": "F04",
+      "severity": "P3",
+      "title": "shallow offline cost extraction omitted nested per-arm costs",
+      "status": "CLOSED_LOCAL_SOURCE_AND_SYNTHETIC_READBACK",
+      "before": {
+        "path": "src/wr/progressive_offline.py",
+        "lines": [
+          301,
+          303
+        ],
+        "logic": "top-level keys only; nested SMC_runs and methods skipped"
+      },
+      "after": {
+        "path": "src/wr/progressive_offline.py",
+        "lines": [
+          303,
+          315
+        ],
+        "evidence": "REPAIR_READBACK_CHECKS.json:parent_repairs.nested_costs"
+      },
+      "limits": "Raw cost paths are not automatically additive; shared-cost allocation remains a parent decision."
+    }
+  ],
+  "remaining_counterexample_supported_P2": 0,
+  "read_only_sources": [
+    "posterior_math.py",
+    "prob_reference.py",
+    "progressive_inference.py",
+    "progressive_offline.py",
+    "prob_handoff.py",
+    "sequential_particles.py",
+    "prob_bank.py",
+    "probability_family.py"
+  ],
+  "configs": [
+    "configs/P1_PROBABILITY_PROTOCOL.json",
+    "configs/W_CONTROLLED_PRIOR.json"
+  ],
+  "positive_checks": [
+    {
+      "topic": "uniform GL measure and prior baseline",
+      "evidence": "ARRAY_CHECKS.json:uniform_GL"
+    },
+    {
+      "topic": "shared gain integrated once",
+      "evidence": "ARRAY_CHECKS.json:shared_gamma"
+    },
+    {
+      "topic": "SMC stage increments and enumerated detailed balance",
+      "evidence": "ARRAY_CHECKS.json:SMC_kernel"
+    },
+    {
+      "topic": "dependent posterior prediction",
+      "evidence": "ARRAY_CHECKS.json:handoff_prediction"
+    },
+    {
+      "topic": "public truncated prior CDF masses at orders3/5/9",
+      "evidence": "REPAIR_READBACK_CHECKS.json:public_truncated_rules"
+    },
+    {
+      "topic": "public coordinate bounds and one-ULP rule",
+      "evidence": "REPAIR_READBACK_CHECKS.json:public_coordinates"
+    }
+  ],
+  "parent_decisions": [
+    {
+      "id": "D01",
+      "topic": "allocation of paid bank/reference/panel/proposal/validation costs and deployment cache rights",
+      "path": "src/wr/progressive_inference.py",
+      "lines": [
+        418,
+        458
+      ]
+    },
+    {
+      "id": "D02",
+      "topic": "direct3 diagnostics versus executable adaptive stopping and fallback cost contract",
+      "path": "configs/P1_PROBABILITY_PROTOCOL.json",
+      "key": "direct_adaptive_control"
+    },
+    {
+      "id": "D03",
+      "topic": "four-arm loss interpretation combines decision rules/search accuracy; schedule comparison separately available",
+      "path": "src/wr/progressive_inference.py",
+      "lines": [
+        167,
+        199
+      ]
+    }
+  ],
+  "scope": {
+    "new_controlled_prior": true,
+    "conditional_fixed_support": true,
+    "original_minimum_feature": "UNRESOLVED_ORIGINAL_SCALAR_NOT_REDEFINED",
+    "outside_family_mass": null,
+    "no_final_scientific_GO": true
+  },
+  "execution": {
+    "PDE": 0,
+    "RHS": 0,
+    "LU": 0,
+    "Book_instances": 0,
+    "Forward_instances": 0,
+    "Family_instances": 0,
+    "Family_point_calls": 0,
+    "material_decoder_calls": 0,
+    "main_calls": 0,
+    "SMC_runs": 0,
+    "new_observations_read": 0,
+    "GT_read": 0,
+    "OFFLINE_TRUTH_opened": false,
+    "GENERATION_PLAN_opened": false,
+    "physics_sources_modified": false,
+    "configs_modified": false,
+    "inputs_modified": false,
+    "ledgers_modified": false,
+    "source_modules_imported": []
+  },
+  "artifacts": [
+    "REVIEW.md",
+    "REVIEW.json",
+    "ARRAY_CHECKS.json",
+    "run_array_checks.py",
+    "REPAIR_READBACK_CHECKS.json",
+    "run_repair_checks.py"
+  ],
+  "history": "ARRAY_CHECKS.json is pre-repair evidence; do not overwrite by rerunning its live-source script. Repairs were implemented by the parent, then independently source-read and checked with synthetic arrays here."
+}

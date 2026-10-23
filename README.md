@@ -1,3 +1,11 @@
+<!-- W_P0R_P1_CURRENT -->
+## Research W：真实墙–目标补偿与受控概率实验
+
+[报告与实际图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_p0r_to_p1/) · [中文研究报告](research/research_w_p0r_to_p1/RESEARCH_REPORT_ZH.md) · [机器可读材料包](research/research_w_p0r_to_p1/MaterialHypothesisPackage/EXAMPLE.json)
+
+联合全波近等价对d=0.798716、目标位移0.1λ₀；两墙受控prior在新观测前冻结并完成概率参考与四格比较。原minimum_feature未完备、online FWI未达到相容门槛；多假设有平方任务收益，递进独立优势未建立。一般未知墙体posterior未解决，旧证据保持原样。
+<!-- /W_P0R_P1_CURRENT -->
+
 <!-- P3LR2_CURRENT -->
 ## P3L-R2 已完成：监督材料风险改善，完整后验仍未合格
 

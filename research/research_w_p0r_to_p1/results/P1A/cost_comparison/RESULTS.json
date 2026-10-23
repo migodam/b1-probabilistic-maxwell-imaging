@@ -1,0 +1,141 @@
+{
+  "contract": {
+    "identity": "P1A_SHARED_F_CACHE_ARRAY_COST_REPLAY_V1",
+    "target": "CONTROLLED_W_FIXED_SUPPORT_JOINT_V1_CONTINUOUS_APPROXIMATED_BY_POSITIVE_QUADRATURE",
+    "reference": "results/P1A/reference/RESULTS.json; full5/full9 and directly truncated CDF5/CDF9",
+    "observations": "P1A OBSERVATIONS.npz: y and parent_ids only; all32, fixed before comparison",
+    "thresholds": {
+      "branch_event": 0.02,
+      "CDF": 0.02,
+      "nuisance_max_node_logZ_change": 0.0002
+    },
+    "gain": "ONE shared amplitude U[.99,1.01] and phase U[-.01,.01] across all frequencies/sources/receivers, marginalized by posterior_math; no profiling",
+    "CDF": "Integrate original-density truncated intervals, divide by same method fullZ; never atomic node-count CDF or independently renormalized truncation",
+    "nuisance_orders": [
+      11,
+      21,
+      41,
+      65
+    ],
+    "cache_rights": "Both reuse exact unique F arrays and rule-node index maps. Neither retains per-y likelihood or posterior across passes. Shared teacher/reference is already paid.",
+    "cache_construction": "Once per method, prior-rule coordinates only, before loading y",
+    "cold_definition": "First in-process cache construction plus first full32 inference; not a fresh process or cold OS disk cache. Shared rule loading reported separately.",
+    "warm_definition": "Two complete recomputations of all32 y from persistent F cache; no result memoization",
+    "method_order_by_pass": {
+      "cold": [
+        "direct_order3",
+        "response_interpolation18"
+      ],
+      "warm1": [
+        "response_interpolation18",
+        "direct_order3"
+      ],
+      "warm2": [
+        "direct_order3",
+        "response_interpolation18"
+      ]
+    },
+    "warm2_order_seed": 20261024,
+    "rule_input_load_timing": {
+      "wall_seconds": 0.049365249928086996,
+      "cpu_seconds": 0.02692999999999998
+    },
+    "reference_setup_free": false,
+    "uniform_likelihood_bound": null,
+    "original_minimum_feature_semantics": "UNRESOLVED; no qualification of the original broad wall prior",
+    "model_scope": "Only the public controlled fixed-support two-wall family; no general unknown-wall online claim",
+    "new_Maxwell_rhs": 0,
+    "new_Maxwell_LU": 0,
+    "GT_access": false,
+    "plan_access": false,
+    "decision": "NOT_EVALUATED_NO_AUTOMATIC_GO"
+  },
+  "passes": [
+    {
+      "pass_name": "cold",
+      "direct_wall_seconds": 0.1508624169509858,
+      "interpolation_wall_seconds": 0.6821949579752982,
+      "direct_cpu_seconds": 0.11341800000000002,
+      "interpolation_cpu_seconds": 0.6139379999999999,
+      "direct_over_interpolation_wall_ratio": 0.22114267364088086,
+      "direct_over_interpolation_cpu_ratio": 0.18473852408549404,
+      "direct_qualified_count": 32,
+      "interpolation_qualified_count": 32,
+      "meaning": "Array computation only; not avoided physical solves or an automatic GO"
+    },
+    {
+      "pass_name": "warm1",
+      "direct_wall_seconds": 0.09427691693417728,
+      "interpolation_wall_seconds": 0.5126006670761853,
+      "direct_cpu_seconds": 0.0925419999999999,
+      "interpolation_cpu_seconds": 0.490575,
+      "direct_over_interpolation_wall_ratio": 0.18391883387885907,
+      "direct_over_interpolation_cpu_ratio": 0.18863986138714753,
+      "direct_qualified_count": 32,
+      "interpolation_qualified_count": 32,
+      "meaning": "Array computation only; not avoided physical solves or an automatic GO"
+    },
+    {
+      "pass_name": "warm2",
+      "direct_wall_seconds": 0.09165220917202532,
+      "interpolation_wall_seconds": 0.45580254192464054,
+      "direct_cpu_seconds": 0.09017300000000006,
+      "interpolation_cpu_seconds": 0.44792600000000027,
+      "direct_over_interpolation_wall_ratio": 0.201078758325965,
+      "direct_over_interpolation_cpu_ratio": 0.20131227033036708,
+      "direct_qualified_count": 32,
+      "interpolation_qualified_count": 32,
+      "meaning": "Array computation only; not avoided physical solves or an automatic GO"
+    }
+  ],
+  "method_accuracy": {
+    "direct_order3": {
+      "observations": 32,
+      "qualified_count": 32,
+      "unqualified": [],
+      "max_branch_event_error": 0.0008708190264642979,
+      "max_CDF_error": 0.0010468436161022998,
+      "max_x_mean_error": 7.895265194912682e-05,
+      "max_x_SD_error": 1.819756777470677e-05,
+      "max_logZ_absolute_error": 0.001969080077287799,
+      "all_CDF_coherent": true,
+      "all_nuisance_converged": true,
+      "mathematical_evaluation_counts": {
+        "log_marginal_calls": 64,
+        "material_statistic_row_evaluations": 3456,
+        "complex_channel_statistic_evaluations": 829440,
+        "material_gamma_likelihood_evaluations": 971136
+      },
+      "new_Maxwell_rhs": 0,
+      "new_Maxwell_LU": 0
+    },
+    "response_interpolation18": {
+      "observations": 32,
+      "qualified_count": 32,
+      "unqualified": [],
+      "max_branch_event_error": 0.0008697851960796643,
+      "max_CDF_error": 0.0008788664975245553,
+      "max_x_mean_error": 7.905208809122488e-05,
+      "max_x_SD_error": 1.8184671678612985e-05,
+      "max_logZ_absolute_error": 0.0019695287296599417,
+      "all_CDF_coherent": true,
+      "all_nuisance_converged": true,
+      "mathematical_evaluation_counts": {
+        "log_marginal_calls": 64,
+        "material_statistic_row_evaluations": 31104,
+        "complex_channel_statistic_evaluations": 7464960,
+        "material_gamma_likelihood_evaluations": 8740224
+      },
+      "new_Maxwell_rhs": 0,
+      "new_Maxwell_LU": 0
+    }
+  },
+  "physical_costs": "PHYSICAL_SETUP_COSTS.json",
+  "array_cache_build": "ARRAY_CACHE_BUILD.json",
+  "empirical_scope": "Measured finite set of the same32 P1A observations and checked quadrature nodes, not held-out deployment, continuous-exact posterior, uniform likelihood bound or proof of future savings.",
+  "shared_reference_and_teacher_free": false,
+  "uniform_likelihood_bound": null,
+  "new_Maxwell_rhs": 0,
+  "new_Maxwell_LU": 0,
+  "scientific_GO": "NOT_EVALUATED"
+}

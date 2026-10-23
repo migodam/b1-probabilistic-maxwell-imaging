@@ -1,0 +1,66 @@
+{
+  "identity": "P1B_SHARED_P1A_F_CACHE_ARRAY_COST_REPLAY_V1",
+  "dataset": "P1B",
+  "target": "CONTROLLED_W_FIXED_SUPPORT_JOINT_V1_CONTINUOUS_APPROXIMATED_BY_POSITIVE_QUADRATURE",
+  "reference": "results/P1B/inference/RESULTS.json continuous_ref only; full5/full9 and directly truncated CDF5/CDF9",
+  "observations": "P1B OBSERVATIONS.npz: y and parent_ids only; all32, fixed before comparison",
+  "observation_scope": "New32 P1B observations relative to P1A setup; observation-only generalization check of unchanged methods; no B adaptation or model/threshold/rule selection",
+  "response_banks": "Only completed P1A full3/5/9 and cdf_i_3/5/9; B650 responses are not loaded",
+  "fixed_minimum_method_nodes": {
+    "direct_order3": 54,
+    "response_interpolation18": 18
+  },
+  "method_and_threshold_changes_on_P1B": false,
+  "reference_missing_policy": "FAIL_CLOSED; never infer qualification",
+  "reference_contrast_scored": false,
+  "thresholds": {
+    "branch_event": 0.02,
+    "CDF": 0.02,
+    "nuisance_max_node_logZ_change": 0.0002
+  },
+  "gain": "ONE shared amplitude U[.99,1.01] and phase U[-.01,.01] across all frequencies/sources/receivers, marginalized by posterior_math; no profiling",
+  "CDF": "Integrate original-density truncated intervals, divide by same method fullZ; never atomic node-count CDF or independently renormalized truncation",
+  "nuisance_orders": [
+    11,
+    21,
+    41,
+    65
+  ],
+  "cache_rights": "Both reuse exact unique F arrays and rule-node index maps. Neither retains per-y likelihood or posterior across passes. Shared teacher/reference is already paid.",
+  "cache_construction": "Once per method, prior-rule coordinates only, before loading y",
+  "cold_definition": "First in-process cache construction plus first full32 inference; not a fresh process or cold OS disk cache. Shared rule loading reported separately.",
+  "warm_definition": "Two complete recomputations of all32 y from persistent F cache; no result memoization",
+  "method_order_by_pass": {
+    "cold": [
+      "direct_order3",
+      "response_interpolation18"
+    ],
+    "warm1": [
+      "response_interpolation18",
+      "direct_order3"
+    ],
+    "warm2": [
+      "direct_order3",
+      "response_interpolation18"
+    ]
+  },
+  "warm2_order_seed": 20261024,
+  "rule_input_load_timing": {
+    "wall_seconds": 0.05329412501305342,
+    "cpu_seconds": 0.030714999999999992
+  },
+  "observation_reference_IO_timing": {
+    "wall_seconds": 0.015736083034425974,
+    "cpu_seconds": 0.012581000000000009
+  },
+  "reference_setup_free": false,
+  "uniform_likelihood_bound": null,
+  "P1B_original_four_arm_extra_bank_cost": "Separately retained in PHYSICAL_SETUP_COSTS.json, not required by either replay method",
+  "original_minimum_feature_semantics": "UNRESOLVED; no qualification of the original broad wall prior",
+  "model_scope": "Only the public controlled fixed-support two-wall family; no general unknown-wall online claim",
+  "new_Maxwell_rhs": 0,
+  "new_Maxwell_LU": 0,
+  "GT_access": false,
+  "plan_access": false,
+  "decision": "NOT_EVALUATED_NO_AUTOMATIC_GO"
+}

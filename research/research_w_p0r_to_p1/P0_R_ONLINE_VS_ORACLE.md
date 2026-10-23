@@ -37,3 +37,8 @@ Oracle与在线不仅初值不同，支持集合也不同；旧TR还受边界rou
 C/P1A/P1B没有真实结果时保持NOT_RUN；优化轨迹不是采样链，不产生ESS、后验概率、模态权重或覆盖率。campaign页面持续WORK_IN_PROGRESS。
 
 [数据页面](index.html) · [机器可读报告](RESULTS_REPORT.json) · [R封账凭据](R_SEALED.json)
+
+
+## R阶段封账时点说明
+
+上述保存说明中的WORK_IN_PROGRESS与“后续未运行”描述R封账时点，不是整轮当前状态。R原始数字与阶段Gate保持原样；最终已完成的B2/C/受控P1-A/P1-B及其限制见[整轮裁决](SCIENTIFIC_DECISION.md)和[阶段汇总](GATE_SUMMARY.json)。本补记没有重开R预算或将Online失败改成PASS。

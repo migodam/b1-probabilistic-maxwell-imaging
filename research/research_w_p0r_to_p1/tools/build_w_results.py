@@ -4,7 +4,8 @@
 Inputs: RESULTS.json and complete records in ITERATIONS.json/FWI_HISTORY.json,
 R_SEALED.json for resource status, plus FINAL.npz
 only beside an existing RESULTS.json. Never reads trial field/J caches or logs.
---final changes the presentation label; it does not certify any scientific gate.
+--final uses a valid parent-authored FINAL_OVERVIEW.json when present.
+Without it the page stays WORK_IN_PROGRESS. Display mode never certifies a gate.
 """
 from __future__ import annotations
 import argparse
@@ -14,8 +15,10 @@ import io
 import json
 import math
 import os
+import re
 from pathlib import Path
 from datetime import datetime, timezone
+from urllib.parse import unquote, urlsplit
 
 
 def atomic(path, text):
@@ -85,10 +88,163 @@ def table(rows, columns=None):
             for r in rows) + '</tbody></table></div>'
 
 
+def narrative_html(root, active, sources):
+    """Render the parent-written Chinese report with a small safe text renderer.
+
+    Only headings, paragraphs, simple lists/tables, bold and inline code are
+    supported. All source HTML is escaped. Rendering never creates a finding.
+    """
+    path=root/'RESEARCH_REPORT_ZH.md'
+    if not active or not path.exists():return ''
+    raw=path.read_text(encoding='utf-8')
+    sources.append(dict(path=path.name,bytes=len(raw.encode()),
+        role='parent-written scientific narrative rendered verbatim in meaning'))
+    def inline(value):
+        escaped=html.escape(value)
+        escaped=re.sub(r'`([^`]+)`',r'<code>\1</code>',escaped)
+        return re.sub(r'\*\*([^*]+)\*\*',r'<strong>\1</strong>',escaped)
+    rendered=[]
+    for block in re.split(r'\n\s*\n',raw.strip()):
+        lines=block.splitlines()
+        if len(lines)==1 and lines[0].startswith('#'):
+            level=min(4,len(lines[0])-len(lines[0].lstrip('#'))+1)
+            rendered.append(f'<h{level}>'+inline(lines[0].lstrip('#').strip())+f'</h{level}>')
+        elif lines and all(line.strip().startswith('|') for line in lines):
+            cells=[[x.strip() for x in line.strip().strip('|').split('|')] for line in lines]
+            body=[]
+            for i,row in enumerate(cells):
+                if all(re.fullmatch(r'[:\- ]+',cell or ' ') for cell in row):continue
+                tag='th' if i==0 else 'td'
+                body.append('<tr>'+''.join(f'<{tag}>'+inline(cell)+f'</{tag}>' for cell in row)+'</tr>')
+            rendered.append('<div class="scroll"><table>'+''.join(body)+'</table></div>')
+        elif all(re.match(r'^\d+\. ',line) for line in lines):
+            rendered.append('<ol>'+''.join('<li>'+inline(re.sub(r'^\d+\. ','',line))+'</li>' for line in lines)+'</ol>')
+        elif all(line.startswith('- ') for line in lines):
+            rendered.append('<ul>'+''.join('<li>'+inline(line[2:])+'</li>' for line in lines)+'</ul>')
+        else:rendered.append('<p>'+inline(' '.join(lines))+'</p>')
+    return '<section class="long-report" id="full-report">'+''.join(rendered)+'</section>'
+
+
+def final_overview(root, requested, sources, errors):
+    """Read only the parent's explicit overview; never derive a scientific claim."""
+    path = root / 'FINAL_OVERVIEW.json'
+    state = dict(requested=bool(requested), source='FINAL_OVERVIEW.json',
+                 status='NOT_REQUESTED', data=None, gallery=[])
+    if not requested:
+        return state
+    if not path.exists():
+        state['status'] = 'NOT_RUN'
+        return state
+    obj = read_json(path, root, sources, errors)
+    if obj is None:
+        state['status'] = 'PARSE_ERROR'
+        return state
+    try:
+        if not isinstance(obj, dict):
+            raise ValueError('FINAL_OVERVIEW must be an object')
+        for key in ('status', 'headline'):
+            if not isinstance(obj.get(key), str) or not obj[key].strip():
+                raise ValueError(f'FINAL_OVERVIEW.{key} must be a nonempty string')
+        if not isinstance(obj.get('paragraphs'), list) or not all(isinstance(v, str) for v in obj['paragraphs']):
+            raise ValueError('FINAL_OVERVIEW.paragraphs must be a list of strings')
+        specifications = {'key_results': ('finding', 'value', 'scope'),
+                          'reading_links': ('href', 'label'),
+                          'gallery_sections': ('path', 'title', 'caption')}
+        for key, fields in specifications.items():
+            rows = obj.get(key)
+            if not isinstance(rows, list):
+                raise ValueError(f'FINAL_OVERVIEW.{key} must be a list')
+            for i, row in enumerate(rows):
+                if not isinstance(row, dict) or any(field not in row for field in fields):
+                    raise ValueError(f'FINAL_OVERVIEW.{key}[{i}] requires {fields}')
+                if any(not isinstance(row[field], str) for field in fields if field != 'value'):
+                    raise ValueError(f'FINAL_OVERVIEW.{key}[{i}] text fields must be strings')
+        state.update(status='PARENT_OVERVIEW_LOADED', data=obj)
+    except ValueError as exc:
+        errors.append(dict(path='FINAL_OVERVIEW.json', kind='SchemaError', message=str(exc)))
+        state['status'] = 'PARSE_ERROR'
+    return state
+
+
+def presentation_url(value, root, *, image=False):
+    """Validate display paths, without opening image/data payloads or fetching URLs."""
+    parsed = urlsplit(value)
+    if image and (parsed.scheme or parsed.netloc or parsed.query or parsed.fragment):
+        raise ValueError('gallery path must be a local image path without query/fragment')
+    if parsed.scheme:
+        if parsed.scheme not in ('http', 'https') or not parsed.netloc:
+            raise ValueError('reading link scheme must be http/https or a relative report path')
+        return value, None
+    if parsed.netloc:
+        raise ValueError('protocol-relative links are not supported')
+    local = Path(unquote(parsed.path))
+    if local.is_absolute() or '..' in local.parts:
+        raise ValueError('local display paths must remain relative to the report root')
+    target = (root / local).resolve()
+    if not target.is_relative_to(root):
+        raise ValueError('local display path leaves report root')
+    if image and (not local.parts or local.parts[0] != 'figures' or local.suffix.lower() not in
+                  ('.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg')):
+        raise ValueError('gallery path must name an actual image under figures/')
+    return value, target
+
+
+def parent_overview_html(overview, root, errors, figure_status):
+    obj = overview['data']
+    if obj is None:
+        return ''
+    esc = html.escape
+    paragraphs = ''.join(f'<p>{esc(text)}</p>' for text in obj['paragraphs'])
+    keys = table([{'发现': row['finding'], '实际结果': row['value'], '适用范围': row['scope']}
+                  for row in obj['key_results']], ['发现', '实际结果', '适用范围']) if obj['key_results'] else ''
+    links = []
+    for row in obj['reading_links']:
+        try:
+            url, target = presentation_url(row['href'], root)
+            if target is not None and not target.exists():
+                links.append(f'<li>{esc(row["label"])} — <span class="empty">NOT_RUN: {esc(row["href"])}</span></li>')
+            else:
+                links.append(f'<li><a href="{esc(url, quote=True)}">{esc(row["label"])}</a></li>')
+        except ValueError as exc:
+            errors.append(dict(path='FINAL_OVERVIEW.json', kind='DisplayPathError', message=str(exc)))
+            links.append(f'<li>{esc(row["label"])} — <span class="empty">NOT_RUN: invalid reading path</span></li>')
+    galleries = []
+    for row in obj['gallery_sections']:
+        record = dict(row, status='NOT_RUN')
+        try:
+            url, target = presentation_url(row['path'], root, image=True)
+            available = (target.is_file() and target.stat().st_size > 0
+                         and figure_status.get(target.relative_to(root).as_posix()) != 'NOT_RUN')
+            if available:
+                record['status'] = 'SAVED_IMAGE'
+                body = f'<a href="{esc(url, quote=True)}"><img src="{esc(url, quote=True)}" alt="{esc(row["title"], quote=True)}" loading="lazy"></a>'
+            else:
+                body = f'<p class="empty">NOT_RUN — actual image unavailable: {esc(row["path"])}</p>'
+        except (OSError, ValueError) as exc:
+            errors.append(dict(path='FINAL_OVERVIEW.json', kind='DisplayPathError', message=str(exc)))
+            body = '<p class="empty">NOT_RUN — invalid or unreadable image path</p>'
+        overview['gallery'].append(record)
+        galleries.append(f'<section class="overview-gallery"><h2>{esc(row["title"])}</h2>{body}<p class="note">{esc(row["caption"])}</p></section>')
+    reading = '<h2>阅读入口</h2><ul>' + ''.join(links) + '</ul>' if links else ''
+    return ('<section class="parent-overview"><p class="meta">最终研究裁决：'
+            + esc(obj['status']) + '</p>' + paragraphs + keys + reading + '</section>'
+            + ''.join(galleries))
+
+
+def saved_figure_html(figure):
+    esc = html.escape
+    if figure.get('status') == 'NOT_RUN':
+        body = '<p class="empty">NOT_RUN — required saved output fields are absent; no image generated.</p>'
+    else:
+        body = (f'<a href="{esc(figure["svg"], quote=True)}"><img src="{esc(figure["path"], quote=True)}" '
+                f'alt="{esc(figure["title"], quote=True)}" loading="lazy"></a>')
+    return f'<section><h2>{esc(figure["title"])}</h2>{body}<p class="note">{esc(figure["caption"])}</p></section>'
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument('--final', action='store_true', help='Use final snapshot label; no stage/gate changes.')
+    parser.add_argument('--final', action='store_true', help='Use parent FINAL_OVERVIEW.json when valid; otherwise stay WIP. No stage/gate changes.')
     parser.add_argument('--probability-figures',action='store_true',help='Optionally render saved P1 reference/inference and completed offline score summaries; never opens truth or observations.')
     parser.add_argument('--online-prior-lambda', type=float, default=.002,
                         help='Frozen online prior weight (.002), used with recorded x and objective; override only with matching run metadata.')
@@ -99,6 +255,8 @@ def main():
     generated.mkdir(parents=True, exist_ok=True)
     tables_dir.mkdir(parents=True, exist_ok=True)
     errors, sources, stage_rows, stage_data = [], [], [], {}
+    overview = final_overview(root, args.final, sources, errors)
+    final_active = bool(args.final and overview['data'] is not None)
     runs, histories, iteration_rows = [], {}, []
     sealed_path=root/'R_SEALED.json'
     sealed=read_json(sealed_path,root,sources,errors) if sealed_path.exists() else None
@@ -217,7 +375,9 @@ def main():
                     rows=data if isinstance(data,list) else data.get('rows',[data]) if isinstance(data,dict) else []
                     if isinstance(rows,list) and all(isinstance(r,dict) for r in rows):
                         for r in rows:
-                            rec=dict(source=str(path.relative_to(root)),**{k:v for k,v in r.items() if not isinstance(v,(list,dict))})
+                            rec={k:v for k,v in r.items() if not isinstance(v,(list,dict))}
+                            if 'source' in rec:rec['recorded_source']=rec.pop('source')
+                            rec['source']=str(path.relative_to(root))
                             cost=r.get('actual_incremental_cost',{})
                             if isinstance(cost,dict):
                                 for key in ('new_charged_complex_rhs','new_charged_factorizations','cpu_seconds','wall_seconds'):
@@ -381,7 +541,7 @@ def main():
                 ax.scatter([r['d_cal'] for r in rows],[r['d_T'] for r in rows],label=method)
                 for r in rows:ax.annotate(str(r.get('coefficient_progress')),(r['d_cal'],r['d_T']),fontsize=8)
         ax.set_xlabel('Saved calibration distance d_cal');ax.set_ylabel('Saved task distance d_T');ax.legend(fontsize=8)
-        ax.set_title('B2 saved oracle-constructed candidates; independent validation pending')
+        ax.set_title('B2 saved oracle candidates; independent validation listed separately')
         finish(fig,'B2_cal_vs_task','B2实际候选：校准与任务距离','仅展示B2已保存候选；标注为系数延拓进度。ORACLE_CONSTRUCTED_PHYSICAL_WITNESS不表示在线成功，候选status和未执行项原样保留；不自动给出见证资格。')
 
     # Exact saved native joint material pair. No decoder, truth generator or PDE import.
@@ -408,7 +568,7 @@ def main():
                     ax.annotate('original target' if row==0 else 'target translated +0.1',xy=center,xytext=(-1.7,2.65),fontsize=8,color='white',arrowprops=dict(arrowstyle='->',color='white'))
                     fig.colorbar(im,ax=ax,shrink=.8)
             fig.suptitle('ORACLE_EXISTENCE_NOT_ONLINE | target shift 0.1, same radius/contrast/mass',fontsize=11)
-            finish(fig,'B2_joint_world_material_gallery','真实joint双世界材料图 · 严格Oracle','读取FULL_J_FINAL.npz中的material_grid/reference_material/material原值，保存频率f=1。两世界Re ε统一[1,9]，σ统一[0,.15]。目标仅平移0.1，质量不变；conditional fixed support，原minimum_feature语义UNRESOLVED，不是在线重建或最终GO。')
+            finish(fig,'B2_joint_world_material_gallery','真实joint双世界材料图 · 严格Oracle','读取FULL_J_FINAL.npz中的material_grid/reference_material/material原值，保存频率f=1。两世界Re ε统一[1,9]，σ统一[0,.15]。目标仅平移0.1，质量不变；conditional fixed support，原minimum_feature语义UNRESOLVED，不是在线重建；见证资格及结论适用范围见父线程摘要与原始gate。')
             sources.append(dict(path=str(joint_final.relative_to(root)),role='saved native joint world material pair only'))
             array_checks.append(dict(source=str(joint_final.relative_to(root)),identity='ORACLE_EXISTENCE_NOT_ONLINE',saved_frequency=1.,grid_shape=[len(ys),len(xs)],sample_count=len(pts),reference_real_range=[float(reference.real.min()),float(reference.real.max())],candidate_real_range=[float(candidate.real.min()),float(candidate.real.max())],reference_conductivity_range=[float(reference.imag.min()),float(reference.imag.max())],candidate_conductivity_range=[float(candidate.imag.min()),float(candidate.imag.max())],original_minimum_feature='UNRESOLVED',conditional_fixed_support=True))
         except (OSError,ValueError,KeyError) as exc:errors.append(dict(path=str(joint_final.relative_to(root)),kind=type(exc).__name__,message=str(exc)))
@@ -486,13 +646,65 @@ def main():
     from w_results_extensions import build_extensions
     extensions=build_extensions(root,sources,errors,finish,table,read_json,atomic,write_csv)
     probability=dict(data=None,html='')
+    probability_missing=[]
+    def probability_finish(fig, name, title, caption):
+        # The probability helper's missing-data branch used to write blank PNGs.
+        # Keep existing files, but mark absence explicitly and generate no image.
+        if '缺失结果保持NOT_RUN' in caption:
+            plt.close(fig)
+            record=dict(path=f'figures/saved_results/{name}.png',
+                        svg=f'figures/saved_results/{name}.svg', title=title,
+                        caption=caption, status='NOT_RUN')
+            probability_missing.append(record)
+            figures.append(record)
+        else:
+            finish(fig,name,title,caption)
     if args.probability_figures:
         from w_probability_figures import build_probability_figures
-        probability=build_probability_figures(root,sources,errors,finish,table,read_json,atomic,write_csv)
+        probability=build_probability_figures(root,sources,errors,probability_finish,table,read_json,atomic,write_csv)
+        if isinstance(probability['data'],dict):
+            probability['data']['missing_figure_status']=probability_missing
+        provenance_path=root/'tables/saved_results/PROBABILITY_FIGURE_SOURCES.json'
+        if probability_missing and provenance_path.exists():
+            provenance_source_start=len(sources)
+            provenance=read_json(provenance_path,root,sources,errors)
+            if isinstance(provenance,list):
+                absent={row['path'] for row in probability_missing}
+                for row in provenance:
+                    if isinstance(row,dict) and row.get('figure') in absent:
+                        row.update(status='NOT_RUN',rendered_current_build=False,
+                                   prior_image_if_present='retained on disk; not displayed as current evidence')
+                provenance_text=json.dumps(provenance,ensure_ascii=False,indent=2,allow_nan=False)
+                atomic(provenance_path,provenance_text)
+                for record in sources[provenance_source_start:]:
+                    record.update(bytes=len(provenance_text.encode('utf-8')),
+                        modified_utc=datetime.fromtimestamp(provenance_path.stat().st_mtime,timezone.utc).isoformat(),
+                        role='generated probability figure readback with explicit missing-image status')
     write_csv(tables_dir/'R3_runs.csv', runs)  # include completed objective/residual checks
-    status = 'FINAL_SNAPSHOT' if args.final else 'WORK_IN_PROGRESS'
+    status = 'FINAL_SNAPSHOT' if final_active else 'WORK_IN_PROGRESS'
+    if final_active:
+        extensions['html']=extensions['html'].replace('C固定材料对与B2扩展 · WORK_IN_PROGRESS', 'C固定材料对与B2扩展 · 保存的完成证据')
+        probability['html']=probability['html'].replace('无最终科学GO', '本视图不另行作科学裁决')
+        for view, relative in ((extensions,'C_B2_DISPLAY_SNAPSHOT.json'),
+                               (probability,'PROBABILITY_DISPLAY_SNAPSHOT.json')):
+            if isinstance(view['data'],dict):
+                view['data'].update(status='FINAL_SNAPSHOT',
+                    presentation_mode_only=True,scientific_summary_source='FINAL_OVERVIEW.json')
+                atomic(root/'tables/saved_results'/relative,
+                       json.dumps(view['data'],ensure_ascii=False,indent=2,allow_nan=False))
+    figure_status={row['path']:row.get('status','SAVED_IMAGE') for row in figures}
+    overview_html=parent_overview_html(overview,root,errors,figure_status) if final_active else ''
+    full_narrative=narrative_html(root,final_active,sources)
+    headline=overview['data']['headline'] if final_active else 'Research W · 保存结果快照'
+    intro='' if final_active else '<p>从 0 读起：本页先展示历史回放与离线表达诊断，再展示已保存的在线与概率结果。所有图表由现有数据生成；报告构建新增物理动作 0。</p>'
+    mode_note=('本页对应已封账研究。数值精度、科学门槛和适用先验分别列示；报告发布本身不等于科学通过。'
+               if final_active else 'WORK_IN_PROGRESS：等待父线程最终摘要；已有记录与缺失项分别保留，不作最终科学裁决。')
+    r_sealed_note=('R封账只描述该阶段预算；下列为保存证据，campaign摘要与科学状态见首屏父线程说明。'
+                   if final_active else 'R封账只描述该阶段预算；本页保持WORK_IN_PROGRESS，不作campaign最终裁决。')
+    b2_heading='B2独立验证 · 保存的完成证据' if final_active else 'B2独立验证检查点 · 持续更新'
+    b2_checkpoint_status='SAVED_COMPLETED_EVIDENCE' if final_active else 'WORK_IN_PROGRESS'
     now = datetime.now(timezone.utc).isoformat()
-    payload = dict(report_status=status, generated_utc=now, physics_actions_by_builder=0,
+    payload = dict(report_status=status, final_requested=bool(args.final), parent_final_overview=overview, generated_utc=now, physics_actions_by_builder=0,
                    stage_status=stage_rows, R3_runs=runs, projection_distance=projection,
                    later_stages=later_rows,B2_candidates=b2_rows,B2_grid_validation=validation_rows,B2_completed_tasks=task_rows,B2_saved_array_checks=array_checks,R_sealed=sealed,input_sources=sources, parse_errors=errors,
                    frozen_online_prior_lambda=args.online_prior_lambda,C_B2_extensions=extensions['data'],probability_display=probability['data'],figures=figures,
@@ -504,9 +716,9 @@ def main():
     atomic(root/'REPORT_PARSE_ERRORS.json', json.dumps(dict(status='ERROR' if errors else 'OK', errors=errors), ensure_ascii=False, indent=2))
     atomic(root/'tables/saved_results/B2_saved_array_checks.json',json.dumps(dict(status='SAVED_ARRAY_READBACK_ONLY',physics_actions=0,checks=array_checks),ensure_ascii=False,indent=2,allow_nan=False))
     # This is a data checkpoint, deliberately separate from main-owned gates.
-    checkpoint=['# B2实际结果检查点\n','状态：**WORK_IN_PROGRESS / ORACLE_EXISTENCE_NOT_ONLINE**。本次构建只读已完成保存记录，新增Maxwell/LU/RHS为0；没有优化、预算操作或P1执行。\n',
+    checkpoint=['# B2实际结果检查点\n',f'状态：**{b2_checkpoint_status} / ORACLE_EXISTENCE_NOT_ONLINE**。本次构建只读已完成保存记录，新增Maxwell/LU/RHS为0；没有优化或预算操作。P1状态另按其实际保存结果显示。\n',
                 '## 1. 信息条件与几何限制\n',
-                'native分支从已知参考世界构造108参数固定支持chart，属于Oracle物理存在性探索，不是在线重建。参考与FULL_J_FINAL实际材料见[双世界图](figures/saved_results/B2_joint_world_material_gallery.png)。目标沿x平移0.1，圆盘半径/介电对比/质量不变，target_mass_relative_change=0。原minimum_feature标量语义保持**UNRESOLVED**；conditional fixed support不认证全部原几何材料类，也不构成最终GO。\n',
+                'native分支从已知参考世界构造108参数固定支持chart，属于Oracle物理存在性探索，不是在线重建。参考与FULL_J_FINAL实际材料见[双世界图](figures/saved_results/B2_joint_world_material_gallery.png)。目标沿x平移0.1，圆盘半径/介电对比/质量不变，target_mass_relative_change=0。原minimum_feature标量语义保持**UNRESOLVED**；conditional fixed support不认证全部原几何材料类。科学解释以父线程摘要及原始gate为准。\n',
                 '## 2. 已保存native候选\n',
                 '|来源|方法|d_cal|d_T|direct-joint distance|status|\n|---|---|---:|---:|---:|---|']
     for r in b2_rows:
@@ -519,26 +731,28 @@ def main():
     for vid in sorted({r['validation_id'] for r in task_rows}):
         ts=[r for r in task_rows if r['validation_id']==vid];count=len({r.get('probe') for r in ts});distances=[r['distance'] for r in ts if number(r.get('distance'))]
         checkpoint.append(f"* {vid}：当前保存{count}/24个probe结果；已完成子集最大距离{max(distances):.12g}。"+('尚不是完整24类supremum；其余项不补造。' if count<24 else '24项保存齐全；资格解释仍归主线程。'))
-    checkpoint+=['\n原始来源：[native cal](results/B2/native_cal_2026102202_narrow/RESULTS.json)、[native joint](results/B2/native_joint_direct_2026102202_narrow/RESULTS.json)、[GRID_COMPARISON](results/B2/validation/joint_seed2_narrow_fullj/GRID_COMPARISON.json)、[ALL_TASKS](results/B2/validation/joint_seed2_narrow_fullj/ALL_TASKS.json)。其他seed/分支不由本seed2检查点推定完成；不据Oracle候选数量产生概率。\n',f'生成UTC：{now}。页面继续WORK_IN_PROGRESS；不修改科学门、物理源码或账本。\n']
+    checkpoint+=['\n原始来源：[native cal](results/B2/native_cal_2026102202_narrow/RESULTS.json)、[native joint](results/B2/native_joint_direct_2026102202_narrow/RESULTS.json)、[GRID_COMPARISON](results/B2/validation/joint_seed2_narrow_fullj/GRID_COMPARISON.json)、[ALL_TASKS](results/B2/validation/joint_seed2_narrow_fullj/ALL_TASKS.json)。其他seed/分支不由本seed2检查点推定完成；不据Oracle候选数量产生概率。\n',f'生成UTC：{now}。{mode_note} 不修改科学门、物理源码或账本。\n']
     atomic(root/'B2_CHECKPOINT.md','\n'.join(checkpoint))
-    figure_html = ''.join(f'<section><h2>{html.escape(f["title"])}</h2><a href="{html.escape(f["svg"])}"><img src="{html.escape(f["path"])}" alt="{html.escape(f["title"])}"></a><p class="note">{html.escape(f["caption"])}</p></section>' for f in figures)
-    document = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research W · saved results</title>
-<style>body{{font:16px/1.65 system-ui,sans-serif;background:#f3f5f7;color:#17212e;margin:0}}main{{max-width:1120px;margin:auto;padding:36px 24px}}h1{{font-size:30px;margin:8px 0}}h2{{font-size:21px}}section{{background:white;border:1px solid #dbe2e9;border-radius:12px;padding:20px;margin:20px 0}}.badge{{display:inline-block;background:#fff0cf;color:#7c4900;padding:4px 10px;border-radius:6px;font-weight:700}}.note,.meta{{color:#506173;font-size:14px}}.scroll{{overflow:auto}}table{{border-collapse:collapse;width:100%;font-size:13px}}td,th{{text-align:left;border-bottom:1px solid #e2e8f0;padding:8px;vertical-align:top;white-space:nowrap}}th{{background:#f6f8fa}}img{{display:block;width:100%;height:auto}}a{{color:#0369a1}}.empty{{color:#6b7280}}.error{{color:#b91c1c}}</style>
-<main><span class="badge">{status}</span><h1>Research W · 保存结果快照</h1><p>从 0 读起：本页先展示真值回放与离线表达诊断，再展示在线反演的已保存轨迹。所有图表由现有数据生成；报告构建新增物理动作 0。</p><p class="meta">生成时间 UTC：{now} · <a href="RESULTS_REPORT.json">机器可读报告</a> · <a href="REPORT_PARSE_ERRORS.json">解析错误记录</a></p>
-<section><h2>R阶段封账与阅读入口</h2>{table([dict(status=sealed.get('status'),**sealed.get('totals',{}),uncompleted_controls=sealed.get('uncompleted_controls'))]) if sealed else '<p>尚无R_SEALED.json。</p>'}<p><a href="P0_R_REPRESENTABILITY.md">可表达性</a> · <a href="P0_R_CODE_AUDIT.md">代码审计</a> · <a href="P0_R_PROJECTION_ANALYSIS.md">投影分析</a> · <a href="P0_R_FWI_CONVERGENCE.md">FWI收敛记录</a> · <a href="P0_R_ONLINE_VS_ORACLE.md">在线与Oracle</a></p><p class="note">R封账只描述该阶段预算；本页继续WORK_IN_PROGRESS，不作campaign最终裁决。</p></section>
-<section><h2>阶段记录状态</h2>{table(stage_rows)}<p class="note">状态来自文件中的记录，不是本页作出的科学门判决。WORK_IN_PROGRESS 与 FINAL_SNAPSHOT 只区分报告展示模式。不存在的后续阶段保持 NOT_RUN。</p></section>
+    figure_html = ''.join(saved_figure_html(f) for f in figures)
+    document = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(headline)}</title>
+<style>body{{font:16px/1.65 system-ui,sans-serif;background:#f3f5f7;color:#17212e;margin:0}}main{{max-width:1120px;margin:auto;padding:36px 24px}}h1{{font-size:30px;margin:8px 0}}h2{{font-size:21px}}section{{background:white;border:1px solid #dbe2e9;border-radius:12px;padding:20px;margin:20px 0}}.badge{{display:inline-block;background:#fff0cf;color:#7c4900;padding:4px 10px;border-radius:6px;font-weight:700}}.note,.meta{{color:#506173;font-size:14px}}.scroll{{overflow:auto}}table{{border-collapse:collapse;width:100%;font-size:13px}}td,th{{text-align:left;border-bottom:1px solid #e2e8f0;padding:8px;vertical-align:top;white-space:nowrap}}th{{background:#f6f8fa}}img{{display:block;width:100%;height:auto}}a{{color:#0369a1}}.empty{{color:#6b7280}}.error{{color:#b91c1c}}.parent-overview td,.parent-overview th{{white-space:normal}}.parent-overview td:first-child{{font-weight:600}}.parent-overview ul{{padding-left:22px}}.long-report td,.long-report th{{white-space:normal}}.long-report p,.long-report li{{line-height:1.95}}.long-report h2,.long-report h3{{margin-top:32px}}</style>
+<main><span class="badge">{status}</span><h1>{html.escape(headline)}</h1>{intro}<p class="meta">生成时间 UTC：{now} · <a href="RESULTS_REPORT.json">机器可读报告</a> · <a href="REPORT_PARSE_ERRORS.json">解析错误记录</a></p><p class="note">{html.escape(mode_note)}</p>{overview_html}{full_narrative}
+<section><h2>R阶段封账与阅读入口</h2>{table([dict(status=sealed.get('status'),**sealed.get('totals',{}),uncompleted_controls=sealed.get('uncompleted_controls'))]) if sealed else '<p>尚无R_SEALED.json。</p>'}<p><a href="P0_R_REPRESENTABILITY.md">可表达性</a> · <a href="P0_R_CODE_AUDIT.md">代码审计</a> · <a href="P0_R_PROJECTION_ANALYSIS.md">投影分析</a> · <a href="P0_R_FWI_CONVERGENCE.md">FWI收敛记录</a> · <a href="P0_R_ONLINE_VS_ORACLE.md">在线与Oracle</a></p><p class="note">{html.escape(r_sealed_note)}</p></section>
+<section><h2>阶段记录状态</h2>{table(stage_rows)}<p class="note">状态来自文件中的记录；{html.escape(mode_note)} 不存在的后续阶段保持 NOT_RUN。</p></section>
 <section><h2>Oracle / 在线结果清单</h2>{table(runs, ['run','role','identity','saved_status','reported_data_distance','data_distance_field','projected_gradient','iterations','success','stop','stopping','completed_evaluations','unfinished_evaluations','objective_residual_reconstruction_status'])}<p class="note">Oracle使用真值信息，仅为离线诊断；controls与未知墙体在线结果分开。projected_gradient不等同数据残差。续接stage按其RESULTS.prior_lambda与实际频率子集恢复残差，最后全带端点使用all_wide_d_mean；不是所有stage都采用λ=.002。<a href="tables/saved_results/R3_runs.csv">CSV</a></p></section>
 <section><h2>原始真值回放</h2>{table([r for r in stage_data.get('R0',[]) if 'd_mean' in r], ['seed','band','label','d_mean','d_observed_truth','volume_probe','same_contract_pass','identity'])}<p class="note">d_observed_truth 是保存噪声向量的白化长度，d_mean 是原均值数据的回放距离；两者不混合。</p></section>
 {figure_html}<section><h2>投影距离明细 · 严格离线</h2>{table(projection)}<p><a href="tables/saved_results/projection_distance.csv">CSV</a> · <a href="tables/saved_results/completed_evaluations.csv">完整已完成评价表</a></p></section>
 <section><h2>后续见证 / 采样阶段</h2>{table(later_rows)}<p class="note">不存在真实结果时，没有 posterior、链、ESS、模态权重或覆盖率图。本页不由优化候选数量构造概率。</p></section>
 <section><h2>B2已保存候选明细</h2>{table(b2_rows,['source','seed','band','method','coefficient_progress','d_cal','d_T','final_distance','d_joint_shifted','target_shift','target_mass_relative_change','material_RMS','incremental_rhs','rhs','cost_new_charged_complex_rhs','status','identity','stop','stopping'])}<p><a href="tables/saved_results/B2_candidates.csv">B2 CSV</a>。支持list、rows及单独dict结果；数值保留字段原义。保留原始status，不从小量局部响应或候选个数推断概率与充分覆盖。</p></section>
-<section><h2>B2独立验证检查点 · 持续更新</h2><p><a href="B2_CHECKPOINT.md">已完成事实说明</a>。ORACLE_EXISTENCE_NOT_ONLINE；原minimum_feature语义UNRESOLVED，conditional fixed support。目标平移0.1、半径/对比/质量不变；不将joint与无目标cal混为一项，不宣布最终GO或P1执行。</p>{table(validation_rows,['validation_id','mode','coarse_distance','fine_distance','world0_grid_distance','world1_grid_distance'])}<p class="note">ALL_TASKS仅按已保存probe列出，缺项不填；不足24项时不是完整任务类supremum。其他seed/分支进度不由此推定。</p>{table(task_rows,['validation_id','probe','center','radius','contrast','distance'])}<p><a href="tables/saved_results/B2_grid_validation.csv">网格数据CSV</a> · <a href="tables/saved_results/B2_completed_tasks.csv">已完成任务CSV</a></p></section>
+<section><h2>{html.escape(b2_heading)}</h2><p><a href="B2_CHECKPOINT.md">已完成事实说明</a>。ORACLE_EXISTENCE_NOT_ONLINE；原minimum_feature语义UNRESOLVED，conditional fixed support。目标平移0.1、半径/对比/质量不变；joint与无目标cal分别展示；P1状态按其实际保存记录列出，科学解释以父线程摘要及原始gate为准。</p>{table(validation_rows,['validation_id','mode','coarse_distance','fine_distance','world0_grid_distance','world1_grid_distance'])}<p class="note">ALL_TASKS仅按已保存probe列出，缺项不填；不足24项时不是完整任务类supremum。其他seed/分支进度不由此推定。</p>{table(task_rows,['validation_id','probe','center','radius','contrast','distance'])}<p><a href="tables/saved_results/B2_grid_validation.csv">网格数据CSV</a> · <a href="tables/saved_results/B2_completed_tasks.csv">已完成任务CSV</a></p></section>
 {extensions['html']}{probability['html']}<section><h2>数据解析与来源</h2><p class="{'error' if errors else 'note'}">{'存在解析错误；相关文件未用于对应图表。' if errors else '当前读取文件均通过 JSON 解析；这不替代科学审阅。'}</p>{table(errors, ['path','kind','message']) if errors else ''}{table(sources, ['path','bytes','modified_utc','role'])}</section></main></html>'''
     for name in ('report.html', 'index.html'):
         atomic(root/name, document)
     print(json.dumps(dict(status='ERROR' if errors else status, completed_evaluations=len(iteration_rows),
                           final_R3_results=sum(r['saved_status']=='SAVED_RESULT' for r in runs),
-                          plots=len(figures), parse_errors=len(errors), physics_actions=0,
+                          plots=sum(f.get('status')!='NOT_RUN' for f in figures),
+                          missing_figures=sum(f.get('status')=='NOT_RUN' for f in figures),
+                          parse_errors=len(errors), physics_actions=0,
                           index=str(root/'index.html')), ensure_ascii=False))
     return 2 if errors else 0
 
