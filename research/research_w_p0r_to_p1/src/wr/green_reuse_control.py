@@ -289,7 +289,16 @@ def main(gate_path='results/P1A/reference/GATE.json'):
 
         # Exact selector update: ALL structurally active rows, no singular-value
         # truncation. C may be singular; (I+C U^T R0U) needs no C inverse.
-        idx=np.unique(D.nonzero()[0])
+        nonzero_rows,nonzero_columns=D.nonzero()
+        idx=np.unique(nonzero_rows)
+        outside_columns=np.setdiff1d(np.unique(nonzero_columns),idx)
+        setup['exact_selector_support']=dict(
+            active_row_count=len(idx),nonzero_column_count=len(np.unique(nonzero_columns)),
+            columns_outside_active_rows=outside_columns.tolist(),
+            selector_factorization_valid=not bool(len(outside_columns)))
+        if len(outside_columns):
+            exact_status='NOT_RUN_INVALID_SELECTOR_SUPPORT'
+            raise RuntimeError('D has nonzero columns outside active row selector; U C U.T is not exact')
         r=len(idx)
         if r==0:raise RuntimeError('empty structural target update; no exact Woodbury claim')
         ru_bytes=int(nfree*r*np.dtype(complex).itemsize)
@@ -329,7 +338,10 @@ def main(gate_path='results/P1A/reference/GATE.json'):
             field_enriched_and_current='same field_V setup + rank(V) paid shared R0V RHS + own QR/projections',
             Krylov='baseline four RHS/LU preconditioner + every actual base-LU preconditioner apply paid warm',
             standalone_setup_wall='use separately measured component events; pooled setup is not credited free to any arm',
-            no_teacher_or_dense_core_cost_exclusion=True)
+            no_teacher_or_dense_core_cost_exclusion=True,
+            warm_measurement='deployment snapshot immediately after real response extraction; Full reuses sf.data',
+            audit_measurement='added residual/error/formula checks separately measured after deployment; retained in audited_total_cost and full stage CPU',
+            backend_required_internal_checks='existing FEM solve/base-action invariants retained in their actual operation cost')
         if R0U is None:
             # The exact-resource *potential* estimate is retained above, while
             # the enabled-method estimate excludes an unallocated giant R0U.
@@ -347,6 +359,9 @@ def main(gate_path='results/P1A/reference/GATE.json'):
                                 contrast=contrast,delta_contrast=delta)
             method_start=_snapshot(book)
             sf=p.solve(LinearWorld(seed,(CENTER,RADIUS,float(contrast))).coefficient(q,1.))
+            # The backend already produced the required full volume response.
+            # Freeze deployment cost BEFORE all finite-update audit bookkeeping.
+            full_deployment_end=_snapshot(book)
             A1=sf._matrix
             owned_state_bytes=sum(getattr(s0,key).nbytes for key in
                                   ('epsilon','material_points','material_weights','incident','field','current','scattered_dofs'))
@@ -362,19 +377,45 @@ def main(gate_path='results/P1A/reference/GATE.json'):
             np.savez_compressed(folder/'OPTIMIZED_FULL_REFERENCE.npz',data=truth,delta_u=direct_du,
                                 full_rhs_residuals=sf.residuals,epsilon=sf.epsilon)
 
-            def record(method,du,start,**metadata):
+            def record(method,du,start,*,response=None,deployment_end=None,additional_validation=None,**metadata):
+                if response is None:
+                    response=_timed(book,method+'_volume_extraction',
+                                    lambda:_response(p,s0,sf.epsilon,du))
+                    # Every reused method freezes deployment after its actual
+                    # response extraction, before added benchmark audits.
+                    deployment_end=_snapshot(book)
+                elif deployment_end is None:
+                    raise RuntimeError('precomputed response requires an explicit deployment-end snapshot')
                 if not np.all(np.isfinite(du)):
                     raise RuntimeError('nonfinite finite-update field; no response claimed')
-                response=_timed(book,method+'_volume_extraction',lambda:_response(p,s0,sf.epsilon,du))
                 defect=_timed(book,method+'_full_matrix_residual_MVP',lambda:A1@du-rhs,
-                               MVP_vectors=du.shape[1])
+                               MVP_vectors=du.shape[1],cost_role='separate_validation')
                 relative=np.linalg.norm(defect,axis=0)/np.maximum(np.linalg.norm(rhs,axis=0),1e-300)
                 full_defect=_timed(book,method+'_full_rhs_residual_MVP',
-                                    lambda:A1@(u0+du)-full_rhs,MVP_vectors=du.shape[1])
+                                    lambda:A1@(u0+du)-full_rhs,MVP_vectors=du.shape[1],
+                                    cost_role='separate_validation')
                 full_relative=np.linalg.norm(full_defect,axis=0)/np.maximum(np.linalg.norm(full_rhs,axis=0),1e-300)
                 if not np.all(np.isfinite(response)) or not np.all(np.isfinite(relative)) or not np.all(np.isfinite(full_relative)):
                     raise RuntimeError('nonfinite response/residual; no engineering result claimed')
-                warm_cost=_delta(_snapshot(book),start)
+                # Validate the finite-increment volume formula independently on
+                # the FIRST Full candidate only; never redo its deployment output.
+                if method=='OPTIMIZED_FULL' and number==0:
+                    extracted=_timed(book,'first_candidate_finite_volume_formula_audit',
+                                     lambda:_response(p,s0,sf.epsilon,du),
+                                     cost_role='separate_validation')
+                    identity_error=float(np.linalg.norm(extracted-sf.data)/.01)
+                    write(folder/'FINITE_VOLUME_IDENTITY_AUDIT.json',dict(
+                        independent_formula_vs_backend_volume_error_white=identity_error,
+                        cost_role='separate_validation',no_additional_PDE_RHS=True))
+                    np.savez_compressed(folder/'FINITE_VOLUME_IDENTITY_AUDIT.npz',
+                                        independently_extracted=extracted,backend_volume_data=sf.data)
+                    if identity_error>1e-7:
+                        raise RuntimeError('finite-update volume formula differs from backend original volume output')
+                if additional_validation is not None:
+                    metadata.update(_timed(book,method+'_additional_identity_audit',
+                                           lambda:additional_validation(response),
+                                           cost_role='separate_validation'))
+                warm_deployment=_delta(deployment_end,start)
                 row=dict(candidate=number,contrast=float(contrast),method=method,
                          finite_update_matrix_relative_residual_max=float(relative.max()),
                          full_rhs_relative_residual_max=float(full_relative.max()),
@@ -382,21 +423,29 @@ def main(gate_path='results/P1A/reference/GATE.json'):
                          response_error_relative=float(np.linalg.norm(response-truth)/max(np.linalg.norm(truth),1e-300)),
                          finite_response_change_white=float(np.linalg.norm(truth-s0.data)/.01),
                          matrix_assembly_identity_relative_error=matrix_identity_error,
-                         warm_cost=warm_cost,warm_rhs=warm_cost['new_rhs'],
-                         warm_material_frequency_LU=warm_cost['new_material_frequency_LU'],
-                         warm_cpu_seconds=warm_cost['cpu_seconds'],warm_wall_seconds=warm_cost['wall_seconds'],
+                         warm_deployment_cost=warm_deployment,
+                         warm_cost=warm_deployment,warm_rhs=warm_deployment['new_rhs'],
+                         warm_material_frequency_LU=warm_deployment['new_material_frequency_LU'],
+                         warm_cpu_seconds=warm_deployment['cpu_seconds'],
+                         warm_wall_seconds=warm_deployment['wall_seconds'],
                          max_major_array_memory_estimate_bytes=max_memory_estimate,
-                         cold_setup_cost_in_SETUP=True,**metadata)
+                         cold_setup_cost_in_SETUP=True,
+                         cost_partition='deployment through response; subsequent benchmark audits/output separate; all work remains in stage total',
+                         **metadata)
                 np.savez_compressed(folder/f'{method}.npz',data=response,delta_u=du,
                                     finite_rhs_relative_residuals=relative,
                                     full_rhs_relative_residuals=full_relative)
+                audited_end=_snapshot(book)
+                row['separate_validation_cost']=_delta(audited_end,deployment_end)
+                row['audited_total_cost']=_delta(audited_end,start)
+                row['post_row_persistence_accounted_in_stage_total']=True
                 rows.append(row);persist()
                 return response
 
             full_extraction=record('OPTIMIZED_FULL',direct_du,method_start,
-                                   status='COMPLETE_DIRECT_FULL_REFERENCE',setup_shared=True)
-            if np.linalg.norm(full_extraction-truth)/.01>1e-7:
-                raise RuntimeError('finite-update volume extraction differs from backend original volume output')
+                                   response=sf.data,deployment_end=full_deployment_end,
+                                   status='COMPLETE_DIRECT_FULL_REFERENCE',setup_shared=True,
+                                   original_backend_volume_output_reused=True)
             if R0U is not None:
                 start=_snapshot(book)
                 z=delta*primal # already-paid R0(rhs_unit), exactly reused by linearity
@@ -430,13 +479,17 @@ def main(gate_path='results/P1A/reference/GATE.json'):
             ca17=_dense(book,'A17_algebraic_feedback_dense_core',
                          np.eye(V.shape[1],dtype=complex)+delta*feedback,delta*current_rhs)
             du_a=RV@ca17
-            same_space_error=float(np.linalg.norm(du_a-du_g)/max(np.linalg.norm(du_g),1e-300))
+            def same_current_space_audit(response):
+                same_space_error=float(np.linalg.norm(du_a-du_g)/max(np.linalg.norm(du_g),1e-300))
+                response_error=float(np.linalg.norm(response-response_g)/.01)
+                if same_space_error>1e-9 or response_error>1e-8:
+                    raise RuntimeError('same-current-space A17/Galerkin algebraic identity check failed')
+                return dict(same_current_space_relative_difference=same_space_error,
+                            same_current_space_response_difference_white=response_error)
             response_a=record('A17_ALGEBRAIC_CURRENT_FEEDBACK_V',du_a,start,
+                              additional_validation=same_current_space_audit,
                               status='SAME_CURRENT_SPACE_ALGEBRAIC_CONTROL_NOT_THEORY_REPRODUCTION',
-                              same_current_space_relative_difference=same_space_error,
                               independent_algorithmic_gain_claim=False)
-            if same_space_error>1e-9 or np.linalg.norm(response_a-response_g)/.01>1e-8:
-                raise RuntimeError('same-current-space A17/Galerkin algebraic identity check failed')
             del cgal,ca17,du_g,du_a,response_g,response_a
 
             start=_snapshot(book)

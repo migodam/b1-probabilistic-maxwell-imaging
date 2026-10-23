@@ -69,7 +69,7 @@ def node_rule(order,cut=None):
 def main():
     p=json.loads((ROOT/'configs/P1_PROBABILITY_PROTOCOL.json').read_text());bank=Bank()
     rules=[(f'full_{n}',n,None) for n in p['full_orders']]
-    rules.extend((f'cdf_{i}_{n}',n,float(cut)) for i,cut in enumerate(p['cdf_checkpoints']) for n in p['reference_orders'])
+    rules.extend((f'cdf_{i}_{n}',n,float(cut)) for i,cut in enumerate(p['cdf_checkpoints']) for n in p.get('cdf_evaluation_orders',p['reference_orders']))
     out=ROOT/'results/P1A/rules';out.mkdir(parents=True,exist_ok=True)
     for name,order,cut in rules:
         path=out/f'{name}.npz'

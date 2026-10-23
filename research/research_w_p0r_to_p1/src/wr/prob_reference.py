@@ -80,7 +80,7 @@ def main():
             else:raw3_ok &=ok
             lik[key]=np.asarray(a['logZ'],float)
             records[key]=posterior(rules[key],lik[key])
-        ref=records['full_9'];coarse=records['full_5'];cdf={};compressed_cdf={}
+        ref=records['full_9'];coarse=records['full_5'];cdf={};compressed_cdf={};direct3_cdf={}
         full3=rules['full_3'];fine=rules['full_9']
         approximation=interpolate(full3,fine['branches'],fine['u'],fine['contrast'])
         comp_l,h,ok=marginal(approximation,y);compressed_ok &=ok;nuisance['compressed']=h
@@ -93,6 +93,10 @@ def main():
                 ll=np.asarray(a['logZ'],float)
                 values.append(float(np.exp(logsumexp(np.log(r['weights'])+ll)-records[f'full_{order}']['logZ'])))
             cdf[str(cut)]=dict(order5=values[0],order9=values[1],error=abs(values[1]-values[0]))
+            key3=f'cdf_{i}_3'
+            if key3 in rules:
+                r3=rules[key3];a3,h3,ok3=marginal(r3['F'],y);raw3_ok &=ok3;nuisance[key3]=h3
+                direct3_cdf[str(cut)]=float(np.exp(logsumexp(np.log(r3['weights'])+np.asarray(a3['logZ'],float))-records['full_3']['logZ']))
             r=rules[f'cdf_{i}_9'];af=interpolate(full3,r['branches'],r['u'],r['contrast'])
             al,ch,ok=marginal(af,y);compressed_ok &=ok;nuisance[f'compressed_cdf_{i}']=ch
             compressed_cdf[str(cut)]=float(np.exp(logsumexp(np.log(r['weights'])+np.asarray(al['logZ'],float))-comp['logZ']))
@@ -108,12 +112,16 @@ def main():
             branch1_posterior_mass=ref['branch1'],prior_branch1_mass=.5,posterior_odds=ref['branch1']/max(1-ref['branch1'],1e-300),
             x_mean=ref['x_mean'],x_sd=ref['x_sd'],contrast_mean=ref['contrast_mean'],log_evidence=ref['logZ'],
             quadrature_event_error=event_error,quadrature_CDF_max_error=cdf_error,CDF=cdf,
+            quadrature_x_mean_error=abs(ref['x_mean']-coarse['x_mean']),quadrature_x_SD_error=abs(ref['x_sd']-coarse['x_sd']),
             reference_CDF_coherence=reference_coherence,compressed_CDF_coherence=compressed_coherence,
             compressed_nuisance_qualified=compressed_ok,direct_order3_nuisance_qualified=raw3_ok,
             compressed_branch_error=abs(comp['branch1']-ref['branch1']),
             compressed_CDF_max_error=max(abs(compressed_cdf[k]-v['order9']) for k,v in cdf.items()),
             compressed_x_mean_error=abs(comp['x_mean']-ref['x_mean']),compressed_response_max_error_white=response_error,
             direct_order3_branch_error=abs(raw3['branch1']-ref['branch1']),nuisance_convergence=nuisance,
+            direct_order3_CDF=direct3_cdf,
+            direct_order3_CDF_coherence=cdf_coherence(list(direct3_cdf.values())) if direct3_cdf else None,
+            direct_order3_CDF_max_error=max(abs(direct3_cdf[k]-v['order9']) for k,v in cdf.items()) if direct3_cdf else None,
             outside_model_support_mass=None,uncovered_other_wall_families='UNQUANTIFIED')
         weights.append(ref['weights']);likelihoods.append(lik['full_9']);rows.append(row)
         write(out/'RESULTS.json',rows);print(json.dumps({k:row[k] for k in ['observation','reference_status','branch1_posterior_mass','quadrature_event_error','quadrature_CDF_max_error','compressed_branch_error']}),flush=True)

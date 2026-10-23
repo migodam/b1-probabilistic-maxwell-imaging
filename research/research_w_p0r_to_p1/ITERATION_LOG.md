@@ -30,3 +30,8 @@
 ## 独立joint门槛与受控概率分支
 
 全部24固定探针核验完成。joint fine d=.7987161、targetshift=.1、质量差0；grid error .0056746/.0152015。cal d=3.560512，不是cal近等价。原minimum_feature标量仍无精确定义，所以原宽材料先验的无条件合法性不宣布PASS；已检验的固定支撑两场均满足全局材料、被动性、面积、查询域和跨频合同。由此只开启固定世界物理敏感性和明确新冻结的受控概率family；其新先验在任何新观测之前定义并公开，不将搜索出的candidate频率当posterior。原online失败不被改写。
+
+
+### P1 独立观测生成前的强基线登记
+
+在任何 P1A/P1B 新观测生成前，加入直接截断 order3 CDF 对照，防止把较昂贵的参考积分当成弱 direct baseline。正式参考仍为5/9，不改 prior/noise/资格门槛；公开节点678，连同16个生成 parent 为13880 RHS、3470 LU。GL97×9 finite 近似、共享gain、点估计 Full 验证fallback与按16个parent聚合的bootstrap已冻结。此时尚无P1新数值成绩。
