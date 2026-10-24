@@ -1,0 +1,53 @@
+{
+  "status": "IMPLEMENTED_NOT_PHYSICALLY_RUN",
+  "output": "Output3 candidate representative, not posterior mean/sample",
+  "objective": "mean full-grid |exact original decoder(x)-frozen mu|^2",
+  "constraint": "original Full nonlinear Phi(x)<=282.873792, strict final check",
+  "Phi_threshold": 282.873792,
+  "coordinates": "full66 probit; exact native Dg times du/deta normal pdf; no prior clipping or new prior",
+  "initialization": "existing Full-qualified online anchor only; exact finite saved probit context preferred",
+  "optimizer": "SLSQP; material objective/gradient decoder-only; Full likelihood and explicit gradient query path",
+  "gradient_modes": [
+    "source_adjoint8",
+    "receiver_J32"
+  ],
+  "default_gradient": "source_adjoint8",
+  "cached_anchor_gradient": "reuse already-paid receiver T/J by matrix composition when available; otherwise explicitly charged gradient",
+  "per_parent_per_arm": {
+    "max_new_states": 16,
+    "max_complex_RHS": 256
+  },
+  "solver_iterations_max": 40,
+  "restoration_scales": [
+    0.999,
+    0.5
+  ],
+  "restoration_budget": "reserve at most2 states inside SAME16/256 cap",
+  "final_selection": "original anchor or accepted SLSQP feasible iterates; optional separately Full-verified accepted restoration; rejected/infeasible trials never final",
+  "fallback": "retain original qualified anchor if no feasible improvement; expose fallback and optimizer status",
+  "KKT": "numeric lambda>=0, stationarity, feasibility, complementarity, active flag; diagnostic only",
+  "ordinary_control": "independent same-cap extra Phi minimization, no mu in proposals or selection; shared once per parent across raw/clipped mu",
+  "allowed_mu_keys": [
+    "prediction_raw",
+    "prediction_clipped"
+  ],
+  "mu": "use frozen provided raw/clipped outputs exactly; never silently clip inside optimization",
+  "material_GT_import": false,
+  "new_physics_in_prepare": false,
+  "offline_evaluation": "separate future module",
+  "required_manifest_fields": [
+    "request_id",
+    "estimator_id",
+    "predictions_npz",
+    "mu_layout",
+    "parents",
+    "outputs",
+    "frozen_estimator",
+    "no_GT"
+  ],
+  "mu_layouts": [
+    "complex_N576",
+    "realimag_N2_24_24"
+  ],
+  "actual_launch": "separate explicit --run --prepared-request PATH --job UNIQUE; no default launch"
+}

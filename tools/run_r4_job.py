@@ -8,10 +8,17 @@ def main():
  p=argparse.ArgumentParser();p.add_argument('--stage',required=True);p.add_argument('--job',required=True)
  p.add_argument('--max-wall',type=float,default=3600);p.add_argument('--gpu',action='store_true')
  p.add_argument('--training',action='store_true');p.add_argument('--rss-limit-mib',type=float,default=6144)
+ p.add_argument('--cpu-parallel',action='store_true',help='released small CPU risk fits only, separate bounded slot')
  p.add_argument('command',nargs=argparse.REMAINDER);a=p.parse_args()
  cmd=a.command[1:] if a.command and a.command[0]=='--' else a.command
  if not cmd:p.error('command required')
- b=Book(a.stage,a.job,max_wall=a.max_wall,analysis_only=True,gpu=a.gpu,kind='training' if a.training else 'analysis')
+ if a.cpu_parallel:
+  policy=json.loads((OUT/'configs/RESOURCE_POLICY_AMENDMENT_01.json').read_text())
+  if not a.training or a.gpu or not policy['released'] or '--device' not in cmd or cmd[cmd.index('--device')+1]!='cpu':raise ValueError('CPU slot policy')
+  allowed={'p3r4.train_risk','p3r4.train_risk_bin','p3r4.train_risk_anchorbin','p3r4.train_risk_fusion'}
+  if '-m' not in cmd or cmd[cmd.index('-m')+1] not in allowed:raise ValueError('small risk modules only')
+  a.rss_limit_mib=min(a.rss_limit_mib,2048)
+ b=Book(a.stage,a.job,max_wall=a.max_wall,analysis_only=True,gpu=a.gpu,kind='training_cpu' if a.cpu_parallel else ('training' if a.training else 'analysis'))
  env=os.environ.copy();env.update(PYTHONPATH=str(ROOT/'src'),OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',VECLIB_MAXIMUM_THREADS='1',
     PYTORCH_MPS_HIGH_WATERMARK_RATIO='0.5',PYTORCH_MPS_LOW_WATERMARK_RATIO='0.4',
     R4_JOBDIR=str(b.jobdir),PYTHONUNBUFFERED='1')

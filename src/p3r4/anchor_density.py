@@ -10,6 +10,7 @@ import numpy as np
 import torch
 
 from .density import DensityPredictor
+from .conditional_coordinates import ConditionalCoordinateMap
 
 FORMAT = 'p3r4_anchor_full66_density_v1'
 
@@ -63,22 +64,34 @@ class AnchorDensityPredictor:
     def _prepare(self, y, context_x, base_mean, base_chol, context_J):
         features = context_features(y, context_x, context_J, self.contract['j_summary'])
         mean, chol = base_parameters(context_x, base_mean, base_chol, self.contract['anchor_scale'])
-        center = mean if self.contract['residual_center'] else np.zeros_like(mean)
-        extra = dict(base_mean=mean-center, base_chol=chol) if self.model.kind == 'cfm' else {}
-        return features, center, extra
+        mode = self.contract.get('coordinate_preconditioner', 'none')
+        if mode != 'none' and not self.contract['residual_center']:
+            raise ValueError('GN coordinate map requires anchor residual centering')
+        center = np.asarray(context_x) if mode != 'none' else (mean if self.contract['residual_center'] else np.zeros_like(mean))
+        coordinate = ConditionalCoordinateMap(mode, context_x, context_J,
+            self.contract.get('alignment_rotation'))
+        if self.model.kind == 'cfm':
+            transformed_mean, transformed_chol = coordinate.transform_base(mean-center, chol,
+                self.contract.get('preconditioner_base', 'raw'))
+            extra = dict(base_mean=transformed_mean, base_chol=transformed_chol)
+        else:
+            extra = {}
+        return features, center, extra, coordinate
 
     def log_prob(self, x, y, context_x, *, base_mean=None, base_chol=None,
                  context_J=None, batch_size=16, **kwargs):
-        features, center, base = self._prepare(y, context_x, base_mean, base_chol, context_J)
+        features, center, base, coordinate = self._prepare(y, context_x, base_mean, base_chol, context_J)
         x = np.asarray(x)
         if x.shape != center.shape:
             raise ValueError('aligned raw Gaussianized x[B,66] required')
-        return self.inner.log_prob(x-center, features, batch_size=batch_size, **base, **kwargs)
+        return (self.inner.log_prob(coordinate.forward(x-center), features,
+                                   batch_size=batch_size, **base, **kwargs)+coordinate.logabsdet)
 
     def sample(self, y, context_x, *, n_samples=1, seed=0, batch_size=16,
                base_mean=None, base_chol=None, context_J=None, **kwargs):
-        features, center, base = self._prepare(y, context_x, base_mean, base_chol, context_J)
-        return self.inner.sample(features, n_samples, seed, batch_size, **base, **kwargs)+center[:, None]
+        features, center, base, coordinate = self._prepare(y, context_x, base_mean, base_chol, context_J)
+        residual = self.inner.sample(features, n_samples, seed, batch_size, **base, **kwargs)
+        return coordinate.inverse(residual)+center[:, None]
 
 
 def load_anchor_density(path, device='cpu'):

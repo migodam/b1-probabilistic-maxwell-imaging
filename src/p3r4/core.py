@@ -30,11 +30,23 @@ def write(path,obj):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     temp=path.with_suffix(path.suffix+'.tmp');temp.write_text(json.dumps(plain(obj),ensure_ascii=False,allow_nan=False,indent=2)+'\n');temp.replace(path)
 
+_ARRAY_IO_PROFILE=dict(stored_array_writes=0,stored_array_bytes=0,stored_array_write_seconds=0.)
+
+def array_io_profile():return dict(_ARRAY_IO_PROFILE)
+
 def save(path,**arrays):
+    codec=os.environ.get('R4_ARRAY_CODEC','compressed')
+    if codec not in ('compressed','stored'):raise ValueError('R4_ARRAY_CODEC must be compressed or stored')
+    io_start=time.perf_counter() if codec=='stored' else None
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     temp=path.with_suffix('.tmp')
-    with temp.open('wb') as f:np.savez_compressed(f,**arrays);f.flush()
+    with temp.open('wb') as f:
+        (np.savez if codec=='stored' else np.savez_compressed)(f,**arrays);f.flush()
     temp.replace(path)
+    if io_start is not None:
+        _ARRAY_IO_PROFILE['stored_array_writes']+=1
+        _ARRAY_IO_PROFILE['stored_array_bytes']+=path.stat().st_size
+        _ARRAY_IO_PROFILE['stored_array_write_seconds']+=time.perf_counter()-io_start
 
 def pack(z):return np.concatenate((z.real.T,z.imag.T),axis=1).ravel()
 
@@ -70,7 +82,7 @@ class Book:
         # process. It cannot construct Target or reserve physical actions.
         # Physics/training workers retain the exclusive cache-memory lock.
         self.workerlock=None
-        if self.kind in ('physics','training'):
+        if self.kind in ('physics','training','training_cpu'):
             self.workerlock=(OUT/(self.kind+'.lock')).open('a')
             try:fcntl.flock(self.workerlock,fcntl.LOCK_EX|fcntl.LOCK_NB)
             except BlockingIOError:
@@ -95,8 +107,16 @@ class Book:
         for source in (ROOT/'src/p3r4').glob('*.py'):
             shutil.copyfile(source,source_dir/source.name)
             files.append(dict(path=str(source.relative_to(ROOT)),bytes=source.stat().st_size))
+        # Capture entry points as well as the imported physics/neural modules.
+        # Older jobs retain their original narrower snapshots honestly.
+        tools_dir=source_dir/'tools';tools_dir.mkdir()
+        entrypoints=set((ROOT/'tools').glob('*r4*.py'))|{ROOT/'tools/train_operator.py'}
+        for source in sorted(entrypoints):
+            if source.is_file():
+                shutil.copyfile(source,tools_dir/source.name)
+                files.append(dict(path=str(source.relative_to(ROOT)),bytes=source.stat().st_size))
         write(self.jobdir/'SOURCE_REVISION.json',dict(
-            git_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+            git_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),array_codec=os.environ.get('R4_ARRAY_CODEC','compressed'),
             argv=sys.argv,source_snapshot=str(source_dir),source_files=files,
             historical_sources='unchanged P1/p3r2 at6eadb469; A30 at717d3d26',checksum_checks=False))
         signal.signal(signal.SIGALRM,lambda a,b:(_ for _ in ()).throw(BudgetStop('job controlled-wall quota')))
@@ -131,7 +151,7 @@ class Book:
                 d['active_wall'].pop(self.job,None);active_meta.pop(self.job,None)
             for k,a in [('RHS',rhs),('states',states),('LU',lu),('controlled_wall_seconds',controlled),('physics_wall_seconds',physics),('GPU_seconds',gpu)]:v[k]+=a
             d['sequence']+=1
-            row=dict(sequence=d['sequence'],event=event,stage=self.stage,job=self.job,utc_unix=time.time(),RHS=rhs,states=states,LU=lu,controlled_wall_seconds=controlled,physics_wall_seconds=physics,context=self.context,**plain(meta),after=d)
+            row=dict(sequence=d['sequence'],event=event,stage=self.stage,job=self.job,utc_unix=time.time(),RHS=rhs,states=states,LU=lu,controlled_wall_seconds=controlled,physics_wall_seconds=physics,GPU_seconds=gpu,context=self.context,**plain(meta),after=d)
             with self.path.open('a') as f:f.write(json.dumps(row,allow_nan=False,separators=(',',':'))+'\n');f.flush();os.fsync(f.fileno())
             write(self.snapshot,d)
             return d

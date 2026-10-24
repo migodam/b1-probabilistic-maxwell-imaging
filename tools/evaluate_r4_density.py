@@ -87,6 +87,7 @@ def freeze(args):
         method.update(checkpoint=identity['path'], checkpoint_identity=identity, kind=payload['kind'],
                       loader='anchor' if payload['format'] == 'p3r4_anchor_full66_density_v1' else 'raw_y',
                       j_summary=payload.get('anchor_contract', {}).get('j_summary', 'none'),
+                      coordinate_preconditioner=payload.get('anchor_contract', {}).get('coordinate_preconditioner', 'none'),
                       anchor_base=payload.get('contract', {}).get('cfm_base') == 'anchor')
         audit = method.get('density_audit')
         if audit is not None:
@@ -148,7 +149,8 @@ def infer(args, frozen, wall, cpu):
                     y, base = read_online_observation(path, parent, need_base=method['anchor_base'] and method.get('loader') != 'anchor',
                                                        target_id=decoder['config']['target_id'])
                     if method.get('loader') == 'anchor':
-                        base = read_online_anchor_context(path, parent, j_summary=method['j_summary'])
+                        base = read_online_anchor_context(path, parent, j_summary=method['j_summary'],
+                            coordinate_preconditioner=method.get('coordinate_preconditioner', 'none'))
                     # Stable parent seed, identical across method families and
                     # CFM NFEs; sample index0 is fixed before any truth access.
                     seed = int(np.random.SeedSequence([frozen['sample_seed'], index]).generate_state(1)[0])

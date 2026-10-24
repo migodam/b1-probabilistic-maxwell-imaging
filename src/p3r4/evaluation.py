@@ -18,6 +18,27 @@ def checkpoint_identity(path):
     return dict(path=str(p),bytes=s.st_size,mtime_ns=s.st_mtime_ns)
 
 
+def read_online_measurement(path,parent=None):
+    """Observation-only raw512 loader; no anchor/J/GT array is materialized."""
+    path=Path(path)
+    if 'offline_only' in path.resolve().parts:raise ValueError('offline_only prohibited online')
+    with np.load(path,allow_pickle=False) as z:
+        key='observation' if 'observation' in z else 'y'
+        value=z[key]
+        single=(key=='observation' and value.shape==(32,8)) or (key=='y' and value.shape==(512,))
+        if single:value=value[None]
+        else:
+            if parent is None:raise ValueError('packed measurements require parent identity')
+            ids=z['parent'].astype(str);rows=np.flatnonzero(ids==parent)
+            if len(rows)!=1:raise ValueError('one matching packed measurement parent required')
+            value=value[rows]
+    if value.shape==(1,32,8) and np.iscomplexobj(value):
+        value=np.concatenate((value.real.transpose(0,2,1),value.imag.transpose(0,2,1)),axis=2).reshape(1,512)
+    if value.shape!=(1,512) or np.iscomplexobj(value) or not np.isfinite(value).all():
+        raise ValueError('finite source-major measurement512 required')
+    return value.astype('float32')
+
+
 def read_online_context(path,parent=None):
     """Only five online arrays are materialized. Never enumerates/reads GT arrays.
 

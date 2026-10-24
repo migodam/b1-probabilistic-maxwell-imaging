@@ -95,6 +95,10 @@ def main():
             for candidate,(q,chi,uniform) in enumerate(zip(qs,chis,logu)):
                 book.context=dict(parent=parent,candidate=candidate,purpose='fixed_star_decision_audit')
                 rr=cache.richardson_decision(chi,observation,base_phi,float(uniform),4)
+                # Count the eight iterative material-system right-hand sides
+                # in addition to every actual cached-LU preconditioner action.
+                book._update('ITERATIVE_MATERIAL_STATE_ATTEMPT',rhs=8,states=1,lu=0,
+                             role='ordinary_GMRES_source_systems',parent=parent,candidate=candidate)
                 gm=cache.ordinary_krylov(chi,observation,base_phi,float(uniform),paid_preconditioner=paid_preconditioner)
                 # Save approximate currents/fields before any Full-audit result.
                 persistence_start=time.perf_counter()

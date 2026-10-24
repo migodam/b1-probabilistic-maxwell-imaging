@@ -28,14 +28,19 @@ else:
     from .density import KINDS, make_model
     from .train_density import load_data, fit_normalization, normalized, write_json
 
+try:
+    from .conditional_coordinates import ConditionalCoordinateMap, fixed_random_rotation, covariance_cholesky_from_factor
+except ImportError:
+    from src.p3r4.conditional_coordinates import ConditionalCoordinateMap, fixed_random_rotation, covariance_cholesky_from_factor
 
-def load_anchor_data(path, j_summary='none', metric='none'):
+
+def load_anchor_data(path, j_summary='none', metric='none', coordinate_preconditioner='none'):
     data = load_data(path)
     if 'offline_only' in Path(path).resolve().parts:
         raise ValueError('offline_only truth forbidden in training')
     with np.load(path, allow_pickle=False) as z:
         data['context_x'] = z['context_x']
-        data['context_J'] = z['context_J'] if j_summary != 'none' else None
+        data['context_J'] = z['context_J'] if j_summary != 'none' or coordinate_preconditioner != 'none' else None
         data['velocity_metric'] = z['velocity_metric'] if metric != 'none' else None
     if data['parent'] is None:
         raise ValueError('anchor fits require explicit independent parent IDs')
@@ -58,13 +63,27 @@ def validate_metric(matrix, count):
     return matrix.astype(np.float32), dict(minimum_eigenvalue=lo, maximum_eigenvalue=hi)
 
 
-def prepare(data, stats, args):
+def coordinate_map(data, args):
+    return ConditionalCoordinateMap(args.coordinate_preconditioner, data['context_x'], data['context_J'],
+                                    getattr(args, 'alignment_rotation', None))
+
+
+def prepare(data, stats, args, coordinate=None):
     features = anchor.context_features(data['y'], data['context_x'], data['context_J'], args.j_summary)
     mean, chol = anchor.base_parameters(data['context_x'], data['base_mean'], data['base_chol'], args.anchor_scale)
-    center = mean if args.residual_center else np.zeros_like(mean)
-    raw = dict(x=data['x']-center, y=features, parent=data['parent'], base_mean=mean-center, base_chol=chol)
-    result = normalized(raw, stats, 'anchor' if args.kind == 'cfm' else 'standard', args.anchor_scale)
+    coordinate = coordinate_map(data, args) if coordinate is None else coordinate
+    center = data['context_x'] if args.coordinate_preconditioner != 'none' else (mean if args.residual_center else np.zeros_like(mean))
+    transformed_mean, transformed_chol = coordinate.transform_base(mean-center, chol, args.preconditioner_base)
+    raw = dict(x=coordinate.forward(data['x']-center), y=features, parent=data['parent'],
+               base_mean=transformed_mean, base_chol=transformed_chol)
+    result = normalized(raw, stats, 'standard', args.anchor_scale)
+    if args.kind == 'cfm':
+        result['base_mean'] = ((transformed_mean@stats['frame']-stats['x_mean'])/stats['x_scale']).astype(np.float32)
+        transform = stats['frame'].T/stats['x_scale'][:, None]
+        result['base_chol'] = covariance_cholesky_from_factor(transform@transformed_chol).astype(np.float32)
     result['velocity_metric'] = data['velocity_metric']
+    result['coordinate_logabsdet'] = coordinate.logabsdet
+    result['coordinate_upper'] = coordinate.upper
     return result
 
 
@@ -88,8 +107,8 @@ def run(args):
     if out.exists() and any(out.iterdir()):
         raise FileExistsError('fresh separate anchor-fit destination required')
     out.mkdir(parents=True, exist_ok=True)
-    train = load_anchor_data(args.train, args.j_summary, args.metric)
-    val = load_anchor_data(args.validation, args.j_summary, args.metric)
+    train = load_anchor_data(args.train, args.j_summary, args.metric, args.coordinate_preconditioner)
+    val = load_anchor_data(args.validation, args.j_summary, args.metric, args.coordinate_preconditioner)
     if set(train['parent']) & set(val['parent']):
         raise ValueError('TRAIN/validation parent overlap')
     if args.train_size:
@@ -107,7 +126,10 @@ def run(args):
                 frame = z['frame']
     train_features = anchor.context_features(train['y'], train['context_x'], train['context_J'], args.j_summary)
     mean, _ = anchor.base_parameters(train['context_x'], train['base_mean'], train['base_chol'], args.anchor_scale)
-    residual = train['x']-mean if args.residual_center else train['x']
+    args.alignment_rotation = fixed_random_rotation(args.alignment_seed) if args.coordinate_preconditioner == 'random' else None
+    train_map, val_map = coordinate_map(train, args), coordinate_map(val, args)
+    center = train['context_x'] if args.coordinate_preconditioner != 'none' else (mean if args.residual_center else np.zeros_like(mean))
+    residual = train_map.forward(train['x']-center)
     stats = fit_normalization(residual, train_features, frame)
     metric_contract, metric_checks = None, None
     if args.metric != 'none':
@@ -118,10 +140,12 @@ def run(args):
             raise ValueError('explicit endpoint-independent TRAIN-only metric tuning contract required')
         if metric_contract.get('bounds') != [.5, 2.]:
             raise ValueError('frozen metric bounds must be[0.5,2]')
+        if metric_contract.get('coordinate_preconditioner', 'none') != args.coordinate_preconditioner:
+            raise ValueError('metric must use this coordinate-preconditioned network normalization')
         train['velocity_metric'], tcheck = validate_metric(train['velocity_metric'], len(train['x']))
         val['velocity_metric'], vcheck = validate_metric(val['velocity_metric'], len(val['x']))
         metric_checks = dict(train=tcheck, validation=vcheck)
-    tr, va = prepare(train, stats, args), prepare(val, stats, args)
+    tr, va = prepare(train, stats, args, train_map), prepare(val, stats, args, val_map)
     context_dim = train_features.shape[1]
     config = dict(dimension=66, context_dim=context_dim, width=args.width)
     if args.kind == 'cfm':
@@ -137,10 +161,17 @@ def run(args):
     if count > args.capacity_limit:
         raise ValueError('declared parameter cap exceeded')
     ac = dict(j_summary=args.j_summary, residual_center=args.residual_center, anchor_scale=args.anchor_scale,
+              coordinate_preconditioner=args.coordinate_preconditioner, preconditioner_base=args.preconditioner_base,
+              alignment_seed=args.alignment_seed if args.coordinate_preconditioner == 'random' else None,
+              alignment_rotation=args.alignment_rotation.tolist() if args.alignment_rotation is not None else None,
+              coordinate_rule='r=U(x-context_x); random r=U Rfixed.T(x-context_x); U.T U=I+Jx.T Jx; none retains prior translation rule',
+              coordinate_factorization='positive-diagonal QR of stacked[Jx;I], no normal-matrix floor beyond I; triangular inverse solves',
+              coordinate_density='log q_x=log q_r+logabsdetW; r TRAIN normalization and fixed-frame Jacobian also included',
+              coordinate_scope='observation-derived full66 conditional map, not a GN Gaussian posterior assumption; no GT defines W',
               context_dim=context_dim, context='all raw512 + all Gaussianized context_x66'+(' +66 log1p column squared norms of Jx' if args.j_summary != 'none' else ''),
               J_source_coordinate='cached whitened native Jq; property columns multiply standard-normal pdf(context_x_eta)',
-              translation='base_mean(y) if supplied, otherwise context_x(y); determinant1; no endpoint dependence',
-              base_covariance='supplied fullrank raw Cholesky or anchor_scale*I; computational base, not qualified posterior covariance',
+              translation='GN/random center=context_x; none uses base_mean or context_x when residual centering enabled; determinant1',
+              base_covariance=f'supplied fullrank Cholesky or anchor_scale*I in declared {args.preconditioner_base} space; computational base, not posterior covariance',
               physical_cost='all context states/Jacobians belong to pre-existing parent receipts; no context physics performed by this trainer',
               metric=args.metric, metric_contract=metric_contract, metric_eigenvalue_checks=metric_checks,
               metric_scope='network-standardized velocity ERROR; never velocity projection; supplied y-only matrices; provenance parent-owned')
@@ -155,11 +186,28 @@ def run(args):
                     normalizer='TRAIN-only residual/frame and all condition columns; y512 never dropped',
                     frame=str(args.frame.resolve()) if args.frame else None,
                     split='unique independent parents, TRAIN/validation disjoint', criterion=criterion, update_zero_eligible=True,
-                    reference_measure='raw Gaussianized dx66; translation determinant1 + normalizer/frame Jacobian',
+                    reference_measure='raw Gaussianized dx66; translation determinant1 + conditional W determinant + normalizer/frame Jacobian',
                     input_provenance='context_x/base_mean/J/metric must be observation-derived and frozen; external cached evidence is parent-owned',
                     comparison_scope='new explicit anchor family; raw-y first-family checkpoints and semantics unchanged',
                     physics_calls=0, posterior_fidelity='NOT_ESTABLISHED', device=args.device)
     write_json(out/'RUN_CONTRACT.json', contract)
+    def representation_replay(data, prepared, mapping):
+        base, _ = anchor.base_parameters(data['context_x'], data['base_mean'], data['base_chol'], args.anchor_scale)
+        center = data['context_x'] if args.coordinate_preconditioner != 'none' else (base if args.residual_center else np.zeros_like(base))
+        recovered_r = (prepared['x'].astype(np.float64)*stats['x_scale']+stats['x_mean'])@stats['frame_inverse']
+        error = mapping.inverse(recovered_r)+center-data['x']
+        maximum = np.max(abs(error), axis=1)
+        return dict(maximum_absolute_error=float(maximum.max()), median_parent_maximum=float(np.median(maximum)),
+                    p95_parent_maximum=float(np.quantile(maximum,.95)),
+                    maximum_latent_RMS=float(np.max(np.linalg.norm(error, axis=1)/np.sqrt(66))),
+                    finite=bool(np.isfinite(error).all()),
+                    role='representation audit only; TRAIN/validation labels do not define W, rotation or any added H floor')
+    write_json(out/'COORDINATE_AUDIT.json', dict(mode=args.coordinate_preconditioner,
+        train_logabsdet_min=float(train_map.logabsdet.min()), train_logabsdet_max=float(train_map.logabsdet.max()),
+        validation_logabsdet_min=float(val_map.logabsdet.min()), validation_logabsdet_max=float(val_map.logabsdet.max()),
+        TRAIN_float32_representation_replay=representation_replay(train,tr,train_map),
+        validation_float32_representation_replay=representation_replay(val,va,val_map),
+        all66_retained=True, GT_defines_map=False, physics_calls=0))
     np.savez_compressed(out/'NORMALIZATION.npz', **{k: v for k, v in stats.items() if isinstance(v, np.ndarray)})
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     history, selected, selected_value, selected_state = [], 0, float('inf'), None
@@ -185,20 +233,37 @@ def run(args):
             x, y, bmean, bchol, metric = batch(va, slice(begin, begin+args.validation_batch_size))
             with torch.no_grad():
                 if args.kind != 'cfm':
-                    value = -model.log_prob(x, y)+float(np.log(stats['x_scale']).sum())-stats['frame_logabsdet']
+                    if args.coordinate_preconditioner == 'none':
+                        value = -model.log_prob(x, y)+float(np.log(stats['x_scale']).sum())-stats['frame_logabsdet']
+                    else:
+                        value = torch.from_numpy((-model.log_prob(x, y)).cpu().numpy().astype(np.float64)
+                            +np.log(stats['x_scale']).sum()-stats['frame_logabsdet']
+                            -va['coordinate_logabsdet'][begin:begin+len(x)])
                 else:
                     fm.append((float(cfm_error_loss(model, x, y, generator_val, bmean, bchol, metric).cpu()), len(x)))
                     sample = model.sample(y, args.validation_samples, generator_val, nfe=args.validation_nfe, base_mean=bmean, base_chol=bchol)
-                    # Fixed orthogonal frame: raw Euclidean energy norm equals
-                    # scaled frame-coordinate norm; translation cancels.
-                    scale = torch.as_tensor(stats['x_scale'], dtype=x.dtype, device=device)
-                    value = torch.linalg.vector_norm((sample-x[:, None])*scale, dim=-1).mean(1)
-                    pair = x.new_zeros(len(x))
-                    k = args.validation_samples
-                    for i in range(k):
-                        for j in range(i):
-                            pair += torch.linalg.vector_norm((sample[:, i]-sample[:, j])*scale, dim=-1)
-                    value = value-pair/(k*(k-1))
+                    if args.coordinate_preconditioner == 'none':
+                        scale = torch.as_tensor(stats['x_scale'], dtype=x.dtype, device=device)
+                        value = torch.linalg.vector_norm((sample-x[:, None])*scale, dim=-1).mean(1)
+                        pair = x.new_zeros(len(x))
+                        k = args.validation_samples
+                        for i in range(k):
+                            for j in range(i):
+                                pair += torch.linalg.vector_norm((sample[:, i]-sample[:, j])*scale, dim=-1)
+                        value = value-pair/(k*(k-1))
+                    else:
+                        # Compare all families in actual raw dx66 Euclidean
+                        # coordinates, undoing both TRAIN frame and W(y).
+                        diff_r = ((sample-x[:, None]).cpu().numpy()*stats['x_scale'])@stats['frame_inverse']
+                        local = ConditionalCoordinateMap(args.coordinate_preconditioner,
+                            rotation=args.alignment_rotation, upper=va['coordinate_upper'][begin:begin+len(x)])
+                        diff_x = local.inverse(diff_r)
+                        k = args.validation_samples
+                        raw_energy = np.linalg.norm(diff_x, axis=-1).mean(1)
+                        for i in range(k):
+                            for j in range(i):
+                                raw_energy -= np.linalg.norm(diff_x[:, i]-diff_x[:, j], axis=-1)/(k*(k-1))
+                        value = torch.from_numpy(raw_energy)
             values.append(value.cpu().numpy())
         values = np.concatenate(values).astype(np.float64)
         if not np.isfinite(values).all():
@@ -273,6 +338,10 @@ def main(argv=None):
     parser.add_argument('--device', choices=('cpu','mps'), default='cpu')
     parser.add_argument('--residual-center', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--j-summary', choices=('none','log_column_norm'), default='none')
+    parser.add_argument('--coordinate-preconditioner', choices=('none','gn','random'), default='none')
+    parser.add_argument('--preconditioner-base', choices=('coordinate','raw'), default=None,
+                        help='CFM covariance units; auto: raw for none, coordinate for GN/random')
+    parser.add_argument('--alignment-seed', type=int, default=20261025113)
     parser.add_argument('--anchor-scale', type=float, default=1.)
     parser.add_argument('--metric', choices=('none','maxwell','decoder','random'), default='none')
     parser.add_argument('--metric-contract', type=Path)
@@ -295,6 +364,10 @@ def main(argv=None):
     parser.add_argument('--weight-decay', type=float, default=1e-4)
     parser.add_argument('--max-wall','--max-seconds', type=float, default=0.)
     args = parser.parse_args(argv)
+    if args.preconditioner_base is None:
+        args.preconditioner_base = 'raw' if args.coordinate_preconditioner == 'none' else 'coordinate'
+    if args.coordinate_preconditioner != 'none' and not args.residual_center:
+        parser.error('GN/random coordinate map requires residual centering at context_x')
     if args.updates<0 or min(args.width,args.diag_hidden,args.velocity_hidden,args.layers,args.bins,args.output_rank,args.batch_size,args.validation_batch_size,args.eval_every,args.capacity_limit)<1:
         parser.error('nonnegative updates and positive dimensions/batches/cap required')
     if not np.isfinite([args.lr,args.weight_decay,args.max_wall,args.anchor_scale]).all() or args.lr<=0 or args.weight_decay<0 or args.max_wall<0 or args.anchor_scale<=0:

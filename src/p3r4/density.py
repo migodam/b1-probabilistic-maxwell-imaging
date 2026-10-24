@@ -416,7 +416,9 @@ class DensityPredictor:
         converted = np.empty_like(chol, dtype=np.float32)
         for begin in range(0, count, 128):
             a = transform@chol[begin:begin+128]
-            converted[begin:begin+128] = np.linalg.cholesky(a@a.transpose(0, 2, 1))
+            # QR of the factor transpose avoids squaring its condition number.
+            from .conditional_coordinates import covariance_cholesky_from_factor
+            converted[begin:begin+128] = covariance_cholesky_from_factor(a)
         return mean, converted
 
     def log_prob(self, x, y, batch_size=128, base_mean=None, base_chol=None, **kwargs):

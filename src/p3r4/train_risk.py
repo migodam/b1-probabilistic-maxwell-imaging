@@ -40,6 +40,7 @@ def main(argv=None):
     p.add_argument('--kind',choices=KINDS,required=True);p.add_argument('--seed',type=int,default=11)
     p.add_argument('--updates',type=int,default=400);p.add_argument('--device',choices=('cpu','mps'),default='cpu')
     p.add_argument('--context-mode',choices=('spectral','decoder_only','random'),default='spectral')
+    p.add_argument('--refit-feature-normalization',action='store_true',help='TRAIN-anchor-only refit for a new context population; historical default unchanged')
     p.add_argument('--batch-size',type=int,default=64);p.add_argument('--learning-rate',type=float,default=5e-4)
     p.add_argument('--train-context','--anchor-train',type=Path);p.add_argument('--validation-context','--anchor-validation',type=Path)
     default=Path(__file__).resolve().parents[3]/'b1-p3l-r2-risk-posterior/research/p3l_r2_risk_posterior_exploration/A/residual_training/n512/local_geometry_cnn_s33/BEST.pt'
@@ -60,6 +61,9 @@ def main(argv=None):
         g=copy.deepcopy(g);frame,_=np.linalg.qr(np.random.default_rng(2026102504).normal(size=(64,64)))
         g['weak']=frame[:,:g['weak'].shape[1]].astype('float32');g['strong']=frame[:,g['weak'].shape[1]:g['weak'].shape[1]+g['strong'].shape[1]].astype('float32')
         feature_norm=fit_normalization(online_features(tc,g))
+    if a.refit_feature_normalization:
+        if tc is None:raise ValueError('TRAIN-only context refit requires actual anchor contexts')
+        feature_norm=fit_normalization(online_features(tc,g))
     ti=feature_image(tr['y'],g,tc,feature_norm);vi=feature_image(va['y'],g,vc,feature_norm)
     if a.context_mode=='decoder_only':
         ti[:,2:6]=0;vi[:,2:6]=0
@@ -74,6 +78,7 @@ def main(argv=None):
     common=dict(kind=a.kind,seed=a.seed,train_size=len(ti),validation_size=len(vi),physics_calls=0,
                 information_set='R2 online anchor local image and inferred u2' if tc is not None else 'source-wise mean packed observation8; insufficient for full-y claim',
                 conditional_density='NOT_CLAIMED',context_mode=a.context_mode,feature_normalization=feature_norm,geometry=g,feature_mean=mean,feature_scale=scale,
+                feature_normalization_provenance='new TRAIN-only contexts' if a.refit_feature_normalization else 'frozen R2 TRAIN; random frame refit only',
                 geometry_checkpoint=str(a.geometry_checkpoint.resolve()),training_parents=tr['parent'])
     if a.kind=='r2_cnn':
         if vc is None or a.context_mode!='spectral':raise ValueError('frozen R2 baseline requires original spectral anchor context')

@@ -147,7 +147,8 @@ def run(args):
                   bins=args.bins, output_rank=args.output_rank, weak_dim=args.weak_dim,
                   bound=args.bound, diag_hidden=args.diag_hidden)
     if args.kind == 'cfm':
-        config = dict(dimension=66, context_dim=512, width=args.width, blocks=4, time_features=32)
+        config = dict(dimension=66, context_dim=512, width=args.width, blocks=4, time_features=32,
+                      velocity_hidden=args.velocity_hidden)
     dev = torch.device(args.device)
     if args.device == 'mps' and not torch.backends.mps.is_available():
         raise RuntimeError('MPS requested but unavailable; no silent device switch')
@@ -333,6 +334,7 @@ def main(argv=None):
     parser.add_argument('--output-rank', type=int, default=32)
     parser.add_argument('--weak-dim', type=int, default=16)
     parser.add_argument('--diag-hidden', type=int, default=655, help='two-layer diagonal head width; default matches spline parameter count')
+    parser.add_argument('--velocity-hidden',type=int,default=None,help='optional CFM feedforward expansion; None preserves original model')
     parser.add_argument('--bound', type=float, default=5.)
     parser.add_argument('--capacity-limit', type=int, default=2_000_000)
     parser.add_argument('--train-size', type=int)

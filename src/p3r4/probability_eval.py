@@ -80,7 +80,7 @@ def decoder_from_geometry(config, points):
                 roi=np.flatnonzero(prior.mask).tolist())
 
 
-def read_online_anchor_context(path, parent, *, j_summary='none'):
+def read_online_anchor_context(path, parent, *, j_summary='none', coordinate_preconditioner='none'):
     """Explicit context_x key only; ambiguous x may be a supervised GT label."""
     path = Path(path)
     if 'offline_only' in path.resolve().parts:
@@ -100,7 +100,7 @@ def read_online_anchor_context(path, parent, *, j_summary='none'):
         for key in ('base_mean', 'base_chol'):
             if key in z:
                 result[key] = read(key)
-        if j_summary != 'none':
+        if j_summary != 'none' or coordinate_preconditioner != 'none':
             result['context_J'] = read('context_J' if 'context_J' in z else 'J')
     # The predictor checks all dimensions, finiteness and Gaussian base rank.
     return result
