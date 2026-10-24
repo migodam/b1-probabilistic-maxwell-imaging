@@ -1,0 +1,148 @@
+{
+  "campaign_id": "P3LR4-20261025",
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "statistical_target": "FULL latent posterior dx66; material law is decoder pushforward including plateaus",
+  "coordinate": "x=(z64,ndtri(u2)), exact N(0,I66) prior; no material-volume factor",
+  "likelihood": "Phi=complex squared residual/sigma^2=real whitened squared residual/2",
+  "observed_packing": "8 source rows, each Re32 then Im32, 512 real entries",
+  "historical_R2_commit": "6eadb4690c962aaa95821fc4056b677f0f924a6b",
+  "old_panels": "all historical DEV and both R2 256 panels EXPOSED",
+  "joint_training_sizes": [
+    4096,
+    16384,
+    32768
+  ],
+  "validation_parents": 2048,
+  "initial_anchor_context": [
+    512,
+    128
+  ],
+  "expanded_anchor_context_max": [
+    2048,
+    512
+  ],
+  "new_development": {
+    "n": 128,
+    "seed": 20261025010,
+    "prefix": "R4DEV"
+  },
+  "new_locked": {
+    "n": 512,
+    "seed": 20261025020,
+    "prefix": "R4L1",
+    "generate_after_method_freeze": true
+  },
+  "independent_confirmation": {
+    "n": 256,
+    "seed": 20261025021,
+    "prefix": "R4L2",
+    "generate_after_separate_freeze": true
+  },
+  "training_seeds": [
+    2026102501,
+    2026102502,
+    2026102503
+  ],
+  "density": {
+    "families": [
+      "full_cov_gaussian",
+      "spline_full66",
+      "triangular_full66",
+      "CFM_full66"
+    ],
+    "input": "all raw512 measurements, train-only scaling; paid anchor conditioning separate",
+    "initial_updates": 6000,
+    "batch": 256,
+    "early_stop": "validation only including update0",
+    "capacity_max": 2000000,
+    "initial_capacity_target": [
+      300000,
+      800000
+    ],
+    "CFM_NFE": [
+      16,
+      32,
+      64
+    ]
+  },
+  "risk": {
+    "families": [
+      "frozen_R2_CNN",
+      "same_capacity_local_CNN",
+      "phase8",
+      "phase16",
+      "fullfield_moment",
+      "affine",
+      "spatial",
+      "monotone_calibration"
+    ],
+    "initial_updates": 3000,
+    "batch": 64,
+    "capacity_max": 30000,
+    "phase_target": "joint E[delta(u)*1{s>t}|context], never factorized"
+  },
+  "generation": {
+    "decoded_samples": 128,
+    "fixed_sample_index": 0,
+    "full_likelihood_samples": 64,
+    "methods_max": 3,
+    "likelihood_SBC_parent_subset": 128
+  },
+  "correction": {
+    "development_parents": 8,
+    "candidates": 1024,
+    "expand_only_if_ESS_at_least": 50,
+    "max_weight_below": 0.2,
+    "no_GT_initialization": true
+  },
+  "local_geometry": {
+    "ranks": [
+      2,
+      4,
+      8
+    ],
+    "material_RMS": [
+      0.02,
+      0.04
+    ],
+    "stress": 0.08,
+    "finite_difference_scales": [
+      0.001,
+      0.002,
+      0.004
+    ],
+    "compare_direct_bracket": true,
+    "candidate_only_unless_full_rank_MH_corrected": true
+  },
+  "evaluation": {
+    "primary_metric": "full576 complex material MSE; parent is statistical unit",
+    "primary_comparisons": [
+      "validation-frozen risk winner vs frozen R2 CNN",
+      "full66 density vs same-information conditional Gaussian",
+      "Maxwell context vs same-capacity decoder/random control"
+    ],
+    "bootstrap_draws": 4000,
+    "bootstrap_seed": 20261025099,
+    "primary_CI": 0.9833333333333333,
+    "positive_risk_relative_target": 0.02,
+    "physics_speed_target": 0.2,
+    "probability": [
+      "full66 NLL",
+      "material energy score",
+      "fixed material projections and phase-event proper scores",
+      "data-dependent SBC",
+      "one fixed draw per parent Gamma256 residual law"
+    ],
+    "posterior_certification": "diagnostics only; no global certificate from tests"
+  },
+  "GT_isolation": "TRAIN supervision permitted; online loads allowlisted y/context only; locked truth scored in separate process after inference closed",
+  "memory": {
+    "physical_workers": 1,
+    "training_workers": 1,
+    "transfer_cache": 2,
+    "numerical_threads": 1,
+    "physical_process_RSS_limit_bytes": 3221225472,
+    "training_RSS_limit_bytes": 6442450944
+  },
+  "freeze_changes": "development amendments written before locked observations; no threshold/noise/prior relaxation"
+}

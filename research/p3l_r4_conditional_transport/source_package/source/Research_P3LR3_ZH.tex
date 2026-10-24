@@ -1,0 +1,4557 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+  a4paper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=21mm]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\setmainfont[Path=fonts/,AutoFakeBold=2,AutoFakeSlant=0.12]{NotoSerifCJKsc-Regular.otf}
+\setsansfont[Path=fonts/,AutoFakeBold=2]{NotoSerifCJKsc-Regular.otf}
+\setmonofont[Path=fonts/,Scale=0.87]{NotoSerifCJKsc-Regular.otf}
+\setmathfont{Latin Modern Math}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 0.5pt
+\definecolor{ink}{HTML}{153247}
+\definecolor{accent}{HTML}{24777C}
+\definecolor{rulegray}{HTML}{C8D4DB}
+\usepackage{titlesec,fancyhdr,fvextra}
+\titleformat{\section}{\Large\bfseries\color{ink}}{}{0pt}{}
+\titleformat{\subsection}{\large\bfseries\color{ink}}{}{0pt}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{accent}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{12pt}{12pt}
+\titlespacing*{\subsection}{0pt}{11pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{9pt}{5pt}
+\pretocmd{\section}{\clearpage}{}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{ink} Research P3L-R3}
+\fancyhead[R]{\small\sffamily\color{ink} Maxwell 概率材料成像}
+\fancyfoot[L]{\footnotesize 理论与算法设计 · 2026-10-23}
+\fancyfoot[R]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{16pt}
+\setlength{\parskip}{5.5pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{4em}
+\renewcommand{\arraystretch}{1.18}
+\AtBeginEnvironment{longtable}{\footnotesize\setlength{\tabcolsep}{4pt}}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\},fontsize=\small}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines,breakanywhere,fontsize=\small}
+\fvset{breaklines=true,breakanywhere=true}
+\allowdisplaybreaks[2]
+\raggedbottom
+\AtBeginDocument{\fontsize{10.5pt}{15.5pt}\selectfont}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Research P3L-R3},
+  pdfauthor={理论与算法研究报告},
+  colorlinks=true,
+  linkcolor={ink},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={accent},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Research P3L-R3}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Maxwell 弱几何输运、材料后验体积与风险导向计算}
+\author{理论与算法研究报告}
+\date{2026 年 10 月 23 日}
+
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{19mm}
+{\sffamily\color{accent}\large RESEARCH / P3L-R3\par}
+\vspace{9mm}
+{\fontsize{27}{38}\selectfont\bfseries\color{ink} Maxwell 弱几何输运\par 材料后验体积与\par 风险导向计算\par}
+\vspace{10mm}
+{\large 非完整几何 · 条件概率输运 · 可控制误差的物理刷新\par}
+\vspace{8mm}
+{\color{rulegray}\hrule height 0.8pt}
+\vspace{9mm}
+{\normalsize
+基于固定 P3L-R2 真实证据的独立理论与算法研究。\par
+将材料风险动作、条件概率样本、物理代表和计算效率分别评价。\par
+}
+\vspace{12mm}
+{\large\bfseries 7 项理论问题\quad 17 类竞争方法\par}
+\vspace{3mm}
+{\large\bfseries 5 种深入算法\quad 分阶段 Codex 研究方案\par}
+\vfill
+{\normalsize 报告日期：2026 年 10 月 23 日\par}
+{\small 研究状态：理论与实验设计；本轮无新增 Maxwell 实验或训练。\par}
+\vspace{5mm}
+{\footnotesize 固定结果版本：6eadb4690c962aaa95821fc4056b677f0f924a6b\par}
+\end{titlepage}
+\pagenumbering{arabic}
+
+
+\renewcommand*\contentsname{目录}
+{
+\hypersetup{linkcolor=ink}
+\setcounter{tocdepth}{2}
+\tableofcontents
+\clearpage
+}
+\hypertarget{ux7814ux7a76ux5224ux65adux4e0eux9605ux8bfbux8defux7ebf}{%
+\section{研究判断与阅读路线}\label{ux7814ux7a76ux5224ux65adux4e0eux9605ux8bfbux8defux7ebf}}
+
+\textbf{建议把主研究对象定义为原先验与有限噪声 Maxwell likelihood
+共同确定的后验概率测度，把动态弱方向作为计算工具，把材料风险动作与物理材料样本作为不同输出。}
+不应继续要求一张固定低维 manifold 同时承载几何、概率和最优成像三项职责。
+
+P3L-R2
+已证明一个有价值但范围明确的事实：低容量、共享空间结构的监督材料估计，可以在原
+P1 分布的新对象上降低风险。它没有证明完整材料 posterior
+已被学习，也没有证明动态弱方向具有相应的概率权重。R3
+最值得检验的研究链是：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  用完整 66 维联合模拟学习条件分布，以可归一化 spline density 与
+  conditional flow matching 竞争；保留全部强方向条件相关性。
+\item
+  用原 P1 的精确饱和 decoder
+  构造事件分段、有限材料响应复用和条件矩估计，直接处理已经暴露的非线性障碍。
+\item
+  用可计算的 Maxwell
+  响应误差界决定何时需要精算，以概率判断和材料统计量的精度为目标，而非无条件追求整个
+  Jacobian 的小 Frobenius 误差。
+\item
+  分别输出材料平方风险估计、条件样本与受约束代表场景；概率资格独立于低
+  MSE 和低 residual。
+\end{enumerate}
+
+\textbf{Flow Matching
+是重要竞争方案，尚不是本研究的结论。非完整几何值得做有限、可证伪的机制实验，不应立即成为整个生成器的硬约束。}
+对静态 Maxwell
+反演，算法能够直接提议材料状态；机器人必须绕行的物理运动约束并不存在。因此，四段
+Lie-bracket 回路必须与直接 bracket 方向提议比较真实费用。
+
+本报告分为主报告、历史对照、三个推导附录及一份完整 Codex
+执行任务书。主报告给出问题重定义、七项理论、十七类方法比较、五种具体算法、阶段预算与研究决策。附录补充证明、正则性条件和文献边界。本文没有新增
+Maxwell 实验、训练、posterior reference 或经验性能数字。
+
+\hypertarget{ux7ed3ux8bbaux7684ux8bc1ux636eux7b49ux7ea7}{%
+\subsection{结论的证据等级}\label{ux7ed3ux8bbaux7684ux8bc1ux636eux7b49ux7ea7}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{已观察 E：} 来自指定 R2
+  固定版本、原始报告、审查、配置或源代码。
+\item
+  \textbf{可推导 T：}
+  本报告列明假设下成立的数学命题。成熟定理的应用明确标记为已有数学，不作为原创性声明。
+\item
+  \textbf{候选 H：} 本轮提出的机制、资源门槛和可证伪预测。没有被 R2
+  自动验证。
+\item
+  \textbf{未成立 N：} 完整 66
+  维后验资格、普遍可积性/不可积性、全局可达性、3D 外推以及新的加速优势。
+\end{itemize}
+
+\hypertarget{ux56faux5b9aux8bc1ux636eux4e0eux539f-p1-ux5408ux540c}{%
+\section{1. 固定证据与原 P1
+合同}\label{ux56faux5b9aux8bc1ux636eux4e0eux539f-p1-ux5408ux540c}}
+
+\hypertarget{ux6570ux636eux8303ux56f4ux4e0eux4e0dux80fdux6539ux53d8ux7684ux5386ux53f2ux7ed3ux8bba}{%
+\subsection{1.1
+数据范围与不能改变的历史结论}\label{ux6570ux636eux8303ux56f4ux4e0eux4e0dux80fdux6539ux53d8ux7684ux5386ux53f2ux7ed3ux8bba}}
+
+主要来源是用户上传的 \nolinkurl{pro_handoff.zip}，对应仓库固定结果
+\nolinkurl{6eadb4690c962aaa95821fc4056b677f0f924a6b}。包内含 432
+项；清单登记 430
+项选定内容，另有交接说明与清单本身。包中没有全部训练真值、全部原始轨迹或约
+93 GB
+的完整原始证据，不能将精简包称作完整重算环境。必读七份文档、两个独立审查、概率目标及
+decoder 源码均已核对；文件来源索引列于文末。{[}E1--E8{]}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+实际结果
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+可以支持
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+不能支持
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+首批 256 新对象：MSE 0.010131196 → 0.007571318；改善 25.27\%，97.5\%
+调整区间 22.34\%--27.99\% & 原 P1 下冻结监督估计器的总体风险改善 & 真正
+posterior mean、完整 posterior 校准、每个 GT 恢复 \\
+217/256 对象改善；主模型 5,842 参数 & 有效的低容量成像方法 &
+所有对象均受益或更大模型更好 \\
+主学习图 138/256 在原 noise-ball 内 & 风险动作与数据相容性必须分别评价 &
+256 个新增物理材料世界 \\
+几何 CNN 相对基础 CNN 次级改善约 3.45\% & 当前空间上下文的有限样本价值 &
+全部 25.27\% 来自动态弱几何 \\
+第二批另 256 对象：真实训练谱包络较一个固定随机包络改善约 0.70\% &
+这个固定谱包络有小增量 & 在线 Jacobian 必要、所有随机 frame 都较差 \\
+约 99.10\% 风险收益来自基础图过渡相单元 & decoder 过渡区域值得优先建模 &
+后验应统一去灰化、所有收益由曲率解释 \\
+1934/2048 所选端点同时通过 noise-ball 与相对 anchor 的 ΔΦ≤2 &
+有有限噪声、先验合法的端点运动 & 整条连续路径相容、重要 posterior
+mass \\
+弧长平均 MSE 增加约 1.96\%，调整区间跨零 & 当前主轨迹平均未建立风险收益
+& 真实 Bayes mean 无效或所有探索无效 \\
+两个 anchor 的 rank-4 材料 normal bracket leakage 约 0.934/0.822 &
+特定动态弱分布局部非对合的数值证据 & 完整 66 维可达、全 P1 非对合定理 \\
+两种固定 10 维 density 改善 proper NLL & 相应投影条件分布可学习 & 剩余
+56 维可用独立 prior 补齐 \\
+\end{longtable}
+
+两批 256 必须保持分开。第二批为七家族、三个固定训练 seed
+的每父样本平均损失，不是 ensemble 图，也不是 768
+个独立对象。首批主投影估计器与第二批 raw/no-blend
+控制不是同一动作。已暴露对象不得重新命名为新的锁定测试集。{[}E1,E4,E7{]}
+
+32,768/2,048 是联合模拟的 train/validation 父样本数；真正带昂贵 physics
+anchor 的只有 512/128 子集。训练 anchor 使用 native48+probit48，测试强
+anchor 使用 native96+probit64。R3 若扩大 anchor
+条件模型，必须支付新增上下文费用并控制这种预算导致的输入分布变化。{[}E2{]}
+
+\hypertarget{ux6b63ux786eux5750ux6807ux566aux58f0ux548cux5bc6ux5ea6}{%
+\subsection{1.2
+正确坐标、噪声和密度}\label{ux6b63ux786eux5750ux6807ux566aux58f0ux548cux5bc6ux5ea6}}
+
+原坐标为 \(q=(z,u)\)，其中
+\(z\sim N(0,I_{64})\)、\(u\sim\mathrm{Unif}([0,1]^2)\)，相互独立。材料网格为
+\(24\times24\)，ROI 有 256 单元，观测为 8 个照明源、32 个复接收通道，共
+256 复数或 512 实数。{[}E5,E8{]}
+
+令 \(\Phi_N\) 表示标准正态 CDF，避免与数据失配 \(\Phi\) 混淆：
+
+\[x=(z,\eta),\qquad u_j=\Phi_N(\eta_j),\qquad x\sim N(0,I_{66}).\]
+
+这不是近似先验。CDF 变量变换的 Jacobian 恰好将两个 uniform 推为两个标准
+Gaussian。边界 \(u=0,1\) 为零先验质量；数值实现应使用稳定
+CDF/log-CDF，不能无说明地截断 \(\eta\) 或把夹断后的 law 称作原先验。
+
+定义 \(G(x)=g(z,\Phi_N(\eta))\)，实白化残差和导数为
+
+\[r_y(x)=\frac{\sqrt2}{\sigma}\operatorname{pack}\{F(G(x))-y\},\quad
+J(x)=Dr_y(x),\quad D(x)=DG(x),\]
+
+\[\Phi(x;y)=\frac{\|F(G(x))-y\|_2^2}{\sigma^2}=\frac12\|r_y(x)\|_2^2,
+\qquad U_y(x)=\Phi(x;y)+\frac12\|x\|_2^2.\]
+
+因此相对于 \(dx\) 的完整 posterior 为
+
+\[\pi_y(x)=Z_y^{-1}\exp[-U_y(x)].\]
+
+原 \(\sigma=0.00119211798514519\)，实部/虚部噪声各为
+\(\sigma^2/2\)。不能再次把 \(\exp(-\Phi)\) 改成
+\(\exp(-\Phi/2)\)。Probit 坐标的 density mode 与原 \((z,u)\) MAP
+一般不同；本报告沿用``Probit 坐标点''，不把它称为坐标不变的最优
+MAP。{[}E5,E8{]}
+
+\hypertarget{ux9971ux548c-decoder-ux7684ux7cbeux786eux7ed3ux6784}{%
+\subsection{1.3 饱和 decoder
+的精确结构}\label{ux9971ux548c-decoder-ux7684ux7cbeux786eux7ed3ux6784}}
+
+ROI 内
+
+\[G_i(x)=\chi_{\rm host}+\delta(u)\,h(s_i),\qquad
+s_i=(m_i+A_i z)/\tau,\]
+
+\[t=(s+1)/2,\qquad
+h(s)=\begin{cases}0&s\le-1,\\10t^3-15t^4+6t^5&-1<s<1,\\1&s\ge1.\end{cases}\]
+
+这里 \(\tau=0.5\)，\(\chi_{\rm host}=0.1+0.04\mathrm{i}\)；\(\delta\)
+的实部在 \([0.8,1.8]\)，虚部在 \([0.03,0.18]\)。它是有真正平坦区的
+\(C^2\) 函数，不是 logistic，也不是 probit decoder；probit
+仅用于两个属性的坐标变换。{[}E8{]}
+
+这一差别直接影响
+R3：局部导数可能为零，有限步却跨越饱和边界；三阶导数在拼接处不连续；材料参数映射可以多对一且秩改变。全局概率应保留在合法
+latent 中，再 pushforward 到材料空间。
+
+\hypertarget{ux5386ux53f2ux7814ux7a76ux5bf9ux65b0ux8defux7ebfux7684ux5b9eux8d28ux7ea6ux675f}{%
+\subsection{1.4
+历史研究对新路线的实质约束}\label{ux5386ux53f2ux7814ux7a76ux5bf9ux65b0ux8defux7ebfux7684ux5b9eux8d28ux7ea6ux675f}}
+
+早期 P3-L 已运行原生 elliptical slice，完整参考仍未合格；也已经实现给定
+Gaussian 条件下 quintic decoder 的解析一、二阶矩。因此 R3
+不把这两项重新当作新算法。其``保留非线性 decoder
+的代理力''把失配预测误差大幅降低，却没有改善同 RHS 的材料
+MCSE，而且更慢；这是``响应更准不等于采样更好''的直接反例。P2 的强
+Full-J/hard-prior 控制又否定了软谱探索的独占性。{[}H1,H2{]}
+
+A17-X/F3 的 17 份旧材料增量有 575 个非零对角项，说明低维 latent
+不推出低秩材料更新。新候选的依据仅是 P1
+精确平台带来的事件区间结构，必须重新检查实际 changed set 与复用次数。旧
+P0 的七维去 gauge 商空间、当前 P1 的 66 维 prior，以及三维 vector
+Maxwell 的 A17
+是不同对象；三者不能混用概率、可达性或费用资格。详细历史对照和固定来源见
+§12。{[}H3--H5,E9{]}
+
+\hypertarget{ux5e94ux5f53ux5efaux6a21ux7684ux51e0ux4f55ux5bf9ux8c61}{%
+\section{2.
+应当建模的几何对象}\label{ux5e94ux5f53ux5efaux6a21ux7684ux51e0ux4f55ux5bf9ux8c61}}
+
+\hypertarget{ux56dbux79cdux96c6ux5408ux4e0eux4e00ux4e2aux6982ux7387ux6d4bux5ea6}{%
+\subsection{2.1
+四种集合与一个概率测度}\label{ux56dbux79cdux96c6ux5408ux4e0eux4e00ux4e2aux6982ux7387ux6d4bux5ea6}}
+
+设 \(\mathcal{H}(x)\) 是白化预测，\(\mathcal{H}(x)-y_w=r_y(x)\)。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+对象
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+定义
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+正确解释
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Exact-data level set & \(\mathcal{H}^{-1}(c)\) & 在邻域常秩 \(r\)
+的充分条件下局部维数为 \(66-r\)；满列秩点附近局部孤立 \\
+有限噪声可行区 & \(\mathcal{N}_\rho(y)=\{x:\|r_y(x)\|\le\rho\}\) &
+一般为有厚度的区域；未赋概率 \\
+相对似然区 & \(\{x:\Phi(x)-\Phi(x_0)\le\kappa\}\) & 相对某 anchor
+的阈值；不是指定 credible level \\
+补偿曲面 & \(x=h(a,b_*(a))\) &
+某个优化算法选出的截面；通常遗漏强方向体积 \\
+Posterior measure & \(\pi_y(dx)\) 及 \(G_\#\pi_y\) & 由原
+prior、噪声和完整 forward 定义的统计对象 \\
+\end{longtable}
+
+若 \(J(x_0)\) 满列秩，则可选择 66 个局部独立输出，利用逆函数定理可知
+exact level set 在 \(x_0\)
+附近是孤立点。这不排除离散的远处同数据解，也不排除宽的有限噪声区域。R2
+的局部满秩证据不能被``弱方向很多''覆盖。{[}E3,E5{]}
+
+\textbf{动态弱分布}是每点一个子空间
+\(\mathcal{D}_x=\operatorname{Range}P_w(x)\)。谱簇分离时它可形成光滑分布；谱交叉时硬
+rank 分割可能不连续。它不必是某张子流形的 tangent bundle。所谓
+likelihood ridge 也不是唯一规范对象：它依赖采用何种
+metric、驻点/曲率定义和阈值。
+
+\hypertarget{p1-specific-ux53cdux4f8bux6750ux6599-posterior-ux53efux4ee5ux542bux539fux5b50}{%
+\subsection{2.2 P1-specific 反例：材料 posterior
+可以含原子}\label{p1-specific-ux53cdux4f8bux6750ux6599-posterior-ux53efux4ee5ux542bux539fux5b50}}
+
+\textbf{命题 T1（由原 decoder 直接推出）。} 在 offset
+标准差为正、有限网格、Gaussian latent 无截断的 P1
+中，存在正先验概率的全宿主材料事件。
+
+证明：固定其余 Gaussian 系数于任意有界小开集。由于共同 offset
+系数可以取足够负值，可使所有 ROI 单元
+\(m_i+A_i z<-\tau\)，而这一严格不等式定义一个非空开集。其 Gaussian
+先验质量为正。在该集合中 \(h(s_i)=0\)，任何两个属性均被消去，全部 latent
+状态都映射到同一 \(\chi_{\rm host}\)。若 Maxwell likelihood
+有限且为正，观测条件化后该材料原子的质量仍为正。证毕。
+
+同理，全纯相事件可压缩成由两个属性参数化的低维材料层；混合饱和模式有不同局部秩。这个命题并未说明该原子在当前非空目标观测下有显著质量。它说明：\textbf{材料
+posterior 连一个处处 66 维的光滑支持都不必具有，更不能无条件写一个统一的
+66 维 Hausdorff 密度。}
+
+最稳妥定义是
+
+\[\mu_y^{\rm mat}(B)=\int\mathbf1\{G(x)\in B\}\pi_y(x)\,dx.\]
+
+在满秩、单射 chart 内可用 area formula；在多对一映射上要汇总全部
+preimage；退化层/原子另行处理。无需为 latent posterior 人为乘
+\(\sqrt{\det(D^*D)}\)，那会改变原问题。
+
+\hypertarget{local-posterior-ux5fc5ux987bux662fux660eux786eux6761ux4ef6ux4e8bux4ef6}{%
+\subsection{2.3 LOCAL posterior
+必须是明确条件事件}\label{local-posterior-ux5fc5ux987bux662fux660eux786eux6761ux4ef6ux4e8bux4ef6}}
+
+如需要局部目标，可事先定义
+
+\[A_y=\{x:\|G(x)-G(x_0(y))\|_M\le R,\ \|x-x_0(y)\|\le L\},\]
+
+\[\pi_y^{\rm loc}(dx)=\frac{\mathbf1_{A_y}(x)\pi_y(dx)}{\pi_y(A_y)}.\]
+
+半径、metric、是否有拓扑限制必须在新测试前固定。用联合模拟做
+\(\mathbf1_{A_y}(X)\) 筛选，可得到对应的条件 endpoint law，但也将训练
+\(Y\) 的边缘重加权为
+\(p(y)\pi_y(A_y)\)；稀有事件会造成数据不足。若没有估计排除质量
+\(1-\pi_y(A_y)\)，局部结论不能升级为完整 posterior 结论。把 full-prior
+训练的生成器叫 LOCAL，或者直接把 noise-ball 当原 posterior
+支持，均不成立。
+
+\hypertarget{ux4e03ux9879ux7406ux8bbaux7684ux6838ux5fc3ux63a8ux8fdb}{%
+\section{3.
+七项理论的核心推进}\label{ux4e03ux9879ux7406ux8bbaux7684ux6838ux5fc3ux63a8ux8fdb}}
+
+\hypertarget{theory-1ux6750ux6599ux98ceux9669ux65b9ux5411ux89c2ux6d4bux4fe1ux606fux65b9ux5411ux4e0eux79efux5206ux65b9ux5411}{%
+\subsection{3.1 Theory
+1：材料风险方向、观测信息方向与积分方向}\label{theory-1ux6750ux6599ux98ceux9669ux65b9ux5411ux89c2ux6d4bux4fe1ux606fux65b9ux5411ux4e0eux79efux5206ux65b9ux5411}}
+
+先区分三个不同优化问题。以 \(M\) 表示材料 RMS 度量；latent
+为实数而材料为复数，故定义实化材料导数
+\(D_M=\operatorname{pack}_M(D)\)，并令
+\(Q=D_M^TD_M=\operatorname{Re}(D^*MD)\)。下述 latent covariance 与
+mobility 均为实矩阵。
+
+\textbf{瞬时观测弱度：} \(v^*J^*Jv\)
+小。它只描述局部数据响应；\(Dv\approx0\) 的饱和 latent
+方向也会很弱，却几乎没有瞬时材料价值。
+
+\textbf{局部材料不确定性：} 若明确采用近似
+\(C=(I+J^TJ)^{-1}\)，实化线性材料 covariance 为 \(D_MCD_M^T\)。在标准化
+\(x=m+C^{1/2}\xi\) 下，保留最大材料方差的 rank-\(k\) 方向是
+
+\[K_{\rm risk}=C^{1/2}QC^{1/2}\]
+
+的前 \(k\) 个特征向量；丢弃量是其余特征值之和。这是 Ky Fan
+原理的应用，并非新的谱理论。\(C\) 也可以来自合格的条件模型或监督校准；GN
+逆不能自动被认作真实
+covariance。反例：\(J=\mathrm{diag}(0.01,0.1)\)，\(D=\mathrm{diag}(0.001,1)\)。最弱的第一方向几乎不贡献材料风险，第二方向贡献约百万倍更大的线性材料方差。
+
+\textbf{估计材料均值的 Monte Carlo 效率：} 对以 \(\pi_y\)
+为不变分布的可逆扩散
+
+\[\mathcal{L}_A f=\pi_y^{-1}\nabla\cdot(\pi_y A\nabla f),\]
+
+令
+\(-\mathcal{L}_A\psi_j=f_j-E_\pi f_j\)。在可解、有限渐近方差等条件下，材料统计量的加权渐近方差为
+
+\[V(A)=2\sum_j w_j\langle f_j-Ef_j,(-\mathcal{L}_A)^{-1}(f_j-Ef_j)\rangle_\pi,\]
+
+\[\delta V=-2E_\pi\operatorname{tr}\left[\left(\sum_jw_j\nabla\psi_j\nabla\psi_j^*\right)\delta A\right].\]
+
+这说明最值得增加扩散的方向由目标统计量的 Poisson
+解决定，通常不等于最小奇异值方向。在线性 Gaussian 情形
+\(\pi=N(m,C)\)、实化材料 \(D_Mx\)、常数 \(A\succ0\) 下，
+
+\[V(A)=2\operatorname{tr}(D_MCA^{-1}CD_M^T).\]
+
+若固定 \(\operatorname{tr}A\)，未退化情形的最优分配满足
+\(A\propto(CQC)^{1/2}\)。这与 \(C^{1/2}QC^{1/2}\)
+的方差保留问题也不同。退化时需强方向 floor 或在极限意义解释。Poisson
+方差与最优预条件已有文献；可研究的新机制是加入\textbf{真实 Maxwell
+求解费用}后，用可验证近似选择刷新方向，而不是把已有公式重命名。{[}L9,L10{]}
+
+\textbf{本轮候选 H1：}
+用材料矩误差、投影风险与求解费用构造方向效用，在开发对象上检验其预测能力；只有它在同预算下胜过
+prior-LIS、任务广义谱、随机与全维方法，才将其列为 Maxwell 新贡献。
+
+\hypertarget{theory-2ux975eux5bf9ux5408ux6027ux4e0dux4f1aux521bux9020ux65b0ux7684ux6570ux636eux81eaux7531ux5ea6}{%
+\subsection{3.2 Theory
+2：非对合性不会创造新的数据自由度}\label{theory-2ux975eux5bf9ux5408ux6027ux4e0dux4f1aux521bux9020ux65b0ux7684ux6570ux636eux81eaux7531ux5ea6}}
+
+对足够光滑向量场 \(X,Y\)，取 \([X,Y]=DY\,X-DX\,Y\)。精确链式法则给出
+
+\[J[X,Y]=D_X(JY)-D_Y(JX).\]
+
+两个 Hessian 交叉项因对称性抵消。因此，若在邻域内 \(JX=JY=0\)，则
+\(J[X,Y]=0\)。常秩 exact kernel 本身可积；显著 normal leakage
+说的是选定的近弱谱分布，不是出现了新的 exact nullspace。
+
+在光滑、谱隙稳定的小邻域，四段 commutator 回路终点为
+
+\[x_{\rm end}=x+s^2[X,Y](x)+O(s^3),\]
+
+若两个场以材料速度归一化、横向 bracket 幅度为非零
+\(\beta\)，该四段回路的材料弧长约 \(4s\)，横向位移约
+\(\beta s^2\)。若沿路径 \(\|JX\|,\|JY\|\le\epsilon\)，中途数据偏移至多
+\(4\epsilon s\)。因此这种回路实现小幅度 \(d\) 的弧长为
+\(\Theta(\sqrt{d/\beta})\)；这不是对所有算法或 Full
+求解次数的下界。若回路中间数据余量不足，它不能成为保持 noise-ball
+的控制策略。
+
+P1 跨饱和接缝只有 \(C^2\) decoder，硬谱场一般只有 \(C^1\)；全局可保证的
+commutator 余项可能只有 \(o(s^2)\)。使用 \(O(s^3)\)、高阶 bracket
+或经典光滑 Hörmander
+条件时，必须限制在光滑分层内部，或另外证明所需正则性。本文不给出全 P1
+可达性定理。
+
+Chow--Rashevskii 的相关结论需要连通区域、足够光滑、双向可用控制和
+bracket-generating 条件；两个 bracket 的非零法向分量不等于 Lie algebra
+满秩。state constraints、先验高能障碍和奇异 decoder
+会进一步收缩可用可达集。{[}L11{]}
+
+\textbf{关键反证对照：} 对静态
+\(F(\chi)\)，到达同一材料的不同参数路径给出相同预测。直接提议
+\(x+s^2[X,Y]\) 并做完整校验，可能比四段绕行便宜。R3 必须同时比较二者；若
+bracket
+只带来昂贵的新方向估计而没有端点统计收益，就应把它留在解释性几何章节。
+
+\hypertarget{theory-3-ux4e0e-theory-6ux65e0ux9700-mcmc-teacher-ux7684ux5408ux6cd5ux6761ux4ef6ux8f93ux8fd0}{%
+\subsection{3.3 Theory 3 与 Theory 6：无需 MCMC teacher
+的合法条件输运}\label{theory-3-ux4e0e-theory-6ux65e0ux9700-mcmc-teacher-ux7684ux5408ux6cd5ux6761ux4ef6ux8f93ux8fd0}}
+
+从联合模拟 \((X_1,Y)\sim p(x,y)\) 抽取数据；给定同一 \(Y\)，独立抽
+\(X_0\sim\rho_0(\cdot\mid Y)\)。可取标准 Gaussian，或
+
+\[X_0=m(Y)+L(Y)Z,\qquad Z\sim N(0,I),\quad L(Y)\text{ 可逆}.\]
+
+anchor 只能作为中心/条件，不能直接作为连续 posterior
+的起始点质量。取线性随机插值
+
+\[X_t=(1-t)X_0+tX_1,\quad V^*=X_1-X_0,\]
+
+\[\mathcal{L}(\theta)=E\|v_\theta(X_t,t,Y)-V^*\|^2.\]
+
+population 最优为 \(v^*(x,t,y)=E[V^*\mid X_t=x,Y=y]\)。对光滑测试函数
+\(\varphi\)，
+
+\[\frac d{dt}E[\varphi(X_t)\mid y]=E[\nabla\varphi(X_t)^*v^*(X_t,t,y)\mid y],\]
+
+故边缘 law 满足连续性方程；在对应 ODE
+良定、唯一且满足终端极限等条件下，起始 law 被输运为 \(p(x\mid y)\)。每个
+\(y\) 只有一个训练 GT 不妨碍这个 population
+目标；数据、正则性和跨对象泛化不足却会妨碍有限样本实现。此理论及其
+simulation-based inference 应用已有成熟先例。{[}L1--L4{]}
+
+\textbf{保留目标的几何加权命题 T2。} 若权重 \(W(X_t,t,Y)\succ0\)
+只依赖网络可见的当前状态和条件，且上下有界并满足相关二阶矩可积，则
+
+\[E[(v-V^*)^*W(v-V^*)]\]
+
+具有相同的 population minimizer \(E[V^*\mid X_t,t,Y]\)。证明是条件期望下
+\(W\) 可提出，严格凸二次式的一阶条件直接给出结论。若 \(W\)
+还依赖未条件化的 GT endpoint，则最优值变为
+\((E[W\mid c])^{-1}E[WV^*\mid c]\)，目标通常改变。
+
+因此，可用 Maxwell/材料 metric
+加权\textbf{速度回归误差}，作为有限容量的归纳偏好；但加入
+\(\lambda\|Jv\|^2\) 的速度惩罚、直接强制 \(v=P_wv\)
+或每步不可逆投影，一般会改变终端分布。弱分布非对合本身并不妨碍合法
+ODE；其端点 law 由完整向量场和初始 law 决定。
+
+沿足够光滑、可逆 ODE，
+
+\[\frac d{dt}\log q_t(X_t\mid y)=-\nabla\cdot v_t(X_t,y).\]
+
+这不是轨迹弧长权重。有限离散 ODE
+的实际采样映射与连续时间密度公式可能存在误差；随机 trace
+估计也不能直接冒充 exact density。66 维可用完整 divergence
+与容差扫描，但若需要清楚的代数 MH ratio，应优先采用显式可逆
+spline/triangular map，或对实际离散映射计算正确 determinant。
+
+若把 \(y\) 压缩为 \(c(y)\)，理论目标变为
+\(p(x\mid c)\)。其不可消除误差满足
+
+\[E_Y\mathrm{KL}(p(X\mid Y)\|q(X\mid c(Y)))
+=I(X;Y\mid c(Y))+E_c\mathrm{KL}(p(X\mid c)\|q(X\mid c)).\]
+
+physics anchor、残差和 Jacobian 均为 \(y\)
+的函数，不增加新传感信息。它们的价值在有限数据/有限算力下的学习效率。R3
+的条件模型应保留原始 512 实观测通道或验证压缩的充分性缺口。
+
+\hypertarget{theory-4ux4eceux8c31ux8befux5deeux8f6cux5411ux51b3ux7b56ux8befux5dee}{%
+\subsection{3.4 Theory
+4：从谱误差转向决策误差}\label{theory-4ux4eceux8c31ux8befux5deeux8f6cux5411ux51b3ux7b56ux8befux5dee}}
+
+硬 projector 的稳定性依赖 cluster gap。设
+\(H=J^*J\)、\(\widehat H=H+E\)，跨选定谱簇有间隙
+\(\gamma\)。适当小扰动下 Davis--Kahan 给出
+\(\|\widehat P-P\|\lesssim\|E\|/\gamma\)；没有 gap 时，单个向量/固定
+rank projector 可以剧烈旋转。应回归 projector
+或子空间而非带任意符号、旋转 gauge 的特征向量。{[}L8{]}
+
+更稳定的软几何是
+
+\[A_\lambda(H)=\lambda(H+\lambda I)^{-1},\]
+
+对半正定 \(H,\widehat H\)，resolvent 恒等式给出
+
+\[\|A_\lambda(\widehat H)-A_\lambda(H)\|\le\|E\|/\lambda.\]
+
+它绕开硬谱交叉，却不能同时免费获得极小 \(\lambda\)
+和稳定性。若近似向量场有统一误差 \(\delta\)、真场 Lipschitz 常数为
+\(L\)，有限时间轨迹误差满足
+\(\|\widehat x_t-x_t\|\le\delta(e^{Lt}-1)/L\)。这只约束轨迹；没有额外假设不能由
+projector 小误差推出 posterior 小误差。
+
+若两个目标具有\textbf{相同 prior
+与相同支持，并在该全部支持上}有统一势误差
+\(|\widehat\Phi-\Phi|\le b\)，可得到归一化 density ratio 的
+\(e^{\pm2b}\) 界以及保守的
+\(\mathrm{TV}(\widehat\pi,\pi)\le\tanh b\)。以 \(d_{\rm mat}\)
+表示有界材料集合直径，相应均值误差满足
+
+\[\|E_{\widehat\pi}G-E_\pi G\|_M\le d_{\rm mat}\,\mathrm{TV}(\widehat\pi,\pi).\]
+
+若只在局部区域有界，还必须加入两分布的区域外质量；训练集均方误差不能充当统一界。若近似
+J 只用于提案且完整 MH
+正确校正，则目标分布不变，受影响的是混合与成本，不能把提案误差当成后验偏差。
+
+最有希望的可计算路线不是先认证整个 \(P_w\)，而是认证一次候选的
+\(\Delta\Phi\) 是否足够准确。具体 Maxwell residual/adjoint 公式见第 6
+节与附录 C。
+
+\hypertarget{theory-5bayes-mean-ux4e0eux7269ux7406ux4ee3ux8868ux7684ux98ceux9669ux5deeux53efux4ee5ux7cbeux786eux91cfux5316}{%
+\subsection{3.5 Theory 5：Bayes mean
+与物理代表的风险差可以精确量化}\label{theory-5bayes-mean-ux4e0eux7269ux7406ux4ee3ux8868ux7684ux98ceux9669ux5deeux53efux4ee5ux7cbeux786eux91cfux5316}}
+
+令 \(\mu_y=E[G(X)\mid y]\)。对任意材料动作 \(a\)，
+
+\[E[\|G(X)-a\|_M^2\mid y]
+=E[\|G(X)-\mu_y\|_M^2\mid y]+\|a-\mu_y\|_M^2.\]
+
+对物理允许集合
+\(\mathcal{C}_y=\{G(x):x\in\mathcal{A},\Phi(x;y)\le c\}\)，假设其非空且最小值可达，最佳受约束
+Bayes action 是离 \(\mu_y\) 最近的点，其不可避免的额外条件风险为
+
+\[\operatorname{dist}_M(\mu_y,\mathcal{C}_y)^2.\]
+
+因此投影到 noise-ball 不是普遍改善平方风险的操作。若用近似均值
+\(\widehat\mu\)，令
+\(\widehat a\in\arg\min_{a\in\mathcal{C}_y}\|a-\widehat\mu\|\)，\(\|\widehat\mu-\mu\|\le e\)，则
+
+\[\|\widehat a-\mu\|\le d+2e,\qquad d=\operatorname{dist}(\mu,\mathcal{C}_y),\]
+
+相对最优受约束动作的额外风险不超过
+\(4de+4e^2\)。若极小值不可达，只能讨论 infimum
+或明确加入紧性条件。若优化只达到距离误差
+\(\varepsilon_{\rm opt}\)，在距离上界中再加入该误差；非凸投影不唯一且未必全局可解。
+
+简单反例：标量参数 \(\chi=\pm1\)、\(F(\chi)=\chi^2\)、观测接近
+1，两个物理状态都高似然，而均值 0 的 forward 为
+0。这个例子证明风险与物理代表之间可存在真实冲突，不依赖 Maxwell
+的特殊复杂性。
+
+\hypertarget{theory-7ux8f68ux8ff9tube-ux4e0eux6982ux7387ux4f53ux79ef}{%
+\subsection{3.6 Theory 7：轨迹、tube
+与概率体积}\label{theory-7ux8f68ux8ff9tube-ux4e0eux6982ux7387ux4f53ux79ef}}
+
+有限条零宽光滑曲线的访问 law 与全维连续 latent posterior
+互奇异，不能直接当它的 density。但有限 MCMC 经验测度也离散；不能因此否定
+Monte Carlo 积分。关键在于抽样机制是否有正确不变
+law、是否覆盖重要质量、统计误差是否受控。R2 的任意弧长平均欠缺这些条件。
+
+在可逆的全维 tube chart \(x=\Psi(a,b)\) 中，
+
+\[\pi_{a,b}(a,b)\propto e^{-U_y(\Psi(a,b))}\,|\det D\Psi(a,b)|,\]
+
+\[\pi_a(a)\propto\int e^{-U_y(\Psi(a,b))}|\det D\Psi(a,b)|\,db.\]
+
+只取 \(b=b_*(a)\) 会遗漏 conditional width。即使 Laplace 可用，也含
+\(\det H_{bb}(a)^{-1/2}\) 等体积因素；R2 已显示 Gaussian strong
+conditional 不可靠，不能无条件套用该修正。
+
+多个 chart 重叠时，应使用可计算的 mixture proposal density 或 partition
+of unity，不能把每个 chart 内的权重相加重复计数。有限条随机控制轨迹的
+endpoint map 若由至少 66 个连续随机变量驱动且达到满秩，可以有全维
+density；此时要计算实际映射/增广变量概率。几步固定四方向扰动不足以自动覆盖完整
+law。
+
+\hypertarget{ux5bf9-p3l-r2-ux73b0ux8c61ux7684ux673aux5236ux89e3ux91ca}{%
+\section{4. 对 P3L-R2
+现象的机制解释}\label{ux5bf9-p3l-r2-ux73b0ux8c61ux7684ux673aux5236ux89e3ux91ca}}
+
+\hypertarget{ux4e3aux4ec0ux4e48ux5c0f-cnn-ux6709ux5927ux98ceux9669ux6536ux76ca}{%
+\subsection{4.1 为什么小 CNN
+有大风险收益}\label{ux4e3aux4ec0ux4e48ux5c0f-cnn-ux6709ux5927ux98ceux9669ux6536ux76ca}}
+
+\textbf{证据 E：} 主要收益已存在于基础图局部
+CNN；输入几何带来较小增量；99.10\%
+收益位于基础点过渡带；切空间外修正仅解释小部分风险改善。{[}E1,E2,E4{]}
+
+\textbf{合理解释 H：} 原 decoder
+的空间相关先验、基础反演的灰化/偏差、局部共享统计以及训练目标从参数 mode
+转成材料 MSE，共同使小 CNN
+能有效预测``在这种重建上下文下真实材料通常怎样''。完全不信息化的弱方向仍可能与可见结构通过
+prior 相关，因而条件期望可改善总体风险。这不意味着能恢复每份 GT
+的独立随机细节。
+
+必须加入更简单的对照：单调标量校准、位置/属性条件校准、阈值与软阈值、局部线性回归、空间滤波、相位条件矩、同容量局部
+CNN、随机与真实谱包络。只有相对这些控制的稳定增量才值得归于新物理机制。
+
+\hypertarget{ux4e3aux4ec0ux4e48ux4e0dux80fdux7528ux666eux901a-jensen-ux76f4ux89c9ux89e3ux91caux5168ux90e8ux53bbux7070ux5316}{%
+\subsection{4.2 为什么不能用普通 Jensen
+直觉解释全部去灰化}\label{ux4e3aux4ec0ux4e48ux4e0dux80fdux7528ux666eux901a-jensen-ux76f4ux89c9ux89e3ux91caux5168ux90e8ux53bbux7070ux5316}}
+
+在过渡带 \(h''(s)=15t(1-t)(1-2t)\)。以正 \(s\)
+为中心的局部对称波动通常降低 \(E[h(s)]\)，以负 \(s\)
+为中心则提高它，倾向向中间回缩。因此``Gaussian Jensen correction
+必然使图像更尖锐''是错误的。
+
+准确材料均值为 \(\chi_{\rm host}+E[\delta h(s_i)\mid y]\)，一般同时包含
+latent 条件均值位移、非 Gaussian 形状、\(\delta\) 与 \(s_i\)
+的相关性和空间信息。R2 的 field2 SLICE Jensen gap 约
+\(7.49\times10^{-4}\) 材料 RMS
+只属于固定其余坐标的条件实验；既不能解释全部 25.27\%，也不能作为完整
+posterior Jensen 效应的上界。{[}E3{]}
+
+\hypertarget{ux4e3aux4ec0ux4e48ux771fux5b9eux8c31ux7684ux5f53ux524dux589eux91cfux5c0f}{%
+\subsection{4.3
+为什么真实谱的当前增量小}\label{ux4e3aux4ec0ux4e48ux771fux5b9eux8c31ux7684ux5f53ux524dux589eux91cfux5c0f}}
+
+冻结 frame \(V\) 下，当前灵敏度图精确为
+
+\[S_V(i)=|\delta|\,h'(s_i)/\tau\cdot\|A_iV\|.\]
+
+对象依赖部分主要是 decoder 导数；Maxwell
+通过训练冻结的空间包络进入。对方向取 norm
+还丢失了符号、相位和逐方向耦合。共享 CNN
+已能从基础图推断大量局部风险，这种包络的边际增量小并不奇怪。第二批只确立约
+0.70\%
+的窄贡献；未确立``加回投影在已有灵敏度上还有收益''。这些是当前特征的信息压缩和模型表现，不是动态
+Maxwell 几何普遍无用的证明。{[}E4{]}
+
+\hypertarget{ux4e3aux4ec0ux4e48ux53efux884cux5f31ux8fd0ux52a8ux4ecdux6076ux5316ux98ceux9669}{%
+\subsection{4.4
+为什么可行弱运动仍恶化风险}\label{ux4e3aux4ec0ux4e48ux53efux884cux5f31ux8fd0ux52a8ux4ecdux6076ux5316ux98ceux9669}}
+
+可行集没有自动给出前进方向，也没有给出概率质量。真正按材料弧长 \(ds\)
+的平均对光滑单调重参数化不变，但按所选几何路径的长度、绕行及重复覆盖分配质量；时间均值或等时间步点均值还依赖速度与采样策略。两者都不是
+posterior
+体积权重。对条件均值附近对称增加随机偏移，只会增加方差；偏离均值的基础点也未必朝正确方向修正。R2
+在开发对象上的收益没有在新对象复现，是当前策略缺少可泛化风险依据的直接结果。{[}E6{]}
+
+\hypertarget{ux4e3aux4ec0ux4e48-10-ux7ef4-density-ux5b66ux5f97ux52a8ux800cux5b8cux6574ux6821ux6b63ux5d29ux6e83}{%
+\subsection{4.5 为什么 10 维 density
+学得动而完整校正崩溃}\label{ux4e3aux4ec0ux4e48-10-ux7ef4-density-ux5b66ux5f97ux52a8ux800cux5b8cux6574ux6821ux6b63ux5d29ux6e83}}
+
+令 \(x=(a,b)\)。即使 \(q(a\mid y)=p(a\mid y)\) 完全正确，取
+\(q(b\mid a,y)=p(b)\) 仍可能错过非常窄、弯曲的强条件质量。链式 KL
+明确分解为边缘误差与平均条件误差；前者下降不控制后者。
+
+一个简单尺度说明：若目标与提案都是同 covariance 的
+Gaussian，只存在均值误差 \(d\)，则
+\(\chi^2(\pi\|q)=\exp(d^*C^{-1}d)-1\)，理想独立 importance ESS 比例约为
+\(\exp(-d^*C^{-1}d)\)。56 个方向各错一个条件标准差就已是灾难；完整
+support 不会修复这种有效质量失配。
+
+Student 提案的真实 \(\Delta\Phi\) 中位数约 40,203，latent 线性预测仅
+10.98，揭示有限响应失配。SMC 最终高 weight ESS
+仍只有一个祖先；改进重点是强条件模型与提案质量。{[}E3{]}
+
+\hypertarget{ux5341ux4e03ux7c7bux5b9eux8d28ux65b9ux6cd5ux7684ux7adeux4e89ux5173ux7cfb}{%
+\section{5.
+十七类实质方法的竞争关系}\label{ux5341ux4e03ux7c7bux5b9eux8d28ux65b9ux6cd5ux7684ux7adeux4e89ux5173ux7cfb}}
+
+表中``posterior''均指原完整 P1 目标；新增 prior、截断目标和 ambient
+平滑目标必须另行命名。以下不是十七个都要扩到大规模的模型，而是先比较机制，再筛选五个深入方向。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+方法
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+实际优化/抽样对象与机制
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+决定性限制和检验
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1. 标量校准、软阈值、空间滤波 & 对 anchor 的过渡相做低容量风险校准 & 无
+joint law；若已接近 CNN，研究应归于经典统计后处理 \\
+2. 相阈值矩积分 & 学习 \(E[\delta\mathbf1\{s_i>t\}\mid y]\)，利用实际
+decoder 积分 &
+保留属性相关，直接服务均值；与标量校准、CNN、真实谱分别比较 \\
+3. Full-field 材料 moments & 直接估计均值和 PSD covariance/空间投影矩 &
+像素边缘方差不决定联合材料世界；通过 joint scores、空间对照评价 \\
+4. 全 66 维 conditional spline & 显式可逆 triangular/coupling 密度，完整
+\(b\mid a,y\) & 主要概率基线；高 SNR 仍可能漏窄 conditional，需
+NLL/校准/校正共同检验 \\
+5. Conditional Flow Matching & joint-simulation 速度回归，连续可逆运输 &
+不需 teacher，但有限数据可塌缩；数值 density 与模型误差需分别审计 \\
+6. Rectified/OT Flow & 在正确条件 coupling 下使路径更直或减少步数 &
+跨不同 \(y\) 随意 OT 重配会改变目标；以终端精度对网络评估次数比较 \\
+7. 条件 score diffusion & 训练 conditional denoising score，再反向
+SDE/ODE & 理论成立需正确 conditional score；不能以 plug-in likelihood
+guidance 当精确 posterior \\
+8. Schrödinger bridge & 在指定参考过程上优化路径相对熵并匹配两端 law &
+不会自动产生缺失的终端 posterior；昂贵、创新重合大，暂缓主线 \\
+9. 强弱三角 transport & 学 \(q(a\mid y)q(b\mid a,y)\)，以非 Gaussian
+innovations 保留耦合 & 强条件不能再补独立
+prior/Gaussian；与无强弱分解同容量模型比较 \\
+10. 相事件分段与有限响应复用 & 精确利用饱和区及稀疏材料更新，嵌入合法
+slice/MH & 不依赖网络；active-set 太大或复用太少则无加速 \\
+11. Rao--Blackwell 条件积分 & 给定少量坐标，解析/数值积分强 conditional
+与材料矩 & 只能在条件分布正确时降低 MC 方差；近似积分偏差必须单独计入 \\
+12. 全秩几何 MALA/HMC/pCN & 合法转移核，学习/解析 metric 只改变效率 &
+是不可省略的强 baseline；正确 invariant law 不保证有限时间混合 \\
+13. 非完整弱扩散 & 动态弱噪声与必要 drift，考察 bracket 传播 &
+纯弱离散提案可能支持不匹配；保留强方向 floor，先做机制门槛 \\
+14. Bracket-informed 提案 & 将有价值横向 bracket 放入全秩
+covariance，或做可逆回路 MH & 与直接 secant/curvature 方向和直接 bracket
+步进同成本比较 \\
+15. Learned operator / DINO & 同时预测 forward 与导数，delayed
+acceptance 校正 & 有直接成熟先例；必须证明 P1
+特有有限响应/风险/费用增量 \\
+16. 多 chart/tube 积分 & 局部条件密度加全维横向厚度，重叠区正确加权 &
+chart 发现、normalization、漏质量与增广密度均昂贵；暂不全规模 \\
+17. Poisson/Stein 材料积分 & 对目标材料统计量优化 mobility 或 control
+functional & 不需 Flow/CNN/RL；不能修复链不遍历、proposal ESS≈1
+或漏模式 \\
+\end{longtable}
+
+其中 2、10、14、17 都可以在不依赖 Flow Matching、CNN 或 RL
+的情况下实现。它们是本轮提出的具体组合机制，不是已经建立``文献首次''的发明：layer-cake、Woodbury、slice
+sampling、可逆 MH、Stein 和 Poisson 方差均有成熟理论基础。
+
+\hypertarget{ux4e94ux79cdux503cux5f97ux6df1ux5165ux5b9eux73b0ux7684ux7b97ux6cd5}{%
+\section{6.
+五种值得深入实现的算法}\label{ux4e94ux79cdux503cux5f97ux6df1ux5165ux5b9eux73b0ux7684ux7b97ux6cd5}}
+
+\hypertarget{ux7b97ux6cd5-aux5b8cux6574ux6761ux4ef6ux5bc6ux5ea6ux4e0eux6750ux6599ux51b3ux7b56ux53ccux8f93ux51fa}{%
+\subsection{算法
+A：完整条件密度与材料决策双输出}\label{ux7b97ux6cd5-aux5b8cux6574ux6761ux4ef6ux5bc6ux5ea6ux4e0eux6750ux6599ux51b3ux7b56ux53ccux8f93ux51fa}}
+
+\hypertarget{ux5bf9ux8c61ux4e0eux7ed3ux6784}{%
+\subsubsection{对象与结构}\label{ux5bf9ux8c61ux4e0eux7ed3ux6784}}
+
+目标一是 \(q_\theta(x\mid y)\)，目标二是
+\(\widehat\mu_\psi(y)\)。第三个可选输出是确定性的受约束代表
+\(x_{\rm rep}\)。三者具有不同评分与资格。
+
+条件输入保留原始 \(y_w\in\mathbb{R}^{512}\)；追加 anchor
+\(x_0\)、\(G(x_0)\)、residual、noise/acquisition
+标识和明确可复现的物理特征。对固定 acquisition，先用小 MLP 编码 raw
+observation；跨 acquisition 再用源/接收位置 token 与 mask 的
+attention。网络不能只看 10 个弱坐标，不能让测试 GT 进入
+normalizer、frame、提案或停止规则。
+
+\textbf{密度基线：} 使用 8--12 个 rational-quadratic spline coupling
+层，所有 66 个坐标轮流更新；每个 conditioner 2--3 层、宽 128/256，10--16
+bins。先做约 0.3--0.8 M 参数，扩展上限 2
+M；参数量以实际导出的计数为准。固定每对象正交 frame \(T(y)\) 可定义
+\(a,b=T(y)^T(x-m(y))\)，其中 \(a\) 为 10/16/24 维，\(b\)
+为全部剩余坐标。明确训练 \(q(a\mid y)q(b\mid a,y)\)，而不是
+\(q(a\mid y)p(b)\)。加入同容量、无谱分割的任意固定顺序模型。
+
+\textbf{CFM 竞争者：} 相同条件编码器，4 个宽 128/256 的 residual
+velocity block，时间 Fourier embedding；输入当前全部 \(x_t\)，输出 66
+维速度。比较标准正态 base、anchor-centered 全秩 base、bounded
+geometry-weighted velocity error。固定比较 16/32/64 次网络评估和自适应
+ODE 容差；在小规模密度审计中用完整 divergence。
+
+输出材料样本为
+\(G(X^{(k)})\)，其样本均值估计模型条件均值；另一个小风险头可以直接从联合数据估计材料均值。两者不强制相等，比较差异有助识别生成器偏差。非线性
+latent pushforward 的 ambient covariance 不一定秩≤66；只有局部线性
+\(D_MCD_M^T\) 有该秩上界。空间 covariance 可用样本或 PSD
+低秩加对角近似，必须说明近似范围。
+
+\hypertarget{ux8badux7ec3ux548cux5b8cux6574ux6821ux6b63}{%
+\subsubsection{训练和完整校正}\label{ux8badux7ec3ux548cux5b8cux6574ux6821ux6b63}}
+
+显式 density 训练采用
+\(-E\log q_\theta(X_{\rm GT}\mid Y)\)；风险头采用真实材料 MSE。若输出
+head
+共享编码器，须另设不共享对照，防止概率/风险梯度互相损害。联合训练权重在
+validation 固定。
+
+若采用独立 MH，
+
+\[\alpha(x,x')=1\wedge\frac{e^{-U_y(x')}q_\theta(x\mid y)}{e^{-U_y(x)}q_\theta(x'\mid y)}.\]
+
+也可用显式 proposal 的 importance weights。它们均不能保证有效样本数；ESS
+门不通过时继续称 approximate conditional
+generator，不把``理论可校正''当``实际已校正''。提案密度必须与实际数值采样映射一致。
+
+\hypertarget{ux7269ux7406ux4ee3ux8868}{%
+\subsubsection{物理代表}\label{ux7269ux7406ux4ee3ux8868}}
+
+定义可评审的受约束问题
+
+\[\min_x\|G(x)-\widehat\mu(y)\|_M^2
+\quad\text{s.t. }\Phi(x;y)\le c_y,\quad x\in\mathcal{A}_y.\]
+
+\(\mathcal{A}_y\) 可是明确的 prior energy cap、局部事件或原整个
+latent；这些选择改变代表选择规则而非自动改变 posterior。以 anchor
+与若干生成候选作多起点，给出预算上限；未解到约束时保留失败而不是悄悄降低阈值。这里的确定性优化输出是
+representative，不是带已知 posterior density 的 sample。
+
+\hypertarget{ux4f2aux4ee3ux7801}{%
+\subsubsection{伪代码}\label{ux4f2aux4ee3ux7801}}
+
+\begin{verbatim}
+OFFLINE:
+  freeze parent splits, target, coordinate transform and anchor budgets
+  fit full-66 conditional density / CFM on TRAIN joint pairs
+  fit material mean head; choose models using VALIDATION only
+  freeze all checkpoints, generation count and correction budgets
+ONLINE(y):
+  compute allowed anchor/context once, with complete cost receipt
+  draw K full-latent candidates; save log_q when genuinely available
+  decode all candidates; evaluate only predeclared Full diagnostics
+  return approximate samples and direct material estimate separately
+  if correction gate qualifies, run fixed legal IS/MH refinement
+  optionally optimize a representative; report its separate residual
+EVALUATE:
+  independent evaluator opens GT only after online results are closed
+\end{verbatim}
+
+\textbf{费用：} joint 数据生成为每新 parent 8 RHS；anchor
+另计。纯生成不需 Maxwell；一次完整 endpoint 校验 8 RHS；若每 flow
+步都更新 physics 则该优势消失。完整条件密度是强 baseline，不能仅因采用
+flow 就声称创新。{[}L1--L7{]}
+
+\textbf{失败条件：} 高 SNR 下训练 y 稀疏、条件编码不足、非 Gaussian
+强条件难学、同支持但尾部严重失配、有限数据记忆、CFM density
+数值不自洽。决定性实验是全 66 维 held-out
+NLL、联合校准和材料统计误差，不能只画更漂亮的 samples。
+
+\hypertarget{ux7b97ux6cd5-bux76f8ux9608ux503cux6761ux4ef6ux77e9ux4f30ux8ba1ux4e0eux89e3ux6790ux79efux5206}{%
+\subsection{算法
+B：相阈值条件矩估计与解析积分}\label{ux7b97ux6cd5-bux76f8ux9608ux503cux6761ux4ef6ux77e9ux4f30ux8ba1ux4e0eux89e3ux6790ux79efux5206}}
+
+P1 精确满足
+
+\[h(s)=\int_{-1}^{1}h'(t)\mathbf1\{s>t\}\,dt,
+\qquad h'(t)=\frac{15}{16}(1-t^2)^2.\]
+
+因此
+
+\[\mu_i(y)=\chi_{\rm host}+\int_{-1}^{1}h'(t)M_i(t,y)\,dt,
+\quad M_i(t,y)=E[\delta(u)\mathbf1\{s_i>t\}\mid y].\]
+
+这保留属性与相事件的相关性；用 \(E\delta\cdot P(s_i>t)\) 代替会漏掉
+covariance。实/虚属性为正，因此各分量 \(M_i(t,y)\) 关于阈值单调不增。
+
+可以用共享低容量 GAM、ridge 加单调样条、局部多项式回归器，输入 anchor
+fraction、邻域统计、anchor 推断属性、decoder
+导数、位置与可选物理特征，学习 8/16
+个预定阈值的加权事件矩。真实属性只能进入 TRAIN 标签。如果只输入压缩特征
+\(c(y)\)，population 目标是
+\(E[\delta\mathbf1\{s_i>t\}\mid c(y)]\)，应按相应压缩条件均值解释，或加
+raw-\(y\) 通道并检验其增量。目标标签直接从 TRAIN latent/材料产生，不需要
+posterior
+teacher。模型是条件矩回归器，不能将其逐像素事件概率独立相乘当作联合材料世界。
+
+若 \(\widehat M\) 的条件误差已知，由 \(h'\ge0\) 且 \(\int h'=1\)，
+
+\[|\widehat\mu_i-\mu_i|^2\le\int_{-1}^{1}h'(t)|\widehat M_i(t,y)-M_i(t,y)|^2dt,\]
+
+另加数值积分误差。给定属性 \(u\) 的相变量条件分布若用 Gaussian mixture
+近似，过渡带是五次多项式，可以用 0--5 阶截断 Gaussian
+矩解析计算，再按所拟合的正确属性条件 law 积分。若直接处理相关的
+\((\delta,s)\)，还需保留交叉矩；不能将属性独立化。准确的是所拟合条件模型下的积分，不是因此得到真实
+posterior。
+
+\begin{verbatim}
+TRAIN:
+  for each TRAIN parent and ROI pixel, form s_i and complex delta
+  construct labels delta * indicator(s_i > threshold_l)
+  fit small shared monotone regressors, optionally with spatial features
+  freeze model, threshold grid and quadrature using VALIDATION
+ONLINE:
+  compute anchor features; predict all weighted threshold moments
+  integrate with the exact quintic kernel h'(t)
+  clip only to the convex material rectangle as a risk action
+  return material estimate; do not label it a joint posterior sample
+\end{verbatim}
+
+\textbf{新机制候选：} 用实际 decoder
+的加权阈值条件矩分配统计学习能力；给定 Gaussian 条件的 quintic
+解析积分在早期 P3-L 已实现，不作为 R3 新颖性。{[}H1{]}
+\textbf{主要对照：} 普通单调去灰化、局部线性/滤波、R2 CNN、只有 decoder
+包络、加真实 Maxwell 特征。若它用很少参数恢复大部分 CNN
+收益，应重新定位风险贡献；若明显落后，空间高阶依赖或输入表示才是更重要因素。
+
+\textbf{费用：} 已有 anchor 上为零新增
+Maxwell；训练标签与积分便宜。可先将有效参数限制为 5k--30k，与 R2
+小网络公平比较。它优先解决均值，不承诺 joint sample，也不必胜过 CNN。
+
+\hypertarget{ux7b97ux6cd5-cux9971ux548cux4e8bux4ef6ux5206ux6bb5ux7684ux6709ux9650-maxwell-ux54cdux5e94ux590dux7528}{%
+\subsection{算法 C：饱和事件分段的有限 Maxwell
+响应复用}\label{ux7b97ux6cd5-cux9971ux548cux4e8bux4ef6ux5206ux6bb5ux7684ux6709ux9650-maxwell-ux54cdux5e94ux590dux7528}}
+
+使用电流表示，以 \(G_b\) 区别于材料 decoder \(G\)：
+
+\[L_\chi j=Xe^{\rm inc},\quad L_\chi=I-XG_b,
+\quad E=e^{\rm inc}+G_bj,\quad F=Sj.\]
+
+令 \(R_0=L_{\chi_0}^{-1}\)、\(\Delta X=X-X_0\)，则精确有限差分是
+
+\[\Delta j=(I-R_0\Delta XG_b)^{-1}R_0\Delta X E_0.\]
+
+若属性固定且只有材料单元集合 \(I\) 改变，\(\Delta X=E_I dE_I^T\)，其中
+\(E_I\) 为选择矩阵、\(d\) 为对角更新。预计算
+
+\[W=R_0E_I,\quad K=E_I^TG_bW,\quad B=E_I^TE_0,\quad O=SW,\]
+
+则
+
+\[c=(I-dK)^{-1}dB,\qquad F=F_0+Oc.\]
+
+在确切稀疏更新、稳定可逆和足够数值精度下，这不是 Born 近似。沿
+\(z(t)=z_0+tv\)，每个像素跨 \(s_i=\pm1\)
+的时间可解析计算；一个固定事件区间中的材料变化是五次多项式。沿 Gaussian
+ellipse，事件方程为
+\(a_i\cos\theta+b_i\sin\theta+c_i=\pm\tau\)，其中三个系数是未除以
+\(\tau\) 的 field 系数；若使用标准化相变量，右端改为
+\(\pm1\)。事件同样可解析定位；每个候选只需实际 \(d(\theta)\) 及小系统。
+
+可选区间边界作为本地基点，但重基必须实际取得与新基点一致的
+current、field 和
+inverse-action，并计入费用；否则沿用原精确基点。从基点到候选累计改变的所有像素必须纳入
+\(I\)，不能只取候选端点正在过渡的单元。更新属性时可能几乎整个 ROI
+改变，此时应采用完整 evaluator 或重新估算 rank，不能保留虚假的稀疏假设。
+
+通过 likelihood
+区间接受某候选，不代表已经得到该候选的精确物理缓存。当前状态的
+likelihood 若也只有区间，slice
+判断须比较候选与当前两端势差的区间及同一个
+\(\log U\)，不能把区间中点当精确阈值；区间规则见算法 D1。
+
+嵌入标准 elliptical slice sampling（ESS）可利用 Gaussian prior
+的旋转不变性；此处 ESS 指 elliptical slice，不是 effective sample
+size。固定属性的 Gaussian block 与原 uniform 属性的合法 slice/MH
+交替，目标仍为完整 posterior，条件间混合是否足够另行检验。自适应选择
+block 若依赖当前状态，须保证选择概率与反向核一致；第一轮采用只依赖 \(y\)
+的固定 blocks。
+
+\begin{verbatim}
+GIVEN current z, u and exact cached state:
+  draw Gaussian ellipse auxiliary nu and log slice threshold
+  find saturation events on the allowed ellipse bracket
+  for each required candidate interval:
+    form the COMPLETE changed-cell set relative to its cache base
+    estimate rank/reuse cost; choose low-rank reuse or Full fallback
+    evaluate exact finite response, or a certified enclosing interval
+    apply the standard slice acceptance/bracket-shrink rule
+  update u by a separate legal uniform-prior kernel
+  retain every repeat, rejection, fallback and charged solve
+\end{verbatim}
+
+\textbf{真正的新研究切口：} 由 decoder 相事件决定响应更新秩和 cache
+生命周期，再让概率判断决定所需求解精度。Woodbury、resolvent 和
+elliptical slice 均为已有方法；早期 P3-L 已运行原生 elliptical slice
+且未获得合格 FULL，R3 只检验其 evaluator
+与统计成本能否改善。{[}L12,E9,H1{]}
+
+\textbf{复杂度与门槛：} 在已有有效基点 state 和
+factorization/inverse-action 的前提下，\(|I|\) 个 inverse-column RHS
+预付，多个小系统大约为 \(O(|I|^3+|I|^2n_s)\)，另有矩阵乘法、存储和 cache
+切换。若从零 Full 每候选 8 RHS，粗略 break-even
+要求节省的完整候选数明显超过 \(|I|/8\)，且 small-system/LU 的 wall time
+也有优势；任何重基求解和新 factorization 都另行计费。dense TM24 有快速
+LU，RHS 不等于全部费用。99\% 风险收益来自过渡带不意味着 \(|I|\)
+很小，这是第一项必须被证伪的假设。
+
+\hypertarget{ux7b97ux6cd5-dux4ee5ux6982ux7387ux5224ux65adux548cux6750ux6599ux52a8ux4f5cux8befux5deeux89e6ux53d1ux7269ux7406ux5237ux65b0}{%
+\subsection{算法
+D：以概率判断和材料动作误差触发物理刷新}\label{ux7b97ux6cd5-dux4ee5ux6982ux7387ux5224ux65adux548cux6750ux6599ux52a8ux4f5cux8befux5deeux89e6ux53d1ux7269ux7406ux5237ux65b0}}
+
+\hypertarget{d1.-ux5148ux89e3ux51b3ux4e00ux6b21ux5224ux65adux800cux975eux9884ux6d4bux6574ux4e2a-j}{%
+\subsubsection{D1. 先解决一次判断，而非预测整个
+J}\label{d1.-ux5148ux89e3ux51b3ux4e00ux6b21ux5224ux65adux800cux975eux9884ux6d4bux6574ux4e2a-j}}
+
+对实化系统 \(\mathsf L j=b\)、白化输出矩阵 \(\mathsf C\)、近似场
+\(\widehat j\)，定义
+
+\[\rho=b-\mathsf L\widehat j,\quad
+\widehat r=\mathsf C\widehat j-y_w,\quad
+\rho_z=\mathsf C^T\widehat r-\mathsf L^T\widehat z.\]
+
+若有经过验证的 \(0<\beta\le\sigma_{\min}(\mathsf L)\)，则精确数据势
+\(V=\|r\|^2/2\) 满足
+
+\[V-\widehat V
+=\widehat z^T\rho+\rho_z^T\mathsf L^{-1}\rho
++\tfrac12\|\mathsf C\mathsf L^{-1}\rho\|^2.\]
+
+令
+\(b_1=\|\rho_z\|\|\rho\|/\beta\)、\(b_2=\|\mathsf C\|^2\|\rho\|^2/(2\beta^2)\)，得
+
+\[V\in[\widehat V+\widehat z^T\rho-b_1,
+\widehat V+\widehat z^T\rho+b_1+b_2].\]
+
+这比无目标的场 norm error 更贴近 likelihood。普通数值 condition
+estimate、随机 probe 和训练误差分位数都不能冒充确定性
+\(\beta\)。例如若已有参考逆/预条件器并验证
+\(\|I-B\mathsf L\|\le\eta<1\)，可由 Neumann
+界得到可用稳定性控制；验证本身的费用也要计入。若得不到可靠下界，只能称经验误差监控，并
+Full fallback。
+
+把势区间转换为 MH log-ratio 区间 \([\ell_-,\ell_+]\)，使用与精确 MH
+相同的一个 \(\log U\)：若 \(\log U<\ell_-\) 接受；若 \(\log U>\ell_+\)
+拒绝；否则精化场/伴随或 Full。只要区间可靠、proposal
+固定且可评估、最终不确定情况精算，接受路径与该精确 MH
+相同。可以保存候选两端的区间逐步收紧，不必每次都算到场误差机器精度。
+
+\hypertarget{d2.-ux6750ux6599ux52a8ux4f5cux5bfcux5411ux7684ux67e5ux8be2ux9009ux62e9}{%
+\subsubsection{D2.
+材料动作导向的查询选择}\label{d2.-ux6750ux6599ux52a8ux4f5cux5bfcux5411ux7684ux67e5ux8be2ux9009ux62e9}}
+
+冻结 posterior GN 动作
+\(H\delta=-J^Tr-g_{\rm prior}\)，\(H=J^TJ+\Lambda\succ0\)。Gaussianized
+P1 下 \(g_{\rm prior}=x\)、\(\Lambda=I\)；省略 prior
+梯度只对应以零增量为中心的 Tikhonov 步。只考虑 Jacobian 缺陷
+\(E\)，一阶实化材料动作误差为
+
+\[\delta m_E=-D_MH^{-1}\{J^TE\delta+E^T(r+J\delta)\}.\]
+
+两项分别检验前向作用和反向伴随作用；只使某个 \(E\delta\)
+很小不能控制全部材料动作。该结构与 A17
+双侧反馈思想相关，但它只解释计算动作的保真度，不能推导真实材料风险必降。
+
+可在低秩 operator-error
+模型中，按``预计材料动作误差下降/实际查询费用''选择 JVP、VJP、secant 或
+Full J。先用确定性/解析 greedy policy；无需直接用
+RL。错误模型若只经验校准，就将收益预测称经验 policy，不宣称证书。
+
+\hypertarget{d3.-j-ux7684ux6709ux9650ux66f4ux65b0ux4e0dux80fdux9057ux6f0fux4e24ux9879}{%
+\subsubsection{D3. J
+的有限更新不能遗漏两项}\label{d3.-j-ux7684ux6709ux9650ux66f4ux65b0ux4e0dux80fdux9057ux6f0fux4e24ux9879}}
+
+对于一个 source，记 \(Dg_k\) 为合法 decoder 导数。精确恒等式为
+
+\[\begin{aligned}
+J_1-J_0={}&S R_1\Delta XG_bR_0\operatorname{diag}(E_0)Dg_0\\
+&+S R_1\operatorname{diag}(\Delta E)Dg_0\\
+&+S R_1\operatorname{diag}(E_1)(Dg_1-Dg_0).
+\end{aligned}\]
+
+依次为传播反馈、总场注入变化、decoder 导数变化；对全部源叠加并应用正确
+whitening。P1 跨饱和边界时第三项可能很大。因此只学习 resolvent 或固定
+source injection 的更新，不是完整 Jacobian transport。
+
+\begin{verbatim}
+PROPOSE using a frozen, evaluable proposal rule
+build cheap field/operator prediction from paid states and secants
+compute residual and an honest likelihood interval
+draw ONE uniform random variable for the acceptance decision
+while the threshold lies inside the log-ratio interval:
+  choose the cheapest useful refinement or exact refresh
+  include its field, adjoint, decoder and factorization costs
+  if no valid certificate is available, use Full
+accept/reject with the resolved decision; retain cache provenance
+\end{verbatim}
+
+\textbf{费用警告：} 原 TM24 的 Full forward 为 8 complex RHS；完整 66 列
+J 通过 receiver-adjoint 仅需新增 32 RHS；likelihood gradient 只需 8
+source-adjoint RHS；一个全源 JVP 通常需 8 RHS。四个 exact JVP 已达到
+Full J 的 RHS 费用。learned JVP 只有总成本占优才值得保留。{[}E8{]}
+
+\textbf{公平对照：} Full、Krylov recycling、Broyden/secant、固定
+surrogate delayed acceptance、DINO 类 derivative-informed model、相同
+proposal 的无证书完整校正。只有检查费用与 fallback 全计入后 material
+MCSE/秒或 probability accuracy/秒更好，才称加速。{[}L7{]}
+
+\hypertarget{ux7b97ux6cd5-eux6709ux6b63ux786eux76eeux6807ux7684ux52a8ux6001ux51e0ux4f55ux6838ux4e0eux6709ux9650-bracket-ux5b9eux9a8c}{%
+\subsection{算法 E：有正确目标的动态几何核与有限 bracket
+实验}\label{ux7b97ux6cd5-eux6709ux6b63ux786eux76eeux6807ux7684ux52a8ux6001ux51e0ux4f55ux6838ux4e0eux6709ux9650-bracket-ux5b9eux9a8c}}
+
+选择对称正定 mobility，首个稳健版本为
+
+\[A(x)=P_w(x)+\epsilon P_s(x),\quad \epsilon>0,\]
+
+或使用软谱 \(A_\lambda(H)\) 加材料任务预条件。正确 Itô 过程为
+
+\[dX_t=[A\nabla\log\pi+\operatorname{div}A]dt+\sqrt{2A}\,dW_t.\]
+
+Fokker--Planck 方程为
+\(\partial_t p=\nabla\cdot[A(p\nabla U+\nabla p)]\)，在全空间充分衰减或无通量边界条件下
+\(p=\pi\) 是稳态。若在原 uniform box
+上运行必须正确处理边界；Gaussianized 坐标避免有限 box
+反射，但尾部仍有非爆炸/可积条件。
+
+一维反例显示 omission 的作用：无 divergence drift 的
+\(dX=a(X)(\log\pi)'dt+\sqrt{2a(X)}dW\) 在零通量条件下得到
+\(p\propto\pi/a\)，并非 \(\pi\)。一般多维偏差更复杂。
+
+如果 \(A=\sum_iX_iX_i^T\)，正确 Stratonovich drift 是
+\(\sum_iX_i(X_i\log\pi+\operatorname{div}X_i)\)。Hörmander
+可以在足够光滑、bracket-generating 等条件下让连续低秩过程获得全维
+endpoint density；它不自动给出唯一稳态或有限预算 mixing。P1
+接缝处正则性与全部 66 维可达性均须另查。{[}L11,L14--L16{]}
+
+实施上先用 full-rank Gaussian proposal 加完整 MH ratio。即使省掉
+divergence drift，\textbf{完整 MH 仍可保留目标}，只是它不再模拟上述连续
+SDE；这常是比昂贵 divergence 计算更合理的 baseline。纯 rank-4 Euler
+proposal 的前后 affine 支持通常不同，不能以伪 determinant 冒充普通 MH
+密度。
+
+额外监督风险 drift \(u_R\) 一般改变 posterior；只有
+\(\nabla\cdot(\pi u_R)=0\)
+且边界通量合法，才能保持原目标。可将风险目标用于 mobility、步长或合法
+kernel 的选择，而不是随意加奖励梯度。kernel 混合权重第一轮只依赖固定
+\(y\)；若按当前状态选择，必须将相应反向选择概率或合法增广变量计入，而不是任意混合几个各自不变的核。
+
+\textbf{bracket 子实验：} 分别比较 frozen weak、dynamic weak、直接
+bracket 增量、可逆 commutator map、bracket-enriched full-rank
+covariance、普通 curvature/secant 方向。可逆 map \(T\) 配对
+\(T^{-1}\)、方向选择与增广变量满足可逆性时，接受比包含
+\(\pi(Tx)|\det DT(x)|/\pi(x)\) 及反向选择概率。数值 Euler
+回路若非真正互逆，需要对实际映射修正；不能按理想 flow 忽略 determinant。
+
+\textbf{判定：} 非零 bracket
+只是机制入门。只有任务尺度横向位移、数据余量、prior 代价和 material
+ESS/MCSE 对总费用共同占优，才扩大。否则保留其解释作用，停用绕行机制。
+
+\hypertarget{ux600eux6837ux9a8cux8bc1ux6982ux7387ux800cux4e0dux7b49ux5f85ux5b8cux6574-mcmc-teacher}{%
+\section{7. 怎样验证概率而不等待完整 MCMC
+teacher}\label{ux600eux6837ux9a8cux8bc1ux6982ux7387ux800cux4e0dux7b49ux5f85ux5b8cux6574-mcmc-teacher}}
+
+\hypertarget{ux7528ux4e0dux540cux6307ux6807ux56deux7b54ux4e0dux540cux95eeux9898}{%
+\subsection{7.1
+用不同指标回答不同问题}\label{ux7528ux4e0dux540cux6307ux6807ux56deux7b54ux4e0dux540cux95eeux9898}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+问题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主指标
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+不能替代它的指标
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+成像估计是否更好 & 新父样本材料 MSE；MAE 与相分层为次级 & 最好一张
+sample 的 oracle GT 距离 \\
+条件密度是否更好 & 同一全 66 坐标的 held-out NLL；joint proper score &
+不同投影空间的 raw NLL 直接比大小 \\
+条件概率是否可信 & 数据依赖 SBC、材料/空间投影覆盖、分层校准 & 参数-only
+SBC 或单一边缘 90\% 覆盖 \\
+材料世界是否合法 & 原 decoder pushforward、属性合法、完整 residual &
+逐像素实虚范围合法 \\
+探索是否覆盖 & 固定目标函数的链间一致、尾 ESS、MCSE、转移记录 &
+高接受率或终点 weight ESS \\
+是否节省物理计算 & 同精度下 wall/RHS/内存与训练摊销 & projector
+Frobenius error 或单次网络时间 \\
+\end{longtable}
+
+风险的统计单位始终是独立父材料/观测对象。像素、同对象的 K 个样本、三训练
+seed 都不增加独立 parent 数。若同材料生成多个噪声重复，split 与
+bootstrap 应以材料父样本成组。
+
+\hypertarget{ux4e00ux4e2aux539f-p1-ux7684ux5fc5ux8981ux6982ux7387ux68c0ux9a8c}{%
+\subsection{7.2 一个原 P1
+的必要概率检验}\label{ux4e00ux4e2aux539f-p1-ux7684ux5fc5ux8981ux6982ux7387ux68c0ux9a8c}}
+
+\textbf{命题 T3（prior-predictive residual 恒等式）。} 跨独立原
+prior-predictive 对象，若每个 \(Y\) 抽取一个正确 posterior 样本
+\(X'\mid Y\)，则 \((X',Y)\) 与原联合模拟 \((X_{\rm GT},Y)\) 同分布。因此
+
+\[\Phi(X';Y)=\frac{\|F(G(X'))-Y\|_{\mathbb{C}}^2}{\sigma^2}
+\sim\operatorname{Gamma}(256,1)=\tfrac12\chi^2_{512}.\]
+
+证明只需 \(p(y)\pi_y(x)=p(x)p(y\mid x)\) 和 256 个独立 circular-complex
+Gaussian noise 分量。该检验每个对象只需一个预定 candidate 的 Full
+forward；选择最小 residual 的 sample 会破坏恒等式。
+
+这是\textbf{跨观测的必要条件}，不是固定 \(y\) 下 residual
+的条件分布，也不是通过后就完成校准。不能以优化点 100\% 进入 noise-ball
+作为 posterior 优势；正确完整 posterior 不应被悄悄裁去其 likelihood
+tails。
+
+更强的 SBC 在每个 \(y\) 下比较真值与生成样本的
+likelihood、随机材料投影、ROI 平均、相体积分数等 test quantities 的
+rank。参数-only SBC 可被完全忽略 \(y\)、只抽 prior
+的方法蒙混通过；数据依赖 quantities 是必要补充。{[}L17,L18{]}
+
+标准离散 rank 均匀性还要求给定 \(y\) 时真值与 \(K\)
+个候选具有适当的条件交换性；主检验使用独立 amortized draws。连续 MCMC
+链、带权 IS 粒子与重采样复制不能直接套用 iid rank
+的置信带；需另作相关性控制、独立运行或适用的校准构造，披露其条件。
+
+\hypertarget{ux6982ux7387ux68c0ux9a8cux7ec4ux5408ux4e0eux8d44ux683cux63aaux8f9e}{%
+\subsection{7.3
+概率检验组合与资格措辞}\label{ux6982ux7387ux68c0ux9a8cux7ec4ux5408ux4e0eux8d44ux683cux63aaux8f9e}}
+
+建议冻结 16 个材料实化随机投影、4 个低频空间投影、ROI 均值/能量、3
+个原有 fraction 阈值事件，以及数据失配 \(\Phi\)。对含 plateau
+原子、离散相事件或数值 ties 的 SBC，必须使用预先规定的随机
+tie-breaking；直接使用严格小于计数会使正确 posterior 也偏离均匀
+ranks。二值事件优先用 Brier/log score 与
+reliability，明确离散区间覆盖是否随机化。连续统计量绘制 50/80/90/95\%
+coverage 与 calibration error，同时做父样本 bootstrap 与预定
+multiplicity 控制。生成模型的独立样本间 \(\widehat R=1\)
+没有证明意义；那只说明随机种子独立。
+
+material energy score 为
+
+\[\mathrm{ES}(Q,\chi)=E_Q\|\Chi'-\chi\|_M-\tfrac12E_Q\|\Chi'-\Chi''\|_M.\]
+
+它对材料 law 有意义，且不要求 ambient Lebesgue
+density；高维时仍可能对相关性不敏感，所以补充空间 variogram/projection
+分数。完整 latent NLL 可对 latent aliases 敏感，而材料 score
+只关心物理材料；两者应同时保留。
+
+``通过 amortized 校准诊断''``在指定观测上获得经验合格
+reference''``证明渐近不变分布正确''``获得统一误差证书''是四种不同资格。不能把其中任何一种直接写成所有观测的认证
+posterior。
+
+\hypertarget{full-reference-ux7684ux62dfux8baeux64cdux4f5cux6807ux51c6}{%
+\subsection{7.4 FULL reference
+的拟议操作标准}\label{full-reference-ux7684ux62dfux8baeux64cdux4f5cux6807ux51c6}}
+
+对预先选定的开发对象，至少 4 条不同初始化链；预定的材料和 latent
+统计量需 rank-normalized split-\(\widehat R<1.01\)、bulk/tail effective
+sample size 均≥400，材料均值 RMS MCSE≤0.001。对材料实化投影
+variance，要求
+MCSE≤\(\max(0.1\widehat v,10^{-6})\)（材料平方单位）；对预定事件概率要求绝对
+MCSE≤0.01。罕见事件零命中不得记作零不确定性：只有可用独立/有效样本合同支持的保守概率上界低于0.01，才能以该上界报告，否则标记未评估。再与独立
+kernel、由已保存轨迹按预定一半/全部预算的结果作误差范围内一致性核查；额外翻倍运行必须来自阶段剩余额度。常数链、未知原因的常数统计量不能因
+MCSE0 自动合格，理论上确定的常数另标注；SMC 同时报告完整
+ancestry、genealogical effective size 和 mutation mixing。
+
+这些是新阶段建议的\textbf{经验资格门}，仍不是排除全部漏模式的定理。没有通过时保留
+UNQUALIFIED；这不阻断 joint-simulation 风险与 conditional density
+的独立评价。R2 的 field2 logZ 原门未过，R3 不得事后修改它。
+
+\hypertarget{ux9ad8ux7ef4ux6821ux6b63ux7684ux73b0ux5b9eux8fb9ux754c}{%
+\subsection{7.5
+高维校正的现实边界}\label{ux9ad8ux7ef4ux6821ux6b63ux7684ux73b0ux5b9eux8fb9ux754c}}
+
+已知 density 的 MH、IS 或 tempering
+提供的是明确目标，不是免费混合。第一个 correction pilot 可用 1,024
+个候选；若最大归一权重大于 0.2、weight ESS 小于
+50，或独立批次关键材料矩差异超预定阈值，不扩大相同 proposal
+的样本量来宣称成功。应回到强条件学习、base 选择、局部事件定义或 proposal
+族。
+
+可采用固定 mixture 的 independence MH+pCN、以全维 Gaussian innovation
+保持支持的局部 MALA，或从优质 learned proposal 出发的正规 bridge。bridge
+的增量权重、Jacobian、重采样与全部先祖都要记录。source-by-source SMC
+已失败，只有带具体新耦合机制时才重试。
+
+文献中的接受率到 TV、importance 二阶矩到 KL 的诊断有稳态或大样本条件。R2
+的不混合短链不满足这些前提，不能用观察到的接受率作全局 TV
+证书。{[}L4,L28{]}
+
+\hypertarget{ux4e0bux4e00ux8f6eux5927ux578b-campaign-ux7684ux5177ux4f53ux8bbeux8ba1}{%
+\section{8. 下一轮大型 campaign
+的具体设计}\label{ux4e0bux4e00ux8f6eux5927ux578b-campaign-ux7684ux5177ux4f53ux8bbeux8ba1}}
+
+\hypertarget{ux603bux534fux8baeux4e0eux5efaux8baeux9884ux7b97}{%
+\subsection{8.1
+总协议与建议预算}\label{ux603bux534fux8baeux4e0eux5efaux8baeux9884ux7b97}}
+
+下表是新 campaign 的\textbf{拟议硬上限}，不继承 R2
+余额，不构成当前新增实验授权。优先由 Stage 0--I
+决定是否值得继续后面的物理开销；所有门槛在新测试观测生成前冻结。预算余量不是自动续烧失败机制的理由。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2222}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2222}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2222}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+阶段
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+新 complex RHS 上限
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+受控 CPU wall 上限
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+GPU 上限
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+核心产物
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Stage 0 合同、静态审计与小型解析单元核查 & 0 & 2 h & 0 &
+目标、成本表、split、算法与统计冻结方案 \\
+Stage I 条件概率与直接材料风险 & 24,000,000 & 24 h & 48 h & 全维
+conditional generator、低容量风险对照、独立校准 \\
+Stage II 动态几何与自适应刷新 & 6,000,000 & 12 h & 16 h &
+同精度的物理费用比较、残差区间与错误刷新审计 \\
+Stage III 非完整探索与统计积分 & 8,000,000 & 24 h & 8 h & task-scale
+可达性、legal kernels、材料 MCSE/RHS \\
+Stage IV 新泛化与更大二维模型 & 20,000,000 & 32 h & 24 h &
+噪声/采集/prior 变化及二维规模证据 \\
+合计 & 58,000,000 & 94 h & 96 h & 达到门槛才执行完整路线 \\
+\end{longtable}
+
+CPU wall 按受控作业定义，不等价于
+core-hours；硬件、线程、并发与峰值内存另记。跨网格的 RHS
+成本不相等，必须同时给出实际
+wall、LU/factorization、matvec、梯度、存储和网络训练。三维不含在上表；只完成设计，具备离散物理验证与新预算后另立目标。
+
+\hypertarget{stage-0ux5148ux628aux53efux6267ux884cux5408ux540cux8865ux9f50}{%
+\subsection{8.2 Stage
+0：先把可执行合同补齐}\label{stage-0ux5148ux628aux53efux6267ux884cux5408ux540cux8865ux9f50}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  固定原 P1 target ID、先验/decoder/noise/packing、ROI 与 solver
+  revision；恢复必要的完整训练数据和外部 A30
+  backend。精简交接包没有真值全集，缺失时不能凭空重建或换 prior。
+\item
+  将原 R2 两批及全部历史 DEV 标为 EXPOSED。建立新命名空间和独立
+  append-only ledger；不得修改旧 closure、ledger 或原冻结模型。
+\item
+  在无 Maxwell 的解析测试中验证 prior transform、density
+  determinant、CFM endpoint law、layer-cake 积分、稀疏矩阵恒等式、SDE
+  divergence 和实际反向 proposal。
+\item
+  明确原接口 Full=8、J=32、gradient=8 RHS；新增 solver
+  用实际计数。输出每类估计器共享与独立费用，禁止重复扣除或把 paid setup
+  叫免费。
+\item
+  先登记五条算法、容量、seed、主比较、超参数网格、各阶段停止门；构建离线
+  GT evaluator 与在线 proposal 输入隔离。
+\end{enumerate}
+
+\hypertarget{stage-iux628aux98ceux9669ux66f4ux597dux548cux6982ux7387ux66f4ux597dux5206ux5f00ux9a8cux8bc1}{%
+\subsection{8.3 Stage
+I：把``风险更好''和``概率更好''分开验证}\label{stage-iux628aux98ceux9669ux66f4ux597dux548cux6982ux7387ux66f4ux597dux5206ux5f00ux9a8cux8bc1}}
+
+\textbf{数据与模型规模。} 继续使用原 32,768 train、2,048 validation
+joint pairs。先用已有 512/128 context
+比较小方法；只有开发门通过，才把同预算 anchor context 扩为 2,048
+train、512 validation，仍是原父样本的子集而非新增独立材料。所有新
+context 统一 native96+probit64 cap；旧低预算 context 可用于有 budget
+token 的扩展训练，但不混作同分布控制。
+
+由最坏每 parent \(160\times(8+32)=6,400\) RHS，可知 2,560 个训练/验证
+context cap 为 16.384 M RHS。再预留 128 个校准开发对象、512
+个首批新锁定对象、256 个另行冻结的机制确认对象，其 truth+anchor 最坏约
+5.742 M RHS。余下约 1.874 M
+用于预定概率诊断、代表优化和失败；实际状态早停可少于此上限，不能反向假定所有任务均免费。冻结
+primary 方法后才产生首批 locked 观测。
+
+这里 96+64 是\textbf{所有 fresh forward attempts} 的 cap，而非可另做任意
+line search 的迭代数；每个新点至多付一次完整 J。普通优化与代表补偿也受
+fresh-state 与 RHS
+双上限约束。若移植代码不满足这一合同，应先下调对象数或 cap，不能沿用
+6,400 的上界。
+
+为避免生成样本数隐性放大物理费用，Stage I 明确采用下面的子预算。所有无
+Full 的材料均值/energy score 可用 \(K=128\) 个 decoded samples；这不赋予
+likelihood 校验资格。需要 Full
+的部分只对测试前冻结的最多三个概率主方法执行。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+诊断/动作
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+固定规模
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+新 RHS cap
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+开发 likelihood-SBC & 128 对象 × 3 方法 × 64 样本 × 8 & 196,608 \\
+Locked likelihood-SBC & 首批中预定 128 对象 × 3 方法 × 64 样本 × 8 &
+196,608 \\
+跨对象 Gamma 检验 & 首批 512×3、确认批 256×2；每对象一个预定样本 &
+16,384 \\
+物理代表 & 512+256 对象，每对象最多 16 fresh states × 40 & 491,520 \\
+等费用普通优化控制 & 同 768 对象，每对象最多 16 fresh states × 40 &
+491,520 \\
+初始 correction pilot & 8 个开发对象 × 3 方法 × 1,024 checked candidates
+× 8 & 196,608 \\
+以上小计 & 不把未混合 pilot 当 FULL reference & 1,589,248 \\
+失败/重算等余量 & 由真实账本控制，不作为自动扩大许可 & 285,184 \\
+\end{longtable}
+
+若三个主方法都做 full likelihood-SBC，已校验候选可以按预定规则复用到
+Gamma 检验，实际费用可减少；上表按不复用保守预留。Full reference
+的四链资格评估属于 Stage III，不能从这组小 correction pilot
+中宣称取得。CPU/GPU cap 可能先于 RHS
+用尽，届时保留未完成项目，不保证在预算内完成所有最大样本数。
+
+\textbf{必需比较。} 原最强 Probit 点、额外等成本普通优化、R2
+CNN；经典校准/滤波；算法 B；full-field moment head；普通 full66
+spline；strong--weak triangular spline；无几何 CFM；有界
+geometry-weighted CFM；一个条件 score/空间条件生成竞争者；均值与受约束
+representative。
+
+full-field 生成有两种语义必须分开：空间网络输出合法 latent、再经原
+decoder 的方案仍属于原 prior pushforward；直接在 ambient
+材料上扩散、加噪或优化投影的方案可能改变统计目标，需另行标记，不能用其
+ambient NLL 与原 latent NLL 排名。
+
+小风险方法≤30k 参数；条件生成器先比较 0.3--0.8
+M，同样本与同训练时限，之后最多 2 M。三固定
+seed；每个家族的父样本平均损失与 ensemble 图分开。所有 learned geometry
+对照配同容量无几何、decoder-only、随机 frame、多随机 frame 和真实训练
+frame。
+
+\textbf{预定主要比较。} (i) 最佳预冻结直接风险方法相对冻结 R2 CNN 的材料
+MSE；(ii) 主 full66 density 相对同容量简单条件 density 的 NLL；(iii)
+geometry 输入对同容量模型的独立贡献。多重比较调整后报告区间；不从 17
+类方法的测试结果中重选主模型。描述性目标可设相对 CNN
+再改善≥2\%，但低于这一幅度不等于数学无效。
+
+\textbf{扩展条件。} 概率路线要有独立 NLL/样本 proper score
+收益且无明显的 data-dependent calibration
+失败；风险路线要在新父样本上有稳定的主风险改善。两者可分别通过。如果生成器概率较好却均值不胜
+CNN，保留其不确定性价值；如果风险头成功而概率失败，仍保持原风险资格，不互相冒名。
+
+\hypertarget{stage-iiux51e0ux4f55ux4e0e-learned-jacobian-ux7684ux4ef7ux503cux5fc5ux987bux7528ux8d39ux7528ux9a8cux8bc1}{%
+\subsection{8.4 Stage II：几何与 learned Jacobian
+的价值必须用费用验证}\label{stage-iiux51e0ux4f55ux4e0e-learned-jacobian-ux7684ux4ef7ux503cux5fc5ux987bux7528ux8d39ux7528ux9a8cux8bc1}}
+
+选 96 个开发对象，覆盖高/低饱和、不同谱隙与 anchor residual；不按 GT
+成败选对象。每对象固定相同起点、proposal seed 和最多 16
+次状态更新，比较：frozen Full J、every-step Full
+J、Broyden/secant、learned projector、learned low-rank J、soft spectral
+predictor、adaptive exact refresh、同容量无几何生成器。
+
+预测目标优先顺序为：候选 likelihood change/误差区间、任务 JVP/VJP、软谱
+action、cluster projector、低秩 factor、完整 J。仅报告
+\(\|\widehat P-P\|\) 或 principal angles
+不够；同时记录材料动作误差、false accept/reject、谱 crossing、decoder
+seam crossing、step rejection 与全部 fallback。
+
+\textbf{强基线：} DINO 类 joint map/Jacobian surrogate+delayed
+acceptance；普通 Krylov recycling；不学习的 phase-event
+reuse；对每次提议都 Full 的原核。近似模型与 DINO
+若条件输入不同，必须单列信息量差别。
+
+\textbf{拟议 gate：} 在同概率/材料精度容差下，总 wall 或部署 RHS
+降低至少 20\%，且独立父样本不确定区间支持节省；不接受只减少 J
+数量但增加更多 forward 的结果。确定性证书的错误判断应为 0；验证证书的
+oracle Full 审计费用单列为研究成本，不能计作部署
+savings。经验误差触发器若有误判，只能在完整校正后保留近似加速解释。
+
+\textbf{缓存与适应合法性。} 评估器的 cache
+只改变求值成本、区间最终仍包住精确值时，可以动态复用。若 proposal metric
+本身依赖过去的 Broyden history，需要冻结 warmup
+后规则、采用可逆增广状态或适当 adaptive MCMC 理论；不能以``最终算了 Full
+likelihood''掩盖错误的 proposal ratio。
+
+\textbf{6 M 的子预算。} 成对固定轨迹与重放1.0 M；训练状态与方向查询2.0
+M；残差/稳定性区间及独立 Full 审计1.5 M；事件复用成本先导1.0
+M；失败余量0.5 M。已有已付 J/state
+可复用，但原始获取费用单列用于部署摊销；不得把同一物理调用在两个子项目各自当作免费。
+
+\hypertarget{stage-iiiux5148ux68c0ux9a8c-bracket-ux662fux5426ux503cux5f97ux518dux7814ux7a76-transport}{%
+\subsection{8.5 Stage III：先检验 bracket 是否值得，再研究
+transport}\label{stage-iiiux5148ux68c0ux9a8c-bracket-ux662fux5426ux503cux5f97ux518dux7814ux7a76-transport}}
+
+\textbf{III-A 几何门。} 在 32 个仅用于开发的 anchor 上，固定
+rank/cluster 与场选择；至少三个步长、反向回路、谱隙/条件数、材料
+derivative rank，记录 bracket 绝对幅度及 normal fraction，不能只报
+leakage 比例。分别在 64 场变量与允许属性变化的完整 66 维构造中检验；跨
+seam 单独报告。
+
+任务尺度固定为原 .02/.04 材料 RMS，并保留 .08
+为尺度压力测试。比较四段回路与直接 bracket、普通 curvature/secant，以及
+Full-corrected 的强方向步进。沿中间轨迹要用连续 residual bound
+或足够细化的带误差界监测；只检查端点不叫路径可行。
+
+\textbf{III-B 概率门。} 在 8 个开发对象上，每个方法使用相同固定 RHS
+cap，而非相同步数。比较算法 C、全秩几何 MALA/HMC/pCN、learned full66
+proposal、bracket-enriched covariance 与 Poisson/Stein 统计改进。总计 8
+M RHS 内保留至少四链、所有因拒绝产生的重复链状态、各批 MCSE 与完整
+ancestry；不得去重后计算均值或 effective sample size。若无法达到 §7.4
+的经验资格，则报告 UNQUALIFIED；不为取得合格标签继续扩大相同失败实验。
+
+\textbf{8 M 的子预算。} 几何门0.8 M；概率比较6.144 M；Poisson/Stein 额外
+score 查询0.256 M；独立审计与失败余量0.8
+M。概率主比较固定六臂：Full-evaluator elliptical slice、Full
+pCN、预先选定的 MALA/HMC 基线、完整 learned proposal+固定 pCN
+mixture、全秩 bracket/task covariance 核、事件 evaluator 的同一
+elliptical slice。每臂8对象×4链×32,000 RHS，合计6.144
+M。warmup、训练后适应、失败和 fallback
+均包含于每链上限；该长度未必达到资格，不能以预算已用完为合格理由。Full/event
+slice 的共同随机数重放必须保留两臂真实费用；若一臂先用尽
+cap，按费用而非步数比较。
+
+\textbf{III-C 风险与概率体积。} Oracle GT 到可达候选的最短距离只作离线
+coverage。实际输出以预先冻结的概率均值、风险策略和代表规则分别评价。正确
+sampling 的时间平均与任意弧长平均分开；只有全维 tube
+密度和重叠权重可计算时才启动 multi-chart 积分。
+
+\textbf{停止规则。} 若 normal bracket 虽大但绝对位移小、prior/data
+代价过高、直接 bracket 更便宜或 material
+ESS/成本没有增量，停止四段绕行支线。若相事件复用的 active set 大到无法
+break even，移除它；允许结果证明这个特化在 TM24 不值得。
+
+\hypertarget{stage-ivux7248ux672cux5316ux6cdbux5316ux4e0eux4e8cux7ef4ux6269ux5c55}{%
+\subsection{8.6 Stage
+IV：版本化泛化与二维扩展}\label{stage-ivux7248ux672cux5316ux6cdbux5316ux4e0eux4e8cux7ef4ux6269ux5c55}}
+
+先选两个变化轴确认，再扩大，避免全笛卡尔积消耗预算：噪声
+\(\sigma/2,2\sigma\)；4-source/16-receiver
+子采集与小角度几何旋转；新的对比度区间；correlation length
+.04/.16；decoder halfwidth .25/1.0。这些都定义新统计目标，不能称原 P1
+posterior 校准。
+
+每个变化区分 zero-shot、明确条件化于 noise/acquisition/prior
+参数的训练、以及重训三种合同；不得测试后微调再报告 zero-shot。先用每条件
+128 对象筛机制，选定条件另生成 256
+个独立确认对象。训练/验证/确认均使用新注册 seeds 和父样本分组。
+
+更大二维先用 48×48 或
+64×64，但需明确网格加密是否保持同一连续材料模型、是否改变
+latent/prior、离散 forward 是否收敛；分别比较 fixed-latent
+与随分辨率扩大的 latent。成本图以网格/源接收规模和 total wall
+为轴，报告内存与 cache 上限。
+
+三维 vector Maxwell 只在二维机制已通过且拥有独立 solver
+验证后进入：需重新定义极化、矢量场、观测白化、属性合法性、离散误差和
+stability certificate。不能把二维标量 TM 的 bracket 证据或 surrogate
+速度直接外推到三维。
+
+\hypertarget{ux65b0ux9896ux6027ux8c03ux67e5ux4e0eux957fux671fux65b9ux5411}{%
+\section{9.
+新颖性调查与长期方向}\label{ux65b0ux9896ux6027ux8c03ux67e5ux4e0eux957fux671fux65b9ux5411}}
+
+\hypertarget{ux6700ux76f4ux63a5ux7684ux5148ux4f8bux610fux5473ux7740ux4ec0ux4e48}{%
+\subsection{9.1
+最直接的先例意味着什么}\label{ux6700ux76f4ux63a5ux7684ux5148ux4f8bux610fux5473ux7740ux4ec0ux4e48}}
+
+截至本轮检索，teacher-free conditional flow、posterior
+transport+MH、LIS/goal-oriented Bayesian inversion、几何 MCMC、learned
+derivatives、residual correction、wave inverse-scattering diffusion
+都已有明确先例。尤其需面对三组直接竞争者：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  FMPE、2026 年有限数据 CFM 研究及 2026 年 10 月 PDE posterior flow
+  研究，已覆盖联合训练、source 选择、塌缩、密度与校正。{[}L1--L4{]}
+\item
+  JMLR 2025 DINO-geometric MCMC 已覆盖 forward/Jacobian
+  联合学习、低秩后验几何、delayed acceptance 与训练摊销；residual-based
+  neural-operator correction 也有专门研究。{[}L7,L13{]}
+\item
+  cRG-Flow 已用于电磁逆散射；U-Flow 与 Back-Projection Diffusion
+  是波动/标量 Helmholtz 逆散射概率生成先例；2025 微波 conditional
+  diffusion 已生成多个候选并用 EM forward 选择低 discrepancy
+  样本。后两种不同物理设定不能混称为 3D vector Maxwell
+  校准成果。{[}L21--L24{]}
+\end{enumerate}
+
+因此``CNN+Flow+Maxwell loss''``学习 J 代替计算 J''``非对合所以用
+diffusion''都不足以形成强 IEEE TAP
+的独立贡献。文献检索不是穷尽性优先权证明；尚未检到完全相同组合，也不能据此声称首次。
+
+\hypertarget{ux54eaux4e9bux5185ux5bb9ux53efux80fdux5f62ux6210ux53efux8bc1ux660eux53efux53d1ux8868ux7684ux7814ux7a76ux6838ux5fc3}{%
+\subsection{9.2
+哪些内容可能形成可证明、可发表的研究核心}\label{ux54eaux4e9bux5185ux5bb9ux53efux80fdux5f62ux6210ux53efux8bc1ux660eux53efux53d1ux8868ux7684ux7814ux7a76ux6838ux5fc3}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+方向
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+可证明的部分
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+必须由新实验建立
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主要重合/风险
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Decoder 相事件与有限 Maxwell 响应复用 &
+事件分段、有限响应恒等式、残差界、接受判断保持 & active set/reuse
+的成本优势、强耦合 posterior 的真实 mixing & Woodbury/slice/ROM
+本身已知；可能只适用于特定 decoder \\
+材料任务误差导向的物理查询 & GN 双侧作用、Poisson/mean error
+关系、条件刷新规则 & 比 Full/Krylov/DINO 更省、且不牺牲统计精度 &
+Goal-oriented 方法成熟；动作保真度不等于 GT 风险 \\
+全维条件输运与统计目标保护 & joint-learning、加权速度目标、密度/支持合同
+& 全 66 维概率质量、动态几何增量、泛化 & CFM/SBI/PDE+MH 已高度覆盖 \\
+相阈值矩与双输出决策 & layer-cake、风险分解、代表风险下界 &
+相对简单后处理及 CNN 的增量、空间依赖 & 若只复现经典去噪，TAP
+独立贡献弱 \\
+非完整材料控制 & 局部 bracket 恒等式与有限步代价 &
+任务尺度可达性、概率体积/统计收益、成本 &
+静态参数可直接步进；绕行未必有价值 \\
+\end{longtable}
+
+\hypertarget{ux4e3bux653bux4e0eux5e76ux884cux5b89ux6392}{%
+\subsection{9.3
+主攻与并行安排}\label{ux4e3bux653bux4e0eux5e76ux884cux5b89ux6392}}
+
+\textbf{主攻：decoder-aware 完整条件材料输运与按概率判断分配 Maxwell
+精度。} 算法 A 是统计基座，C/D 提供最有可能超出普通生成网络的 Maxwell
+计算机制。先用 spline 与 CFM 竞争，再将真正有成本收益的 evaluator
+接入合法校正。最有潜力的理论不是``新一种 flow''，而是：有限 decoder
+变化如何决定响应更新秩；计算误差何时已经足以决定概率动作；这些机制是否降低固定材料统计精度所需的总求解量。
+
+\textbf{并行一：相阈值条件矩与材料估计/物理代表双输出。}
+这是风险收益最有证据基础、费用最低的一条支线，也会给生成器一个非常强的决策
+baseline。若它解释大部分 CNN
+收益，应该诚实地将该成果定位为结构化材料风险估计，而非动态弱几何。
+
+\textbf{并行二：有预算门的动态几何与 bracket 机制研究。} 将 Theory 1/2/E
+结合起来，以材料统计量的渐近方差与计算费用评价 mobility。最多投入 Stage
+III 的预设份额；优先 direct bracket 或 covariance
+enrichment，避免先承诺非完整绕行。
+
+\textbf{暂缓：} 纯弱退化 Euler sampler、没有 transverse density 的
+trajectory posterior、大型 Schrödinger bridge、无物理增量证据的
+full-field ambient diffusion、用 RL 选择刷新、反复扩充同一失败
+Gaussian/Student
+proposal、直接跳到三维。它们可在明确瓶颈与新的成功条件出现后重启。
+
+\hypertarget{ux5982ux4f55ux5224ux65adux5f3a-ieee-tap-ux673aux4f1a}{%
+\subsection{9.4 如何判断强 IEEE TAP
+机会}\label{ux5982ux4f55ux5224ux65adux5f3a-ieee-tap-ux673aux4f1a}}
+
+目前可给出的判断是\textbf{有值得投入的具体研究假设，但强 TAP
+贡献尚未成立}。最有说服力的论文链应同时包含：一个实际 Maxwell/decoder
+特化的有限响应命题；严格的概率/风险角色分离；相对 DINO、完整
+J、传统合法采样与小 CNN
+的决定性对照；至少一项噪声/采集变化和更大二维的真实成本收益。
+
+若最终只有``生成器输出更多图''和原 P1
+上约几个百分点风险改善，论文应下调为方法/应用增量。如果相事件导致可计算的噪声级求解停止规则，并在独立变化下显著改善材料
+MCSE/成本，则理论、计算电磁学与概率成像之间才形成实质连接。
+
+\hypertarget{ux53efux8fbeux6027ux6982ux7387ux8d28ux91cfux98ceux9669ux4e0eux7269ux7406ux6027ux7684ux6700ux7ec8ux5173ux7cfb}{%
+\section{10.
+可达性、概率质量、风险与物理性的最终关系}\label{ux53efux8fbeux6027ux6982ux7387ux8d28ux91cfux98ceux9669ux4e0eux7269ux7406ux6027ux7684ux6700ux7ec8ux5173ux7cfb}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+命题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+是否一般成立
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+原因或反例
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+GT 可达 ⇒ 高 posterior mass & 否 & 可达集合可包含极低 prior/likelihood
+质量状态 \\
+高 posterior mass ⇒ 每份 GT 可恢复 & 否 &
+完全不信息化的随机细节仍不可辨认 \\
+数据相容 ⇒ 重要 posterior mass & 否 & 可行点可位于极窄、低 prior
+的区域 \\
+完整 posterior 正确 ⇒ 样本逐个比 anchor 更近 GT & 否 & 一个独立
+posterior sample 的条件 MSE 是 posterior mean 的两倍 \\
+posterior mean ⇒ 单一合法物理世界 & 否 & 非线性 decoder image/forward
+不对平均封闭 \\
+正确 posterior 样本均值 ⇒ 随样本增多逼近 Bayes mean & 有条件成立 &
+需正确目标、可积性及适当独立/遍历条件 \\
+低材料 MSE ⇒ 完整 posterior 正确 & 否 &
+只预测一个条件均值已可很优，却不提供联合概率 \\
+learned metric 有误差 ⇒ posterior 一定偏 & 否 & 合法完整 MH
+可只改变效率；错误 density/ratio 才改变目标 \\
+\end{longtable}
+
+若每个观测的真实 posterior 材料方差为 \(V_y=E\|\Chi-\mu_y\|^2\)，一个与
+GT 条件独立的正确 posterior draw 作为点估计，其风险为 \(2V_y\)；\(K\)
+个独立正确样本的均值风险为 \((1+1/K)V_y\)。这说明不能用``每张样本都接近
+GT''要求一个正确概率模型，反过来也不能用一个好均值证明后验覆盖。
+
+当弱方向完全不被观测识别时，prior-informed
+网络仍可利用相关结构降低平均风险。若该方向在 prior
+下也独立于所有可见信息，其不可约条件方差无法消除；任何方法保证找回每个
+GT 的这部分偶然细节都违反统计信息限制。R3
+应追求可检验的总体决策收益、条件分布质量和物理费用，而不是 oracle
+个体恢复。
+
+\hypertarget{ux6765ux6e90ux8303ux56f4ux4e0eux95eeux9898ux8986ux76d6ux7d22ux5f15}{%
+\section{11.
+来源、范围与问题覆盖索引}\label{ux6765ux6e90ux8303ux56f4ux4e0eux95eeux9898ux8986ux76d6ux7d22ux5f15}}
+
+\hypertarget{ux56faux5b9aux5b9eux9a8cux6765ux6e90}{%
+\subsection{11.1
+固定实验来源}\label{ux56faux5b9aux5b9eux9a8cux6765ux6e90}}
+
+下列 E1--E8 均属于仓库 \nolinkurl{migodam/b1-probabilistic-maxwell-imaging}
+的固定 commit
+\nolinkurl{6eadb4690c962aaa95821fc4056b677f0f924a6b}。本报告实际读取上传的精简交接包，并用原配置、目标与源码核对数学约定；没有把未包含的全部真值、外部
+backend 或历史物理缓存称为已经重现。
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{{[}E1{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/RESEARCH_REPORT_ZH.md}{P3L-R2
+  完整中文研究报告}，以及
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/GPT_PRO_HANDOFF/START_HERE.md}{GPT
+  Pro START HERE}、ACTUAL\_\allowbreak{}FINDINGS、THREE\_\allowbreak{}THEORY\_\allowbreak{}QUESTIONS。
+\item
+  \textbf{{[}E2{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/SUPERVISED_RISK_RESULTS.md}{SUPERVISED\_\allowbreak{}RISK\_\allowbreak{}RESULTS.md}：父样本分割、anchor
+  子集、主估计器与冻结风险评价。
+\item
+  \textbf{{[}E3{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/NON_GAUSSIAN_POSTERIOR_REPORT.md}{NON\_\allowbreak{}GAUSSIAN\_\allowbreak{}POSTERIOR\_\allowbreak{}REPORT.md}：10
+  维 density、FULL reference、Student、SMC、MALA、field2
+  条件实验与失败资格。
+\item
+  \textbf{{[}E4{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/LEARNED_MODEL_COMPARISON.md}{LEARNED\_\allowbreak{}MODEL\_\allowbreak{}COMPARISON.md}，及同目录下机制/确认报告与
+  public\_\allowbreak{}metrics：真实谱、随机包络、回投影、过渡相归因。
+\item
+  \textbf{{[}E5{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/THEORY_AND_METHODS.md}{THEORY\_\allowbreak{}AND\_\allowbreak{}METHODS.md}：坐标、白化、likelihood
+  和几何定义。
+\item
+  \textbf{{[}E6{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/GEOMETRY_TRAJECTORY_RESULTS.md}{GEOMETRY\_\allowbreak{}TRAJECTORY\_\allowbreak{}RESULTS.md}，以及
+  \nolinkurl{public_metrics/C/jobs/C_projector_brackets/RESULTS.json}：端点、风险平均与两个
+  anchor 的局部 bracket 数值。
+\item
+  \textbf{{[}E7{]}}
+  同固定目录中的锁定评价审查、独立确认审查、FAILURE\_\allowbreak{}ANALYSIS、LOCKED\_\allowbreak{}GENERALIZATION、REPRODUCE、RESOURCE\_\allowbreak{}SUMMARY、ITERATION\_\allowbreak{}LOG
+  和 HANDOFF\_\allowbreak{}CONTENTS
+  清单。历史结果、调整区间、失败和成本按各自实际快照保留，不把中间成本快照升级为最终
+  ledger。
+\item
+  \textbf{{[}E8{]}}
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/src/p1_material/prior.py}{原材料
+  prior 源码}、target 配置，以及
+  \nolinkurl{src/p3r2/core.py}、\nolinkurl{geometry.py}：quintic
+  plateau、Gaussian/uniform 先验、当前场、接收伴随和 RHS 计费。
+\item
+  \textbf{{[}E9{]}}
+  \href{https://github.com/migodam/a17-maxwell-certified-exchange/blob/main/closure_final/START_HERE.md}{A17
+  最终 closure}，本次读取的文件 blob SHA
+  \nolinkurl{f932346c0db60caa360d944666b1b9582e090a72}。明确采用 verified
+  conditional exchange；在线 FP64 显著性门不是确定性 Maxwell
+  误差证书，非线性实验也不是加速结果。
+\end{itemize}
+
+上传 ZIP 的 SHA-256 为
+\nolinkurl{9486199125f4c72e12f17af1240c924603d6f7044a69dd980f29454d1adb9ab3}。报告的证据使用范围由该包与上述只读来源界定。新方案所有性能门槛、预算和成功条件均为研究设计。
+
+\hypertarget{ux539fux59cbux6587ux732eux4e0eux65b0ux9896ux6027ux8fb9ux754c}{%
+\subsection{11.2
+原始文献与新颖性边界}\label{ux539fux59cbux6587ux732eux4e0eux65b0ux9896ux6027ux8fb9ux754c}}
+
+检索截止
+2026-10-23。新近预印本不自动代表已同行评审。以下文献用于界定既有数学和直接方法先例；R3
+的命题中，直接代数推导与候选机制不被包装成这些基础结果的首次发现。附录使用各自局部的
+A-S/B-T/C-S 引用，文末均给出原始链接。
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{{[}L1{]}} Lipman et al.~\emph{Flow Matching for Generative
+  Modeling}. ICLR 2023.
+  \href{https://arxiv.org/abs/2210.02747}{arXiv:2210.02747}。速度回归、路径边缘和
+  CNF 的基础。
+\item
+  \textbf{{[}L2{]}} Wildberger, Dax et al.~\emph{Flow Matching for
+  Scalable Simulation-Based Inference}. NeurIPS 2023.
+  \href{https://papers.neurips.cc/paper_files/paper/2023/hash/3663ae53ec078860bb0b9c6606e092a0-Abstract-Conference.html}{会议原文}；\href{https://arxiv.org/abs/2305.17161}{arXiv:2305.17161}。联合模拟训练条件
+  posterior flow 的直接先例。
+\item
+  \textbf{{[}L3{]}} Dasgupta et al.~\emph{Conditional flow matching for
+  physics-constrained inverse problems with finite training data}.
+  arXiv:2603.14135v3, 2026-04-08.
+  \href{https://arxiv.org/abs/2603.14135}{原文}。有限样本方差塌缩、记忆和
+  source law。
+\item
+  \textbf{{[}L4{]}} Blechschmidt, Ernst, Poguntke and Sprungk.
+  \emph{Flow Matching for Fast Posterior Sampling in Bayesian Inverse
+  Problems}. arXiv:2610.02377v1, 2026-10-01.
+  \href{https://arxiv.org/abs/2610.02377}{原文}。PDE
+  条件输运、density、精度诊断与 Metropolization；其诊断条件不能略去。
+\item
+  \textbf{{[}L5{]}} Durkan, Bekasov, Murray and Papamakarios.
+  \emph{Neural Spline Flows}. NeurIPS 2019.
+  \href{https://papers.neurips.cc/paper_files/paper/2019/hash/7ac71d433f282034e088473244df8c02-Abstract.html}{会议原文}。显式可逆
+  rational-quadratic spline 与可计算 determinant。
+\item
+  \textbf{{[}L6{]}} Holzschuh and Thuerey. \emph{Flow Matching for
+  Posterior Inference with Simulator Feedback}. arXiv:2410.22573, 2024.
+  \href{https://arxiv.org/abs/2410.22573}{原文}。以
+  simulator/gradient/cost feedback 改进 flow 已有先例。
+\item
+  \textbf{{[}L7{]}} Cao, O'Leary-Roseberry and Ghattas.
+  \emph{Derivative-Informed Neural Operator Acceleration of Geometric
+  MCMC for Infinite-Dimensional Bayesian Inverse Problems}. JMLR
+  26(78):1--68, 2025.
+  \href{https://jmlr.org/papers/v26/24-0745.html}{期刊原文}。DINO、几何
+  MCMC、delayed acceptance 及成本分析，属于必须面对的直接基线。
+\item
+  \textbf{{[}L8{]}} Yu, Wang and Samworth. \emph{A useful variant of the
+  Davis--Kahan theorem for statisticians}. Biometrika, 2015.
+  \href{https://arxiv.org/abs/1405.0680}{arXiv:1405.0680}。gap-dependent
+  子空间扰动结果；不是 R3 新定理。
+\item
+  \textbf{{[}L9{]}} Duncan, Lelièvre and Pavliotis. \emph{Variance
+  Reduction Using Nonreversible Langevin Samplers}. Journal of
+  Statistical Physics, 2016.
+  \href{https://arxiv.org/abs/1506.04934}{arXiv:1506.04934}。Poisson
+  方程、渐近方差与动力学设计背景；本报告的可逆 mobility 变分另直接推导。
+\item
+  \textbf{{[}L10{]}} AlRachid, Mones and Ortner. \emph{Some remarks on
+  preconditioning molecular dynamics}. SMAI Journal of Computational
+  Mathematics 4:57--80, 2018.
+  \href{https://www.numdam.org/item/SMAI-JCM_2018__4__57_0/}{期刊原文}。统计积分效率与预条件的关系。
+\item
+  \textbf{{[}L11{]}} Giannotti, Spiro and Zoppello. \emph{Proving the
+  Chow--Rashevskii Theorem à la Rashevskii}. arXiv:2401.07546v2, 2024.
+  \href{https://arxiv.org/html/2401.07546v2}{作者全文}。用于核对控制可达性的充分条件；Chow--Rashevskii
+  定理本身是经典理论。
+\item
+  \textbf{{[}L12{]}} Murray, Adams and MacKay. \emph{Elliptical slice
+  sampling}. AISTATS 2010, PMLR 9:541--548.
+  \href{https://proceedings.mlr.press/v9/murray10a.html}{会议原文}。Gaussian
+  prior 的合法 slice 核；事件缓存只改变
+  evaluator，不改变此核的理论来源。
+\item
+  \textbf{{[}L13{]}} Cao, O'Leary-Roseberry, Jha, Oden and Ghattas.
+  \emph{Residual-based error correction for neural operator accelerated
+  infinite-dimensional Bayesian inverse problems}.
+  \href{https://arxiv.org/abs/2210.03008}{arXiv:2210.03008}。物理
+  residual 校正已有研究。
+\item
+  \textbf{{[}L14{]}} Ma, Chen and Fox. \emph{A Complete Recipe for
+  Stochastic Gradient MCMC}. NeurIPS 2015.
+  \href{https://arxiv.org/abs/1506.04696}{arXiv:1506.04696}。不变密度、状态相关扩散与必要
+  drift 的通用框架。
+\item
+  \textbf{{[}L15{]}} Xifara, Sherlock, Livingstone, Byrne and Girolami.
+  \emph{Langevin diffusions and the Metropolis-adjusted Langevin
+  algorithm}. Statistics \& Probability Letters 91:14--19, 2014.
+  \href{https://arxiv.org/abs/1309.2983}{arXiv:1309.2983}。不同参考测度下的几何
+  diffusion/MALA。
+\item
+  \textbf{{[}L16{]}} Hairer. \emph{On Malliavin's proof of Hörmander's
+  theorem}. 2011. \href{https://hairer.org/papers/hormander.pdf}{作者
+  PDF}。hypoellipticity 的光滑性、bracket 与密度条件；不能直接套用于跨
+  seam 的 C² decoder。
+\item
+  \textbf{{[}L17{]}} Talts, Betancourt, Simpson, Vehtari and Gelman.
+  \emph{Validating Bayesian Inference Algorithms with Simulation-Based
+  Calibration}. arXiv:1804.06788.
+  \href{https://arxiv.org/abs/1804.06788}{原文}。prior-predictive
+  校准不要求每份观测已有 MCMC teacher。
+\item
+  \textbf{{[}L18{]}} Modrák et al.~\emph{Simulation-Based Calibration
+  Checking for Bayesian Computation: The Choice of Test Quantities
+  Shapes Sensitivity}. Bayesian Analysis, DOI 10.1214/23-BA1404.
+  \href{https://arxiv.org/abs/2211.02383}{arXiv:2211.02383}。参数-only
+  SBC 的盲点与 data-dependent quantities。
+\item
+  \textbf{{[}L19{]}} Cui, Martin, Marzouk, Solonen and Spantini.
+  \emph{Likelihood-informed dimension reduction for nonlinear inverse
+  problems}. Inverse Problems 30:114015, 2014.
+  \href{https://arxiv.org/abs/1403.4680}{arXiv:1403.4680}。prior-relative
+  LIS 的成熟基础。
+\item
+  \textbf{{[}L20{]}} Spantini et al.~\emph{Goal-oriented optimal
+  approximations of Bayesian linear inverse problems}.
+  \href{https://arxiv.org/abs/1607.01881}{arXiv:1607.01881}。目标量导向的后验近似；新任务谱需承认该重合。
+\item
+  \textbf{{[}L21{]}} Khorashadizadeh et al.~\emph{Deep Variational
+  Inverse Scattering}. EuCAP 2023; arXiv:2212.04309.
+  \href{https://arxiv.org/abs/2212.04309}{原文}。U-Flow，验证对象为标量
+  Helmholtz 逆散射。
+\item
+  \textbf{{[}L22{]}} Zhang, Guerra, Li and Zepeda-Núñez.
+  \emph{Back-Projection Diffusion: Solving the Wideband Inverse
+  Scattering Problem with Diffusion Models}. CMAME 443:118036, 2025.
+  \href{https://arxiv.org/abs/2408.02866}{arXiv:2408.02866}。物理回投影与条件
+  diffusion 的直接波动成像先例，采用标量 Helmholtz。
+\item
+  \textbf{{[}L23{]}} Zhang, Chen, Cui, Teixeira and Li.
+  \emph{Probabilistic Deep Learning Solutions to Electromagnetic Inverse
+  Scattering Problems Using Conditional Renormalization Group Flow}.
+  IEEE TMTT 70(11):4955--4965, 2022. DOI 10.1109/TMTT.2022.3205890.
+  \href{https://ieeexplore.ieee.org/document/9897092}{IEEE
+  入口}。本轮核到 IEEE 索引摘要与书目；全文受限，仅据此确认电磁条件 flow
+  先例，不推断其全部概率保证。
+\item
+  \textbf{{[}L24{]}} Chehelgami, LoVetri and Khoshdel.
+  \emph{Physics-Guided Conditional Diffusion Networks for Microwave
+  Image Reconstruction}. arXiv:2510.25729v1, 2025.
+  \href{https://arxiv.org/abs/2510.25729}{原文}。多生成候选加 EM
+  discrepancy 选择；选中图像不自动保留 posterior law。
+\item
+  \textbf{{[}L25{]}} Oates, Girolami and Chopin. \emph{Control
+  functionals for Monte Carlo integration}. JRSS B, 2017.
+  \href{https://arxiv.org/abs/1410.2392}{arXiv:1410.2392}。Stein/control
+  functional 方差减少已有基础，不能修复漏模式。
+\item
+  \textbf{{[}L26{]}} Parno and Marzouk. \emph{Transport map accelerated
+  Markov chain Monte Carlo}. SIAM/ASA JUQ 6(2):645--682, 2018.
+  \href{https://arxiv.org/abs/1412.5492}{arXiv:1412.5492}。输运与正确
+  MCMC 校正的成熟联系。
+\item
+  \textbf{{[}L27{]}} Song et al.~\emph{Score-Based Generative Modeling
+  through Stochastic Differential Equations}. ICLR 2021.
+  \href{https://arxiv.org/abs/2011.13456}{arXiv:2011.13456}。reverse SDE
+  与 probability-flow ODE。
+\item
+  \textbf{{[}L28{]}} Chatterjee and Diaconis. \emph{The sample size
+  required in importance sampling}. Annals of Applied Probability, 2018.
+  \href{https://arxiv.org/abs/1511.01437}{arXiv:1511.01437}。列明条件下样本量与
+  KL 的指数尺度，不是任意小批 ESS 的精确公式。
+\end{itemize}
+
+进一步邻近研究包括 \href{https://arxiv.org/abs/2510.09534}{Conditional
+Flow Matching for Bayesian Posterior
+Inference}、\href{https://arxiv.org/abs/2206.10745}{Derivative-Informed
+Neural Operator} 和 \href{https://arxiv.org/abs/1109.1516}{Bayesian
+Inference with Optimal
+Maps}。它们进一步缩小``新条件流''``新导数学习''和``新 posterior
+transport''的宽泛优先权空间。
+
+\hypertarget{ux7528ux6237ux7814ux7a76ux95eeux9898ux7684ux4ea4ux4ed8ux6620ux5c04}{%
+\subsection{11.3
+用户研究问题的交付映射}\label{ux7528ux6237ux7814ux7a76ux95eeux9898ux7684ux4ea4ux4ed8ux6620ux5c04}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+要求
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主报告位置
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+深入推导
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Manifold、有限噪声区域、strata 与原 posterior & §1--2、Theory 2/7 & 附录
+A、B \\
+Lie bracket、有限可达性、反例与概率代价 & §3.2、算法 E、Stage III & 附录
+A \\
+无 MCMC teacher 的条件 Flow、密度、补偿 & §3.3、算法 A、§7 & 附录 B \\
+Jacobian/projector 表示、误差、刷新与 A17 & §3.4、算法 C/D、Stage II &
+附录 C \\
+全场矩、低维 prior 支持、过渡区与双输出 & §2.2、§3.5、§4、算法 A/B &
+附录 B、C \\
+正确随机动力学、Hörmander 与风险 metric & §3.1、算法 E & 附录 A、B \\
+≥12 方法、≥3 非 Flow/CNN/RL 候选 & §5 的 17 类；§6 的 B/C/D/E &
+三个附录 \\
+完整算法、预算、冻结评价、规模化与失败门 & §6--9 & 独立 Codex
+执行任务书 \\
+\end{longtable}
+
+本报告没有声称新的 posterior
+已经校准、新的复用已经加速或新的几何方向已经改善
+MSE。它提供的是可执行、能被反证且不混淆概率与风险资格的下一轮研究框架。
+
+\hypertarget{ux5386ux53f2ux7814ux7a76ux5982ux4f55ux7ea6ux675f-r3}{%
+\section{12. 历史研究如何约束
+R3}\label{ux5386ux53f2ux7814ux7a76ux5982ux4f55ux7ea6ux675f-r3}}
+
+本节完整读取下列五份报告，全部固定在
+\nolinkurl{6eadb4690c962aaa95821fc4056b677f0f924a6b}。只做文献与代码证据读取，没有运行物理实验。历史中的预算、停训和阶段封账属于当时执行合同；它们不禁止当前已授权的理论设计，也不能被当作本轮新增实验授权。
+
+\hypertarget{p0p1-ux4e0eux4e09ux7ef4-a17-ux5fc5ux987bux5206ux6e05}{%
+\subsection{12.1 P0、P1 与三维 A17
+必须分清}\label{p0p1-ux4e0eux4e09ux7ef4-a17-ux5fc5ux987bux5206ux6e05}}
+
+LXZ、Research F 及 F3审计主要检查原 P0：固定增量相位、Gaussian 栅格化和
+peak normalization，八个参数中存在共同权重缩放
+gauge，材料商空间为七维。部分所谓两条件实际上来自同一个
+parent、两个背景，不能算两个独立物体。{[}H3--H5{]}
+
+本轮 P1 则是64维相关 Gaussian 场加两项 uniform 属性、具有精确平台的 C²
+quintic decoder、24×24 scalar-TM/VIE。这里的 FULL
+是该离散二维模型，不是三维 vector Maxwell。A17 的三维 frozen-GN
+理论与已有验证亦是另一条证据线；二维P0/P1的负成本结果不能否定其代数定理，三维GN收益也不能替二维概率成像背书。
+
+\hypertarget{ux4efdux65e7ux589eux91cfux7684575ux79e9ux662fux65b0ux76f8ux4e8bux4ef6ux5047ux8bbeux7684ux9996ux8981ux53cdux8bc1ux5bf9ux7167}{%
+\subsection{12.2
+17份旧增量的575秩，是新相事件假设的首要反证对照}\label{ux4efdux65e7ux589eux91cfux7684575ux79e9ux662fux65b0ux76f8ux4e8bux4ef6ux5047ux8bbeux7684ux9996ux8981ux53cdux8bc1ux5bf9ux7167}}
+
+F3竞争审计发现，17份存储的 \(\Delta X=\operatorname{diag}\Delta\chi\)
+都有575个非零对角项；三个合格weak端点在相对阈值 \(10^{-10}\)
+下仍为571秩。七维latent并不意味着七个material
+ports。rank-7截断遗漏约58\%--64\%的算子谱范数；要降至1\%需178--193
+ports，且原rank-7缓存一阶接收误差超过100\%。{[}H3{]}
+
+因此R3相事件复用\textbf{绝不能}以``66维latent''``四个weak方向''推断低秩。新假设来自P1的精确平台：固定属性、限制在单个事件区间，未跨阈值的纯相单元严格不变，更新支撑可能较小。它与旧P0没有精确平台、几乎全网格变化的情况不同，所以旧575秩并未逻辑否定新候选；但也没有提供新候选的正证据。
+
+必须实测相对所用base的完整changed
+set、累计跨事件支撑、属性改变后的rank、复用次数和setup费用。不能只数候选端点的过渡像素；两项属性变化也可能改变整个非零fraction区域。若新P1更新仍广泛分布，低秩方案应失败退出，保留Full/Krylov。
+
+\hypertarget{p2ux786eux8ba4ux6709ux9650ux566aux58f0ux6750ux6599ux8fd0ux52a8ux5374ux5426ux5b9aux8f6fux8c31ux72ecux5360ux6027}{%
+\subsection{12.3
+P2确认有限噪声材料运动，却否定软谱独占性}\label{p2ux786eux8ba4ux6709ux9650ux566aux58f0ux6750ux6599ux8fd0ux52a8ux5374ux5426ux5b9aux8f6fux8c31ux72ecux5360ux6027}}
+
+P2的24个新对象仅15个得到合格基础解，held-out为4/8。首次archive有69个去重替代解释，含held-out29个；主held-out只有1个达到结构变化尺度，0个拓扑事件改变。全部8对象Best-of-4
+MAE从0.06513030降至0.06424926约1.35\%，但包含原图的oracle最小值按定义不会变差，在线默认图没有改善。{[}H2{]}
+
+动态软谱没有在完整费用上独立胜过hard-prior。追加的已暴露sphere-only
+Full-J与hard-prior分别找到10/9个held-out替代解释，足以否定``只有软谱能探索''的叙事，不能又把这批暴露控制称新确认。R3必须保留无角向限制的强Full-J、hard-prior和同预算非学习方法。
+
+P2只验证有限端点，未稠密检查中间曲线；所以不能把端点合格升级为整条noise-compatible路径。小Gaussian/Flow也未改善oracle指标，但这不否定本轮基于大量joint-simulation数据的完整条件模型，训练目标与样本规模已经不同。
+
+\hypertarget{p3-lux662fux6982ux7387ux4f53ux79efux5931ux914dux7684ux76f4ux63a5ux53cdux4f8b}{%
+\subsection{12.4
+P3-L是概率体积失配的直接反例}\label{p3-lux662fux6982ux7387ux4f53ux79efux5931ux914dux7684ux76f4ux63a5ux53cdux4f8b}}
+
+早期P3-L在128个新对象上，``weak density×strong
+Gaussian''材料均值MSE为0.0615021，而Probit点为0.0110309，恶化457.5\%。11组FULL参考全部不合格；原生elliptical
+slice也已运行，不能在R3被介绍为从未尝试的概率突破。128份Full-SNIS的ESS中位数为1；正确权重不能挽救有限预算的proposal失配。{[}H1{]}
+
+同一阶段已实现quintic
+decoder在给定Gaussian条件下的解析一、二阶矩，并通过独立数值核验。因此算法B的候选新性只能是\textbf{学习保留属性相关性的阈值条件矩}等统计构造，不能声称首次解析积分。积分准确和被积分law正确是两件事。
+
+更强的反例是保留完整非线性decoder的代理力：平均绝对 \(\Phi\)
+预测误差从8.27591降至0.545205，但同RHS的材料均值MCSE从0.0166675变为0.0168920，wall从245.671s升至393.749s。R3的learned
+J、finite secant和Flow guidance都必须回答：更准的响应为何会改善material
+mixing/风险，是否抵得过额外成本。
+
+\hypertarget{research-flxzux4fddux7559ux4e0bux6765ux7684ux4ee3ux6570ux7ea6ux675f}{%
+\subsection{12.5 Research
+F/LXZ保留下来的代数约束}\label{research-flxzux4fddux7559ux4e0bux6765ux7684ux4ee3ux6570ux7ea6ux675f}}
+
+Research F将decoder二阶项分成可由参数加速度改变的切向坐标项与prior
+image真正法向曲率。两者映射到数据后可以相消，不能相加范数或拿raw参数Hessian判断Maxwell非线性。所查去gauge材料/响应rank均为7，不存在已证非零exact
+tangent
+kernel；这只限制局部exact-fiber叙事，不排除finite-noise宽度。{[}H4{]}
+
+F3还发现某些current直线不能同时由八个source共享的一个标量材料实现，并违反固定增量相位。因此R3继续优先从合法材料状态出发；任意current
+transport需另证材料可实现性。相同{[}V,C{]}下A17 exchange与ordinary
+Galerkin等价，A17只能通过空间选择、更新费用或误差控制取胜；普通ROM必须获得相同Schur/cache权限。{[}H3{]}
+
+成本证据也不能被新命名覆盖。P2的A17评估器setup摊销时间约为optimized
+Full的11.1倍，且其fallback用已付费Full
+prediction作误差参照，是oracle-assisted离线审计，不是可部署的在线证书。早期P3-L的16个固定提案中，rank16条件浮点界仅5次提前判断、11次fallback；构造稳定性及bounds/ROM费用使端到端加速仍未成立。这要求R3算法D真正补上可计算的正稳定性下界与全部检测费用，不能把旧表当现成认证先导。{[}H1,H2{]}
+
+LXZ的径向proxy上，简单global-MH优于hybrid；它使用已暴露观测与代理参考，新增full-Mie为0，不证明复杂P1多mode。其N3原P0合法anchor检查失败也不能外推为如今P1没有基础重建。{[}H5{]}
+
+最后，早期P3-L的两个bracket
+leakage约0.002，而R2约0.93/0.82。本次报告级阅读尚未核验两项是否使用同一frame、方向对、度量与归一化，不能直接混成同一量的矛盾或演化趋势。R3应重新固定projector、方向对、材料度量、谱隙和差分尺度，报告各自作用域。
+
+这些历史失败要求新路线提出能区分机制的预测，不要求维护旧算法或永久停止条件生成。R2现有监督风险改善是新的正证据；完整概率与计算加速仍须独立取得资格，不能相互替代。
+
+\hypertarget{ux56faux5b9aux5386ux53f2ux6765ux6e90}{%
+\subsection{12.6
+固定历史来源}\label{ux56faux5b9aux5386ux53f2ux6765ux6e90}}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_local_posterior_imaging/RESEARCH_REPORT_ZH.md}{H1：P3-L
+  原实验报告}
+\item
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p2_material_fiber_20261019/RESEARCH_REPORT_ZH.md}{H2：P2
+  有限噪声材料探索}
+\item
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/a17x_f3_competition_audit/RESEARCH_REPORT_ZH.md}{H3：A17-X/F3竞争审计}
+\item
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/research_f_intrinsic_transport/RESEARCH_REPORT_ZH.md}{H4：Research
+  F 内在材料运输}
+\item
+  \href{https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/research_lxz_20261016/RESEARCH_REPORT_ZH.md}{H5：LXZ局部--全局研究}
+\end{itemize}
+
+\hypertarget{ux9644ux5f55-aux52a8ux6001ux5f31ux5206ux5e03ux975eux5b8cux6574ux63a7ux5236ux4e0eux6b63ux786eux968fux673aux79efux5206}{%
+\section{附录
+A：动态弱分布、非完整控制与正确随机积分}\label{ux9644ux5f55-aux52a8ux6001ux5f31ux5206ux5e03ux975eux5b8cux6574ux63a7ux5236ux4e0eux6b63ux786eux968fux673aux79efux5206}}
+
+本附录补充主报告的条件、证明与反例；执行预算和资格门以主报告第7--8节及任务书为准。参考文献编号在本附录独立加前缀。
+
+\hypertarget{a.2-ux6b63ux5219ux6027ux5408ux540cp1-ux5e76ux975eux5904ux5904ux89e3ux6790}{%
+\subsection{A.2 正则性合同：P1
+并非处处解析}\label{a.2-ux6b63ux5219ux6027ux5408ux540cp1-ux5e76ux975eux5904ux5904ux89e3ux6790}}
+
+P1 saturation 为 C² quintic 与精确 plateau
+的拼接。固定一个所有像素均不跨 saturation seam 的 cell 内，decoder
+是多项式/常数的组合；在 Maxwell 离散算子保持可逆的邻域内，forward
+是光滑的。全局跨 seam 时，不能默认三阶导连续。
+
+令
+
+\[
+h(x)=\frac{\sqrt2}{\sigma}\operatorname{pack}F(g(T(x))),\qquad
+y_w=\frac{\sqrt2}{\sigma}\operatorname{pack}y,\qquad r(x)=h(x)-y_w,
+\]
+
+其中
+\texttt{T(x)=(z,\ Φ\_\allowbreak{}N(η))}，\texttt{x=(z,η)∈R\^{}\{66\}}；\nolinkurl{pack}
+将复向量的实部和虚部拼成实向量。以下与主报告统一使用单位方差实白化约定：每个复噪声分量的实部、虚部方差均为
+\texttt{σ²/2}，因此
+
+\[
+\Phi(x)=\tfrac12\|r(x)\|^2
+=\frac{\|F(g(T(x)))-y\|_{\mathbb{C}}^2}{\sigma^2},\quad
+\pi(x\mid y)=Z_y^{-1}\exp[-\Phi(x)-\tfrac12\|x\|^2].
+\]
+
+这与原 P1 likelihood 完全一致，不能再次无声改变 \nolinkurl{1/2}
+或白化尺度。所有 latent 导数、Jacobian、projector、协方差和 SDE
+均对实坐标解释；复材料位移及其导数在内积、RMS、法向投影与迹公式中先按相同材料损失权重实化。为简化后文记号，材料映射
+\nolinkurl{g} 在涉及 \nolinkurl{x} 的导数时表示复合映射 \texttt{g\(\circ\)T}。
+
+对 hard spectral projector，C² 的 h 只保证 J=Dh 为 C¹，并在固定谱隙下使
+P\_\allowbreak{}w 为 C¹。因此：
+
+\begin{itemize}
+\tightlist
+\item
+  一阶 bracket \texttt{{[}X,Y{]}} 可以存在。
+\item
+  一般 C¹ 场的 exact commutator 展开可安全写为
+  \texttt{s²{[}X,Y{]}+o(s²)}。
+\item
+  \texttt{O(s³)} remainder 需额外 C² 场及受控导数；可在固定光滑 cell
+  内陈述，或单独证明更强的分片正则估计。
+\item
+  高阶 iterated brackets 与经典 C∞ Hörmander 结论不能跨 seam 直接套用。
+\item
+  eigenvalue crossing、材料 rank
+  改变、归一化奇异会进一步破坏场的光滑性。
+\end{itemize}
+
+实作上可用光滑 soft metric 或光滑 surrogate vector fields 作
+proposal，最终用原 target Full MH 校正。这样光滑 surrogate 只改变
+proposal，不改物理 prior。若直接平滑 decoder/likelihood
+后不校正，则改变研究模型。
+
+\hypertarget{a.3-ux56dbux79cdux4e0dux540cux96c6ux5408ux4e0eux7b2cux4e94ux79cdux7b97ux6cd5ux66f2ux9762}{%
+\subsection{A.3
+四种不同集合与第五种``算法曲面''}\label{a.3-ux56dbux79cdux4e0dux540cux96c6ux5408ux4e0eux7b2cux4e94ux79cdux7b97ux6cd5ux66f2ux9762}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Exact-data level set}：\texttt{E\_\allowbreak{}y=\{x:h(x)=y\_\allowbreak{}w\}}。若 Dh
+  在某个解 x* 满列秩，则该解局部孤立。证法是选出 66
+  个独立输出分量，使用逆函数定理。P1
+  的数值满列秩是支持该情形的数值证据，而不是精确实数 rank 的计算机证明。
+\item
+  \textbf{Finite-noise
+  region}：\texttt{N\_\allowbreak{}b=\{x:\textbar{}\textbar{}r(x)\textbar{}\textbar{}≤b\}}。它通常有
+  66 维内部；可以不连通、狭窄、具有边界与小通道。noise-ball 不是
+  posterior credible set 的同义词。
+\item
+  \textbf{Posterior concentration region}：例如有明确概率合同的
+  \texttt{C\_\allowbreak{}α} 满足 \texttt{π(C\_\allowbreak{}α\textbar{}y)≥1−α}。它取决于
+  likelihood、prior、体积与归一化。
+\item
+  \textbf{Dynamic weak
+  distribution}：\texttt{D\_\allowbreak{}x=Range\ P\_\allowbreak{}w(x)}。光滑且定秩时是切丛子丛；不对合时是非完整分布。它是从谱、材料
+  metric 与阈值选择得到的方向结构。
+\item
+  \textbf{Compensation centre surface}：算法选定 a 后解出 b=c(a)，形成
+  \texttt{\{x=T(a,c(a))\}}。它可以是一张真正光滑曲面，但其 tangent
+  通常不等于动态 D\_\allowbreak{}x；它只是一种局部组织概率体积的中心，不自动携带正确
+  marginal mass。
+\end{enumerate}
+
+材料本身应写为推送测度 \texttt{g\_\allowbreak{}\#π}。精确 saturation plateau
+使它可能有不同秩的 strata；P1 还有全 host 原子的可能性：有限 ROI
+中，只要 offset 足够负，所有 field 都进入零 plateau。Gaussian prior
+对相应开区域给正质量，所有这些 latent 映到同一全 host
+材料。局部同结构研究可明确条件于一个局部事件，但不能在全局宣称原材料 law
+处处是光滑 66 维 manifold density。
+
+\hypertarget{a.4-ux547dux9898ux4e00ux975eux5bf9ux5408ux6027ux7531ux5f31ux54cdux5e94ux7684ux53d8ux5316ux4ea7ux751fux4e0dux4ea7ux751fux65b0ux7684-exact-fiber}{%
+\subsection{A.4 命题一：非对合性由弱响应的变化产生，不产生新的 exact
+fiber}\label{a.4-ux547dux9898ux4e00ux975eux5bf9ux5408ux6027ux7531ux5f31ux54cdux5e94ux7684ux53d8ux5316ux4ea7ux751fux4e0dux4ea7ux751fux65b0ux7684-exact-fiber}}
+
+\hypertarget{a.4.1-ux6052ux7b49ux5f0fux4e0eux8bc1ux660e}{%
+\subsubsection{A.4.1
+恒等式与证明}\label{a.4.1-ux6052ux7b49ux5f0fux4e0eux8bc1ux660e}}
+
+设 h∈C²(Ω,R\textsuperscript{m)，X,Y∈C¹(Ω,R}d)，采用
+
+\[
+[X,Y]=DY\,X-DX\,Y.
+\]
+
+令 \texttt{a\_\allowbreak{}X=Dh\ X}、\texttt{a\_\allowbreak{}Y=Dh\ Y}。则
+
+\[
+\boxed{Dh[X,Y]=D a_Y\,X-D a_X\,Y.}\tag{G1}
+\]
+
+证明：展开右侧为
+
+\[
+D^2h[X,Y]+Dh(DY X)-D^2h[Y,X]-Dh(DX Y),
+\]
+
+Hessian 对称项抵消即得。
+
+\textbf{直接后果}：若 X、Y 在邻域内都是 exact null fields，即
+\texttt{Dh\ X=Dh\ Y=0}，则 \texttt{Dh{[}X,Y{]}=0}。因此常秩 exact kernel
+自动对合，与常秩定理一致。非对合的近弱谱场说明的是``有限弱响应如何随位置改变''，而不是发现绕过
+exact observability 的手段。
+
+如果
+
+\[
+\|D a_Y X\|\le k_{YX},\quad \|D a_X Y\|\le k_{XY},
+\]
+
+则
+\texttt{\textbar{}\textbar{}Dh{[}X,Y{]}\textbar{}\textbar{}≤k\_\allowbreak{}YX+k\_\allowbreak{}XY}。但仅有
+\texttt{\textbar{}\textbar{}a\_\allowbreak{}X\textbar{}\textbar{},\textbar{}\textbar{}a\_\allowbreak{}Y\textbar{}\textbar{}≤ε}
+并不控制这些导数：小幅、快速旋转的弱响应可以有很大的 bracket 响应。
+
+\hypertarget{a.4.2-ux5bf9ux6750ux6599-pushforward-ux7684ux540cux7c7bux6052ux7b49ux5f0f}{%
+\subsubsection{A.4.2 对材料 pushforward
+的同类恒等式}\label{a.4.2-ux5bf9ux6750ux6599-pushforward-ux7684ux540cux7c7bux6052ux7b49ux5f0f}}
+
+在 g 的 rank 合适、向量场可被识别为相关场时，
+
+\[
+Dg[X,Y]=D(DgY)X-D(DgX)Y.
+\]
+
+decoder Hessian 在反对称差中抵消。这个恒等式解释为什么源码可以用
+\texttt{Dg\ bracket} 检查材料 normal leakage；但它不取消 decoder
+在有限路径中的非线性 remainder，也不保证 g 在该点是 immersion。
+
+\hypertarget{a.4.3-ux53efux8bc1ux4f2aux9884ux6d4b}{%
+\subsubsection{A.4.3
+可证伪预测}\label{a.4.3-ux53efux8bc1ux4f2aux9884ux6d4b}}
+
+今后应同时测
+\texttt{\textbar{}\textbar{}Dh\ X\textbar{}\textbar{}}、\texttt{\textbar{}\textbar{}Dh\ Y\textbar{}\textbar{}}、\texttt{\textbar{}\textbar{}Dh{[}X,Y{]}\textbar{}\textbar{}}、材料横向量
+\texttt{\textbar{}\textbar{}(I−Q\_\allowbreak{}w)Dg{[}X,Y{]}\textbar{}\textbar{}}，而非只测
+leakage fraction。若横向量主要落在数据高响应或高 prior cost 方向，则
+bracket 对``扩大低成本概率覆盖''的核心假说失败，即使 leakage ratio
+很大。
+
+\hypertarget{a.5-ux547dux9898ux4e8cux6709ux9650ux566aux58f0-commutator-ux7684ux6750ux6599ux6536ux76caux6570ux636eux4f59ux91cfux4e0eux8defux5f84ux6210ux672c}{%
+\subsection{A.5 命题二：有限噪声 commutator
+的材料收益、数据余量与路径成本}\label{a.5-ux547dux9898ux4e8cux6709ux9650ux566aux58f0-commutator-ux7684ux6750ux6599ux6536ux76caux6570ux636eux4f59ux91cfux4e0eux8defux5f84ux6210ux672c}}
+
+\hypertarget{a.5.1-ux5047ux8bbe}{%
+\subsubsection{A.5.1 假设}\label{a.5.1-ux5047ux8bbe}}
+
+在开集 Ω 内，X,Y
+的局部流存在，\texttt{\textbar{}\textbar{}Dg\ X\textbar{}\textbar{}\_\allowbreak{}mat=\textbar{}\textbar{}Dg\ Y\textbar{}\textbar{}\_\allowbreak{}mat=1}，且
+
+\[
+\sup_\Omega\max(\|DhX\|,\|DhY\|)\le\varepsilon,
+\quad
+\sup_\Omega\max(|XU_0|,|YU_0|)\le\kappa,
+\]
+
+其中
+\texttt{U0(x)=\textbar{}\textbar{}x\textbar{}\textbar{}²/2}。考虑依次
+\texttt{X,+s;Y,+s;X,−s;Y,−s} 的 exact 四段流，记 endpoint C\_\allowbreak{}s(x)。
+
+\hypertarget{a.5.2-ux7ed3ux8bba}{%
+\subsubsection{A.5.2 结论}\label{a.5.2-ux7ed3ux8bba}}
+
+在 C¹ 场下：
+
+\[
+C_s(x)=x+s^2[X,Y](x)+o(s^2).
+\]
+
+若在光滑 cell 内有足够有界二阶场导数，可将余项加强为
+\texttt{O(s³)}。材料 endpoint 满足
+
+\[
+g(C_s(x))-g(x)=s^2Dg[X,Y]+o(s^2).
+\]
+
+令
+\texttt{β=\textbar{}\textbar{}(I−Q\_\allowbreak{}w)Dg{[}X,Y{]}\textbar{}\textbar{}\_\allowbreak{}mat\textgreater{}0}，则横向材料位移为
+\texttt{βs²+o(s²)}；四段材料弧长为 \nolinkurl{4s}。在整条路径留于 Ω
+的前提下，任意中间点 ξ 有
+
+\[
+\|h(\xi)-h(x)\|\le4\varepsilon s,\quad
+|U_0(\xi)-U_0(x)|\le4\kappa s.
+\]
+
+因此若 \texttt{b−\textbar{}\textbar{}r(x)\textbar{}\textbar{}≥4εs}，整条
+exact 路径保持在 noise-ball 内。若 \texttt{e=4εs}，则
+
+\[
+|\Phi(\xi)-\Phi(x)|\le\|r(x)\|e+\tfrac12e^2.\tag{G2}
+\]
+
+这些是充分条件，可能很保守；它们不是必要下界。如果只有端点 Full
+检查，不能声称获得整条路径 certificate。
+
+为获得横向尺度 δ，需要局部 \texttt{s≈sqrt(δ/β)}，因此标准四段结构付出
+\texttt{4sqrt(δ/β)} 的弧长及 \texttt{O(εsqrt(δ/β))}
+的保守数据余量。固定总时间
+T、控制欧氏范数与上述水平长度相配时，Cauchy--Schwarz 给出能量下界
+\texttt{∫\textbar{}\textbar{}u\textbar{}\textbar{}²dt≥L²/T≈16δ/(βT)}。更高阶
+bracket 位移一般出现 \texttt{δ\^{}(1/k)} 水平长度尺度；这不是免费扩维。
+
+\hypertarget{a.5.3-ux53cdux4f8bux548cux9650ux5236}{%
+\subsubsection{A.5.3
+反例和限制}\label{a.5.3-ux53cdux4f8bux548cux9650ux5236}}
+
+\begin{itemize}
+\tightlist
+\item
+  在 R⁴ 中取 Heisenberg 场 \texttt{X=∂a−b∂c/2}、\texttt{Y=∂b+a∂c/2}，则
+  \texttt{{[}X,Y{]}=∂c}，但第四坐标永远不动。非零 bracket 不等于 full
+  rank Lie closure。
+\item
+  将状态限制在两个不相交 noise-region 分支内，局部 bracket generating
+  不提供跨分支的约束可达性。
+\item
+  即使同一连通开内部 everywhere bracket generating，Chow
+  只给存在路径；它不给材料 prior penalty、Maxwell cost、路径长度或
+  posterior mass 的好界。
+\item
+  在 Heisenberg 例子中，产生竖直 c 位移是水平投影的有向面积；小位移 δ
+  的水平长度至少是常数乘 sqrt(δ)。若计算算法可直接改变 c，直接跳 δ
+  通常便宜得多。该例说明强制水平控制可能只是人工算法限制。
+\item
+  一步 normal bracket 可能在 Dg 的核里，或被 material saturation
+  压缩；latent 可达性与材料可达性必须分别测。
+\end{itemize}
+
+\hypertarget{a.5.4-p3l-r2-ux7684ux5177ux4f53ux542bux4e49}{%
+\subsubsection{A.5.4 P3L-R2
+的具体含义}\label{a.5.4-p3l-r2-ux7684ux5177ux4f53ux542bux4e49}}
+
+已有两个 rank-4 bracket 结果最多验证了两个特定场的一阶 closure
+有明显材料横向分量。它既没有检查全部六个 pair brackets，也没有检查更高阶
+closure，更没有涉及两个 bounded 属性。下一轮合理工作不是直接宣称
+Hörmander，而是测量``新增方向数、材料量级、数据成本、prior
+成本和数值稳定性''。
+
+\hypertarget{a.6-nonholonomic-reachability-ux5e94ux600eux6837ux4f7fux7528ux6210ux719fux63a7ux5236ux8bba}{%
+\subsection{A.6 Nonholonomic reachability
+应怎样使用成熟控制论}\label{a.6-nonholonomic-reachability-ux5e94ux600eux6837ux4f7fux7528ux6210ux719fux63a7ux5236ux8bba}}
+
+Frobenius 回答是否存在处处以 D 为 tangent 的积分叶。Chow--Rashevskii
+在足够光滑、对称可正负控制、bracket
+generating、连通域等条件下回答水平路径可达性。Sussmann orbit
+思想用于不规则 rank 与 flow 生成的轨道。它们均不负责给 posterior
+权重。{[}A-S1{]}
+
+对严格数据约束，应该在 \texttt{int(N\_\allowbreak{}b∩K\_\allowbreak{}prior∩E\_\allowbreak{}local)}
+的连通分支上讨论约束可达性；一旦存在边界，需额外的 viability 条件。对
+Gaussian prior 的概率推断，通常没有必要强制所有中途状态留在某个人工
+noise-ball；可以允许低概率状态并由正确
+kernel/路径概率决定代价，但不能删除这些代价。
+
+研究``是否到达 GT''只适合作离线覆盖诊断。在线算法不能以 GT
+定义控制代价或停止规则。更合适的因果问题是：在不读取测试 GT
+时，这些控制方向是否以相同总成本提升重要材料函数的有效覆盖和 MCSE？
+
+\hypertarget{a.7-ux547dux9898ux4e09ux6b63ux786eux7684ux5f31ux51e0ux4f55ux968fux673aux52a8ux529bux5b66ux53caux5b83ux6ca1ux6709ux4fddux8bc1ux7684ux4e8b}{%
+\subsection{A.7
+命题三：正确的弱几何随机动力学及它没有保证的事}\label{a.7-ux547dux9898ux4e09ux6b63ux786eux7684ux5f31ux51e0ux4f55ux968fux673aux52a8ux529bux5b66ux53caux5b83ux6ca1ux6709ux4fddux8bc1ux7684ux4e8b}}
+
+\hypertarget{a.7.1-ituxf4-ux578bux4e0dux53d8ux6027}{%
+\subsubsection{A.7.1 Itô
+型不变性}\label{a.7.1-ituxf4-ux578bux4e0dux53d8ux6027}}
+
+设 π\textgreater0 是相对于 latent Lebesgue 的目标 density，A(x)=A(x)\textsuperscript{T}≥0
+足够正则，非爆炸且无穷远/边界通量条件成立。定义
+
+\[
+dX=[A\nabla\log\pi+\operatorname{div}A]dt+\sqrt{2A}\,dW,
+\quad(\operatorname{div}A)_i=\sum_j\partial_jA_{ij}.
+\]
+
+Fokker--Planck 为
+
+\[
+\partial_t p=\nabla\cdot[A(p\nabla U+\nabla p)],\quad U=-\log\pi.
+\]
+
+代 p=π 即为零。因此 π 是不变分布；这是标准结论，见 Ma--Chen--Fox 及
+Xifara 等。{[}A-S2,A-S3{]}
+
+\textbf{一维反例}：取目标 π，省略 a'(x) 而运行
+\texttt{dX=a(X)(logπ)\textquotesingle{}dt+sqrt(2a(X))dW}，零通量稳态满足
+\texttt{p∝π/a}，一般不是 π。位置变化的 metric
+不能只作为``加速权重''乘梯度而忽略 drift。
+
+\hypertarget{a.7.2-ux6b63ux786eux7684-stratonovich-ux5f62ux5f0f}{%
+\subsubsection{A.7.2 正确的 Stratonovich
+形式}\label{a.7.2-ux6b63ux786eux7684-stratonovich-ux5f62ux5f0f}}
+
+若 \texttt{A=Σ\_\allowbreak{}\{i=1\}\^{}r\ X\_\allowbreak{}i\ X\_\allowbreak{}i\textsuperscript{T}}，噪声系数是
+\texttt{sqrt2\ X\_\allowbreak{}i}，则等价形式是
+
+\[
+dX=\sum_iX_i\{X_i\log\pi+\operatorname{div}X_i\}\,dt
+ +\sqrt2\sum_iX_i\circ dW_i.\tag{G3}
+\]
+
+因为
+\texttt{div\ A=Σ{[}DX\_\allowbreak{}i\ X\_\allowbreak{}i+X\_\allowbreak{}i\ div\ X\_\allowbreak{}i{]}}，Itô→Stratonovich
+恰好减去 \texttt{Σ\ DX\_\allowbreak{}i\ X\_\allowbreak{}i}。因此 correct Stratonovich drift
+是水平的；Itô drift 出现横向项并不代表额外任意强方向驱动力。
+
+对应生成元
+
+\[
+L_Af=\pi^{-1}\nabla\cdot(\pi A\nabla f),
+\quad
+-\langle f,L_Af\rangle_\pi=\int\|A^{1/2}\nabla f\|^2\pi dx.
+\]
+
+在紧连通无边界空间（或合适的 reflecting/no-flux 条件）及充分光滑 bracket
+generating 场下，这个能量形式可辅助证明唯一性：若另一个稳态 density
+的比值 h 满足 L\_\allowbreak{}A h=0，则所有 X\_\allowbreak{}i h=0；由 Lie closure 得 ∇h=0，h
+为常数。非紧域仍须检查非爆炸、recurrence、不可约性等，不能仅从形式积分分部认定唯一不变
+law。
+
+\hypertarget{a.7.3-ux3b50-ux4e0e-huxf6rmander}{%
+\subsubsection{A.7.3 ε→0 与
+Hörmander}\label{a.7.3-ux3b50-ux4e0e-huxf6rmander}}
+
+\texttt{A=P\_\allowbreak{}w+εP\_\allowbreak{}s} 在 ε\textgreater0 且 projector 合适时给全秩
+noise；ε=0 时完全退化。若 smooth noise fields 的迭代 brackets 满足相应
+Hörmander 条件，退化 SDE 可具有 full-dimensional transition
+density。它依靠随时间的随机路径与 Lévy-area 信息，不要求某一瞬间 noise
+rank 等于状态维数。{[}A-S4,A-S5{]}
+
+但必须区分：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  密度存在/光滑；
+\item
+  可达 support；
+\item
+  唯一 invariant law；
+\item
+  在给定预算下有足够 mixing；
+\item
+  参数 sample 对材料估计有足够 ESS。
+\end{enumerate}
+
+上述五件事没有自动互推。很小 bracket 系数可使横向扩散极慢；高势垒可造成
+metastability；C¹ projector、seam、crossing 也不满足经典 C∞
+定理的默认条件。P3L-R2 两个局部 leakage 数值远不足以直接调用这个理论。
+
+\hypertarget{a.7.4-ux4e00ux4e2aux5bb9ux6613ux5ffdux7565ux7684ux79bbux6563ux5316ux5931ux8d25}{%
+\subsubsection{A.7.4
+一个容易忽略的离散化失败}\label{a.7.4-ux4e00ux4e2aux5bb9ux6613ux5ffdux7565ux7684ux79bbux6563ux5316ux5931ux8d25}}
+
+即使连续退化扩散可以有全维 density，单步 Euler proposal
+
+\[
+x'=x+h b(x)+\sqrt{2h}\,W(x)\xi,\quad\xi\in R^4,
+\]
+
+仍只落在一个 rank-4 affine plane。状态相关 W(x') 的反向 affine plane
+通常不包含 x；直接用 pseudo-determinant 写普通 Gaussian MH ratio
+不合法，泛型情况下前后 proposal 可互奇异。保留 ε\textgreater0 的
+full-rank covariance 是最简单的安全基线。多步低秩 noise 可以扩展
+endpoint rank，但其 marginal density 通常不再是一个便宜
+Gaussian，需要合法 augmented-path 构造或其他校正。
+
+\hypertarget{a.7.5-ux5982ux4f55ux5f15ux5165ux6750ux6599ux98ceux9669ux800cux4e0dux6539-posterior}{%
+\subsubsection{A.7.5 如何引入材料风险而不改
+posterior}\label{a.7.5-ux5982ux4f55ux5f15ux5165ux6750ux6599ux98ceux9669ux800cux4e0dux6539-posterior}}
+
+训练数据可以用来选择 A(x,y)，只要它作为冻结的状态函数进入正确
+drift/MH，并不改变 π。但若另加 drift u\_\allowbreak{}R，保留 π 的必要条件是
+
+\[
+\nabla\cdot(\pi u_R)=0
+\]
+
+及边界无通量。一般监督 reward gradient 不满足。特别是
+\texttt{u\_\allowbreak{}R=−λA∇R} 通常使 target 变成与 \texttt{πe\^{}\{−λR\}} 有关的新
+law；这可以是决策策略，却不能继续叫原 posterior sampler。
+
+\hypertarget{a.8-ux4efbux52a1ux611fux77e5ux4e0dux53d8ux51e0ux4f55ux6700ux8be5ux4f18ux5316ux7684ux662fux6750ux6599ux5747ux503cux7684ux8ba1ux7b97ux8befux5dee}{%
+\subsection{A.8
+任务感知不变几何：最该优化的是材料均值的计算误差}\label{a.8-ux4efbux52a1ux611fux77e5ux4e0dux53d8ux51e0ux4f55ux6700ux8be5ux4f18ux5316ux7684ux662fux6750ux6599ux5747ux503cux7684ux8ba1ux7b97ux8befux5dee}}
+
+\hypertarget{a.8.1-ux628aux7edfux8ba1ux76eeux6807ux4e0eux91c7ux6837ux901fux5ea6ux8fdeux63a5ux8d77ux6765}{%
+\subsubsection{A.8.1
+把统计目标与采样速度连接起来}\label{a.8.1-ux628aux7edfux8ba1ux76eeux6807ux4e0eux91c7ux6837ux901fux5ea6ux8fdeux63a5ux8d77ux6765}}
+
+设材料的实/虚分量或一组冻结的材料函数为 f\_\allowbreak{}j，权重 w\_\allowbreak{}j
+与最终材料损失一致。对平稳、满足 CLT 的可逆扩散，令
+
+\[
+\bar f_j=f_j-E_\pi f_j,\quad -L_A\psi_j=\bar f_j.
+\]
+
+时间均值总渐近方差为
+
+\[
+V(A)=2\sum_jw_j\langle\bar f_j,(-L_A)^{-1}\bar f_j\rangle_\pi.
+\]
+
+其 Poisson 表示是成熟 MCMC 理论。{[}A-S6{]} 对保留 π 的 A
+perturbation，若 inverse operator、域和微分交换等技术条件成立，
+
+\[
+\boxed{\delta V=-2E_\pi\operatorname{tr}[S_\psi(x)\delta A(x)],
+\quad S_\psi=\sum_jw_j\nabla\psi_j\nabla\psi_j^T.}\tag{G4}
+\]
+
+证明：令
+K=−L\_\allowbreak{}A，\texttt{δK=−π\^{}\{-1\}div(π\ δA∇)}；\texttt{δK\^{}\{-1\}=−K\^{}\{-1\}δK\ K\^{}\{-1\}}，再积分分部。这个式子不是说增加
+A
+越多越好，因为乘常数加快连续时间也同时缩小稳定离散步长、增加每单位物理模拟时间的成本。必须固定预算，例如
+\texttt{E\ tr(C\_\allowbreak{}cost\ A)≤B}，并最后比较离散化、acceptance、RHS、wall-clock。
+
+\hypertarget{a.8.2-ux53efux7cbeux786eux89e3ux7684-gaussian-sanity-check}{%
+\subsubsection{A.8.2 可精确解的 Gaussian sanity
+check}\label{a.8.2-ux53efux7cbeux786eux89e3ux7684-gaussian-sanity-check}}
+
+若 \texttt{π=N(m,C)}，\texttt{f(x)=Dx}，其中 D
+是将复材料实部、虚部以及损失权重实化后的\textbf{实矩阵}，A
+是常数实对称正定矩阵，则
+
+\[
+V(A)=2\operatorname{tr}(D C A^{-1}C D^T).
+\]
+
+在 \texttt{tr\ A=B} 下，若 K=\texttt{C\ D\^{}T\ D\ C} 正定，最优
+
+\[
+A_*={B K^{1/2}\over\operatorname{tr}K^{1/2}}.
+\]
+
+若 K 奇异，形式最优会在某些方向失去 noise；实际为完整 posterior coverage
+保留 \texttt{εI} floor，并重新求受约束问题。对
+\texttt{tr(C\_\allowbreak{}cost\ A)=B}、C\_\allowbreak{}cost\textgreater0，令
+H=\texttt{C\_\allowbreak{}cost\^{}\{1/2\}K\ C\_\allowbreak{}cost\^{}\{1/2\}}，
+
+\[
+A_*={B C_{cost}^{-1/2}H^{1/2}C_{cost}^{-1/2}\over\operatorname{tr}H^{1/2}}.
+\]
+
+这个准则与只取 J 最小特征方向明显不同：其目标是减小 \emph{材料均值的
+Monte Carlo 误差}。它不是减少不可约 Bayes
+risk，也不会让无信息弱方向中的每份 GT 可恢复。
+
+\hypertarget{a.8.3-ux65b0ux9896ux6027ux8fb9ux754cux4e0eux5019ux9009ux4ef7ux503c}{%
+\subsubsection{A.8.3
+新颖性边界与候选价值}\label{a.8.3-ux65b0ux9896ux6027ux8fb9ux754cux4e0eux5019ux9009ux4ef7ux503c}}
+
+按 Poisson 方程与渐近方差设计预条件已有先例。{[}A-S6,A-S7{]}
+扩散系数的谱隙优化，以及基于 ESJD 和 inverse-Fisher 的 adaptive
+Langevin，也已有直接研究。{[}A-S8,A-S9{]}
+
+P3L-R3 可探索的实质内容是：用 P1 的 material decoder、有限 Maxwell
+response 与可复用 JVP 给 Sψ 建立便宜但有可诊断误差的近似；将 Full
+refresh 的真正费用并入 C\_\allowbreak{}cost；最终改善材料函数
+MCSE/RHS。这是候选机制，不是已经成立的新算法定理。
+
+\hypertarget{a.9-ux7406ux8bbaux4e03ux4eceux8f68ux8ff9ux5230ux6982ux7387ux4f53ux79efux7684ux969cux788dux4e0eux53efux7528ux51faux53e3}{%
+\subsection{A.9
+理论七：从轨迹到概率体积的障碍与可用出口}\label{a.9-ux7406ux8bbaux4e03ux4eceux8f68ux8ff9ux5230ux6982ux7387ux4f53ux79efux7684ux969cux788dux4e0eux53efux7528ux51faux53e3}}
+
+\hypertarget{a.9.1-ux96f6ux5bbdux652fux6301ux969cux788d}{%
+\subsubsection{A.9.1
+零宽支持障碍}\label{a.9.1-ux96f6ux5bbdux652fux6301ux969cux788d}}
+
+若 π 在 R\^{}66 有 density，Γ 是有限/可数条 C¹ 曲线的并，则
+π(Γ)=0。任何只支撑于 Γ 的概率 ν 与 π 互奇异，TV(ν,π)=1（按 sup\_\allowbreak{}A
+的约定）。更一般，少于 66 个连续随机自由度通过 locally Lipschitz map
+生成的端点，通常不能代表全66维 AC target。
+
+这不等于``轨迹不能估计后验矩''：有限 MCMC 经验分布也总是离散且与连续 π
+的 TV 距离为1。若随机过程有正确不变 law 且遍历，其时间平均照样一致。R2
+弧长平均缺少的是 \textbf{正确随机
+law、横向条件质量或合法积分权重}，而不是一个足以否定 Monte Carlo
+的纯维数口号。
+
+\hypertarget{a.9.2-ux5206ux5e03ux4e0dux51c6ux786eux91cdux8981ux77e9ux4ecdux53efux51c6ux786e}{%
+\subsubsection{A.9.2
+分布不准确，重要矩仍可准确}\label{a.9.2-ux5206ux5e03ux4e0dux51c6ux786eux91cdux8981ux77e9ux4ecdux53efux51c6ux786e}}
+
+例：\texttt{π=N(0,diag(1,ε²,...,ε²))}，\texttt{ν=N(0,1)×δ\_\allowbreak{}0\^{}\{65\}}。二者
+TV=1、双向 KL 都不有限，但均值完全相同，\texttt{W2(π,ν)=εsqrt(65)}。若 g
+为 L-Lipschitz，则
+
+\[
+\|E_\pi g-E_\nu g\|\le L W_2(\pi,\nu),
+\]
+
+进而把 ν 的材料均值用作决策，其 excess conditional squared risk
+≤\texttt{L²\ W2²}。这给``只近似少数材料统计量''一个合法出口，同时不能把
+ν 称作完整校准 posterior。
+
+\hypertarget{a.9.3-ux5408ux6cd5-tube-ux5750ux6807}{%
+\subsubsection{A.9.3 合法 tube
+坐标}\label{a.9.3-ux5408ux6cd5-tube-ux5750ux6807}}
+
+取 centre c(a)，以及 transverse coordinates b，定义
+\texttt{x=T(a,b)}，总维数 \texttt{dim\ a+dim\ b=66}。在局部 injective 且
+det DT≠0 时，
+
+\[
+\tilde\pi(a,b\mid y)\propto e^{-U(T(a,b))}|\det DT(a,b)|,
+\]
+
+\[
+\pi_a(a\mid y)\propto \int e^{-U(T(a,b))}|\det DT(a,b)|db.
+\]
+
+条件材料均值也必须在 b 上积分。只有当强条件确实接近 Gaussian、centre
+为条件 minimum、边界可忽略等条件成立时，才可用 Laplace 的
+\texttt{det\ H\_\allowbreak{}bb\^{}\{-1/2\}} 近似横向质量。R2
+已显示这种近似可能失败，故 tube 不是绕开56维难题的符号替换。
+
+非对合性阻止``所有 centre tangent 恰等于
+D\_\allowbreak{}w''的全局构造，却不阻止选择一套普通 chart；此时 chart tangent 与 weak
+distribution 的夹角和转换 Jacobian 必须记账。多个 overlapping chart
+用明确 mixture density 或 partition-of-unity
+权重，不能把每个局部积分直接相加造成重计。
+
+\hypertarget{a.9.4-ux7a00ux758fux8f68ux8ff9ux79efux5206ux4f55ux65f6ux503cux5f97ux505a}{%
+\subsubsection{A.9.4
+稀疏轨迹积分何时值得做}\label{a.9.4-ux7a00ux758fux8f68ux8ff9ux79efux5206ux4f55ux65f6ux503cux5f97ux505a}}
+
+若只需 μ=Eπg，存在两个可检验充分路线：
+
+\begin{itemize}
+\tightlist
+\item
+  通过合法 sampler 的 ergodic theorem 与材料 MCSE 控制积分误差。
+\item
+  建立 transverse residual material variance
+  \texttt{E\textbar{}\textbar{}g−E{[}g\textbar{}a{]}\textbar{}\textbar{}²}
+  足够小的独立证据，且正确估计 π\_\allowbreak{}a 和 E{[}g\textbar a{]}。
+\end{itemize}
+
+若上述两者均没有，沿曲线多生成端点不会自动降低偏差。应将计算预算用于更好的条件材料风险估计，或解决强条件的概率体积。
+
+\hypertarget{a.10-ux4e09ux79cdux4e0dux4f9dux8d56-flow-matchingcnn-ux6216-rl-ux7684ux5019ux9009ux673aux5236}{%
+\subsection{A.10 三种不依赖 Flow Matching、CNN 或 RL
+的候选机制}\label{a.10-ux4e09ux79cdux4e0dux4f9dux8d56-flow-matchingcnn-ux6216-rl-ux7684ux5019ux9009ux673aux5236}}
+
+以下``候选''指本问题中的新设计假说；其使用的 MH、Poisson、Stein
+等基础数学不新。
+
+\hypertarget{n1.-ux53efux9006-commutator-block-ux4e0e-direct-bracket-ux5bf9ux7167}{%
+\subsubsection{N1. 可逆 commutator block 与 direct-bracket
+对照}\label{n1.-ux53efux9006-commutator-block-ux4e0e-direct-bracket-ux5bf9ux7167}}
+
+\textbf{对象}：由两个 gauge-invariant weak fields 构成可逆
+diffeomorphism
+\texttt{T\_\allowbreak{}s=Φ\_\allowbreak{}\{−Y\}\^{}s\ Φ\_\allowbreak{}\{−X\}\^{}s\ Φ\_\allowbreak{}Y\^{}s\ Φ\_\allowbreak{}X\^{}s}，以及精确反向
+\texttt{T\_\allowbreak{}s\^{}\{-1\}}。以等概率选正向/反向，在 augmented
+\texttt{(x,sign)} 空间作确定性 MH。
+
+这里整族向量场必须是给定观测 y 后冻结的状态函数
+\texttt{X\_\allowbreak{}i(·;y)}，或来自同一个已冻结 chart
+家族。若每次以当前起点重建一个私有
+anchor/frame，反向点不能重新用自己的新 frame 冒充原映射的逆；必须把
+chart/cache
+纳入明确的辅助状态与反向概率，或者在生产采样前冻结它们。历史依赖的
+refresh 本身不是不变性证明。
+
+\[
+\alpha(x\to T_sx)=1\wedge {\pi(T_sx)|\det DT_s(x)|\over\pi(x)}.
+\]
+
+如果 sign 的选择非对称，要乘反向/正向概率比。Jacobian 可沿每段流积分
+\texttt{div\ X}；有限步数值映射须可逆并计算自身实际
+determinant，不能把理想 exact-flow determinant 当数值图的
+determinant。若采用 clipping/非可逆优化 corrector，则该公式失效。
+
+\textbf{最小伪代码}：
+
+\begin{verbatim}
+freeze fields/refresh rule from TRAIN and current allowed context
+sample pair and direction sign, keeping auxiliary probabilities
+construct an invertible block map T and its exact reverse
+track actual log absolute Jacobian of the numerical map
+obtain exact Full log posterior at endpoint
+accept with target ratio × Jacobian × reverse selection ratio
+record material-functional ESS, loop/path cost and refresh cost
+\end{verbatim}
+
+\textbf{公平对照}：直接 \texttt{x\textquotesingle{}=x+s²B} 的合法
+full-rank MH proposal；普通 weak+strong covariance；同成本
+pCN/MALA/HMC；同 gap/步长但随机方向。若直接 bracket step 已达到相同末端
+secant/混合质量且更便宜，回路只保留为几何诊断。
+
+\textbf{失败模式}：divergence/field derivatives 比 Full solves
+还贵；反向数值稳定性差；材料位移太小；高 prior/data cost；冻结 frame 使
+bracket 近零；横向仍只覆盖极少维。
+
+\hypertarget{n2.-ux6750ux6599-poisson-ux9884ux6761ux4ef6ux4e0eux63a7ux5236ux53d8ux91cf}{%
+\subsubsection{N2. 材料 Poisson
+预条件与控制变量}\label{n2.-ux6750ux6599-poisson-ux9884ux6761ux4ef6ux4e0eux63a7ux5236ux53d8ux91cf}}
+
+\textbf{对象}：以冻结材料函数 f\_\allowbreak{}j 为目标，构造低维解析/多项式/核基底
+ψ\_\allowbreak{}j 的 Galerkin 近似，不必训练神经网络。用 exact target score
+与合法样本估计弱形式
+
+\[
+E_\pi[\nabla\varphi_k^T A\nabla\psi_j]
+ =E_\pi[\varphi_k\bar f_j].
+\]
+
+由 G4 指导 mobility/refresh 方向，并利用 \texttt{Eπ{[}L\_\allowbreak{}A\ ψ{]}=0}
+构造控制变量 \texttt{f+L\_\allowbreak{}A\ ψ}。若 ψ 逼近 Poisson 解，波动可下降；其
+zero-mean 性要求原 target score、边界项和合法积分。基础 Stein control
+functionals 已有成熟先例。{[}A-S10{]}
+
+\textbf{算法}：先用 full-rank
+合法基线得到有限开发链；以分样本/交叉拟合确定基底系数；冻结后在新链上估材料均值；比较校正前后材料
+MCSE 及所有 score/JVP 的实付成本。若 score 已经为 MH proposal
+支付，控制变量可便宜复用。
+
+\textbf{正确性与限制}：不把监督风险 reward 放入
+target；控制变量不修复漏模态、不可约性失败或 ESS≈1。对 autocorrelated
+chains，需要独立评价链或合适渐近理论，不能把同链拟合后的方差下降当无偏性证明。
+
+\textbf{决定性实验}：先在线性 Gaussian 与小维 non-Gaussian 可积 slice
+上验证公式、unbiased/consistent 性和成本；再用 P1
+的真实合法样本检验是否降低材料 MCSE/RHS。尚未获得合格 FULL chain
+时，只能保持 development candidate。
+
+\hypertarget{n3.-bracket-informed-covariance-acquisitionux800cux975eux6267ux884c-bracket-ux56deux8def}{%
+\subsubsection{N3. bracket-informed covariance acquisition，而非执行
+bracket
+回路}\label{n3.-bracket-informed-covariance-acquisitionux800cux975eux6267ux884c-bracket-ux56deux8def}}
+
+\textbf{对象}：在已付物理 anchor 周围，少量 secant/probe 估
+\texttt{B\_\allowbreak{}ij={[}X\_\allowbreak{}i,X\_\allowbreak{}j{]}}，将材料有意义、预测 data/prior cost
+可接受的 transverse components 加入 proposal mobility：
+
+\[
+A(x)=a_wP_w(x)+\sum_{ij}\gamma_{ij}b_{ij}b_{ij}^T+\epsilon I,
+\quad \epsilon>0.
+\]
+
+\nolinkurl{b_ij} 经材料 rank 与已有方向正交化，γ 由冻结的 task/cost
+criterion 选取。使用 state-dependent Gaussian MH ratio，可以不计算
+\texttt{div\ A} 仍保持 MH 不变性；省略 divergence
+会改变连续SDE含义但不会破坏正确计算 proposal ratio 的 MH。
+
+这一说明假设 A 是冻结的可计算状态函数 \texttt{A(x,y)}；若 A
+还依赖未入状态的历史或自适应缓存，则需额外的适应性条件、冻结生产阶段或增广状态设计，不能直接沿用普通MH结论。
+
+\textbf{潜在机制}：把 weak projector 旋转包含的有限响应几何转化为有限秩
+candidate
+directions；跳过四段控制回路的费用。它更接近``有物理结构的方向获取''，而非证明
+sub-Riemannian dynamics 普遍最优。
+
+\textbf{关键对照}：bracket directions vs 同数量 material secant PCA vs
+random transverse vs true curvature Hessian directions；保持物理
+probes、矩阵 rank、模型容量、MH 步数与全部 RHS 成本相同。若普通 secant
+更优，不保留 bracket 命名作为主贡献。
+
+\textbf{失败模式}：finite difference 对 projector crossing/decoder seams
+敏感；bracket 幅度小；估方向成本不能摊销；质量集中于受限几何但 material
+moments 在其外。
+
+\hypertarget{a.11-reachabilityposterior-massbayes-riskphysical-realizability-ux7684ux5173ux7cfb}{%
+\subsection{A.11 Reachability、posterior mass、Bayes risk、physical
+realizability
+的关系}\label{a.11-reachabilityposterior-massbayes-riskphysical-realizability-ux7684ux5173ux7cfb}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+命题
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+是否成立
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+原因/反例
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+GT 可达 ⇒ GT 附近有大 posterior mass & 否 & 可达是
+support/控制命题；细狭区域可密度高但体积极小，或 prior 极小 \\
+候选数据相容 ⇒ 接近 GT & 否 &
+弱信息下不同材料解释同一测量；先验可能偏好另一材料 \\
+posterior mean 风险最优 ⇒ 属于合法 decoder image/noise-ball & 否 & 非凸
+pushforward support 与非线性 F；均值可落在支持外 \\
+正确 posterior sampler ⇒ 有限预算风险一定优于 CNN & 否 & MC
+误差、初始化、autocorrelation 与昂贵物理成本仍可更大 \\
+material MSE 降低 ⇒ full posterior 更准确 & 否 &
+条件均值只约束第一矩，无从识别多模态或校准 \\
+合法 prior latent sample ⇒ Maxwell数据相容 & 否 & prior 合法不等于
+likelihood 大 \\
+exact posterior sample ⇒ 总在固定 noise-ball & 否 & Gaussian likelihood
+有尾部；硬球是另一个截断目标 \\
+\end{longtable}
+
+对任何只依赖 y 的材料动作 T，有
+
+\[
+E[\|\chi-T(y)\|^2\mid y]
+=\operatorname{tr}\operatorname{Cov}(\chi\mid y)
+ +\|T(y)-E[\chi\mid y]\|^2.
+\]
+
+CNN 可以通过训练先验中的空间相关性更好估计
+E{[}χ\textbar y{]}，从而降低第二项；它不能把不可约条件方差变成逐例可恢复信息。若弱坐标
+U 与 y 独立，最优预测是 prior conditional
+mean，平均风险可以优于一个任意点，却不可能保证每份 U\_\allowbreak{}GT 的偶然值。
+
+动态弱探索真正有价值的条件，是它以更低成本逼近重要 posterior
+统计量，或发现有明确质量与物理意义的替代材料。单纯``更远''``更多''``更接近某个离线
+GT''都不充分。
+
+\hypertarget{a.r-ux539fux59cbux6765ux6e90ux7d22ux5f15}{%
+\subsection{A.R
+原始来源索引}\label{a.r-ux539fux59cbux6765ux6e90ux7d22ux5f15}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{{[}A-S1{]}} Giannotti, Spiro, Zoppello. \emph{Proving the
+  Chow--Rashevskii Theorem à la Rashevskii}. 2024.
+  \href{https://arxiv.org/html/2401.07546v2}{原始来源}。
+\item
+  \textbf{{[}A-S2{]}} Ma, Chen, Fox. \emph{A Complete Recipe for
+  Stochastic Gradient MCMC}. 2015.
+  \href{https://proceedings.neurips.cc/paper/2015/file/9a4400501febb2a95e79248486a5f6d3-Paper.pdf}{原始来源}。
+\item
+  \textbf{{[}A-S3{]}} Xifara et al.. \emph{Langevin diffusions and the
+  Metropolis-adjusted Langevin algorithm}. 2014.
+  \href{https://arxiv.org/pdf/1309.2983}{原始来源}。
+\item
+  \textbf{{[}A-S4{]}} Hörmander. \emph{Hypoelliptic second order
+  differential equations}. 1967.
+  \href{https://link.springer.com/article/10.1007/BF02392081}{原始来源}。
+\item
+  \textbf{{[}A-S5{]}} Hairer. \emph{On Malliavin's proof of Hörmander's
+  theorem}. 2011.
+  \href{https://hairer.org/papers/hormander.pdf}{原始来源}。
+\item
+  \textbf{{[}A-S6{]}} Duncan, Lelièvre, Pavliotis. \emph{Variance
+  Reduction Using Nonreversible Langevin Samplers}. 2016.
+  \href{https://pmc.ncbi.nlm.nih.gov/articles/PMC4939425/}{原始来源}。
+\item
+  \textbf{{[}A-S7{]}} AlRachid, Mones, Ortner. \emph{Some Remarks on
+  Preconditioning Molecular Dynamics}. 2018.
+  \href{https://www.numdam.org/item/SMAI-JCM_2018__4__57_0/}{原始来源}。
+\item
+  \textbf{{[}A-S8{]}} Lelièvre, Pavliotis, Robin, Santet, Stoltz.
+  \emph{Optimizing the diffusion coefficient of overdamped Langevin
+  dynamics}. 2024 预印本；本轮核到 v3（2025）.
+  \href{https://arxiv.org/html/2404.12087v3}{原始来源}。
+\item
+  \textbf{{[}A-S9{]}} Titsias. \emph{Optimal Preconditioning and Fisher
+  Adaptive Langevin Sampling}. 2023.
+  \href{https://proceedings.neurips.cc/paper_files/paper/2023/hash/5da6d5818a156791090c875abeca3cf8-Abstract-Conference.html}{原始来源}。
+\item
+  \textbf{{[}A-S10{]}} Oates, Girolami, Chopin. \emph{Control
+  functionals for Monte Carlo integration}. 2017.
+  \href{https://arxiv.org/abs/1410.2392}{原始来源}。
+\end{itemize}
+
+\hypertarget{ux9644ux5f55-bux5b8cux6574ux6761ux4ef6ux8f93ux8fd0ux6750ux6599ux6761ux4ef6ux77e9ux4e0eux6982ux7387ux6821ux6b63}{%
+\section{附录
+B：完整条件输运、材料条件矩与概率校正}\label{ux9644ux5f55-bux5b8cux6574ux6761ux4ef6ux8f93ux8fd0ux6750ux6599ux6761ux4ef6ux77e9ux4e0eux6982ux7387ux6821ux6b63}}
+
+本附录补充主报告的条件、证明与反例；执行预算和资格门以主报告第7--8节及任务书为准。参考文献编号在本附录独立加前缀。
+
+\textbf{实坐标与复材料的约定。} 所有 latent、速度、covariance
+与谱方向均在实空间中。复材料空间使用实 Hilbert 内积
+\(\langle a,b\rangle_M=\operatorname{Re}(a^*Mb)\)。后文 \(Dg^TMDg\)
+等简记均指这个实 Hilbert adjoint，等价于
+\(Q=\operatorname{Re}[(Dg)^*M(Dg)]=D_M^TD_M\)，其中 \(D_M\) 是吸收材料
+metric 后的实化导数；材料 covariance、trace
+和平方风险也使用相同实化约定。不能把复矩阵的特征向量误作合法实 latent
+方向。
+
+\hypertarget{b.1-ux9996ux5148ux628aux76eeux6807ux6d4bux5ea6ux5199ux5bf9}{%
+\subsection{B.1
+首先把目标测度写对}\label{b.1-ux9996ux5148ux628aux76eeux6807ux6d4bux5ea6ux5199ux5bf9}}
+
+原 P1 为
+
+\[
+q=(z,u)\in\mathbb{R}^{64}\times[0,1]^2,\quad z\sim N(0,I_{64}),\quad u\sim U([0,1]^2).
+\]
+
+每个 ROI 单元的 decoder 是
+
+\[
+g_i(q)=\chi_h+\delta(u)h(s_i),\qquad s_i=\frac{m+A_i z}{\tau},
+\]
+
+其中 \(\delta\) 对两个 uniform 属性线性，且
+
+\[
+h(s)=\begin{cases}0&s\le-1,\\10t^3-15t^4+6t^5,&-1<s<1,\ t=(s+1)/2,\\1&s\ge1.\end{cases}
+\]
+
+这是真正带平坦区的 \(C^2\) 五次 decoder，不是 logistic，也不是 Gaussian
+CDF decoder。``Probit 点''指属性坐标变换后的优化，不表示材料相函数是
+probit。
+
+令 \(u_j=\Phi_N(\eta_j)\)、\(x=(z,\eta)\)。原 prior 在 x
+中\textbf{精确}变为 \(N(0,I_{66})\)，因为
+\(du_j=\varphi_N(\eta_j)d\eta_j\)。于是
+
+\[
+\pi_y(x)=Z_y^{-1}\exp[-U_y(x)],\quad U_y(x)=\Phi(x;y)+\tfrac12\|x\|^2,
+\quad \Phi=\frac{\|F(g(q(x)))-y\|^2_{\mathbb{C}}}{\sigma^2}.
+\]
+
+若实白化残差 \(r=\sqrt2\operatorname{pack}(F-y)/\sigma\)，则
+\(\Phi=\frac12\|r\|^2\)，\(J=D_xr\)，\(\nabla U=J^Tr+x\)。把原 \(\Phi\)
+再乘 \(1/2\) 会改变 posterior。反过来，在 q 坐标评估 flow 密度时
+
+\[
+q_q(z,u\mid y)=q_x(z,\Phi_N^{-1}(u)\mid y)/\prod_j\varphi_N(\eta_j).
+\]
+
+原生优化若把 u 放在边界，\(\Phi_N^{-1}(u)\) 无穷。可用有限截断的 anchor
+\textbf{仅作为网络 context 或起始 Gaussian
+的中心}；不得把这个数值技巧称为改变后仍相同的
+prior。联合模拟真值在理论上落在开区间的概率为一。
+
+\hypertarget{ux547dux9898-1p1-ux7684ux6750ux6599-posterior-ux4e0dux53eaux662fux4e00ux5f20-66-ux7ef4ux66f2ux9762ux4e0aux7684ux8fdeux7eedux5bc6ux5ea6}{%
+\subsubsection{命题 1：P1 的材料 posterior 不只是``一张 66
+维曲面上的连续密度''}\label{ux547dux9898-1p1-ux7684ux6750ux6599-posterior-ux4e0dux53eaux662fux4e00ux5f20-66-ux7ef4ux66f2ux9762ux4e0aux7684ux8fdeux7eedux5bc6ux5ea6}}
+
+由于 offset Gaussian 系数能充分负，存在非空开集使所有 ROI 单元
+\(s_i<-1\)。该开集具有正 prior 概率，并全被 decoder
+映到同一宿主材料。只要该材料的 forward 有限，Gaussian likelihood
+为正，因此这个单点在材料 posterior 下也有正质量。充分正 offset
+则产生所有 ROI 纯相、只剩两个属性变化的低维成分。
+
+结论：\(\nu_y=g_\#\pi_y\) 在 1152 维实材料 ambient
+空间中奇异，而且可能含原子与不同维数的成分。全局的单个 66 维 Hausdorff
+density/Gram determinant 描述并不成立。最稳妥的严格概率对象是 latent
+posterior 的 pushforward；在局部满秩且单射的图册上才可单独使用 area
+formula。
+
+这是从实际 decoder
+得出的结构命题，不是说这些原子的质量在当前观测下足够大。其质量可能极小，是否影响计算需另测。
+
+另一个容易误写的结论：latent 维数 66 不推出材料 covariance
+的矩阵秩不超过 66。非线性曲线 \((t,t^2)\) 已可具有满秩二维
+covariance；只有局部线性近似 \(D C_xD^T\) 的秩受 66 限制。
+
+\textbf{Ambient material diffusion 的语义。} 给材料加独立 Gaussian noise
+后，\(\nu_y*N(0,\epsilon^2I)\) 具有 ambient density；但固定
+\(\epsilon>0\)
+的目标已经改变。只有在正确的零噪声极限或有独立证明的去卷积/decoder
+pushforward 中才能恢复原材料law。把ambient样本优化投影回decoder
+image通常改变质量分配。理论上conditional score
+diffusion可以收敛到奇异终点测度，但零噪声端的score/积分可能变得困难。P1既然已知66维prior，latent生成再pushforward应作为第一概率基线；full-field
+diffusion是检验额外表达与计算代价的竞争实验，而不是默认更完整的posterior。
+
+\hypertarget{b.2-ux6ca1ux6709-mcmc-teacher-ux4e5fux80fdux5b66ux4e60-conditional-lawux4f46ux4e0dux662fux65e0ux6761ux4ef6ux4fddux8bc1}{%
+\subsection{B.2 没有 MCMC teacher 也能学习 conditional
+law，但不是无条件保证}\label{b.2-ux6ca1ux6709-mcmc-teacher-ux4e5fux80fdux5b66ux4e60-conditional-lawux4f46ux4e0dux662fux65e0ux6761ux4ef6ux4fddux8bc1}}
+
+\hypertarget{ux547dux9898-2ux8054ux5408ux6a21ux62dfux7684-conditional-flow-ux5b66ux4e60}{%
+\subsubsection{命题 2：联合模拟的 conditional flow
+学习}\label{ux547dux9898-2ux8054ux5408ux6a21ux62dfux7684-conditional-flow-ux5b66ux4e60}}
+
+设 \((X_1,Y)\) 服从正确 prior、forward 和 noise 的联合分布。给每份 y
+定义可采样、具有完整支持且密度已知的参考分布
+
+\[
+X_0=a(y)+L(y)\epsilon,\quad\epsilon\sim N(0,I_{66}),\quad L(y)\text{可逆},
+\]
+
+且给定 Y 后 \(\epsilon\) 与 \(X_1\) 独立。以下平方损失要求
+\(E\|X_0\|^2+E\|X_1\|^2<\infty\)，并在指定几乎处处的条件 \(y\)
+上满足相应可积性。令
+
+\[
+X_t=(1-t)X_0+tX_1,\quad U_t=X_1-X_0,\quad t\sim U(0,1).
+\]
+
+平方 flow matching 目标
+
+\[
+\mathcal{L}(v)=E\|v(X_t,t,Y)-U_t\|^2
+\]
+
+的 population 最小解为
+\(v^*(x,t,y)=E[U_t\mid X_t=x,Y=y]\)。对紧支撑光滑测试函数 \(\psi\)，
+
+\[
+\frac{d}{dt}E[\psi(X_t)\mid y]
+=E[\nabla\psi(X_t)^TU_t\mid y]
+=\int\nabla\psi(x)^Tv^*(x,t,y)p_t(x\mid y)dx.
+\]
+
+故 \(p_t\) 满足
+\(\partial_t p_t+\nabla\cdot(p_tv^*)=0\)。在向量场具有足够正则性、无爆炸且
+continuity equation/ODE 解唯一等条件下，该流把已知 \(\rho_0^y\) 输送到
+\(\pi_y\)。这是一种标准 conditional FM 原理；FMPE 已在 2023
+年直接研究，此处作用是明确 P1 的正确使用方式。{[}B-T1,B-T2{]}
+
+\textbf{一份 y 只有一个 GT 为什么仍然有意义？} 联合分布中 \(E_{X,Y}\)
+可用独立 joint simulations 估计；无需针对相同连续 y 重复抽完整
+posterior。学习靠跨观测的统计共享，而非从某个唯一训练标签直接推断其局部散布。有限样本时，任意复杂的条件分布不可无假设识别；网络可以记忆训练对并在邻近观测处塌缩。此失败已有专门的有限数据
+CFM 研究，不能声称 full-support source 自动解决 mode
+collapse。{[}B-T3{]}
+
+\textbf{anchor 点质量不能作为完整 base。} 若所有样本从同一 \(x_0(y)\)
+出发、ODE 给定 y 后确定，则末端还是一个点。若只有 k
+维连续随机种子，经足够正则的有限维确定性 endpoint map 且
+\(k<66\)，一般不能形成 66 维 Lebesgue 密度。用 full-rank \(L\epsilon\)
+最直接。低秩 Brownian 驱动在 Hörmander 条件下是另一种情况，不能与 k
+个固定噪声系数混淆。
+
+\textbf{参考分布选择。} 首个基线用标准 Gaussian；第二个用
+\(a(y)=x_0(y)\)、\(LL^T=\gamma^2(I+J_0^TJ_0)^{-1}+\epsilon I\)，明确这只是计算预条件。每个基点
+Jacobian 的费用必须计入，且 covariance 不能降秩。
+
+\textbf{端点平滑。} 若使用
+\(X_t=tX_1+[1-(1-\sigma_{\min})t]X_0\)，\(t=1\) 的目标包含
+\(\sigma_{\min}X_0\) 平滑，并非精确原 posterior。需要明确偏差、逐步减小
+\(\sigma_{\min}\) 的收敛证据或后续合法校正；不能把数学便利隐藏掉。
+
+\textbf{OT coupling 警告。} 任意改变 conditional coupling，只要给定 y
+的两端 marginal 保持正确，FM 定理仍成立；但对不同 y 的训练对直接做
+minibatch OT 配对，可能使分给该 y 的 base 噪声不再服从声明的
+\(\rho_0^y\)。简单采用 independent conditional coupling 为主基线；OT
+变体需证明其 conditional source 和 target 没有被配对规则改变。
+
+\hypertarget{ux547dux9898-3ux89c2ux6d4bux538bux7f29ux7684ux4e0dux53efux9006ux635fux5931}{%
+\subsubsection{命题
+3：观测压缩的不可逆损失}\label{ux547dux9898-3ux89c2ux6d4bux538bux7f29ux7684ux4e0dux53efux9006ux635fux5931}}
+
+若模型只接收 \(C=c(Y)\)，它即使完美也学习 \(p(x\mid C)\)。任意 density
+\(q(x\mid C)\) 满足
+
+\[
+E_Y\operatorname{KL}(p(X\mid Y)\|q(X\mid C))
+=I(X;Y\mid C)+E_C\operatorname{KL}(p(X\mid C)\|q(X\mid C)).
+\]
+
+证明是加入并减去 \(\log p(X\mid C)\) 再取条件期望。材料均值的对应代价为
+
+\[
+R(\mu_C)-R(\mu_Y)=E\|E[\chi\mid Y]-E[\chi\mid C]\|_M^2.
+\]
+
+因此仅使用 anchor、十维弱坐标或 CNN feature 都有潜在 information
+bottleneck。\(q_0,J_0,r_0\) 若都是 y
+的确定函数，并未创造新信息；它们可提高有限样本效率。建议原始 512
+维实测量保留一条 skip/context 路径，之后才检验可否压缩。
+
+\hypertarget{ux5c40ux90e8-posterior-ux7684ux5b9aux4e49}{%
+\subsubsection{局部 posterior
+的定义}\label{ux5c40ux90e8-posterior-ux7684ux5b9aux4e49}}
+
+选择只依赖 \((x,y)\) 和已冻结阈值的事件 \(A_y\)，例如
+\(\|g(x)-g(x_0(y))\|_M\le r\)、prior shell
+及某种连通性条件。局部目标必须写成
+
+\[
+\pi_y^{A}(x)=\pi_y(x)1_{A_y}(x)/\pi_y(A_y).
+\]
+
+full-prior joint training 未筛选时学习的是 FULL conditional。按
+\(A_Y(X_{GT})\) 筛选的联合样本，在每个给定 y 下确实产生局部
+conditional，但 y 的训练权重改变为
+\(p(y)\pi_y(A_y)\)；有限数据会偏重接受率大的观测。若按带 GT
+的额外规则挑``更好局部样本''，则 target 再次改变。
+
+\hypertarget{b.3-ux51e0ux4f55ux600eux6837ux8fdbux5165-flow-ux624dux4e0dux5077ux5077ux6539ux6389ux76eeux6807}{%
+\subsection{B.3 几何怎样进入 Flow
+才不偷偷改掉目标}\label{b.3-ux51e0ux4f55ux600eux6837ux8fdbux5165-flow-ux624dux4e0dux5077ux5077ux6539ux6389ux76eeux6807}}
+
+\hypertarget{ux547dux9898-4ux52a0ux6743-velocity-error-ux4fddux7559-population-target}{%
+\subsubsection{命题 4：加权 velocity-error 保留 population
+target}\label{ux547dux9898-4ux52a0ux6743-velocity-error-ux4fddux7559-population-target}}
+
+取 \(W(x,t,y)\) 可测、对称正定，并有
+\(0<w_-I\preceq W\preceq w_+I<\infty\)。它可以依赖当前材料 decoder、廉价
+Jacobian predictor 或可见 physics
+context，但\textbf{只能依赖网络当时可见的 \((x,t,y)\)}。定义
+
+\[
+\mathcal{L}_W(v)=E[(v(X_t,t,Y)-U_t)^T W(X_t,t,Y)(v(X_t,t,Y)-U_t)].
+\]
+
+条件于 \((X_t,t,Y)\)，对 v 求导得
+\(2W(v-E[U_t\mid X_t,t,Y])\)，故最优场仍是 \(v^*\)。这给出一种保留
+population conditional law 的几何注入方式。
+
+可选 \(W\) 是有界裁剪的 \(I+\alpha Dg^TMDg+\beta J^TJ\)。材料项强调对
+material loss 重要的速度误差，数据项强调会造成大 residual
+变化的速度误差。正定底噪保证不把某些分量完全扔掉。有限容量下最优近似仍会改变，必须以风险、概率质量和计算量检验；该回归恒等式本身不构成创新。
+
+三个对照极其重要：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  若 W 依赖隐藏 endpoint \(X_1\) 或 GT，最优场变成
+  \((E[W\mid X_t])^{-1}E[WU_t\mid X_t]\)，一般不再是目标速度。
+\item
+  另外加 \(\lambda\|Jv\|^2\) 是惩罚 velocity 本身，通常改变
+  flow，而不是仅改变误差度量。
+\item
+  把 v 替换为 \(P_wv\) 一般改变 \(\nabla\cdot(pv)\)。只有被丢掉的 flux
+  在目标路径下 divergence 为零等特殊条件下才保留给定 \(p_t\)。
+\end{enumerate}
+
+\textbf{非对合不妨碍 ODE 合法。} 动态 projector
+场正则时，\(\dot x=P_w(x)v_\theta(x,t,y)\) 是普通
+ODE。问题是目标是否可实现、density
+是否被正确计算、费用是否值得；不是非对合就无法定义动力系统。full-dimensional
+base 经此 ODE 仍可有 full-dimensional density；不能笼统说``弱场 ODE
+永远只能出低维样本''。若从点或固定低维 seed 出发则是另一回事。
+
+\textbf{概率输运时不应强制所有中间时刻都满足原 noise-ball。}
+全支持参考分布的许多初值本就不在其中。要求每个 t 都在 ball
+相当于另选受约束 path/base，并且可能不覆盖原 Gaussian likelihood 的
+tails。材料探索器可以使用 hard feasible path，posterior generator
+则应声明自己的 path law。
+
+\hypertarget{ux5bc6ux5ea6ux4e0eux8865ux507f}{%
+\subsubsection{密度与补偿}\label{ux5bc6ux5ea6ux4e0eux8865ux507f}}
+
+对足够光滑的可逆 ODE flow \(T_t\)，
+
+\[
+\log q_1(T_1(x_0)\mid y)=\log\rho_0^y(x_0)-\int_0^1\operatorname{div}_xv(T_t(x_0),t,y)dt.
+\]
+
+若物理 context \(P_w,J,r\) 随 x 改变，divergence 必须包含其 x
+导数，不能在求密度时把它们 \nolinkurl{detach} 后继续称完整 density。
+
+可逆 strong shear \((a,b)\mapsto(a,b+c(a,y))\) 的 determinant 等于
+1；\((a,b)\mapsto(a,c(a,y)+L(a,y)b)\) 的 determinant 是
+\(\det L\)。但若优化 corrector 把所有 b 变成 \(b^*(a)\)，它丢掉 strong
+条件体积并产生奇异分布。此时应另作为 physical representative
+输出，或保留充分维度的辅助变量和完整联合 Jacobian/marginal
+density。给投影结果随手附上原 flow 权重不正确。
+
+\textbf{数值 exactness。} 连续 CNF 的密度公式是理论精确式。有限容差 ODE
+产生的采样映射与反向积分密度不必完全匹配；随机 Hutchinson trace
+也不是自动给出可供 exact MH 使用的无偏非负 density estimator。P1 仅 66
+维，可做 exact trace/tolerance
+审计，但仍需把结果称为数值精度内校正。若要第一阶段清楚地分离这些误差，使用解析可逆
+spline/coupling 层作为 density 基线，或使用有真实离散 Jacobian
+的可逆数值映射。
+
+\hypertarget{b.4-ux4e24ux79cdux503cux5f97ux8ba4ux771fux6bd4ux8f83ux7684ux5b8cux6574ux6982ux7387ux7b97ux6cd5}{%
+\subsection{B.4
+两种值得认真比较的完整概率算法}\label{b.4-ux4e24ux79cdux503cux5f97ux8ba4ux771fux6bd4ux8f83ux7684ux5b8cux6574ux6982ux7387ux7b97ux6cd5}}
+
+\hypertarget{ux7b97ux6cd5-p66-ux7ef4-conditional-triangular-densityux9996ux5148ux653bux514b-strong-conditional}{%
+\subsubsection{算法 P：66 维 conditional triangular density，首先攻克
+strong
+conditional}\label{ux7b97ux6cd5-p66-ux7ef4-conditional-triangular-densityux9996ux5148ux653bux514b-strong-conditional}}
+
+\textbf{对象。} 对每份 y 冻结一个正交 \(V_y=[V_a,V_b]\)，将
+\(x=x_0(y)+V_a a+V_b b\)。V 可以来自 TRAIN frame 或 anchor，但在一次
+density evaluation 中不能随待评 x 偷换。建模
+
+\[
+q_\theta(x\mid y)=q_\theta(a\mid y)q_\theta(b\mid a,y),\quad \dim a=10,\quad\dim b=56.
+\]
+
+将 b 分成 7 个 8 维 block，用有解析反函数的 rational-quadratic spline
+条件层、不同 permutation 和完整高斯 base。先用相同总容量的普通 66D
+spline 作为强 baseline，避免把人为强弱次序当必然优点。
+
+\textbf{训练。} 所有 joint samples 的 \(-\log q_\theta(x_{GT}\mid y)\)
+最小化；不是只训练 weak 10D 然后乘 prior56。先验变换和 V 的 determinant
+全部计入。网络可以先预测 strong conditional center
+\(c_\theta(a,y)\)，再生成非 Gaussian innovation；后者不得消失。
+
+\textbf{结构建议。} 6--10 层 spline blocks，8 个 bins，conditioner 每层
+2 个 128 宽 hidden layers；约 0.3--1.5M
+参数作为计划范围，实际由代码精确记账。context 保留 512 实测量，另输入
+anchor、残差、廉价 decoder saturation features；context encoder 输出
+128--256 维。单独比较不含 anchor 的版本，以检验物理上下文的成本与收益。
+
+\textbf{为什么对 R2 有针对性。} 固定 a 后 strong 分布可随 a
+大幅弯曲、改变宽度及 tails。\(q_b(b\mid a,y)\)
+把这一耦合直接放进概率模型；多中心 Student 的整体 heavy tail 或多加
+mixture center 并未做到这一点。不过它仍可能无法从 32768 个 joint samples
+学到高度集中的条件 law，不能承诺解决。
+
+\textbf{校正。} 提案密度已知时可用
+
+\[
+\alpha(x,x')=1\wedge \exp[-U(x')+U(x)]q_\theta(x\mid y)/q_\theta(x'\mid y).
+\]
+
+不变分布正确不等于短链合格。采用固定概率混合 conditional independence
+proposal 和 prior-reversible pCN kernel，比只做一条脆弱 IMH
+更有可检验性；pCN 在 x 的标准 Gaussian prior 下只需 likelihood ratio。
+
+\begin{verbatim}
+Train-P:
+  Freeze target, parent split, x=(z,Φ_N^{-1}(u)), context and frame rules.
+  For joint (x_GT,y): compute allowed y-only context; evaluate full66 log q.
+  Optimize heldout full66 NLL; freeze model/seed before test.
+Deploy-P(y):
+  Compute declared anchor/context and full66 samples x_k with exact log q_k.
+  Push x_k through original decoder; report approximate law and mean separately.
+  If correction stage authorized:
+    Alternate full-density independence MH with pCN; every accepted target uses FULL Φ.
+    Keep rejected repeats; diagnose material functions, mode transitions and chain agreement.
+  Return mean action, sample law status, and optional feasible representative as separate outputs.
+\end{verbatim}
+
+\textbf{费用。} 无物理 context 的 sampler 在线只需网络和
+decoder；anchor/J context 成本不得藏掉。每个 FULL checked candidate 8
+RHS，full target Jacobian 另 32 receiver
+RHS（采用证据包接口时；求解器变化需重测）。训练 forward 数据成本与
+amortization horizon 必须计入。若同时计算 MH
+的两个状态，可缓存当前状态，只新增 proposed state。
+
+\textbf{失败门。} full66 NLL 不改善、strong conditional conditional-PIT
+显著失真、material ESS/RHS 没有增长、importance correction 仍
+ESS≈1、罕见 y 崩溃，则本方法只保留 approximate generator
+身份，不能再通过延长同一失败链自封 FULL。
+
+\hypertarget{ux7b97ux6cd5-fux5b8cux6574-latent-cfm-ux4fddux76eeux6807ux7684ux51e0ux4f55ux8befux5deeux52a0ux6743}{%
+\subsubsection{算法 F：完整 latent CFM +
+保目标的几何误差加权}\label{ux7b97ux6cd5-fux5b8cux6574-latent-cfm-ux4fddux76eeux6807ux7684ux51e0ux4f55ux8befux5deeux52a0ux6743}}
+
+采用命题2的 full-support base 和完整 66 维 velocity。建议 4 个 256
+宽残差 MLP blocks；time embedding 32--64 维；context 128--256 维；约
+0.4--1.5M 参数。先冻结无几何模型和同容量几何模型，保持 raw y/anchor
+信息一致。几何通过：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  当前 decoder features 和可见 physics context；
+\item
+  命题4的 bounded SPD velocity-error metric；
+\item
+  可逆的 anchor preconditioning。
+\end{enumerate}
+
+不以 hard weak projection 为默认。所谓 \nolinkurl{v_extra} 与
+\texttt{P\_\allowbreak{}w\ v\_\allowbreak{}w+P\_\allowbreak{}s\ v\_\allowbreak{}s}
+若已保留全部维度，在表达能力上只是重参数化；必须说明具体 inductive bias
+和代价。
+
+\begin{verbatim}
+Train-F:
+  For each joint (x_1,y), draw ε~N66 and t~Uniform(0,1).
+  x_0=a(y)+L(y)ε; x_t=(1-t)x_0+t x_1; u=x_1-x_0.
+  W_t = bounded_SPD_metric(x_t,t,y), computed without hidden endpoint labels.
+  Minimize (vθ(x_t,t,y)-u)^T W_t (vθ(x_t,t,y)-u).
+  Use heldout NLL/energy score/calibration, not train FM loss alone, to freeze model.
+Deploy-F(y):
+  Draw independent full-rank x_0 and integrate ODE with frozen tolerance.
+  Return endpoint samples; density uses complete divergence with a tolerance audit.
+  Report every physics refresh and every ODE NFE.
+  Optional correction is labelled by the accuracy of implemented proposal density.
+\end{verbatim}
+
+\textbf{最重要的现实障碍。} 训练的 x\_\allowbreak{}t 并非只分布在 high-likelihood
+tube，逐训练样本计算完整动态 J 成本可能远超数据模拟。先只用 cheap
+decoder geometry/learned local operator，待每条轨迹所需 refresh
+次数可测后再决定是否加入真正动态 Maxwell context。强行每步 full J
+的结果只能作为昂贵上界。
+
+与 diffusion 的公平比较应是\textbf{同一 joint simulation 训练的条件
+score}。将 unconditional prior score 加上
+\(\nabla_x\log p(y\mid\hat x_0(x_t))\) 一般不是真实 noisy-time
+conditional score，误差不会由写一个 Maxwell loss 自动消失。Schrödinger
+bridge 或 OT 更复杂的 path objective 也不会自动提供缺失的 full
+conditional truth；先通过本轮较简单对照再投入。
+
+\hypertarget{b.5-ux6750ux6599ux98ceux9669ux8f93ux51faux4e0eux7269ux7406ux4e16ux754cux8f93ux51faux5e94ux5206ux522bux5b9aux4e49}{%
+\subsection{B.5
+材料风险输出与物理世界输出应分别定义}\label{b.5-ux6750ux6599ux98ceux9669ux8f93ux51faux4e0eux7269ux7406ux4e16ux754cux8f93ux51faux5e94ux5206ux522bux5b9aux4e49}}
+
+取材料 Hilbert norm
+为全网格平均复数平方范数，\(\mu_y=E[\chi\mid y]\)，\(V_y=E\|\chi-\mu_y\|_M^2\)。任意
+y-only action a 都满足
+
+\[
+E[\|\chi-a\|_M^2\mid y]=V_y+\|a-\mu_y\|_M^2.
+\]
+
+若独立 posterior sample \(\chi'\mid y\) 用作点图，其平均风险是
+\(2V_y\)。M 个独立正确样本的均值风险是 \((1+1/M)V_y\)。若从近似 law q
+抽样，
+
+\[
+E\|\chi-\bar\chi_q\|_M^2
+=V_y+\|\mu_q-\mu_y\|_M^2+\operatorname{tr}_M\operatorname{Cov}_q(\chi)/M.
+\]
+
+因此生成器样本变多、变漂亮、可解释概率更好，均不保证它的有限样本均值胜过
+5842 参数风险 CNN。概率路线应按其额外 uncertainty/joint decision
+价值评价，而不是预设取代直接风险输出。
+
+\hypertarget{ux547dux9898-5physical-representative-ux7684ux4e0dux53efux6d88ux9664ux98ceux9669ux4ee3ux4ef7}{%
+\subsubsection{命题 5：physical representative
+的不可消除风险代价}\label{ux547dux9898-5physical-representative-ux7684ux4e0dux53efux6d88ux9664ux98ceux9669ux4ee3ux4ef7}}
+
+给定一个明确的合法场景集合 \(S_y\)（原 decoder image、明确
+likelihood/prior/local
+约束），假设该集合非空且距离极小值可达；否则只能讨论
+infimum。最优受约束平方风险 action 为
+
+\[
+\chi_y^{rep}\in\arg\min_{a\in S_y}\|a-\mu_y\|_M^2.
+\]
+
+其相对 Bayes mean 的最小额外风险是
+\(d_y^2=\operatorname{dist}_M(\mu_y,S_y)^2\)。若用估计 \(\hat\mu_y\) 且
+\(e_y=\|\hat\mu_y-\mu_y\|_M\)，令 \(\hat a\) 是到 \(\hat\mu_y\)
+的最近合法代表，则
+
+\[
+\|\hat a-\mu_y\|_M\le d_y+2e_y,
+\quad R_y(\hat a)-R_y(\mu_y)\le(d_y+2e_y)^2.
+\]
+
+证明由三角不等式和 \(\|\hat a-\hat\mu\|\le\|a^*-\hat\mu\|\)
+立即得到。这是 decision-theoretic 不等式，非 Maxwell
+新定理，但它清楚说明后处理代价应如何记账。
+
+反例：\(F(\chi)=\chi^2\)，小噪声观测 y≈1，prior 对 ±1 对称。posterior
+mean 接近0，能达到接近1的平方风险；合法单一代表接近
+±1，平均风险接近2。把 mean 投影到 data-consistency set 必然增加 Bayes
+risk。非线性 decoder 本身也可能让 mean 不属于 prior image。
+
+若 F 在 posterior material convex hull 的 Hessian 算子范数有界
+\(L_2\)，Taylor 一阶项在条件期望下抵消，得到
+
+\[
+\|F(\mu_y)-E[F(\chi)\mid y]\|\le\tfrac12L_2E[\|\chi-\mu_y\|_M^2\mid y].
+\]
+
+该界依赖真实 posterior dispersion 和局部 Hessian 界；若 convex hull 不在
+forward 的可定义稳定域上则不可使用。它解释 mean
+数据误差可由非线性曲率和不确定性引起，但不证明 R2 CNN 已是 true mean。
+
+\hypertarget{ux7b97ux6cd5-rux98ceux9669ux77e9-ux5408ux6cd5ux4ee3ux8868ux7684ux4e24ux4e2aux8f93ux51fa}{%
+\subsubsection{算法 R：风险矩 +
+合法代表的两个输出}\label{ux7b97ux6cd5-rux98ceux9669ux77e9-ux5408ux6cd5ux4ee3ux8868ux7684ux4e24ux4e2aux8f93ux51fa}}
+
+风险头直接最小化材料 MSE，保留 R2 CNN 作为最强基线。代表头求
+
+\[
+q^{rep}\in\arg\min_q\|g(q)-\hat\mu_y\|_M^2\quad\text{s.t.}\quad\Phi(q;y)\le c_y,\quad q\in Q_{legal},\quad q\in A_y\text{（若声明LOCAL）}.
+\]
+
+最好由已有 physics anchor 开始，用有限步 trust region 或 strong
+compensation，逐候选 FULL
+验证。其优化目标是``在可行集合中最接近所估材料均值''，不是单纯把
+residual 尽量降到零。对每个预算画 material risk--residual Pareto
+curve；保留 \(\hat\mu\) 和 \(g(q^{rep})\) 两张图。这个代表不是 posterior
+draw；没有 density 就不附概率。
+
+\hypertarget{b.6-ux72ecux7acbux4e8e-flowcnnrl-ux7684ux5019ux9009ux76f8ux9608ux503cux77e9ux79efux5206}{%
+\subsection{B.6 独立于 Flow/CNN/RL
+的候选：相阈值矩积分}\label{b.6-ux72ecux7acbux4e8e-flowcnnrl-ux7684ux5019ux9009ux76f8ux9608ux503cux77e9ux79efux5206}}
+
+R2
+的99.10\%改善发生在基础重建过渡区，提示首先研究材料相变量的条件矩，而不是强行解释为几何运动。以下机制仅用
+GLM、广义加性回归、kernel ridge
+或其他低容量统计器即可实现；可以之后再比较神经版本。
+
+\hypertarget{ux547dux9898-6p1-decoder-ux7684ux6761ux4ef6ux6750ux6599ux5747ux503cux6709ux7cbeux786eux4e00ux7ef4ux9608ux503cux79efux5206ux8868ux793a}{%
+\subsubsection{命题 6：P1 decoder
+的条件材料均值有精确一维阈值积分表示}\label{ux547dux9898-6p1-decoder-ux7684ux6761ux4ef6ux6750ux6599ux5747ux503cux6709ux7cbeux786eux4e00ux7ef4ux9608ux503cux79efux5206ux8868ux793a}}
+
+在 \(-1<t<1\)，\(h'(t)=15(1-t^2)^2/16\)，且其积分为1。对所有 s，
+
+\[
+h(s)=\int_{-1}^{1}h'(t)1\{s>t\}\,dt.
+\]
+
+故
+
+\[
+\mu_i(y)=\chi_h+\int_{-1}^{1}h'(t)m_i(t,y)dt,
+\quad m_i(t,y)=E[\delta(u)1\{s_i>t\}\mid y].
+\]
+
+Fubini 合法，因为 \(\delta\) 有界。训练 joint sample 的监督标签
+\(\delta(u_{GT})1\{s_{i,GT}>t\}\) 是该条件矩的无偏标签；无需 posterior
+teacher。用有限阈值 t\_\allowbreak{}j 与正 quadrature 权重 \(\omega_j\)
+训练多个小型回归器，产生
+\(\hat\mu_i=\chi_h+\sum_j\omega_j\hat m_i(t_j,y)\)。属性与相变量相关性通过加权标签保留，不能把
+\(E\delta\,E1\{s>t\}\) 当成同一个量。
+
+\textbf{条件化及防泄漏边界。} 若实际回归器仅输入局部特征 \(c_i(y)\)，其
+population target 是
+\(E[\delta(u)1\{s_i>t\}\mid c_i(Y)=c_i(y)]\)，积分后得到该信息集的材料条件均值，而不自动等于完整
+\(y\) 条件均值；其充分性缺口应按命题 3
+单独评价。\(u_{GT},s_{i,GT},\delta(u_{GT})\) 只用于构造 TRAIN
+标签，测试输入的``属性''只能是 anchor
+或其他由观测产生的推断属性。只有保留足够的观测条件或独立验证压缩的充分性，才能把其输出近似解释为
+\(\mu_i(y)\)。
+
+如果 \(\delta\)
+的实/虚分量为非负合法属性，可分别施加阈值单调性与上界；如果某个版本允许符号变化，应改用正负分解，不能硬套单调性。
+
+设 \(d_i(t)=\hat m_i(t)-m_i(t)\)，则由 Jensen
+
+\[
+\left|\int h'(t)d_i(t)dt\right|^2\le\int h'(t)|d_i(t)|^2dt.
+\]
+
+全网格求和后，它给出了 threshold-regression error 到 material mean
+excess risk 的直接控制；再显式加 quadrature
+error。此界是已有条件期望与积分工具的应用；潜在研究贡献是利用实际饱和
+decoder，将需要学习的概率量缩到具有可解释物理意义的一维事件矩，并在强对照下解释/复现风险收益。
+
+\textbf{可计算的 Gaussian 特例。} 为保留属性与相变量相关性，先给定
+\(u\)。若声明近似模型 \(\widetilde p(s_i\mid u,y)\) 为 Gaussian 或
+Gaussian mixture，则过渡区 \(h\) 是五次
+polynomial，\(E_{\widetilde p}[h(s_i)\mid u,y]\) 可由截断 Gaussian 的
+0--5 阶矩及两侧 tail probability 精确计算。标准化变量的截断矩递推为
+
+\[
+M_k(a,b)=a^{k-1}\varphi_N(a)-b^{k-1}\varphi_N(b)+(k-1)M_{k-2}(a,b),\quad k\ge2,
+\]
+
+\(M_0=\Phi_N(b)-\Phi_N(a)\)、\(M_1=\varphi_N(a)-\varphi_N(b)\)。在
+Gaussian mixture 下对成分求和，再计算
+
+\[
+\widetilde\mu_i(y)=\chi_h+\int\delta(u)E_{\widetilde p}[h(s_i)\mid u,y]\,\widetilde p(u\mid y)\,du.
+\]
+
+外层二维属性积分可用相应条件 law 的 quadrature
+或样本，并计入其误差。计算精确的是\textbf{所声明近似分布下的内层 decoder
+积分}，不是完整真实 posterior。不可改为独立乘两个均值；直接联合近似
+\((\delta,s_i)\) 时一般会出现额外矩，而使用 Gaussianized \(\eta\) 时
+\(\delta(\Phi_N(\eta))\) 还带来 Gaussian CDF 积分。该方法是解析
+Rao--Blackwell 基线，可判断``Jensen correction/相概率修正''究竟解释多少
+CNN 增益。
+
+\begin{verbatim}
+PhaseMoment:
+  Select K=8/16/32 thresholds and frozen positive quadrature.
+  TRAIN labels: real/imag δ(u_GT) × 1{s_i,GT > t_j}.
+  Fit low-capacity monotone/GAM or ridge conditional moment regressors
+    from c_i(y): anchor patch, saturation derivative, inferred property and residual;
+    keep GT properties only in TRAIN labels; optionally add raw y to test compression.
+  Form μ_hat by weighted threshold integration; keep legal convex rectangle clipping.
+  Evaluate on new parents: MSE, phase-stratified gain, event calibration, cost.
+  Compare given-u Gaussian truncated moments plus conditional u integration,
+    and plain threshold/sharpen filters, with approximation errors separated.
+\end{verbatim}
+
+\textbf{它能/不能输出什么。} 能输出条件 mean
+及按需要训练的局部二阶矩；不自动提供一个 spatial joint
+distribution。联合 covariance 需要
+\(E[\delta\bar\delta\,1\{s_i>t,s_j>t'\}\mid y]\) 等双事件矩，或者 latent
+sampler。独立像素 Bernoulli/阈值噪声拼图不能视为 P1 material worlds。
+
+\textbf{决定性检验。} 若该小模型复现 CNN 大部分25\%收益且 Maxwell
+spectral feature 的净增量消失，应把主效应定位为 decoder-aware
+conditional risk correction。若其不如CNN但 latent-CFM samples也不改善
+mean，可能空间统计依赖而非 full posterior
+宽度是瓶颈。若真正动态J在同等容量同成本对照下产生明显增量，才提升Maxwell几何的论文地位。
+
+\hypertarget{b.7-ux4e0dux80fdux7528ux6821ux6b63ux4e4bux540eux63a9ux76d6-ess-ux5d29ux6e83}{%
+\subsection{B.7 不能用``校正之后''掩盖 ESS
+崩溃}\label{b.7-ux4e0dux80fdux7528ux6821ux6b63ux4e4bux540eux63a9ux76d6-ess-ux5d29ux6e83}}
+
+设已归一化目标 p、提案 q，\(W=p/q\)。当二阶矩有限、独立提案足够多时
+
+\[
+\frac{ESS_N}{N}\to\frac{1}{E_qW^2}=\frac{1}{1+\chi^2(p\|q)}.
+\]
+
+若 strong 条件中每个方向有轻微但重复的错配，联合 likelihood ratio
+可以迅速集中。低维 NLL 大幅改善不能限制余下56维的
+\(\chi^2\)。Full-support 保证绝对连续性，未保证概率质量靠近。加入
+\(q_\epsilon=(1-\epsilon)q+\epsilon p_{prior}\) 虽有数学支撑保护，但对窄
+posterior 的实际命中率可能仍极小。{[}B-T8{]}
+
+只看到样本权重均匀也可能因为所有样本都漏掉同一重要区域。已有最新 CFM
+inverse-problem 文献把 stationary IMH acceptance 与 TV、importance
+二阶矩与KL联系起来；在本项目里必须保留其stationary/足够采样条件。R2已经出现失混合与祖先塌缩，不应把有限批次ESS用作全局误差证书。{[}B-T4{]}
+
+优先顺序是：先通过 heldout conditional
+density/联合校准看生成器是否取得实质改善；再进行小规模预算匹配 FULL
+correction 资格评估；只有 material
+ESS/RHS、跨链一致性及MCSE达到冻结标准时才扩大。不能重复4096全拒绝的同类实验、仅加网络层数或链长。
+
+\hypertarget{b.8-ux6ca1ux6709-full-reference-ux65f6ux4ecdux53efux505aux4e25ux683cux7684ux72ecux7acbux8bc4ux4ef7}{%
+\subsection{B.8 没有 FULL reference
+时仍可做严格的独立评价}\label{b.8-ux6ca1ux6709-full-reference-ux65f6ux4ecdux53efux505aux4e25ux683cux7684ux72ecux7acbux8bc4ux4ef7}}
+
+\hypertarget{ux547dux9898-7p1-ux8de8ux5bf9ux8c61-residual-law-ux7684ux5fc5ux8981ux68c0ux9a8c}{%
+\subsubsection{命题 7：P1 跨对象 residual law
+的必要检验}\label{ux547dux9898-7p1-ux8de8ux5bf9ux8c61-residual-law-ux7684ux5fc5ux8981ux68c0ux9a8c}}
+
+当 \((X_{GT},Y)\) 来自原 joint law，且 \(X'\mid Y\sim\pi_Y\)，则
+\((X',Y)\) 与 \((X_{GT},Y)\) 同 law。由 P1
+的256个复测量、每个实/虚噪声方差 \(\sigma^2/2\)，
+
+\[
+\Phi(X';Y)\ \overset{\text{跨独立对象}}{\sim}\ \operatorname{Gamma}(256,1)=\tfrac12\chi^2_{512}.
+\]
+
+这是跨 prior-predictive 对象的必要条件，不是固定一份 y 的条件 residual
+分布声明。每个新对象预先选择一个生成样本并做 FULL forward
+即可检验；若每个对象取最小 residual 样本，该检验失效。参数-only SBC
+下完全忽略数据的 prior sampler
+可能通过，但这个data-aware检验通常能排除它。单一统计量通过仍远不能证明
+posterior 正确。
+
+推荐冻结下列互补指标：
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{条件 density：} 同一66维标准Gaussian坐标中的 heldout full
+  NLL；评价均值和尾部，不能把不同frame/dimension的NLL直接相减排名。
+\item
+  \textbf{材料 joint score：} 在实/虚材料向量上使用 energy
+  score，辅以若干冻结空间投影的 CRPS、材料事件和结构统计；高维 energy
+  score也可能不敏感，故不能单独用。
+\item
+  \textbf{SBC：} 参数、物性、材料平均/面积/预定空间投影，外加数据依赖
+  \(\Phi(x;y)\) 及分源 residual；用 independent parent 作为统计单位。主
+  rank 检验使用条件独立 amortized draws，相关 MCMC
+  或带权/重采样粒子不能直接套 iid rank 置信带。对 plateau
+  原子、离散事件与数值 ties 使用预定随机 tie-breaking；二值事件同时用
+  Brier/log score 与 reliability。{[}B-T9,B-T10{]}
+\item
+  \textbf{conditional coverage：}
+  根据事先声明的可见y特征分组检查；总体覆盖可掩盖某些难观测/饱和组失败。逐像素90\%覆盖不是整张图联合90\%覆盖。
+\item
+  \textbf{joint consistency：} 比较模拟 \((x,y)\) 与
+  \((x'\sim q(.\mid y),y)\)
+  的冻结双样本检验；它有有限检验功效，不能认证所有集合。
+\item
+  \textbf{材料风险：}
+  直接风险头、生成器有限M样本均值、校正后均值、可行代表分别比较；不能选``最接近GT的一张''作为在线结果。
+\item
+  \textbf{分布与物理：} approximate posterior 不应强制所有样本处于
+  noise-ball；把生成结果按ball过滤后是截断目标。候选物理世界可以另外筛选，但概率标签要更名。
+\end{itemize}
+
+校准能在没有``每份y的MCMC真相''时发现错误并给出明确统计证据，但有限检验未拒绝不是FULL认证。要宣称校准完整材料posterior，仍需更强参考、理论误差界或明确限定``在这些预注册统计量上的经验校准''。
+
+\textbf{从概率误差到材料风险的一个条件界。}
+确定decoder的pushforward满足数据处理不等式
+\(\mathrm{KL}(g_\#p\|g_\#q)\le\mathrm{KL}(p\|q)\)。若合法材料集合在
+\(\|\cdot\|_M\) 中直径为D（P1有界属性给出有限D），则
+
+\[
+\|\mu_p-\mu_q\|_M\le D\,\mathrm{TV}(g_\#p,g_\#q),\qquad
+R_p(\mu_q)-R_p(\mu_p)\le\frac{D^2}{2}\mathrm{KL}(p\|q).
+\]
+
+第一步可对所有单位材料方向使用标量函数振幅不超过D，第二步用Pinsker。这说明真正的分布误差界可控制mean
+excess risk，但一个改善的heldout
+NLL分数没有提供每份y的KL值或上界。反方向不成立：只要均值相同，完全错误的joint
+covariance/尾部也能得到相同平方风险。材料NLL在ambient
+Lebesgue测度下仍未因此获得定义。
+
+\hypertarget{b.r-ux539fux59cbux6765ux6e90ux7d22ux5f15}{%
+\subsection{B.R
+原始来源索引}\label{b.r-ux539fux59cbux6765ux6e90ux7d22ux5f15}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{{[}B-T1{]}} Lipman et al.. \emph{Flow Matching for Generative
+  Modeling}. 2023. \href{https://arxiv.org/abs/2210.02747}{原始来源}。
+\item
+  \textbf{{[}B-T2{]}} Wildberger, Dax, Buchholz, Green, Macke,
+  Schölkopf. \emph{Flow Matching for Scalable Simulation-Based
+  Inference}. 2023.
+  \href{https://papers.neurips.cc/paper_files/paper/2023/hash/3663ae53ec078860bb0b9c6606e092a0-Abstract-Conference.html}{原始来源}。
+\item
+  \textbf{{[}B-T3{]}} Dasgupta et al.. \emph{Conditional flow matching
+  for physics-constrained inverse problems with finite training data}.
+  2026. \href{https://arxiv.org/abs/2603.14135}{原始来源}。
+\item
+  \textbf{{[}B-T4{]}} Blechschmidt, Ernst, Poguntke, Sprungk. \emph{Flow
+  Matching for Fast Posterior Sampling in Bayesian Inverse Problems}.
+  2026. \href{https://arxiv.org/abs/2610.02377}{原始来源}。
+\item
+  \textbf{{[}B-T5{]}} Percy S. Zhai, So Won Jeong, Veronika Ro{\fontspec{DejaVu Serif}č}ková.
+  \emph{Conditional Flow Matching for Bayesian Posterior Inference}.
+  2026. \href{https://arxiv.org/abs/2510.09534}{原始来源}。
+\item
+  \textbf{{[}B-T6{]}} Benjamin Holzschuh, Nils Thuerey. \emph{Flow
+  Matching for Posterior Inference with Simulator Feedback}. 2024.
+  \href{https://arxiv.org/abs/2410.22573}{原始来源}。
+\item
+  \textbf{{[}B-T7{]}} Durkan, Bekasov, Murray, Papamakarios.
+  \emph{Neural Spline Flows}. 2019.
+  \href{https://papers.neurips.cc/paper_files/paper/2019/hash/7ac71d433f282034e088473244df8c02-Abstract.html}{原始来源}。
+\item
+  \textbf{{[}B-T8{]}} Chatterjee, Diaconis. \emph{The sample size
+  required in importance sampling}. 2018.
+  \href{https://arxiv.org/abs/1511.01437}{原始来源}。
+\item
+  \textbf{{[}B-T9{]}} Talts et al.. \emph{Validating Bayesian Inference
+  Algorithms with Simulation-Based Calibration}. 2018.
+  \href{https://arxiv.org/abs/1804.06788}{原始来源}。
+\item
+  \textbf{{[}B-T10{]}} Modrák et al.. \emph{Simulation-Based Calibration
+  Checking for Bayesian Computation: The Choice of Test Quantities
+  Shapes Sensitivity}. 2023.
+  \href{https://arxiv.org/abs/2211.02383}{原始来源}。
+\item
+  \textbf{{[}B-T11{]}} El Moselhy, Marzouk. \emph{Bayesian Inference
+  with Optimal Maps}. 2012.
+  \href{https://arxiv.org/abs/1109.1516}{原始来源}。
+\item
+  \textbf{{[}B-T12{]}} Parno, Marzouk. \emph{Transport map accelerated
+  Markov chain Monte Carlo}. 2018.
+  \href{https://arxiv.org/abs/1412.5492}{原始来源}。
+\item
+  \textbf{{[}B-T13{]}} Greenberg, Nonnenmacher, Macke. \emph{Automatic
+  Posterior Transformation for Likelihood-Free Inference}. 2019.
+  \href{https://proceedings.mlr.press/v97/greenberg19a.html}{原始来源}。
+\item
+  \textbf{{[}B-T14{]}} Song et al.. \emph{Score-Based Generative
+  Modeling through Stochastic Differential Equations}. 2021.
+  \href{https://arxiv.org/abs/2011.13456}{原始来源}。
+\end{itemize}
+
+\hypertarget{ux9644ux5f55-cux6750ux6599ux4efbux52a1ux51e0ux4f55ux6709ux9650ux54cdux5e94ux4e0eux51b3ux7b56ux7cbeux5ea6ux63a7ux5236}{%
+\section{附录
+C：材料任务几何、有限响应与决策精度控制}\label{ux9644ux5f55-cux6750ux6599ux4efbux52a1ux51e0ux4f55ux6709ux9650ux54cdux5e94ux4e0eux51b3ux7b56ux7cbeux5ea6ux63a7ux5236}}
+
+本附录补充主报告的条件、证明与反例；执行预算和资格门以主报告第7--8节及任务书为准。参考文献编号在本附录独立加前缀。
+
+\hypertarget{c.2-ux56faux5b9aux5b9aux4e49ux548cux5b9eux9645ux8d39ux7528}{%
+\subsection{C.2
+固定定义和实际费用}\label{c.2-ux56faux5b9aux5b9aux4e49ux548cux5b9eux9645ux8d39ux7528}}
+
+令完整 probit 坐标为
+\(x=(z,\eta)\in\mathbb{R}^{66}\)，\(u=\Phi_N(\eta)\)，原 prior 恰为
+\(N(0,I_{66})\)。记实白化观测映射
+
+\[
+f(x)=\frac{\sqrt2}{\sigma}\operatorname{pack}F(g(z,\Phi_N(\eta))),\qquad
+V_y(x)=\tfrac12\|f(x)-y_w\|^2,
+\]
+
+则 \(V_y\) 就是 R2 的
+\(\Phi=\|F-y\|_{\mathbb{C}}^2/\sigma^2\)，完整负对数目标（差常数）为
+\(U_y=V_y+\|x\|^2/2\)。令
+
+\[
+m(x)=\frac1{\sqrt N}\begin{bmatrix}\Re g(x)\\\Im g(x)\end{bmatrix},\quad
+D=Dm(x),\quad J=Df(x),\quad H=I+J^TJ,\quad G=D^TD.
+\]
+
+这样 \(\|m_1-m_2\|^2\) 就是全网格复材料 MSE。所有公式中，66维 probit
+导数应包括 \(du/d\eta=\varphi_N(\eta)\)；不能把 native q 的 Jacobian
+直接当作 x 的 Jacobian。
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+P1 实际操作
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+新 complex RHS
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+额外注意
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+一次新材料 forward & 8 & 还包括新 \(576\times576\) 系统
+factorization、数据写入等 \\
+完整66列 J & 32 receiver adjoints & 已有新材料场；最后由
+transfer×field×decoder derivative 构造 \\
+likelihood gradient & 8 source adjoints & 如已有 J，可直接缓存矩阵乘 \\
+一个 full-source JVP & 通常8 & 若已有 receiver
+transfer，则可以纯矩阵乘；不应重复收费，也不能把已支付缓存当免费
+setup \\
+\(r\) 个 full-source JVP & 通常 \(8r\) & \(r\ge4\)
+时必须解释为何不直接取 full J \\
+一次 Hessian-vector action & 通常 JVP+VJP &
+取决于计算图和缓存，不能写为一个 scalar RHS \\
+一个 changed-cell inverse column & 1 & 第7节精确低秩复用的主要 setup
+成本 \\
+\end{longtable}
+
+这些费用来自源代码，不是性能预测。大三维的源/接收数、Krylov次数、factorization可复用性不同，应重新建表。
+
+\hypertarget{c.3-theory-1ux98ceux9669ux5bfcux5411ux51e0ux4f55ux5e94ux5206ux4e3aux4e09ux5c42}{%
+\subsection{C.3 Theory
+1：风险导向几何应分为三层}\label{c.3-theory-1ux98ceux9669ux5bfcux5411ux51e0ux4f55ux5e94ux5206ux4e3aux4e09ux5c42}}
+
+\hypertarget{c.3.1-ux7b2cux4e00ux5c42ux5c40ux90e8ux6750ux6599ux4e0dux786eux5b9aux6027ux7684ux8c31ux662fux5df2ux6709ux7ed3ux8bba}{%
+\subsubsection{C.3.1
+第一层：局部材料不确定性的谱，是已有结论}\label{c.3.1-ux7b2cux4e00ux5c42ux5c40ux90e8ux6750ux6599ux4e0dux786eux5b9aux6027ux7684ux8c31ux662fux5df2ux6709ux7ed3ux8bba}}
+
+如果只作一个声明清楚的局部 Gaussian 近似 \(X\mid y\sim N(\bar x,C)\)，且
+\(m(X)\simeq m(\bar x)+D(X-\bar x)\)，则材料协方差为 \(DCD^T\)。选取
+\(\xi=C^{-1/2}(X-\bar x)\) 的 k 维正交坐标
+\(P\xi\)，以保留的线性材料波动近似完整波动，残余均方误差为
+
+\[
+\mathcal{E}(P)=\operatorname{tr}(DCD^T)-\operatorname{tr}\{P C^{1/2}GC^{1/2}\},\qquad P^2=P=P^T,\ \operatorname{rank}P=k.
+\]
+
+Ky Fan 变分原理给出最优 P 是 \(C^{1/2}GC^{1/2}\) 的前 k
+个特征方向。这个结论已经出现在 R2 的理论文档，goal-oriented Bayesian
+approximation 和 LIS 都有成熟先例，不应再次包装成新定理。{[}C-S1,C-S2{]}
+
+\textbf{反例。} 取
+\(J=\mathrm{diag}(10,0.1)\)、\(D=\mathrm{diag}(100,10^{-3})\)、\(C=(I+J^TJ)^{-1}\)。最弱观测方向是第二坐标，但材料方差几乎全部来自第一坐标。相反，若弱方向材料导数也很大，其材料风险可以主导。这是观测代价与材料单位不同造成的，不是弱方向理论失效。
+
+\hypertarget{c.3.2-ux7b2cux4e8cux5c42ux975eux7ebfux6027ux6750ux6599ux98ceux9669ux4e0dux80fdux53eaux9760-dg}{%
+\subsubsection{C.3.2 第二层：非线性材料风险不能只靠
+Dg}\label{c.3.2-ux7b2cux4e8cux5c42ux975eux7ebfux6027ux6750ux6599ux98ceux9669ux4e0dux80fdux53eaux9760-dg}}
+
+P1 有精确饱和平台。可能出现 \(Dg(x_0)v=0\)，而有限 posterior 区间中
+\(g(x_0+tv)\)
+穿过平台边界、变化很大。因此``局部材料度量的数值核''不能自动从完整概率状态中删去。
+
+真正对某个 summary \(Z=\psi(X)\) 有意义的材料风险是
+
+\[
+\mathbb{E}[\|m(X)-\mathbb{E}[m(X)\mid Z,y]\|^2\mid y]
+=\mathbb{E}[\operatorname{tr}\operatorname{Cov}(m(X)\mid Z,y)\mid y].
+\]
+
+这个对象包含有限材料变化，通常未知。用 \(H^{-1}\) 或局部 secant
+替代它是近似，不是证明。一个现实的 R3 测试可以比较：
+
+\begin{itemize}
+\tightlist
+\item
+  \(J\) 最弱谱；
+\item
+  R2 的广义材料/先验谱；
+\item
+  有限半径 secant 构造的材料响应 Gram；
+\item
+  训练数据监督的剩余材料误差方向；
+\item
+  不用几何的等容量模型。
+\end{itemize}
+
+应检验方向所覆盖的\textbf{新对象实际材料风险}，同时记录是否只是 decoder
+过渡带和固定空间包络。
+
+\hypertarget{c.3.3-ux7b2cux4e09ux5c42ux6700ux503cux5f97ux5237ux65b0ux7684ux662fux6750ux6599ux52a8ux4f5cux8befux5deeux800cux975e-j-ux7684ux6700ux5927ux8befux5dee}{%
+\subsubsection{C.3.3 第三层：最值得刷新的是材料动作误差，而非 J
+的最大误差}\label{c.3.3-ux7b2cux4e09ux5c42ux6700ux503cux5f97ux5237ux65b0ux7684ux662fux6750ux6599ux52a8ux4f5cux8befux5deeux800cux975e-j-ux7684ux6700ux5927ux8befux5dee}}
+
+冻结一个局部 GN 动作
+
+\[
+H\delta=-b,\qquad H=I+J^TJ,\qquad b=J^Tr+x.
+\]
+
+假设残差 r 精确，只把 J 换成 \(\widehat J=J+E\)。一阶作用误差为
+
+\[
+\widehat\delta-\delta
+\simeq-H^{-1}\{J^TE\delta+E^T(r+J\delta)\}.
+\]
+
+因此材料动作的一阶误差为
+
+\[
+\boxed{\quad\delta m_E=-DH^{-1}\{J^TE\delta+E^T(r+J\delta)\}.\quad}
+\]
+
+这包含 E 在\textbf{向前预测动作}和\textbf{残差拉回}两侧的作用，正对应
+A17 一直强调的双侧材料效用，而不仅是 \(\|E\|_F\)。如果某种 surrogate
+大量误差落在这两个作用均不敏感的方向，昂贵地改善 Frobenius norm
+可能没有决策意义。
+
+精确扰动式为
+
+\[
+\widehat\delta-\delta=-\widehat H^{-1}(\Delta b+\Delta H\delta),
+\]
+
+其中 \(\Delta H=J^TE+E^TJ+E^TE\)，若残差也变为 \(r+e\)，则
+\(\Delta b=E^Tr+J^Te+E^Te\)。因此可以保留二阶余项，得到可核算的动作误差上界。
+
+\textbf{边界。} 这是冻结动作误差，不是真实 MSE 改善定理。A17/R2
+已给出更准确 GN 不必改善材料风险的反例。若最终参考估计器 T 的误差为
+\(R(T)\)，且数值近似 \(\widehat T\) 满足
+\(\mathbb{E}\|\widehat T-T\|^2\le\varepsilon^2\)，只可保证
+
+\[
+|R(\widehat T)-R(T)|\le2\sqrt{R(T)}\varepsilon+\varepsilon^2.
+\]
+
+只有 T 真是 Bayes mean 时，正交性才把 excess risk 精确化为
+\(\mathbb{E}\|\widehat T-T\|^2\)。
+
+\hypertarget{c.4-ux65b0ux5019ux9009ux4e00ux6309ux6750ux6599ux52a8ux4f5cux8befux5deeux9009ux62e9ux4e0bux4e00ux4e2aux7269ux7406ux67e5ux8be2}{%
+\subsection{C.4
+新候选一：按材料动作误差选择下一个物理查询}\label{c.4-ux65b0ux5019ux9009ux4e00ux6309ux6750ux6599ux52a8ux4f5cux8befux5deeux9009ux62e9ux4e0bux4e00ux4e2aux7269ux7406ux67e5ux8be2}}
+
+\textbf{数学对象。} 在一个冻结 anchor/cache 周围，对压缩 Jacobian 缺陷
+\(e=\operatorname{vec}E\) 建一个小型误差模型
+\(e\sim N(\bar e,\Sigma_E)\)，它可以来自历史
+secant，无须神经网络。令第3.3节线性映射为 \(B e=\delta m_E\)。
+
+一次精确 JVP 或 VJP 查询给出 \(h_v=H_v e\)。若包含数值误差模型
+\(\Sigma_\nu\)，Gaussian 更新使误差协方差下降
+
+\[
+\Sigma_E^+=\Sigma_E-\Sigma_EH_v^T(H_v\Sigma_EH_v^T+\Sigma_\nu)^{-1}H_v\Sigma_E.
+\]
+
+于是这次查询的预期局部材料动作误差收益为
+
+\[
+\mathcal{V}(v)=\operatorname{tr}\{B(\Sigma_E-\Sigma_E^+)B^T\}.
+\]
+
+选择 \(\mathcal{V}(v)/c(v)\) 最大的查询，并与``现在直接刷新 full
+J''的完整费用比较。这个价值公式假设收到查询后用条件均值修正算子/动作，因而把剩余Bayes误差降到条件协方差；如果只更新不确定度却不修正计算，实际动作误差不会自动下降。未被误差模型包含的系统偏差也不在此公式的保证内。若
+noiseless 查询协方差奇异，用有定义的 pseudoinverse，不能人为加大噪声冒充
+exact。
+
+\textbf{算法。}
+
+\begin{verbatim}
+输入：观测 y，已有精确 anchor/state，冻结计算规则
+构造廉价候选 Jhat 与误差模型 Sigma_E
+计算近似动作 delta，构造双侧材料作用 B
+枚举：若干 JVP、一个 residual VJP、完整 J、无刷新
+估计每个动作的 V/c；若将需 >=4 个 P1 full-source JVP，优先评估 full J
+执行选中的精确物理查询；用实际 secant/adjoint缺陷更新模型
+检查有限decoder余项、实际likelihood误差和最终材料动作
+如果误差检查失败，回退 full J；全部查询与回退计入成本
+\end{verbatim}
+
+\textbf{潜在独立性。} 这不是新 Gaussian 更新定理，也不是新 active
+sensing：没有新增实验测量。可能的新机制是把 A17
+的双侧材料动作影响用于\textbf{选择数值求解查询}，从``J准不准''转成``哪个物理作用值得算''。它必须胜过DINO、full
+J、随机/最大谱缺陷查询和普通secant；目前只是候选。
+
+\textbf{主要失败模式。}
+误差模型不校准；局部动作与真实材料风险不相关；饱和事件使模型过期；四个JVP的费用已超过full
+J；full-field输出误差被低维B漏掉。故优先作为计算机制支线，不作为完整
+posterior 主算法。
+
+\hypertarget{c.5-theory-4ux8c31ux66f4ux65b0ux7684ux6b63ux786eux8befux5deeux5bf9ux8c61}{%
+\subsection{C.5 Theory
+4：谱更新的正确误差对象}\label{c.5-theory-4ux8c31ux66f4ux65b0ux7684ux6b63ux786eux8befux5deeux5bf9ux8c61}}
+
+\hypertarget{c.5.1-ux4ece-j-ux8befux5deeux5230-cluster-projector}{%
+\subsubsection{C.5.1 从 J 误差到 cluster
+projector}\label{c.5.1-ux4ece-j-ux8befux5deeux5230-cluster-projector}}
+
+令 \(K=J^TJ\)、\(\widehat K=\widehat J^T\widehat J\)，则
+
+\[
+\|\widehat K-K\|\le(2\|J\|+\|E\|)\|E\|.
+\]
+
+在目标谱簇与补空间存在 gap \(\gamma>0\)、扰动小于 \(\gamma/2\)
+时，Davis--Kahan 给出形如
+
+\[
+\|\widehat P-P\|\le\min\{1,2\|\widehat K-K\|/\gamma\}.
+\]
+
+这是成熟扰动理论。{[}C-S4{]} 不能只给训练 MSE 而省略 gap；也不能把任意
+eigenvector 的逐项 MSE 作为 subspace transport
+的可靠指标。重复特征值内部的旋转无物理意义，应比较
+projector、主角度或谱簇作用。
+
+若使用 R2 的 generalized material metric，\(G\)
+可能奇异；需先声明保留范围和 singular-value cutoff，或用 \(G+\rho I\)
+作正则化。此时白化矩阵也变化，其误差受 \(\lambda_{\min}(G+\rho I)\)
+控制。只套普通 K 的 Davis--Kahan 会漏掉 decoder
+退化。这些几何矩阵只定义计算坐标、方向或预条件，原posterior仍相对于完整Gaussianized
+latent的 \(dx\)；不能无故乘入材料Gram determinant改变原prior。
+
+\hypertarget{c.5.2-ux63a8ux8350ux8f6fux8c31ux4f5cux7528ux907fux514dux628a-crossing-ux5f53ux8fd0ux52a8ux7a81ux53d8}{%
+\subsubsection{C.5.2 推荐软谱作用，避免把 crossing
+当运动突变}\label{c.5.2-ux63a8ux8350ux8f6fux8c31ux4f5cux7528ux907fux514dux628a-crossing-ux5f53ux8fd0ux52a8ux7a81ux53d8}}
+
+对半正定 K，定义
+
+\[
+R_\tau(K)=\tau(K+\tau I)^{-1},\qquad
+A_{\tau,\epsilon}=\epsilon I+(1-\epsilon)R_\tau(K).
+\]
+
+resolvent identity 直接给出
+
+\[
+\|R_\tau(K)-R_\tau(\widehat K)\|\le\|K-\widehat K\|/\tau,
+\]
+
+不需要谱 gap，也不受简并簇内部 gauge 影响。其导数
+
+\[
+DR_\tau(K)[\dot K]=-\tau(K+\tau I)^{-1}\dot K(K+\tau I)^{-1}
+\]
+
+允许直接学习 \(\dot K\) 的低秩作用或更新少量 Krylov 系数。\(\epsilon>0\)
+保留所有坐标中的随机性；它的值控制探索速度，而不是允许静默改变
+posterior。
+
+风险材料度量可通过 \(C^{1/2}GC^{1/2}\) 或有限secant权重进入
+mobility，但必须明确它只是计算预条件器。若随机过程使用匹配的精确
+score、divergence drift 和正确边界条件，则近似 mobility
+本身不必造成后验偏差；它主要改变 mixing。反过来，小 projector
+误差并不保证概率正确，若 drift 或 density correction 错了仍会偏。
+
+\hypertarget{c.5.3-ux53eaux9760-projector-residual-ux4e0dux591f}{%
+\subsubsection{C.5.3 只靠 projector residual
+不够}\label{c.5.3-ux53eaux9760-projector-residual-ux4e0dux591f}}
+
+\((I-\widehat P)K\widehat P\) 小只说明 \(\widehat P\)
+接近某个不变子空间，未证明它是所需弱谱簇。例如选择最强特征向量可使该
+residual 恰为0。因此刷新准则还要有 Ritz 值的区间定位和与补空间的分离。
+
+少量随机 JVP 检查也不是 deterministic operator
+certificate：存在矩阵缺陷在所有被测方向为0、却在一个未测方向很大。可以做预声明的高概率检验，但须报告置信水平、独立探针和多次检测的失败概率；不能把若干测试全过写成统一算子误差界。
+
+\hypertarget{c.5.4-ux6d41ux8f68ux8ff9ux8befux5deeux7684ux53efux7528ux4f46ux6709ux9650ux754c}{%
+\subsubsection{C.5.4
+流轨迹误差的可用但有限界}\label{c.5.4-ux6d41ux8f68ux8ff9ux8befux5deeux7684ux53efux7528ux4f46ux6709ux9650ux754c}}
+
+若两个向量场在包含轨迹的域内满足共同 Lipschitz 常数 L，且
+\(\|v_t-\widehat v_t\|\le\varepsilon_t\)，相同初值耦合给出
+
+\[
+\|X_T-\widehat X_T\|\le\int_0^T e^{L(T-s)}\varepsilon_s\,ds.
+\]
+
+若材料映射 Lipschitz 常数为 \(L_m\)，可得对应 material Wasserstein
+误差上界。只有参考 v 的 endpoint 已知为目标 posterior，才能把它称为
+posterior approximation
+bound；否则这只是两个算法之间的误差。长时间大L、非正则谱切换和接近共振会使界失去数值用途。
+
+\hypertarget{c.6-maxwell-ux6709ux9650-secant-ux4e0eux5b8cux6574-jacobian-ux66f4ux65b0}{%
+\subsection{C.6 Maxwell 有限 secant 与完整 Jacobian
+更新}\label{c.6-maxwell-ux6709ux9650-secant-ux4e0eux5b8cux6574-jacobian-ux66f4ux65b0}}
+
+\hypertarget{c.6.1-ux4e0eux5b9eux9645-p1-ux7535ux6d41ux65b9ux7a0bux4e00ux81f4ux7684ux7cbeux786eux5f0f}{%
+\subsubsection{C.6.1 与实际 P1
+电流方程一致的精确式}\label{c.6.1-ux4e0eux5b9eux9645-p1-ux7535ux6d41ux65b9ux7a0bux4e00ux81f4ux7684ux7cbeux786eux5f0f}}
+
+代码中的模型是
+
+\[
+L_\chi j=Xe^{\rm inc},\quad L_\chi=I-XG_b,\quad X=\operatorname{diag}\chi,
+\quad E=e^{\rm inc}+G_bj,\quad F=Sj.
+\]
+
+\(G_b\) 表示固定背景传播矩阵，避免与材料风险 Gram G 混淆。令
+\(R_0=L_{\chi_0}^{-1}\)、\(\Delta X=X_1-X_0\)，则
+
+\[
+\boxed{\Delta j=(I-R_0\Delta XG_b)^{-1}R_0\Delta X E_0
+=R_1\Delta X E_0.}
+\]
+
+这是 finite feedback 的精确代数，不需要 Born
+小对比；实际可逆性、数值稳定性仍需检查。若使用 Neumann
+截断，必须有适当范数下
+\(\|R_0\Delta XG_b\|<1\)，否则不能用``前几项看起来收敛''替代证明。
+
+\hypertarget{c.6.2-jacobian-ux4e0dux53eaux66f4ux65b0-resolvent}{%
+\subsubsection{C.6.2 Jacobian 不只更新
+resolvent}\label{c.6.2-jacobian-ux4e0dux53eaux66f4ux65b0-resolvent}}
+
+对每个
+source，\(J_i=S R_i\operatorname{diag}(E_i)Dg_i\)（最后作白化实化）。因而
+
+\[
+\begin{aligned}
+J_1-J_0={}&S R_1\Delta XG_bR_0\operatorname{diag}(E_0)Dg_0\\
+&+S R_1\operatorname{diag}(\Delta E)Dg_0\\
+&+S R_1\operatorname{diag}(E_1)(Dg_1-Dg_0).
+\end{aligned}
+\]
+
+三项依次为 propagation feedback、total-field injection change、decoder
+derivative change。只回归第一项会遗漏当前场对材料导数的作用；只回归 J
+矩阵又会错失这三种不同可复用结构。特别是饱和 decoder
+的第三项可能主导局部谱变化。
+
+可比较四个物理特化
+surrogate：冻结R/更新D；更新R/冻结E,D；更新R,E/更新精确D；无结构J
+regression。Dg可解析廉价计算，应始终用真实Dg，没必要用网络重复猜。
+
+\hypertarget{c.6.3-ux6b63ux786eux5206ux5f00ux4e24ux79cd-secant-ux4f59ux9879}{%
+\subsubsection{C.6.3 正确分开两种 secant
+余项}\label{c.6.3-ux6b63ux786eux5206ux5f00ux4e24ux79cd-secant-ux4f59ux9879}}
+
+\[
+F(g(x+h))-F(g(x))
+=Jh+DF(g(x))\{\Delta\chi-Dg(x)h\}+e_{\rm Maxwell}.
+\]
+
+两项余量可能相消或相长。因此必须报告向量和、交叉内积与实际
+likelihood，不把范数比例当可相加的因果贡献。这一点已经在R2文档明确，不应重复犯错。
+
+\hypertarget{c.6.4-j-ux56deux5f52ux662fux5426ux9700ux8981ux662fux67d0ux4e2a-f-ux7684ux5bfcux6570}{%
+\subsubsection{C.6.4 J 回归是否需要是某个 F
+的导数？}\label{c.6.4-j-ux56deux5f52ux662fux5426ux9700ux8981ux662fux67d0ux4e2a-f-ux7684ux5bfcux6570}}
+
+独立网络输出的 \(\widehat J(x)\)
+未必满足各输出行的混合偏导相容条件，故未必存在 \(\widehat f\) 使
+\(D\widehat f=\widehat J\)。若只将其作为 proposal
+metric，这不是逻辑矛盾；若称 \(\widehat J^T\widehat r\) 为某个精确
+loglikelihood gradient，就需证明或通过可微 \(\widehat f\)
+的AD构造。任意学习 score 也必须区分近似分数与真实势函数梯度，后续 MH
+可纠正proposal但不会自动纠正报告的flow density。
+
+\hypertarget{c.7-ux65b0ux5019ux9009ux4e8cux9971ux548cux4e8bux4ef6ux9a71ux52a8ux7684ux6709ux9650ux6750ux6599ux54cdux5e94ux590dux7528}{%
+\subsection{C.7
+新候选二：饱和事件驱动的有限材料响应复用}\label{c.7-ux65b0ux5019ux9009ux4e8cux9971ux548cux4e8bux4ef6ux9a71ux52a8ux7684ux6709ux9650ux6750ux6599ux54cdux5e94ux590dux7528}}
+
+这是最具有 P1 结构特点、且不依赖 Flow/CNN/RL 的新候选机制。它不是新的
+Woodbury 恒等式；潜在贡献是\textbf{把 decoder
+事件、稀疏有限更新和概率核的反复似然评估组织为一个有可核算成本的算法}。
+
+\hypertarget{c.7.1-ux547dux9898ux56faux5b9aux5c5eux6027ux76f4ux7ebfux4e0aux7684ux4e8bux4ef6ux5206ux6bb5ux7ed3ux6784}{%
+\subsubsection{C.7.1
+命题：固定属性直线上的事件分段结构}\label{c.7.1-ux547dux9898ux56faux5b9aux5c5eux6027ux76f4ux7ebfux4e0aux7684ux4e8bux4ef6ux5206ux6bb5ux7ed3ux6784}}
+
+固定 u，令 \(z(t)=z_0+tv\)。对每个 ROI 像素
+
+\[
+s_i(t)=a_i+b_it,\quad g_i(t)=\chi_{\rm host}+\delta(u)h(s_i(t)),
+\]
+
+其中 \(h(s)=p((s+1)/2)\) 在 \(-1<s<1\) 为五次多项式，外侧分别为0和1。若
+\(b_i\ne0\)，事件时间为 \(t_{i,\pm}=(\pm1-a_i)/b_i\)。事件之间，过渡集合
+\(I=\{i:-1<s_i(t)<1\}\) 不变，非I像素材料恒定，I内材料为 t
+的五次多项式。
+
+\textbf{证明。}
+分段来自仿射函数与两个阈值的交点；在固定区间内每个像素始终属于同一段，代入五次多项式即得。故
+\(\operatorname{rank}\Delta X\le|I|\)。这仅是P1代数后果，未声称所有
+Maxwell priors 具有此性质。
+
+\hypertarget{c.7.2-ux7cbeux786eux5c0fux7cfbux7edfux516cux5f0f}{%
+\subsubsection{C.7.2
+精确小系统公式}\label{c.7.2-ux7cbeux786eux5c0fux7cfbux7edfux516cux5f0f}}
+
+设 \(E_I\)
+为选取I中网格单元的列选择矩阵，\(d(t)=\operatorname{diag}\Delta\chi_I(t)\)，在区间内某个anchor预先计算
+
+\[
+W=R_0E_I,\quad K=E_I^TG_bW,\quad B=E_I^TE_0,\quad O=SW.
+\]
+
+则
+
+\[
+\boxed{\quad c(t)=(I-d(t)K)^{-1}d(t)B,\quad
+\Delta j=Wc(t),\quad F(t)=F_0+Oc(t).\quad}
+\]
+
+证明：代入精确 \(\Delta j=R_0\Delta X(E_0+G_b\Delta j)\)，令
+\(\Delta j=Wc\)，可得
+\(c=d(B+Kc)\)。整个式子对有限步精确，无需截断为二次。
+
+预付 \(|I|\) 个 inverse-column RHS 后，同区间多次 likelihood 评估仅需
+\(|I|\times|I|\) 小系统。若
+\(|I|\ll576\)、同I访问次数足够多，可节约新大系统factorization。若I大、事件频繁、二维dense
+Full非常快，这条路线失败。
+
+\textbf{重要限制。}
+99.10\%的风险收益位于过渡带，不能推出过渡带单元数少。固定属性才有当前稀疏结构；改变两项材料属性会改变所有非零fraction单元，低秩优势可能消失。跨事件可用新anchor或累计changed-set，但不能继续使用失效的旧I。这里的I必须是相对于所用base所有材料已经改变的单元，不能只取候选端点正在过渡的单元。若选择新区间边界重基，必须先获得与该边界一致的current、field和inverse-action缓存，并计入重基费用。
+
+\hypertarget{c.7.3-ux5408ux6cd5ux6982ux7387ux4f7fux7528ux6761ux4ef6-elliptical-slice}{%
+\subsubsection{C.7.3 合法概率使用：条件 elliptical
+slice}\label{c.7.3-ux5408ux6cd5ux6982ux7387ux4f7fux7528ux6761ux4ef6-elliptical-slice}}
+
+给定当前 u，可对 Gaussian64场执行标准 elliptical slice
+kernel：\(z(\theta)=z\cos\theta+\nu\sin\theta\)，\(\nu\sim N(0,I)\)。每个像素的阈值事件变为
+\(a_i\cos\theta+b_i\sin\theta+c_i=\pm1\)，仍可解析定位；事件区间内 h
+是有限次三角多项式，低秩响应式保持有效。标准 slice
+的角度选取与收缩规则不变，只替换 likelihood evaluator。
+
+然后交替对两个属性做保留原条件目标的合法 slice/MH更新。这种 kernel
+composition
+保留完整66维posterior；它不把固定u条件分布冒充FULL。{[}C-S5{]}
+
+\begin{verbatim}
+输入：合法 x，固定观测y，精确/有界likelihood evaluator
+循环 sweep：
+  固定u；抽Gaussian辅助方向nu，设slice阈值logL(x)+logUniform
+  初始化标准elliptical-slice角度区间
+  对每个试探theta：
+    找到其decoder事件区间及changed集合I
+    若已有W/K/O缓存且小系统稳定，调用精确有限响应
+    否则按成本选择新列求解、Krylov或Full
+    用已认证likelihood区间决定在slice内/外；不确定则精化
+    按标准ESS规则接受或收缩角区间
+  对probit属性eta做合法条件kernel
+  偶尔做全维合法补充kernel，记录材料ESS/MCSE与来源祖先
+\end{verbatim}
+
+不允许按当前state任意选择``最有风险的Gibbs block''却忽略state-dependent
+selection对不变性的影响。起步使用只依赖观测y而冻结的分块/正交基、固定循环或固定概率选择。若当前likelihood只知道区间，slice判断应使用候选与当前两端势差的区间和同一个log-uniform，不能将区间中点当精确threshold。通过区间判定接受也不意味着拥有该候选的精确物理state；可继续使用旧的精确base和完整changed-set，若重基则须实际计算并付费。
+
+\textbf{决定性实验。}
+不先训练大模型；先在预定新DEV状态记录每条ESS/line-search需要的active-set大小、重复访问次数、小系统condition、setup
+RHS、Full fallback。与同一随机种子、同一原始ESS核的Full
+evaluator做逐接受决定一致性和总wall/RHS比较。只有成本赢了，再测material
+ESS/RHS。若只是每一步便宜、mixing更差，不能扩大。
+
+\hypertarget{c.8-ux53efux8ba1ux7b97ux7684-likelihood-ux8befux5deeux533aux95f4ux4e0eux63a5ux53d7ux5224ux5b9a}{%
+\subsection{C.8 可计算的 likelihood
+误差区间与接受判定}\label{c.8-ux53efux8ba1ux7b97ux7684-likelihood-ux8befux5deeux533aux95f4ux4e0eux63a5ux53d7ux5224ux5b9a}}
+
+\hypertarget{c.8.1-residualdual-identity}{%
+\subsubsection{C.8.1 residual--dual
+identity}\label{c.8.1-residualdual-identity}}
+
+为免复数因子歧义，将多源Maxwell系统实化、白化，写作
+
+\[
+\mathsf L j=b,\qquad f=\mathsf C j,
+\quad\rho=b-\mathsf L\widehat j,\quad\widehat r=\mathsf C\widehat j-y_w.
+\]
+
+\(\mathsf L\) 是对所有source的block系统。令近似dual \(\widehat z\)
+的残差为
+
+\[
+\rho_z=\mathsf C^T\widehat r-\mathsf L^T\widehat z.
+\]
+
+若有\textbf{经过验证的正}稳定性下界
+\(0<\beta\le\sigma_{\min}(\mathsf L)\)，则
+
+\[
+V-\widehat V
+=\widehat z^T\rho+\rho_z^T\mathsf L^{-1}\rho
++\tfrac12\|\mathsf C\mathsf L^{-1}\rho\|^2.
+\]
+
+因此得到非对称区间
+
+\[
+V\in\left[\widehat V+\widehat z^T\rho-a,\quad
+\widehat V+\widehat z^T\rho+a+b\right],
+\]
+
+\[
+a=\|\rho_z\|\|\rho\|/\beta,\qquad
+b=\|\mathsf C\|^2\|\rho\|^2/(2\beta^2).
+\]
+
+这可与 \(V\ge0\) 相交。目标导向a posteriori
+residual/dual估计已有深厚先例，Maxwell稳定性常数估计也已有研究；这里的贡献候选只能是与实际材料路径、缓存和概率阈值组合的效果。{[}C-S6,C-S7{]}
+
+\hypertarget{c.8.2-ux7a33ux5b9aux6027ux4e0bux754cux662fux6700ux96beux7684ux771fux5b9eux6761ux4ef6}{%
+\subsubsection{C.8.2
+稳定性下界是最难的真实条件}\label{c.8.2-ux7a33ux5b9aux6027ux4e0bux754cux662fux6700ux96beux7684ux771fux5b9eux6761ux4ef6}}
+
+若已有参考 \(0<\beta_0\le\sigma_{\min}(L_0)\)，Weyl界给出
+\(\sigma_{\min}(L_1)\ge\beta_0-\|\Delta XG_b\|\)，但右端在强散射时可能变负。若有近似逆B及验证的
+\(\|I-BL\|\le\kappa<1\)，则
+\(\|L^{-1}\|\le\|B\|/(1-\kappa)\)。这些界都可能太松，特别在非normal/resonant系统中。
+
+普通LAPACK condition
+estimate、有限训练误差分位数或少数随机探针都不是确定性下界。若无法低成本得到有效界，应把方法标为误差监控、使用
+Full 校正，不能叫 certified。对dense
+TM24，计算紧下界可能与Full求解同价；这本身是一个NO-GO结果。
+
+\hypertarget{c.8.3-ux8defux5f84ux4e00ux81f4ux7684ux7cbeux786e-mh-ux63a5ux53d7ux5224ux5b9a}{%
+\subsubsection{C.8.3 路径一致的精确 MH
+接受判定}\label{c.8.3-ux8defux5f84ux4e00ux81f4ux7684ux7cbeux786e-mh-ux63a5ux53d7ux5224ux5b9a}}
+
+固定合法proposal \(q_y(x'\mid x)\)（例如冻结conditional
+density或pCN），精确计算prior和proposal
+ratio。由两端likelihood区间得到log MH比区间 \([\ell_-,\ell_+]\)，抽
+\(\log u\)：
+
+\begin{itemize}
+\tightlist
+\item
+  若 \(\log u<\ell_-\)，接受；
+\item
+  若 \(\log u>\ell_+\)，拒绝；
+\item
+  否则增加求解精度，最坏回退Full。
+\end{itemize}
+
+由于 \(\log u<0\)，这个判断与 usual \(\log u<\min(0,\ell)\)
+一致。若区间始终包住真实值并最终收敛，除了概率0的相等事件，得到与完全精确likelihood
+MH
+\textbf{相同的接受路径}。历史信息可以决定如何计算区间，但不改变proposal/接受规则。
+
+若同时让proposal随history/cache任意适应，pathwise
+acceptance正确本身不证明stationarity；需固定adaptation、diminishing-adaptation/containment证明，或显式augmented-state
+kernel。不要漏掉这一点。
+
+这是``让学习决定何时精化、让物理界保证决定''的合理方案。通用 delayed
+acceptance、local-approximation
+MCMC已有先例；不能把标准MH校正新命名后当新理论。{[}C-S3,C-S8,C-S9{]}
+
+\hypertarget{c.9-likelihood-ux8befux5deeux600eux6837ux5f71ux54cd-posterior-ux548cux6750ux6599-bayes-risk}{%
+\subsection{C.9 likelihood 误差怎样影响 posterior 和材料 Bayes
+risk}\label{c.9-likelihood-ux8befux5deeux600eux6837ux5f71ux54cd-posterior-ux548cux6750ux6599-bayes-risk}}
+
+设两个目标同prior，势函数差
+\(\delta=\widehat V-V\)。只有在整个相关支持上（或有明确tail质量控制的域上）有统一界，才能得到概率界；在若干轨迹上误差小不够。
+
+若存在常数c使 \(|\delta(x)-c|\le\varepsilon\)
+对全支持成立，则归一化密度比位于
+\([e^{-2\varepsilon},e^{2\varepsilon}]\)，一个保守有效界为
+
+\[
+\operatorname{TV}(\widehat\pi,\pi)\le\tanh\varepsilon.
+\]
+
+若材料支持的直径为 \(D_m\)，则
+
+\[
+\|\widehat\mu_m-\mu_m\|\le D_m\operatorname{TV}(\widehat\pi,\pi),
+\quad R_y(\widehat\mu_m)-R_y(\mu_m)\le D_m^2\tanh^2\varepsilon.
+\]
+
+P1材料有界，所以 \(D_m\)
+有限；但这并不使统一likelihood误差容易获得。若只在域E上成立，必须加上两分布域外概率质量，不能把``所有访问点''当后验支持。
+
+更精确的\textbf{目标影响恒等式}是：令
+\(\pi_t\propto e^{-t\delta}\pi\)，则
+
+\[
+\widehat\mu_m-\mu_m=-\int_0^1\operatorname{Cov}_{\pi_t}(m,\delta)\,dt.
+\]
+
+证明仅需对归一化积分求导并交换积分（P1有界材料、适当可积delta下成立）。它说明数值物理误差是否影响材料mean，取决于它与材料波动的相关性；单独
+\(\|\delta\|\)、J误差或projector误差未必给出排序。这是已知指数tilt敏感性恒等式的材料解释，不能独立声称新定理。用它构造便宜刷新代理是候选研究；缺少合格posterior时，代理需明示来源并由新数据验证。
+
+\hypertarget{c.10-ux5e94ux9884ux6d4bux54eaux79cdux7269ux7406ux5bf9ux8c61ux5177ux4f53ux6bd4ux8f83}{%
+\subsection{C.10
+应预测哪种物理对象：具体比较}\label{c.10-ux5e94ux9884ux6d4bux54eaux79cdux7269ux7406ux5bf9ux8c61ux5177ux4f53ux6bd4ux8f83}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+对象
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+最适用途
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主要优点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+决定性限制/必要控制
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+完整J & 小66维模型的强baseline & 任意方向、谱与gradient可复用 &
+output维大，full J只需32RHS，学习摊销未必成立 \\
+JVP & 少量预知候选方向 & 可训练directional response & 四个full-source
+probe已抵full J；反向作用需另算 \\
+低秩J因素 & DINO、几何proposal & 压缩并可计算J/J\textsuperscript{T}作用 &
+必须审计截断尾对材料和接受率；已有直接文献 \\
+projector & 方向分布与可达性诊断 & gauge不变、可低维 &
+gap/crossing与错误簇；不给likelihood值 \\
+软谱resolvent & mobility/transport正则 & 无hard crossing、全支撑 &
+仍需score/divergence或MH；并非后验本身 \\
+cluster Ritz值与residual & 自适应刷新 & 能检验谱簇而非单向量 &
+需补谱分离，漏检方向仍有风险 \\
+有限材料secant & 有限步预测、拒绝提案分析 & 与实际移动尺度匹配 &
+decoder与Maxwell余项须分开；无全局density \\
+likelihood gradient/score & MALA/HMC/compensation & P1仅8adjoint RHS &
+score准确不证明全局mixing；强弱耦合仍在 \\
+HVP & Krylov/局部曲率 & 不显式存J & 多次作用易比32RHS full J更贵 \\
+likelihood区间 & 接受/拒绝、步长决策 & 精度直接对准最终概率判断 &
+稳定性下界困难，需Full fallback \\
+\end{longtable}
+
+推荐先做\textbf{精确Dg + cached current/receiver transfer +
+少量有限secant + 软谱/低秩作用}。如果只能部署一个监督physics
+surrogate，优先复现DINO作为强baseline，不先发明一个没有导数一致性的J回归器。
+
+\hypertarget{c.11-ux6210ux672cux5224ux636eux4e0eux51b3ux5b9aux6027ux5b9eux9a8cux5408ux540c}{%
+\subsection{C.11
+成本判据与决定性实验合同}\label{c.11-ux6210ux672cux5224ux636eux4e0eux51b3ux5b9aux6027ux5b9eux9a8cux5408ux540c}}
+
+设预付训练/数据成本 \(C_{\rm off}\)，每观测平均额外surrogate费用
+\(c_s\)，Full fallback概率 \(p_F\)，每观测刷新数
+\(n_J\)，Full-only方案费用 \(c_F\)。只有
+
+\[
+N_{\rm deploy}\{c_F-c_s-p_F c_F-n_Jc_J-c_{\rm checks}\}>C_{\rm off}
+\]
+
+才发生部署摊销优势；左侧非正则永不break
+even。对采样，必须把分母换成\textbf{满足同一material
+MCSE的总费用}，而不是原始sample数。
+
+建议三组小范围先导，由未来明确授权后执行：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{算子表示先导}：同一批冻结新DEV状态，比较Full J、8-RHS
+  score、Broyden/secant、DINO低秩J、projector、soft
+  resolvent；匹配准确likelihood和reference更新，记录J/Dg/spectral
+  gap/event变化、total RHS/wall。先不宣称risk改善。
+\item
+  \textbf{事件复用先导}：记录过渡集合大小/复用次数/condition；验证第7节有限响应与Full至原数值容差，并用同随机核逐接受复放。若每次低秩setup+fallback不便宜立即停止。
+\item
+  \textbf{任务查询先导}：比较第4节的材料动作价值查询与随机、最大J误差、full-refresh、DINO；先检验预测动作误差能否被正确减少，再独立测试material
+  MSE。前一项成功不替代后一项。
+\end{enumerate}
+
+冻结指标至少含：material MSE/MAE；mean/covariance/event MCSE；minimum
+material ESS及Rhat；failure/fallback；所有source/receiver/JVP
+RHS；factorizations；cache
+warm/cold费用；数据与训练费用；独立新parent和模型seed层级。Full
+posterior未合格时，相关指标应标为诊断或未评估，不用高weightESS替代mixing。
+
+\hypertarget{c.r-ux539fux59cbux6765ux6e90ux7d22ux5f15}{%
+\subsection{C.R
+原始来源索引}\label{c.r-ux539fux59cbux6765ux6e90ux7d22ux5f15}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{{[}C-S1{]}} Cui, Martin, Marzouk, Solonen, Spantini.
+  \emph{Likelihood-informed dimension reduction for nonlinear inverse
+  problems}. 2014. \href{https://arxiv.org/abs/1403.4680}{原始来源}。
+\item
+  \textbf{{[}C-S2{]}} Spantini, Cui, Willcox, Tenorio, Marzouk.
+  \emph{Goal-oriented optimal approximations of Bayesian linear inverse
+  problems}. 2017. \href{https://arxiv.org/abs/1607.01881}{原始来源}。
+\item
+  \textbf{{[}C-S3{]}} Cao, O'Leary-Roseberry, Ghattas.
+  \emph{Derivative-Informed Neural Operator Acceleration of Geometric
+  MCMC for Infinite-Dimensional Bayesian Inverse Problems}. 2025.
+  \href{https://jmlr.org/papers/v26/24-0745.html}{原始来源}。
+\item
+  \textbf{{[}C-S4{]}} Yu, Wang, Samworth. \emph{A useful variant of the
+  Davis--Kahan theorem for statisticians}. 2015.
+  \href{https://arxiv.org/abs/1405.0680}{原始来源}。
+\item
+  \textbf{{[}C-S5{]}} Murray, Adams, MacKay. \emph{Elliptical slice
+  sampling}. 2010.
+  \href{https://proceedings.mlr.press/v9/murray10a.html}{原始来源}。
+\item
+  \textbf{{[}C-S6{]}} Janon, Nodet, Prieur. \emph{Goal-oriented error
+  estimation for the reduced basis method, with application to
+  sensitivity analysis}. 2016.
+  \href{https://arxiv.org/abs/1303.6618}{原始来源}。
+\item
+  \textbf{{[}C-S7{]}} \emph{Estimating the Inf-Sup Constant in Reduced
+  Basis Methods for Time-Harmonic Maxwell's Equations}. 2015.
+  \href{https://ieeexplore.ieee.org/document/7254247}{原始来源}。
+\item
+  \textbf{{[}C-S8{]}} Conrad, Marzouk, Pillai, Smith. \emph{Accelerating
+  Asymptotically Exact MCMC for Computationally Intensive Models via
+  Local Approximations}. 2016.
+  \href{https://arxiv.org/abs/1402.1694}{原始来源}。
+\item
+  \textbf{{[}C-S9{]}} Christen, Fox. \emph{Markov chain Monte Carlo
+  Using an Approximation}. 2005.
+  \href{https://www.tandfonline.com/doi/abs/10.1198/106186005X76983}{原始来源}。
+\item
+  \textbf{{[}C-S10{]}} Cao, O'Leary-Roseberry, Jha, Oden, Ghattas.
+  \emph{Residual-based error correction for neural operator accelerated
+  infinite-dimensional Bayesian inverse problems}. 2023.
+  \href{https://arxiv.org/abs/2210.03008}{原始来源}。
+\item
+  \textbf{{[}C-S11{]}} O'Leary-Roseberry, Chen, Villa, Ghattas.
+  \emph{Derivative-Informed Neural Operator: An Efficient Framework for
+  High-Dimensional Parametric Derivative Learning}. 2024.
+  \href{https://arxiv.org/abs/2206.10745}{原始来源}。
+\item
+  \textbf{{[}C-E-A17{]}} \emph{A17 closure final START\_\allowbreak{}HERE}.
+  \href{https://github.com/migodam/a17-maxwell-certified-exchange/blob/main/closure_final/START_HERE.md}{原始来源}。
+\end{itemize}
+
+\end{document}

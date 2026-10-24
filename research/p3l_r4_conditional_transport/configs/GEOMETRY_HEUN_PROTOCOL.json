@@ -1,0 +1,116 @@
+{
+  "campaign": "P3LR4-20261025",
+  "stage": "III",
+  "job": "dynamic_geometry_heun_r1",
+  "revision": 1,
+  "authority": "Parent explicitly approved Heunrevision1 after verified Euler O(h^2) self-defect; first job must be CLOSED COMPLETE",
+  "parents": [
+    "R4DEV_00000",
+    "R4DEV_00001",
+    "R4DEV_00002",
+    "R4DEV_00003",
+    "R4DEV_00004",
+    "R4DEV_00005",
+    "R4DEV_00006",
+    "R4DEV_00007"
+  ],
+  "selection": "first8fixed newDEV, not GT-selected",
+  "dimensions": [
+    64,
+    66
+  ],
+  "ranks": [
+    2,
+    4,
+    8
+  ],
+  "fields": "same frozen seeds and Euclidean generalized-material projector fields from first pilot; normalized by exact decoder metric",
+  "integrator": "explicit Heun: predictor=x+tF(x); corrected=x+t/2*(F(x)+F(predictor)); each field refresh uses actual booked Full+J",
+  "regularity": "at C1 only second-order Taylor consistency with o(h^2); no global O(h^3) at seams; empirical convergence required",
+  "orientations": {
+    "forward": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        -1
+      ],
+      [
+        1,
+        -1
+      ]
+    ],
+    "reverse": [
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        0,
+        -1
+      ]
+    ]
+  },
+  "small_h": [
+    0.001,
+    0.002,
+    0.004
+  ],
+  "reference_bracket_h": 0.001,
+  "reference_acquisition": "already paid firstpilot 3h centralFD;480RHS/config=23040RHS for selected48; retained in first ledger",
+  "gate": {
+    "both_fine_h_relative_material_error_max": 0.2,
+    "fine_mid_change_max_factor_times_mid_coarse": 1.25,
+    "change_absolute_floor": 1e-08,
+    "require_no_material_rank_change": true,
+    "require_no_relative_gap_le_001": true,
+    "seams": "flag separately; seam crossing does not imply high regularity or automatically pass gate"
+  },
+  "gate_failure": "no task-scale physics, no additional h, no new seeds or amplitude adjustment",
+  "task_radii": [
+    0.02,
+    0.04,
+    0.08
+  ],
+  "stress_radius": 0.08,
+  "task_step": "sqrt(requested_RMS/||D reference_bracket||), both orientations; report actual endpoint distance, do not force match",
+  "direct_control": "both signed reference bracket directions, exact decoder-distance match requested RMS, then freshly paid Full endpoint",
+  "latent_displacement_cap": 8.0,
+  "per_curve_worst_cost": {
+    "Full_states": 8,
+    "J_builds": 7,
+    "complex_RHS": 288
+  },
+  "all48_small_h_RHS": 82944,
+  "all48_task_and_direct_RHS": 85248,
+  "max_new_complex_RHS": 168192,
+  "parent_additional_cap": 250000,
+  "max_controlled_wall_seconds": 1800,
+  "teacher_eligible": {
+    "radius_relative_error_max": 0.01,
+    "signed_material_progress_min_fraction": 0.5,
+    "Full_DeltaPhi_max": 2.0,
+    "prior_energy_delta_max": 2.0,
+    "backward_residual_max": 1e-10,
+    "prior_legal": true
+  },
+  "teacher_semantics": "truth-free local computational teacher only; no posterior sample/GT-risk qualification",
+  "no_GT": true,
+  "continuous_path_certificate": false,
+  "Heun_map_exactly_reversible": false,
+  "source_before_pay": true
+}

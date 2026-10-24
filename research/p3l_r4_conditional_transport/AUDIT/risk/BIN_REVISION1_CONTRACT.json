@@ -1,0 +1,17 @@
+{
+  "revision": "PRELOCKED_RISK_REVISION1",
+  "reason": "remove deterministic finite point-threshold quadrature label bias while preserving original decoder",
+  "module": "p3r4.train_risk_bin",
+  "kinds": ["phase8", "phase16"],
+  "training_seeds": [2026102501, 2026102502, 2026102503],
+  "matched_context": [512, 128],
+  "parameter_counts": {"phase8": 6114, "phase16": 6386},
+  "moment_rule": "equal_h_mass_bin_integrated_joint_delta_event_v1",
+  "labels": "delta_component*clip(K*original_saturation(s)-j,0,1)",
+  "integration_weights": "1/K",
+  "first_competition_files_changed": false,
+  "training_launched_by_worker": false,
+  "physics_calls": 0,
+  "actual_validation_status": "NOT_RUN_PARENT_SCHEDULES",
+  "CLI": "PYTHONPATH=src <python> -m p3r4.train_risk_bin --train TRAIN --validation VALIDATION --anchor-train CONTEXT_TRAIN --anchor-validation CONTEXT_VALIDATION --out NEW_REVISION_OUTPUT --kind phase8 --seed 2026102501 --updates 3000 --device cpu"
+}

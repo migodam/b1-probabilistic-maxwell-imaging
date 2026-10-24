@@ -1,0 +1,223 @@
+Research P3L-R3 — Maxwell 条件材料输运、风险估计与计算复用
+独立 Codex 研究执行任务书（设计版，2026-10-23）
+
+【执行权限与当前状态】
+
+本文件是一份未来 campaign 的完整设计，不是新增物理实验、训练、付费计算或预算扩张的授权。在未来获得用户对新 campaign 的明确授权后，才可执行授权范围内的实验。若没有该授权，只完成 Stage 0 的零新增物理准备：阅读证据、静态代码审计、纯解析小型单元核查、接口和冻结配置草稿、资源核算及可复核的实施计划。此时新增 Maxwell 状态、forward、Jacobian、JVP、adjoint、训练、GPU 作业与新观测生成均为零。不得把“本任务书有预算数字”视为授权，不得修改旧授权文件或删除关闭标记来取得执行能力。
+
+获得授权后，在其范围和硬上限内自主完成已经通过门槛的工作；无需为正常实现细节反复询问。遇到缺失数据、真正的权限限制、未通过门槛或已耗尽预算，应完成可做的静态工作、保留检查点并如实报告，不伪造成功、不无限追加运行。本文件不假定现有仓库已经具有任何新 CLI 参数；先审查真实接口，再实现并记录实际运行命令。
+
+一、研究目标、输出角色和成功标准
+
+你负责一个以原 P1 Maxwell 统计目标为基准的研究 campaign。研究对象是 prior 与有限噪声 likelihood 共同定义的完整后验测度；动态弱方向是计算工具，不能预设它形成一张固定低维解流形。比较完整条件密度与条件 Flow Matching，发展原饱和 decoder 驱动的有限响应复用，探索以概率判断和材料动作误差触发物理刷新。不要把所有路线拼成一个巨型网络后只比较最终 MSE。
+
+必须为每个输出指定四种角色之一：
+1. 材料风险动作：以新对象上的平方材料误差评价，不要求它是原 prior 的单一可实现材料。
+2. 条件材料生成器：完整 latent law 经原 decoder pushforward；其概率近似质量须单独检验。
+3. Maxwell 相容代表：由预定 constrained decision rule 选择，报告 residual、prior 合法性及额外风险；不自动视为 posterior sample。
+4. 几何可达候选：研究动态控制能到达哪里；离线接近 GT 只说明 oracle coverage，不证明在线可识别、具有重要 posterior mass 或能改善总体风险。
+
+优先推进算法 A 为统计基座，算法 C/D 为物理计算机制；算法 B 是风险与机制解释的并行强基线；算法 E 是有严格预算门的动态几何研究。四类成功分别登记。允许风险路线成功而概率路线失败，也允许概率建模改善而均值 MSE 不胜小 CNN。不得使用 GT 选择最好样本作为部署成像结果。
+
+二、固定证据、必读材料与历史负结果
+
+完整项目：https://github.com/migodam/b1-probabilistic-maxwell-imaging
+固定提交：6eadb4690c962aaa95821fc4056b677f0f924a6b
+固定结果目录：research/p3l_r2_risk_posterior_exploration
+证据交接入口：https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/6eadb4690c962aaa95821fc4056b677f0f924a6b/research/p3l_r2_risk_posterior_exploration/GPT_PRO_HANDOFF/START_HERE.md
+精简证据：https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/p3lr2-risk-posterior-20261023/pro_handoff.zip
+
+在固定提交核对并完整阅读 RESEARCH_REPORT_ZH.md、THEORY_AND_METHODS.md、LEARNED_MODEL_COMPARISON.md、SUPERVISED_RISK_RESULTS.md、NON_GAUSSIAN_POSTERIOR_REPORT.md、GEOMETRY_TRAJECTORY_RESULTS.md、GPT_PRO_HANDOFF/THREE_THEORY_QUESTIONS.md，以及交接清单、独立审查、TARGET.json 和 src/p1_material/prior.py、target.py。继续核对原 P3-L Manifold & Fiber Explore、P1/P2、A17、Research L/F/X 的实际报告；不要仅根据本文件概述推断旧实验细节。精简包不是完整训练真值或全部原始轨迹，缺失时明确列出，不拿新 prior 替代恢复。
+
+需要保持不变的证据约束如下。32768/2048 是独立联合模拟 train/validation 父样本数，昂贵 physics context 只有 512/128 子集。第一批 256 新对象的最强 physics-only Probit 点 MSE 为 0.010131196，小 CNN 为 0.007571318，风险改善 25.27%，217 个对象改善；主网络仅 5842 参数，但只有 138 张结果进入原 noise-ball。后续另一批独立 256 对象只确立真实冻结训练谱包络相对一个固定随机包络约 0.70% 的增量，两批不能混为 512 个同一冻结实验。约 99.10% 风险改善位于 anchor 过渡相，不能自动归因于动态 Maxwell 弱方向。
+
+1934/2048 所选端点通过 noise-ball 与相对 anchor 的 ΔΦ≤2，只证明这些端点可行；连续路径没有因此全部获证。弧长均值没有建立新对象风险改善，平均 MSE 约增加 1.96%。两个 anchor 的 rank-4 分布有局部 non-involutive 数值迹象，不推出全局 66 维可达。10 维 density 能改善 NLL，完整 66 维 posterior reference 仍不合格；Gaussian strong conditional、Student proposal、逐源 SMC、动态 MALA 的失败不能被删去。
+
+特别保留两项历史边界：P3-L 已试过 elliptical slice 并出现失败，它不是本轮新发明或未试强基线；Gaussian 下 quintic decoder 的解析矩也已有。算法 C 的候选贡献是事件分段控制响应更新秩与 cache 复用，算法 B 的候选贡献是保留属性—相位相关性的 weighted-threshold 条件学习。A17-X 在 dense TM24 没有独立加速优势，不要求使用 A17。所有负结果都要进入对照与停止规则。
+
+同时继承两条计算反证：旧P0的低维latent并未形成低秩材料更新，F3存储增量几乎遍布全网格；P1的精确平台只提供一个有待检验的新稀疏机制，不允许由latent维数推断材料ports数。早期P3-L更准的非线性代理也没有改善同费用材料MCSE，故本轮不能把response误差下降直接写成统计收益。原P0、当前P1二维标量TM与三维A17 frozen-GN证据分开引用。旧bracket leakage与R2量级差异须核对frame、方向对、材料metric及归一化，不拼成未经核验的演化趋势。
+
+历史必读路径同样固定于上述提交：research/p3l_local_posterior_imaging/RESEARCH_REPORT_ZH.md；research/p2_material_fiber_20261019/RESEARCH_REPORT_ZH.md；research/a17x_f3_competition_audit/RESEARCH_REPORT_ZH.md；research/research_f_intrinsic_transport/RESEARCH_REPORT_ZH.md；research/research_lxz_20261016/RESEARCH_REPORT_ZH.md。对旧原生elliptical slice、解析矩、代理响应与概率退化分别建立一行历史对照，列“旧实现/失败条件/本轮真正变化/决定性检验”，不只在引言里提及。
+
+三、不可偷偷改变的原 P1 统计合同
+
+target_id = P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018。
+prior_id = P1-Gaussian64-Uniform2-C2-volume-fraction-v1。
+24×24 网格，576 个材料单元，ROI 半径 0.38，256 个 ROI 单元；8 个照明源、32 个复接收通道。标量 TM、被动有效复 susceptibility；wavenumber=2π，gain=1。总散射接收量为 S j。使用冻结几何和 backend，不将其偷换为 Born forward 或三维 vector Maxwell。
+
+原 q=(z,u)，z∈R^64 服从 N(0,I64)，u∈[0,1]^2 独立均匀。64 个 Gaussian 坐标包含共同 offset 和 63 个非零 DCT modes。field_mean=0，offset_SD=0.65，field_SD=1，correlation_rolloff_length=0.08；DCT 权重及归一化必须逐项复用原代码。令 f=m+A z，s=f/τ，τ=0.5。ROI 内
+  χ_i=χ_host+δ(u)h(s_i)，χ_host=0.1+0.04i，
+  δ(u)=(0.8+1.0u_1)+i(0.03+0.15u_2)，
+  h(s)=0 (s≤−1)，h(s)=10t^3−15t^4+6t^5 (−1<s<1,t=(s+1)/2)，h(s)=1 (s≥1)。
+ROI 外固定 χ_host。h 是有精确平坦区的 C² quintic，不是 logistic/probit，不做 peak normalization，也不把宿主 pocket 当空气。h'(s)=15(1−s²)²/16 在过渡带成立，带外为零。跨饱和接缝的有限变化不能由 anchor Jacobian 代替。
+
+原 noise 是 256 个独立 circular-complex Gaussian 分量，绝对 σ=0.00119211798514519，实部/虚部方差各 σ²/2。不得按每对象 signal norm 重新缩放 σ。packing 为 source-major，每源 Re32 再 Im32；不是先拼全部实部再全部虚部的任意替代顺序。必须依据真实代码核对。令
+  r_y(x)=√2 pack(F(G(x))−y)/σ，Φ(x;y)=||F(G(x))−y||²_C/σ²=||r_y(x)||²/2。
+
+以 Φ_N 表示标准正态 CDF，作精确 Gaussianization：x=(z,η)，u_j=Φ_N(η_j)，x~N(0,I66)，G(x)=g(z,Φ_N(η))。完整目标相对于 dx 为
+  π_y(x)=Z_y^−1 exp[−U_y(x)]，U_y=Φ(x;y)+||x||²/2。
+不要再把 exp(−Φ) 改为 exp(−Φ/2)。native 与 Gaussianized 的 density mode 不是坐标不变 MAP。u 边界的 Probit 无穷值只可通过有声明的有限 anchor context 处理，不得截断真值 law 或整个先验而仍称原 target。若在 q 中报告 density，包含变换 Jacobian：q_q(z,u)=q_x(z,Φ_N^−1(u))/∏φ_N(η_j)。
+
+材料 MSE 使用原全网格复平方范数平均，RMS=||χ−χ'||/24。实 latent 与复材料统一使用实 Hilbert 内积 Re(a*Mb)，谱计算以实化导数 D_M 进行，Q=D_M^T D_M。不得用复特征向量作为实 latent 方向。原 0.02/0.04 RMS 任务尺度、fraction 阈值 .25/.5/.75、连接规则及原 noise-ball 阈值从固定配置读取，不自行重定义。完整 posterior 不以 noise-ball 为硬支持。
+
+四、概率与决策的基本约束
+
+原材料 prior 是 latent pushforward，可能多对一并含饱和导致的不同维数成分甚至宿主材料原子。不要在 1152 维实 ambient 材料空间强行给出普通连续 density，也不要对 latent target 额外乘材料 Gram determinant。material samples 必须通过原 decoder 或明确声明新的统计目标。逐像素方差/概率不能独立拼成合法 joint material world；非线性 latent 的材料 covariance 也不必只有 66 的秩，只有局部线性近似有该上界。
+
+若要 LOCAL posterior，先冻结事件 A_y，例如材料距离、latent 范数及 prior shell，明确 π_y^A∝π_y 1_A。联合数据按 A_Y(X_GT) 筛选会改变训练 Y 的权重；不能把 full-prior joint training 叫 LOCAL，也不能以局部样本合格宣称完整 mass 覆盖。记录排除质量未知的事实。
+
+平方风险的条件最优动作是 μ_y=E[G(X)|y]，风险分解为 Var_y(G)+||a−μ_y||²_M。受约束物理代表的额外最小风险是 dist_M(μ_y,C_y)²。非线性 forward 下 μ_y 本来就可能不满足数据约束。投影代表必须另报 MSE/残差，不把“投影后更物理”当成“Bayes 风险必更好”。输出 raw mean、样本均值、直接风险头和代表图时分别命名；若选最低 residual 候选，明确这改变了生成 law。
+
+五、算法 A：完整条件密度、CFM 与独立材料输出
+
+首先实现 full66 可逆 spline density，作为概率主基线。输入保留原始 512 实观测及 noise/acquisition 标识，再追加合法 anchor x0、χ0、residual 和冻结 physics context。固定 acquisition 用 MLP，跨 acquisition 再考虑位置 token/mask attention。训练 normalizer、谱 frame、数据压缩只能由 TRAIN 得到。不能只留 10 维弱坐标而把其余 56 维独立补 prior。
+
+建议 8–12 层 rational-quadratic spline coupling，所有坐标轮流更新；conditioner 2–3 层、宽 128/256、10–16 bins。先约 0.3–0.8M 参数，扩展上限 2M，输出实际参数统计。训练 loss 为完整 x_GT 的 −log q(x_GT|y)。比较无谱分割固定顺序与 q(a|y)q(b|a,y)，其中 a 可为 10/16/24 维，b 包含全部余下坐标。若 frame T(y) 固定于每对象，正确处理其坐标变换；若 frame 依赖当前 x，不能继续按固定正交变换忽略 Jacobian。
+
+CFM 使用相同条件编码器，四个宽 128/256 的 residual velocity blocks、时间 embedding，输入与输出均保留 66 维。联合训练取 (X1,Y)~原 prior-predictive，给定同一 Y 独立抽 X0=m(Y)+L(Y)ε，L 可逆，ε~N(0,I66)；比较标准 Gaussian 与 anchor-centered full-rank base。Xt=(1−t)X0+tX1，target velocity=X1−X0。MSE 的 population minimizer 是 E[X1−X0|Xt,t,Y]，在连续性方程/ODE 良定条件下输运到真实 conditional law。每个 y 一个 GT 不否定 population 学习，但有限样本仍会塌缩。
+
+几何只先进入有界正定的 velocity-error 权重 W(Xt,t,Y)，最小化 E[(v−v_target)^T W(v−v_target)]。W 不得依赖未条件化的 GT endpoint。加 ||Jv||² 惩罚、硬投影 P_w v 或每步优化回 noise-ball 一般改变终端 law，作为另一个探索算法评价，不冒称相同 posterior flow。base 点质量不能通过普通确定 ODE 变成 full66 posterior。σ_min>0 的 endpoint noise 会改变终端目标；跨不同 y 的任意 OT 配对也可能改变条件 source law。
+
+比较 16/32/64 次网络评估与自适应 ODE 容差。密度需满足 log q1=log q0−∫div(v)dt；对当前状态计算的 physics context，其链式导数不能 detach 后仍称完整 divergence。数值 ODE 的实际映射与连续密度可能不一致，随机 trace 也不自动提供 exact MH density。先用 spline 提供清楚的 MH 比率，CFM 做完整 trace/容差审计并按实际精度标注。
+
+可选 independent MH：α=min(1,exp[−U(x')+U(x)]q(x|y)/q(x'|y))，或固定 mixture 的 IMH+pCN。保留所有拒绝与重复状态。理论可校正不代表有限预算已有有效 posterior。另训练≤30k 参数的直接材料风险头；共享编码器与不共享各有对照。样本经 G 解码，均值与 PSD covariance 可由样本估计，材料 energy/projection score 与 latent NLL 同时报告。
+
+六、算法 B：保留属性相关性的相阈值条件矩学习
+
+利用精确恒等式 h(s)=∫_{−1}^1 h'(t)1{s>t}dt，定义 M_i(t,y)=E[δ(u)1{s_i>t}|y]，得到 μ_i=χ_host+∫h'(t)M_i(t,y)dt。这不是把 Eδ 与相概率相乘。TRAIN 标签是 δ(u_GT)1{s_i,GT>t}，实虚分量分别回归，GT 属性只能进标签。输入为 anchor patch、推断属性、饱和导数、位置、residual 和可选 raw y；若只用局部压缩 c_i(y)，明确其目标是 E[δ1{s_i>t}|c_i(y)]。
+
+从 8/16 个冻结阈值开始，使用共享 GAM、ridge+单调样条、局部多项式或其他≤30k 的低容量模型；与 CNN 保持同父样本、同 context 和相近容量。δ 实虚均非负，可施加随阈值递减的约束。用正 quadrature 权重积分，数值积分误差与回归误差分开。Jensen 给出 |μhat_i−μ_i|²≤∫h'|Mhat_i−M_i|²，另加 quadrature error。合法凸材料矩形 clipping 只是风险动作，不生成 joint worlds。
+
+必须与普通单调去灰化、阈值/软阈值、局部线性与空间滤波、标量/位置校准、R2 CNN、decoder-only 与真实谱输入竞争。保留既有解析 Gaussian quintic 矩作基线：给定 u 后近似 s_i|u,y 为 Gaussian mixture，用 0–5 阶截断矩积分，再按正确属性条件 law 积分；相关性不能独立化。它只对声明的近似 conditional 模型积分精确。新贡献候选是 weighted-threshold 学习及可解释误差分解，不是重新提出既有 Gaussian 积分。若普通校准已解释大部分风险收益，应如实重定位。
+
+七、算法 C：饱和事件分段与有限 Maxwell 响应复用
+
+用电流表示 L_χj=Xe_inc，L_χ=I−XG_b，E=e_inc+G_bj，F=Sj。G_b 是背景 Green 算子，不能与 decoder G 混淆。已有精确基点 R0=L_χ0^−1、E0 时，有限变化满足 Δj=(I−R0ΔXG_b)^−1R0ΔXE0。若 ΔX=E_I d E_I^T，缓存 W=R0E_I、K=E_I^T G_bW、B=E_I^T E0、O=SW，则 c=(I−dK)^−1dB，F=F0+Oc。适用时这是有限响应恒等式，不是 Born approximation。
+
+沿 z0+tv 求解 f_i=±τ 的事件时间；沿 Gaussian ellipse 求解 a_i cosθ+b_i sinθ+c_i=±τ。未标准化 f 的边界为±τ，标准化 s 的边界为±1。区间内材料更新可由 quintic 结构计算；变化集合 I 必须包含从 cache 基点到候选累计改变的全部单元，不能只取终点过渡单元。属性变化可能让整个 ROI 更新，应重新估 rank 或 Full fallback。
+
+重基必须真正取得新基点一致的 current、field、inverse-action/factorization 并计费；低 residual 预测不能冒充精确 cache。只由 likelihood 区间作出接受判断，也不代表获得精确场。若当前状态与候选都只有势区间，比较两端势差与同一个 log U，不能以中点代替精确 slice threshold。
+
+可以嵌入标准 elliptical slice 或其他合法 slice/MH 核，固定 u 更新 Gaussian z block，再用合法属性核更新 u。第一轮 blocks/混合权重只依赖 y；状态依赖选择须处理反向概率或合法增广。必须保留原 P3-L elliptical slice 失败基线：先证明 evaluator 减少相同核的成本，再检验新 block 或 learned proposal 是否真正改变混合，不把便宜但不遍历的链叫成功。
+
+收费包括 |I| 个 inverse-column RHS、小系统因子分解、矩阵乘法、内存、重基与失败 fallback。粗略 amortization 需复用候选数量明显超过 |I|/8，且实际 wall 也更好。过渡区贡献 99% 风险不意味着 active set 很小。决定性实验比较相同 proposal/随机数下 Full 与事件复用的预测/接受决策，随后比较 material MCSE/总费用。若 active set 或 cache 生命周期使成本无净收益，停止此支线。
+
+八、算法 D：以概率判断和材料动作误差触发物理刷新
+
+首选学习或预测候选 ΔΦ/可靠区间、任务 JVP/VJP、软谱 action，再考虑完整 J。对实化线性系统 L j=b，白化输出 C，近似场 jhat 与伴随 zhat，定义 ρ=b−Ljhat，rhat=Cjhat−y_w，ρ_z=C^T rhat−L^T zhat。若已验证 0<β≤σ_min(L)，则 V=||r||²/2 满足
+  V−Vhat=zhat^Tρ+ρ_z^T L^−1ρ+||CL^−1ρ||²/2，
+  V∈[Vhat+zhat^Tρ−b1, Vhat+zhat^Tρ+b1+b2]，
+  b1=||ρ_z||||ρ||/β，b2=||C||²||ρ||²/(2β²)。
+普通 condition estimate、随机 probe 与训练误差分位数不是确定性 β；可用经过验证的预条件残差范数界，但验证和数值舍入控制也要计费。得不到可靠界则称经验监控，最终 Full 校正，不给伪证书。
+
+proposal 规则先冻结且密度可评估，抽一个 U，在 MH log-ratio 区间 [ell_min,ell_max] 上：log U<ell_min 接受，log U>ell_max 拒绝，否则精化或 Full。重复精化不得重新抽 U；所有当前/候选势、proposal 项及必要 determinant 均进入区间。可靠包络与最终精算保证与相同精确 MH 判断一致。把研究 oracle Full 审计另计为研发费用，不能悄悄剔除后声称端到端免费。
+
+材料动作方向的辅助目标采用 HΔ=−J^Tr−g_prior，H=J^TJ+Λ；Gaussianized P1 为 g_prior=x、Λ=I。对 Jacobian 缺陷 E，一阶材料动作误差为 −D_M H^−1[J^T EΔ+E^T(r+JΔ)]。同时考虑前向和伴随作用，不能只预测 EΔ。以预期动作误差下降/查询费用选择 secant、JVP、VJP 或 Full refresh，先用解析/greedy policy，不急于 RL；动作保真不等于真实 GT 风险必降。
+
+完整 J transport 必须包括传播 resolvent 变化、总场变化与 decoder 导数变化三项。跨 saturation seam 时第三项可能主导。硬 projector 需要 cluster gap，交叉时用软谱 λ(H+λI)^−1 或成簇更新；回归 projector 不回归任意符号特征向量。若历史 cache/Broyden 状态改变 proposal，冻结 warmup 后适应、使用合法增广或适用 adaptive MCMC 理论，不能仅凭最终 Full likelihood 宣称转移核正确。
+
+九、算法 E：有正确目标的动态几何核与有限 bracket 实验
+
+首个实现使用 A(x)=P_w(x)+εP_s(x)，ε>0，或有正定 floor 的软谱 mobility。连续 Itô 目标为 dX=[A∇logπ+div A]dt+√(2A)dW；全空间适当衰减或无通量边界下保持 π。不加 divergence drift 一般改变稳态，一维零通量反例为 p∝π/a。实施可先用 full-rank Gaussian proposal+完整 MH，省略 drift 也可保持目标，但须承认不是相同连续 SDE。
+
+纯 rank-4 Euler 的前后 affine 支持可能不同，不能用伪 determinant 当全维密度。Hörmander/bracket-generating 需要光滑性、完整 Lie rank 及其他条件；非零 normal leakage 不足以证明 66 维可达、唯一不变分布或有限时间 mixing。P1 decoder 接缝只有 C²，硬谱方向一般只有较低正则性；跨 seam 与平滑 strata 分开评价。
+
+比较 frozen/dynamic weak、直接 bracket 步、四段 commutator、bracket-enriched full-rank covariance、普通 curvature/secant 方向与强方向补偿。静态 Maxwell 状态可直接提议，机器人式绕行并非硬约束；四段回路必须在同成本下胜过直接 bracket 才有算法价值。可逆 map 配对 T/T^−1 时包含 |det DT| 和反向选择概率；有限 Euler 回路未必精确互逆。监督风险 drift 一般改变 target，只有相应 π-divergence-free 条件才可保持 posterior。风险驱动核选择第一轮用 y 固定权重。
+
+十、统一资源计数与接口设计要求
+
+必须先审查原 PhysicsBook/MaxwellTarget 及 A30 接口。现有 P1 guard 对旧 target/stage/closure 有明确限制；创建新 campaign 适配层和独立授权合同，保留旧 guard，不给旧文件改名绕过检查。以下是需要实现的接口设计，不是声称已存在的 API 或 CLI。
+
+每次物理请求携带 request_id、campaign_id、stage、parent_id、split、target_hash、solver_hash、algorithm/checkpoint_hash、state_hash、purpose、requested_accuracy、cache_parent、authorization_scope。执行前原子预留最坏 RHS/状态/时间份额，执行后记录实际用量和剩余；并发用锁或事务，不允许多个 worker 同时通过剩余额度。失败、拒绝、timeout、证书精化和精确审计都要记账。预留与实际消耗区分，不能双计或靠失败释放已发生计算。
+
+返回 PhysicsResult 包含 prediction、必要 state handle、exact/approx/interval 类型、势区间、误差依据、证书适用条件、cache provenance 与 PhysicsReceipt。receipt 至少记录 forward_source_RHS、source_adjoint_RHS、receiver_adjoint_RHS、inverse_column_RHS、JVP_RHS、complex_RHS_total、material_states、factorizations、matvec、operator_apply、solve_wall、factor_wall、network_wall、GPU time、峰值 CPU/GPU memory、cache hit/miss/bytes、refresh_reason、fallback、exception。
+
+原 TM24 在有效状态已有时：一次完整 forward 为 8 complex RHS；完整 66 列 Jacobian 用 receiver-adjoint 新增 32 RHS；likelihood gradient 为 8 source-adjoint RHS；全源 JVP 通常为 8 RHS。缺基点时另付 forward/factorization。四个 exact JVP 已到 Full J 的 RHS 费用。多 RHS 批处理按实际右端列数计数，不按一次函数调用算一次。LU/factorization、矩阵乘法与内存另记，因为 dense TM24 的 RHS 并不代表全部 wall。
+
+同一共享 anchor/context 的 paid setup 只记一次，并给每方法提供“共享后在线成本”与“独立部署总成本”两套视角；不能把 setup 隐去或重复扣除。训练数据、geometry labels、模型训练、oracle 审计、失败候选与所有 fallback 进入总账。报告摊销曲线 cost_train+N*cost_online；跨网格 RHS 不能直接当相同费用，按分辨率、源数与 wall 分层。CPU wall 是受控作业时间，不等于 core-hours；硬件、线程、并发规则必须冻结，GPU 多卡并行按卡时及 wall 同报。
+
+历史 ledger 只读。新账本 append-only，每条有 UTC、序号、前条 hash 或等价防篡改摘要；中断后从完整检查点恢复并重新核算预留，不重置计数。阶段关闭输出不可覆盖的 CLOSED manifest。达到任何授权/阶段硬上限立即停止新请求，安全持久化并终止；剩余其他资源不抵消已达上限。
+
+十一、Stage 0–IV 的硬预算、执行顺序与扩大门槛
+
+以下都是拟议新 campaign 上限，当前不授权执行。Stage 0：0 新 complex RHS，CPU wall 2h，GPU 0。Stage I：24,000,000 RHS、CPU wall 24h、GPU 48h。Stage II：6,000,000 RHS、CPU wall 12h、GPU 16h。Stage III：8,000,000 RHS、CPU wall 24h、GPU 8h。Stage IV：20,000,000 RHS、CPU wall 32h、GPU 24h。合计58,000,000 RHS、94h CPU wall、96h GPU。三维不在其中。各阶段上限独立，不能把失败阶段的余量默认为其他阶段新授权。
+
+Stage 0：恢复合同，核对文件 hash、目标、数据可用性、solver依赖与历史暴露清单。新 namespace 建议 research/p3l_r3_transport/，具体路径可按项目规范调整；不覆盖 R2。对 prior transform、noise packing、密度 determinant、layer-cake、低秩线性代数恒等式、SDE drift、反向 proposal 写必要的纯解析小核查。使用合成小矩阵不算 Maxwell；不得加载物理 backend 取得未授权响应。先形成运行合同、模型族、seed清单、统计门、预算保留及真实接口清单。授权未到时停在这些准备产物。
+
+Stage I：使用原32768 train、2048 validation joint pairs。先以已有512/128 context比较低容量模型；开发门通过才扩到2048 train、512 validation context，仍是原父样本子集，不增加独立材料数。新 context统一 native96+probit64 cap；原 native48+probit48 context若继续用，需有budget token并单列输入分布控制。最坏每parent 160*(8+32)=6400 RHS，2560个context上限16.384M。
+
+这里96+64必须解释为全部fresh forward attempts上限，不是还能附加任意line-search的迭代次数；每个fresh点至多做一次完整J。普通优化、代表补偿也受fresh-state/RHS双上限。若原实际代码不满足此合同，先在计划中降低对象数或attempt cap并重新冻结，不能继续引用6400这一上界。
+
+另预留128个概率校准开发对象、首批512个新locked对象、另批256个独立机制确认对象；truth+anchor最坏896*(8+6400)=5.741568M，余1.874432M用于预定概率诊断、代表优化及失败。该核算是上限规划，实际早停可省，但不能逆向把剩余实验假定免费。既有上下文不重复付费，任何复用需hash匹配。完整统计方案与主方法冻结后才生成第一批locked观测；第二批确认对照再次独立冻结。
+
+Stage I的廉价材料均值、energy score等固定K=128个decoded samples，不附带Full likelihood资格。昂贵诊断只对测试前冻结的最多三个概率主方法执行，子预算如下：
+  开发likelihood-SBC：128对象×3方法×64样本×8=196608 RHS；
+  locked likelihood-SBC：首批预定128对象×3方法×64样本×8=196608 RHS；
+  Gamma必要检验：首批512×3及确认256×2，每对象预定一个样本，共16384 RHS；
+  物理代表：768对象×最多16个fresh states×40=491520 RHS；
+  等费用普通优化：同768对象×16个fresh states×40=491520 RHS；
+  correction pilot：8开发对象×3方法×1024个Full-checked候选×8=196608 RHS。
+合计1589248 RHS，剩285184作为失败/重算余量，不自动扩大。可按预定索引复用likelihood-SBC的已校验样本到Gamma检验，上表按不复用保守预留。小pilot不是四链FULL reference；相关资格放Stage III。CPU/GPU上限可能先耗尽，届时保留未完成项目，不强行实现全部最大规模。
+
+Stage I 必需比较：最强Probit、额外等成本普通优化、冻结R2 CNN；经典后处理与B；full-field moments；普通full66 spline、strong–weak spline；无几何CFM、几何误差加权CFM；一个条件score/空间生成竞争者；可选物理代表。小风险方法≤30k；生成器0.3–0.8M，扩展≤2M；三个冻结训练seed，同样本与训练时限。full-field direct ambient diffusion另标目标，不能与原latent NLL直接排名。几何输入配无几何、decoder-only、随机frame、多随机frame和真实训练frame控制。
+
+预定三项主要比较：最佳预冻结风险方法相对R2 CNN的MSE；主full66 density相对同容量简单density的NLL；几何输入相对同容量无几何的独立增量。开发集可选主checkpoint，新测试不能重选赢家。描述性风险目标为相对CNN再降≥2%，但幅度不足不等于理论错误。概率扩大门需独立NLL或样本proper score收益且无明显data-dependent calibration失败；风险扩大门需新父样本主风险改善。二者可独立通过，门未过则维持其真实资格并停止相应模型扩大。
+
+Stage II：选96个开发对象，以anchor可见的饱和程度、谱隙、residual分层，不按GT成败选。每对象相同起点与proposal seed，最多16次状态更新。比较frozen Full J、every-step Full J、Broyden/secant、learned projector、learned low-rank J、soft predictor、adaptive exact refresh、同容量无几何模型。强基线包含DINO式map/J学习+delayed acceptance、Krylov recycling、非学习事件复用及每候选Full原核。
+
+同概率/材料精度下，部署wall或RHS至少节省20%，并由独立parent区间支持，才扩大。只减少J次数却增加更多forward不通过。报告principal angles之外的材料动作误差、false accept/reject、seam与spectral crossing、step rejection及fallback。声称确定性certificate的错误判断必须为0；研究审计Full另记研发成本，端到端总成本仍报告。经验触发器有误判时只能借完整校正保留目标，不得称证书。失败说明应辨别预测难、稳定界松、cache短或TM24 Full过快。
+
+Stage II的6M细分：成对固定轨迹与重放1.0M；训练状态及方向查询2.0M；残差/稳定性区间与独立Full审计1.5M；事件复用成本先导1.0M；失败余量0.5M。已付state/J可复用，但原获取费用仍进入相应部署摊销。冻结一次调用的owner与被复用者，不让两个子项目都把同一物理状态当免费外部输入。
+
+Stage III-A：32个开发anchor，冻结rank/cluster/向量场定义；至少三个步长、正反回路，报告绝对bracket材料幅度与normal比例、谱隙、条件数、decoder derivative rank。分别分析64场变量与含属性的完整66维，跨seam单列。任务RMS为.02/.04，.08仅压力测试。比较四段回路、直接bracket、curvature/secant与Full-corrected强方向步。中间路径用连续误差界或带可靠误差控制的细化监测；端点过球不叫整条路径可行。
+
+Stage III-B：8个开发对象，比较C、全秩MALA/HMC/pCN、learned full66 proposal、bracket-enriched covariance与Poisson/Stein材料积分。按相同RHS cap而非步数分配，8M总额内至少保留四链、多初始化、重复状态与逐批MCSE。历史失败elliptical slice和原Gaussian/Student核保留对照，只有具体新条件耦合或复用机制才重试。若不达FULL经验资格，标UNQUALIFIED，不靠无限延长获得标签。
+
+Stage III子预算固定为几何门0.8M、概率主比较6.144M、Poisson/Stein额外score查询0.256M、独立审计与失败余量0.8M。概率主比较恰为六臂：Full-evaluator elliptical slice；Full pCN；预选的MALA或HMC；full66 learned proposal+固定pCN mixture；全秩bracket/task covariance核；事件evaluator的同一elliptical slice。每臂8对象×4链×32000 RHS，六臂共6.144M；warmup、适应、失败与fallback都在每链额度内。Full/event slice可共同随机数重放，但两臂真实计算都收费，一臂先到cap则按费用截断比较，不能给它额外步数。所有因拒绝产生的重复状态必须保留，不得去重后计算均值、ESS或MCSE。
+
+Stage III-C：oracle GT最短距离只由离线evaluator计算coverage。实际均值按合法随机过程或有密度的权重计算。弧长均值对重参数化不变，但依赖路径与重复覆盖；时间/等点均值另依赖速度与采样策略，两者都不等于自动posterior体积。仅在全维tube映射、横向law、determinant、chart重叠权重均可计算时启动multi-chart。bracket若绝对位移小、数据/先验代价大、直接步更便宜或material ESS/成本无增量，则停四段绕行。C若active set无法break even则停复用。
+
+Stage IV：先选两个变化轴，不做全笛卡尔积。候选为σ/2与2σ，4源/16接收子采集与小角度旋转，新对比度区间，correlation length .04/.16，τ=.25/1.0。每一变化建立新target/version，不能称原P1校准。分开zero-shot、带noise/acquisition/prior条件训练、重训；测试后调参不得仍报zero-shot。每条件128开发parent筛机制，选定条件另256独立确认；GT隔离与冻结方式沿用。
+
+更大二维先48×48或64×64，明确网格加密是否保持同连续材料、是否改变latent与prior、forward离散是否收敛。fixed-latent与随网格扩大latent分开。将新truth/anchor/solver验证全部计入20M与wall上限，实际大网格费用未知时先保守小试并预留失败额；不能用TM24每RHS wall外推无成本。三维仅写设计，须新的solver验证、极化/白化/稳定性合同与另行预算后执行。
+
+十二、冻结评价、GT隔离与概率资格
+
+全部历史P3-L/P1/P2/R2开发、测试和确认对象标为EXPOSED。即使更换算法或随机seed，也不能把这些parent重新命名为new locked。新材料parent的seed命名空间与旧集合做精确去重；同材料的多个噪声重复按同一parent分组，不能跨train/test，bootstrap也以parent为单位。像素、K个样本与三个训练seed不增加独立样本量。
+
+建立三个逻辑域：TRAIN/VALIDATION数据可提供监督GT；ONLINE只读observation、sigma、target_id及从y计算的context；EVALUATOR在online输出hash封存后才读取测试GT。评估进程不得回写proposal、early stopping、normalizer、frame、阈值或选择规则。提前冻结每对象sample数、样本索引、代表规则、完整forward诊断名额、bootstrap种子、多重比较处理与失败计数。online输出缺失/NaN/预算失败计入失败表，不只汇报成功子集。
+
+主风险为全网格材料MSE，次级MAE、过渡/纯相分层、topology及属性误差。对方法差值按同parent配对，调整多个预定主要比较的区间；三训练seed先分别报再按冻结方式做父样本平均损失，ensemble图另报。不能测试后从多个seed选最优。对风险改善同时报告absolute和relative量、改善对象比例、费用与物理代表牺牲的风险。
+
+概率评价同时包含：同一Gaussianized全66坐标的held-out NLL；material energy score；空间variogram与冻结投影scores；data-dependent SBC；50/80/90/95%覆盖。预先冻结16个实材料随机投影、4个低频空间投影、ROI均值/能量、fraction阈值.25/.5/.75事件以及数据失配Φ。不同维数或不同frame的raw NLL不可直接比大小；latent aliases敏感性与材料law评分分开。
+
+SBC需要真值与条件样本的交换性统计。只做parameter-only SBC可被完全忽略y的prior sampler通过；必须加入likelihood等依赖数据的量。i.i.d.生成样本的Rhat≈1只说明网络重复抽样独立，不证明目标正确。高维energy score可能不敏感于相关性，因此空间投影与variogram不能省。不得把单一覆盖率、低NLL或低residual直接命名为校准。
+
+标准rank置信带依赖给定y时真值与K个候选的条件交换性，主SBC使用独立amortized draws。连续MCMC、带权IS与重采样复制不能直接当iid候选套用；须采用适用的相关性控制、独立运行或专门校准构造，并写明条件。平台原子、离散事件与数值ties使用预冻结的随机tie-breaking种子；严格小于计数会让正确模型也偏离均匀。二值事件优先报Brier/log score和reliability；离散覆盖是否随机化须明确，不能把自然ties作为模型失败。
+
+原P1的必要检查：跨独立prior-predictive对象，每y抽一个预先指定的正确posterior样本，则Φ(X';Y)~Gamma(256,1)=χ²512/2。每对象仅一个固定索引Full评估即可作该检验；不能先挑最小residual样本。它是跨观测必要条件，不是固定y下条件分布，更不是充分证书。还应核对样本prior统计、属性合法与decoder输出，不把进入noise-ball的比例越高越好当概率目标。
+
+FULL reference建议门：预定开发对象至少四条不同初始化链；冻结latent与材料统计量的rank-normalized split-Rhat<1.01，bulk/tail effective sample size≥400，材料均值RMS MCSE≤0.001。实化材料投影variance要求MCSE≤max(0.1*vhat,1e−6)，单位为材料平方；预定事件概率要求绝对MCSE≤0.01。罕见事件零命中不得报零不确定性，只有独立/有效样本合同支持的保守概率上界<0.01时可报告该上界，否则未评估。
+
+参考资格还要与独立kernel、已保存轨迹按预定一半/全部预算的结果作误差范围内一致性核查。额外翻倍运行只能使用阶段真实剩余额度，不能突破每链或阶段cap。常数链和原因未知的常数统计量不能凭MCSE0自动合格；理论确定的常量另注。SMC完整报告ancestry、genealogical effective size与mutation mixing。这个门是经验资格，不能排除所有漏模式；R2旧field2 logZ门不得事后改写。
+
+完整校正pilot先1024候选。最大归一权重>0.2、weight ESS<50、关键材料矩独立批次不一致或支持诊断失败，则不扩大同proposal来宣称校正成功，转向strong conditional/base/proposal结构。若只是在pilot中未见大权重，也不证明不存在漏质量。TV/接受率与KL/重要性矩的文献诊断保留稳态、有限矩与样本条件，不把短链接受率用作全局证书。
+
+资格措辞固定分级：APPROXIMATE_CONDITIONAL_GENERATOR；AMORTIZED_DIAGNOSTICS_PASSED；EMPIRICALLY_QUALIFIED_REFERENCE_ON_DECLARED_CASES；ASYMPTOTIC_TARGET_CORRECT_KERNEL；UNIFORM_ERROR_CERTIFICATE；UNQUALIFIED。这些不是一条可随意升级的等级链，分别记录适用对象、假设、检验和数值精度。没有reference不阻止joint-simulation风险和proper score研究，但禁止借此放宽完整posterior结论。
+
+十三、产物、复现、失败处理与最终研究决策
+
+建立独立目录与manifest，至少交付：目标与数据版本合同；AUTHORIZATION_DRAFT（未授权保持false/zero）；阶段预算及freeze方案；历史暴露清单；split/seed registry；真实接口与成本表；实现代码及必要纯解析核查；每家族checkpoint/config/parameter count；append-only物理账本与阶段closure；逐parent风险/概率/资源表；所有失败、拒绝、fallback、cache与SMC ancestry记录；校准与MCSE图；阶段gate决策；中文研究报告和复现README。文件名可以按项目规范调整，但语义不可省略。
+
+复现README记录真实使用的命令、依赖版本、solver/data hashes、硬件和线程、状态恢复方法；不编造尚未实现的flags。保存完整机器可读结果和清晰的主表，图中标注物理模型、对象数、指标、误差区间和预算。压缩交接包附校验和及“未包含的原始数据”清单，不能把包称为可完整重算环境。论文表述把已观察、条件数学、候选机制、未成立资格四类分开。
+
+硬停止条件包括：授权缺失或目标不匹配；任何资源到顶；GT泄漏/冻结破坏；noise/packing/prior变更未版本化；密度与实际采样映射不一致；证书误判；后验核的反向支持或选择概率错误；关键保存/账本失败。出现这些情况先停止受影响执行，保留现场，修正静态问题并报告，不删除失败记录。受影响locked cohort不能继续作为未经暴露确认；若仅开发阶段发现问题，可在同授权余额内修复并重新冻结，但不得把旧失败隐藏。
+
+科学停止条件与工程错误分开：风险增量不稳定、概率校准明显失败、校正ESS退化、事件reuse成本不占优、动态geometry无同预算贡献、bracket只给高leakage却无任务位移等，都是可交付负结果。停止该支线并完成诊断；不需要把全部五种算法都训练到最大规模。其他已授权且通过门槛的独立支线仍可继续。
+
+最终报告给出主攻、并行、停止三类决策：A解决full66强条件体积到何种程度；B能否解释或超越CNN的过渡相收益；C/D能否在包含training/setup/审计/fallback后节省真实Maxwell总费用；E是否提供直接提议无法廉价获得的材料统计收益。强IEEE TAP机会必须由具体Maxwell有限响应/误差命题、公平强对照、新父样本冻结风险及概率资格共同支持，不以“Flow+CNN+Maxwell loss”或成熟理论重命名代替贡献。
+
+直接相关原始先例必须纳入讨论：FMPE(NeurIPS2023)、Blechschmidt等arXiv2610.02377、有限数据CFM arXiv2603.14135、DINO及JMLR2025 DINO-geometric MCMC；电磁cRG-Flow DOI10.1109/TMTT.2022.3205890；U-Flow arXiv2212.04309（EuCAP2023、标量Helmholtz）；Back-Projection Diffusion arXiv2408.02866（二维声学Helmholtz）；微波conditional diffusion arXiv2510.25729。最低discrepancy筛选不是posterior校准，标量波模型不是完整vector Maxwell。文献未见完全相同组合不等于已证明首次。
+
+执行完成或触发停止后，提交自包含中文结论：实际做了什么、没有做什么、各项资格与失败原因、每阶段资源、全部固定主比较、下一步只需解决的具体瓶颈。当前若仍无新campaign授权，结论只报告Stage0准备完成与新增物理/训练/GPU均为零；不要提出形式化审批问题，也不要偷偷开始实验。
+
