@@ -1,0 +1,32 @@
+    C = np.zeros([max(1, m), n], dtype=np.float64, order='F')
+    d = np.zeros([max(1, m)], dtype=np.float64)
+    _eval_con_normals(C, x, cons, m, meq)
+    _eval_constraint(d, x, cons, m, meq)
+
+    iter_prev = 0
+
+    while True:
+        # Call SLSQP
+        slsqp(state_dict, fx, g, C, d, x, mult, xl, xu, buffer, indices)
+
+        if state_dict['mode'] == 1:  # objective and constraint evaluation required
+            fx = sf.fun(x)
+            _eval_constraint(d, x, cons, m, meq)
+
+        if state_dict['mode'] == -1:  # gradient evaluation required
+            g = sf.grad(x)
+            _eval_con_normals(C, x, cons, m, meq)
+
+        if state_dict['iter'] > iter_prev:
+            # call callback if major iteration has incremented
+            if callback is not None:
+                intermediate_result = OptimizeResult(
+                    x=np.copy(x),
+                    fun=fx
+                )
+                if _call_callback_maybe_halt(callback, intermediate_result):
+                    break
+
+            # Print the status of the current iterate if iprint > 2
+            if iprint >= 2:
+                print(f"{state_dict['iter']:5d} {sf.nfev:5d} "

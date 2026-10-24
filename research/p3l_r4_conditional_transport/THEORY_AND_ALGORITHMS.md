@@ -1,6 +1,6 @@
 # R4：数学对象、实际算法与已发现的失效机制
 
-状态：研究执行中。本文记录已经实现或验证的机制，不替代最终独立测试及科研裁决。
+状态：实际实验与两批独立评价完成。初始数学审计保留于AUDIT；下列机制须结合最终报告的正负结果与限定范围。
 
 ## 1. 先区分要估计什么
 
@@ -57,3 +57,16 @@ CFM也保持66维，并保留full-rank base。数值ODE轨迹的full-trace连续
 Heun修订通过小步经验核验，但任务尺度上路径代价高于直接bracket提案，未建立材料统计或成像收益。接缝处没有未经证明的全局高阶收敛保证。非零bracket不等于exact-nullspace、GT可达性或posterior混合改善。
 
 冻结的满秩矩阵pCN对照将使用Q正定且Q<I、rho=sqrt(I-Q)。其proposal对于原N(0,I)可逆，MH只需完整likelihood比；另保留显式正反Gaussian密度的核对。任何动态、状态相关矩阵若没有完整校正，都不能继承这个结论。
+
+
+## 8. 独立joint simulation可验证的概率和风险结论
+
+平方材料损失下 R(T)−R(mu)=E||T−mu||²；对相同latent参考测度，NLL(Q1)−NLL(Q2)=E_Y[KL(pi||Q1)−KL(pi||Q2)]。样本energy score亦为相应材料energy-distance的proper比较，允许材料分布退化。它们都是标准身份；独立parent测试可估计相对差，却不提供未知绝对后验误差。
+
+这个区别在本轮具有实际意义：有相对proper-score改善，同时有严重Full-PPC失败；二者并不矛盾。CFM的数值logq不稳定则不能调用显式density的NLL结论。详见AUDIT/JOINT_SIMULATION_PROPER_SCORE_INTERPRETATION.md。
+
+## 9. 最终已完成与未成立部分
+
+完整66维模型、三角条件、bounded geometry CFM、精确相bin与anchor-bin、mixed bidirectional KL、source-adjoint物理训练、同Full决定区间、direct/bracket/Heun和独立测试均已真实运行。相阈值head、active-row加速、当前learned-J与四段路径未建立独立优势。有限噪声候选确实存在，但没有exact fiber或mode-mass证明。
+
+风险融合的主要解释是局部材料patch与全局观测统计的互补，不是生成模型已经校准；Gaussian控制与空间打乱控制均已执行。静态Maxwell几何有特定proper-score增量，动态几何没有由此自动继承成功。

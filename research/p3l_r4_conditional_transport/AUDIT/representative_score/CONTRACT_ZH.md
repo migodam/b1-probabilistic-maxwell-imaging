@@ -1,0 +1,19 @@
+# Output3实际输出的独立离线评分
+
+新增tools/score_r4_representatives.py与纯helper src/p3r4/representative_eval.py；无物理/训练启动，不修改Target或代表点runner。
+
+评分入口：`PYTHONPATH=src <python> tools/score_r4_representatives.py --physical ACTUAL_RUN_DIRECTORY --prepared-request ORIGINAL_PREPARATION/FROZEN_REQUEST.json --online-gate ACTUAL_INFERENCE/ONLINE_COMPLETE.json --receipt STAGE/II/jobs/ACTUAL_JOB/CLOSED.json --truth STAGE/inputs/offline_only --out NEW_SCORE_DIRECTORY`。
+
+在任何GT打开前，要求actual RESULTS与Book均COMPLETE、START为本job的physics且PID不同、物理目录中的冻结请求逐项等于原冻结请求、request声明frozen/noGT、实际online gate为ONLINE_COMPLETE且方法freeze先于infer。检查infer完成→requestfreeze→actualjobstart→results→Bookclosure的真实时序，冻结mu源文件size/mtime未改，并要求其直接链接到gate封存artifact或该estimator_id的canonical推断NPZ。没有实际infer gate或link时明确拒绝；仅frozen_estimator=true不够，不得为了评分伪造旧gate或回填时序。若原source是未封存的后处理合并文件，需要父调度器另行做真实有记录的推断/变换封存，不在此偷偷放宽。
+
+每个request声明parent完整保留，动作固定为raw_mu、clipped_mu、ordinary_extra_Phi、representative_raw、representative_clipped、original_anchor。原qualified cache与new FINAL字段的source_kind和路径分别记录，不能混为同一求解或冒称mu的先验合法性。按实际runner明确fallback则评价anchor重复并保留fallback；缺失、未请求、unqualified skip及失败全部NOT_EVALUATED，不能自动冒充新的成功输出。raw/clipped mu仍可在anchor不合格时按原冻结数组评分。
+
+输出每parent NPZ/JSON记录、全表PER_PARENT.npz/CSV、RESULTS.json：full576complex MSE/MAE、ROI、GT相位与anchor相位host/transition/pure分层、Phi(仅已付已保存)、native z及Gaussianized prior能量、相对anchor RMS、代表点相对mu/anchor及普通额外Phi优化的MSE变化。源MaterialPrior提供纯decoder分层；没有rawNN自身合法相属性时不伪造其decoder相位。
+
+bootstrap以父样本为统计单位，4000次、seed20261025099、98.3333333333%区间。全部声明parent都可评估才给主比较CI；任何缺失均报告planned/evaluable数量、NOT_EVALUATED，不通过删父样本给漂亮区间。有限子集均值只作明确descriptive结果。没有posterior mean/sample标签；只有风险动作、受约束代表与普通控制。
+
+另有可选付费scaffold tools/r4_raw_material_forward.py freeze|run。freeze读取已冻结raw/clippedmu snapshots；run必须独立明确release experiment=raw_material_forward_diagnostic_v1、唯一job、hard max-rhs/wall。仅用Book和原FrozenMaxwellAdapter直接full_state(chi)，每任意材料动作8复源RHS/LU，失败保留、current/field/prediction及时保存，不使用Target.evaluate(q)，不改核心Target，不读GT。
+
+其passivity、ROI外host固定、原材料分量矩形分别检查；无论通过/不通过或Full residual多低，decoder_realizability均NOT_PROVEN，P1_legal_world均NOT_CLAIMED。该scaffold只覆盖已有qualified frozen_mu快照，其他声明parent保留explicit NOT_EVALUATED/predeclared skips，不冒称全父样本诊断。物理响应可用于检验任意NN均值是否拟合数据，不能使任意NN图变成P1可实现材料世界。
+
+SCHEMA_CHECK.json仅验证合成时间戳/Book状态gate及raw材料边界类型，0新RHS/训练，不是假称已存在实际代表点评分。目前没有actual representative outputs被评分。

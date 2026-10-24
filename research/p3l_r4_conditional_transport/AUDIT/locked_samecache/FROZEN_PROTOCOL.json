@@ -1,0 +1,133 @@
+{
+  "status": "PREPARED_NOT_RELEASED",
+  "experiment": "interval_chain_locked_v1",
+  "campaign_id": "P3LR4-20261025",
+  "ledger_stage": "IV",
+  "parents": [
+    "R4L1_00000",
+    "R4L1_00001",
+    "R4L1_00002",
+    "R4L1_00003",
+    "R4L1_00004",
+    "R4L1_00005",
+    "R4L1_00006",
+    "R4L1_00007"
+  ],
+  "steps": 1024,
+  "beta": 0.002,
+  "seed": 20261025171,
+  "arms": [
+    "full",
+    "richardson",
+    "global_gmres",
+    "global_gmres_accuracy"
+  ],
+  "combined_complex_RHS_cap": 300000,
+  "arm_complex_RHS_caps": {
+    "full": 65536,
+    "richardson": 78154,
+    "global_gmres": 78155,
+    "global_gmres_accuracy": 78155
+  },
+  "arm_wall_seconds": 1200,
+  "arm_RSS_cap_bytes": 3221225472,
+  "target_config": {
+    "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+    "prior_id": "P1-Gaussian64-Uniform2-C2-volume-fraction-v1",
+    "host_chi": [
+      0.1,
+      0.04
+    ],
+    "roi_radius": 0.38,
+    "spatial_modes_axis": 8,
+    "latent_dimension": 66,
+    "gaussian_dimension": 64,
+    "field_mean": 0.0,
+    "offset_SD": 0.65,
+    "field_SD": 1.0,
+    "correlation_rolloff_length": 0.08,
+    "phase_transition_halfwidth": 0.5,
+    "inclusion_increment_real_interval": [
+      0.8,
+      1.8
+    ],
+    "inclusion_increment_imag_interval": [
+      0.03,
+      0.18
+    ],
+    "physical_model": "passive effective scalar TM susceptibility; continuous host/inclusion fraction with exact phase plateaus",
+    "topology_is_input": false,
+    "peak_normalization": false,
+    "material_density": "latent pushforward only; many-to-one saturation allowed",
+    "packing": "source-major Re32 then Im32",
+    "gain": 1.0,
+    "source_count": 8,
+    "receiver_count": 32,
+    "grid": 24,
+    "wavenumber": 6.283185307179586,
+    "material_task_RMS": 0.02,
+    "secondary_material_RMS": 0.04,
+    "min_changed_fraction": 0.15,
+    "min_connected_changed_cells": 4,
+    "min_smoothed_fraction_RMS": 0.01,
+    "topology_thresholds": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "prior_reversible_local": "pCN z64 + fixed diagonal reflected Gaussian u2",
+    "large_NN": false,
+    "noise": {
+      "distribution": "circular complex Gaussian",
+      "sigma": 0.00119211798514519,
+      "real_component_variance": 7.105726452533137e-07,
+      "imag_component_variance": 7.105726452533137e-07,
+      "rule": "fixed absolute instrument sigma copied from exposed F3 weak acquisition; never rescaled per P1 parent",
+      "origin": "F3 a323ef2 inputs/online/p250073_weak_a1_snr20.npz:sigma only",
+      "per_parent_SNR": "NOT_FIXED; report after actual forward",
+      "whitening": "sqrt(2)/sigma times source-major Re32/Im32"
+    },
+    "data_definition": "total complex scattered receiver field S j; deterministic known-background subtraction would preserve the likelihood",
+    "host_pockets_are_air": false,
+    "phase_law": "C2 quintic saturated fraction, not peak-normalized",
+    "prior_topology_events": "post-decoder fraction thresholds .25/.5/.75, foreground4/background8 connectivity, min4 cells; not generator inputs"
+  },
+  "target_identity": {
+    "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/configs/TARGET.json",
+    "bytes": 2203,
+    "mtime_ns": 1792865206666197345
+  },
+  "common_randomness": "each arm independently resets SeedSequence([20261025171,parent_index]);66 normal thenuniform every step",
+  "rights": "each approximate arm independently cold pays576inversecolumns perparent; same eight-source R0/G/S matrix rights,stored canonical endpoint-once arrays",
+  "reduced_LS": "actual complex small LS RHS charged1 before each new solve;cached same-endpoint solution replay0;no RHS debit for cached R0 matrix multiply",
+  "accuracy_arm": "both endpoints white_error_upper<=.05 AND Phiwidth<=.05 before sameU MH, max4 refinement then paidFull fallback",
+  "initial_context_cost": "new locked96+64 context owner separately disclosed,never treated as free cold acquisition",
+  "required_inputs": {
+    "locked_marker": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/configs/FROZEN_LOCKED.json",
+    "contexts": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/results/contexts/locked",
+    "cache": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/results/contexts/cache",
+    "observations": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/inputs/online"
+  },
+  "release_required_fields": [
+    "released:true",
+    "experiment:interval_chain_locked_v1",
+    "campaign_id:P3LR4-20261025",
+    "prepared_protocol_identity",
+    "context_receipt"
+  ],
+  "source_modules": [
+    "tools/run_r4_interval_chain_locked.py",
+    "tools/run_r4_interval_chain_global_gmres.py",
+    "tools/run_r4_interval_chain_fast.py",
+    "src/p3r4/decision_refresh_global_gmres.py",
+    "src/p3r4/decision_refresh_fast.py"
+  ],
+  "no_GT": true,
+  "new_physics_during_preparation": 0,
+  "NN_training": 0,
+  "posterior_reference": "NONE",
+  "floating_certification": false,
+  "failure_policy": "missing marker/context/cache or release fails before Book; no substitute parent,rerun,adaptive beta,iteration orbudget change",
+  "comparison": "allarms close before independent Full audit; flags/xpaths/ALL potential proofs/final intervals/fixedaccuracy;ordinary Krylov benefit not excluded",
+  "novelty_or_GO_claim": false
+}

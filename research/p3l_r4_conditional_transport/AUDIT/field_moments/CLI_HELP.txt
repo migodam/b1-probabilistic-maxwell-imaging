@@ -1,0 +1,45 @@
+usage: train_field_moments.py [-h] --train TRAIN --validation VALIDATION
+                              --out OUT
+                              --kind {train_mean,mlp_small,mlp_medium,cnn_small,cnn_medium,mlp_small_moments,mlp_medium_moments,cnn_small_moments,cnn_medium_moments,r2_reference}
+                              --seed SEED --updates UPDATES
+                              [--device {cpu,mps}] [--second-moments]
+                              [--moment-loss-weight MOMENT_LOSS_WEIGHT]
+                              [--target TARGET] [--geometry GEOMETRY]
+                              [--reference-checkpoint REFERENCE_CHECKPOINT]
+                              [--train-size TRAIN_SIZE]
+                              [--batch-size BATCH_SIZE]
+                              [--validation-batch-size VALIDATION_BATCH_SIZE]
+                              [--eval-every EVAL_EVERY] [--patience PATIENCE]
+                              [--lr LR] [--weight-decay WEIGHT_DECAY]
+                              [--capacity-limit CAPACITY_LIMIT]
+                              [--max-wall MAX_WALL]
+
+One bounded raw-measurement material mean/moment fit, with zero physics.
+TRAIN/validation: y[N,512]+material[N,576], or original complex
+observation[N,32,8]+chi[N,576]. x[N,66] may reconstruct labels through the
+unchanged pure P1 decoder only when material labels are absent. No anchor,
+Jacobian, residual or GT-derived feature is ever a network input.
+
+options:
+  -h, --help            show this help message and exit
+  --train TRAIN
+  --validation VALIDATION
+  --out OUT
+  --kind {train_mean,mlp_small,mlp_medium,cnn_small,cnn_medium,mlp_small_moments,mlp_medium_moments,cnn_small_moments,cnn_medium_moments,r2_reference}
+  --seed SEED
+  --updates UPDATES
+  --device {cpu,mps}
+  --second-moments
+  --moment-loss-weight MOMENT_LOSS_WEIGHT
+  --target TARGET
+  --geometry GEOMETRY
+  --reference-checkpoint REFERENCE_CHECKPOINT
+  --train-size TRAIN_SIZE
+  --batch-size BATCH_SIZE
+  --validation-batch-size VALIDATION_BATCH_SIZE
+  --eval-every EVAL_EVERY
+  --patience PATIENCE
+  --lr, --learning-rate LR
+  --weight-decay WEIGHT_DECAY
+  --capacity-limit CAPACITY_LIMIT
+  --max-wall, --max-seconds MAX_WALL

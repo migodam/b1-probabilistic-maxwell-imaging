@@ -1,0 +1,100 @@
+{
+  "status": "FROZEN_BEFORE_GT_OR_NUMERIC_DENSITY",
+  "parents": [
+    "R4DEV_00000",
+    "R4DEV_00001"
+  ],
+  "models": [
+    {
+      "id": "raw_matched",
+      "loader": "raw",
+      "checkpoint": {
+        "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/models/density/extended_cfm_matched_s2026102501/BEST.pt",
+        "bytes": 2824943,
+        "mtime_ns": 1792870978314630062
+      }
+    },
+    {
+      "id": "anchor_none",
+      "loader": "anchor",
+      "checkpoint": {
+        "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/models/anchor_density/anchor_cfm_none_s2026102501/BEST.pt",
+        "bytes": 2861423,
+        "mtime_ns": 1792874288490230701
+      }
+    },
+    {
+      "id": "anchor_geometry",
+      "loader": "anchor",
+      "checkpoint": {
+        "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/models/geometry_weighted_cfm_v1/geometry_cfm_geometry_s2026102501/BEST.pt",
+        "bytes": 2864751,
+        "mtime_ns": 1792879431844626600
+      }
+    }
+  ],
+  "source_identities": [
+    {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/src/p3r4/adaptive_cfm_audit.py",
+      "bytes": 4478,
+      "mtime_ns": 1792881311613465859
+    },
+    {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/tools/audit_r4_adaptive_cfm.py",
+      "bytes": 12657,
+      "mtime_ns": 1792881441985816504
+    },
+    {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/src/p3r4/density.py",
+      "bytes": 24374,
+      "mtime_ns": 1792867785890390726
+    },
+    {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/src/p3r4/anchor_density.py",
+      "bytes": 5246,
+      "mtime_ns": 1792867785883684570
+    },
+    {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/src/p3r4/conditional_coordinates.py",
+      "bytes": 6817,
+      "mtime_ns": 1792867940564448823
+    },
+    {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/src/p3r4/probability_eval.py",
+      "bytes": 13962,
+      "mtime_ns": 1792867940563455325
+    }
+  ],
+  "solver": "DOP853",
+  "tolerances": [
+    {
+      "atol": 1e-05,
+      "rtol": 0.0001
+    },
+    {
+      "atol": 1e-06,
+      "rtol": 1e-05
+    }
+  ],
+  "agreement_nats": 0.05,
+  "cycle_error": "raw maxabs/RMS/relative report only; no new acceptance threshold",
+  "backward_ODE": "ds/dt=v(s,t,c), dl/dt=-trace(dv/ds), integrate1->0 from(s1,0)",
+  "density": "logq_raw=logp_base(s0)-l_back+logabsdet(raw_to_network_map)",
+  "sign": "l_back=+integral_0^1 div(v)dt; subtract it from base log density",
+  "precision": "stored Float32 parameter/buffer values promoted to CPU Float64; same original affine maps and API Float32 normalized condition/base values promoted",
+  "target_point": "true raw Gaussianized GT mapped by frozen affine in Float64; fixed32 also records source Float32-rounded input separately",
+  "divergence": "all66 exact autograd diagonal VJPs; no stochastic trace",
+  "forward_cycle": "velocity-only DOP8530->1 from recovered s0, invert frozen affine to rawdx66; no resampling",
+  "fixed_comparisons": "source publicFloat32 RK4 NFE32; Float64 RK4 NFE32 at rounded s1; Float64 RK4 NFE32 at true s1",
+  "old_fixed_audit": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/AUDIT/cfm_density_trace_audit_1792871479806924000/RESULT.json",
+  "old_fixed_scope": "older unmatched small rawCFM, different checkpoint; failed3/4 retained, not numerically interchanged with matched model",
+  "maximum_wall": 900,
+  "CPU_threads": 1,
+  "RSS_cap_bytes": 2147483648,
+  "physics_RHS": 0,
+  "optimizer_updates": 0,
+  "heldout_GT": "FORBIDDEN; exposed DEV0/1 only",
+  "scope": "integration diagnostic only; no frozenNFE32/samplelaw/lockedNLL/model selection change",
+  "posterior_qualification": "NOT_ESTABLISHED",
+  "no_fallback_or_expansion": true
+}

@@ -1,31 +1,31 @@
-# R4 实质科研迭代（执行中）
+# R4 实质迭代与最终状态
 
-## 风险路线，第1轮
+## 风险路线
 
-假设：完整joint属性–相事件矩可比直接材料回归更准确。已运行点阈值8/16、直接CNN、无几何CNN和经典控制，各保留独立训练seed与失败。发现点阈值标签具有求积误差，因此在不改P1的情况下改为精确h质量bin。
+假设：完整属性–相事件矩会胜过直接回归。实际运行K8/16点阈值→精确h质量bin→anchor-induced bin初始化。依次改变求积误差与初始化机制，保持P1、标签/容量等共同条件。精确bin仍弱于强CNN，anchor-bin出现局部平台梯度抑制且风险更差，停止扩大该家族。
 
-精确bin修订保持同容量/数据/优化器；128新DEV上bin8/16 MSE约0.007735/0.007722，直接CNN约0.007473。该轮否定“去掉求积偏差足以带来收益”，没有放宽噪声或材料类。
+发现：首轮CNN与R2函数类别相同，收益先计为训练基线修复。随后扩大到1024context并保持decoder/random控制。另将全局model均值/方差作为四通道context，加入同容量Gaussian、直接field与空间打乱控制。新512/256独立确认主要风险改善13.10%/11.36%；Gaussian几乎相同，拒绝Flow特有风险归因。
 
-## 风险路线，第2轮（正在运行）
+## 完整概率路线
 
-具体机制改变：精确bin head从物理anchor的joint mass初始化，而非与anchor距离较大的均匀mass。其他标签/容量/学习率不变，eps预固定为1e-4。预测：如果主要瓶颈是初始参数化与优化，validation应改善；若仍不胜重新优化的直接CNN，停止扩大此相模型家族。未读取locked数据。
+三seed Full66 Gaussian/Spline/三角/CFM以及数据规模、容量、lr真实比较。显式Spline和静态物理frame NLL有独立增量。满秩GN坐标在当前训练下失败，不强制使用。bounded geometry CFM改变训练误差权重而非硬投影，随机同谱控制、相同base与数据；两批energy score改善约21%。
 
-## 几何路线，第1轮与修订（已完成）
+进一步用真实Full source-adjoint做paired physics/supervised mixed-KL拟合：response改善但NLL/覆盖恶化，三族均未过复制门；停止seed扩张。CFM数值密度以双精度全trace自适应ODE独立核验，预算895秒后只得部分稳定性失败，其余NOT_RUN。不是重复Gaussianreference后结束其余路线。
 
-发现四段Euler在h²阶混入自加速度，不是纯bracket路径。保留原试验，采用Heun修订，并与直接bracket方向做相同材料尺度对比。小步经验门48/48通过，任务尺度Heun仅1项局部teacher，直接法94项；Heun边际288 RHS，直接法8 RHS。两轮共459712 RHS。没有把该负结果解释成所有非完整几何无价值。
+## 物理计算路线
 
-## 计算路线，第1轮与修订
+active-row精确复用因变化集合大而净wall失败，保留原结果。首轮完整区间链同Full决定却更慢；只修改逆范数包络与动作流程，在新DEV和预冻结8新对象quiet重放。新locked同核wall71.397→24.153秒、逐步决定/路径零差异；普通GMRES同时作为强控制。较大步长失效边界保留，未宣称posterior mixing改善。
 
-active-row精确复用：Full7.427秒，含setup的reuse8.374秒；停止其加速声明。闭账14147 complex RHS（含所有reduced RHS）。
+六次localvalue/JVP和三次动作排序器真实训练，误差或相对普通fieldupdate控制不胜，停止扩大，不冒充完整LazyDINO复现。
 
-决定区间：fixed-star机制通过，但完整匹配链18.85% RHS降低、wall约55%增加。旧试验封存。下一轮只改变逆范数上界为标准1/∞范数界与Frobenius界的较小值，在预定新DEV上检验；不改kernel、noise、prior、统计目标或成功门槛。
+## 动态几何路线
 
-## 完整概率路线，第1轮（部分已完成）
+主线程发现四段Euler二阶自身加速度污染；保留旧实验，改Heun并做真实Full配对。小步核验不足以保证任务尺度，Heun288项仅9距离匹配、2全部支持；直接法94支持，停止四段路线升级。满秩冻结pCN四核实际运行，ESS仍UNQUALIFIED。共同archive严格RMS.02形成111新有限噪声候选，无后验质量声明。
 
-全部66维Gaussian/Spline/三角/CFM均运行真实监督训练；Spline在新DEV上NLL好于Gaussian，但其模型样本均值MSE约0.02411，高于物理基础解与CNN。CFM32约0.02858；NFE增加尚未解决该差距。继续检查匹配容量、真实TRAIN谱/随机frame、付费Maxwell校准及物理anchor-conditioned模型。概率路线与风险路线独立，不因参考或某个flow失败而一起停止。
+## 优化诊断与工程修复
 
-## 归因修正
+原SLSQP callback选点局限并非物理无解。零新物理best-query与新Full-J TR在GT开放前封存；λ0降Phi却增risk，λ1与原baseline相近。所有预算停和原失败保留，不事后改旧资格。
 
-直接5842参数CNN与R2函数类别等价。约4.88%的DEV增益记为更充分训练的基线，不作为新架构或Maxwell专有机制贡献。所有最终GO判断仍等待新locked测试与独立消融。
+Closed fusion K元数据、PPC release状态与离线list矩阵评分故障使用独立只读compat或新输出恢复；原weights、partial、ERROR、预测和成本不覆盖。最终报告构建也保留首次schema assertion失败收据，仅修复对failure字典的读取，未改变科学数据。
 
-费用的唯一权威是RESOURCE_LEDGER.jsonl及各作业CLOSED.json；本日志中的总数按已闭账机制归属，不重复计入后续复用。
+本轮不再新训模型或付费物理。完整费用以RESOURCE_LEDGER和CLOSED收据为准，旧中期文本保留于AUDIT，最终主张由GO_NO_GO.md约束。

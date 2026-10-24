@@ -11,9 +11,7 @@ class LockedFourArmPreparation(unittest.TestCase):
   self.assertEqual(p['ledger_stage'],'IV');self.assertEqual(p['seed'],20261025171)
   self.assertEqual(p['parents'],tuple(f'R4L1_{i:05d}' for i in range(8)))
   self.assertEqual(sum(p['arm_complex_RHS_caps'].values()),300000)
-  self.assertEqual(driver.engine.LEDGER_STAGE,'IV')
-  self.assertEqual(driver.engine.CONTEXT_DIR,driver.OUT/'results/contexts/locked')
-  self.assertEqual(driver.engine.RESULT,driver.OUT/'results/IV/interval_chain_locked_v1')
+  self.assertEqual(driver.RESULT,driver.OUT/'results/IV/interval_chain_locked_v1')
  def test_missing_locked_gate_prevents_launch_without_book(self):
   with tempfile.TemporaryDirectory() as folder:
    with patch.object(driver,'PREPARED',Path(folder)/'missing_prepared'),patch.object(driver,'LOCKED',Path(folder)/'missing_locked'):

@@ -1,0 +1,178 @@
+{
+  "status": "STATIC_INDEPENDENT_COST_REVIEW_COMPLETE",
+  "cutoff_bytes": 917318397,
+  "last_sequence": 647516,
+  "closed_jobs": 95,
+  "active_jobs_excluded": 3,
+  "physics_RHS_reconciliation": "PASS",
+  "non_GPU_additive_ledger_errors": [],
+  "forward_double_charge_or_unused_credit_findings": [],
+  "named_checks": {
+    "finite_feedback_reuse_first": {
+      "expected_RHS": 5955,
+      "ledger_RHS": 5955,
+      "PASS": true
+    },
+    "finite_feedback_pcn_decision_audit": {
+      "expected_RHS": 2048,
+      "ledger_RHS": 2048,
+      "PASS": true
+    },
+    "conservative_reduced_rhs_reconciliation": {
+      "expected_RHS": 6144,
+      "ledger_RHS": 6144,
+      "PASS": true
+    },
+    "decision_refresh_star_v1": {
+      "expected_RHS": 62770,
+      "ledger_RHS": 62770,
+      "PASS": true
+    },
+    "interval_chain_v1_full": {
+      "expected_RHS": 65536,
+      "ledger_RHS": 65536,
+      "PASS": true
+    },
+    "interval_chain_v1_interval": {
+      "expected_RHS": 53184,
+      "ledger_RHS": 53184,
+      "PASS": true
+    },
+    "dynamic_geometry_first": {
+      "expected_RHS": 291648,
+      "ledger_RHS": 291648,
+      "PASS": true
+    },
+    "dynamic_geometry_heun_r1": {
+      "expected_RHS": 168064,
+      "ledger_RHS": 168064,
+      "PASS": true
+    },
+    "reuse_all_complex": {
+      "full_grid": 8003,
+      "reduced_reconciliation": 6144,
+      "total": 14147,
+      "actual": 14147
+    },
+    "interval_pair": {
+      "total": 118720,
+      "actual": 118720
+    },
+    "geometry_pair": {
+      "total": 459712,
+      "actual": 459712
+    }
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "P2",
+      "status": "FIXED_FOR_NEW_PROCESSES_HISTORY_RECONSTRUCTION_PASS",
+      "issue": "Historical Book rows omitted top-level GPU_seconds deltas while after-counters/caps correctly charged them.",
+      "observed_events": 28,
+      "derived_already_charged_GPU_seconds": 4202.726937541971,
+      "extra_GPU_debit_needed": 0,
+      "action": "Use after-difference fallback whenever a row lacks GPU_seconds, including jobs that imported old Book before the source patch; never add the reconstructed amount again.",
+      "evidence": [
+        "II/jobs/independent_physics_cost_review_v1/source_snapshot/core.py:142",
+        "AUDIT/independent_physics_cost_review/DERIVED_GPU_DELTAS.jsonl",
+        "src/p3r4/core.py:142",
+        "AUDIT/GPU_LEDGER_SERIALIZATION_CLARIFICATION.md"
+      ]
+    },
+    {
+      "id": "F02",
+      "severity": "P2",
+      "status": "EXPLAINED_RECEIPT_SCOPE_REQUIRES_EVENT_AWARE_AGGREGATION",
+      "issue": "external_neural_audit_profile_reconciliation raw CLOSED covers registration overhead; its imported workload is a separate same-job ledger event.",
+      "raw_closed_wall_seconds": 0.001335625071078539,
+      "imported_wall_seconds": 1.8852797499857843,
+      "total_job_ledger_wall_seconds": 1.8866153750568628,
+      "imported_CPU_seconds": 1.116593,
+      "imported_RSS_peak_bytes": 538624000,
+      "action": "Sum owned import event once with registration overhead; include observed external CPU/RSS metadata when profiling. Do not alter raw receipt or reimport the work.",
+      "evidence": [
+        "RESOURCE_LEDGER.jsonl:87105",
+        "I/jobs/external_neural_audit_profile_reconciliation/CLOSED.json",
+        "AUDIT/RESOURCE_UNIT_CLARIFICATION.json"
+      ]
+    },
+    {
+      "id": "F03",
+      "severity": "P2",
+      "status": "CAP_TOTAL_RECONCILED_OLD_FULL_GRID_ONLY_COMPARISON_OBSOLETE",
+      "issue": "Historical event-reuse raw tables compare Full4096 vs reuse1859 source/setup RHS but omit4096 reduced current-system columns from the arm comparison.",
+      "corrected_first_pilot": {
+        "Full_RHS": 4096,
+        "reuse_setup_RHS": 1859,
+        "reuse_reduced_RHS": 4096,
+        "reuse_all_complex_RHS": 5955,
+        "total_both_arms": 10051
+      },
+      "corrected_pcn_audit": {
+        "Full_RHS": 2048,
+        "reuse_reduced_RHS": 2048,
+        "total_both_arms": 4096
+      },
+      "corrected_both_jobs_total": 14147,
+      "action": "Use all-complex arm counts or label raw figures full-grid-only. Current cap6144 reconciliation is correct; addendum-use is mandatory, not another debit.",
+      "evidence": [
+        "results/II/reuse_first/REPORT_ZH.md",
+        "AUDIT/RESOURCE_UNIT_CLARIFICATION.json",
+        "II/jobs/conservative_reduced_rhs_reconciliation/CLOSED.json"
+      ]
+    },
+    {
+      "id": "F04",
+      "severity": "P3",
+      "status": "HISTORICAL_SOURCE_COVERAGE_LIMIT_NOT_REPAIRED_RETROACTIVELY",
+      "issue": "Among95 closed jobs,29 have no SOURCE_REVISION;41 Python entrypoints are absent from their older module-only source snapshot.",
+      "action": "Publish per-job snapshot coverage; do not imply current wider Book snapshots identify all older runner code. Any later archival copy must be marked post hoc.",
+      "evidence": [
+        "AUDIT/independent_physics_cost_review/SOURCE_SNAPSHOT_INVENTORY.json",
+        "src/p3r4/core.py:99"
+      ]
+    },
+    {
+      "id": "F05",
+      "severity": "INFO",
+      "status": "MODEL_DATA_OWNERS_RECORDED_COLD_TOTAL_NOT_RECONSTRUCTED",
+      "issue": "Restored joint32768/2048 and old512/128 anchor contexts belong to paid R2; current fits add compute, not fresh training Maxwell queries. New1024/256 context packing was not complete at the cutoff.",
+      "action": "Retain old acquisition owner/cost in cold comparisons; label restored data and operator folds EXPOSED. Do not claim new strong-context training from a future plan while old anchor paths remain in executed argv.",
+      "evidence": [
+        "AUDIT/DATA_RESTORE.json",
+        "AUDIT/risk/ASSET_INVENTORY.json",
+        "I/jobs/risk_anchorbin_phase16_s2026102501/SOURCE_REVISION.json",
+        "AUDIT/operator_transport/REPORT_ZH.md"
+      ]
+    },
+    {
+      "id": "F06",
+      "severity": "INFO",
+      "status": "REPRESENTATIVE_STATIC_CAP_AND_MOCK_CHECKS_PASS_PHYSICS_NOT_RUN",
+      "issue": "Output3 is currently implementation/preparation only;256RHS includes Full8 plus chosen source8/receiver32, restoration and failures; final KKT uses cached gradient.",
+      "action": "Keep NOT_RUN qualification until an explicitly launched closed physical job exists. Audit actual per-arm16states/256RHS and strict final feasibility at that time.",
+      "evidence": [
+        "configs/REPRESENTATIVE_PROTOCOL.json",
+        "src/p3r4/representative.py",
+        "tools/run_r4_representatives.py",
+        "AUDIT/representative_preparation/TESTED_SCOPE.json"
+      ]
+    }
+  ],
+  "source_snapshot_counts": {
+    "no_SOURCE_REVISION": 29,
+    "Python_entrypoint_missing_in_older_snapshot": 41,
+    "current_entrypoint_snapshot_present": 17,
+    "other_nonfile_or_narrow_entries": 8
+  },
+  "future_GPU_source_fix": true,
+  "historical_GPU_reconstruction": "PASS_NO_EXTRA_DEBIT",
+  "new_complex_RHS": 0,
+  "new_Maxwell_states": 0,
+  "new_LU": 0,
+  "scientific_or_novelty_judgment_delegated": false,
+  "claims_owner": "parent Codex",
+  "source_results_auth_modified": false,
+  "ledger_mutation": "own zero-physics analysis receipt only"
+}

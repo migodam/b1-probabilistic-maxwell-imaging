@@ -1,3 +1,11 @@
+<!-- P3LR4_CURRENT -->
+## P3L-R4 已完成：风险成像与完整条件概率分别裁决
+
+[中文报告](p3l_r4_conditional_transport/RESEARCH_REPORT_ZH.md) · [报告与实际图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r4_conditional_transport/) · [GPT Pro交接](p3l_r4_conditional_transport/GPT_PRO_HANDOFF/START_HERE.md)
+
+512+256个全新对象：主要材料风险动作相对R2 CNN改善13.10%/11.36%，相对更强CNN改善5.36%/4.90%；普通Gaussian融合相当。Full-66 proper score有相对进步，但完整后验仍未校准。固定核的数值Maxwell决定重放wall下降66.17%；动态非完整路径未建立独立优势。原始负结果与完整费用保留。
+<!-- /P3LR4_CURRENT -->
+
 - [Research T：Maxwell基础、拓扑与补偿机制](research_t_20261015/START_HERE.md) · [实际成像图库](research_t_20261015/)
 
 # 研究总览

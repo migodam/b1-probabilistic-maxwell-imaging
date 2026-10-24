@@ -1,0 +1,86 @@
+{
+  "status": "COMPLETE_INDEPENDENT_CONTRACT_REVIEW",
+  "no_shared_source_autofixes": true,
+  "physics_RHS": 0,
+  "optimizer_updates": 0,
+  "findings": [
+    {
+      "id": "PC-001",
+      "severity": "P2",
+      "status": "FIX_VERIFIED_DEV128",
+      "finding": "Canonical online anchor caches lack explicit context_x; accepting their ambiguous x directly would weaken the GT isolation contract.",
+      "action": "Use the verified inputs/anchor_conditions/dev export. Future panels require the same explicit exporter and provenance checks. Keep strict reader rejection of ambiguous joint x.",
+      "evidence": [
+        "EXPORT_FIX_VERIFICATION.json",
+        "inputs/anchor_conditions/dev/EXPORT_COMPLETE.json",
+        "tools/export_r4_anchor_conditions.py"
+      ],
+      "remaining_caution": "Packed strong-context online_train still names its online anchor x; density_train separately carries explicit context_x. Do not feed joint supervised x to the online predictor."
+    },
+    {
+      "id": "PC-002",
+      "severity": "P2",
+      "status": "NUMERICAL_DENSITY_GATE_FAILED_3_OF_4",
+      "finding": "Full-trace CFM continuous-density NFE32/64 agreement exceeds frozen .05nat tolerance on 3 of 4 exposed DEV parents.",
+      "action": "Keep CFM log density numerical/unqualified; do not use it as exact proposal density, exact MH correction, or passed calibrated density.",
+      "evidence": [
+        "AUDIT/cfm_density_trace_audit_1792871479806924000/NUMERICAL_REPORT.md",
+        "AUDIT/cfm_density_trace_audit_1792871479806924000/RESULT.json"
+      ],
+      "absolute_NLL_32_64_deltas": [
+        0.114944458,
+        0.037582397,
+        0.058952332,
+        0.119895935
+      ]
+    },
+    {
+      "id": "PC-003",
+      "severity": "P3",
+      "status": "LABEL_CAUTION_NO_CURRENT_FORMULA_BUG",
+      "finding": "log_mean_unnormalized_weight estimates the integral of exp(-Phi-.5||x||\u00b2), not normalized Bayesian evidence.",
+      "action": "Retain unnormalized label. If evidence is ever reported, include Gaussian prior constant33log(2pi) and the normalized likelihood constant.",
+      "evidence": [
+        "src/p3r4/probability_physics.py:5",
+        "INDEPENDENT_ALGEBRA.json"
+      ]
+    },
+    {
+      "id": "PC-004",
+      "severity": "P3",
+      "status": "HARDENING_RECOMMENDATION",
+      "finding": "Paid audit explicit-density declaration is validated by finite sealed log_q_x, without an independent producer-kind whitelist.",
+      "action": "Optionally whitelist algebraic Gaussian/spline/triangular source kinds at freeze. Present producer never exports CFM log_q_x, so current CFM declaration fails closed.",
+      "evidence": [
+        "tools/run_r4_probability_audit.py:38",
+        "tools/run_r4_probability_audit.py:74",
+        "tools/evaluate_r4_density.py:176"
+      ]
+    },
+    {
+      "id": "PC-005",
+      "severity": "P3",
+      "status": "REPORTING_BOUNDARY",
+      "finding": "Randomized inclusive marginal rank coverage is not simultaneous material credible-band coverage; pointwise moment heads are not joint spatial posterior laws.",
+      "action": "Preserve separate empirical interval/rank labels; report ROI and fixed projections, PSD correction magnitude, and absence of cross-pixel law.",
+      "evidence": [
+        "src/p3r4/probability_eval.py:176",
+        "src/p3r4/field_moments.py:52",
+        "src/p3r4/field_moments.py:179"
+      ]
+    },
+    {
+      "id": "PC-006",
+      "severity": "P3",
+      "status": "REPORTING_BOUNDARY",
+      "finding": "Default first16 triangular block, global TRAIN Fisher frame, per-y GN coordinates, and GN random-alignment coordinates are distinct controls, with distinct data panels.",
+      "action": "Name all frames/conditioning explicitly and report32768/2048 raw data separately from1024/256 strong-anchor and historical512/128 panels. Do not call the default triangular split Maxwell weak/strong.",
+      "evidence": [
+        "inputs/train_frames_v1/PROVENANCE.json",
+        "src/p3r4/density.py:164",
+        "src/p3r4/conditional_coordinates.py:3",
+        "CLOSED_FITS.csv"
+      ]
+    }
+  ]
+}
