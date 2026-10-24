@@ -16,7 +16,14 @@ LIMIT=1_500_000_000;VERSION='R4_STREAM_EVIDENCE_V1';MIB=1024**2
 
 def dump(path,value):
  path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
- with path.open('x') as f:json.dump(value,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n')
+ if path.exists():raise FileExistsError(path)
+ temp=Path(str(path)+'.writing')
+ with temp.open('x') as f:json.dump(value,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n');f.flush();os.fsync(f.fileno())
+ os.link(temp,path);temp.unlink()
+ fd=os.open(path.parent,os.O_RDONLY)
+ try:os.fsync(fd)
+ finally:os.close(fd)
+
 def identity(path):
  p=Path(path);s=p.lstat();return dict(path=str(p.absolute()),bytes=s.st_size,mtime_ns=s.st_mtime_ns)
 def git(repo,*args):
@@ -53,7 +60,10 @@ def category(source,origin):
  r=source.relative_to(OUT);p=r.parts;name=source.name
  if len(p)>1 and p[0]=='inputs':
   if p[1] in ['joint','background']:return 'reused_inputs','reused_historical_R2_or_paid_background; not new independent R4 parents'
-  if p[1] in ['online','offline_only']:return 'new_R4_inputs','new_R4 simulated parents/observations/truth; provenance in original manifests'
+  if p[1] in ['online','offline_only']:
+   if name.startswith('R2_'):return 'reused_inputs','reused original R2 TRAIN/VAL observation/label or metadata export; not new R4 independent parents'
+   if name.startswith(('R4DEV_','R4L1_','R4L2_')):return 'new_R4_inputs','new R4 simulated parents/observations/truth; exact seeds in original manifests'
+   return 'derived_training_inputs','observation/truth export without new R4 cohort prefix; use original manifest provenance, not new-independent-parent claim'
   return 'derived_training_inputs','new_R4 features/contexts, often on reused historical R2 TRAIN/VAL parents; not new independent parent claim'
  if source.suffix in ['.npz','.npy','.bin','.dat']:
   if p and p[0]=='results' and any(s in p for s in ['risk45','density','samples','features','online']):return 'raw_neural_and_scores','new_R4 neural samples/actions/scores; category is storage only, not posterior qualification'
@@ -146,7 +156,11 @@ class SplitWriter:
    try:os.fsync(fd)
    finally:os.close(fd)
    row=self.parts[-1];row.update(status='CLOSED_IMMUTABLE',closed_unix_ns=time.time_ns())
-   if self.category:event(self.dest,'PARTS_CLOSED.jsonl',dict(event='PART_CLOSED',category=self.category,codec=self.codec,absolute_path=str(self.final),**row))
+   if self.category:
+    # Main uploader consumes only atomically published closed_parts JSON.
+    marker=dict(category=self.category,codec=self.codec,absolute_path=str(self.final),**row)
+    dump(self.dest/'closed_parts'/(self.final.name+'.json'),marker)
+    event(self.dest,'PARTS_CLOSED.jsonl',dict(event='PART_CLOSED',**marker))
  def abort(self):
   if self.file:
    self.file.flush();os.fsync(self.file.fileno());self.file.close();self.file=None
@@ -183,6 +197,7 @@ def pack(a,dest):
  confirmation=json.loads(a.confirmation.read_text())
  if confirmation.get('released') is not True or confirmation.get('experiment')!='r4_evidence_stream_v1' or confirmation.get('final_reports_complete') is not True or confirmation.get('no_active_writers') is not True:raise ValueError('main explicit final-report/quiet packaging confirmation required')
  if confirmation.get('workspace')!=str(ROOT):raise ValueError('confirmation workspace mismatch')
+ if confirmation.get('source_commit') and git(ROOT,'rev-parse','HEAD')!=confirmation['source_commit']:raise ValueError('confirmed final source commit differs')
  started=time.perf_counter();cpu=time.process_time();deadline=Deadline(a.max_wall);receipt=dict(format=VERSION,status='FAILED',parts=[],started_unix=time.time(),max_wall_seconds=a.max_wall,part_limit_bytes=a.part_bytes,hashes_used=False,upload_started=False)
  try:
   with ExitStack() as stack:
