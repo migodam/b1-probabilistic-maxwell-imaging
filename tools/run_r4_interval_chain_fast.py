@@ -22,6 +22,10 @@ CAP={'interval':134464,'full':65536};MAX_WALL=1200
 LEDGER_STAGE='II'
 CONTEXT_DIR=OUT/'results/contexts/dev'
 CACHE_DIR=OUT/'results/contexts/cache'
+# Prospective grid wrappers only; ordinary existing defaults stay unchanged.
+CASE_DESIGNS=None
+REUSE_ORIGINAL_R0_PER_PARENT=False
+MATERIAL_MOVE_AUDIT=False
 EXACT_SCALAR_COPY_BYTES=0
 # Opt-in extension hooks; the closed fast-pair defaults remain unchanged.
 CACHE_CLASS_BY_ARM={}
@@ -130,8 +134,13 @@ def run(arm,release_path):
           caps=CAP,max_wall=MAX_WALL,GT_read=False,floating_certificate=False,posterior_reference='NONE',success='0flag/path/allproofenclosuremiss and >=20%wholejobwall saving including coldR0/setup/allpersistence vscommonstoredoptimizedFull')
         design.update(FROZEN_DESIGN_EXTENSION)
         write(folder/'FROZEN_ARM.json',design);write(book.jobdir/'COMMAND.json',dict(argv=sys.argv,array_codec=os.environ['R4_ARRAY_CODEC'],noGT=True))
-        for parent_index,parent in enumerate(PARENTS):
-            d=folder/parent;d.mkdir();before=costs.copy();tick=time.perf_counter();cachepath=CACHE_DIR/f'{parent}.npz'
+        cases=CASE_DESIGNS if CASE_DESIGNS is not None else [dict(parent=p,case_id=p,parent_index=i,seed=SEED,beta=BETA,steps=STEPS) for i,p in enumerate(PARENTS)]
+        inverse_pool={}
+        for case in cases:
+            parent=case['parent'];parent_index=case['parent_index'];case_id=case['case_id'];case_steps=case['steps'];case_beta=case['beta'];case_seed=case['seed']
+            candidate=None
+            if CASE_DESIGNS is not None:book.context=dict(parent=parent,case_id=case_id,beta=case_beta,seed=case_seed,arm=arm,purpose='original_anchor_case_setup')
+            d=folder/case_id;d.mkdir();before=costs.copy();tick=time.perf_counter();cachepath=CACHE_DIR/f'{parent}.npz'
             base=target.load_cache(cachepath,owner='paid online96+64 initialanchor, commonbotharms')
             with np.load(CONTEXT_DIR/f'{parent}.npz') as z:x0=z['x'];y=z['observation']
             if not np.isfinite(x0).all() or np.max(abs(from_probit(x0)-base.q))>1e-12:raise ValueError('onlineexactprobitbase')
@@ -143,16 +152,28 @@ def run(arm,release_path):
                     old=costs['RHS']
                     with book.physical('fast_original_R0_576RHS'):R=model.solve_anchor(rhs,base.state,role='R4_fast_R0')
                     return R,costs['RHS']-old
-                R0=charged_inverse(acquire,576);cache=CACHE_CLASS_BY_ARM.get(arm,DecisionRefreshFast)(base.state.chi,base.state.current,base.state.field,model.G,model.S,model.incident,R0,target.sigma,576,True)
+                reused=REUSE_ORIGINAL_R0_PER_PARENT and parent in inverse_pool
+                if reused:R0=inverse_pool[parent]['R0']
+                else:
+                    R0=charged_inverse(acquire,576)
+                    if REUSE_ORIGINAL_R0_PER_PARENT:
+                        R0.flags.writeable=False;inverse_pool[parent]=dict(R0=R0,first_case_id=case_id)
+                cache=CACHE_CLASS_BY_ARM.get(arm,DecisionRefreshFast)(base.state.chi,base.state.current,base.state.field,model.G,model.S,model.incident,R0,target.sigma,576,True)
                 if arm in CACHE_CONFIGURE_BY_ARM:CACHE_CONFIGURE_BY_ARM[arm](cache,book,costs)
-                save(d/'RECONSTRUCTION_R0.npz',R0=R0,base_q=base.q,base_chi=base.state.chi,base_current=base.state.current,base_field=base.state.field)
-                writer.paths.add(d/'RECONSTRUCTION_R0.npz')
-                setup=dict(wall_including_R0_boundcopy_and_persistence=time.perf_counter()-setup_start,RHS=576,fast_setup=cache.fast_setup_profile,
+                reconstruction=(folder/'shared_R0'/f'{parent}.npz') if REUSE_ORIGINAL_R0_PER_PARENT else d/'RECONSTRUCTION_R0.npz'
+                if not reused:save(reconstruction,R0=R0,base_q=base.q,base_chi=base.state.chi,base_current=base.state.current,base_field=base.state.field)
+                writer.paths.add(reconstruction)
+                setup=dict(wall_including_R0_boundcopy_and_persistence=time.perf_counter()-setup_start,RHS=0 if reused else 576,fast_setup=cache.fast_setup_profile,
                            weak_background_identity=checkpoint_identity(OUT/'inputs/background/weak.npz'),base_cache_identity=checkpoint_identity(cachepath))
-            rng=np.random.default_rng(np.random.SeedSequence([SEED,parent_index]));xs=[x0.copy()];flags=[];cand_phi=[];cur_phi=[];cand_intervals=[];cur_intervals=[];fallbacks=0
-            for step in range(STEPS):
-                endpoint_id=f'c{step:04d}';proposed=np.sqrt(1-BETA*BETA)*current.x+BETA*rng.normal(size=66);logu=float(np.log(rng.uniform()));q=from_probit(proposed);chi=target.prior.decode(q)[0]
+                if REUSE_ORIGINAL_R0_PER_PARENT:setup.update(shared_original_R0_cache_hit=reused,shared_original_R0_first_case=inverse_pool[parent]['first_case_id'],shared_original_R0_path=str(reconstruction),cold_owner_RHS=576)
+            if CASE_DESIGNS is not None:write(d/'SETUP.json',clean(setup))
+            rng=np.random.default_rng(np.random.SeedSequence([case_seed,parent_index]));xs=[x0.copy()];flags=[];cand_phi=[];cur_phi=[];cand_intervals=[];cur_intervals=[];fallbacks=0;moves=[];proposals=[];anchor_moves=[]
+            for step in range(case_steps):
+                candidate=None
+                endpoint_id=f'c{step:04d}';proposed=np.sqrt(1-case_beta*case_beta)*current.x+case_beta*rng.normal(size=66);logu=float(np.log(rng.uniform()));q=from_probit(proposed);chi=target.prior.decode(q)[0]
+                proposal_move=float(np.linalg.norm(chi-current.chi)/24) if MATERIAL_MOVE_AUDIT else None
                 writer.attempt(step,proposed,q,chi,logu);book.context=dict(parent=parent,step=step,arm=arm,purpose='commonstored_fixedkernel_fastpair')
+                if CASE_DESIGNS is not None:book.context.update(case_id=case_id,beta=case_beta,seed=case_seed)
                 def paid(state,role):
                     old=costs['RHS'];p=target.evaluate(state.q,purpose=f'{parent}_{arm}_s{step:04d}_{role}')
                     return exact_state(state.x,state.q,p,target.phi(p,y),state.endpoint_id),costs['RHS']-old
@@ -171,19 +192,35 @@ def run(arm,release_path):
                 before_endpoint=current.endpoint_id
                 if accepted:current=candidate
                 flags.append(bool(accepted));xs.append(current.x.copy())
-                append(d/'CHAIN_REFERENCES.jsonl',dict(step=step,accepted=bool(accepted),x=current.x,logu=logu,current_before=before_endpoint,candidate=endpoint_id,current_after=current.endpoint_id,
+                if MATERIAL_MOVE_AUDIT:moves.append(proposal_move if accepted else 0.);proposals.append(proposal_move);anchor_moves.append(float(np.linalg.norm(current.chi-base.state.chi)/24))
+                reference=dict(step=step,accepted=bool(accepted),x=current.x,logu=logu,current_before=before_endpoint,candidate=endpoint_id,current_after=current.endpoint_id,
                     current_exact=current.exact,current_array_version=writer.versions[current.endpoint_id],candidate_array_version=writer.versions[candidate.endpoint_id],
-                    current_interval=[current.lower,current.upper],history=history,Full_calls=full_calls))
+                    current_interval=[current.lower,current.upper],history=history,Full_calls=full_calls)
+                if MATERIAL_MOVE_AUDIT:reference.update(material_move_RMS=moves[-1],proposal_material_RMS=proposals[-1],state_material_RMS_from_anchor=anchor_moves[-1])
+                append(d/'CHAIN_REFERENCES.jsonl',reference)
+            move_arrays=dict(material_move_RMS=np.array(moves),proposal_material_RMS=np.array(proposals),state_material_RMS_from_anchor=np.array(anchor_moves)) if MATERIAL_MOVE_AUDIT else {}
             save(d/'CHAIN.npz',x_path=np.array(xs),accept=np.array(flags),candidate_phi=np.array(cand_phi),current_phi_before=np.array(cur_phi),
-                candidate_interval=np.array(cand_intervals),current_interval=np.array(cur_intervals))
+                candidate_interval=np.array(cand_intervals),current_interval=np.array(cur_intervals),**move_arrays)
             writer.paths.add(d/'CHAIN.npz')
             seals=writer.seal();all_seals.extend(seals);all_array_seals.extend(checkpoint_identity(path) for path in sorted(writer.paths))
-            summary=dict(parent=parent,steps=STEPS,accepts=sum(flags),fallbacks=fallbacks,costs={k:costs[k]-before[k] for k in costs},wholeparentwall=time.perf_counter()-tick,
+            summary=dict(parent=parent,steps=case_steps,accepts=sum(flags),fallbacks=fallbacks,costs={k:costs[k]-before[k] for k in costs},wholeparentwall=time.perf_counter()-tick,
                 setup=setup,io=writer.stats,cumulative_core_array_io=array_io_profile(),cumulative_exact_xq_copy_bytes=EXACT_SCALAR_COPY_BYTES,matrix_actions=dict(cache.counts) if cache else {},latest_endpoint_arrays=seals)
+            if CASE_DESIGNS is not None:summary.update(case_id=case_id,beta=case_beta,seed=case_seed)
+            if MATERIAL_MOVE_AUDIT:summary.update(mean_material_move_RMS=float(np.mean(moves)),mean_proposal_material_RMS=float(np.mean(proposals)),max_proposal_material_RMS=float(np.max(proposals)),terminal_material_RMS_from_anchor=anchor_moves[-1])
             summaries.append(summary);write(d/'SUMMARY.json',clean(summary));print(json.dumps(clean({k:v for k,v in summary.items() if k!='latest_endpoint_arrays'})),flush=True)
             del current,base,cache,writer;model._transfers.clear();gc.collect()
         write(folder/'RESULTS.json',clean(dict(status='COMPLETE',arm=arm,costs=costs,parents=summaries,wall_seconds=time.perf_counter()-started,array_codec='stored',GT_read=False)))
     except BaseException as exc:
+        if MATERIAL_MOVE_AUDIT:
+            # Keep any already-computed last fields at a hard-cap stop, while
+            # retaining UNKNOWN status and never making an unverified decision.
+            try:
+                if 'writer' in locals():
+                    for state in (locals().get('current'),locals().get('candidate')):
+                        if state is not None and state.point.get('current') is not None:writer.final(state)
+                    all_seals.extend(writer.seal());all_array_seals.extend(checkpoint_identity(path) for path in sorted(writer.paths))
+            except BaseException as publication_error:
+                write(folder/'PARTIAL_ARRAY_PUBLICATION_ERROR.json',dict(error=repr(publication_error),original_error=repr(exc)))
         status='STOPPED' if isinstance(exc,BudgetStop) else 'ERROR';error=repr(exc);write(folder/'ERROR.json',dict(status=status,error=error,traceback=traceback.format_exc(),costs=costs));raise
     finally:
         book.close(status,error)

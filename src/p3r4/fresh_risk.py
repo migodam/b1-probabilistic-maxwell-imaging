@@ -21,6 +21,7 @@ def canonical_infer(frozen,contexts,native,features,out,check_frozen,device='cpu
  featuregate=json.loads((features/'FEATURES_COMPLETE.json').read_text())
  if featuregate['freeze']!=frozen:raise ValueError('feature freeze mismatch')
  sourceids=featuregate['gates'].copy()+featuregate['observation_sources']
+ observation_paths={Path(v['path']).stem:Path(v['path']) for v in featuregate['observation_sources']}
  for provider in frozen['providers']:sourceids.extend(json.loads((features/provider/'MOMENTS_COMPLETE.json').read_text())['artifacts'])
  for v in sourceids:
   if checkpoint_identity(v['path'])!=v:raise ValueError('feature source changed')
@@ -41,9 +42,14 @@ def canonical_infer(frozen,contexts,native,features,out,check_frozen,device='cpu
   online=[];anchors=[];qs=[];context_errors=[]
   for parent in ids:
    path=contexts/(parent+'.npz');sourceids.append(checkpoint_identity(path));err=None
+   with np.load(path,allow_pickle=False) as metadata:
+    if str(metadata['parent'].item())!=parent:raise ValueError('context parent identity mismatch; no matched anchor fallback')
+   if parent not in observation_paths:raise ValueError('one sealed original observation required per fresh parent')
+   with np.load(observation_paths[parent],allow_pickle=False) as source:original_observation=source['observation']
    try:on=read_online_context(path,parent);anchor,q=on['chi0'],on['q0']
    except Exception as exc:
     err=repr(exc);on=None;anchor,q=read_anchor_fallback(path,parent)
+   if on is not None and not np.array_equal(on['observation'][0],original_observation):raise ValueError('context observation differs from sealed original measurement; no matched anchor fallback')
    online.append(on);anchors.append(anchor);qs.append(q);context_errors.append(err)
   anchor=np.concatenate(anchors);q=np.concatenate(qs);allanchors.append(anchor);allqs.append(q)
   # Failed contexts still occupy their original batch positions. Fill only

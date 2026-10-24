@@ -6,6 +6,7 @@ or Target. No command waits for data then launches itself. Pair starts once.
 """
 from pathlib import Path
 import argparse,json,sys,subprocess,os,time
+for key in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS'):os.environ[key]='1'
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tools')]
 import numpy as np
 import run_r4_interval_chain_global_gmres as common
@@ -19,6 +20,7 @@ PREPARED=OUT/'AUDIT/locked_samecache/FROZEN_PROTOCOL.json';RESULT=OUT/'results/I
 MARKER=OUT/'results/IV/interval_chain_locked_pair';LOCKED=OUT/'configs/FROZEN_LOCKED.json'
 engine.EXPERIMENT=EXPERIMENT;engine.PARENTS=PARENTS;engine.SEED=SEED;engine.RESULT=RESULT;engine.CAP=CAPS
 engine.LEDGER_STAGE='IV';engine.CONTEXT_DIR=OUT/'results/contexts/locked';engine.CACHE_DIR=OUT/'results/contexts/cache'
+engine.CASE_DESIGNS=None;engine.REUSE_ORIGINAL_R0_PER_PARENT=False;engine.MATERIAL_MOVE_AUDIT=False
 engine.FROZEN_DESIGN_EXTENSION=dict(common.engine.FROZEN_DESIGN_EXTENSION,experiment=EXPERIMENT,ledger_stage='IV',
  cohort='fresh first8R4L1, after parent FROZEN_LOCKED and closed online context acquisition',seed=SEED,
  no_automatic_locked_unseal=True,source_protocol='AUDIT/global_gmres/PROTOCOL_ZH.md',source_target_unchanged=True)

@@ -18,16 +18,20 @@ STAGE=ROOT/'research/p3l_r4_conditional_transport';EXPERIMENT='raw_material_forw
 def freeze(a):
     prepared=json.loads(a.prepared_request.read_text())
     if prepared.get('status')!='FROZEN_READY' or prepared.get('GT_read') is not False:raise ValueError('observation-only frozen representative request required')
+    if any(p.startswith(('R4L1_','R4L2_')) for p in prepared['request']['parents']) and a.stage!='IV':raise ValueError('fresh raw diagnostic freeze requires explicit StageIV')
     rows=[]
     for item in prepared['qualified']:
         for key in item['outputs']:rows.append(dict(parent=item['parent'],action=key,frozen_mu=item['frozen_mu'],mu_identity=checkpoint_identity(item['frozen_mu']),observation=item['online_observation'],observation_identity=checkpoint_identity(item['online_observation'])))
-    spec=dict(status='FROZEN_ARBITRARY_MATERIAL_FORWARD',experiment=EXPERIMENT,rows=rows,planned_RHS=8*len(rows),GT_read=False,
+    spec=dict(status='FROZEN_ARBITRARY_MATERIAL_FORWARD',stage=a.stage,experiment=EXPERIMENT,rows=rows,planned_RHS=8*len(rows),GT_read=False,
               decoder_realizability='NOT_PROVEN',P1_legal_world='NOT_CLAIMED',arbitrary_materials_preserved_no_clipping=True,declared_parents=prepared['request']['parents'],predeclared_unqualified_skips=prepared['skips'],scope='qualified frozen_mu snapshots only; other declared parents explicit NOT_EVALUATED')
     write_new_json(a.out,spec);print(json.dumps(dict(status=spec['status'],actions=len(rows),planned_RHS=spec['planned_RHS'])))
 
 
 def run(a):
     spec=json.loads(a.freeze.read_text());release=json.loads(a.release.read_text())
+    request_stage=spec.get('stage','II')
+    if a.stage!=request_stage or release.get('stage','II')!=request_stage:raise ValueError('explicit raw request/release/CLI stage mismatch')
+    if any(p.startswith(('R4L1_','R4L2_')) for p in spec.get('declared_parents',[])) and request_stage!='IV':raise ValueError('fresh locked/confirmation raw diagnostics require StageIV')
     if spec['status']!='FROZEN_ARBITRARY_MATERIAL_FORWARD' or release.get('released') is not True or release.get('experiment')!=EXPERIMENT:raise ValueError('explicit matching release/freeze required')
     if not a.job or a.max_rhs is None or a.max_wall is None or a.max_rhs<spec['planned_RHS'] or a.max_wall<=15:raise ValueError('explicit bounded job/RHS/wall required')
     if a.out.exists():raise FileExistsError('no repeated paidrun')
@@ -39,7 +43,7 @@ def run(a):
     from p1_material.prior import MaterialPrior
     cfg=json.loads((STAGE/'configs/TARGET.json').read_text());points=json.loads((ROOT/'research/p1_material_target_20261018/inputs/geometry.json').read_text())['points'];roi=np.flatnonzero(MaterialPrior(cfg,points).mask)
     sys.path.insert(0,str(ROOT.parents[1]/'A30/a30-maxwell-material-manifold/src'));from a30.physics import FrozenMaxwellAdapter
-    book=Book('II',a.job,max_wall=a.max_wall);original=book._update;costs=dict(RHS=0,states=0,LU=0);status='COMPLETE';error=None;rows=[];start=time.monotonic()
+    book=Book(request_stage,a.job,max_wall=a.max_wall);original=book._update;costs=dict(RHS=0,states=0,LU=0);status='COMPLETE';error=None;rows=[];start=time.monotonic()
     def limited(event,**kw):
         if costs['RHS']+kw.get('rhs',0)>a.max_rhs:raise BudgetStop('raw material diagnostic hardRHS cap')
         if resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*(1 if sys.platform=='darwin' else 1024)>3*1024**3:raise BudgetStop('3GiB cap')
@@ -67,7 +71,7 @@ def run(a):
             except BudgetStop:raise
             except Exception as exc:record.update(error=repr(exc),new_RHS=costs['RHS']-before)
             rows.append(record);write(a.out/'PROGRESS.json',dict(rows=rows,costs=costs));print(json.dumps(record),flush=True)
-        write(a.out/'RESULTS.json',dict(status='COMPLETE',rows=rows,costs=costs,GT_read=False,no_clipping=True,decoder_realizability='NOT_PROVEN',posterior_sample=False,
+        write(a.out/'RESULTS.json',dict(status='COMPLETE',stage=request_stage,rows=rows,costs=costs,GT_read=False,no_clipping=True,decoder_realizability='NOT_PROVEN',posterior_sample=False,
              scope='nonlinear Full response/passivity/ROI/rectangle diagnostics of arbitrary image only; not prior legal world',predeclared_unqualified_skips=spec.get('predeclared_unqualified_skips',[]),declared_parents=spec.get('declared_parents',[]),wall_seconds=time.monotonic()-start))
     except BaseException as exc:status='ERROR';error=repr(exc);write(a.out/'ERROR.json',dict(error=error,traceback=traceback.format_exc(),costs=costs));raise
     finally:book.close(status,error)
@@ -76,7 +80,7 @@ def run(a):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('command',choices=('freeze','run'))
     for key in ('prepared-request','freeze','release','out'):p.add_argument('--'+key,type=Path,required=key=='out')
-    p.add_argument('--job');p.add_argument('--max-rhs',type=int);p.add_argument('--max-wall',type=float);a=p.parse_args()
+    p.add_argument('--stage',choices=('II','IV'),default='II');p.add_argument('--job');p.add_argument('--max-rhs',type=int);p.add_argument('--max-wall',type=float);a=p.parse_args()
     if a.command=='freeze':freeze(a)
     else:run(a)
 

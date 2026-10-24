@@ -22,6 +22,7 @@ def component_check(c):
 
 def bound(a):
  c=read(a.component);component_check(c);top=read(a.top_freeze)
+ if top.get('released') is not True:raise ValueError('top-level template is not a released parent freeze')
  if top.get('risk_component_identity')!=checkpoint_identity(a.component) or top.get('risk_rule')!=c['risk_rule'] or top.get('cohort')!=a.cohort:raise ValueError('parent-owned matching top-level freeze required; no implicit release')
  if top.get('methods_frozen') is not True or top.get('adapt_after_L1') is not False:raise ValueError('same risk rule without postL1 adaptation required')
  cohort=c['cohorts'][a.cohort]
@@ -50,11 +51,12 @@ def main():
  if a.command=='infer':
   if a.truth:raise ValueError('truth prohibited')
   from p3r4.fresh_risk import canonical_infer
-  canonical_infer(f,a.contexts,a.native,a.features,a.out,frozen_check);return
+  canonical_infer(f,a.contexts,a.native,a.features,a.out,frozen_check);component_check(c);return
  gate=read(a.online/'ONLINE_COMPLETE.json')
  if gate['freeze']!=f or gate['truth_read'] is not False or gate['canonical_batch_size']!=64 or gate['array_codec']!='stored' or gate['pid']==os.getpid():raise ValueError('closed independent canonical batch64 inference required')
  for v in gate['sealed_artifact_identities']+gate['source_identities']:identity_check(v)
  if a.command=='score':
+  if 'offline_only' not in a.truth.resolve().parts:raise ValueError('isolated offline_only truth required')
   subprocess.run([sys.executable,str(ROOT/'tools/r4_risk_panel.py'),'score','--freeze',str(a.freeze),'--online',str(a.online),'--truth',str(a.truth),'--out',str(a.out)],check=True);return
  if a.truth:raise ValueError('truth prohibited in online exports')
  if a.out.exists():raise FileExistsError('new export directory required')
@@ -72,8 +74,8 @@ def main():
   with dest.open('xb') as stream:np.savez(stream,**{k:v[i] for k,v in allpred.items()})
   obs=a.observations/(parent+'.npz');identity=checkpoint_identity(dest)
   for key in allpred:rows.append(dict(parent=parent,action=key,frozen_mu=str(dest.resolve()),mu_identity=identity,observation=str(obs.resolve()),observation_identity=checkpoint_identity(obs)))
- write_new_json(a.out/'RAW_FORWARD_FROZEN.json',dict(status='FROZEN_ARBITRARY_MATERIAL_FORWARD',experiment='raw_material_forward_diagnostic_v1',rows=rows,planned_RHS=8*len(rows),GT_read=False,declared_parents=f['parents'],predeclared_unqualified_skips=[],scope='all declared parents; no prior feasibility selection',decoder_realizability='NOT_PROVEN',P1_legal_world='NOT_CLAIMED',arbitrary_materials_preserved_no_clipping=True,component_identity=checkpoint_identity(a.component),online_gate_identity=checkpoint_identity(a.online/'ONLINE_COMPLETE.json'),source_predictions=sources))
+ write_new_json(a.out/'RAW_FORWARD_FROZEN.json',dict(status='FROZEN_ARBITRARY_MATERIAL_FORWARD',stage='IV',experiment='raw_material_forward_diagnostic_v1',rows=rows,planned_RHS=8*len(rows),GT_read=False,declared_parents=f['parents'],predeclared_unqualified_skips=[],scope='all declared parents; no prior feasibility selection',decoder_realizability='NOT_PROVEN',P1_legal_world='NOT_CLAIMED',arbitrary_materials_preserved_no_clipping=True,component_identity=checkpoint_identity(a.component),online_gate_identity=checkpoint_identity(a.online/'ONLINE_COMPLETE.json'),source_predictions=sources))
  if a.cohort=='locked':
-  write_new_json(a.out/'REPRESENTATIVE_MANIFEST.json',dict(status='ONLINE_FROZEN_REPRESENTATIVE_MANIFEST',request_id='LOCKED64_PRIMARY_SPLINE_S1_AND_FROZEN_R2',parents=f['parents'][:64],estimators=[dict(id=mid,label=tag,predictions_npz=str((a.online/(mid+'.npz')).resolve()),identity=checkpoint_identity(a.online/(mid+'.npz'))) for tag,mid in selected[:2]],outputs=['prediction_raw','prediction_clipped'],seed_rule='fixed Spline2026102501 and frozenR2seed33; no seed-ensemble image',online_gate=str((a.online/'ONLINE_COMPLETE.json').resolve()),online_gate_identity=checkpoint_identity(a.online/'ONLINE_COMPLETE.json'),component_identity=checkpoint_identity(a.component),top_freeze_identity=checkpoint_identity(a.top_freeze),no_GT=True,frozen_estimator=True,per_arm=dict(max_states=16,max_RHS=256),ordinary_control='one shared same-budget Full-Phi arm per parent across all4material targets; charged once, never free',maximum_total_RHS=64*5*256))
+  write_new_json(a.out/'REPRESENTATIVE_MANIFEST.json',dict(status='ONLINE_FROZEN_REPRESENTATIVE_MANIFEST',stage='IV',request_id='LOCKED64_PRIMARY_SPLINE_S1_AND_FROZEN_R2',parents=f['parents'][:64],estimators=[dict(id=mid,label=tag,predictions_npz=str((a.online/(mid+'.npz')).resolve()),identity=checkpoint_identity(a.online/(mid+'.npz'))) for tag,mid in selected[:2]],outputs=['prediction_raw','prediction_clipped'],seed_rule='fixed Spline2026102501 and frozenR2seed33; no seed-ensemble image',online_gate=str((a.online/'ONLINE_COMPLETE.json').resolve()),online_gate_identity=checkpoint_identity(a.online/'ONLINE_COMPLETE.json'),component_identity=checkpoint_identity(a.component),top_freeze_identity=checkpoint_identity(a.top_freeze),no_GT=True,frozen_estimator=True,per_arm=dict(max_states=16,max_RHS=256),ordinary_control='one shared same-budget Full-Phi arm per parent across all4material targets; charged once, never free',maximum_total_RHS=64*5*256))
  print(json.dumps(dict(status='ONLINE_EXPORTS_FROZEN',parents=len(f['parents']),raw_forward_RHS=8*len(rows),representative_eligible=a.cohort=='locked')))
 if __name__=='__main__':main()
