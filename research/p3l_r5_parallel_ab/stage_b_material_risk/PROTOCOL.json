@@ -1,0 +1,14 @@
+{
+ "status":"FROZEN_BEFORE_NEW_TRAINING", "training_seeds":[2026102601,2026102602,2026102603],
+ "representation_arm_cap":8,"training_job_concurrency":1,"rss_cap_bytes":3221225472,"threads":1,
+ "new_physics_RHS_cap":32768,"wall_cap_seconds":86400,"gpu_cap_seconds":86400,
+ "data_regimes":{"context":"existing TRAIN1024/VAL256","no_context":"existing joint TRAIN32768/VAL2048 separately reported"},
+ "arms":["original_gaussian_K32_frozen_fusion","deterministic_gaussian_frozen_fusion","deterministic_gaussian_matched_fusion","direct_material_moments_no_density","RRR_raw_y","RRR_decoder_only","RRR_same_spectrum_random","RRR_physical_residual"],
+ "rank_grid":[2,4,8,16],"ridge_grid":[0.001,0.01,0.1,1.0],"selection":"validation only; RRR training crossfit; before new truth freeze checkpoints and comparison family",
+ "new_confirmation":{"cohorts":2,"parents_each":256,"status":"NOT_GENERATED"},
+ "primary_loss":"full-grid mean abs(material_prediction-material_truth)^2; per-parent mean over training seed losses separate from ensemble",
+ "compression_gate":{"retained_incremental_gain_fraction_min":0.8,"additional_provider_warm_cost_fraction_max":0.3333333333333333,"both_required":true},
+ "mechanism_gate":{"relative_MSE_gain_min":0.02,"paired_family_CI":0.9833333333333333,"two_new_cohorts":true},
+ "frozen_head_diagnostic":"existing R4 head seeds2026102501/02/03 remain original; new matched heads use2026102601/02/03",
+ "old_R4_test_use":"prohibited for selection or claimed locked confirmation", "truth_for_online_features":false,"SHA256_checks":false
+}

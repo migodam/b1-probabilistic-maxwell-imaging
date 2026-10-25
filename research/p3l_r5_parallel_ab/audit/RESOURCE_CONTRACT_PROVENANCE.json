@@ -1,0 +1,100 @@
+{
+  "status": "QUALIFIED_ORIGINAL_DISCRETE_TM24",
+  "historical_source_commit": "85b7bcbf39f0eeab7062ecce17531538151082bf",
+  "current_HEAD": "85b7bcbf39f0eeab7062ecce17531538151082bf",
+  "historical_delivery_cleanup_commit": "092da74e",
+  "historical_readonly": true,
+  "sources": {
+    "original_prior": "src/p1_material/prior.py:MaterialPrior",
+    "original_packing_and_noise": "src/p1_material/target.py",
+    "historical_R4_interface": "src/p3r4/core.py:Target",
+    "original_backend": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A30/a30-maxwell-material-manifold/src/a30/physics.py",
+    "frozen_backend_SOURCE_COMMIT": "5d5e31fcfc56ac8ef9d64c46b4b7bbdedef96bb4",
+    "background": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r4-conditional-transport/research/p3l_r4_conditional_transport/inputs/background/weak.npz"
+  },
+  "physics": {
+    "grid": 24,
+    "material_cells": 576,
+    "sources": 8,
+    "receivers": 32,
+    "precision": "complex128",
+    "device": "CPU",
+    "workers": 1,
+    "BLAS_threads": 1,
+    "forward_equations": "L=I-diag(chi)G; L current=diag(chi) incident; field=incident+G current; prediction=S current",
+    "mass_normalization": "current and field use original sqrt(cell_volume) convention; cell_volume=1/576",
+    "decoder": "Original MaterialPrior; q[:64]=x[:64], q[64:]=Phi(x[64:]); x66 standard Gaussian; no clipping/truncation/peak normalization introduced by adapter",
+    "derivative": "Dchi_dx=Dchi_dq diag(1x64,phi(x64),phi(x65)); direct lowdim solves8*dRHS; fullreceiverJacobian32adjointRHS",
+    "packing": "source-major Re32 then Im32",
+    "sigma": 0.00119211798514519,
+    "white": "sqrt(2)/sigma*pack(z)",
+    "phi": "0.5*||white(prediction-observation)||^2",
+    "qualification": "audit/PHYSICS_QUALIFICATION.json",
+    "inverse_action": "Target.inverse_action(Point, complex576xn, adjoint=False, purpose, persist_path=None); n counted derivative RHS through frozen A30 solve; no implicit new state"
+  },
+  "budget": {
+    "authorization": "shared/cost_ledger/AUTHORIZATION.json",
+    "ledger": "shared/cost_ledger/LEDGER.jsonl",
+    "allocation_A": {
+      "states": 32768,
+      "forward_RHS": 262144,
+      "derivative_RHS": 40960,
+      "total_RHS": 303104,
+      "process_CPU_seconds": 86400,
+      "controlled_wall_seconds": 86400
+    },
+    "allocation_B": {
+      "confirmation_RHS": 32768,
+      "controlled_wall_seconds": 86400,
+      "new_large_train": false
+    },
+    "reservations": "append+flush+fsync before state LU and before actual solve; state reserve checks8forwardRHS affordability; failures never refunded",
+    "locking": "atomic ledger-cap check under ledger.lock; journal writer/read locks; one physics_worker.lock across A/B",
+    "restart": "new process replays append-only journal once; incremental offset refresh thereafter; partial tail fails closed; unfinished actions conservatively charged elapsed wall to CPU and controlled wall, no automatic reset",
+    "qualification_charged_A": {
+      "states": 3,
+      "forward_RHS": 24,
+      "derivative_RHS": 56,
+      "total_RHS": 80
+    }
+  },
+  "storage": {
+    "default": "immediate compressed x,q,chi,prediction,residual endpoints; no default field/LU persistence",
+    "designated_references": "retain_reference=True only",
+    "transfer_cache_limit": 1,
+    "no_endpoint_state_cache": true,
+    "no_history_writes": true
+  },
+  "isolation": {
+    "online_npz_allowlist": [
+      "observation",
+      "target_id",
+      "sigma"
+    ],
+    "online_forbidden_path_parts": [
+      "oracle",
+      "offline",
+      "labels",
+      "teacher",
+      "locked"
+    ],
+    "new_B_generation": "NOT_RUN; frozen concrete selection/protocol required before Target(B)",
+    "B_anchor_warning": "supplied-x40RHS is not historical96+64 optimized strongcontext; full512 matching historicalalgorithm exceeds fixed32768RHS based actual receipts"
+  },
+  "QA": {
+    "accounting": "audit/ACCOUNTING_TESTS.json",
+    "real_physics": "audit/PHYSICS_QUALIFICATION.json",
+    "historical_assets": "audit/HISTORICAL_ASSET_AUDIT.json",
+    "hardware": "audit/HARDWARE.json",
+    "atomic_contention": "audit/ATOMIC_BUDGET_TEST.json"
+  },
+  "no_SHA256": true,
+  "no_cloud": true,
+  "A5_probe_reservation": {
+    "derivative_RHS": 1152,
+    "forward_RHS": 16,
+    "status": "PARENT_RESERVED_NOT_RUN_BY_SHARED_WORKER",
+    "allocation_unchanged": true,
+    "norm_rounding_qualification": "Float64 numerical norm bound; not certified rounding enclosure"
+  }
+}

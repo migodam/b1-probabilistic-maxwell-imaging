@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_maxwell.py", line 249, in <module>
+    try:main()
+        ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_maxwell.py", line 235, in main
+    ss,ab,dg,rraw=response(model,modes,d,sig,n);responses[str(n)]=ss;ablate[str(n)]=ab;diags[str(n)]=dg
+                  ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_maxwell.py", line 148, in response
+    r=model.full(x,'response_inverse_n'+str(n));err=float(U@(r['f']-d)/sig-s)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_maxwell.py", line 52, in full
+    p=self.t.evaluate(self.V@z,purpose=purpose);self.last=(key,p);self.calls+=1
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/shared/physics_adapter.py", line 191, in evaluate
+    state=self.backend().full_state(chi,purpose=purpose)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A30/a30-maxwell-material-manifold/src/a30/physics.py", line 341, in full_state
+    native = self._cpu.full_state(chi)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A30/a30-maxwell-material-manifold/vendor/frozen_a29/src/a24/physics.py", line 194, in full_state
+    factor = self.factor_matrix(L, role="full")
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A30/a30-maxwell-material-manifold/vendor/frozen_a29/src/a24/physics.py", line 150, in factor_matrix
+    with self.book.span(role + "_LU_factor", **count):
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 148, in __exit__
+    next(self.gen)
+    ~~~~^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/shared/physics_adapter.py", line 125, in span
+    finally:self.append(dict(event='BACKEND_ACTION',label=label,counts=counts,wall_seconds=time.perf_counter()-start,cpu_seconds=time.process_time()-cpu,error=err))
+            ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/shared/physics_adapter.py", line 72, in append
+    f.write(json.dumps(dict(utc=time.time(),stage=self.stage,job=self.job,**row),allow_nan=False)+'\n');f.flush();os.fsync(f.fileno())
+                                                                                                                  ~~~~~~~~^^^^^^^^^^^^
+KeyboardInterrupt

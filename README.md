@@ -1,3 +1,11 @@
+<!-- P3LR5_CURRENT -->
+## P3L-R5：响应概率与材料统计压缩，分开裁决
+
+[中文报告与实际图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r5_parallel_ab/) · [匿名Markdown](research/p3l_r5_parallel_ab/RESEARCH_REPORT_ZH.md) · [下一轮Pro交接](research/p3l_r5_parallel_ab/GPT_PRO_HANDOFF/START_HERE.md)
+
+18份真实低维Maxwell观测、291784 RHS。正则响应积分材料矩有进步，但全域概率覆盖和成本优势未建立。214272参数功能压缩器在已有VAL256保留92.96%融合增量；CPU单线程batch64额外provider成本2.54%，完整附加链54.57%。新256+256独立确认因硬预算未运行，不把开发风险动作称为校准posterior。
+<!-- /P3LR5_CURRENT -->
+
 <!-- P3LR4_CURRENT -->
 ## P3L-R4 已完成：风险成像与完整条件概率分别裁决
 

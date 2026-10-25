@@ -1,0 +1,21 @@
+# Independent A coordinate/density review
+
+Scope: `stage_a_response_coordinates/code/run_maxwell.py` v1 and original shared P1/Maxwell interface. No additional physics was run by this review. The revised chart solver must be reviewed separately when available.
+
+PASS for target convention: A explicitly fixes the other64 Gaussianized coordinates at zero and restricts the selected2 coordinates to[-4,4]^2. The prior constant is `log(2π)+2log(Φ(4)-Φ(-4))`, so the declared2D truncated prior is normalized. This is a new, explicit2D submodel and is not a full66 posterior marginal. The pairs including coordinate64 correctly use the original probit property transform through the shared decoder.
+
+PASS for packing and noise: shared `white` is sqrt(2)/sigma times source-major Re32/Im32. A multiplies it by base sigma to define f=sqrt(2)pack(F), and uses sig=base_sigma*noise_multiplier. Thus (f-d)/sig is the correct512-real standardized residual and the likelihood is exp(-||residual||²/2). Model Jacobians multiply by base sigma once and divide by actual sig once; there is no duplicate probit derivative.
+
+PASS for local density algebra: W and V are orthonormal2D directions, the selected response is s=Uᵀ(f-d)/sig, and B=Uᵀ∂f/∂b. Consequently the original-coordinate-to-(a,s) volume factor is sig/|B|. The implementation retains original prior, determinant, normal residual and partition weight. The original-coordinate mixture quadrature weights use target/mixed-proposal, with Gaussian-Hermite expectation weights already accounting for each component transform; an additional Cholesky determinant would be incorrect.
+
+HOLD for branch coverage: the chart inverse solves one scalar root from one local initialization. V1 uses a fixed slope B0 and can fail or find one of multiple roots. The identity partition component does not replace failed chart mass, because positive chart partition weight has already been assigned. The script correctly reports inverse failures and marks coverage/TV NOT_CERTIFIED and scale-up HOLD. Successful moment agreement alone cannot prove global injectivity or missing-branch mass bounds. V1 interruption and counts are preserved in `A_V1_INTERRUPT_LEDGER_AUDIT.json`.
+
+HOLD for observed-Hessian baseline near support boundary: the centered finite-difference stencil can cross[-4,4] when the optimized mode is close to a boundary. The target log density is not an interior smooth density across that boundary. Such a baseline should be skipped or explicitly identified as an interior extension; truncated Gaussian normalization alone does not fix this Hessian interpretation.
+
+Reference quadrature also remains numerical: finite9/15/21-order agreement is a convergence diagnostic rather than a proof of global integration accuracy. All reported normalized densities, reverse-KL estimates and Gaussian q-mass checks should keep their numerical qualification, especially when original-coordinate convergence fails.
+
+## V2 follow-up
+
+Reviewed `code/run_v2.py` after creation. The weak coordinate uses Gauss-Legendre Lebesgue weights, and conditional response integration uses truncated standard-normal mass multiplied by sqrt(2π), sig/|B|, original prior and full normal residual. These factors are correct. The fixed weak-line box interval is partitioned into disjoint b intervals; Brent inversion improves numerical stability relative to V1. Nine monotonicity probes do not certify injectivity between probes, and the implementation explicitly retains this limitation. The local QR-RTO implementation uses the augmented residual map and actual endpoint Jacobian determinant; its unknown success/branch normalization is explicitly disclosed, so the reported ideal logq must not be presented as a qualified unconditional density.
+
+Actionable error found: `Conditional.inverse` catches `(ValueError, RuntimeError)`, which also catches `BudgetStop` because it subclasses RuntimeError. It must re-raise BudgetStop first. Otherwise hard-budget exhaustion can become an inverse failure and later an empty integration failure, although the shared ledger still prevents additional solves. A and the parent were notified. This review does not authorize relaxing caps, dropping incomplete observations, or treating finite-probe coverage as a certificate.
