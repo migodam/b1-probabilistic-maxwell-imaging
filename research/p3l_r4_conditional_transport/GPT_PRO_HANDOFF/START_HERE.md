@@ -2,6 +2,8 @@
 
 先读[完整报告](../RESEARCH_REPORT_ZH.md)、[裁决](../GO_NO_GO.md)、[评分数学解释](../AUDIT/JOINT_SIMULATION_PROPER_SCORE_INTERPRETATION.md)与[机器指标](../RESULTS_AND_METRICS.json)。本轮真实完成多模型训练、768新对象独立评价及物理重放。
 
+[交接阅读顺序、证据版本与立即复核入口](READING_GUIDE.md)区分阅读ZIP、完整原始分卷和封账后补充，避免把小包当成全部模型/物理证据。
+
 ## 十项明确答复
 
 1. Spline有稳定显式full66 proper-NLL收益；CFM有样本energy-score收益，但其数值log-density未过稳定门，二者不能按一个虚构统一NLL排名。

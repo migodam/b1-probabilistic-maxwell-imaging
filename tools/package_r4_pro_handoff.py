@@ -23,7 +23,8 @@ def main():
         for pattern in ('*.png','*.pdf','*.md','*.csv'):
             files.update((S/'figures'/folder).glob(pattern))
     for name in ('SOURCE_INVENTORY.json','ENVIRONMENT.json','RUNTIME_VERSIONS.json','GATE_SUMMARY.json',
-                 'RESEARCH_CLOSURE.json','RESULTS_AND_METRICS.json','RESOURCE_LEDGER.json','FAILURE_INDEX.json'):
+                 'RESEARCH_CLOSURE.json','RESULTS_AND_METRICS.json','RESOURCE_LEDGER.json','FAILURE_INDEX.json',
+                 'DELIVERY_RESOURCE_SUMMARY.json','DELIVERY_LEDGER.jsonl'):
         files.add(S/name)
     for name in ('JOINT_SIMULATION_PROPER_SCORE_INTERPRETATION.md','RISK_CONTEXT_AND_METRIC_THEORY.md',
                  'PHYSICS_TRANSPORT_THEORY_REVISION.md','GEOMETRY_MATCHED_DISTANCE_GATE_REVIEW.md',
@@ -37,6 +38,7 @@ def main():
     files.update((ROOT/'src/p3r4').glob('*.py'))
     files.update((ROOT/'src/p1_material').glob('*.py'))
     files.update((ROOT/'tools').glob('*r4*.py'))
+    files.add(ROOT/'requirements.txt')
     files={p for p in files if p.is_file()};manifest=[]
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     bundle=out/a.name
