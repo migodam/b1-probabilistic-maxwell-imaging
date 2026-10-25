@@ -113,6 +113,18 @@ class FiniteBayesTests(unittest.TestCase):
         self.assertEqual(metrics['action'].shape,(2,))
         self.assertGreater(metrics['occupancy_max_error'],.5)
 
+    def test_matching_marginals_do_not_certify_joint_branches(self):
+        g=tiny_grid()
+        reference=np.array([.5,0,0,.5])
+        swapped=np.array([0,.5,.5,0])
+        metrics=posterior_metrics(swapped,reference,g)
+        self.assertTrue(np.allclose(metrics['coordinate_cdf_sup'],0))
+        self.assertAlmostEqual(metrics['mode_mass_max_error_ref_ge_005'],0.)
+        self.assertAlmostEqual(metrics['action_regret'],0.)
+        self.assertAlmostEqual(metrics['joint_total_variation'],1.)
+        self.assertGreater(np.linalg.norm(metrics['wall_pose_cross_covariance_difference']),.5)
+        self.assertFalse(metrics['joint_diagnostics_change_frozen_gate'])
+
     def test_prior_importance_and_tempered_smc_reproducibility(self):
         g=tiny_grid()
         ll=np.log(np.array([1.,3.,1.,2.]))

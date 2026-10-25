@@ -73,4 +73,4 @@ P0-Q通过，限定为QUALIFIED_DISCRETE_FULLWAVE；原两墙体8项完整观测
 
 从同合同真值回放与FWI诊断推进到条件固定支撑的joint补偿见证（d=0.798716，目标位移0.1λ₀），随后独立新观测的proper两墙概率参考和四格消融。原minimum_feature仍未定义，在线anchor未达标；多假设有受控平方风险收益，progressive与压缩没有独立端到端优势。历史P0/continuation及其负结果保留。
 
-- [Research W-SLAM](research_w_slam/)：实验进行中：E0/E1/A0已执行，概率参考尚在计算。
+- [Research W-SLAM](research_w_slam/)：已完成的物理、概率与成本结果；限制及负结果保留。

@@ -1,0 +1,129 @@
+{
+  "figures": [
+    {
+      "name": "A0_parent_outcomes",
+      "caption_en": "Continuous A0: repeats averaged within parent. Train/holdout envelope compatibility, pose error and support IoU remain distinct; missing/failed scores are not imputed.",
+      "caption_zh": "连续A0：先在parent内平均噪声副本；训练/留出兼容、位姿误差和支撑IoU分开。缺失或失败得分不填零。",
+      "sources": [
+        "results/a0/scoring/RESULTS.json",
+        "results/a0/scoring/FULL_TABLE.csv"
+      ]
+    },
+    {
+      "name": "A0_fixed_materials",
+      "caption_en": "Fixed parents0–3, repeat0: actual selected and true wall coefficients on the public24×6 grid; no cartoon geometry or invented wave fields. Selection failures remain blank.",
+      "caption_zh": "固定parent0–3、副本0：公共24×6网格上的实际真值与已选墙系数；非示意几何，不补造波场。未保存候选留空。",
+      "sources": [
+        "results/a0/scoring/RESULTS.json",
+        "inputs/offline/CONTINUOUS_TRUTHS.json"
+      ]
+    },
+    {
+      "name": "A0_wide_matched_materials",
+      "caption_en": "Saved3x3-extension offline truth and paid selected wall coefficients on the same public24×6 grid. Every panel uses the identical epsilon_inf1–6 color scale; selection/nonconvergence status is unchanged. No new wavefield or PDE.",
+      "caption_zh": "已保存3x3扩展的离线真值与已计费候选墙系数，位于同一公共24×6网格。全部面板共用epsilon_inf1–6色标；不改写候选/不收敛状态，不生成新波场或PDE。",
+      "sources": [
+        "results/a0/wide_extension/offline/TRUTHS.json",
+        "results/a0/wide_extension/parent_*_primary.npz"
+      ]
+    },
+    {
+      "name": "A0_polish_actual_trial_objectives",
+      "caption_en": "Optional ordinary known-intrinsic optimization diagnostic: all saved valued trials; cached/failed/unpaid attempts remain in CSV even when no objective/RHS point exists. First native-J audit cost is included. Starts depend on all three primary arms plus the shared paid bank; no matched speed comparison.",
+      "caption_zh": "可选的已知目标内禀参数普通优化诊断：绘制全部已有目标值的实际试探；缓存/失败/未付费尝试即使没有可绘点也保留在CSV。含首次原生J审核成本；初始化依赖三个主方法及共同已付费bank，不构成匹配速度比较。",
+      "sources": [
+        "results/a0/adjoint_polish/parent_*/ATTEMPTS.json",
+        "results/a0/adjoint_polish/RESULTS.json"
+      ]
+    },
+    {
+      "name": "A0_polish_exploratory_pairs",
+      "caption_en": "Fixed four-parent×two-repeat diagnostic, parent means first. Before/after objectives, data fit, exposed development holdout and offline GT errors are separate. No formal confidence interval from four clusters; no blind test, matched speed win, new support search or reset A0 budget. Original three arms remain unchanged.",
+      "caption_zh": "固定4个parent×2副本的探索诊断，先按parent平均。分开显示目标函数、数据拟合、已暴露开发留出及离线真值误差。4簇不报告正式置信区间；不是盲测、匹配加速、新支撑搜索或重置A0预算，原三个主方法保持不变。",
+      "sources": [
+        "results/a0/adjoint_polish/RESULTS.json",
+        "results/a0/adjoint_polish/OFFLINE_SCORES.json",
+        "results/a0/scoring/RESULTS.json"
+      ]
+    },
+    {
+      "name": "E2_fixed_beliefs",
+      "caption_en": "Explicit finite-prior reference, fixed parents0/3/6/9: two-repeat mean distributions at prefixes1–3. Pose colors are atom masses at actual CC nodes, not continuous density; no representative selected by outcome.",
+      "caption_zh": "显式有限先验参考，固定parent0/3/6/9：前缀1–3的两副本平均分布。位姿颜色为真实CC节点上的原子质量，非连续密度；不按结果选例。",
+      "sources": [
+        "results/e2e3/inference/POSTERIORS.npz",
+        "results/e2e3/finite_bank/online/FINITE_GRID.npz"
+      ]
+    },
+    {
+      "name": "E2_wall_target_crosscov",
+      "caption_en": "Finite joint posterior wall–target cross covariance, averaged across the two within-parent covariances; units differ between contrast and loss rows. This is not a local-Gaussian or continuous-posterior certificate.",
+      "caption_zh": "先计算两份副本各自的有限联合后验墙–目标交叉协方差，再在parent内平均；对比度与损耗行单位不同。非局部高斯或连续后验证书。",
+      "sources": [
+        "results/e2e3/inference/POSTERIORS.npz",
+        "results/e2e3/finite_bank/online/FINITE_GRID.npz"
+      ]
+    },
+    {
+      "name": "E3_error_vs_CPU",
+      "caption_en": "Finite-prior final errors versus canonical METHOD_RESULTS standalone_cpu_seconds, including each method’s actual likelihood/reference dependence; any old derived fallback is explicitly labeled. Common11800RHS/2950LU setup is separate. SetupCPU comes only from complete JOB_COST_FINAL wrapper receipts, never in-flight snapshots. No online acceleration/equal-risk claim.",
+      "caption_zh": "有限先验最终误差对照METHOD_RESULTS规范standalone_cpu_seconds，包含各方法真实似然/参考依赖；旧派生回退会明确标注。共同11800RHS/2950LU准备另列；准备CPU只读完成的JOB_COST_FINAL wrapper收据，不使用运行中快照。不宣称在线加速或等风险优势。",
+      "sources": [
+        "results/e2e3/inference/METHOD_RESULTS.json",
+        "results/e2e3/finite_bank/online/JOB_COST_FINAL.json"
+      ]
+    },
+    {
+      "name": "E3_parent_hard_vs_smoother",
+      "caption_en": "Final finite-prior offline pose errors and reference-action regret, parent first. Hard freezing and ordinary smoother are explicit controls; all twelve independent parents, not24 independent noise cases.",
+      "caption_zh": "有限先验最终离线位姿误差及相对参考动作风险，先按parent聚合。硬冻结与普通smoother作为显式对照；独立单位是12个parent，不是24份噪声。",
+      "sources": [
+        "results/e2e3/inference/OFFLINE_SCORES.json",
+        "results/e2e3/inference/METHOD_RESULTS.json"
+      ]
+    },
+    {
+      "name": "E4_saved_comparison",
+      "caption_en": "Saved E4 finite-prior comparison; repeats and MC seeds averaged within parent. Offline projections using exact posterior moments are not deployable algorithms; no continuous convergence claim.",
+      "caption_zh": "已保存E4有限先验比较，副本及MC种子先在parent内平均。使用精确后验矩的离线投影不是可部署算法，不声称连续收敛。",
+      "sources": [
+        "results/e4/comparison/FULL_TABLE.csv"
+      ]
+    },
+    {
+      "name": "E5_policy_choices_risk",
+      "caption_en": "Conditional finite-prior active sensing: parent-grouped choices and posterior target risk. Independent future noise is preserved; all policies share the costly bank. These are conditional pilot outcomes, not general sensing superiority.",
+      "caption_zh": "条件有限先验主动感知：按parent聚合的选点与目标后验风险。保留独立未来噪声，各策略共用已付费bank；仅为条件pilot，不宣称一般选点优势。",
+      "sources": [
+        "results/e5/finite_sensing/ONLINE_RESULTS.json"
+      ]
+    },
+    {
+      "name": "E5_parent_GT_errors",
+      "caption_en": "Offline finite-prior target squared error, two repeats averaged within parent. Descriptive paired bootstrap compares twelve shared parents; no new acceptance threshold.",
+      "caption_zh": "有限先验离线目标平方误差，两副本先在parent内平均。描述性配对bootstrap以12个共同parent比较，不引入新接受门槛。",
+      "sources": [
+        "results/e5/finite_sensing/offline/PARENT_GROUPED_GT_SCORES.json"
+      ]
+    }
+  ],
+  "missing_inputs": [],
+  "execution": "SAVED_ARRAY_RENDER_ONLY_NO_PDE",
+  "paired_bootstrap": {
+    "seed": 2026102510,
+    "draws": 2000,
+    "statistical_unit": "12 independent parent means",
+    "descriptive_only": true
+  },
+  "A0_noiseless_analysis_source": "results/a0/analysis_repaired/RESULTS.json",
+  "A0_original_analysis_status": "PRESERVED_LAYOUT_FAILURE_NOT_NEGATIVE_PHYSICAL_FINDING",
+  "finite_setup_CPU_policy": "Only online/JOB_COST_FINAL.json with complete=true; never in-flight COST_RECEIPT or COMPLETE snapshot",
+  "ordinary_adjoint_polish": {
+    "status": "OPTIMIZER_DIAGNOSTIC_COMPLETE_PARENT_REVIEW_REQUIRED",
+    "independent_parents": 4,
+    "bootstrap": "NOT_RUN_FOUR_PARENT_EXPLORATORY_DIAGNOSTIC_NO_FORMAL_CI",
+    "holdout_scope": "EXPOSED_DEVELOPMENT_REEVALUATION_NOT_NEW_BLIND_TEST",
+    "matched_speed_claim": false
+  },
+  "no_scientific_gate_assigned": true
+}

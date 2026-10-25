@@ -8,6 +8,7 @@ from .geometry import enumerate_supports
 
 PRIOR_ID = 'FINITE_PRIOR_ENUM4_V1'
 STALE_LABEL = 'STALE_WALL_MARGINAL'
+CONDUCTIVITY_PER_ELL = 8.8541878128e-12 * (2*np.pi*1e9)
 
 
 def _normalize(weights):
@@ -107,7 +108,8 @@ def summarize(weights,grid,quantiles=(.025,.5,.975)):
         occupied = z[:,region]>0
         probability = float(w[occupied].sum())
         if probability == 0:
-            conditionals.append(dict(occupied_probability=0.,defined=False,epsinf=None,ell=None,joint=None))
+            conditionals.append(dict(occupied_probability=0.,defined=False,epsinf=None,ell=None,joint=None,
+                conductivity_S_per_m=None,joint_eps_sigma=None))
             continue
         conditional_w = w[occupied]/probability
         pair = np.column_stack((grid['epsinf'][occupied],grid['ell'][occupied]))
@@ -116,11 +118,26 @@ def summarize(weights,grid,quantiles=(.025,.5,.975)):
         conditionals.append(dict(occupied_probability=probability,defined=True,
             epsinf=_distribution(grid['epsinf'][occupied],conditional_w,quantiles),
             ell=_distribution(grid['ell'][occupied],conditional_w,quantiles),
-            joint=dict(values=unique,mass=mass)))
+            conductivity_S_per_m=_distribution(grid['ell'][occupied]*CONDUCTIVITY_PER_ELL,conditional_w,quantiles),
+            joint=dict(values=unique,mass=mass),
+            joint_eps_sigma=dict(values=unique*np.array([1.,CONDUCTIVITY_PER_ELL]),mass=mass)))
+    conversion=np.r_[np.ones(4),np.full(4,CONDUCTIVITY_PER_ELL)]
+    pose_values,pose_inverse=np.unique(pose,axis=0,return_inverse=True)
+    pose_mass=np.bincount(pose_inverse,weights=w,minlength=len(pose_values))
+    wall_group_mass=np.bincount(grid['wall_group_id'],weights=w)
     return dict(label=grid['label'],occupancy=w@z,conditional_material=conditionals,
                 full_wall_mean=mean[:8],full_wall_cov=cov[:8,:8],
+                full_wall_mean_eps_sigma=mean[:8]*conversion,
+                full_wall_cov_eps_sigma=cov[:8,:8]*conversion[:,None]*conversion[None,:],
+                wall_permittivity_pose_cross_cov=cov[:4,8:],
+                wall_conductivity_pose_cross_cov=cov[4:8,8:]*CONDUCTIVITY_PER_ELL,
+                conductivity_conversion_S_per_m_per_ell=CONDUCTIVITY_PER_ELL,
+                physical_covariance_units='relative permittivity contrast; conductivity S/m; position lambda0',
                 joint_mean=mean,joint_cov=cov,pose_mean=mean[8:],pose_cov=cov[8:,8:],
-                mode_probability=mode_mass,event_px_ge_0=float(w[pose[:,0]>=0].sum()),
+                mode_probability=mode_mass,mode_partition='occupancy support only; not all joint material-pose branches',
+                wall_group_probability=wall_group_mass,
+                pose_joint_distribution=dict(values=pose_values,mass=pose_mass),
+                event_px_ge_0=float(w[pose[:,0]>=0].sum()),
                 coordinate_distributions=[_distribution(coords[:,j],w,quantiles) for j in range(10)],
                 coordinate_names=['z0_eps_contrast','z1_eps_contrast','z2_eps_contrast','z3_eps_contrast','z0_ell','z1_ell','z2_ell','z3_ell','px','py'])
 
@@ -193,10 +210,22 @@ def posterior_metrics(approx,ref,grid):
     ref_risk = float(r@np.sum((pose-optimal)**2,axis=1))
     approx_action_ref_risk = float(r@np.sum((pose-action)**2,axis=1))
     occupancy_error = np.abs(a@grid['support']-r@grid['support'])
+    # These output-only diagnostics do not change the preregistered marginal
+    # tolerances or trigger decisions. Equal marginals can hide joint dependence.
+    ac,rc=coords-a@coords,coords-r@coords
+    covariance_difference=(ac*a[:,None]).T@ac-(rc*r[:,None]).T@rc
+    wall_groups=grid['wall_group_id']
+    ag=np.bincount(wall_groups,weights=a);rg=np.bincount(wall_groups,weights=r)
     return dict(label='FINITE_GRID_DISCREPANCY_NO_GLOBAL_CERTIFICATE',coordinate_cdf_sup=np.asarray(cdf_sup),
                 event_px_ge_0_error=float(abs(a[grid['pose'][:,0]>=0].sum()-r[grid['pose'][:,0]>=0].sum())),
                 mode_mass_max_error_ref_ge_005=float(np.abs(am[selected]-rm[selected]).max()) if np.any(selected) else 0.,
                 evaluated_mode_ids=np.flatnonzero(selected),occupancy_error=occupancy_error,
+                mode_partition='occupancy support only',
+                joint_total_variation=float(.5*np.abs(a-r).sum()),
+                joint_atom_max_probability_error=float(np.abs(a-r).max()),
+                wall_group_total_variation=float(.5*np.abs(ag-rg).sum()),
+                wall_pose_cross_covariance_difference=covariance_difference[:8,8:],
+                joint_diagnostics_change_frozen_gate=False,
                 occupancy_max_error=float(occupancy_error.max()),action=action,reference_action=optimal,
                 loss='target pose Euclidean squared loss: (px-action_x)^2 + (py-action_y)^2',
                 reference_bayes_risk=ref_risk,approx_action_reference_risk=approx_action_ref_risk,

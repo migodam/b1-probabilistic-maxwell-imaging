@@ -8,7 +8,7 @@ from pathlib import Path
 import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
-EXCLUDED={'.git','.aws','.codex','.agents','.venv','.deps','node_modules','__pycache__'}
+EXCLUDED={'.git','.aws','.codex','.agents','.venv','.deps','node_modules','__pycache__','release_assets'}
 EXPORTS={'COST_SUMMARY.json','EXPORT_STATUS.json','A0_ANALYSIS_PROVENANCE.json','PHYSICS_LEDGER.jsonl','FAILURE_LEDGER.jsonl','PUBLICATION_ARRAY_MANIFEST.csv'}
 
 
@@ -196,7 +196,7 @@ def run(args):
         if path.exists():
             data=json.loads(path.read_text())
             failures.append(dict(category='E0_ORIGINAL_QUALIFICATION_AND_REFINEMENT_HISTORY',source=rel,evidence=data,
-                scope='Original h=.200/.185 qualification attempts and subsequent refinement are retained independently of final gate; inspect recorded per-row h and outcomes.'))
+                scope='Original qualification attempts and subsequent refinement are retained independently of final gate; inspect the actual recorded per-row discretization and outcomes.'))
     # Preserve compiler provenance using the actual failed job log when present.
     compiler_log=root/'results/jobs/finite-bank-001/OUTPUT.log'
     if compiler_log.exists():

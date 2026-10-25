@@ -1,0 +1,128 @@
+{
+  "status": "FROZEN_BEFORE_ADJOINT_POLISH_EXECUTION",
+  "scope": "ORDINARY_OPTIMIZER_ERROR_DIAGNOSTIC_NOT_MATCHED_SPEED_WIN",
+  "main_A0_unchanged": true,
+  "parents": [
+    0,
+    3,
+    6,
+    9
+  ],
+  "noise_repeats": [
+    0,
+    1
+  ],
+  "conditions": 8,
+  "known_target_intrinsic": {
+    "contrast": 3.0,
+    "radius": 0.12,
+    "loss": 0.02
+  },
+  "theta_order": [
+    "epsinf",
+    "ell",
+    "px",
+    "py",
+    "gain_offset",
+    "phase"
+  ],
+  "lower": [
+    1.5,
+    0,
+    -1,
+    1.6,
+    -0.01,
+    -0.01
+  ],
+  "upper": [
+    6,
+    0.25,
+    1,
+    2.6,
+    0.01,
+    0.01
+  ],
+  "prior": "Unchanged proper physical box, .5/.5 support-grid level prior and conditioned Bernoulli(.65) support mass; truncated independent Gaussian gain/phase sigma .005. No algorithmic damping as prior.",
+  "initialization": "Best saved main selection over all three methods by recomputed hierarchical online MAP objective only; no true labels, holdout scores or final error used",
+  "optimizer": {
+    "method": "L-BFGS-B",
+    "combined_fun_gradient": true,
+    "max_unique_joint_theta": 20,
+    "maxfun": 20,
+    "maxiter": 20,
+    "maxls": 20,
+    "no_op": "Retain saved main start if no paid online trial improves its unchanged data-plus-prior objective",
+    "quality_based_extra_iterations": false,
+    "numerical_coordinates": "u=(theta-LOWER)/(UPPER-LOWER), bounds[0,1]^6; gradient_u=gradient_theta*public_box_widths",
+    "public_box_widths": [
+      4.5,
+      0.25,
+      2.0,
+      1.0,
+      0.02,
+      0.02
+    ],
+    "preconditioning_scope": "Ordinary public box-width preconditioning only; no prior/objective change, clipping, jitter or truth-based tuning"
+  },
+  "weighted_gradient": {
+    "function": "wslam.physics.weighted_material_gradient(ev,world,raw_residual,gamma)",
+    "raw_residual": "unwhitened complex gamma*F-y",
+    "returns": "four physical gradients and metadata",
+    "paid_transpose_rhs": 2,
+    "gamma_columns": "analytic gain/phase derivatives plus unchanged sigma .005 prior"
+  },
+  "audit": {
+    "condition": "parent0 repeat0 first evaluation only",
+    "upgrade": "same current FE state to full shared J;16 extra transpose RHS",
+    "direct": "Re((gamma*J4)^H residual)/sigma^2",
+    "scaling": [
+      4.5,
+      0.25,
+      2,
+      1
+    ],
+    "relative_scaled_max_threshold": 1e-09,
+    "mismatch": "raise immediately, retain failure, no offline scoring"
+  },
+  "forward": {
+    "h": 0.17,
+    "n": 256,
+    "grid": 2,
+    "order": 3,
+    "f": 1.0
+  },
+  "budget": {
+    "stage": "A0",
+    "minimum_start_rhs": 700,
+    "minimum_start_factorizations": 180,
+    "no_borrowing": true,
+    "training_rhs_upper": 640,
+    "training_factorizations_upper": 160,
+    "audit_rhs_upper": 16,
+    "holdout_rhs_upper": 16,
+    "holdout_factorizations_upper": 8,
+    "fine_rhs_upper": 4,
+    "fine_factorizations_upper": 2,
+    "total_rhs_upper": 676,
+    "total_factorizations_upper": 170
+  },
+  "holdout": {
+    "sources": "independent outer2TX16RX f1",
+    "access": "All8 online outputs terminal and durable first",
+    "qualification": "Previously exposed development re-evaluation, not a new blind test",
+    "noise_envelope": "Unchanged frozen DISCREPANCY_RULE.json"
+  },
+  "finer": {
+    "parent": 0,
+    "noise_repeats": [
+      0,
+      1
+    ],
+    "h": 0.17,
+    "n": 384,
+    "grid": 3,
+    "scope": "Descriptive check only"
+  },
+  "cost_attribution": "Initialization depends on all three paid main arms and their common proposal bank. Retain shared setup/main costs, report actual new costs separately; no matched-cost speedup claim.",
+  "scientific_gate": "NO_NEW_GO_GATE_PARENT_REVIEW_REQUIRED"
+}

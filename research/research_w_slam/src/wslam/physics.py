@@ -244,3 +244,50 @@ def surface_shape_jacobian(p, s, qnodes, boundary_points, normals, ds,
     j = np.einsum('n,ns,nr,nj->srj', p.k**2*weights*jump,
                   field, receiver, velocity, optimize=True)
     return j.reshape(s.field.shape[1]*len(p.rx), velocity.shape[1])
+
+
+def weighted_material_gradient(ev, world, raw_residual, gamma, sigma=.01):
+    """Ordinary exact-data VJP, two wall + two real pose coordinates.
+
+    The bilinear transpose load is gamma*conj(residual)/sigma². This is
+    equivalent to a conjugate-adjoint formulation with its conjugations placed
+    consistently. One transpose RHS per illumination, reusing the forward LU.
+    It is a standard full-adjoint action, not a feedback/ROM innovation.
+    """
+    from .world import boundary_quadrature
+    from .fem_backend import line_green
+    p,s=ev.backend,ev.state
+    _state(p,s)
+    residual=np.asarray(raw_residual,dtype=np.complex128)
+    ns=s.field.shape[1]
+    if (s.receiver_mode!='probe' or not ev.metadata['target_included']
+            or residual.shape!=s.data.shape or not np.isfinite(residual).all()
+            or not np.isfinite(gamma) or sigma<=0):
+        raise ValueError('Weighted point VJP requires a finite target-present point-output state')
+    weights=gamma*np.conj(residual)/sigma**2
+    rhs=np.asfortranarray(p._receiver_probe[:,p._free_dofs].T@weights.T)
+    p.book.reserve(p.phase,'weighted_point_material_vjp',rhs=ns,
+                   factorizations=0,freq=p.freq,forward_factor_reused=True)
+    v=s.factor.solve(rhs,trans='T')
+    defects=np.linalg.norm(s._matrix.T@v-rhs,axis=0)/np.maximum(np.linalg.norm(rhs,axis=0),np.finfo(float).tiny)
+    backward=float(defects.max())
+    p._event('backend_solve',label='weighted_point_material_vjp',rhs=ns,
+             transpose='T',residual=backward,factor_reused=True)
+    if not np.isfinite(v).all() or backward>p.residual_tolerance:
+        raise RuntimeError('Weighted material-adjoint backward residual exceeds frozen tolerance')
+    nodes=np.zeros((p.ndofs,ns),dtype=np.complex128);nodes[p._free_dofs]=v
+    qquad=np.column_stack([np.asarray(p.material_basis.interpolate(nodes[:,i])).ravel() for i in range(ns)])
+    n=int(ev.metadata['circle_polygon_n'])
+    d=world.material_directions(s.material_points,p.freq,n,kind='shared')[:,:2]
+    material=np.real(np.einsum('n,ns,ns,nj->j',p.k**2*s.material_weights,s.field,qquad,d,optimize=True))
+    points,normal,ds,radial=boundary_quadrature(world.pose,world.radius,n)
+    probe=p.basis.probes(points.T)
+    incident=line_green(points,s.illumination['positions'],p.k)*np.asarray(s.illumination['amplitudes'])[None,:]
+    field=incident+probe@s.scattered_dofs
+    qboundary=probe@nodes
+    jump=world.contrast+1j*world.target_loss/p.freq
+    pose=np.real(np.einsum('n,ns,ns,nj->j',p.k**2*ds*jump,field,qboundary,normal,optimize=True))
+    return np.r_[material,pose],dict(backward_residual=backward,paid_rhs=ns,
+        full_factor_reused=True,coordinate_order=['epsinf','ell','pose_x','pose_y'],
+        formula='Re sum gamma conj(raw residual) dF / sigma_real²',
+        type='ORDINARY_FULL_ADJOINT_NO_ROM')

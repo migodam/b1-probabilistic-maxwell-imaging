@@ -1,0 +1,21 @@
+
+{"stage": "E0E1", "label": "refinement01-001", "command": ["/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python", "tools/e0_refine.py"], "start_unix": 1792904262.2984052}
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/tools/e0_refine.py", line 107, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/tools/e0_refine.py", line 51, in main
+    reference=solver.evaluate(world,freq)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/src/wslam/forward.py", line 64, in evaluate
+    started=time.perf_counter();p=self.get_backend(world,f)
+                                  ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/src/wslam/forward.py", line 60, in get_backend
+    self.backend=FEM(f,self.tx,self.rx,self.book,h=self.h,order=self.order,mesh=mesh,pml=self.pml,phase=self.stage,receiver_mode='probe')
+                 ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/src/wslam/fem_backend.py", line 374, in __init__
+    raise MemoryError(f'FEM pre-Basis gate: {expected_dofs} DOFs '
+    ...<2 lines>...
+                      f'(limit {self.max_factor_bytes})')
+MemoryError: FEM pre-Basis gate: 70861 DOFs (limit 60000), estimated factor 1850322432 bytes (limit 1500000000)

@@ -18,7 +18,8 @@ from wslam.physics import acquisition
 ROOT=Path(__file__).resolve().parents[1]
 METHODS=['HARD_FROZEN_WALL','ITERATIVE_LAYER_POINT','BATCH_JOINT_MAP',
  'INCREMENTAL_JOINT_SMOOTHER','PERIODIC_GLOBAL_REFRESH','SOFT_FREEZE',
- 'SPECTRAL_ONLY','INNOVATION_ONLY','TASK_WEIGHTED','QUALIFIED_REOPEN']
+ 'SPECTRAL_ONLY','INNOVATION_ONLY','TASK_WEIGHTED','QUALIFIED_REOPEN',
+ 'ONLINE_TASK_WEIGHTED_PROXY']
 
 def jsave(p,obj):
     p.write_text(json.dumps(obj,indent=2,default=json_default,allow_nan=False)+'\n')
@@ -32,7 +33,7 @@ def likelihood(y,means):
     difference=(means-y)/.01
     return -.5*np.sum(difference.real**2+difference.imag**2,axis=-1)
 
-def gaussian_reopen(old,coords,means,y,reference_tau):
+def _gaussian_reopen(old,coords,means,y,reference_tau):
     """Moment regression surrogate; D6-8 valid only for this named Gaussian.
 
     Uses cached candidate responses available to all arms. It is not the local
@@ -72,6 +73,17 @@ def gaussian_reopen(old,coords,means,y,reference_tau):
         dual_interval=audit['dual_interval'],dual_residuals=audit['dual_residuals'],
         lower_bound=audit['lower_bound_source'])
 
+def gaussian_reopen(old,coords,means,y,reference_tau):
+    """An unqualified numerical surrogate must reopen, never certify freezing."""
+    try:
+        return _gaussian_reopen(old,coords,means,y,reference_tau)
+    except (ValueError,np.linalg.LinAlgError,FloatingPointError) as exc:
+        return dict(defined=False,scope='NUMERICALLY_UNQUALIFIED_MOMENT_REGRESSION',
+            reason=repr(exc),true_posterior_certificate=False,
+            decision='CONSERVATIVE_REOPEN',spectral_reopen=True,
+            innovation_reopen=True,task_reopen=True,
+            modified_precision=False,jitter_added=False,tolerance_relaxed=False)
+
 def main():
     bankroot=ROOT/'results/e2e3/finite_bank';online=bankroot/'online'
     independent_check=json.loads((ROOT/'results/e2e3/bank_validation/RESULTS.json').read_text())
@@ -92,6 +104,8 @@ def main():
         if complex(z['known_gamma'])!=1 or float(z['sigma_real_imag'])!=.01:
             raise RuntimeError('Finite-prior calibration/noise mismatch')
     protocol=json.loads((ROOT/'FINITE_PILOT_SUPPLEMENT.json').read_text())
+    online_addition=json.loads((ROOT/'E2_ONLINE_POLICY_ADDITION.json').read_text())
+    if online_addition['added_method']!='ONLINE_TASK_WEIGHTED_PROXY':raise RuntimeError('Wrong online-policy addition')
     out=ROOT/'results/e2e3/inference';out.mkdir(parents=True,exist_ok=False)
     prior=grid['prior_weight'];coords=joint_coordinates(grid);N=len(prior)
     if (means.shape!=(2950,4,16) or observed.shape!=(12,2,4,16) or identifiers.shape!=(12,2,3)
@@ -103,7 +117,7 @@ def main():
     shape=observed.shape[:2]
     references=np.zeros((*shape,3,N));lls=np.zeros_like(references)
     completed_mask=np.zeros((*shape,3),bool)
-    allweights=np.zeros((*shape,3,len(METHODS),N));logs=[];summaries=[]
+    allweights=np.zeros((*shape,3,len(METHODS),N));logs=[];summaries=[];method_beliefs=[]
     seq=[([0],[8]),([1],[8]),([0,1],[i for i in range(16) if i!=8])]
     worst_refresh=0.;likelihood_work=0
     for parent in range(shape[0]):
@@ -163,14 +177,23 @@ def main():
                             reopen=(t%2==1);w=ref.copy() if reopen else stale
                             action='GLOBAL_RELINEARIZE' if reopen else 'SOFT_FREEZE'
                         else:
-                            pose=grid['pose'];mean_pose=ref@pose
-                            reference_risk=float(ref@np.sum((pose-mean_pose)**2,axis=1))
-                            criterion=gaussian_reopen(old,coords,newmeans,y,.05*reference_risk+.005**2)
+                            pose=grid['pose']
+                            if method=='ONLINE_TASK_WEIGHTED_PROXY':
+                                old_mean_pose=old@pose
+                                old_risk=float(old@np.sum((pose-old_mean_pose)**2,axis=1))
+                                criterion=gaussian_reopen(old,coords,newmeans,y,.05*old_risk+.005**2)
+                                criterion['threshold_source']='PREVIOUS_REPRESENTED_BELIEF_ONLY'
+                                criterion['current_reference_access_for_decision']=False
+                            else:
+                                mean_pose=ref@pose
+                                reference_risk=float(ref@np.sum((pose-mean_pose)**2,axis=1))
+                                criterion=gaussian_reopen(old,coords,newmeans,y,.05*reference_risk+.005**2)
                             if method=='TASK_WEIGHTED':
                                 criterion['reference_threshold_requires_full_update']=True
                                 criterion['reference_cpu_seconds_attribution']=batch_cpu+likelihood_cpu
                             key={'SPECTRAL_ONLY':'spectral_reopen','INNOVATION_ONLY':'innovation_reopen',
-                                 'TASK_WEIGHTED':'task_reopen','QUALIFIED_REOPEN':'task_reopen'}[method]
+                                 'TASK_WEIGHTED':'task_reopen','QUALIFIED_REOPEN':'task_reopen',
+                                 'ONLINE_TASK_WEIGHTED_PROXY':'task_reopen'}[method]
                             reopen=bool(criterion[key])
                             if method=='QUALIFIED_REOPEN':
                                 # Full finite reference audit is explicitly paid computation.
@@ -185,6 +208,12 @@ def main():
                             action='REOPEN' if reopen else 'SOFT_FREEZE'
                     cpu=time.process_time()-started
                     allweights[parent,repeat,t,mi]=w;old_methods[method]=w
+                    summary_start=time.process_time();method_summary=summarize(w,grid)
+                    belief_cpu=time.process_time()-summary_start
+                    method_beliefs.append(dict(parent=parent,repeat=repeat,time=t+1,method=method,
+                        belief=method_summary,qualification='exact finite joint belief' if method=='INCREMENTAL_JOINT_SMOOTHER' else
+                        'method approximation/point action; see full reference discrepancies',
+                        summary_cpu_seconds=belief_cpu))
                     metrics=posterior_metrics(w,ref,grid)
                     tau=.05*metrics['reference_bayes_risk']+.005**2
                     probability_ok=bool(max(metrics['coordinate_cdf_sup'][8:])<=.02 and
@@ -194,7 +223,8 @@ def main():
                         posterior_metrics=metrics,probability_tolerance_met=probability_ok,
                         task_tolerance=tau,task_tolerance_met=bool(metrics['action_regret']<=tau),
                         cpu_seconds=cpu,shared_likelihood_cpu_seconds=likelihood_cpu,
-                        standalone_cpu_seconds=cpu+likelihood_cpu+(batch_cpu if method in
+                        belief_summary_cpu_seconds=belief_cpu,
+                        standalone_cpu_seconds=cpu+belief_cpu+likelihood_cpu+(batch_cpu if method in
                             ('BATCH_JOINT_MAP','HARD_FROZEN_WALL','ITERATIVE_LAYER_POINT',
                              'PERIODIC_GLOBAL_REFRESH','TASK_WEIGHTED','QUALIFIED_REOPEN') else 0.),
                         shared_batch_reference_cpu_seconds=batch_cpu,
@@ -209,6 +239,7 @@ def main():
                 completed_mask=completed_mask,complete=bool(completed_mask.all()),
                 parent_id=np.arange(shape[0]),repeat_id=np.arange(shape[1]))
             jsave(out/'METHOD_RESULTS.json',logs);jsave(out/'BELIEFS.json',summaries)
+            jsave(out/'METHOD_BELIEFS.json',method_beliefs)
             print(json.dumps(dict(parent=parent,repeat=repeat,status='ONLINE_SAVED')),flush=True)
     # All decisions are now saved. Truth is only an offline scoring input here.
     offline=np.load(bankroot/'offline/FINITE_PRIOR_TRUTHS_AND_NOISE.npz',allow_pickle=False)

@@ -2,6 +2,7 @@
 from pathlib import Path
 import json
 import numpy as np
+from scipy.linalg import block_diag
 from wslam.information import dynamic_information,schur,conditional_innovation,svd_audit
 from wslam.accounting import json_default
 from wslam.physics import pack,packj
@@ -26,6 +27,18 @@ for label,path in [('D1',source/'dynamic/full_joint_base_right.npz'),
         naive_incorrect_vs_augmented_error=float(np.linalg.norm(naive-ordinary['information'])),
         absolute_information_eigenvalues=np.linalg.eigvalsh(actual['information']),
         scope='matrix identity on actual Maxwell Jacobian, not finite PDE uniqueness'))
+z=np.load(source/'rank_audit/MINIMAL_INTRINSIC_D2.npz');a=z['A'];bs=z['B_shared']
+# Rigid intrinsic target: two per-time poses but only ONE shared material block.
+b=np.column_stack((block_diag(bs[:2,:2],bs[2:,:2]),bs[:,2:]))
+d=np.column_stack((-np.eye(2),np.eye(2),np.zeros((2,3))));q=.03**2*np.eye(2)
+actual=dynamic_information(a,b,d,q);ordinary=schur(a,b,d.T@np.linalg.solve(q,d))
+rows.append(dict(case='D2_SHARED_INTRINSIC',formula=actual['formula'],B_rank=svd_audit(b)['rank'],B_columns=b.shape[1],
+    intrinsic_material_shared_across_observations=True,
+    null_motion_rank=actual['null_motion_rank_audit']['rank'],
+    absolute_information_eigenvalues=np.linalg.eigvalsh(actual['information']),
+    normalized_corrected_vs_augmented_error=float(np.linalg.norm(actual['information']-ordinary['information'])/max(1.,np.linalg.norm(ordinary['information'])))))
+np.savez_compressed(out/'D2_SHARED_INTRINSIC.npz',A=a,B=b,D=d,Q=q,information=actual['information'],
+                    augmented_information=ordinary['information'],null_motion_projector=actual['null_motion_projector'])
 z=np.load(source/'dynamic/pose0_f1.npz');j=z['J'].reshape(4,16,7)
 j0=packj(j[0,:,:4]);j1=packj(j[1,:,:4])
 prior=np.eye(4)*100.**-2

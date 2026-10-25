@@ -60,7 +60,7 @@ def main(argv=None):
     output_path, receipt_path = job_dir/'OUTPUT.log', job_dir/'RECEIPT.json'
     env = os.environ.copy()
     env.update(PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1',VECLIB_MAXIMUM_THREADS='1',NUMEXPR_NUM_THREADS='1',BLIS_NUM_THREADS='1',WSLAM_STAGE=phase)
-    env['PYTHONPATH'] = os.pathsep.join(map(str,(ROOT/'src',ROOT/'vendor',ROOT.parent/'research-w-continuation'/'.deps')))
+    env['PYTHONPATH'] = os.pathsep.join(map(str,(ROOT/'src',ROOT/'vendor')))
     env['MPLCONFIGDIR'] = str(ROOT/'results'/'.matplotlib-cache')
     ledger = Path(env.get('WSLAM_LEDGER',ROOT/'results'/'budget_ledger.json')).resolve()
     # Each project job uses the same lock, avoiding competing CPU allowances.

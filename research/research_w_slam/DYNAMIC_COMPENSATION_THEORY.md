@@ -1,6 +1,6 @@
-# 动态补偿理论与当前实验接口：提取草稿
+# 动态补偿理论、条件与实际实验接口
 
-本文件对应研究包 `source_package/Research_W_SLAM_Report_ZH.md` 与 `src/wslam/information.py`，只转述数学接口和已实施实验的范围。标准 Schur 补、SVD 消元、线性高斯条件化与对偶残差界本身不作为原创性主张；最终理论有效性、创新性和科学解释留给主线程。
+本文件对应研究包 `source_package/Research_W_SLAM_Report_ZH.md` 与 `src/wslam/information.py`，记录经主线程核对的数学条件和已实施实验范围。标准 Schur 补、SVD 消元、线性高斯条件化与对偶残差界本身不作为原创性主张；数值核对与有限非线性物理证据分别裁决。
 
 ## 参数和观测
 
@@ -36,6 +36,6 @@ E1最小端口方向来自固定局部基点的“共享减独立”广义信息
 
 ## 文献和可追踪原始量
 
-文献起点来自`source_package/References_Main.md`与`Literature_Audit.md`。主要DOI线索为 iSAM2 `10.1177/0278364911430419`、IGG/SPO2026 `10.3390/robotics15050087`、Watson2024 `10.1088/1361-6420/ad5b83`、Wang–Amin2006 `10.1109/TSP.2006.879325`、Yao `10.1109/TIM.2024.3502875`。网络重试证据`research/delegated/literature/rawbundle/verify_network_retry.json`中四项均返回HTTP429；IGG/SPO不在该四项重试中。不能把任何一项标成当前在线正文核验通过。本文件不据此给出最终相关工作或新颖性判断。
+文献起点来自`source_package/References_Main.md`与`Literature_Audit.md`。主要DOI线索为 iSAM2 `10.1177/0278364911430419`、IGG/SPO2026 `10.3390/robotics15050087`、Watson2024 `10.1088/1361-6420/ad5b83`、Wang–Amin2006 `10.1109/TSP.2006.879325`、Yao `10.1109/TIM.2024.3502875`。网络重试证据`research/delegated/literature/rawbundle/verify_network_retry.json`中四项均返回HTTP429；IGG/SPO不在该四项重试中。该首次CLI记录不能当作正文核验通过。其后定向核对的原始来源及证据层级见research/delegated/literature/PRIMARY_READBACK_20261025.md；仍不构成全面新颖性检索。
 
 当前E1原始矩阵位于`results/e1/dynamic/`，图注和缺口清单位于`figures/actual_e0_e1/SCHEMA_AND_MISSING.json`。缺少完整优化轨迹、试探复场和confusion NPZ内部的干扰列名；不可从最终端点反推未保存的过程。与绘图相关的180秒保守上界已经由父线程记账；它不是精确CPU测量，不再次计入本理论整理。

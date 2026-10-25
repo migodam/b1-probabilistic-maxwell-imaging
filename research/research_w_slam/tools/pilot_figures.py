@@ -201,6 +201,41 @@ def main():
              '已保存3x3扩展的离线真值与已计费候选墙系数，位于同一公共24×6网格。全部面板共用epsilon_inf1–6色标；不改写候选/不收敛状态，不生成新波场或PDE。',
              ['results/a0/wide_extension/offline/TRUTHS.json','results/a0/wide_extension/parent_*_primary.npz'])
     else:gaps.append('Optional3x3 extension terminal/truth inputs absent; no matched material panel invented')
+    # Optional ordinary adjoint polish: primary arms stay frozen. All GT metric
+    # pairs are read only by the helper after all eight online outputs are durable.
+    from polish_artifacts import load_polish
+    polish=load_polish(root)
+    table('A0_POLISH_ALL_ACTUAL_TRIALS',polish['trials'])
+    if polish['trials']:
+        fig,axes=plt.subplots(1,2,figsize=(10,4))
+        for parent in polish['parent_ids']:
+            for repeat in (0,1):
+                rr=[r for r in polish['trials'] if r['parent']==parent and r['repeat']==repeat and r['objective'] is not None]
+                paid=[r for r in rr if r['rhs_since_case_start'] is not None]
+                if rr:axes[0].plot([r['attempt'] for r in rr],[r['objective'] for r in rr],'o-',ms=3,label=f'P{parent}/r{repeat}')
+                if paid:axes[1].plot([r['rhs_since_case_start'] for r in paid],[r['objective'] for r in paid],'o-',ms=3)
+        axes[0].set_xlabel('Actual combined call attempt');axes[1].set_xlabel('Reserved RHS since case start (audit included)')
+        for ax in axes:ax.set_ylabel('Saved actual objective')
+        axes[0].legend(fontsize=6)
+        save(fig,'A0_polish_actual_trial_objectives','Optional ordinary known-intrinsic optimization diagnostic: all saved valued trials; cached/failed/unpaid attempts remain in CSV even when no objective/RHS point exists. First native-J audit cost is included. Starts depend on all three primary arms plus the shared paid bank; no matched speed comparison.',
+             '可选的已知目标内禀参数普通优化诊断：绘制全部已有目标值的实际试探；缓存/失败/未付费尝试即使没有可绘点也保留在CSV。含首次原生J审核成本；初始化依赖三个主方法及共同已付费bank，不构成匹配速度比较。',
+             ['results/a0/adjoint_polish/parent_*/ATTEMPTS.json','results/a0/adjoint_polish/RESULTS.json'])
+    if polish.get('offline_status')=='SAVED_TERMINAL_OFFLINE_PAIR_SUMMARY':
+        pairs=[dict(r,diagnostic='ordinary_adjoint_polish') for r in polish['paired_rows']]
+        table('A0_POLISH_PAIRED_BEFORE_AFTER',pairs)
+        fields=['objective','training_noise_energy','holdout_noise_energy','pose_error_lambda0','material_eps_contrast_L2','material_ell_L2']
+        metrics=[field+suffix for field in fields for suffix in ('_before','_after','_change')]
+        parentrows=grouped(pairs,'diagnostic',metrics);table('A0_POLISH_FOUR_PARENT_MEANS',parentrows)
+        fig,axes=plt.subplots(2,3,figsize=(11,6))
+        for ax,field in zip(axes.ravel(),fields):
+            for row in parentrows:
+                ax.plot([0,1],[row[field+'_before'],row[field+'_after']],'o-',label=f"P{row['parent']}")
+            ax.set_xticks([0,1],['Saved main start','Adjoint polish']);ax.set_ylabel(field)
+        axes[0,0].legend(fontsize=7)
+        save(fig,'A0_polish_exploratory_pairs','Fixed four-parent×two-repeat diagnostic, parent means first. Before/after objectives, data fit, exposed development holdout and offline GT errors are separate. No formal confidence interval from four clusters; no blind test, matched speed win, new support search or reset A0 budget. Original three arms remain unchanged.',
+             '固定4个parent×2副本的探索诊断，先按parent平均。分开显示目标函数、数据拟合、已暴露开发留出及离线真值误差。4簇不报告正式置信区间；不是盲测、匹配加速、新支撑搜索或重置A0预算，原三个主方法保持不变。',
+             ['results/a0/adjoint_polish/RESULTS.json','results/a0/adjoint_polish/OFFLINE_SCORES.json','results/a0/scoring/RESULTS.json'])
+    else:gaps.append('Optional adjoint polish paired offline summary NOT_RUN: '+str(polish.get('offline_status',polish.get('reason'))))
     # Finite atom coordinates and joint weights; no wslam module import.
     infer=root/'results/e2e3/inference';gridpath=root/'results/e2e3/finite_bank/online/FINITE_GRID.npz'
     methods=jsonread(infer/'METHOD_RESULTS.json');scores=jsonread(infer/'OFFLINE_SCORES.json')
@@ -384,6 +419,7 @@ def main():
         A0_noiseless_analysis_source='results/a0/analysis_repaired/RESULTS.json' if valid_repaired else 'UNAVAILABLE_NOT_COMPLETE_EVALUABLE72',
         A0_original_analysis_status='PRESERVED_LAYOUT_FAILURE_NOT_NEGATIVE_PHYSICAL_FINDING',
         finite_setup_CPU_policy='Only online/JOB_COST_FINAL.json with complete=true; never in-flight COST_RECEIPT or COMPLETE snapshot',
+        ordinary_adjoint_polish=dict(status=polish['status'],independent_parents=4,bootstrap=polish['bootstrap'],holdout_scope=polish['holdout_scope'],matched_speed_claim=False),
         no_scientific_gate_assigned=True),ensure_ascii=False,indent=2))
     print(json.dumps(dict(output=str(out),figure_count=len(manifest),gaps=gaps)))
 

@@ -6,6 +6,7 @@ Reads snapshots only; never modifies or charges the authoritative ledger.
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import tempfile
 
@@ -30,7 +31,9 @@ def run(args):
     if checkpoint.get('status')!='COMPLETE' or complete.get('status')!='COMPLETE' or int(checkpoint.get('completed',0))!=2950:
         raise RuntimeError('complete physical bank and terminal COMPLETE receipt required')
     ledger=json.loads((root/'results/budget_ledger.json').read_text());events=ledger['events']
-    starts=[(i,e) for i,e in enumerate(events) if e.get('kind')=='reservation' and e.get('source')=='run_job' and str(e.get('label','')).startswith('finite-bank-')]
+    def constructs_bank(event):
+        return any(Path(str(part)).name=='finite_bank.py' for part in event.get('command',[]))
+    starts=[(i,e) for i,e in enumerate(events) if e.get('kind')=='reservation' and e.get('source')=='run_job' and constructs_bank(e)]
     if not starts:raise RuntimeError('no finite-bank wrapper starts found')
     jobs=[];covered=set();raw_receipts=[]
     for start_index,start in starts:
@@ -54,7 +57,10 @@ def run(args):
     # Discover receipt-only finite-bank jobs, rather than silently omitting them.
     declared={row['label'] for row in jobs}
     for directory in (root/'results/jobs').glob('finite-bank-*'):
-        if directory.is_dir() and directory.name not in declared:
+        receipt=directory/'RECEIPT.json'
+        actual_bank=(receipt.exists() and constructs_bank(json.loads(receipt.read_text())))
+        conventional_bank_name=bool(re.fullmatch(r'finite-bank-\d+',directory.name))
+        if directory.is_dir() and (actual_bank or conventional_bank_name) and directory.name not in declared:
             raise RuntimeError('finite-bank job directory has no authoritative matched start/completion: '+directory.name)
     physical=[event for i,event in enumerate(events) if i in covered and event.get('kind')=='reservation' and event.get('stage')=='E2E3']
     rhs=sum(e.get('rhs',0) for e in physical);fe=sum(e.get('factorizations',0) for e in physical)
@@ -70,7 +76,8 @@ def run(args):
         physical_bank=dict(planned_rhs=11800,planned_factorizations=2950,actual_rhs=rhs,actual_factorizations=fe),
         jobs=jobs,failed_jobs_included=[row['label'] for row in jobs if row['exit_code']!=0],
         raw_wrapper_receipts=raw_receipts,max_child_rss_by_unit=rss_by_unit,
-        cpu_source='Only authoritative finite-bank-* job_completion measured CPU, each event counted once',
+        cpu_source='Only authoritative finite_bank.py wrapper job_completion measured CPU, each event counted once',
+        selection_rule='command contains finite_bank.py; validation/finalizer commands excluded even with similar labels',
         wall_source='Only those measured wrapper walls, each once; no solver timers or estimates added',
         original_in_child_receipts_preserved=['online/COST_RECEIPT.json','CHECKPOINT.json','COMPLETE.json'],
         in_child_CPU_warning='Raw bank receipts omit their own in-flight wrapper CPU; use this terminal setup receipt for attribution',
