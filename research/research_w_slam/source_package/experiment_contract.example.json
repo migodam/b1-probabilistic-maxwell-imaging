@@ -1,0 +1,318 @@
+{
+  "protocol": "Research W-SLAM",
+  "version": "2026-10-24 UTC",
+  "status": "DRAFT_REQUIRES_PREREGISTRATION",
+  "actual_maxwell_experiment_executed_by_this_report": false,
+  "historical_evidence_commits": [
+    "958a478739d9553269316ded8125fda9df225c0c",
+    "483d260c6b5b111db9fb814b096685fccb362448"
+  ],
+  "physics": {
+    "initial_model": "2D scalar-TM full-wave",
+    "initial_solver_family": "body-fitted high-order FEM",
+    "time_convention": "exp(-i omega t)",
+    "lambda0_physical_units": null,
+    "frequency_list": [
+      1000000000.0
+    ],
+    "public_roi": {
+      "coordinate_unit": "lambda0",
+      "x_bounds": [
+        -1.5,
+        1.5
+      ],
+      "y_bounds": [
+        0.5,
+        1.25
+      ],
+      "macrogrid_shape": [
+        24,
+        6
+      ]
+    },
+    "source_model": {
+      "polarization": "scalar-TM",
+      "positions_lambda0": [
+        [
+          -1.5,
+          0
+        ],
+        [
+          1.5,
+          0
+        ]
+      ],
+      "current_normalization": null
+    },
+    "receiver_ports": {
+      "count": 16,
+      "x_bounds_lambda0": [
+        -2,
+        2
+      ],
+      "y_lambda0": 0,
+      "spacing": "uniform_including_endpoints",
+      "source_receiver_coincidence_must_be_checked": true
+    },
+    "pml_and_boundary_contract": null,
+    "three_dimensional_certification_claimed": false,
+    "f0_hz": 1000000000.0,
+    "lambda0_definition": "c0 / f0",
+    "background": "air",
+    "mu_r": 1
+  },
+  "geometry": {
+    "proposed_contract": "G_GRID_0125_V1",
+    "macrocell_edge_lambda0": 0.125,
+    "forbid_diagonal_only_2_by_2_contacts": true,
+    "material_and_air_connectivity": 4,
+    "boundary_contact_rules": null,
+    "material_jump_rules": null,
+    "wall_target_contact_rules": null,
+    "minimum_wall_target_distance_lambda0": null,
+    "truth_geometry": null,
+    "truth_hole_count": null,
+    "old_minimum_feature_0_1_retroactively_certified": false,
+    "small_reference_region_grid_shapes": [
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "candidate_support_counts_before_geometry_filter": [
+      16,
+      512
+    ],
+    "all_candidate_supports_assumed_legal": false
+  },
+  "prior": {
+    "occupancy_measure": {
+      "unconditioned": "independent Bernoulli by public region",
+      "p": 0.65,
+      "condition_on_geometry_legality": true,
+      "normalization_constant": null
+    },
+    "continuous_material_measure": {
+      "epsilon_inf": {
+        "family": "Uniform",
+        "low": 1.5,
+        "high": 6
+      },
+      "ell_sigma_over_epsilon0_omega0": {
+        "family": "Uniform",
+        "low": 0,
+        "high": 0.25
+      },
+      "initial_material_sharing": "two continuous parameters shared across occupied regions",
+      "wide_class_regional_correlation": null
+    },
+    "passive_material_intervals": {
+      "epsilon_inf": [
+        1.5,
+        6
+      ],
+      "ell_sigma_over_epsilon0_omega0": [
+        0,
+        0.25
+      ]
+    },
+    "frequency_consistent_parameterization": "epsilon_r(omega)=epsilon_inf+i*ell*omega0/omega under exp(-i omega t)",
+    "target_prior": {
+      "initial_shape": "disk",
+      "initial_radius_lambda0": 0.12,
+      "initial_known_real_contrast": 3,
+      "center": {
+        "family": "Uniform rectangle",
+        "x_bounds_lambda0": [
+          -1,
+          1
+        ],
+        "y_bounds_lambda0": [
+          1.6,
+          2.6
+        ]
+      },
+      "separate_unknown_target_extension": {
+        "radius_lambda0": {
+          "family": "Uniform",
+          "low": 0.08,
+          "high": 0.18
+        },
+        "real_contrast": {
+          "family": "Uniform",
+          "low": 2,
+          "high": 5
+        },
+        "loss_prior": null,
+        "topology_prior": null
+      }
+    },
+    "pose_prior_and_gauge": {
+      "initial_pose_known": true,
+      "unknown_pose_navigation_prior": null,
+      "unknown_pose_anchor": null,
+      "do_not_invent_orientation_sensitivity_for_isotropic_point_source": true
+    },
+    "shared_gain_phase_prior": {
+      "amplitude": {
+        "family": "Uniform",
+        "low": 0.99,
+        "high": 1.01
+      },
+      "phase": {
+        "family": "Uniform",
+        "low": -0.01,
+        "high": 0.01
+      },
+      "shared_across_observations": true
+    },
+    "motion_covariance": null,
+    "proposal_density_and_jacobian": null
+  },
+  "noise": {
+    "active_noise_contract": "independent Gaussian real and imaginary components; common source/data normalization still requires E0 freeze",
+    "per_real_or_imag_component_sigma": 0.01,
+    "full_realified_covariance": "0.01^2 times identity after final observation dimension is fixed",
+    "historical_reference_sigma_per_real_or_imag_component": 0.01,
+    "historical_reference_is_not_automatically_new_contract": true,
+    "whitened_mean_distance_divided_by_dimension": false,
+    "random_seeds": null
+  },
+  "inference_guards": {
+    "optimizer_may_read_truth_support": false,
+    "optimizer_may_read_truth_hole_count": false,
+    "optimizer_may_use_near_truth_initialization_for_main_test": false,
+    "unique_observation_factor_ids_required": true,
+    "relinearization_replaces_factor_version": true,
+    "residual_softmax_is_evidence": false,
+    "local_gaussian_certificate_is_automatically_true_posterior_certificate": false
+  },
+  "task": {
+    "quantity_of_interest": "2D target center",
+    "loss_definition": "squared Euclidean target-center error",
+    "loss_weight_matrix": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "bounded_loss_maximum": null,
+    "task_regret_reference_risk_fraction": 0.05,
+    "task_regret_absolute_floor": {
+      "value_lambda0_squared": 2.5e-05,
+      "definition": "(0.005 lambda0)^2"
+    },
+    "position_unit": "lambda0",
+    "half_plane_event_boundary": null
+  },
+  "accuracy_gates": {
+    "initial_numerical_witness_whitened_response_difference_max": 0.1,
+    "numerical_witness_gate_alone_certifies_posterior": false,
+    "target_1d_cdf_sup_error_max": 0.02,
+    "specified_event_probability_absolute_error_max": 0.02,
+    "important_mode_mass_absolute_error_max": 0.02,
+    "important_mode_definition": null,
+    "likelihood_error_tolerance": null,
+    "reference_error_tolerance": null,
+    "rank_tolerance": null,
+    "predictive_discrepancy_statistic_and_acceptance_rule": null,
+    "independent_holdout_contract": null
+  },
+  "panel": {
+    "development_parent_worlds": 12,
+    "locked_test_parent_worlds": 24,
+    "independent_noise_repeats_per_world": 2,
+    "high_precision_95_percent_calibration_claim_from_this_panel": false,
+    "truth_manifest": null,
+    "split_manifest": null
+  },
+  "suggested_campaign_caps": {
+    "stop_at_first_limit": true,
+    "e0_e1_combined": {
+      "full_wave_rhs": 4000,
+      "fe_factorizations": 1200,
+      "cpu_seconds": 7200,
+      "counter_shared_between_prompts_0_and_1": true
+    },
+    "a0_small_and_wide_anchor": {
+      "full_wave_rhs": 12000,
+      "fe_factorizations": 3000,
+      "cpu_seconds": 14400
+    },
+    "e2_e3_development_pilot": {
+      "full_wave_rhs": 12000,
+      "fe_factorizations": 3000,
+      "cpu_seconds": 14400
+    },
+    "locked_tests_e4_e5_e6": {
+      "full_wave_rhs": null,
+      "fe_factorizations": null,
+      "cpu_seconds": null,
+      "requires_preregistered_cap_before_physical_run": true
+    },
+    "historical_92000_rhs_balance_automatically_carried_forward": false
+  },
+  "cost_comparison": {
+    "matched_probability_and_task_accuracy_required": true,
+    "locked_test_median_cpu_reduction_min": 0.2,
+    "locked_test_median_full_wave_rhs_reduction_min": 0.2,
+    "paired_parent_world_uncertainty_required": true,
+    "failed_accuracy_gate_fraction_must_be_reported": true,
+    "maximum_preregistered_engineering_revisions_before_method_stop": 2
+  },
+  "active_acquisition": {
+    "enabled": null,
+    "allowed_actions": {
+      "repeat_independent_noise_at_existing_geometry": true,
+      "append_frequency_ratios": [
+        0.85,
+        1.15
+      ],
+      "append_tx_positions_lambda0": [
+        [
+          -2.25,
+          0
+        ],
+        [
+          2.25,
+          0
+        ]
+      ],
+      "same_data_recomputation_is_new_acquisition": false
+    },
+    "acquisition_cost_model": null,
+    "latency_model": null,
+    "future_query_contract": null,
+    "retain_all_old_observation_channels": true,
+    "design_monte_carlo_error_tolerance": null,
+    "tie_break_rule": null
+  },
+  "reproducibility": {
+    "implementation_commit": null,
+    "environment_manifest": null,
+    "hardware_manifest": null,
+    "random_seed_manifest": null,
+    "preregistration_commit": null,
+    "gate_status": "NOT_RUN"
+  },
+  "remaining_pre_formal_test_blockers": [
+    "fixed exterior-domain and PML numerical settings",
+    "current source normalization and observation units",
+    "complete geometry boundary/contact rules",
+    "half-plane event boundary",
+    "rank and predictive discrepancy acceptance rules",
+    "random seeds and preregistration commit"
+  ],
+  "chronology_guard": {
+    "factor_processing_order_may_be_permuted_for_numerical_control": true,
+    "moving_target_timestamps_and_dynamics_edges_must_remain_fixed": true
+  }
+}

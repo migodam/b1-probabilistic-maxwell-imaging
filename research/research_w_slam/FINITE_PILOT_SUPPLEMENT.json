@@ -1,0 +1,44 @@
+{
+  "status": "FROZEN_BEFORE_FINITE_BANK_INFERENCE",
+  "prior_id": "FINITE_PRIOR_ENUM4_V1",
+  "scope": "controlled discrete prior on all 14 legal public 2x2 occupancy patterns, 3x3 material nodes, 5x5 pose nodes; calibrated instrument and known target intrinsic material",
+  "continuous_prior_certificate": false,
+  "state_count": 2950,
+  "independent_grid_audit": "12 deterministic state-index quantiles floor(linspace(0,2949,12)), n384/grid3, 48RHS/12FE within E2E3 cap; original0.1 tolerance; not uniform or posterior error certificate",
+  "parents": 12,
+  "noise_repeats": 2,
+  "seeds": {"worlds": 2026102504, "noise": 2026102505, "monte_carlo": 2026102506},
+  "observations": [
+    {"time": 1, "source_indices": [0], "receiver_indices": [8], "reason": "minimal Maxwell compensation test from E1"},
+    {"time": 2, "source_indices": [1], "receiver_indices": [8], "reason": "new source, shared wall and target pose"},
+    {"time": 3, "source_indices": [0, 1], "receiver_indices": [0,1,2,3,4,5,6,7,9,10,11,12,13,14,15], "reason": "remaining independent base-aperture channels; no reused observations"}
+  ],
+  "prior_bank": "2950 full-FEM four-source means shared equally by all methods; actual preparation charged E2E3, standalone attribution retains it",
+  "revisitation": {
+    "ordinary_incremental": "exact finite-prior factor update, equal to batch reference",
+    "hard_freeze": "early MAP wall group retained, target conditional updated",
+    "soft_freeze": "preserve early wall marginal and update target conditional; explicitly approximate until REOPEN correction",
+    "spectral_only": "reopen if new marginal wall information increment exceeds 10 percent of prior whitened trace",
+    "innovation_only": "reopen if posterior predictive innovation exceeds predeclared 99 percent Gaussian chi-square reference; heuristic for mixtures",
+    "task_weighted": "local Gaussian omitted-wall task regret plus omitted covariance exceeds tau",
+    "task_threshold_cost": "tau uses the current full finite-reference Bayes risk; its full update CPU is attributed. This reference-dependent diagnostic is not a cheap deployable certificate.",
+    "ordinary_iterative_point": "two finite-prior wall-then-pose coordinate MAP sweeps retaining all factors; explicitly not continuous layer-stripping FWI",
+    "qualified_reopen": "same local rule, plus finite-prior posterior discrepancy audit; auditing cost included and no cost advantage presumed",
+    "tau": "0.05 times reference target Bayes risk plus 0.005 squared",
+    "periodic": "exact global factor refresh every second new observation; finite table refresh, not FE relinearization",
+    "factor_refresh": "replace version of same factor and apply log-likelihood ratio or rebuild once from base prior"
+  },
+  "probability_comparisons": {"tolerance": 0.02, "important_mode_mass": 0.05, "SMC_particles": [256,1024], "MC_seeds": [0,1,2]},
+  "active_sensing": {
+    "conditional": "finite posterior reference valid; no continuous probability claim",
+    "starting_data": "time1 single complex port",
+    "actions": ["new independent repeat base-left full16RX", "base-right full16RX", "outer-left full16RX", "outer-right full16RX"],
+    "outcome_draws": 32,
+    "controls": ["Random","Uniform","EIG","SingularValue","PrincipalAngleSum","GeneralizedRetention","TaskEVSI"],
+    "local_singular_score": "minimum squared singular value of four public-scaled joint parameters; zero if rank<4, before any finite pilot outcomes",
+    "angle_retention_equivalence": "data-only range-normalized angle sum and retention trace are algebraically equivalent here; they are not distinct novelty evidence",
+    "new_frequency": "NOT_RUN; four-source cached acquisition only",
+    "noise": "independent action-evaluation noise, never reused to choose action"
+  },
+  "limitations": "No newly proved exact nonlinear nonrecoverable world pair is assumed. Missing such negative control remains an explicit E3 qualification gap. No parameter relabeling is used as a physical ambiguity."
+}

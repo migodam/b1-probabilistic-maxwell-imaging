@@ -1,0 +1,23 @@
+{
+  "status": "FROZEN_BEFORE_EXTENSION_EXECUTION_AND_MAIN_PERFORMANCE_SCORING",
+  "scope": "TARGET_INTRINSIC_NUISANCE_STRESS_NOT_UNKNOWN_INTRINSIC_PRIOR_SBC",
+  "main_A0_unchanged": true,
+  "truth_generator_intrinsic_fixed": {"contrast": 3.0, "radius": 0.12, "loss": 0.02},
+  "parents": [0,3,6,9], "noise_repeats": [0,1], "conditions": 8,
+  "initial_selection": "Best saved main-arm selection over all methods by recomputed hierarchical online data objective plus unchanged proper support/gain/phase prior; no truth or holdout access",
+  "initial_intrinsic": {"contrast": 3.0, "radius": 0.12},
+  "theta_order": ["epsinf","ell","px","py","gain_offset","phase","target_contrast","target_radius"],
+  "lower": [1.5,0.0,-1.0,1.6,-0.01,-0.01,2.0,0.08],
+  "upper": [6.0,0.25,1.0,2.6,0.01,0.01,5.0,0.18],
+  "x_scale": [4.5,0.25,2.0,1.0,0.02,0.02,3.0,0.1],
+  "fixed_target_loss": 0.02,
+  "prior": "Same proper bounded uniform physical coordinates and .5/.5 grid-level Bernoulli(.65)-conditioned support prior as main A0; independent truncated Gaussian gain/phase sigma .005. Contrast and radius independent proper uniforms on stated public bounds. Normalization constants common to candidate/no-op cancel; algorithmic TR damping is not statistical prior.",
+  "optimizer": {"method":"FullJ_TRF","max_nfev":6,"support":"fixed to online-selected main support","selection":"lowest recomputed extended-prior online objective among paid residual trials and saved-main no-op","jitter":false,"clipping":false},
+  "forward": {"h":0.17,"polygon_n":256,"field_grid_refinement":2,"order":3,"frequency":1.0,"training":"base2TX16RX","holdout":"independentouter2TX16RX"},
+  "cost": {"stage":"A0","required_start_headroom_rhs":900,"required_start_headroom_factorizations":60,"training_rhs_upper":864,"training_factorizations_upper":48,"primary_holdout_rhs_upper":16,"primary_holdout_factorizations_upper":8,"finer_rhs_upper":4,"finer_factorizations_upper":2,"total_rhs_upper":884,"total_factorizations_upper":58,"borrowing":false,"insufficient_headroom":"NOT_RUN"},
+  "finer": {"parents":[0],"noise_repeats":[0,1],"h":0.17,"polygon_n":384,"field_grid_refinement":3,"scope":"descriptive independent holdout numerical audit, no new gate"},
+  "noise_rule": "Unchanged results/a0/preparation/DISCREPANCY_RULE.json; one-sided conservative envelope, not fitted degrees of freedom or posterior calibration",
+  "offline_access": "All eight online selections must be terminal and durable before loading any offline truth or holdout",
+  "failures": "All trials, paid data/J/theta, nonconvergence and failed reservations retained; no automatic expensive retry",
+  "claims": {"unknown_intrinsic_prior_SBC":false,"posterior_certificate":false,"scientific_acceptance":"PARENT_REVIEW_REQUIRED"}
+}

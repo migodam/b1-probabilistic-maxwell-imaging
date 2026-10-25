@@ -1,0 +1,340 @@
+{
+  "status": "DIAGNOSTIC_COMPLETE_PARENT_REVIEW_REQUIRED",
+  "supplement": {
+    "status": "PREREGISTERED_BEFORE_INTRINSIC_NEGATIVE_PHYSICAL_RUN",
+    "freeze_date_utc": "2026-10-25",
+    "scope": "Known local E1 finite-compensation negative control, not online reconstruction or an exact PDE equality witness",
+    "base_world": {
+      "support": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "epsinf": [
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "ell": 0.08,
+      "target_pose": [
+        0.2,
+        2.0
+      ],
+      "contrast": 3,
+      "radius": 0.12,
+      "target_loss": 0.02
+    },
+    "frozen_wall_direction": [
+      0.019586943322844955,
+      1.0
+    ],
+    "direction_provenance": "results/e1/dynamic/RESULTS.json profile_direction_frozen; no endpoint results choose or change this direction",
+    "wall_steps": [
+      -0.01,
+      0.01
+    ],
+    "wall_parameterization": "Add wall_step times direction[0]/direction[1] to left/right epsilon_inf respectively; loss fixed",
+    "acquisition": "f0, first two base Tx, Rx array index 8 only, known gamma=1",
+    "noiseless_primary_reference": "results/e1/dynamic/pose0_f1.npz first two Tx, Rx8",
+    "independent_base_reference": "results/e1/rank_audit/JACOBIANS.npz independent_data first two Tx, Rx8",
+    "realification": "pack(data-reference): all real then all imaginary, sigma=0.01; packj uses identical row ordering",
+    "target_coordinates": [
+      "pose_x",
+      "pose_y",
+      "contrast",
+      "radius"
+    ],
+    "target_initial": [
+      0.2,
+      2.0,
+      3,
+      0.12
+    ],
+    "target_lower": [
+      -1,
+      1.6,
+      2,
+      0.08
+    ],
+    "target_upper": [
+      1,
+      2.6,
+      5,
+      0.18
+    ],
+    "target_loss_fixed": 0.02,
+    "optimization": {
+      "method": "scipy least_squares TRF",
+      "x_scale": [
+        2,
+        1,
+        3,
+        0.1
+      ],
+      "max_nfev": 8,
+      "jacobian_columns": [
+        2,
+        3,
+        4,
+        6
+      ],
+      "statistical_prior": "none",
+      "GN_damping_as_prior": false,
+      "jitter_or_pseudoinverse": false
+    },
+    "primary_solver": {
+      "h": 0.17,
+      "n": 256,
+      "grid_refinement": 2
+    },
+    "independent_solver": {
+      "h": 0.17,
+      "n": 384,
+      "grid_refinement": 3,
+      "forward_only": true
+    },
+    "local_rank_diagnostic": "Report 4x4 B primary/independent singular values and operator discrepancy before endpoint solves; empirical uncertainty only, no new rank gate",
+    "budget": {
+      "stage": "E0E1",
+      "primary_rhs_upper": 48,
+      "primary_factorizations_upper": 16,
+      "independent_rhs_upper": 4,
+      "independent_factorizations_upper": 2,
+      "total_rhs_upper": 52,
+      "total_factorizations_upper": 18,
+      "policy": "Shared campaign limits stop execution; no resets/refunds"
+    },
+    "interpretation": "Finite residuals, optimizer status and observed two-grid mean discrepancies only. No exact continuum/PDE equality, global nonidentifiability, posterior or general unknown-wall reconstruction claim"
+  },
+  "local_rank_diagnostic": {
+    "B_primary_singular_values": [
+      23.869187365067894,
+      7.675226488784914,
+      1.8407499168189636,
+      0.19037075944062512
+    ],
+    "B_independent_singular_values": [
+      23.8680760814652,
+      7.674805980625222,
+      1.8407757371850253,
+      0.1903229368869783
+    ],
+    "B_operator_grid_discrepancy": 0.0019192328172364839,
+    "base_mean_grid_difference_white": 0.0007825870573138532,
+    "source": "Saved rank_audit independent Jacobian and dynamic primary, no new solves",
+    "interpretation": "Empirical discrete uncertainty only; no rank gate or continuum certificate",
+    "realification": "All two-port real values then all imaginary values; sigma .01",
+    "shape": [
+      4,
+      4
+    ]
+  },
+  "profiles": [
+    {
+      "wall_step": -0.01,
+      "status": "MAX_NFEV_OR_NONCONVERGENCE",
+      "success": false,
+      "final": [
+        0.18767366177508368,
+        1.9827887739212295,
+        3.177427467333592,
+        0.1325267000294671
+      ],
+      "scope": "Known local noiseless finite-compensation control; not online reconstruction",
+      "optimizer_status": 0,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "nfev": 8,
+      "njev": 6,
+      "primary_residual_white": 9.646760962181846e-05,
+      "primary_residual_energy": 9.305999706147562e-09,
+      "final_wall_epsinf": [
+        [
+          2.9998041305667718,
+          3.99
+        ],
+        [
+          2.9998041305667718,
+          3.99
+        ]
+      ],
+      "finite_nonconvergence_retained": true,
+      "stage_cost_diff": {
+        "rhs": 22,
+        "factorizations": 8,
+        "cpu_seconds": 0.0
+      },
+      "wall_seconds": 20.28680787491612,
+      "independent_status": "SCORED",
+      "independent_residual_white": 0.0002627591279337998,
+      "independent_residual_energy": 6.904235931253095e-08,
+      "endpoint_mean_grid_difference_white": 0.0006166647778716596,
+      "base_mean_grid_difference_white": 0.0007825870573138532,
+      "observed_endpoint_plus_base_grid_discrepancy": 0.0013992518351855128,
+      "uncertainty_interpretation": "Observed two-grid mean discrepancy sum, not a rigorous continuous/PDE error bound",
+      "independent_metadata": {
+        "world": {
+          "support": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "epsinf": [
+            [
+              2.9998041305667718,
+              3.99
+            ],
+            [
+              2.9998041305667718,
+              3.99
+            ]
+          ],
+          "ell": 0.08,
+          "target_pose": [
+            0.18767366177508368,
+            1.9827887739212295
+          ],
+          "target_intrinsic": {
+            "radius": 0.1325267000294671,
+            "contrast": 3.177427467333592,
+            "loss": 0.02
+          }
+        },
+        "freq": 1.0,
+        "ndofs": 50689,
+        "order": 3,
+        "circle_polygon_n": 384,
+        "residual": 1.9438002731524084e-13,
+        "wall_seconds": 2.1723067918792367,
+        "target_included": true,
+        "derivative": null,
+        "jacobian_kind": "shared",
+        "forward_field_reused_for_J": false
+      },
+      "independent_stage_cost": {
+        "rhs": 2,
+        "factorizations": 1,
+        "cpu_seconds": 0.0
+      }
+    },
+    {
+      "wall_step": 0.01,
+      "status": "MAX_NFEV_OR_NONCONVERGENCE",
+      "success": false,
+      "final": [
+        0.21005526439014408,
+        2.012116075820249,
+        3.554019098563807,
+        0.09444516805415858
+      ],
+      "scope": "Known local noiseless finite-compensation control; not online reconstruction",
+      "optimizer_status": 0,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "nfev": 8,
+      "njev": 6,
+      "primary_residual_white": 0.02368404064812427,
+      "primary_residual_energy": 0.0005609337814220026,
+      "final_wall_epsinf": [
+        [
+          3.0001958694332282,
+          4.01
+        ],
+        [
+          3.0001958694332282,
+          4.01
+        ]
+      ],
+      "finite_nonconvergence_retained": true,
+      "stage_cost_diff": {
+        "rhs": 22,
+        "factorizations": 8,
+        "cpu_seconds": 0.0
+      },
+      "wall_seconds": 20.264342083130032,
+      "independent_status": "SCORED",
+      "independent_residual_white": 0.023696196790519482,
+      "independent_residual_energy": 0.0005615097423350258,
+      "endpoint_mean_grid_difference_white": 0.0008332414857858753,
+      "base_mean_grid_difference_white": 0.0007825870573138532,
+      "observed_endpoint_plus_base_grid_discrepancy": 0.0016158285430997285,
+      "uncertainty_interpretation": "Observed two-grid mean discrepancy sum, not a rigorous continuous/PDE error bound",
+      "independent_metadata": {
+        "world": {
+          "support": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "epsinf": [
+            [
+              3.0001958694332282,
+              4.01
+            ],
+            [
+              3.0001958694332282,
+              4.01
+            ]
+          ],
+          "ell": 0.08,
+          "target_pose": [
+            0.21005526439014408,
+            2.012116075820249
+          ],
+          "target_intrinsic": {
+            "radius": 0.09444516805415858,
+            "contrast": 3.554019098563807,
+            "loss": 0.02
+          }
+        },
+        "freq": 1.0,
+        "ndofs": 50563,
+        "order": 3,
+        "circle_polygon_n": 384,
+        "residual": 1.7990556649423914e-13,
+        "wall_seconds": 2.1974747909698635,
+        "target_included": true,
+        "derivative": null,
+        "jacobian_kind": "shared",
+        "forward_field_reused_for_J": false
+      },
+      "independent_stage_cost": {
+        "rhs": 2,
+        "factorizations": 1,
+        "cpu_seconds": 0.0
+      }
+    }
+  ],
+  "general_unknown_wall_reconstruction": false,
+  "exact_PDE_equality_claim": false,
+  "posterior_claim": false,
+  "overall_gate": "NOT_ASSIGNED_PARENT_REVIEW",
+  "budget_start": {
+    "rhs": 3294,
+    "factorizations": 359,
+    "cpu_seconds": 657.3595789999999
+  },
+  "budget_end": {
+    "rhs": 3342,
+    "factorizations": 377,
+    "cpu_seconds": 657.3595789999999
+  }
+}

@@ -1,0 +1,62 @@
+"""Create the explicit new contract once, before real experiment outputs."""
+from pathlib import Path
+import json, sys, platform
+from wslam.accounting import CAPS, BudgetBook
+root=Path(__file__).resolve().parents[1]
+path=root/'EXPERIMENT_CONTRACT.json'
+if path.exists():raise RuntimeError('Contract already frozen; do not overwrite')
+c=dict(version='WSLAM_20261025_V1',frozen_before_new_physics=True,scope='2D scalar TM; no new NN or 3D',
+ source_commits=['958a478739d9553269316ded8125fda9df225c0c','483d260c6b5b111db9fb814b096685fccb362448'],
+ physics=dict(time_convention='exp(-i omega t)',f0_hz=1e9,c0_m_per_s=299792458.,lambda0_m=.299792458,mu_r=1.,source='unit i H0^(1)(2pi f r)/4',source_multiplier=1.,
+   wall_roi=[-1.5,1.5,.5,1.25],material_integration_box=[-2,2,.25,3],PML_physical_box=[-2.75,2.75,-.8,3.5],PML_thickness=1.,PML_strength=4.,PML_power=3,
+   default_h=.22,default_order=3,circle_polygon_n=128,independent_h=.17,independent_polygon_n=256,receiver='FE point; volume extraction independent audit',
+   full_complex_dtype='complex128',residual_tolerance=1e-9,max_dofs=60000,max_factor_bytes=1500000000,
+   base_tx=[[-1.5,0],[1.5,0]],outer_tx=[[-2.25,0],[2.25,0]],rx_count=16,rx_x=[-2,2],rx_y=0,
+   base_frequencies=[1.],additional_frequencies=[.85,1.15],material_law='epsinf+i ell/f; same fields at all frequencies'),
+ geometry=dict(id='G_GRID_0125_V1',macro_shape=[6,24],edge=.125,small_region_shapes=[[2,2],[3,3]],
+   empty_allowed=True,material_connected_if_nonempty=True,air_topology='4-connected components; holes not fixed',
+   forbid_diagonal_checkerboards=True,outside_air_padded=True,boundary_contact='all public ROI faces allowed; zero material outsideROI',
+   maximum_area=2.25,material_jumps='any jump within bounded material intervals; no vertex-only connections',
+   wall_target_gap_min=.15,old_minimum_feature_not_equivalent=True),
+ prior=dict(occupancy_p=.65,occupancy='Bernoulli on public regions conditioned on geometric legality',epsinf=[1.5,6],ell=[0,.25],
+   continuous_material='Uniform shared epsinf/ell for A0; no GT support',target_pose=[[-1,1],[1.6,2.6]],target_pose_density='Uniform rectangle',
+   intrinsic_target=dict(shape='disk represented by regular polygon; polygon refinement audited',radius=.12,contrast=3.,loss=.02,
+     extended_radius=[.08,.18],extended_contrast=[2,5],pose_identity_separate=True),
+   instrument=dict(type='shared truncated Gaussian',amplitude_offset_sd=.005,amplitude_offset_bounds=[-.01,.01],phase_sd=.005,phase_bounds=[-.01,.01]),
+   controlled_reference=dict(identity='FINITE_PRIOR_ENUM4_V1',occupancy='same14 legal supports',
+     material_nodes='positive Clenshaw-Curtis3 for epsinf andell',pose_nodes='positive Clenshaw-Curtis5 eachposecoord',
+     instrument='known calibrated gamma=1',warning='explicit discrete probability measure; not a certified continuous-prior posterior')),
+ noise=dict(real_imag_sd=.01,independent_quadratures=True,whitening='all Re then all Im / .01; fixed permutation of source-major blocks',divide_by_channel_count=False),
+ task=dict(position_loss='squared Euclidean in lambda0^2',event='p_x>=0',loss_max=5.,tau_fraction=.05,tau_floor=.005**2),
+ e1=dict(base_support='all4 regions; known only in local mechanism experiment',wall_parameter_identity=['eps_left','eps_right'],wall_base=[3.,4.],wall_loss=.08,
+    target_pose0=[.2,2.],target_pose1=[.3,2.05],target_intrinsic=[.12,3.,.02],motion_delta=[.1,.05],motion_sd=.03,
+    pose_derivative_steps=[.002,.001,.0005],wall_fd_steps=[.002,.001],finite_wall_steps=[.002,.01,.03],
+    minimal_port=dict(tx0=0,tx1=1,receiver=8,identity='explicit one-complex-port controlled mechanism; not full16Rx ambiguity'),
+    nav_prior=dict(translation_sd=.005,translation_bounds=[-.02,.02],world_anchor='fixed public coordinate/known aperture gauge; no fictitious antenna orientation'),
+    rank_rule='max(machine SVD tolerance, 2*measured derivative/refinement operator discrepancy); do not select rank by E1 success'),
+ a0=dict(development_parents=12,noise_repeats=2,locked_parents=24,locked_not_opened=True,
+    methods=['FULL_J_TR','MULTISTART_JOINT_MAP','HYBRID_MULTISCALE_BIRTH_DEATH_EXCHANGE'],
+    maximum_full_J_updates_per_method=6,maximum_step_trials=2,coarse_material_nodes=[2.5,5.],coarse_loss_nodes=[.0625,.1875],
+    coarse_pose_x=[-.7,0,.7],coarse_pose_y=[1.75,2.1,2.45],
+    initialization='only observed-data coarse bank plus public prior; every support remains reopenable',
+    stop='bounded optimizer plus noise/predictive discrepancy; never GT error',
+    discrepancy=dict(calibration='4096 prior-predictive conditional noise simulations at frozen source/covariance; forward means cancel in this diagnostic',
+      rule='one-sided99% empirical noise-energy envelope for64 real channels, train and independent holdout separately',
+      interpretation='conservative compatibility envelope; NOT chi-square fitted degrees of freedom or posterior calibration'),
+    holdout='outerTx channels unavailable to fitting; scored after outputs saved',
+    wide_support_extension='3x3 legal occupancy and public multiscale candidate editing within same A0 cap; missing if cap reached'),
+ probability=dict(target_CDF_sup_tolerance=.02,event_abs_tolerance=.02,important_mode_mass_tolerance=.02,important_mode_min_mass=.05,
+    finite_reference_max_physical_states=2950,reference_shared_for_all_methods=True,
+    algorithms=['MAP','INDEPENDENT_MARGINALS','MOMENT_GAUSSIAN','OCCUPANCY_MIXTURE','SMC','DIRECT_REFERENCE'],
+    particle_counts=[256,1024],posterior_claim='only explicitly declared finite prior unless continuous quadrature independently converges',
+    relinearization='replace old likelihood version; exact logweight ratio or rebuild from base prior; no repeated evidence'),
+ seeds=dict(truth=2026102501,noise=2026102502,calibration=2026102503,finite_reference_truth=2026102504,
+     inference=2026102505,active_search=2026102506,active_evaluation=2026102507,algebra=20261025),
+ budgets=CAPS, gates=dict(numerical_full_data_whitened=.1,probability='same predefined0.02 CDF/event/mode gates',
+    A0='measurement-only feasibility, conservative train discrepancy and independent holdout; GT error not acceptance',
+    E1='nondegenerate physical finite recovery beyond numerical error plus nonrecovery control; matrices alone insufficient',
+    scheduling='same-risk/probability CPU andRHS>=20% reduction for new scheduling claim; no locked expansion without development support'),
+ environment=dict(python=sys.version,platform=platform.platform(),GPU=False),late_stages='conditional only; user stage budgets override draft nulls')
+path.write_text(json.dumps(c,indent=2))
+BudgetBook().event('E0E1','preinstrument_preparation_allocation',process_cpu_seconds=60.,estimated_allocation=True,scope='conservative preparation/import/worker integration allowance, not measured process CPU')
+print(json.dumps(dict(contract=str(path),scope=c['scope'],stages=list(CAPS))))

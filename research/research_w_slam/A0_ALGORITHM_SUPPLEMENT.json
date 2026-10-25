@@ -1,0 +1,16 @@
+{
+  "status": "FROZEN_BEFORE_A0_FITTING",
+  "hierarchical_support_prior": {
+    "level_probability": {"2": 0.5, "3": 0.5},
+    "within_level": "Bernoulli(0.65) conditioned on public geometry legality"
+  },
+  "common_initializer_pool": "two measurement-ranked coarse supports and one legal 3x3 Born-screened neighbor; same pool available to all arms",
+  "methods": {
+    "FULL_J_TR": {"max_nfev": 6},
+    "MULTISTART_JOINT_MAP": {"starts": 2, "max_nfev_each": 3},
+    "HYBRID_MULTISCALE_BIRTH_DEATH_EXCHANGE": {"max_nfev_coarse": 3, "max_nfev_neighbor": 3}
+  },
+  "truth_access": "none in fitting, ranking, hyperparameters, or stopping",
+  "acceptance": "same full nonlinear data objective plus proper shared nuisance and hierarchical support prior",
+  "scope": "bounded exploratory optimization, not global MAP convergence or unrestricted topology reconstruction"
+}
