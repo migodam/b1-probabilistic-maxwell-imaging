@@ -15,3 +15,7 @@
 5. [理论与方法](THEORY_AND_ALGORITHMS.md)、[完整失败记录](FAILURE_ANALYSIS.md)、[下一轮 Pro 交接](GPT_PRO_HANDOFF/START_HERE.md)。
 
 历史 P1/P2/P3-L/R2 不改写。新对象在冻结方法和两批预测完成后才进入独立 GT 评分；现在两批标签均为 EXPOSED，不能再称未来盲测。原始失败、重复状态、拒绝、过时中期日志和费用仍完整保留。
+
+封账后追加了两项零新增物理说明：[训练、比较与费用范围](TRAINING_AND_COST_AUDIT.md)，以及[由固定PIT尾事件得到的保守TV/KL下界](THEORY_CALIBRATION_ERROR_BOUND.md)。它们解释原结果，不改变模型、评分或预注册门槛。
+
+[可移植离线重放](PUBLIC_REPLAY.md)已在保存数组上完成一次核对：862个必要文件、零失败；主要风险均值差至多6.94e−18，比较量差至多2.15e−16。该工具不运行网络或Maxwell，也不修改原账本。

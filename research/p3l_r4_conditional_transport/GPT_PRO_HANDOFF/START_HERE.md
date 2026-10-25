@@ -28,3 +28,10 @@
 不再把Gaussian强补全当FULL posterior；不拿纯trajectory频率当概率；不重复Euler四段错误；不把有限Neumann恒等式当多解定理；不将teacher/anchor成本视为免费；不使用两批已暴露GT做新blind claim。
 
 本轮GO-A成立，GO-B仅相对，GO-C仅限定数值核，GO-D动态部分未成立，GO-E尚缺关键机制。新理论可以推翻原假设，但必须解释实际数组与负结果。
+
+归因缺口需保留：CFM没有专门的同谱decoder-only权重臂；none/随机控制的正面结果尚未分离DF·Dg中传播与decoder各自的贡献。已有风险CNN的decoder消融不能跨算法代替它。下一轮若要主张Maxwell特有机制，应先补上该辨别性对照，而不是只扩大模型。
+
+
+## 封账后的数学解释补充（零新增物理）
+
+固定样本的PIT尾事件还可通过标准数据处理不等式，给出平均条件材料TV/KL的保守下界，不需要MCMC teacher。完整26模型×2批校正后，rawSpline seed1的两批TV下界为0.953/0.939；这是原模型与理想独立随机流前提下的post-hoc解释，不是每观测保证、预注册主结果或新Maxwell定理。详见[数学证明与全部限定](../THEORY_CALIBRATION_ERROR_BOUND.md)。

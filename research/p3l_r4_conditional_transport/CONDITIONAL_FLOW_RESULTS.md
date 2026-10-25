@@ -14,6 +14,8 @@ Spline NLL77.509/77.278，matchedGaussian83.077/83.449；物理三角NLL76.592/7
 
 几何CFM energy score0.130661/0.138822，对随机控制0.165310/0.174586改善20.96%/20.49%。它仍远弱于好的材料风险动作；第一批模型样本均值MSE约0.03568。显式Spline样本均值约0.02278，不能用最接近GT的样本替代均值或在线决策。
 
+这项CFM比较具有none及同谱随机控制，但没有专门的同谱decoder-only CFM臂。因此它支持复合DF·Dg几何相对这些控制的增量，尚不能把约21%的全部收益单独归于Maxwell传播信息。风险CNN另有decoder-only消融，不能用它替代CFM本身缺失的对照。这个限制在封账后明确记录，不补跑测试来挽救原创性结论。
+
 这些proper scores可提供真实相对conditional-distribution证据，不能被“没有MCMC reference”抹掉。它们又不能给出绝对π距离或概率认证。[标准评分解释](AUDIT/JOINT_SIMULATION_PROPER_SCORE_INTERPRETATION.md)逐项说明。
 
 ## 实际替代机制与失败
@@ -23,3 +25,5 @@ Spline NLL77.509/77.278，matchedGaussian83.077/83.449；物理三角NLL76.592/7
 CFM完整散度审核采用CPU双精度DOP853、全66维trace、两预定tolerance，895秒预算后保留部分完成结果。某对象NLL0.136nat的容差差超过0.05；离散32步与更精细积分也不一致。CFM数值logq不用于exact-MH，未完成求解为NOT_RUN。样本energy score仍是合法的模型样本评分。
 
 真正FULL资格见[概率审计](PROBABILITY_CALIBRATION_AUDIT.md)：本轮未通过。相对评分进步与绝对失配同时成立。
+
+实际数据规模、学习率、Spline/CFM可比输入及完整费用范围，见[训练与成本补充](TRAINING_AND_COST_AUDIT.md)。这是对封存日志的解释，没有新增训练或物理查询。

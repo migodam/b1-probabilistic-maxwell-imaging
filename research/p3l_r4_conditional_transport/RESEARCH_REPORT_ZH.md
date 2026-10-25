@@ -76,6 +76,8 @@ Spline 对同容量 Gaussian 改善 5.568/6.171 nat；固定物理 frame 对随�
 
 CFM 物理权重的 energy score 改善约 20.96%/20.49%。权重在实际网络标准化坐标里有界于 I 和 4I，所有 66 个速度分量保留；相同谱随机旋转控制享有相同容量、数据和 base。这个正面结果不等于 density 已有可用精确 logq。
 
+CFM 的独立物理归因还有一个缺口：已比较none和同谱随机权重，但没有专门的同谱decoder-only CFM臂。因此目前支持DF·Dg复合几何的增量，尚不能隔离其中Maxwell传播相对decoder的贡献；风险CNN的decoder控制不能替代这个缺失对照。[训练与成本补充](TRAINING_AND_COST_AUDIT.md)进一步列出真实数据规模、学习率和可比输入，避免把训练不足或信息量差异包装成机制差异。
+
 值得注意：三角 Maxwell frame 虽改善 latent NLL，却没有同样改善 material energy score；第一批随机 frame 0.09964，Maxwell frame 0.10127。不同 proper score 衡量的目标不同，不能挑一个指标把所有结果叙述成一致胜利。
 
 ## 8. 为什么仍然不能称完整 posterior 合格
@@ -134,3 +136,8 @@ CFM 的数值密度另有独立问题：双精度全迹 DOP853 审核用尽 895 
 ## 13. 相关工作与可发表性
 
 完整条件Flow、simulation-based learning、DINO、局部预条件与retrospective接受判定都有成熟先例。本轮不把这些工具拼接后的名称当贡献；逐项原始来源和不支持的主张见[相关先例与主张账本](PRIOR_ART_AND_CLAIM_LEDGER.md)。当前最有价值的是可被独立核验的新实验现象及失败机制，仍需要新的Maxwell专有机制与决定性比较。
+
+
+## 封账后的数学解释补充（零新增物理）
+
+固定样本的PIT尾事件还可通过标准数据处理不等式，给出平均条件材料TV/KL的保守下界，不需要MCMC teacher。完整26模型×2批校正后，rawSpline seed1的两批TV下界为0.953/0.939；这是原模型与理想独立随机流前提下的post-hoc解释，不是每观测保证、预注册主结果或新Maxwell定理。详见[数学证明与全部限定](THEORY_CALIBRATION_ERROR_BOUND.md)。

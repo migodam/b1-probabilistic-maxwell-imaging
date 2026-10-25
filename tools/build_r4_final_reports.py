@@ -4,6 +4,7 @@ The narrative and scientific decisions are reviewed by the parent Codex agent.
 This tool only reads saved scores, copies compact public evidence and renders it.
 """
 from pathlib import Path
+import argparse
 import collections
 import csv
 import json
@@ -46,6 +47,12 @@ def mean_families(score):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--overwrite-final-documents', action='store_true',
+                        help='Explicitly rebuild the original closed draft; post-pack publication and interpretation additions are not regenerated.')
+    args = parser.parse_args()
+    if (S / 'THEORY_CALIBRATION_ERROR_BOUND.md').exists() and not args.overwrite_final_documents:
+        parser.error('Final publication contains additive post-pack supplements. Use tools/replay_r4_public_risk.py for numerical replay, or explicitly rebuild the original draft in a separate checkout with --overwrite-final-documents.')
     assert read('results/FRESH_ISOLATED_SCORES_COMPLETE.json')['status'] == 'COMPLETE'
     PUBLIC.mkdir(exist_ok=True)
     risk, density, risk_tables = {}, {}, {}

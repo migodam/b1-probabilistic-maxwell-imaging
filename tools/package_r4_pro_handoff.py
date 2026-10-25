@@ -29,7 +29,14 @@ def main():
                  'PHYSICS_TRANSPORT_THEORY_REVISION.md','GEOMETRY_MATCHED_DISTANCE_GATE_REVIEW.md',
                  'GEOMETRIC_CANDIDATE_ARCHIVE_REVIEW.md','ADAPTIVE_CFM_DENSITY_PROTOCOL.md'):
         files.add(S/'AUDIT'/name)
-    files.update((ROOT/'src/p3r4').glob('*.py'));files.update((ROOT/'tools').glob('*r4*.py'))
+    # Small post-pack additions are distinct from the full source/archive snapshot.
+    for folder in ('post_score_calibration_bound','delivery_layout','public_replay'):
+        base=S/'AUDIT'/folder
+        for pattern in ('*.md','*.json','*.csv','*.tsv'):
+            files.update(base.glob(pattern))
+    files.update((ROOT/'src/p3r4').glob('*.py'))
+    files.update((ROOT/'src/p1_material').glob('*.py'))
+    files.update((ROOT/'tools').glob('*r4*.py'))
     files={p for p in files if p.is_file()};manifest=[]
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     bundle=out/a.name

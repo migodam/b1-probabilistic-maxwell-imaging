@@ -28,3 +28,8 @@ K64重要性采样仅固定前16parent，ESS中位1、最大2.273。它是权重
 ## 输出身份
 
 风险估计器：监督material-risk action；生成样本：qθ的材料推送；约束代表：candidate-only合法世界；几何端点：可达性见证。四者分开保存。posterior probability/mode mass默认null，禁止residual softmax。
+
+
+## 封账后的数学解释补充（零新增物理）
+
+固定样本的PIT尾事件还可通过标准数据处理不等式，给出平均条件材料TV/KL的保守下界，不需要MCMC teacher。完整26模型×2批校正后，rawSpline seed1的两批TV下界为0.953/0.939；这是原模型与理想独立随机流前提下的post-hoc解释，不是每观测保证、预注册主结果或新Maxwell定理。详见[数学证明与全部限定](THEORY_CALIBRATION_ERROR_BOUND.md)。

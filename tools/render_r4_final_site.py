@@ -77,6 +77,7 @@ def main():
     note='<p class="note">成像图是监督材料风险动作，不能自动称为 posterior mean。显式 Flow 的 proper score 有相对改善，生成样本仍严重违反原噪声尺度的必要校验。所有新模型在读取这两批 GT 前冻结；现在标签均已 EXPOSED。</p>'
     selected=figure('figures/final_risk/two_cohort_risk_bars_display_v2.png','两批独立材料风险','逐parent平均三个训练seed的loss，不是集成图；固定Gaussian provider几乎追平Spline，因此没有Flow特有风险增益。')
     links=[('MATERIAL_RISK_RESULTS.md','材料风险与强控制'),('CONDITIONAL_FLOW_RESULTS.md','Full-66 条件概率'),('PHASE_MOMENT_RESULTS.md','相阈值条件矩'),('PROBABILITY_CALIBRATION_AUDIT.md','独立概率校准'),('MAXWELL_REUSE_RESULTS.md','有限反馈与决定区间'),('LEARNED_JACOBIAN_RESULTS.md','Learned Jacobian 实测'),('NONHOLONOMIC_GEOMETRY_RESULTS.md','动态非完整几何'),('LOCKED_GENERALIZATION.md','冻结与泛化审计'),('RESOURCE_SUMMARY.md','完整资源语义'),('FAILURE_ANALYSIS.md','失败与 NOT_RUN'),('GPT_PRO_HANDOFF/START_HERE.md','下一轮 Pro 研究接口'),('RESULTS_AND_METRICS.json','机器可读总指标')]
+    links.extend([('TRAINING_AND_COST_AUDIT.md','训练、同输入对照与费用'),('THEORY_CALIBRATION_ERROR_BOUND.md','标准校准误差下界'),('PUBLIC_REPLAY.md','可移植离线数值重放')])
     toc='<div class="toc">'+''.join(f'<a href="{p}">{html.escape(n)}</a>' for p,n in links)+'</div>'
     report=head('P3L-R4 完整中文研究报告')+intro+'<main>'+cards+note+selected+toc+'<article class="report">'+markdown((S/'RESEARCH_REPORT_ZH.md').read_text())+'</article><footer>物理/概率资格与网页发布分开。所有图来自保存的真实数组；原始模型、拒绝和失败通过现有 B1 Release 提供。<a href="EVIDENCE_PACKAGE.md">证据包</a></footer></main></html>'
     (S/'report.html').write_text(report);(S/'index.html').write_text(report)

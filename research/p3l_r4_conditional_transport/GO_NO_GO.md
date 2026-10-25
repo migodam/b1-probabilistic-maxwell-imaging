@@ -15,3 +15,5 @@
 下一步最有辨别力的正面实验：在同一P1/新独立对象上，构造既保留proper-NLL覆盖又把固定样本Phi降到原噪声尺度的可逆full66条件输运，并与同容量普通模型比较；或者在更大二维系统中，以相同统计误差/决定正确性证明包括setup与refresh的端到端收益。它们需要新的冻结合同，不能把本轮未用额度当永久授权。
 
 风险成像已经值得继续；它应定位为物理基础图上的amortized material-risk estimation，而不是已解决的Bayesian posterior。A17在denseTM24没有独立净优势，删除其强制依赖不影响其他路线。
+
+静态几何的解释仍有边界：CFM只有none与同谱随机控制，没有专门的同谱decoder-only CFM臂。约21%的energy-score收益属于DF·Dg复合机制，目前不能全部归因于Maxwell传播；这也是GO-E尚未建立的原因之一。
