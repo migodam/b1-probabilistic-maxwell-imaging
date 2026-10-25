@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_v2.py", line 196, in <module>
+    try:main()
+        ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_v2.py", line 181, in main
+    ss,aa,dg=response_bounded(c,na,ns);responses[str(ns)]=ss;ab[str(ns)]=aa;diags[str(ns)]=dg;report(V2/f'{name}_RESPONSE_{na}x{ns}.json',dict(summary=ss,ablations=aa,diagnostics=dg,cost=t.book.totals()))
+             ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_v2.py", line 110, in response_bounded
+    b,r,err=ans;Jb=c.model.jac(r['z'],'v2_response_actual_determinant_JVP',V=c.W[:,None])[:,0];B=float(c.U@Jb)
+                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/stage_a_response_coordinates/code/run_maxwell.py", line 63, in jac
+    J=self.t.jacobian(p,self.V if V is None else self.V@V,purpose=purpose)*SIGMA;self.jcalls+=1
+      ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/shared/physics_adapter.py", line 216, in jacobian
+    save(self.jobdir/'derivatives'/f'{p.key}_{uuid.uuid4().hex}.npz',x=p.x,V=np.eye(66) if V is None else V,J=J)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-parallel-ab/research/p3l_r5_parallel_ab/shared/physics_adapter.py", line 38, in save
+    tmp.replace(path)
+    ~~~~~~~~~~~^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_local.py", line 780, in replace
+    os.replace(self, target)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+KeyboardInterrupt

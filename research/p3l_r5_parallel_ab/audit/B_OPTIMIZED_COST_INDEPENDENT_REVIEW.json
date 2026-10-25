@@ -1,0 +1,91 @@
+{
+  "status": "COST_GATE_PASS_CONDITIONAL_DEVELOPMENT_ONLY",
+  "source": "stage_b_material_risk/benchmark_optimized.py",
+  "canonical_receipt": "stage_b_material_risk/OPTIMIZED_COST_BENCHMARK.json",
+  "prior_receipts_preserved": [
+    "OPTIMIZED_COST_INITIAL_COLD_TIMING_SCOPE.json",
+    "OPTIMIZED_COST_V2_COLD_SCOPE_NO_RAW.json"
+  ],
+  "review_new_training": 0,
+  "review_new_physics_RHS": 0,
+  "raw_trials_checked_per_arm_batch": 30,
+  "all_10_arm_batch_raw_medians_and_units_recomputed": true,
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "processor": "arm",
+    "logical_CPU": 10,
+    "torch": "2.14.0",
+    "torch_threads": 1,
+    "numpy": "2.5.3",
+    "numeric_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    }
+  },
+  "rows": [
+    {
+      "batch": 1,
+      "provider_student_us_per_parent": 109.35449972748756,
+      "provider_K32_us_per_parent": 1113.312435336411,
+      "EXTRA_provider_cost_ratio": 0.09822444828296899,
+      "provider_gate_le_one_third": true,
+      "provider_p90_student_over_p10_K32": 0.15559896803769183,
+      "full_student_us_per_parent": 701.9375916570425,
+      "full_K32_us_per_parent": 1472.978969104588,
+      "full_pipeline_ratio": 0.47654284710103134,
+      "student_checkpoint_load_seconds": 0.006587957963347435,
+      "K32_checkpoint_load_seconds": 0.005285375053063035,
+      "student_first_full_inference_seconds": 0.0011632079258561134,
+      "K32_first_full_inference_seconds": 0.0016160421073436737
+    },
+    {
+      "batch": 64,
+      "provider_student_us_per_parent": 8.454757335130125,
+      "provider_K32_us_per_parent": 332.2643187857466,
+      "EXTRA_provider_cost_ratio": 0.025445878046814866,
+      "provider_gate_le_one_third": true,
+      "provider_p90_student_over_p10_K32": 0.04302076324434459,
+      "full_student_us_per_parent": 349.7255875117844,
+      "full_K32_us_per_parent": 640.9082034224411,
+      "full_pipeline_ratio": 0.5456718850597551,
+      "student_checkpoint_load_seconds": 0.006587957963347435,
+      "K32_checkpoint_load_seconds": 0.005285375053063035,
+      "student_first_full_inference_seconds": 0.019803666044026613,
+      "K32_first_full_inference_seconds": 0.03881304198876023
+    }
+  ],
+  "K32_law": {
+    "parent_seed_rule": "parent_seed(parent,20261025121)",
+    "draws": "4 sequential torch.randn((8,66)) chunks per parent, CPU generator reset per parent/call; matches originalbatch_size8 draw grouping",
+    "encoder": "same frozenGaussian682943parameter encoder/head, computed once per parent batch instead of repeated for32draws",
+    "decoder": "same originalGaussianized P1 decoder and full frame_inverse/x_mean/x_scale",
+    "moments": "meanRe/Im,varRe/Im ddof0 atK32; random draws and decoder included in provider timing",
+    "max_fourchannel_difference_to_stored": 1.0132789611816406e-06,
+    "tolerance": 2e-06,
+    "equivalence": "same RNG/density/decoder law with float32 operation-order difference, not bitwise equality"
+  },
+  "student_pipeline": {
+    "architecture": "512->128->128->1024, bothSiLU and all3Linear layers executed",
+    "provider_parameters": 214272,
+    "head_parameters": 6418,
+    "normalization": "ownTRAIN y_mean/y_scale, target_scale/mean, varianceclip, hostpadding, full4channelconstruction included",
+    "full_pipeline": "provider + original allowed feature_image assembly + momentnormalization +anchor +same6418parameter head",
+    "shared_exclusions": "paid stronganchor acquisition, interpreter imports; checkpointload reported separately"
+  },
+  "MPS_fences": "NOT_APPLICABLE all timing networks/tensors onCPU; MPS training does not make this MPS inference timing",
+  "gate": "EXTRA provider runtime ratio\u22641/3 at both batch1 andbatch64; fullpipeline ratio reported separately, not compared to1/3",
+  "interpretation": "Cost gate passes current same-hardware CPU benchmark. Combined risk-retention gate can be DEVELOPMENT_ONLY under exposedVAL selection; no independent confirmation and no posterior qualification.",
+  "no_cherry_picking": "single canonical raw receipt used for both arms and batches; prior runs retained, no mixed favorable values",
+  "risk_qualification": "Independently recomputed retainedgain92.9591percent on exposedVAL; final scientific conditionalGO and novelty judgment remain parent responsibility",
+  "risk_retention_recheck": {
+    "scope": "mean per-parent loss over3seeds, not ensemble image MSE; exposedVAL256",
+    "strong_CNN_MSE": 0.00746135413646698,
+    "K32_MSE": 0.007145498879253864,
+    "width128_MSE": 0.007167737931013107,
+    "retained_incremental_gain_fraction": 0.9295910033112486,
+    "risk_gate80pct": true,
+    "no_independent_confirmation": true
+  }
+}

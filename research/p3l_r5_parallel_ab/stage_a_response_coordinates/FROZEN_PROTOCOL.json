@@ -1,0 +1,79 @@
+{
+  "version": "A_v1_prephysics_20261026",
+  "model": "TM24 two-dimensional latent submodels, not full66 posterior marginals",
+  "activity_pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      64
+    ],
+    [
+      12,
+      27
+    ]
+  ],
+  "space_names": [
+    "offset_low_field_geometry",
+    "offset_real_property_coupling",
+    "higher_field_saturation_exposure_probe"
+  ],
+  "inactive_probit_coordinates": "all zero",
+  "prior": "independent standard Gaussians conditioned on [-4,4]^2; exactly normalized by (Phi(4)-Phi(-4))^2",
+  "sigma": 0.00119211798514519,
+  "noise_multipliers": [
+    1,
+    0.5,
+    0.25
+  ],
+  "parents_per_space": 2,
+  "parent_seed": 20261026051,
+  "noise_seed": 20261026052,
+  "parents_are_paired_across_noise": true,
+  "observations_total": 18,
+  "online_algorithm_truth_access": false,
+  "global_branch_search": "fixed 13x13 original-domain response grid per space; optimize top three separated starts per observation; retain numerical coverage limitation",
+  "original_integration": "mode-adapted original latent Gaussian quadrature, increasing orders and full original prior component; not coarse uniform reference",
+  "response_integration": "rank1 frozen strongest GN response per discovered chart plus 1D outer weak Gaussian-adapted integration; actual nonlinear inverse, full prior, normal residual and sigma/abs(B); compact bump partition with identity remainder",
+  "response_orders": [
+    5,
+    9
+  ],
+  "original_orders": [
+    9,
+    15,
+    21
+  ],
+  "baselines": [
+    "observed-Hessian Laplace if SPD",
+    "full-rank local GN/LIS Gaussian",
+    "RTO: NOT_RUN unless genuine branch-normalized implementation available",
+    "ordinary Spline: NOT_RUN",
+    "manifold lifting: NOT_RUN"
+  ],
+  "ablations": [
+    "delete determinant",
+    "delete normal residual",
+    "standard response Gaussian"
+  ],
+  "gates": {
+    "TV": 0.05,
+    "bidirectional_KL": 0.1,
+    "important_branch_error": 0.02,
+    "omitted_mass": 0.01,
+    "mean_error_SD_fraction": 0.01,
+    "reference_error_fraction_of_effect": 0.2,
+    "cost_saving_fraction": 0.2
+  },
+  "max_forward_material_states": 32768,
+  "max_forward_RHS": 262144,
+  "max_derivative_adjoint_RHS": 40960,
+  "physics_wall_seconds": 86400,
+  "parallel_physics_workers": 1,
+  "BLAS_threads": 1,
+  "memory_bytes_limit": 1500000000,
+  "claims": "finite float64 numerical evidence only; no rigorous global atlas/Delta/continuous PDE certificate; sampled extrema not global bounds",
+  "adaptive_order_stopping": "original at least9/15; stop if relativeZ and materialMean/SD changes<0.002 else21; response5/9 fixed; no expanding budget on failure"
+}

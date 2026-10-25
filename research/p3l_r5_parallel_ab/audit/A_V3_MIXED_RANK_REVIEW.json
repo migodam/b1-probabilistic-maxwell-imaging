@@ -1,0 +1,53 @@
+{
+  "status": "STRATUM_MEASURE_ALGEBRA_PASS_NUMERICAL_INTEGRATION_UNQUALIFIED",
+  "physics_RHS": 0,
+  "threshold": 0.7692307692307692,
+  "host_prior_mass": 0.22086048232212066,
+  "pure_prior_mass": 0.22086048232212066,
+  "transition_prior_mass": 0.5582790353557587,
+  "prior_mass_sum": 1.0,
+  "host_conditional_mean": -1.3431798759388769,
+  "host_conditional_variance": 0.22712530411312892,
+  "decoder_rank_checks": [
+    {
+      "x0": -1.0,
+      "rank": 0,
+      "singular_values": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "x0": 0.0,
+      "rank": 2,
+      "singular_values": [
+        27.89146103054144,
+        0.22398010668579504
+      ]
+    },
+    {
+      "x0": 1.0,
+      "rank": 1,
+      "singular_values": [
+        6.102205047368387,
+        0.0
+      ]
+    }
+  ],
+  "host_factorization": "host material/F constant; integrate exact field tail mass and full truncated property prior",
+  "pure_factorization": "upper field tail mass times one-dimensional truncated property integration; field conditional mean=-HOSTMEAN and variance=HOSTVAR",
+  "transition_POU": "GL Lebesgue integrates target*pnormal/(pnormal+qmode); Gaussian-Hermite expectation integrates target*qmode/(pnormal+qmode)/qmode; factors sum to target",
+  "response_measure": "selected Gaussian conditional mass*sqrt2pi*sig/absB; all weak-coordinate Lebesgue factors retained",
+  "fixed_bugs": [
+    "U=J[:,1] numpyview mutated cachedJ; source now copies and A restarted",
+    "response latent covariance missing host/pure within-stratum terms; source now adds terms; first completed pre-fix response covariance remains unqualified"
+  ],
+  "remaining": [
+    "property response monotonicity not globally certified",
+    "threshold B rejection/inverse failures can omit transition mass; report retained",
+    "GL24/48 and GH15/21 convergence remains numerical",
+    "oldv1/v2 failed quadrature is historical failure, not certified TV",
+    "first retained V3 observation response covariance predates fix; material means and masses unaffected by missing covariance term"
+  ],
+  "scale_up": "HOLD"
+}
