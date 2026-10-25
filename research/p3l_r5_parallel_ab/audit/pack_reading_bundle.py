@@ -11,6 +11,7 @@ def main():
     files=[]
     for f in sorted(P.rglob('*')):
         if not f.is_file() or '__pycache__' in f.parts:continue
+        if f.name in ('PUBLICATION_RECEIPT.json','RELEASE_UPLOAD_RECEIPT.json','WEB_READBACK.json','PUBLIC_WEB_READBACK_INITIAL.json','USER_PUBLICATION_AUTHORIZATION.json'):continue
         rel=f.relative_to(P)
         keep=(f.suffix in ('.md','.py','.png') or
               (len(rel.parts)==1 and f.suffix=='.json') or
