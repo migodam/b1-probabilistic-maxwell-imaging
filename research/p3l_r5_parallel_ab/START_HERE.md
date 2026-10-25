@@ -1,5 +1,7 @@
 # Research P3L-R5：A/B 实验结果
 
+公开发布因自动审批拦截而待确认；本地科研、报告和证据包已完成。
+
 **A：局部概率矩有进步，完整覆盖与成本门未通过，REDIRECT。B：统计压缩通过开发门，独立确认未运行，CONDITIONAL GO。没有新的 Full-66 posterior 或 Maxwell 专属风险贡献主张。**
 
 - **实际Maxwell**：3个二维子模型、6个parent、18份配对观测；32,705状态attempts、291,784 RHS，预算内封账。

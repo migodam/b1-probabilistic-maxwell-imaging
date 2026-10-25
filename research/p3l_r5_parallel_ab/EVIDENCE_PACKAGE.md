@@ -1,5 +1,7 @@
 # R5源码、阅读包与原始证据
 
+**公开状态：自动审批拦截，待用户确认。以下GitHub链接是计划位置，尚未上传；全部本地归档已完成并验证。**
+
 本轮在现有B1仓库交付，不新建研究仓库。静态网页、Git代码和Release运输不改变科学门槛。
 
 - [原始证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr5-parallel-ab-20261026)
