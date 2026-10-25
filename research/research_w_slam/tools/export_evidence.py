@@ -113,6 +113,11 @@ def walk_nodes(value,pointer=''):
 def failure_category(node,path):
     scalar={str(k).lower():v for k,v in node.items() if isinstance(v,(str,int,float,bool)) or v is None}
     text=' '.join(str(v) for v in scalar.values()).lower()
+    if scalar.get('defined') is False and any(term in text for term in ('covariance','symmetric statistical','moment_regression')):
+        return 'NUMERICALLY_UNQUALIFIED_LOCAL_SURROGATE_CONSERVATIVE_REOPEN'
+    if any(scalar.get(key) is False for key in ('probability_tolerance_met','task_tolerance_met',
+            'all_declared_tolerances_met','both_noise_envelopes_compatible')):
+        return 'DECLARED_ACCURACY_OR_DATA_COMPATIBILITY_FAILURE'
     if 'broadcast' in text or 'unexpected source layout' in text or 'shape error' in text:
         return 'INVALID_ARRAY_SHAPE_OR_LAYOUT_NOT_NEGATIVE_EVIDENCE'
     if any('preflight' in str(k).lower() or 'preflight' in str(v).lower() for k,v in scalar.items()):
@@ -125,7 +130,7 @@ def failure_category(node,path):
     if any(any(t in value for t in ('FAIL','STOPPED','ERROR')) for value in statuses):
         return 'FAILED_OR_STOPPED_RESULT'
     if any(k.startswith('error') and bool(v) for k,v in scalar.items()):return 'RECORDED_ERROR'
-    if any(any(t in value for t in ('NOT_RUN','NOT_ESTABLISHED','UNKNOWN','INCONCLUSIVE','HOLD','NOT_EVALUABLE')) for value in statuses):
+    if any(any(t in value for t in ('NOT_RUN','NOT_DEFINED','NOT_ESTABLISHED','UNKNOWN','INCONCLUSIVE','HOLD','NOT_EVALUABLE')) for value in statuses):
         return 'UNRESOLVED_OR_NOT_RUN_RETAINED'
     if 'smc' in path.lower() or 'smc' in text:
         if scalar.get('pass') is False or scalar.get('accurate') is False or scalar.get('within_tolerance') is False:

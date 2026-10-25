@@ -1,0 +1,24 @@
+{
+  "id": 31817,
+  "stage": "E0E1",
+  "time": 1792921162.5241148,
+  "label": "git-research-commit-001",
+  "process_cpu_seconds": 1.3322419999999997,
+  "kind": "job_completion",
+  "command": [
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python",
+    "-c",
+    "import subprocess\nrepo=\"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0\"\nbase=['git','-C',repo]\nassert not subprocess.check_output(base+['diff','--cached','--name-only']).strip(), 'Unexpected preexisting staged work'\nsubprocess.run(base+['add','-f','research/research_w_slam','research/index.html','research/README.md'],check=True)\npaths=subprocess.check_output(base+['diff','--cached','--name-only'],text=True).splitlines()\nassert all(p.startswith('research/research_w_slam/') or p in ('research/index.html','research/README.md') for p in paths)\nprint('Staged own research files:',len(paths),flush=True)\nsubprocess.run(base+['commit','-m','Complete W-SLAM Maxwell compensation, finite belief and revisitation experiments'],check=True)\nprint(subprocess.check_output(base+['rev-parse','HEAD'],text=True))\n"
+  ],
+  "exit_code": 0,
+  "failure": null,
+  "wall_seconds": 1.565307084005326,
+  "children_maxrss": 117850112,
+  "rss_unit": "bytes",
+  "rss_semantics": "RUSAGE_CHILDREN high-water mark for wrapper lifetime; not additive",
+  "live_group_peak_cpu_seconds": 0.0,
+  "cpu_limit_remaining_at_launch": 6447.201389,
+  "cpu_limit_exceeded": false,
+  "output_log": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/results/jobs/git-research-commit-001/OUTPUT.log",
+  "receipt_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/results/jobs/git-research-commit-001/RECEIPT.json"
+}
