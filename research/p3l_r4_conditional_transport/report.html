@@ -33,7 +33,7 @@ h1,h2,h3{line-height:1.45}article h1{font-size:29px}article h2{font-size:23px;ma
 <p>真实复属性与相事件配对监督，未独立化 E(delta) 与事件概率。先运行 K8/K16 点阈值，再把标签改为精确 h 质量 bins，逐样本求和恰好等于原 decoder；因此去掉了求积偏差。最后只改变为 anchor-induced mass 初始化，保留标签、容量和优化器。</p>
 <p>三种版本均未超过强普通 CNN。第一批精确 bin8/bin16 的 MSE 为 0.007742/0.007746；anchor-bin 更差，约 0.010263/0.010019。宿主 plateau 的 mass/logit 梯度存在已验证抑制，但不能由此解释所有纯相及过渡相。停止继续调整 epsilon 或扩大此 head，不把恒等式当成算法成功。</p>
 <h2>7. 完整条件概率：相对改善是实测事实</h2>
-<p>Spline 更新全部 66 维，显式逆变换及 Jacobian 自动核验；三角模型真正为 q(a|y)q(b|a,y)，不补独立的剩余 prior。所有模型使用原 joint simulation proper NLL 训练。</p>
+<p>Spline 更新全部 66 维，显式逆变换及 Jacobian 自动核验；三角模型真正为 q(a|y)q(b|a,y)，不补独立的剩余 prior。显式密度模型以原 joint simulation proper NLL 训练；CFM 以同一联合样本的全66维 velocity 回归训练。</p>
 <table><tr><th>独立概率指标，三个 seed 的 parent loss 均值</th><th>新512</th><th>新256</th></tr><tr><td>同容量 diagonal Gaussian NLL，nat/parent</td><td>83.07743</td><td>83.44856</td></tr><tr><td>Full-66 Spline NLL</td><td><strong>77.50922</strong></td><td><strong>77.27755</strong></td></tr><tr><td>三角随机 frame NLL</td><td>77.95014</td><td>77.86049</td></tr><tr><td>三角 Maxwell frame NLL</td><td><strong>76.59216</strong></td><td><strong>76.25860</strong></td></tr><tr><td>anchor CFM 随机同谱控制 material energy score</td><td>0.165310</td><td>0.174586</td></tr><tr><td>有界 Maxwell 几何 CFM energy score</td><td><strong>0.130661</strong></td><td><strong>0.138822</strong></td></tr></table>
 <p>Spline 对同容量 Gaussian 改善 5.568/6.171 nat；固定物理 frame 对随机 frame 改善 1.358/1.602 nat。相同原测度下，joint-test NLL 差估计两个条件模型相对真实 posterior 的期望 forward-KL 差，未知的 conditional entropy 相消；不需要 MCMC teacher。它不提供绝对 KL、全局覆盖或可信区间资格。</p>
 <p>CFM 物理权重的 energy score 改善约 20.96%/20.49%。权重在实际网络标准化坐标里有界于 I 和 4I，所有 66 个速度分量保留；相同谱随机旋转控制享有相同容量、数据和 base。这个正面结果不等于 density 已有可用精确 logq。</p>

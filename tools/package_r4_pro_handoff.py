@@ -1,5 +1,6 @@
 """Small GPT Pro reading/code package; full raw evidence is a separate release."""
 from pathlib import Path
+import argparse
 import json
 import os
 import subprocess
@@ -10,7 +11,11 @@ ROOT=Path(__file__).resolve().parents[1];S=ROOT/'research/p3l_r4_conditional_tra
 
 
 def main():
-    start=time.perf_counter();out=S/'packaging/pro_handoff'
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--out',type=Path,default=S/'packaging/pro_handoff')
+    p.add_argument('--name',default='Research_P3LR4_Results_and_Pro_Handoff.zip')
+    a=p.parse_args()
+    start=time.perf_counter();out=a.out
     out.mkdir(parents=True,exist_ok=False)
     files=set(S.glob('*.md'))|set((S/'GPT_PRO_HANDOFF').glob('*'))
     for pattern in ('*.json','*.csv'):files.update((S/'evidence_summary').glob(pattern))
@@ -27,7 +32,7 @@ def main():
     files.update((ROOT/'src/p3r4').glob('*.py'));files.update((ROOT/'tools').glob('*r4*.py'))
     files={p for p in files if p.is_file()};manifest=[]
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
-    bundle=out/'Research_P3LR4_Results_and_Pro_Handoff.zip'
+    bundle=out/a.name
     with zipfile.ZipFile(bundle,'x',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
         z.writestr('READ_THIS_FIRST.md',
             '# P3L-R4 实验结果与下一轮 Pro 阅读包\n\n'+

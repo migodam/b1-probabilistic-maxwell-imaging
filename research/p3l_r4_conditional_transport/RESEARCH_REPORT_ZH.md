@@ -61,7 +61,7 @@ decoder 在两侧精确饱和，多对一映射允许退化材料层；所以 la
 
 ## 7. 完整条件概率：相对改善是实测事实
 
-Spline 更新全部 66 维，显式逆变换及 Jacobian 自动核验；三角模型真正为 q(a|y)q(b|a,y)，不补独立的剩余 prior。所有模型使用原 joint simulation proper NLL 训练。
+Spline 更新全部 66 维，显式逆变换及 Jacobian 自动核验；三角模型真正为 q(a|y)q(b|a,y)，不补独立的剩余 prior。显式密度模型以原 joint simulation proper NLL 训练；CFM 以同一联合样本的全66维 velocity 回归训练。
 
 |独立概率指标，三个 seed 的 parent loss 均值|新512|新256|
 |---|---:|---:|
