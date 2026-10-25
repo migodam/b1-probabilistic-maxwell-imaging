@@ -4,6 +4,8 @@
 
 [交接阅读顺序、证据版本与立即复核入口](READING_GUIDE.md)区分阅读ZIP、完整原始分卷和封账后补充，避免把小包当成全部模型/物理证据。
 
+已公开：[本轮Pro阅读ZIP](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-p3lr4-20261025/Research_P3LR4_Complete_Results_and_Handoff.zip)（约5.2MB）· [完整原始证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-p3lr4-20261025)（175GB分卷）。最终出版读回晚于阅读ZIP生成，回执另附，不改原包或科研账本。
+
 ## 十项明确答复
 
 1. Spline有稳定显式full66 proper-NLL收益；CFM有样本energy-score收益，但其数值log-density未过稳定门，二者不能按一个虚构统一NLL排名。

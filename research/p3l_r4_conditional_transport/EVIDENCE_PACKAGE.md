@@ -2,6 +2,8 @@
 
 本轮继续使用原B1仓库，不新建项目。公开状态、最后读回时间与远端名称/大小核对，以最终`PUBLICATION_RECEIPT.json`为准；打包完成、上传完成、公开可访问和科学资格是四个不同事实。
 
+**已于2026-10-25正式公开并完成匿名读回。** 120个原始分卷均通过远端名称、大小、uploaded状态核对；网页、匿名Markdown及四个代表性下载入口也通过无登录检查。详见[公开回执](PUBLICATION_RECEIPT.json)与[读回记录](WEB_READBACK.json)。没有执行400GB恢复树的全量解包；这不改变原科学资格。
+
 ## 先读研究结果
 
 [中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r4_conditional_transport/) · [实际数组图库](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r4_conditional_transport/gallery.html) · [匿名Markdown](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/p3l_r4_conditional_transport/RESEARCH_REPORT_ZH.md)
