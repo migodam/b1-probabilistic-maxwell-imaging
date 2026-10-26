@@ -1,0 +1,7 @@
+# 数值复现：canonical CPU与原设备失败
+
+本轮全部正式预测使用预冻结单线程CPU、batch64、原float32网络和complex128物理。旧VAL的16个动作/seed组合，两个全新CPU实例逐数组重复一致；deterministic和distilled主要均值精确重现，Strong/K32与旧封存值差≤9.32e−10。优化K32与未优化CPU入口预测完全一致，原随机合同不变。
+
+原R5 CPU/MPS逐像素3e−6容差曾FAIL，最大3.94517929e−6。该失败没有放宽、覆盖或改称PASS。独立CPU复现解决的是本轮canonical确定性，不替另一个设备的原失败翻案。本次受控运行环境MPS/CUDA不可用，新的MPS推断计时为NOT_AVAILABLE，不代表设备物理上不存在GPU。
+
+新两批预测先以原字节和BLAKE2b封存，再评分。评分与最终QA从已存数组重算MSE/MAE一致，不用重新生成的容差图替换已评分图。详见CHECKPOINT_REPRODUCTION、32份prediction seal及FINAL_INDEPENDENT_QA。

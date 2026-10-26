@@ -1,0 +1,30 @@
+{
+  "protocol_id": "R5_B_INDEPENDENT_CONFIRMATION_STATISTICS_V1",
+  "status": "FROZEN_BEFORE_FRESH_GT_ACCESS",
+  "phase": "independent_confirmation",
+  "primary_split": "TEST",
+  "independent_batches": {"A": 256, "B": 256},
+  "methods": ["physics_probit", "strong_cnn", "k32", "deterministic_matched", "distilled_w128"],
+  "training_seed_count": 3,
+  "unit": "independent_parent",
+  "primary_estimator": "mean across parents of each parent's arithmetic mean over three frozen training-seed losses",
+  "seed_resampling": false,
+  "ensemble": "separate descriptive prediction-ensemble losses; never substitute for seed-mean losses",
+  "primary_loss": "raw_full_grid_material_MSE",
+  "secondary_loss": "clipped_full_grid_material_MSE",
+  "bootstrap": {"replicates": 20000, "minimum_replicates": 20000, "rng_seed": 2026102705, "unit": "parent", "paired_across_methods_seeds_metrics": true, "pooled_stratified_by_batch": true, "batch_sample_sizes_fixed": true, "ci": "percentile", "quantile_method": "linear"},
+  "multiplicity": {"family_size": 4, "family_wise_alpha": 0.05, "method": "Bonferroni", "per_comparison_alpha": 0.0125, "two_sided_confidence": 0.9875, "two_sided_quantiles": [0.00625, 0.99375], "one_sided_lower_confidence": 0.9875, "one_sided_lower_quantile": 0.0125, "primary_scope": "pooled TEST raw seed-mean loss; batch-specific and clipped analyses are descriptive replication/sensitivity only"},
+  "comparisons": [
+    {"id": "deterministic_vs_k32", "effect": "L_k32-L_deterministic_matched", "direction": "positive favors deterministic", "null": "effect=0", "decision": "two-sided adjusted CI excludes zero; report direction"},
+    {"id": "distilled_vs_k32", "effect": "L_k32-L_distilled_w128", "direction": "positive favors distilled", "null": "effect=0", "decision": "two-sided adjusted CI excludes zero; report direction"},
+    {"id": "distilled_vs_strong", "effect": "L_strong_cnn-L_distilled_w128", "direction": "positive favors distilled", "null": "effect=0", "decision": "two-sided adjusted CI excludes zero; report direction"},
+    {"id": "retention_80pct", "effect": "(L_strong_cnn-L_distilled_w128)-0.8*(L_strong_cnn-L_k32)", "direction": "positive supports at least 80 percent retained incremental gain", "null": "effect<=0", "decision": "adjusted one-sided lower contrast bound>0 and positive stable K32 gain denominator"}
+  ],
+  "retention": {"threshold": 0.8, "numerator": "L_strong_cnn-L_distilled_w128", "denominator": "L_strong_cnn-L_k32", "primary_inference": "paired linear contrast", "ratio_role": "secondary interpretation only", "ratio_validity": "denominator point>0 and adjusted two-sided denominator CI lower>0", "resampling": "same parent draws for numerator and denominator; never bootstrap separately", "zero_denominator_draws": "ratio unavailable if any exact zero denominator draw; no draw deletion", "nonpositive_denominator_draws": "report count; retain all nonzero draws unconditionally for ratio quantiles"},
+  "pvalues": {"method": "null-centered paired parent bootstrap with plus-one correction", "two_sided": "(1+count(abs(Tboot-Tobserved)>=abs(Tobserved)))/(B+1)", "one_sided_greater": "(1+count(Tboot-Tobserved>=Tobserved))/(B+1)", "adjustment": "min(1,4*p)", "decision_authority": "prespecified percentile confidence bounds; centered-bootstrap p-values are approximate companions, not an override"},
+  "batch_consistency": "Report A/B point directions, adjusted bounds and pooled result. No extra confirmatory claim from picking a batch. Opposite batch directions qualify pooled interpretation; consistency alone does not imply significance.",
+  "fail_closed": ["missing methods/seeds", "nonfinite or negative losses", "duplicate parents", "parent overlap across batches", "wrong confirmatory batch size", "physics loss varies across seed slots", "fewer than 20000 bootstrap replicates"],
+  "truth_policy": "This evaluator consumes per-parent loss arrays already formed by the authorized evaluation stage. It never opens truth fields or prediction images and performs no training or physical solves.",
+  "no_optional_stopping": true,
+  "no_scope_tuning": true
+}

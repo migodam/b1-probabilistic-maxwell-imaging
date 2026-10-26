@@ -1,3 +1,11 @@
+<!-- R5B_CONFIRM_CURRENT -->
+## P3L-R5-B：新256+256独立确认，80%保留率统计门HOLD
+
+[中文报告与实际图](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r5_b_independent_confirmation/) · [匿名Markdown](research/p3l_r5_b_independent_confirmation/RESEARCH_REPORT_ZH.md) · [原始证据](research/p3l_r5_b_independent_confirmation/EVIDENCE_PACKAGE.md)
+
+原配置Native96/Probit64、冻结三seed、1,999,504新增RHS。蒸馏MSE相对Strong CNN降低3.11%；增量保留80.70%，调整区间[60.28%,113.12%]，不能确认至少80%。确定性矩相对K32改善1.28%。batch64 provider费用2.03%、完整学习链53.68%，含物理锚点全系统推导仅节省0.0117%。没有新训练或posterior资格声明。
+<!-- /R5B_CONFIRM_CURRENT -->
+
 <!-- P3LR5_CURRENT -->
 ## P3L-R5：响应概率与材料统计压缩，分开裁决
 

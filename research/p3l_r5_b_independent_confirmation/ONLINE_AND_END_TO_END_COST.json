@@ -1,0 +1,1386 @@
+{
+  "status": "COMPLETE_METADATA_COST_AUDIT",
+  "new_physics_RHS": 0,
+  "new_GT_read": false,
+  "new_training": 0,
+  "new_benchmarks": 0,
+  "source_files": [
+    "audit/timing/CONFIRMATION_TIMING.json",
+    "raw/contexts/*.json (A/B only)",
+    "raw/predictions/A/ONLINE_COMPLETE.json",
+    "raw/predictions/B/ONLINE_COMPLETE.json",
+    "RESOURCE_LEDGER_SNAPSHOT.json",
+    "audit/HISTORICAL_OFFLINE_COST_SCOPE.json"
+  ],
+  "canonical": {
+    "backend": "CPU1",
+    "seed": 2026102601,
+    "quadrature": 64,
+    "repeats": 30,
+    "input_scope": {
+      "regime": "new observation-only context",
+      "source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r5-b-confirm/research/p3l_r5_b_independent_confirmation/configs/parents_A.json",
+      "truth_materialized": false
+    },
+    "optional_device": {
+      "MPS": "NOT_AVAILABLE",
+      "CUDA": "NOT_AVAILABLE",
+      "canonical_backend_unchanged": true
+    }
+  },
+  "timing": [
+    {
+      "arm": "StrongCNN",
+      "method": "strongCNN",
+      "seed": 2026102601,
+      "batch_size": 1,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "NOT_APPLICABLE",
+        "reason": "StrongCNN has no separate posterior-moment provider"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.0002870335942134261,
+        "p50_seconds": 0.00030714599415659904,
+        "p90_seconds": 0.0003687538206577301,
+        "p50_seconds_per_parent": 0.00030714599415659904,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.0013628873974084854,
+        "p50_seconds": 0.0014692716067656875,
+        "p90_seconds": 0.0022840250516310335,
+        "p50_seconds_per_parent": 0.0014692716067656875,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.0004639123100787401,
+        "p50_seconds": 0.0004872711142525077,
+        "p90_seconds": 0.0008337631588801744,
+        "p50_seconds_per_parent": 0.0004872711142525077,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.0018336534267291427,
+        "p50_seconds": 0.0020325419027358294,
+        "p90_seconds": 0.002850837609730661,
+        "p50_seconds_per_parent": 0.0020325419027358294,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7306269188684382
+    },
+    {
+      "arm": "K32_optimized",
+      "method": "original_K32_frozen",
+      "seed": 2026102601,
+      "batch_size": 1,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "MEASURED",
+        "p10_seconds": 0.0008687908761203289,
+        "p50_seconds": 0.000949625507928431,
+        "p90_seconds": 0.0010973171098157765,
+        "p50_seconds_per_parent": 0.000949625507928431,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.0011646830011159182,
+        "p50_seconds": 0.001229728921316564,
+        "p90_seconds": 0.0014301334973424677,
+        "p50_seconds_per_parent": 0.001229728921316564,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.010833220602944494,
+        "p50_seconds": 0.011179415858350694,
+        "p90_seconds": 0.014264995884150268,
+        "p50_seconds_per_parent": 0.011179415858350694,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.0014965919312089682,
+        "p50_seconds": 0.0015645624371245503,
+        "p90_seconds": 0.001893888134509325,
+        "p50_seconds_per_parent": 0.0015645624371245503,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.012392703932709992,
+        "p50_seconds": 0.012783396523445845,
+        "p90_seconds": 0.015822799410670996,
+        "p50_seconds_per_parent": 0.012783396523445845,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7315495017955982
+    },
+    {
+      "arm": "detMatchedQ64",
+      "method": "deterministic_matched",
+      "seed": 2026102601,
+      "batch_size": 1,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "MEASURED",
+        "p10_seconds": 0.002140854368917644,
+        "p50_seconds": 0.0022498955950140953,
+        "p90_seconds": 0.002824716898612678,
+        "p50_seconds_per_parent": 0.0022498955950140953,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.0025842418195679783,
+        "p50_seconds": 0.00294827064499259,
+        "p90_seconds": 0.0033699658466503023,
+        "p50_seconds_per_parent": 0.00294827064499259,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.009897408215329051,
+        "p50_seconds": 0.010674667079001665,
+        "p90_seconds": 0.0140868327813223,
+        "p50_seconds_per_parent": 0.010674667079001665,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.002730683027766645,
+        "p50_seconds": 0.002860395470634103,
+        "p90_seconds": 0.004200508748181164,
+        "p50_seconds_per_parent": 0.002860395470634103,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.012809482868760824,
+        "p50_seconds": 0.013431583531200886,
+        "p90_seconds": 0.01826885810587555,
+        "p50_seconds_per_parent": 0.013431583531200886,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7332680435192742
+    },
+    {
+      "arm": "distillW128",
+      "method": "distilled_w128_n32768",
+      "seed": 2026102601,
+      "batch_size": 1,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "MEASURED",
+        "p10_seconds": 3.266285639256239e-05,
+        "p50_seconds": 4.202092532068491e-05,
+        "p90_seconds": 6.193327717483044e-05,
+        "p50_seconds_per_parent": 4.202092532068491e-05,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.00033389171585440636,
+        "p50_seconds": 0.0003563954960554838,
+        "p90_seconds": 0.0004733368521556259,
+        "p50_seconds_per_parent": 0.0003563954960554838,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.009523367113433778,
+        "p50_seconds": 0.009838291094638407,
+        "p90_seconds": 0.011521083023399116,
+        "p50_seconds_per_parent": 0.009838291094638407,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.0005459537729620934,
+        "p50_seconds": 0.0005844375118613243,
+        "p90_seconds": 0.0008172208443284035,
+        "p50_seconds_per_parent": 0.0005844375118613243,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.010070274583995342,
+        "p50_seconds": 0.010523415985517204,
+        "p90_seconds": 0.012118720682337882,
+        "p50_seconds_per_parent": 0.010523415985517204,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.730676168370337
+    },
+    {
+      "arm": "StrongCNN",
+      "method": "strongCNN",
+      "seed": 2026102601,
+      "batch_size": 64,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "NOT_APPLICABLE",
+        "reason": "StrongCNN has no separate posterior-moment provider"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.013522520568221808,
+        "p50_seconds": 0.013990562409162521,
+        "p90_seconds": 0.016539591108448805,
+        "p50_seconds_per_parent": 0.0002186025376431644,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.0013952377019450068,
+        "p50_seconds": 0.001455208519473672,
+        "p90_seconds": 0.0018645130330696704,
+        "p50_seconds_per_parent": 2.2737633116776124e-05,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.013726591505110264,
+        "p50_seconds": 0.014286187593825161,
+        "p90_seconds": 0.021465108613483608,
+        "p50_seconds_per_parent": 0.00022322168115351815,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.015109004476107657,
+        "p50_seconds": 0.015836187987588346,
+        "p90_seconds": 0.022969600232318043,
+        "p50_seconds_per_parent": 0.0002474404373060679,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7305383754119248
+    },
+    {
+      "arm": "K32_optimized",
+      "method": "original_K32_frozen",
+      "seed": 2026102601,
+      "batch_size": 64,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "MEASURED",
+        "p10_seconds": 0.012910291436128318,
+        "p50_seconds": 0.01328681199811399,
+        "p90_seconds": 0.014246712764725092,
+        "p50_seconds_per_parent": 0.0002076064374705311,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.02712967505212873,
+        "p50_seconds": 0.028048562118783593,
+        "p90_seconds": 0.032578383269719784,
+        "p50_seconds_per_parent": 0.00043825878310599364,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.010989982960745692,
+        "p50_seconds": 0.01131927059032023,
+        "p90_seconds": 0.013220129488036038,
+        "p50_seconds_per_parent": 0.00017686360297375359,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.027328108670189977,
+        "p50_seconds": 0.02826143754646182,
+        "p90_seconds": 0.036985358432866634,
+        "p50_seconds_per_parent": 0.00044158496166346595,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.03842181237414479,
+        "p50_seconds": 0.03976735344622284,
+        "p90_seconds": 0.05039210449904204,
+        "p50_seconds_per_parent": 0.0006213648975972319,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7307580316573876
+    },
+    {
+      "arm": "detMatchedQ64",
+      "method": "deterministic_matched",
+      "seed": 2026102601,
+      "batch_size": 64,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "MEASURED",
+        "p10_seconds": 0.0530846576904878,
+        "p50_seconds": 0.05421385448426008,
+        "p90_seconds": 0.06363680067006498,
+        "p50_seconds_per_parent": 0.0008470914763165638,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.0668573547853157,
+        "p50_seconds": 0.06911937496624887,
+        "p90_seconds": 0.07745822907891126,
+        "p50_seconds_per_parent": 0.0010799902338476386,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.009934983705170453,
+        "p50_seconds": 0.010375646059401333,
+        "p90_seconds": 0.012021021032705904,
+        "p50_seconds_per_parent": 0.00016211946967814583,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.06767387094441801,
+        "p50_seconds": 0.06973231246229261,
+        "p90_seconds": 0.08631039957981557,
+        "p50_seconds_per_parent": 0.001089567382223322,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.07770677781663834,
+        "p50_seconds": 0.08006858348380774,
+        "p90_seconds": 0.09809385433327407,
+        "p50_seconds_per_parent": 0.001251071616934496,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7313997631081293
+    },
+    {
+      "arm": "distillW128",
+      "method": "distilled_w128_n32768",
+      "seed": 2026102601,
+      "batch_size": 64,
+      "repeats": 30,
+      "steady_provider_only": {
+        "status": "MEASURED",
+        "p10_seconds": 0.0002626167377457023,
+        "p50_seconds": 0.00026935397181659937,
+        "p90_seconds": 0.0003065494121983648,
+        "p50_seconds_per_parent": 4.208655809634365e-06,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "steady_full_predict": {
+        "p10_seconds": 0.014276416087523103,
+        "p50_seconds": 0.015055125462822616,
+        "p90_seconds": 0.017682612268254162,
+        "p50_seconds_per_parent": 0.00023523633535660338,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "fresh_action_load": {
+        "p10_seconds": 0.00951942119281739,
+        "p50_seconds": 0.009839271078817546,
+        "p90_seconds": 0.012030787835828961,
+        "p50_seconds_per_parent": 0.00015373861060652416,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "first_full_inference_after_load": {
+        "p10_seconds": 0.01420130447950214,
+        "p50_seconds": 0.01475431292783469,
+        "p90_seconds": 0.017294741747900844,
+        "p50_seconds_per_parent": 0.00023053613949741703,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "load_plus_first_inference": {
+        "p10_seconds": 0.023988895025104283,
+        "p50_seconds": 0.02457783359568566,
+        "p90_seconds": 0.030996779329143465,
+        "p50_seconds_per_parent": 0.00038402864993258845,
+        "unit": "seconds per whole batch; per-parent value separately divided by batch size"
+      },
+      "derived_warm_system_seconds_per_parent": 1.7305550092096382
+    }
+  ],
+  "compression_vs_optimized_K32": [
+    {
+      "candidate": "detMatchedQ64",
+      "reference": "K32_optimized",
+      "batch_size": 1,
+      "full_predict_saving_percent": -139.7496386306124,
+      "full_predict_speedup": 0.41710177571559237,
+      "full_system_saving_percent": -0.09924877815470574,
+      "full_system_speedup": 0.9990084962737865,
+      "CPU_seconds_saved_per_parent_full_predict": -0.0017185417236760259,
+      "provider_saving_percent": -136.92451142368216,
+      "provider_speedup": 0.4220753665338332,
+      "CPU_seconds_saved_per_parent_provider": -0.0013002700870856643
+    },
+    {
+      "candidate": "distillW128",
+      "reference": "K32_optimized",
+      "batch_size": 1,
+      "full_predict_saving_percent": 71.01836918058964,
+      "full_predict_speedup": 3.4504614534329563,
+      "full_system_saving_percent": 0.0504365266113064,
+      "full_system_speedup": 1.0005046197788021,
+      "CPU_seconds_saved_per_parent_full_predict": 0.0008733334252610803,
+      "provider_saving_percent": 95.575000358578,
+      "provider_speedup": 22.598871887787187,
+      "CPU_seconds_saved_per_parent_provider": 0.0009076045826077461
+    },
+    {
+      "candidate": "StrongCNN",
+      "reference": "K32_optimized",
+      "batch_size": 1,
+      "full_predict_saving_percent": 75.0232763633985,
+      "full_predict_speedup": 4.0037276888253475,
+      "full_system_saving_percent": 0.053280771136098415,
+      "full_system_speedup": 1.0005330917467545,
+      "CPU_seconds_saved_per_parent_full_predict": 0.000922582927159965
+    },
+    {
+      "candidate": "detMatchedQ64",
+      "reference": "K32_optimized",
+      "batch_size": 64,
+      "full_predict_saving_percent": -146.4275162253716,
+      "full_predict_speedup": 0.40579883907341124,
+      "full_system_saving_percent": -0.03707805707116192,
+      "full_system_speedup": 0.9996293568565646,
+      "CPU_seconds_saved_per_parent_full_predict": -0.000641731450741645,
+      "provider_saving_percent": -308.0275576410317,
+      "provider_speedup": 0.24508148561861715,
+      "CPU_seconds_saved_per_parent_provider": -0.0006394850388460327
+    },
+    {
+      "candidate": "distillW128",
+      "reference": "K32_optimized",
+      "batch_size": 64,
+      "full_predict_saving_percent": 46.32478699241241,
+      "full_predict_speedup": 1.8630573480139498,
+      "full_system_saving_percent": 0.011730261771772589,
+      "full_system_speedup": 1.000117316379236,
+      "CPU_seconds_saved_per_parent_full_predict": 0.00020302244774939027,
+      "provider_saving_percent": 97.97277200990852,
+      "provider_speedup": 49.328442823783035,
+      "CPU_seconds_saved_per_parent_provider": 0.00020339778166089673
+    },
+    {
+      "candidate": "StrongCNN",
+      "reference": "K32_optimized",
+      "batch_size": 64,
+      "full_predict_saving_percent": 50.120215254124176,
+      "full_predict_speedup": 2.004820199394871,
+      "full_system_saving_percent": 0.01269133185835831,
+      "full_system_speedup": 1.0001269294276185,
+      "CPU_seconds_saved_per_parent_full_predict": 0.00021965624546282925
+    }
+  ],
+  "online_anchor": {
+    "parents": 512,
+    "receipt_wall_sum_seconds": 885.9237237116322,
+    "mean_receipt_wall_seconds_per_parent": 1.7303197728742816,
+    "min_seconds": 0.6121200420893729,
+    "max_seconds": 3.836797249969095,
+    "RHS": 1960400,
+    "scope": "Native96+Probit64, final J, background setup and receipt/cache work included in each actual context receipt; probe excluded"
+  },
+  "actual_prediction_call_aggregates": [
+    {
+      "method": "physics_probit",
+      "seed": 2026102601,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.004329917021095753,
+      "checkpoint_load_seconds_sum": 3.224983811378479e-05,
+      "context_IO_seconds_sum": 1.421545040095225,
+      "anchor_plus_actual_calls_seconds": 887.3496309185866,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "strong_cnn",
+      "seed": 2026102601,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.18834420572966337,
+      "checkpoint_load_seconds_sum": 0.004849166143685579,
+      "context_IO_seconds_sum": 0.6553619997575879,
+      "anchor_plus_actual_calls_seconds": 886.7722790832631,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "strong_cnn",
+      "seed": 2026102602,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.19006633153185248,
+      "checkpoint_load_seconds_sum": 0.0038027078844606876,
+      "context_IO_seconds_sum": 0.6071619568392634,
+      "anchor_plus_actual_calls_seconds": 886.7247547078878,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "strong_cnn",
+      "seed": 2026102603,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.1568627506494522,
+      "checkpoint_load_seconds_sum": 0.0037880409508943558,
+      "context_IO_seconds_sum": 0.5803964158985764,
+      "anchor_plus_actual_calls_seconds": 886.6647709191311,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "k32",
+      "seed": 2026102601,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.32528916699811816,
+      "checkpoint_load_seconds_sum": 0.03286016592755914,
+      "context_IO_seconds_sum": 0.6393486668821424,
+      "anchor_plus_actual_calls_seconds": 886.92122171144,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "k32",
+      "seed": 2026102602,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.33340483298525214,
+      "checkpoint_load_seconds_sum": 0.026579041266813874,
+      "context_IO_seconds_sum": 0.6175296662840992,
+      "anchor_plus_actual_calls_seconds": 886.9012372521684,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "k32",
+      "seed": 2026102603,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.33049062523059547,
+      "checkpoint_load_seconds_sum": 0.02750370791181922,
+      "context_IO_seconds_sum": 0.7029353748075664,
+      "anchor_plus_actual_calls_seconds": 886.9846534195822,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "deterministic_matched",
+      "seed": 2026102601,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.7024076678790152,
+      "checkpoint_load_seconds_sum": 0.027867541881278157,
+      "context_IO_seconds_sum": 0.5845810840837657,
+      "anchor_plus_actual_calls_seconds": 887.2385800054763,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "deterministic_matched",
+      "seed": 2026102602,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.822145041776821,
+      "checkpoint_load_seconds_sum": 0.026157167041674256,
+      "context_IO_seconds_sum": 0.7002507073339075,
+      "anchor_plus_actual_calls_seconds": 887.4722766277846,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "deterministic_matched",
+      "seed": 2026102603,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.7552202509250492,
+      "checkpoint_load_seconds_sum": 0.026017748983576894,
+      "context_IO_seconds_sum": 0.6408506240695715,
+      "anchor_plus_actual_calls_seconds": 887.3458123356104,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "distilled_w128",
+      "seed": 2026102601,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.1957055008970201,
+      "checkpoint_load_seconds_sum": 0.029663207940757275,
+      "context_IO_seconds_sum": 0.6459874159190804,
+      "anchor_plus_actual_calls_seconds": 886.795079836389,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "distilled_w128",
+      "seed": 2026102602,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.14837766881100833,
+      "checkpoint_load_seconds_sum": 0.0251586246304214,
+      "context_IO_seconds_sum": 0.5817148361820728,
+      "anchor_plus_actual_calls_seconds": 886.6789748412557,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "distilled_w128",
+      "seed": 2026102603,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.15379420737735927,
+      "checkpoint_load_seconds_sum": 0.0270883331540972,
+      "context_IO_seconds_sum": 0.5814234579447657,
+      "anchor_plus_actual_calls_seconds": 886.6860297101084,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "det_frozen",
+      "seed": 2026102601,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.7365025011822581,
+      "checkpoint_load_seconds_sum": 0.03184087504632771,
+      "context_IO_seconds_sum": 0.5958153740502894,
+      "anchor_plus_actual_calls_seconds": 887.2878824619111,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "det_frozen",
+      "seed": 2026102602,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.7473744989838451,
+      "checkpoint_load_seconds_sum": 0.03166283294558525,
+      "context_IO_seconds_sum": 0.5913249158766121,
+      "anchor_plus_actual_calls_seconds": 887.2940859594382,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    },
+    {
+      "method": "det_frozen",
+      "seed": 2026102603,
+      "parents": 512,
+      "groups": 2,
+      "inference_seconds_sum": 0.808585291961208,
+      "checkpoint_load_seconds_sum": 0.02871574927121401,
+      "context_IO_seconds_sum": 0.6834436242934316,
+      "anchor_plus_actual_calls_seconds": 887.444468377158,
+      "scope": "sum of separate observed receipts; not one instrumented joint invocation; includes repeated context I/O for this action/seed only"
+    }
+  ],
+  "actual_whole_prediction_jobs": {
+    "groups": [
+      {
+        "group": "A",
+        "wall_seconds": 11.792999374913052,
+        "CPU_seconds": 11.219418,
+        "peak_RSS_bytes": 496680960
+      },
+      {
+        "group": "B",
+        "wall_seconds": 8.412178041879088,
+        "CPU_seconds": 7.8480430000000005,
+        "peak_RSS_bytes": 489013248
+      }
+    ],
+    "scope": "all listed actions/seeds plus context I/O and artifact work; do not interpret whole-job sums as one-arm deployment"
+  },
+  "physical_scope": {
+    "all_actual_RHS": 1999504,
+    "main_512_anchors_RHS": 1960400,
+    "main_512_truth_generation_RHS": 4096,
+    "probe_RHS": 35008,
+    "check_sum": 1999504,
+    "ledger": {
+      "RHS": 1999504,
+      "forward_RHS": 453872,
+      "derivative_RHS": 1545632,
+      "state_attempts": 56734,
+      "LU_attempts": 56734,
+      "physics_wall_seconds": 571.5985695682466,
+      "physics_CPU_seconds": 549.3886999999984,
+      "job_wall_seconds": 929.1211526200641,
+      "job_CPU_seconds": 868.9198909999993,
+      "failures": 0,
+      "sequence": 317185,
+      "active_actions": {},
+      "actual_counters": {
+        "saved_background_file_reads": 1040,
+        "a30_background_file_read_seconds": 17.286233817227185,
+        "saved_background_imports": 1040,
+        "a30_saved_background_array_bytes": 6301368320,
+        "a30_saved_background_import_seconds": 0.49864292284473777,
+        "background_equation_audits": 1040,
+        "cached_background_field_columns": 8320,
+        "cached_background_transfer_columns": 599040,
+        "a30_cached_background_equation_audit_seconds": 4.052866658195853,
+        "paid_background_array_setup_seconds": 22.501205475768074,
+        "a30_fresh_full_state_calls": 56734,
+        "full_forward_calls": 56734,
+        "full_forward_source_rhs": 453872,
+        "full_L_assemblies": 56734,
+        "full_assembly_bytes": 305350557696,
+        "full_material_assembly_seconds": 32.0324381229002,
+        "LU_factorizations": 56734,
+        "full_LU_factorizations": 56734,
+        "LU_array_bytes": 301298388480,
+        "full_LU_factor_seconds": 255.819972144207,
+        "actual_full_forward_RHS": 453872,
+        "linear_solve_rhs": 1999504,
+        "full_forward_RHS": 453872,
+        "solve_result_bytes": 18427428864,
+        "full_forward_solve_seconds": 12.691597696393728,
+        "G_actions": 453872,
+        "Green_kernel_rhs": 453872,
+        "green_result_bytes": 4182884352,
+        "G_seconds": 12.807388330576941,
+        "S_actions": 453872,
+        "receiver_kernel_rhs": 453872,
+        "receiver_result_bytes": 232382464,
+        "S_seconds": 1.1621442146133631,
+        "residual_audits": 56734,
+        "full_state_residual_rhs": 453872,
+        "residual_L_actions": 453872,
+        "matrix_result_bytes": 4182884352,
+        "residual_L_apply_seconds": 11.697681947378442,
+        "residual_array_bytes": 4182884352,
+        "full_state_residual_audit_seconds": 14.414322463795543,
+        "full_field_array_bytes": 4705744896,
+        "full_forward_seconds": 332.2202460949775,
+        "a30_fresh_full_state_seconds": 358.9592026176397,
+        "receiver_transfer_builds": 48301,
+        "actual_derivative_RHS": 1545632,
+        "receiver_transfer_adjoint_RHS": 1545632,
+        "receiver_transfer_adjoint_solve_seconds": 30.603770529618487,
+        "anchor_residual_columns": 1545632,
+        "a30_anchor_solve_residual_audit_seconds": 31.826415821211413,
+        "a30_anchor_receiver_transfer_seconds": 94.76071851002052
+      }
+    },
+    "truth_generation": "offline generation/evaluation cost; separate from deployment warm online timing"
+  },
+  "memory": {
+    "benchmark_combined_process_peak_RSS_bytes": 487129088,
+    "scope": "cumulative combined process peak, not per-arm allocation"
+  },
+  "offline_costs": {
+    "shared": {
+      "joint_truth_and_context_CPU_controlled_wall_seconds": 3977.1247740364634,
+      "joint_truth_RHS": 278528,
+      "strong_context_RHS": 4928104,
+      "original_Gaussian_MPS_whole_job_wall_seconds": 53.70004091714509,
+      "original_Gaussian_operation_wall_seconds": 52.42265670909546
+    },
+    "baseline_specific": {
+      "K32_seed1_head_plus_features_CPU_controlled_wall_seconds": 127.65701150102541
+    },
+    "incremental": {
+      "teacher_CPU_wall_seconds_full_charge": 29.153279749909416,
+      "teacher_cache": "one cache shared by width64/128 and seeds; full charge sensitivity used; if already cached marginal teacher charge zero",
+      "student_seed1_provider_MPS_wall_seconds": 11.174166333861649,
+      "student_seed1_head_MPS_wall_seconds": 16.99775699991733,
+      "student_seed1_total_MPS_operation_wall_seconds": 28.171923333778977,
+      "student_all3_MPS_operation_wall_seconds": 82.75562191661447,
+      "student_all3_whole_job_wall_seconds": 84.7705672911834
+    },
+    "unattributable_not_free": [
+      "Original P1 known-background acquisition (already paid shared cache); exact parent-attributable cost not recovered in this bounded audit",
+      "Historical architecture search, failed training/normalization versions, packaging/import time and other R4 research work not charged wholesale to the selected Gaussian teacher",
+      "R4 joint repacking and TRAIN normalization overhead beyond recovered whole-job/provider records",
+      "Power/money/hardware normalization across CPU and MPS unavailable; GPU_seconds records denote controlled wall with MPS, not device utilization"
+    ],
+    "rules": [
+      "These shared sunk costs are disclosed separately from new deployment inference/anchor acquisition",
+      "Do not sum an operation time and its enclosing whole-job wall; they overlap",
+      "Do not assign all R4 campaign costs to this teacher or all cached teacher generation to each final seed",
+      "29.153s teacher generation alone is not total offline amortization or end-to-end break-even"
+    ],
+    "currency_power_or_equal_CPU_GPU_price": "UNAVAILABLE; CPU and MPS wall seconds stay separate; overlapping whole-job/operation costs not added"
+  },
+  "amortization": [
+    {
+      "deployments": 1,
+      "shared_joint_and_context_CPU_wall_seconds_per_deployment": 3977.1247740364634,
+      "shared_original_Gaussian_MPS_whole_job_wall_seconds_per_deployment": 53.70004091714509,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_full_charge": 29.153279749909416,
+      "incremental_student_provider_and_head_MPS_wall_seconds_per_deployment_one_seed": 28.171923333778977,
+      "baseline_K32_head_and_features_CPU_wall_seconds_per_deployment": 127.65701150102541,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_if_preexisting_cache": 0.0,
+      "online_savings": [
+        {
+          "batch_size": 1,
+          "CPU_provider_seconds_saved": 0.0009076045826077461,
+          "CPU_full_predict_seconds_saved": 0.0008733334252610803,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -29.152406416484155
+        },
+        {
+          "batch_size": 64,
+          "CPU_provider_seconds_saved": 0.00020339778166089673,
+          "CPU_full_predict_seconds_saved": 0.00020302244774939027,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -29.153076727461666
+        }
+      ]
+    },
+    {
+      "deployments": 512,
+      "shared_joint_and_context_CPU_wall_seconds_per_deployment": 7.7678218242899675,
+      "shared_original_Gaussian_MPS_whole_job_wall_seconds_per_deployment": 0.104882892416299,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_full_charge": 0.05693999951154183,
+      "incremental_student_provider_and_head_MPS_wall_seconds_per_deployment_one_seed": 0.055023287761287065,
+      "baseline_K32_head_and_features_CPU_wall_seconds_per_deployment": 0.24933010058794025,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_if_preexisting_cache": 0.0,
+      "online_savings": [
+        {
+          "batch_size": 1,
+          "CPU_provider_seconds_saved": 0.464693546295166,
+          "CPU_full_predict_seconds_saved": 0.4471467137336731,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -28.706133036175743
+        },
+        {
+          "batch_size": 64,
+          "CPU_provider_seconds_saved": 0.10413966421037912,
+          "CPU_full_predict_seconds_saved": 0.10394749324768782,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -29.049332256661728
+        }
+      ]
+    },
+    {
+      "deployments": 10000,
+      "shared_joint_and_context_CPU_wall_seconds_per_deployment": 0.39771247740364635,
+      "shared_original_Gaussian_MPS_whole_job_wall_seconds_per_deployment": 0.005370004091714509,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_full_charge": 0.0029153279749909414,
+      "incremental_student_provider_and_head_MPS_wall_seconds_per_deployment_one_seed": 0.002817192333377898,
+      "baseline_K32_head_and_features_CPU_wall_seconds_per_deployment": 0.01276570115010254,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_if_preexisting_cache": 0.0,
+      "online_savings": [
+        {
+          "batch_size": 1,
+          "CPU_provider_seconds_saved": 9.076045826077461,
+          "CPU_full_predict_seconds_saved": 8.733334252610803,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -20.419945497298613
+        },
+        {
+          "batch_size": 64,
+          "CPU_provider_seconds_saved": 2.0339778166089673,
+          "CPU_full_predict_seconds_saved": 2.0302244774939027,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -27.123055272415513
+        }
+      ]
+    },
+    {
+      "deployments": 100000,
+      "shared_joint_and_context_CPU_wall_seconds_per_deployment": 0.03977124774036463,
+      "shared_original_Gaussian_MPS_whole_job_wall_seconds_per_deployment": 0.0005370004091714509,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_full_charge": 0.00029153279749909416,
+      "incremental_student_provider_and_head_MPS_wall_seconds_per_deployment_one_seed": 0.0002817192333377898,
+      "baseline_K32_head_and_features_CPU_wall_seconds_per_deployment": 0.001276570115010254,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_if_preexisting_cache": 0.0,
+      "online_savings": [
+        {
+          "batch_size": 1,
+          "CPU_provider_seconds_saved": 90.76045826077461,
+          "CPU_full_predict_seconds_saved": 87.33334252610803,
+          "CPU_full_predict_savings_minus_full_teacher_charge": 58.18006277619861
+        },
+        {
+          "batch_size": 64,
+          "CPU_provider_seconds_saved": 20.339778166089673,
+          "CPU_full_predict_seconds_saved": 20.302244774939027,
+          "CPU_full_predict_savings_minus_full_teacher_charge": -8.85103497497039
+        }
+      ]
+    },
+    {
+      "deployments": 1000000,
+      "shared_joint_and_context_CPU_wall_seconds_per_deployment": 0.003977124774036464,
+      "shared_original_Gaussian_MPS_whole_job_wall_seconds_per_deployment": 5.370004091714509e-05,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_full_charge": 2.9153279749909415e-05,
+      "incremental_student_provider_and_head_MPS_wall_seconds_per_deployment_one_seed": 2.8171923333778977e-05,
+      "baseline_K32_head_and_features_CPU_wall_seconds_per_deployment": 0.0001276570115010254,
+      "incremental_teacher_CPU_wall_seconds_per_deployment_if_preexisting_cache": 0.0,
+      "online_savings": [
+        {
+          "batch_size": 1,
+          "CPU_provider_seconds_saved": 907.6045826077461,
+          "CPU_full_predict_seconds_saved": 873.3334252610803,
+          "CPU_full_predict_savings_minus_full_teacher_charge": 844.1801455111708
+        },
+        {
+          "batch_size": 64,
+          "CPU_provider_seconds_saved": 203.39778166089673,
+          "CPU_full_predict_seconds_saved": 203.02244774939027,
+          "CPU_full_predict_savings_minus_full_teacher_charge": 173.86916799948085
+        }
+      ]
+    }
+  ],
+  "teacher_CPU_only_breakeven": [
+    {
+      "batch_size": 1,
+      "teacher_CPU_only_provider_parents": 32121.124450634303,
+      "teacher_CPU_only_full_predict_parents": 33381.61452047268,
+      "meaning": "CPU wall teacher-only recovery; excludes MPS student/head and all shared sunk costs; not total or financial break-even"
+    },
+    {
+      "batch_size": 64,
+      "teacher_CPU_only_provider_parents": 143331.3554939038,
+      "teacher_CPU_only_full_predict_parents": 143596.3366272485,
+      "meaning": "CPU wall teacher-only recovery; excludes MPS student/head and all shared sunk costs; not total or financial break-even"
+    }
+  ],
+  "historical_Q16_vs_current_Q64": {
+    "historical_rows": [
+      {
+        "arm": "optimized_original_K32",
+        "batch": 1,
+        "checkpoint_load_seconds": 0.005285375053063035,
+        "first_inference_seconds": 0.0016160421073436737,
+        "full_warm_median_seconds": 0.001472978969104588,
+        "full_warm_per_parent_seconds": 0.001472978969104588,
+        "provider_warm_per_parent_seconds": 0.001113312435336411,
+        "provider_p10_seconds": 0.0008637881139293313,
+        "provider_p90_seconds": 0.001990833319723606,
+        "raw_provider_seconds": [
+          0.0008930421900004148,
+          0.0014229998923838139,
+          0.0019742909353226423,
+          0.0009577497839927673,
+          0.0008914999198168516,
+          0.0011459998786449432,
+          0.0008992091752588749,
+          0.0008902079425752163,
+          0.0008773328736424446,
+          0.001334708882495761,
+          0.0010112079326063395,
+          0.0008489578031003475,
+          0.0008447500877082348,
+          0.001196624943986535,
+          0.002036707941442728,
+          0.0010806249920278788,
+          0.0015774169005453587,
+          0.0014774170704185963,
+          0.001990000018849969,
+          0.0020733329001814127,
+          0.0012660829816013575,
+          0.0010017501190304756,
+          0.0008566251490265131,
+          0.0008645839989185333,
+          0.001311957836151123,
+          0.0019287499599158764,
+          0.0009022909216582775,
+          0.0008757091127336025,
+          0.00195629196241498,
+          0.001998333027586341
+        ],
+        "raw_full_pipeline_seconds": [
+          0.0012163331266492605,
+          0.0020104169379919767,
+          0.0017999580595642328,
+          0.0014529998879879713,
+          0.0012924589682370424,
+          0.0027101668529212475,
+          0.0013970830477774143,
+          0.0011777079198509455,
+          0.001149917021393776,
+          0.0015335408970713615,
+          0.001182416919618845,
+          0.001139374915510416,
+          0.0022530420683324337,
+          0.0024397079832851887,
+          0.002067374996840954,
+          0.0013320001307874918,
+          0.0016252079512923956,
+          0.0029069159645587206,
+          0.0031466251239180565,
+          0.001451290911063552,
+          0.001247375039383769,
+          0.0012459161225706339,
+          0.0011486669536679983,
+          0.001459999941289425,
+          0.001614416018128395,
+          0.0014484580606222153,
+          0.0014859579969197512,
+          0.0015728750731796026,
+          0.0026912919711321592,
+          0.0026842919178307056
+        ],
+        "timing_units": "secondsperwholebatch; perparent separatelynormalized",
+        "full_p10": 0.0011749288300052286,
+        "full_p90": 0.002693179459311068
+      },
+      {
+        "arm": "optimized_original_K32",
+        "batch": 64,
+        "checkpoint_load_seconds": 0.005285375053063035,
+        "first_inference_seconds": 0.03881304198876023,
+        "full_warm_median_seconds": 0.04101812501903623,
+        "full_warm_per_parent_seconds": 0.0006409082034224411,
+        "provider_warm_per_parent_seconds": 0.0003322643187857466,
+        "provider_p10_seconds": 0.01669978688005358,
+        "provider_p90_seconds": 0.025940883974544707,
+        "raw_provider_seconds": [
+          0.019639667123556137,
+          0.018410541815683246,
+          0.0256953751668334,
+          0.02702662511728704,
+          0.026999959023669362,
+          0.017658666940405965,
+          0.023489250103011727,
+          0.019712042063474655,
+          0.02751454198732972,
+          0.019933625124394894,
+          0.016750290989875793,
+          0.016245249891653657,
+          0.025268542114645243,
+          0.02055324986577034,
+          0.01615816680714488,
+          0.02129374979995191,
+          0.018324665958061814,
+          0.023688540793955326,
+          0.017092667054384947,
+          0.02300045802257955,
+          0.024417166830971837,
+          0.024733166908845305,
+          0.024502916960045695,
+          0.02582320896908641,
+          0.016106124967336655,
+          0.02123608300462365,
+          0.02542733307927847,
+          0.019932208117097616,
+          0.01914958283305168,
+          0.02389124990440905
+        ],
+        "raw_full_pipeline_seconds": [
+          0.04426550003699958,
+          0.0346943330951035,
+          0.04374229093082249,
+          0.03600908303633332,
+          0.03917474998161197,
+          0.03078241692855954,
+          0.03573270794004202,
+          0.04082766594365239,
+          0.03837475017644465,
+          0.049777167150750756,
+          0.035077041015028954,
+          0.031373083824291825,
+          0.03518508397974074,
+          0.04729370796121657,
+          0.04158087517134845,
+          0.03856366709806025,
+          0.04042054107412696,
+          0.026655167108401656,
+          0.043517166981473565,
+          0.04273962485603988,
+          0.0421250001527369,
+          0.050939208129420877,
+          0.04913491616025567,
+          0.04652658314444125,
+          0.04629370803013444,
+          0.04344212496653199,
+          0.041208584094420075,
+          0.045349833089858294,
+          0.03896349994465709,
+          0.03690595901571214
+        ],
+        "timing_units": "secondsperwholebatch; perparent separatelynormalized",
+        "full_p10": 0.03436220816802234,
+        "full_p90": 0.04747782878112048
+      },
+      {
+        "arm": "deterministic_q16",
+        "batch": 1,
+        "checkpoint_load_seconds": 0.006012459052726626,
+        "first_inference_seconds": 0.0031943339854478836,
+        "full_warm_median_seconds": 0.0026687919162213802,
+        "full_warm_per_parent_seconds": 0.0026687919162213802,
+        "provider_warm_per_parent_seconds": 0.0019524790113791823,
+        "provider_p10_seconds": 0.0011472496436908842,
+        "provider_p90_seconds": 0.002605595742352307,
+        "raw_provider_seconds": [
+          0.0027811250183731318,
+          0.0013858338352292776,
+          0.0019868749659508467,
+          0.0012384580913931131,
+          0.001129042124375701,
+          0.0015489580109715462,
+          0.0019081670325249434,
+          0.0021828748285770416,
+          0.0028560839127749205,
+          0.0021513330284506083,
+          0.00250504189170897,
+          0.002606458030641079,
+          0.0017094169743359089,
+          0.0015487500932067633,
+          0.0022932919673621655,
+          0.0020675829146057367,
+          0.002404165919870138,
+          0.002299125073477626,
+          0.001918083056807518,
+          0.001190209062770009,
+          0.0011341250501573086,
+          0.0011487079318612814,
+          0.0022226660512387753,
+          0.002368499990552664,
+          0.0026054999325424433,
+          0.001836166949942708,
+          0.002322542015463114,
+          0.001161583000794053,
+          0.001120750093832612,
+          0.0013924159575253725
+        ],
+        "raw_full_pipeline_seconds": [
+          0.0023825420066714287,
+          0.0025984998792409897,
+          0.003284249920397997,
+          0.0015209170524030924,
+          0.0020973749924451113,
+          0.0027446250896900892,
+          0.002546084113419056,
+          0.002483417047187686,
+          0.00308591709472239,
+          0.0027071249205619097,
+          0.0032990837935358286,
+          0.0029417499899864197,
+          0.002730207983404398,
+          0.0032304590567946434,
+          0.003432750003412366,
+          0.0032036250922828913,
+          0.0023877089843153954,
+          0.002791041973978281,
+          0.0022879589814692736,
+          0.0014545000158250332,
+          0.0014255000278353691,
+          0.002997209085151553,
+          0.0029374579899013042,
+          0.0028462500777095556,
+          0.002630458911880851,
+          0.0026206669863313437,
+          0.0019197079818695784,
+          0.0016156251076608896,
+          0.0014062919653952122,
+          0.003066624980419874
+        ],
+        "timing_units": "secondsperwholebatch; perparent separatelynormalized",
+        "full_p10": 0.0015142753487452866,
+        "full_p90": 0.0032358381431549788
+      },
+      {
+        "arm": "deterministic_q16",
+        "batch": 64,
+        "checkpoint_load_seconds": 0.006012459052726626,
+        "first_inference_seconds": 0.05814774986356497,
+        "full_warm_median_seconds": 0.0635287705808878,
+        "full_warm_per_parent_seconds": 0.0009926370403263718,
+        "provider_warm_per_parent_seconds": 0.0006644521545240423,
+        "provider_p10_seconds": 0.03726817436981946,
+        "provider_p90_seconds": 0.04636372548993677,
+        "raw_provider_seconds": [
+          0.03947404189966619,
+          0.04228129191324115,
+          0.04569854214787483,
+          0.051637833938002586,
+          0.043623625067994,
+          0.046295333886519074,
+          0.04826316703110933,
+          0.04430350009351969,
+          0.03483712510205805,
+          0.03885283297859132,
+          0.04002070799469948,
+          0.03807749995030463,
+          0.043002917198464274,
+          0.04160254099406302,
+          0.04396104207262397,
+          0.037538290955126286,
+          0.03478108299896121,
+          0.04154129093512893,
+          0.03987733391113579,
+          0.03311304189264774,
+          0.04561429098248482,
+          0.03907891595736146,
+          0.04385979101061821,
+          0.04386583319865167,
+          0.044675499899312854,
+          0.04697924992069602,
+          0.045913666021078825,
+          0.04276858386583626,
+          0.0377236248459667,
+          0.03889029216952622
+        ],
+        "raw_full_pipeline_seconds": [
+          0.058833666844293475,
+          0.06456933403387666,
+          0.06285975011996925,
+          0.06261670892126858,
+          0.05739562516100705,
+          0.05848562507890165,
+          0.0693238340318203,
+          0.06346779107116163,
+          0.06551691703498363,
+          0.0682929172180593,
+          0.07240604213438928,
+          0.059846000047400594,
+          0.06584858405403793,
+          0.06311812484636903,
+          0.06422862503677607,
+          0.06099991709925234,
+          0.06248737499117851,
+          0.05601962492801249,
+          0.0666383330244571,
+          0.06358975009061396,
+          0.06808779202401638,
+          0.05126116587780416,
+          0.07125704200007021,
+          0.06290158396586776,
+          0.10172637505456805,
+          0.0701059999410063,
+          0.06460016593337059,
+          0.06168275000527501,
+          0.06251620803959668,
+          0.07374133286066353
+        ],
+        "timing_units": "secondsperwholebatch; perparent separatelynormalized",
+        "full_p10": 0.05837662508711219,
+        "full_p90": 0.07137194201350212
+      },
+      {
+        "arm": "distilled_w128_n32768",
+        "batch": 1,
+        "checkpoint_load_seconds": 0.006587957963347435,
+        "first_inference_seconds": 0.0011632079258561134,
+        "full_warm_median_seconds": 0.0007019375916570425,
+        "full_warm_per_parent_seconds": 0.0007019375916570425,
+        "provider_warm_per_parent_seconds": 0.00010935449972748756,
+        "provider_p10_seconds": 3.408312331885099e-05,
+        "provider_p90_seconds": 0.00013440453913062813,
+        "raw_provider_seconds": [
+          0.00018650013953447342,
+          0.00015341700054705143,
+          0.00011420808732509613,
+          9.508407674729824e-05,
+          3.920821473002434e-05,
+          0.00012366590090095997,
+          0.00011854199692606926,
+          9.837490506470203e-05,
+          7.812515832483768e-05,
+          7.258402183651924e-05,
+          9.55839641392231e-05,
+          0.00011229189112782478,
+          0.00013229204341769218,
+          0.0001204581931233406,
+          0.00012808293104171753,
+          5.179084837436676e-05,
+          3.4082913771271706e-05,
+          0.00011783302761614323,
+          0.0001284999307245016,
+          0.00011224998161196709,
+          6.633298471570015e-05,
+          0.0001282920129597187,
+          5.100015550851822e-05,
+          3.408314660191536e-05,
+          3.3250078558921814e-05,
+          3.174995072185993e-05,
+          0.00015650014393031597,
+          0.00010645901784300804,
+          0.00010087504051625729,
+          0.00011312495917081833
+        ],
+        "raw_full_pipeline_seconds": [
+          0.0010942090302705765,
+          0.0007001250050961971,
+          0.0006699170917272568,
+          0.000542874913662672,
+          0.00048200017772614956,
+          0.0007055420428514481,
+          0.0008019160013645887,
+          0.0007262500002980232,
+          0.0006735420320183039,
+          0.0006850829813629389,
+          0.0007145840208977461,
+          0.0007037501782178879,
+          0.0007087918929755688,
+          0.0008167920168489218,
+          0.0008140420541167259,
+          0.00040804105810821056,
+          0.0006219579372555017,
+          0.0006467499770224094,
+          0.0008758329786360264,
+          0.0008342498913407326,
+          0.0009875001851469278,
+          0.0006174580194056034,
+          0.0003665830008685589,
+          0.00032729189842939377,
+          0.00031195906922221184,
+          0.0003960409667342901,
+          0.0008670829702168703,
+          0.0008004580158740282,
+          0.0007752920500934124,
+          0.0006755420472472906
+        ],
+        "timing_units": "secondsperwholebatch; perparent separatelynormalized",
+        "full_p10": 0.00039309517014771703,
+        "full_p90": 0.0008679579710587859
+      },
+      {
+        "arm": "distilled_w128_n32768",
+        "batch": 64,
+        "checkpoint_load_seconds": 0.006587957963347435,
+        "first_inference_seconds": 0.019803666044026613,
+        "full_warm_median_seconds": 0.0223824376007542,
+        "full_warm_per_parent_seconds": 0.0003497255875117844,
+        "provider_warm_per_parent_seconds": 8.454757335130125e-06,
+        "provider_p10_seconds": 0.0002882624743506312,
+        "provider_p90_seconds": 0.000718437577597797,
+        "raw_provider_seconds": [
+          0.00027991714887320995,
+          0.00028849998489022255,
+          0.0002888338640332222,
+          0.0002937908284366131,
+          0.00026604090817272663,
+          0.000500124879181385,
+          0.00030012521892786026,
+          0.0002861248794943094,
+          0.00030991598032414913,
+          0.0006241248920559883,
+          0.00030625006183981895,
+          0.0006642080843448639,
+          0.0005268340464681387,
+          0.0007645839359611273,
+          0.0006378749385476112,
+          0.0007160000968724489,
+          0.0005132090300321579,
+          0.00030116597190499306,
+          0.0007403749041259289,
+          0.0004486669786274433,
+          0.0005600419826805592,
+          0.000621916027739644,
+          0.0007791251409798861,
+          0.0005553748924285173,
+          0.0006002089940011501,
+          0.000579125015065074,
+          0.0005056250374764204,
+          0.0005985840689390898,
+          0.0006701250094920397,
+          0.0006603749934583902
+        ],
+        "raw_full_pipeline_seconds": [
+          0.024497041013091803,
+          0.019447416067123413,
+          0.022333916975185275,
+          0.019100792007520795,
+          0.023600458865985274,
+          0.019916624994948506,
+          0.022281500045210123,
+          0.02327283308841288,
+          0.019435875117778778,
+          0.06673324992880225,
+          0.021378833102062345,
+          0.023250082973390818,
+          0.024614708963781595,
+          0.026004582876339555,
+          0.022341500036418438,
+          0.020589665975421667,
+          0.022495084209367633,
+          0.02547566592693329,
+          0.022423375165089965,
+          0.01893137488514185,
+          0.021540750050917268,
+          0.01798250013962388,
+          0.026634708046913147,
+          0.02418474992737174,
+          0.02288524992763996,
+          0.020081541035324335,
+          0.024813124909996986,
+          0.01911758305504918,
+          0.021171333035454154,
+          0.025020333006978035
+        ],
+        "timing_units": "secondsperwholebatch; perparent separatelynormalized",
+        "full_p10": 0.01911590395029634,
+        "full_p90": 0.025528557621873917
+      }
+    ],
+    "current": "canonical Action quadrature_nodes=64; use current table for claims; historical Q16 has different work and different runtime/session",
+    "historical_ratio": "deterministic q16 full/K32: 1.8118 batch1 and 1.5488 batch64; not current Q64"
+  },
+  "model_size": {
+    "original_Gaussian_provider_parameters": 682943,
+    "student_provider_parameters": 214272,
+    "head_parameters_each": 6418,
+    "provider_parameter_reduction_percent": 68.62520005329874,
+    "full_provider_plus_head_parameter_reduction_percent": 67.98629455394199
+  },
+  "limitations": [
+    "Derived warm full-system time = actual mean main-anchor receipt wall + median steady full predict/batch; not a direct joint timing or a quantile of joint latency.",
+    "First Action load + first inference is object cold in a warm process/filesystem, not true process/disk cold.",
+    "Runtime replicates use one fixed training seed and same parents; no cross-seed pseudo-independence.",
+    "CPU/MPS wall are not priced or device-utilization equivalents; no total economic break-even is identified.",
+    "Physical instrumentation sub-operation timers overlap with enclosing job wall and must not be summed with it."
+  ]
+}

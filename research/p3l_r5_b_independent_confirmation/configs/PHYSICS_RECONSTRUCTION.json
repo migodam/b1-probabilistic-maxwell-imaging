@@ -1,0 +1,37 @@
+{
+  "native": {
+    "method": "full_TRF",
+    "max_evaluations": 96,
+    "polish": false,
+    "start": "zeros64 + midpoint .5 .5",
+    "objective": "Phi + .5||z64||^2",
+    "bounds": "Gaussian unrestricted; properties[0,1]"
+  },
+  "probit": {
+    "max_nfev": 64,
+    "fresh_cap": 64,
+    "start": "to_probit(native_best, initialization=True)",
+    "boundary_init_clip": [
+      0.0001,
+      0.9999
+    ],
+    "objective": "Phi+.5||x66||^2",
+    "identity": "PROBIT_COORDINATE_MAP_NOT_NATIVE_MAP"
+  },
+  "common": {
+    "method": "trf",
+    "tr_solver": "exact",
+    "x_scale": "jac",
+    "ftol": 1e-09,
+    "xtol": 1e-09,
+    "gtol": 1e-07,
+    "backward_residual": 1e-10
+  },
+  "sigma": 0.00119211798514519,
+  "geometry": "original24x24_TM8sources32receivers256ROI",
+  "physics": "A30 FrozenMaxwellAdapter read-only original R4 saved background",
+  "fallback": "original optimizers retain finite lowest objective endpoint even cap/non-success; no GT restart; catastrophic absent endpoint stops diagnosis",
+  "persistence": "lossless endpoint(q,chi,prediction,residual) immediately; final(current,field,J) stored; no redundant dense LU archive; steps unchanged",
+  "live_cache": "4 optimizer points + native/probit best; receiver transfer bounded2; clear between parents",
+  "single_worker": true
+}
