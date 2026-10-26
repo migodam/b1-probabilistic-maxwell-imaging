@@ -52,4 +52,4 @@ Native出现普通异常或BudgetStop后，只要已有finite best便可能返�
 
 已落盘 `configs/PHYSICS_RECONSTRUCTION.json` 明确Native96无polish、Probit64、原容差与失败保留；AUTHORIZATION给出3,300,000 RHS硬上限。FREEZE.json在首次源码查看时尚不存在，在随后状态snapshot时已存在（parent线程并发准备）；本审计没有执行release或物理调用。后续生成状态应以parent线程实际receipt为准。A/B本地parents文件的完整rows与原pending逐项完全一致；8个probe ID与confirmation/历史ID无交集，16个probe prior/noise seeds内部无重复且与A/B无交集。见 [PRE_RELEASE_CONFIG_STATUS.json](audit/independence/PRE_RELEASE_CONFIG_STATUS.json)。
 
-520 parent（probe8+A256+B256）完整最坏上界3,332,160 RHS，比3.3M多32,160。历史实际成本较低不解除硬限额；runner必须保留RESOURCE_LIMITED提前停止，禁止降低保真、扩预算或删parent求完成。现有anchors入口在余额<6500时停止，是保守保护。新read_online校验keys/shape/sigma，但尚未比较target_id内容与原Target ID；建议release前补上该等值检查与finite检查。收费一致性的运行时验证不在本次只读审计范围内。
+520 parent（probe8+A256+B256）完整最坏上界3,332,160 RHS，比3.3M多32,160。历史实际成本较低不解除硬限额；runner必须保留RESOURCE_LIMITED提前停止，禁止降低保真、扩预算或删parent求完成。现有anchors入口在余额<6500时停止，是保守保护。首次审计提示的read_online缺口已由parent在正式FREEZE前补齐；后续复查确认keys/shape、finite complex观测、原P1 target_id与sigma均受检，14项冻结源码当前与FREEZE身份一致，见 `audit/independence/POST_GENERATION_SOURCE_GUARD_REVIEW.json`。收费一致性的运行时验证不在本次只读审计范围内。

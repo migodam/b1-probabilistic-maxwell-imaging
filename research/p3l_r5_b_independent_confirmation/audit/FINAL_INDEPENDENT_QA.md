@@ -1,0 +1,13 @@
+# Final independent mechanical QA
+
+**PASS_MECHANICAL_QA_WITH_RETAINED_SCIENTIFIC_HOLD**. Authorized offline QA added0 RHS and0 training. It re-read all512 scorepack truths only after both prediction seals and original offline scoring completed; no model, method, threshold or primary hypothesis changed.
+
+- Streamed317,185 ledger rows. Sequence, cumulative RHS, all reserved totals, closed-job counters and final SNAPSHOT agree; no active action or unused prepaid forward credit. Actual solver counters equal **1,999,504 RHS =453,872 forward +1,545,632 derivative**,56,734 LU/state attempts. No recorded physics failures.
+- All512 TEST contexts exist, preserve GT_read=false and Native96/Probit64 caps. Native report is OPTIMIZER_RETURNED for512; Probit SciPy success338/512, with finite best endpoints retained for remaining174. Success flags do not certify posterior or global optimum.
+- Every final native and probit q is legal; decoder G(q) matches stored material exactly. Maximum saved backward residual1.6382e-15. Two fixed first-parent caches satisfy current/field/receiver matrix identities to≤1.576e-15, using algebra only and0 solver RHS.
+- Recomputed all512×3×6 raw and clipped method/seed losses. Per-parent MSE/MAE agree exactly with saved scores; published primary method means differ by≤8.674e-19. All32 globally sealed prediction artifacts retain sealed identities; predictions equal scorepack exactly. Primary results average three seed **losses**; ensemble-image losses were separately recomputed and remain descriptive.
+- Retention point estimate **80.69595%**. The80% margin is1.93634e-6, but its adjusted one-sided lower bound is−5.43036e-5 and confidence_gate=false: **HOLD**, not statistical PASS. Existing deterministic-vs-K32 and student-vs-strong conclusions are unchanged.
+- Additional descriptive Native96 baseline: MSE0.0124494704, complex MAE0.0473304450. Saved parent losses in `NATIVE_BASELINE_DESCRIPTIVE.npz`; no new primary comparison or interval was added.
+- All14 original frozen source files still match their byte count and existing BLAKE2B identity. No SHA256 or large historical asset hashing. Old R4 and R5 sibling worktrees currently have empty tracked diffs and clean porcelain status, at092da74e andd813b419 respectively; this worker did not possess a pre-run git-status baseline and does not claim ignored historical files were content-audited.
+
+Detailed evidence: [FINAL_INDEPENDENT_QA.json](FINAL_INDEPENDENT_QA.json). Reproduction uses `audit/final_independent_qa.py`, which imports only the static prior decoder, never a physics Target, model or optimizer. The first independent QA execution took5.65 s; stored-field algebra cost is wall/CPU work and is not represented as solver RHS.
