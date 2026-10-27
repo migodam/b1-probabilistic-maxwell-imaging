@@ -42,6 +42,14 @@ CONFIGS = {c.name: c for c in (
     AnchorConfig('adaptive_native72_probit48', 72, 48, adaptive=True),
 )}
 
+# Preserve the original five-arm registry used by the frozen evaluator. Root
+# explicitly names these diagnostic allocations in run_c --configs.
+REVISION1_CONFIGS = {c.name: c for c in (
+    AnchorConfig('native24_probit64', 24, 64),
+    AnchorConfig('native48_probit64', 48, 64),
+    AnchorConfig('native96_probit32', 96, 32),
+)}
+
 
 def _plain(value):
     if isinstance(value, np.ndarray):
@@ -254,7 +262,7 @@ def run(target, y, parent, destination, config='native96_probit64', decision_pre
     the local counters are path diagnostics, never a substitute resource ledger.
     """
     from shared.physics import reconstruct, probit_optimize
-    config = CONFIGS[config] if isinstance(config, str) else config
+    config = {**CONFIGS, **REVISION1_CONFIGS}[config] if isinstance(config, str) else config
     if not isinstance(config, AnchorConfig):
         raise TypeError('AnchorConfig or frozen config name required')
     destination = Path(destination)

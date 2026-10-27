@@ -1,0 +1,37 @@
+{
+  "status": "FROZEN_BEFORE_INITIAL_TRAINING",
+  "arms": [
+    "feature_control1024",
+    "direct_gt",
+    "feature_action",
+    "gt_action"
+  ],
+  "seeds": [
+    2026102601,
+    2026102602,
+    2026102603
+  ],
+  "architecture": "512-128-128-1024 SiLU, zero output init",
+  "provider_updates": 4000,
+  "matched_head_updates": 4000,
+  "batch_size": 64,
+  "optimizer": "AdamW lr5e-4 wd1e-3 clip5",
+  "provider_initialization": "fresh same seed for every arm",
+  "frozen_head": "corresponding historical Gaussian fusion head seed provider_seed-100",
+  "feature_control1024": "normalized teacher feature MSE only",
+  "direct_gt": "GT material head-output MSE / train target component variance",
+  "feature_action": "normalized feature MSE + frozen teacher action MSE / same scale",
+  "gt_action": "(GT material head-output MSE + frozen teacher action MSE) / same scale",
+  "feature_data": "paired TRAIN1024; original teacher normalization from TRAIN32768 disclosed",
+  "same_context_schedule": true,
+  "selection": "provider by VAL256 frozen-head material MSE incl update0; matched head by VAL256 material MSE incl update0 every100 updates",
+  "historical_original_baseline": "immutable width128 n32768 feature-distill checkpoints retained separately; different provider training count/selection from causal1024 comparison",
+  "resource_cap": {
+    "MPS_device_seconds": 3600,
+    "conservative_wall_gate": 3500,
+    "RSS_bytes": 5000000000,
+    "CPU_threads": 1
+  },
+  "physics_RHS": 0,
+  "posterior_claim": false
+}

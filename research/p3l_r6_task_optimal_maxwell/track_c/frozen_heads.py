@@ -40,7 +40,9 @@ def packed_measurement(y):
     y = np.asarray(y)
     if y.shape != (32, 8) or not np.iscomplexobj(y) or not np.isfinite(y).all():
         raise ValueError('finite complex32x8 observation required')
-    return np.concatenate((y.real.T, y.imag.T), axis=1).ravel()
+    # Match p3r2.risk_models.observation_features, including its float32
+    # feature dtype. Maxwell observations themselves remain complex128.
+    return np.concatenate((y.real.T, y.imag.T), axis=1).ravel().astype('float32')
 
 
 def predict_contexts(contexts, action, parents=None, batch_size=64):

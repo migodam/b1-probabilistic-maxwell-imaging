@@ -100,7 +100,7 @@ def quotient_nodes(nr,nt,nf=48,seam_scale=SIGMA**(1/3)):
             # At these radii the fibre touches q=1 or switches a property
             # boundary. Explicit panels avoid integrating hidden step/kinks.
             rmax=min(RHI,IHI/th)
-            radial=[0.,rmax,RLO,ILO/th,(2*seam_scale)**3,(5*seam_scale)**3]
+            radial=[0.,rmax,RLO,ILO/th,.02,(2*seam_scale)**3,(5*seam_scale)**3]
             cuts=sorted(set([float(r**(1/3)) for r in radial if 0<=r<=rmax]))
             for left,right in zip(cuts[:-1],cuts[1:]):
                 t,wt=gl(nr,left,right)
@@ -143,6 +143,7 @@ def summarize(nodes,observation,sigma,reference_phi):
     return dict(log_evidence=float(np.log(Z)-reference_phi),scaled_evidence=Z,mean_increment=[float(mean.real),float(mean.imag)],
                 material_ROI_SD=float(np.sqrt(var)),source_layer_mass=branches,latent_phase_gt_half=phase,
                 material_real_increment_gt_002=event,prior_mass_quadrature=float(nodes['prior_weights'].sum()),
+                material_nonhost_event=float(1-branches[0]),
                 within_task_response_covariance_norm=float(np.linalg.norm(cov-between)),
                 between_task_response_covariance_norm=float(np.linalg.norm(between)),
                 total_task_response_covariance_norm=float(np.linalg.norm(cov)),
@@ -177,6 +178,7 @@ def main():
              models={'S1':[0,64],'S3':[0,64,65]},observations='controlled host and regular worlds, not an SBC population',
              source_levels_S1=[[12,12],[24,16],[32,24]],source_levels_S3=[[10,8],[16,9]],
              quotient_levels=[[12,6,48],[20,8,64]],noise_scales=[1.,.5,.25],
+             tasks=['ROI material mean','real material increment>0.02','material!=host','latent phase fraction>0.5; prior-dependent'],
              max_RHS=160000,reference_status='refinement must qualify per task; no global interval certificate')
     write(OUT/'track_a/FROZEN_PROTOCOL.json',cfg)
     b=Book('A','stratified_uniform_submodels',role='LOW_DIMENSIONAL_MODEL_REFERENCE',max_wall=3600)
