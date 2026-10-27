@@ -22,6 +22,7 @@ def main():
                 content=data.decode('utf-8',errors='replace')
                 if kind in ('raw_report','page') and ('266,326' not in content or '3,934' not in content):raise ValueError('current experiment result marker missing')
                 if kind=='raw_report' and data!=(ROOT/'RESEARCH_W_BGGA_REPORT_ZH.md').read_bytes():raise ValueError('raw report differs from local source')
+                if 'error' in row:row['earlier_attempt_error']=row.pop('error')
                 row.update(status=status,bytes=len(data),passed=status==200,attempts=attempt+1);break
             except Exception as exc:
                 row.update(passed=False,error=repr(exc),attempts=attempt+1)
