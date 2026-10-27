@@ -1,0 +1,57 @@
+<!doctype html>
+<!-- R6_STATIC_SITE_GENERATED: build_site.py -->
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="R6任务最优Maxwell材料计算：材料风险、低维条件概率、真实物理成本分别呈现"><title>R6 的数学对象、条件推论与反例</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+</style></head><body><a class="skip" href="#main">跳到正文</a><header><nav aria-label="研究导航"><a href="../index.html">阅读入口</a><a href="../report.html">完整报告</a><a href="GO_NO_GO.html">路线判定</a><a href="../appendices.html">附录与证据</a><a href="../RESEARCH_REPORT_ZH.md">原始Markdown</a><a href="../RESULTS_SUMMARY.json">结果JSON</a></nav><h1>R6 的数学对象、条件推论与反例</h1><p>实际数据与范围分别呈现 · 原始失败保留 · 网页生成不增加实验资格</p></header><main id="main"><p class="source">来源：<a href="../THEORY_AND_COUNTEREXAMPLES.md" download>原始Markdown</a>。附录按来源版本呈现，最终状态以完整报告及路线判定为准。</p><div class="toc"><a class="" href="#1-三维均匀子模型的材料商与正确体积">1. 三维均匀子模型的材料商与正确体积</a><a class="" href="#2-均匀复材料方向的条件几何">2. 均匀复材料方向的条件几何</a><a class="" href="#3-材料任务与事件任务">3. 材料任务与事件任务</a><a class="" href="#4-固定模型分歧与任务蒸馏">4. 固定模型分歧与任务蒸馏</a><a class="" href="#5-物理停止的任务合同">5. 物理停止的任务合同</a><a class="" href="#6-新候选最优性闭合的材料反投影特征kkt-closure">6. 新候选：最优性闭合的材料反投影特征（KKT closure）</a><a class="" href="#7-给定材料后精确边缘也不能独立组合一个条件推论">7. 给定材料后，精确边缘也不能独立组合：一个条件推论</a><a class="" href="#8-平台端点的零jacobian与非零任务响应">8. 平台端点的零Jacobian与非零任务响应</a></div><article><h1 id="r6-的数学对象条件推论与反例">R6 的数学对象、条件推论与反例</h1>
+<p>本文是新实验的数学解释，不把既有 coarea、条件期望、Gaussian channel 导数或 resolvent 恒等式列为原创。</p>
+<h2 id="1-三维均匀子模型的材料商与正确体积">1. 三维均匀子模型的材料商与正确体积</h2>
+<p>只保留 (X0,X64,X65)，其余 latent 为0；活动先验明确截断于[-4,4]，不是完整66维后验的边缘。令 a=1/1.3，Z0=Φ(4)−Φ(−4)，Q=H(1.3X0)。host、pure 的场 prior 质量均为 p=(Φ(−a)−Φ(−4))/Z0。Gaussianized 属性变成独立、精确归一化的矩形均匀 D=(R,I)。</p>
+<p>材料增量 V=QD。对任意材料函数 φ，正确 prior 积分为</p>
+<p>p φ(0) + ∫ φ(v) [ p r_D(v) + ∫_{−a}^{a} φ_N(z)/Z0 · r_D(v/Q(z))/Q(z)^2 dz ] dv.</p>
+<p>证明：先条件于Q，再作二维D→V换元；host单独保留。pure与transition的源域不交，其材料像可以重叠，因此方括号内要相加。这里的φ_N是标准正态密度，与任务φ不同。省略Q^−2或只选一个代表点赋单位 prior 会改变目标。</p>
+<p>实现 <code>track_a/stratified.py:fibre</code> 在z中积分，避免逆quintic导数在端点的奇性。材料坐标取 Re(V)=t³，Im(V)=θt³，面积Jacobian为3t⁵；这抵消下接缝的径向面积密度主奇性。代码还分别处理host、pure、矩形边界及任务事件边界。先验数值归一化通过不等于高SNR likelihood已经被求积解析，实际失败样本予以保留。</p>
+<p>同一v的不同(Q,D)原像是同材料gauge。Maxwell只依赖材料，给定v后它们的条件分解仍由prior纤维决定。低维源标签posterior质量不能被称作不同材料世界的模式概率。</p>
+<h2 id="2-均匀复材料方向的条件几何">2. 均匀复材料方向的条件几何</h2>
+<p>固定其他材料，写ROI材料为 χ_H+v·1_ROI。在离散VIE矩阵可逆的开域内，F(v)是复解析的向量值函数：矩阵元素对v仿射，逆矩阵在非极点处解析。记 a=∂F/∂v。对完整复接收的各向同性Gaussian白化，实Hilbert导数两列为 pack(a)、pack(ia)（共同白化常数略去），所以</p>
+<p>J_v^T J_v = ||a||² I_2.</p>
+<p>这是标准复解析/Cauchy–Riemann性质在此Maxwell子模型上的应用，不是一般多材料场的全局各向同性定理。若仅取完整复通道子集，性质仍成立；若a在该子集为零，rank下降为0。只看实部或改变噪声协方差时不沿用此等式。</p>
+<p>在pure接缝，Q=1−κh³+O(h⁴)，κ=2.74625。固定虚属性，只允许实属性补偿时，新增法向系数范数比为 |Im D|/|D|；两属性都可调时，D/Q补偿使材料在合法box内部完全不变，所有阶Maxwell变化都消失。这不产生新的材料fiber，只揭示原二维冻结属性人为留下的法向方向。真实记录见 <code>track_a/COMPENSATION.json</code>，完整付费复测向量另列。</p>
+<p>对host接缝，D被限定在严格正、有限的材料区间，属性方向本身随Q坍缩，不能使用pure层的非零属性切空间消掉首项。仍需验证物理材料作用不为零，不能只凭decoder三次式宣称响应三次。</p>
+<h2 id="3-材料任务与事件任务">3. 材料任务与事件任务</h2>
+<p>对正确posterior和已知覆盖域C，精确恒等式为</p>
+<p>Eφ−E(φ|C)=P(Cᶜ|y)[E(φ|Cᶜ)−E(φ|C)].</p>
+<p>小漏质量不是唯一控制量，任务振幅也重要。原子附近材料增量可很小，而非host材料事件仍有单位对比。因此准确均值和准确事件概率是不同计算目标。但只有对遗漏域的任务振幅及质量真实受控，才能给出证书；有限节点看起来接近不够。</p>
+<p>本轮区分：ROI材料均值、Re材料增量&gt;.02、材料是否等于host、latent Q&gt;.5。最后一项不是材料函数，必须保留纤维条件。严格区间上下界没有取得时，求积加密与MC诊断仅标Q1/Q2，不写成连续PDE或全posterior认证。</p>
+<h2 id="4-固定模型分歧与任务蒸馏">4. 固定模型分歧与任务蒸馏</h2>
+<p>有限三个checkpoint的平均平方风险=平均图像风险+有限预测分歧。R5B已观察到的94.85%是该固定集合的恒等式，不是总体训练方差，也不保证容量足够。本轮以相同N1024、容量、batch schedule和更新数检验feature、GT及action监督；不能拿N32768基线与N1024新方法直接作监督目标的因果推断。</p>
+<p>固定teacher action a_T，GT+λaction平方损失的无限容量最优解为 (E[M|Y]+λa_T)/(1+λ)，固定正λ保留teacher偏差。Action匹配正确不自动提供posterior资格。</p>
+<h2 id="5-物理停止的任务合同">5. 物理停止的任务合同</h2>
+<p>新的低成本anchor可以优化不同的在线计算安排，但不能伪称仍是原Native96+Probit64。同一冻结材料估计器的风险非劣性、匹配训练的新系统风险和solver stationarity是三个不同对象。停止策略在线只能使用已计算的观测、当前状态与历史；GT可在TRAIN中监督策略，却不能在测试选择轨迹终点。</p>
+<p>本轮开发扩大门保持：完整系统wall降低至少20%，材料MSE相对相同Full基线增加不超过1%，采用parent配对区间。风险未达门时保留未合格状态，不用较小provider耗时替代物理系统收益。</p>
+<h2 id="6-新候选最优性闭合的材料反投影特征kkt-closure">6. 新候选：最优性闭合的材料反投影特征（KKT closure）</h2>
+<p>这是在R6实际截断失败后提出、在D生成前完成开发的独立候选，不改历史模型权重，不伪造物理Jacobian。原局部网络的一个输入为</p>
+<p>B(q,g)=δ(q) diag(H′/τ) A · P_ball(g), g=J_w,zᵀ r_w，r_w=white(y−F(q))，P_ball(v)=v/max(||v||,1).</p>
+<p>注意残差是y−F而不是F−y。Gaussian场prior的一阶最优性给出</p>
+<p>∇_z[Phi+||z||²/2]=z−g=0。</p>
+<p>所以真实驻点处g=z（正号）。Native的Uniform属性box不改变无约束Gaussian场的这个等式；Probit坐标也保留同一z。原模型用当次σ形成J，但风险feature代码固定训练σ形成r_w；新噪声下等价闭合为g_feature=(σ_new/σ_train)z。已知noise比例是公共设备合同，不是GT或重训标签。</p>
+<p>闭合候选把g换成上述prior值，只改变反投影方向，其余材料anchor、df、训练固定weak/strong包络、u2、Gaussian全局provider与head完全相同。它不是实际adjoint，在未收敛状态处只是新的近似风险特征；预测中不把它装成一份真实J。</p>
+<p><strong>特征空间界。</strong> P_ball是到闭单位球的Euclidean投影，1-Lipschitz。令D_zG=δdiag(H′/τ)A，e=z−g（同一噪声约定下），则</p>
+<p>||B(q,g)−B(q,z)||_material_RMS ≤ ||D_zG/24||_(real Hilbert op) · ||e||,</p>
+<p>也可把右端||e||替为min(||e||,2)。证明仅用投影收缩性和线性算子范数；材料复数按实Hilbert空间处理。边界、df=0和任意e也不破坏该不等式。它不是head输出风险界，不证明完整posterior，也不证明近似驻点的网络一定更好。</p>
+<p>新噪声的显式写法为：令r=σ_new/σ_train，真实stationarity残差e_new=z−J_newᵀr_new，则输入方向差不超过min(r||e_new||,2)；相应材料反投影界乘同一||D_zG/24||。不能在跨噪声计算中漏掉这个r，也不能把它解释为网络输出的Lipschitz常数。</p>
+<p>本轮开发同时保留真实梯度、q闭合、零反投影、反号q四个版本。新规则让Native24/Probit64在开发集通过固定风险/成本门，零与反号未通过；但q与真实梯度在同一24/64端点的风险差约−7.48e−6，开发配对区间跨零。不能仅凭一个通过NI门、另一个未通过，就宣称q显著优于真实梯度。D将预先冻结同端点对照，分别检验成本收益与闭合机制独立增量。</p>
+<h2 id="7-给定材料后精确边缘也不能独立组合一个条件推论">7. 给定材料后，精确边缘也不能独立组合：一个条件推论</h2>
+<p>在三维子模型中，固定非零材料增量V=v且v处于允许矩形的重叠内部。正确prior纤维满足D=v/Q，且0&lt;q_min≤Q≤q_max≤1。Maxwell likelihood仅依赖v，故这个条件纤维不被相同材料的观测更新。即使某算法知道Q与D的<strong>精确条件边缘</strong>，把它们独立相乘得到的材料均值仍为</p>
+<p>E_fact[QD|V=v] = v · E[Q|v] E[1/Q|v]。</p>
+<p>而真实联合均值恰为v。由Cauchy–Schwarz，E Q · E1/Q≥1，非退化纤维时严格大于1。更明确，取同分布独立Q,Q′，</p>
+<p>E Q E1/Q−1 = E[(Q−Q′)²/(2QQ′)]， Var(Q)/q_max² ≤ E Q E1/Q−1 ≤ Var(Q)/q_min²。</p>
+<p>这是标准条件期望与Cauchy–Schwarz在实际decoder gauge上的推论，不是新的通用概率定理。其意义是：甚至把两个边缘都拟合对了，独立的材料生成或矩组合仍会制造错误材料均值和不必要材料波动；问题不只在各边缘的Gaussian形状。</p>
+<p>若另有明确的局部概率条件使V后验随σ→0收敛到v0≠0，且prior纤维核与相关矩连续、条件Q的方差在v0不消失，那么这个因子化均值偏差趋向非零常数，而真实材料后验宽度可随σ缩小。这里的后验集中是额外假设，不能由本轮局部GH加密自动得到全域保证，更不能外推到Full66。</p>
+<p>已有事后功能数值中，REGULAR/PURE_OVERLAP的Cov(Q,δR)约−.00293370/−.01802786。PURE_OVERLAP中的Var(Q)约.010937，其中99.9995%来自同材料纤维内。隐变量分解很不确定不等于存在那么多不同材料世界；但主动打破这种条件相关，会把隐变量gauge错误地变成材料不确定性。补充Full-Maxwell copula控制已实际执行448 RHS，单独计费、单独标记，不把受控固定材料条件draw称作整个S3或Full66 posterior samples。</p>
+<h2 id="8-平台端点的零jacobian与非零任务响应">8. 平台端点的零Jacobian与非零任务响应</h2>
+<p>在host平台内部，所有材料对latent的一阶导数都为零，因此该anchor的Maxwell latent Jacobian也为零。但真实先验仍给相邻transition正质量；对含噪数据的后验权重更新不等于在该平台内作一阶移动。高斯观测的条件矩导数由Cov(task,F)/sigma²给出，包含branch间权重迁移，不能从这个单点J=0推出任务响应为零。</p>
+<p>本轮S3 host有限求积的材料均值导数范数在σ、σ/2、σ/4约为.003590、.002835、.002290，其中between-source项范数约占27.7%–28.0%。这只是已保存规则的积分诊断；更细规则和固定节点有限差分支持其代数一致性，没有全域tail证书。source分层不是不同材料世界的互斥模式：需要保留pushforward合并关系。</p>
+<p>一个可继续证明的<strong>条件</strong>推论是：若单个接缝法向h≥0满足材料增量c_M h³+O(h⁴)，真实Maxwell首项c_F h³+O(h⁴)且c_F非零、可统一控制其余方向；host prior质量正；数据为f_host+σε；远分支与一二阶材料矩可控制，且允许在标准化创新ε下对渐近积分求导，则典型泄漏质量为σ^(1/3)K(ε)，材料增量均值为σ^(4/3)L(ε)。对原观测数据的导数相应为σ^(−2/3)DK与σ^(1/3)DL。事件任务可以越来越敏感，而材料均值越来越不敏感，同一物理后验不需要相同的任务误差分配。</p>
+<p>这里的额外一致性、支配与可微条件没有由三点log斜率证明；不是对所有Full66分层的定理。本例反驳的是“单个host anchor的零Jacobian足以判定所有材料任务没有观测信息”的推断，并不否定使用全局prior平均或多中心的LIS方法。条件协方差恒等式与接缝缩放已有先例，本轮的贡献资格取决于实际Maxwell系数、任务误差和费用证据。</p></article><footer>本页只读呈现实际来源；静态网页生成不改变实验、统计、物理或论文资格。JSON/Markdown/图表保留相对下载链接；未记录的资源不能填成零。</footer></main></body></html>

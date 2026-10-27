@@ -1,0 +1,314 @@
+{
+  "status": "DECODER_ONLY_PRIOR_NUMERICAL_DIAGNOSTIC",
+  "scope": "Original untruncated Gaussian64 x Uniform2 prior; not frozen 2D submodel",
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "prior_id": "P1-Gaussian64-Uniform2-C2-volume-fraction-v1",
+  "sources": [
+    {
+      "repository_path": "src/p1_material/prior.py",
+      "commit": "ad71a86ef3c28bf48049199f733080a0f2b95e33",
+      "url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/ad71a86ef3c28bf48049199f733080a0f2b95e33/src/p1_material/prior.py",
+      "local_blake2b": "fc9d4f6886abf70abf7c1e1db39e79cb616e5cc7899aabdbc4f5b10e8c4e4050c4ae504729df27717ae729c32563753014b503666b0ff38fec698da14c3c4600"
+    },
+    {
+      "repository_path": "research/p1_material_target_20261018/configs/ONLINE_TARGET.json",
+      "commit": "ad71a86ef3c28bf48049199f733080a0f2b95e33",
+      "url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/ad71a86ef3c28bf48049199f733080a0f2b95e33/research/p1_material_target_20261018/configs/ONLINE_TARGET.json",
+      "local_blake2b": "6ab8f70632f95a3a7d59e26d8771271be5c1bc4b86807fae77721f9557b10dbd943c50dac6cfc1fcc7310678ed330200a41955c905a1d763bafe148d3e230b98"
+    },
+    {
+      "repository_path": "research/p1_material_target_20261018/inputs/geometry.json",
+      "commit": "ad71a86ef3c28bf48049199f733080a0f2b95e33",
+      "url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/ad71a86ef3c28bf48049199f733080a0f2b95e33/research/p1_material_target_20261018/inputs/geometry.json",
+      "local_blake2b": "7a53e3bc7bde7d8f8d4d45d03cd940d79230bf2fbdcc2e698fd81ec497e5ddf1663ca7bbc0b53743d6712faedb7e8e227a787b9bad772dadf41684ab2314428e"
+    }
+  ],
+  "dimensions": {
+    "latent": 66,
+    "Gaussian_field": 64,
+    "integrated_offset": 1,
+    "remaining_Gaussian_QMC": 63,
+    "grid_cells": 576,
+    "ROI_cells": 256
+  },
+  "parameters": {
+    "offset_SD": 0.65,
+    "field_SD": 1.0,
+    "field_mean": 0.0,
+    "tau": 0.5,
+    "correlation_rolloff_length": 0.08
+  },
+  "formula_host": "E_b Phi((-tau-max_i b_i)/a0), b_i=field_mean+(A_ROI[:,1:] z_rest)_i",
+  "formula_pure": "E_b Phi((min_i b_i-tau)/a0)",
+  "analytic_positive_mass_proof": "For every finite z_rest the finite ROI maximum/minimum is finite, so each conditional Gaussian CDF is strictly positive. Its expectation is positive. The independent U2 property coordinates integrate to one. With zero field mean, z_rest and -z_rest have the same law, hence host and pure masses are exactly equal.",
+  "material_measure_interpretation": {
+    "all_host": "Rank-0 material atom at the all-host chi vector; atom prior mass estimated here.",
+    "all_pure_ROI": "Rank-2 continuous material layer because both uniform material property coordinates remain free; not a point atom.",
+    "posterior": "NOT_COMPUTED; host posterior mass is p_host*likelihood(host)/full66_evidence, which is unknown."
+  },
+  "checks": {
+    "host_fraction_all_zero": true,
+    "host_chi_all_host": true,
+    "pure_ROI_fraction_all_one": true,
+    "outside_ROI_fraction_zero": true,
+    "host_decoder_J_max_abs": 0.0,
+    "pure_decoder_J_numerical_rank": 2
+  },
+  "levels": [
+    {
+      "sobol_points_per_replicate": 4096,
+      "replicates": 8,
+      "independent_scramble_seeds": [
+        2026103900,
+        2026103901,
+        2026103902,
+        2026103903,
+        2026103904,
+        2026103905,
+        2026103906,
+        2026103907
+      ],
+      "host": {
+        "replicate_values": [
+          0.0006745414449025674,
+          0.0006609280060553505,
+          0.0006506950296483614,
+          0.0006646972370078712,
+          0.0006638962960424337,
+          0.0006613390569270539,
+          0.0007111294106103805,
+          0.0007127819815540774
+        ],
+        "mean": 0.000675001057843512,
+        "replicate_min": 0.0006506950296483614,
+        "replicate_max": 0.0007127819815540774,
+        "replicate_sample_SD": 2.3718093861302962e-05,
+        "replicate_SE_of_mean": 8.385612503073173e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      },
+      "pure": {
+        "replicate_values": [
+          0.0006774126992516877,
+          0.0006884820135129803,
+          0.0006486960859921302,
+          0.0006962124702776784,
+          0.0006472486902479578,
+          0.0006502162943966492,
+          0.0006586832398415043,
+          0.000677440318942036
+        ],
+        "mean": 0.000668048976557828,
+        "replicate_min": 0.0006472486902479578,
+        "replicate_max": 0.0006962124702776784,
+        "replicate_sample_SD": 1.9270539518376474e-05,
+        "replicate_SE_of_mean": 6.813164585283675e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      },
+      "symmetry_pooled_host_equals_pure": {
+        "replicate_values": [
+          0.0006759770720771276,
+          0.0006747050097841654,
+          0.0006496955578202458,
+          0.0006804548536427748,
+          0.0006555724931451958,
+          0.0006557776756618515,
+          0.0006849063252259424,
+          0.0006951111502480567
+        ],
+        "mean": 0.00067152501720067,
+        "replicate_min": 0.0006496955578202458,
+        "replicate_max": 0.0006951111502480567,
+        "replicate_sample_SD": 1.614234576268862e-05,
+        "replicate_SE_of_mean": 5.707181076527528e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      }
+    },
+    {
+      "sobol_points_per_replicate": 8192,
+      "replicates": 8,
+      "independent_scramble_seeds": [
+        2026104000,
+        2026104001,
+        2026104002,
+        2026104003,
+        2026104004,
+        2026104005,
+        2026104006,
+        2026104007
+      ],
+      "host": {
+        "replicate_values": [
+          0.0007085302888410192,
+          0.0006973222791035274,
+          0.0006825198979783268,
+          0.0007221180283051934,
+          0.0006566471821128942,
+          0.0006651203379081248,
+          0.000682754445572283,
+          0.0006973792169325639
+        ],
+        "mean": 0.0006890489595942416,
+        "replicate_min": 0.0006566471821128942,
+        "replicate_max": 0.0007221180283051934,
+        "replicate_sample_SD": 2.1763764674868888e-05,
+        "replicate_SE_of_mean": 7.694652792874013e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      },
+      "pure": {
+        "replicate_values": [
+          0.000697131696178219,
+          0.0007050678756245016,
+          0.0007042511577363213,
+          0.0006872726746853521,
+          0.0006998539100816028,
+          0.0007058448009222191,
+          0.000684403756221234,
+          0.0007104209476456937
+        ],
+        "mean": 0.000699280852386893,
+        "replicate_min": 0.000684403756221234,
+        "replicate_max": 0.0007104209476456937,
+        "replicate_sample_SD": 9.226145345341297e-06,
+        "replicate_SE_of_mean": 3.261934968951766e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      },
+      "symmetry_pooled_host_equals_pure": {
+        "replicate_values": [
+          0.0007028309925096192,
+          0.0007011950773640144,
+          0.0006933855278573241,
+          0.0007046953514952727,
+          0.0006782505460972485,
+          0.000685482569415172,
+          0.0006835791008967585,
+          0.0007039000822891288
+        ],
+        "mean": 0.0006941649059905672,
+        "replicate_min": 0.0006782505460972485,
+        "replicate_max": 0.0007046953514952727,
+        "replicate_sample_SD": 1.0498332004715112e-05,
+        "replicate_SE_of_mean": 3.7117208758409085e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      }
+    },
+    {
+      "sobol_points_per_replicate": 65536,
+      "replicates": 16,
+      "independent_scramble_seeds": [
+        2026104300,
+        2026104301,
+        2026104302,
+        2026104303,
+        2026104304,
+        2026104305,
+        2026104306,
+        2026104307,
+        2026104308,
+        2026104309,
+        2026104310,
+        2026104311,
+        2026104312,
+        2026104313,
+        2026104314,
+        2026104315
+      ],
+      "host": {
+        "replicate_values": [
+          0.0006915169751810134,
+          0.0006872199521569465,
+          0.0006860089726214531,
+          0.000680796071845054,
+          0.0006972024325534293,
+          0.0006925837661595565,
+          0.0006846674797972952,
+          0.000682643272861469,
+          0.0006785920425544701,
+          0.0006907206091342251,
+          0.000686551566107332,
+          0.0006827574533096984,
+          0.0006897376570264367,
+          0.0007009945385732896,
+          0.0006939425819785507,
+          0.0006890882924194805
+        ],
+        "mean": 0.0006884389790174812,
+        "replicate_min": 0.0006785920425544701,
+        "replicate_max": 0.0007009945385732896,
+        "replicate_sample_SD": 6.028381716958238e-06,
+        "replicate_SE_of_mean": 1.5070954292395595e-06,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      },
+      "pure": {
+        "replicate_values": [
+          0.0006862600531495913,
+          0.0006911827668591991,
+          0.0006875920075506784,
+          0.0006842753243417625,
+          0.0006907233913741168,
+          0.0006929606342441188,
+          0.0006877265970143512,
+          0.000683729182014745,
+          0.0006864413970856615,
+          0.000692010875144398,
+          0.0006888116483828886,
+          0.0006918492564106333,
+          0.0006860069116715097,
+          0.000684694802728748,
+          0.0006881605538449608,
+          0.000681167807825076
+        ],
+        "mean": 0.0006877245756026525,
+        "replicate_min": 0.000681167807825076,
+        "replicate_max": 0.0006929606342441188,
+        "replicate_sample_SD": 3.385419768142044e-06,
+        "replicate_SE_of_mean": 8.46354942035511e-07,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      },
+      "symmetry_pooled_host_equals_pure": {
+        "replicate_values": [
+          0.0006888885141653024,
+          0.0006892013595080728,
+          0.0006868004900860657,
+          0.0006825356980934082,
+          0.0006939629119637731,
+          0.0006927722002018377,
+          0.0006861970384058232,
+          0.000683186227438107,
+          0.0006825167198200658,
+          0.0006913657421393116,
+          0.0006876816072451103,
+          0.0006873033548601658,
+          0.0006878722843489731,
+          0.0006928446706510188,
+          0.0006910515679117557,
+          0.0006851280501222782
+        ],
+        "mean": 0.0006880817773100669,
+        "replicate_min": 0.0006825167198200658,
+        "replicate_max": 0.0006939629119637731,
+        "replicate_sample_SD": 3.662467379041442e-06,
+        "replicate_SE_of_mean": 9.156168447603605e-07,
+        "qualification": "NUMERICAL_DIAGNOSTIC_NOT_RIGOROUS_INTERVAL"
+      }
+    }
+  ],
+  "fine_minus_coarse_symmetry_mean": 2.2639888789897228e-05,
+  "extension_minus_original_fine_symmetry_mean": -6.083128680500326e-06,
+  "extension_rationale": "A pre-fixed independent 16x65536 scramble group was added after the two initial groups differed by 3.37%; no optional convergence stopping. All levels are retained.",
+  "cost": {
+    "new_Maxwell_states": 0,
+    "new_Maxwell_RHS": 0,
+    "Gaussian_Rao_Blackwell_points": 1146880,
+    "wall_seconds": 1.2223155829124153
+  },
+  "versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "limitations": [
+    "Finite scrambled-QMC replicate variability is a numerical diagnostic, not a rigorous enclosure or posterior certificate.",
+    "No directed rounding or full deterministic quadrature error bound was used.",
+    "No Maxwell forward, Jacobian, likelihood, posterior normalization, posterior mass, or high-SNR experiment was run.",
+    "The frozen two-dimensional prior mass 0.22086048 is not used anywhere in this computation."
+  ]
+}

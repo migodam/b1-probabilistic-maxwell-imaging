@@ -1,0 +1,20 @@
+{
+  "revision": 2,
+  "status": "FROZEN_BEFORE_NATIVE_CONTEXT_BUILD_AND_MATCHED_FITS",
+  "date": "2026-10-27",
+  "competitor": "native96_only",
+  "definition": "Original Native96 full_TRF endpoint, same native objective/init/bounds/tolerances, omit Probit stage as a NEW task-risk anchor",
+  "rationale": "Native and probit optimize different coordinate-MAP objectives; downstream task risk need not require the probit coordinate mode. Test an explicit stage omission with matched training.",
+  "not_claimed": ["same anchor as Original Native96+Probit64", "free cold physics", "posterior certificate", "novelty"],
+  "historical_TRAIN": "first512 Original strong_context TRAIN parents, same subset in new Full512, Low512, Native512 heads",
+  "context_build": "reuse saved q/current/field/prediction/receiver_T; exact Original chain-rule J arithmetic; no LU read or solve",
+  "cache_validation": "decoder chi identity and cached Maxwell/current/field/prediction/receiver-transfer arithmetic; preserve numerical failures",
+  "cold_cost": "retain original Native96 phase actual state/J32 RHS counts and recorded phase wall per parent",
+  "heads": {"capacity": 6418, "seeds": [2026102601,2026102602,2026102603], "updates": 4000, "batch_size": 64, "optimizer": "AdamW lr0.0005 weight_decay0.001 clip_norm5", "provider": "frozen Original compact128; no provider updates"},
+  "checkpoint_selection": "CDEV64 only; no D or historical test labels",
+  "training_device": "MPS if available, otherwise CPU1; actual CPU/wall and whole-MPS-job wall reservation accounted separately",
+  "MPS_whole_job_wall_cap_seconds": 1800,
+  "execution": "Native512+Full512 now; Low512 after root completes low48/32 contexts",
+  "new_context_build_RHS": 0,
+  "locked_D_GT_read": false
+}
