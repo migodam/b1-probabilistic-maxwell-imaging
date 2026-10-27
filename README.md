@@ -164,3 +164,9 @@ input source包来自用户A32附件，命名仅作为来源；项目统一称B1
 初期机械source/绘图工作曾按旧AGENTS规则使用DeepSeek；收到用户禁止指令后全部终止，后续三个native Codex subagents完成review、文献与视觉交付。后续不再调用DeepSeek，已记录此偏好。
 
 项目现按用户授权公开发布。HTML可在线或离线查看；之前本地浏览器现场运行受工具限制，原始NOT_RUN记录保留。大型真实三维成像、未知位置/边界和可变维多物体后验均未实现，不用模板图冒充它们。
+
+<!-- BGGA_START -->
+## Research W-BGGA
+
+[静态Green吸收实现与资格前检查](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_bgga/)：固定公共目标网格和概率区间核，32项测试通过；新物理待独立资源授权，不写成G0或加速PASS。
+<!-- BGGA_END -->

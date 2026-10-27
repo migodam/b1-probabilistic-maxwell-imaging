@@ -1,0 +1,114 @@
+{
+  "schema": "BGGA_STATIC_V1",
+  "status": "FROZEN_DESIGN_PENDING_NEW_PHYSICS_AUTHORIZATION",
+  "source_commits": {
+    "W": "958a478739d9553269316ded8125fda9df225c0c",
+    "WSLAM": "52351aee6ddd41b09851fe5e52d1a8861891ef13"
+  },
+  "static_wall": true,
+  "static_target": true,
+  "acquisition_index": "frequency/source/receiver, never motion time",
+  "physics": {
+    "polarization": "2D scalar TM Ez",
+    "time": "exp(-i omega t)",
+    "mu_r": 1.0,
+    "f0_hz": 1000000000.0,
+    "relative_frequencies": [
+      1.0
+    ],
+    "dispersion": "epsinf+i ell/f",
+    "dtype": "complex128/float64",
+    "threads": 1,
+    "noise_std_each_real_imag": 0.01,
+    "complex_noise_variance": 0.0002,
+    "packing": "complex frequency/source/receiver C order flattened, then [all Re, all Im]; identical y/J ordering",
+    "whitening": "divide each real coordinate by .01; no sqrt(channel count)",
+    "source": "unit i H0^(1)(2pi f r)/4; no fitted gain",
+    "tx": [
+      [
+        -1.5,
+        0
+      ],
+      [
+        1.5,
+        0
+      ]
+    ],
+    "rx": {
+      "count": 16,
+      "x_min": -2,
+      "x_max": 2,
+      "y": 0
+    },
+    "public_wall_roi": [
+      -1.5,
+      1.5,
+      0.5,
+      1.25
+    ],
+    "target_material_integration_roi": [
+      -1.2,
+      1.2,
+      1.4,
+      2.8
+    ],
+    "pml": {
+      "physical_box": [
+        -2.75,
+        2.75,
+        -0.8,
+        3.5
+      ],
+      "thickness": 1.0,
+      "strength": 4.0,
+      "power": 3
+    },
+    "field": "scalar H1 P3 FEM, not 3D H(curl)",
+    "max_dofs": 60000,
+    "max_factor_bytes": 1500000000
+  },
+  "fixed_space": {
+    "h": 0.17,
+    "wall_macro_edge": 0.125,
+    "wall_subdivision": 2,
+    "target_step": 0.125,
+    "circle_polygon_n": 384,
+    "cut_cell_integration": "P3 polynomial on fixed triangles; physical circle polygon intersections",
+    "no_target_in_mesh_key": true,
+    "independent": "pinned interface-fitted P3, h=.17, n=384, wall refinement=3"
+  },
+  "statistical_scope": "new replay uses same explicit finite counting prior; no continuous posterior claim",
+  "stage_order": [
+    "preflight/code/zero-PDE verification",
+    "G0 new physical qualification",
+    "G1",
+    "G2"
+  ],
+  "proposed_not_authorized": {
+    "G0": {
+      "rhs": 4000,
+      "full_fe": 500,
+      "cpu_seconds": 7200
+    },
+    "G1": {
+      "rhs": 20000,
+      "full_fe": 5000,
+      "cpu_seconds": 28800,
+      "replay_cpu_seconds": 3600
+    },
+    "G2": {
+      "rhs": 80000,
+      "full_fe": 12000,
+      "cpu_seconds": 86400
+    }
+  },
+  "resource_policy": "Old W/WSLAM caps are campaign-specific and cannot be transferred. Authorization must be explicit.",
+  "exclusions": [
+    "locked test access",
+    "NN",
+    "3D",
+    "new A17 modules",
+    "active sensing campaign",
+    "hash checks"
+  ]
+}

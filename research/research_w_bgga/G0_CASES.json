@@ -1,0 +1,29 @@
+{
+  "identity": "PREDECLARED_STATIC_GEOMETRY_QUALIFICATION_NOT_NEW_PRIOR_DRAWS",
+  "selection": "geometrically fixed before any new full-wave output; no truth-conditioned selection",
+  "qualification": [
+    {"id":"weak_center","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[0.2,2.0],"radius":0.12,"contrast":0.5,"target_loss":0.02},
+    {"id":"strong_center","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[0.2,2.0],"radius":0.12,"contrast":3.0,"target_loss":0.02},
+    {"id":"left_small","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[-1.0,1.6],"radius":0.08,"contrast":3.0,"target_loss":0.02},
+    {"id":"right_small","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[1.0,2.6],"radius":0.08,"contrast":3.0,"target_loss":0.02},
+    {"id":"left_large","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[-1.0,2.6],"radius":0.16,"contrast":3.0,"target_loss":0.02},
+    {"id":"right_large","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[1.0,1.6],"radius":0.16,"contrast":3.0,"target_loss":0.02},
+    {"id":"low_loss_high_contrast","support":[[1,1],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[0.137,2.13],"radius":0.16,"contrast":8.0,"target_loss":0.002},
+    {"id":"asym_low","support":[[1,0],[1,1]],"epsinf":1.5,"ell":0.0,"pose":[0.137,2.13],"radius":0.12,"contrast":3.0,"target_loss":0.02},
+    {"id":"asym_mid","support":[[1,0],[1,1]],"epsinf":3.75,"ell":0.125,"pose":[0.137,2.13],"radius":0.12,"contrast":3.0,"target_loss":0.02},
+    {"id":"asym_high","support":[[1,0],[1,1]],"epsinf":6.0,"ell":0.25,"pose":[0.137,2.13],"radius":0.12,"contrast":3.0,"target_loss":0.02},
+    {"id":"empty_wall","support":[[0,0],[0,0]],"epsinf":3.75,"ell":0.125,"pose":[0.2,2.0],"radius":0.12,"contrast":3.0,"target_loss":0.02},
+    {"id":"two_region_wall","support":[[1,1],[0,0]],"epsinf":3.75,"ell":0.125,"pose":[-0.3,2.1],"radius":0.12,"contrast":3.0,"target_loss":0.02}
+  ],
+  "stress_panel_status": "NOT_RUN; separate from this prerequisite geometry panel",
+  "stress_constructs": [
+    {"intended_class":"high_retention_high_absolute_information","parents":3,"construction":"full 2x2 wall epsinf 2.5/3.75/5, ell .08, 2TX/16RX; nuisance pose/intrinsic blocks separate"},
+    {"intended_class":"high_retention_low_absolute_information","parents":3,"construction":"one public .125 macrocell at row2 columns8/11/14; full 2TX/16RX, same noise and material units"},
+    {"intended_class":"low_information_low_task_difference","parents":3,"construction":"same three public single macrocells; one predeclared calibration port, same-port current task; no PEC surrogate"},
+    {"intended_class":"low_information_high_task_difference","parents":3,"construction":"full/asymmetric/two-region walls, minimal one-complex-port joint data with shared unknown intrinsic parameters; future fixed 25-pose full-response task"}
+  ],
+  "classification_rule": "Intended labels are hypotheses; measured absolute/relative spectra, proper-prior local covariance, finite task differences and independent errors decide actual classification. Missing classes remain missing.",
+  "rank_rule": "Jacobian singular values compared with measured FD/refinement operator-error norm; no unregistered machine-rank threshold or jitter",
+  "prior_for_local_stress": "only explicit finite counting prior or separately labelled local Gaussian diagnostic; no damping-as-prior",
+  "high_sensitivity_status": "low_loss_high_contrast is a stress attempt, not a declared resonance; report actual stability"
+}

@@ -1,0 +1,38 @@
+test_aggregate_cpu_only_once (test_accounting.Accounting.test_aggregate_cpu_only_once) ... ok
+test_no_implicit_resource_grant (test_accounting.Accounting.test_no_implicit_resource_grant) ... ok
+test_synthetic_grant_is_not_replenished (test_accounting.Accounting.test_synthetic_grant_is_not_replenished) ... ok
+test_intervals (unittest.loader._FailedTest.test_intervals) ... ERROR
+test_public_ports_refuse_large_allocation (test_operators.Operators.test_public_ports_refuse_large_allocation) ... ERROR
+test_synthetic_fixed_source_and_material_rhs (test_operators.Operators.test_synthetic_fixed_source_and_material_rhs) ... ok
+
+======================================================================
+ERROR: test_intervals (unittest.loader._FailedTest.test_intervals)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_intervals
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/tests/test_intervals.py", line 6, in <module>
+    import pytest
+ModuleNotFoundError: No module named 'pytest'
+
+
+======================================================================
+ERROR: test_public_ports_refuse_large_allocation (test_operators.Operators.test_public_ports_refuse_large_allocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/tests/test_operators.py", line 37, in test_public_ports_refuse_large_allocation
+    n=8;c=FixedSpaceCache(csc_matrix(np.eye(n)),np.ones((n,1)),csr_matrix(np.eye(n)),np.zeros((1,n)),np.arange(n),SyntheticCounter())
+          ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/src/bgga/operators.py", line 25, in __init__
+    self.uw=self.factor.solve(self.b);self.wall_data=self.direct+(R@self.uw).T
+            ~~~~~~~~~~~~~~~~~^^^^^^^^
+TypeError: Cannot cast array data from dtype('complex128') to dtype('float64') according to the rule 'safe'
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.030s
+
+FAILED (errors=2)
