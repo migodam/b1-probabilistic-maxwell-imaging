@@ -1,3 +1,11 @@
+<!-- P3LR6_CURRENT -->
+## Research P3L-R6：任务最优Maxwell材料计算
+
+新增6,860,984 RHS，512个新对象两档noise确认。对原冻结完整基线，原窗口整系统节时34.6%/32.6%并通过1%风险非劣门；强化Full-q低噪NI与跨窗口20%门仍HOLD。普通Probit很有竞争力，完整posterior未认证，TAP判定REDIRECT。分层材料纤维、条件copula反例、全部负结果与原始费用保留。
+
+[中文完整报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r6_task_optimal_maxwell/) · [原始证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr6-task-optimal-20261027)
+<!-- /P3LR6_CURRENT -->
+
 <!-- R5B_CONFIRM_CURRENT -->
 ## P3L-R5-B：新256+256独立确认，80%保留率统计门HOLD
 

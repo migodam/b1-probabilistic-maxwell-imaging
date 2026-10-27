@@ -1,0 +1,107 @@
+{
+  "status": "PASS_ZERO_PHYSICS_EXTRA_MATH",
+  "same_material_gauge": {
+    "status": "PASS_DECODER_ONLY",
+    "pure_offset": 2.0,
+    "transition_offset": 0.4780686500957393,
+    "fraction": 0.95,
+    "pure_property": [
+      1.3,
+      0.105
+    ],
+    "transition_property": [
+      1.368421052631579,
+      0.11052631578947368
+    ],
+    "maximum_material_difference": 4.47545209131181e-16,
+    "scope": "new 3D fixed-offset+two-property submodel; not Full66 positive-mass overlap"
+  },
+  "missing_mass": {
+    "status": "PASS_FINITE_ALGEBRA",
+    "cases": 100,
+    "max_identity_error": 4.440892098500626e-16,
+    "minimum_bound_slack": 0.009806090122030965,
+    "qualification": "known finite source partition; no unvisited Maxwell domain certified"
+  },
+  "compensated_scalar": {
+    "status": "PASS_NO_NEW_NORMAL_SHRINKAGE",
+    "model": "z Uniform[-2,2], h Uniform[0,1], f=z+h^3, observation0",
+    "rows": [
+      {
+        "sigma": 0.1,
+        "mean_h": 0.5000000000000001,
+        "var_h": 0.08333333333333379,
+        "posterior_mass_h_gt_half": 0.5
+      },
+      {
+        "sigma": 0.05,
+        "mean_h": 0.5000000000000001,
+        "var_h": 0.08333333333333379,
+        "posterior_mass_h_gt_half": 0.5
+      },
+      {
+        "sigma": 0.02,
+        "mean_h": 0.49999999999999994,
+        "var_h": 0.08333333333333379,
+        "posterior_mass_h_gt_half": 0.49999999999999994
+      }
+    ],
+    "reason": "z=-h^3 remains interior for every h; c lies in range A"
+  },
+  "derivative_identity": {
+    "status": "PASS_FINITE_QUADRATURE",
+    "sigma": 0.2,
+    "y": 0.13,
+    "tasks": [
+      "material_mean",
+      "material_second_moment",
+      "material_event_gt_0.125"
+    ],
+    "quadrature_nodes": 513,
+    "analytic_covariance_derivative": [
+      0.2469455860429992,
+      0.08873846590895647,
+      0.7667785578812943
+    ],
+    "finite_difference_checks": [
+      {
+        "step": 0.001,
+        "max_abs_error": 3.5856931849265195e-06,
+        "finite_difference": [
+          0.24694751308830185,
+          0.08873955381804959,
+          0.7667821435744793
+        ]
+      },
+      {
+        "step": 0.0001,
+        "max_abs_error": 3.5856898894515155e-08,
+        "finite_difference": [
+          0.2469456053133534,
+          0.08873847678801672,
+          0.7667785937381932
+        ]
+      },
+      {
+        "step": 1e-05,
+        "max_abs_error": 3.650115765196915e-10,
+        "finite_difference": [
+          0.24694558623493398,
+          0.08873846601767375,
+          0.7667785582463059
+        ]
+      }
+    ],
+    "wrong_q_counterexample": {
+      "actual_derivative": 0.0,
+      "cov_q_over_sigma2": 4.166666666666665
+    },
+    "qualification": "toy likelihood-tilt posterior incl atom; finite quadrature consistency only, no directed rounding"
+  },
+  "cost": {
+    "new_Maxwell_states": 0,
+    "new_Maxwell_RHS": 0,
+    "training_updates": 0,
+    "wall_seconds": 0.0824361671693623
+  }
+}

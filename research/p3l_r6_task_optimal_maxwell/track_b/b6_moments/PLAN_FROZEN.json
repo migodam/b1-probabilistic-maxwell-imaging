@@ -1,0 +1,40 @@
+{
+  "frozen_UTC": "2026-10-27T12:01:40.398757+00:00",
+  "tasks": [
+    "ROImean_material_real",
+    "ROImean_material_imag",
+    "ROI_fraction_of_cells_with_real_material_increment_gt_.02"
+  ],
+  "response_coordinate": "sqrt2 source-major packed complex response; isotropic coordinate noisevariance sigma\u00b2",
+  "sigma": 0.00119211798514519,
+  "projection_sets": [
+    "canonical_receivers4",
+    "structured_source_receiver_sums4",
+    "seeded_random_orthonormal4"
+  ],
+  "inputs": [
+    "raw_y_rbf127 TRAINlandmarks,width512 afterTRAINpercoordinate standardization",
+    "random_projection127 fixed orthonormal afterTRAINstandardization",
+    "decoder_only: random66D measurementcode\u2192originalC2/probitdecoder\u2192fixed127 materialprojections; uncalibratedpseudo-latent, noanchor/J/latentGT"
+  ],
+  "features_including_intercept": 128,
+  "ridge": 0.01,
+  "selection": "none; noVALtuning",
+  "fold": "parentindex parity; eachdirection baselinea0 trainedotherhalf, momentfitownhalf; allfoldnormalizers fitowntrainingonly",
+  "moment_targets": [
+    "a=Etask",
+    "b=Eprojected_noiselessf",
+    "c=Etask_times_f",
+    "bres=E(f-y)",
+    "cres=E((task-a0)*(f-y))"
+  ],
+  "covariance_estimates": [
+    "c-a*b",
+    "cres-(a-a0)*bres"
+  ],
+  "identity_scope": "Cov/sigma\u00b2 identity onlyfortrueposterior; learnedFDgap isregressionconsistency,not biasproof",
+  "FD": "first128historicalVAL,12fixedprojectiondirections,steps sigma*1e-3 andsigma*1e-4",
+  "CPU_limit_seconds": 120,
+  "physics_RHS": 0,
+  "noMPS": true
+}

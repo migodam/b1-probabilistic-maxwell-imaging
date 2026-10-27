@@ -1,0 +1,19 @@
+{
+  "revision": 1,
+  "status": "FROZEN_BEFORE_REVISION1_ANCHOR_EXECUTION",
+  "date": "2026-10-27",
+  "scope": "CDEV64 stage-specific anchor allocation development diagnostic",
+  "rationale": "Original paired native/probit truncations failed the joint risk1%/wall20% gate. Isolate native and probit budgets to learn whether late probit refinement or late native steps account for frozen-head sensitivity.",
+  "observed_previous_result": "track_c/evaluation_CDEV/CDEV_RESULTS.json; CDEV_NO_FROZEN_HEAD_PASS",
+  "new_configurations": ["native24_probit64", "native48_probit64", "native96_probit32"],
+  "unchanged_baseline": "native96_probit64 from original completed CDEV contexts and sealed predictions; never recompute",
+  "optimizer": "Exact imported Original R4 native full TRF and probit TRF; same objective, initialization, noise, bounds, tolerances and cache policy",
+  "cohort": "same CDEV64 development cohort; truths already exposed to earlier offline development evaluation",
+  "selection": "minimum measured whole-system wall among new arms with paired bootstrap20000 upper98.333% same-estimator MSE ratio<=1.01 and lower98.333% wall saving>=0.20; development selection only",
+  "prediction_before_truth": "all requested revision configurations/methods/seeds sealed by BLAKE2b before revision scoring",
+  "previous_artifacts": "original CONFIGS5, original evaluator and canonical CDEV_RESULTS remain unchanged",
+  "novelty_claim": false,
+  "locked_D_truth_read": false,
+  "new_physics_execution_owner": "root orchestrator only",
+  "fallback_matched_training": "if no variant passes, matched full-vs-low heads on identical historical TRAIN512/1024 parents, original FusionRisk6418, three seeds, 4000 updates, CDEV selection only"
+}
