@@ -8,8 +8,15 @@ def identity(path):
  with p.open('rb') as f:
   for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
  return dict(path=str(p.resolve()),bytes=p.stat().st_size,blake2b=h.hexdigest())
+def _json_value(value):
+ # Original optimizer reports contain NumPy arrays/scalars. This changes only
+ # report serialization, never a forward, optimizer, prediction or score.
+ if hasattr(value,'tolist'):return value.tolist()
+ if isinstance(value,Path):return str(value)
+ if isinstance(value,complex):return [value.real,value.imag]
+ raise TypeError(f'Unsupported report type {type(value).__name__}')
 def write(path,obj):
- p=Path(path);p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_suffix(p.suffix+'.tmp');tmp.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n');tmp.replace(p)
+ p=Path(path);p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_suffix(p.suffix+'.tmp');tmp.write_text(json.dumps(obj,indent=2,allow_nan=False,default=_json_value)+'\n');tmp.replace(p)
 def freeze():
  p=ROOT/'D_FREEZE.json'
  if not p.exists():raise RuntimeError('NOT_RUN: root D_FREEZE absent')

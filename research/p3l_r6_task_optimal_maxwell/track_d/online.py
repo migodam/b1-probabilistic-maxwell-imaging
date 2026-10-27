@@ -34,7 +34,14 @@ def anchors(group,d):
    reportpath=dest/'REPORT.json';closed=OUT/'raw/jobs'/job/'CLOSED.json'
    if reportpath.exists():
     report=json.loads(reportpath.read_text())
-    if not (closed.exists() and json.loads(closed.read_text())['status']=='COMPLETE' and report.get('GT_read') is False and report.get('path_complete') is True and report.get('freeze_identity')==identity(ROOT/'D_FREEZE.json') and report.get('context_identity')==identity(dest/'CONTEXT.npz')):raise RuntimeError('completed context cannot be safely resumed; root audit required')
+    complete=closed.exists() and json.loads(closed.read_text())['status']=='COMPLETE'
+    recovery_path=dest/'ADMINISTRATIVE_RECOVERY.json'
+    if recovery_path.exists():
+     recovery=json.loads(recovery_path.read_text())
+     complete=(recovery.get('status')=='RECOVERED_REPORT_ONLY_NO_NEW_PHYSICS' and recovery.get('original_closed_identity')==identity(closed)
+       and recovery.get('context_identity')==identity(dest/'CONTEXT.npz') and recovery.get('recovered_report_identity')==identity(reportpath)
+       and recovery.get('QA_identity')==identity(recovery['QA_identity']['path']))
+    if not (complete and report.get('GT_read') is False and report.get('path_complete') is True and report.get('freeze_identity')==identity(ROOT/'D_FREEZE.json') and report.get('context_identity')==identity(dest/'CONTEXT.npz')):raise RuntimeError('completed context cannot be safely resumed; root audit required')
     continue
    if dest.exists():raise RuntimeError('partial context: no implicit replay; root audit required')
    b=physics.Book('D',job,parent,'ONLINE_INFERENCE',max_wall=d['anchor_max_wall_seconds']);status,error='COMPLETE',None;start=time.perf_counter()
