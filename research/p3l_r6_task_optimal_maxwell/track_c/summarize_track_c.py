@@ -52,7 +52,7 @@ def main():
             'Native cache reuse has zero incremental RHS, while Original native cold phase cost remains retained',
             'Head microbenchmark excludes anchor computation; standalone D physical timing belongs to root',
             'All phase figures use corrected Original full-anchor q0 masks; first erroneous GT-phase outputs retained'],
-        D_GT_read_by_worker=False,figures=str(TRACK/'figures_CDEV_revision2/FIGURE_SOURCES.json'))
+        D_GT_read_by_worker=False,figures=str(TRACK/'figures_CDEV_final/FIGURE_SOURCES.json'))
     (TRACK/'TRACK_C_CLOSEOUT.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(dict(status=result['status'],paid_anchors=reports,training=result['matched_training'])),flush=True)
 

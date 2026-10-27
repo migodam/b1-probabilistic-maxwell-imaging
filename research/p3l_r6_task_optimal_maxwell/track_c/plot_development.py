@@ -36,7 +36,8 @@ def main():
                 x,y=row['wall_saving_lower_one_sided_98_333333'],row['MSE_ratio_upper_one_sided_98_333333']
                 ax.scatter([x],[y],s=145,facecolors='none',edgecolors=COLORS[method],linewidths=1.8)
                 text=row['config'].replace('native','N').replace('_probit','/P')
-                ax.annotate(text,(x,y),xytext=(5,6),textcoords='offset points',fontsize=8,color=COLORS[method])
+                offset=((-34,-17) if row['config']=='native48_probit64' else (7,-17)) if method=='physics' else (5,15)
+                ax.annotate(text,(x,y),xytext=offset,textcoords='offset points',fontsize=8,color=COLORS[method])
     ax.set(xlabel='Lower one-sided 98.333% whole-wall saving',ylabel='Upper one-sided 98.333% MSE ratio to SAME estimator at full96/64',
            title='CDEV64: stage allocation can pass where joint truncation fails')
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x,_:f'{100*x:.0f}%'));ax.legend(fontsize=8,ncol=2,loc='upper right');ax.grid(alpha=.15)
@@ -69,13 +70,26 @@ def main():
     axes[0].set_ylabel('Complex material MSE within common phase masks');axes[-1].legend(fontsize=8)
     fig.suptitle('Corrected phase risks: masks defined by full96/64 anchor q0, common to all candidates')
     fig.tight_layout();fig.savefig(args.output/'CORRECTED_ANCHOR_PHASE_RISKS.png');fig.savefig(args.output/'CORRECTED_ANCHOR_PHASE_RISKS.pdf');plt.close(fig)
+    benchmark_path=TRACK/'clean_inference_benchmark30/BENCHMARK.json'
+    extra=[]
+    if benchmark_path.exists():
+        benchmark=json.loads(benchmark_path.read_text());names=list(benchmark['arms'])
+        labels=['Original full deterministic','Ordinary low48/P64 deterministic','Ordinary low24/P64 deterministic','qKKT low24/P64 deterministic','Original full distilled']
+        means=[benchmark['arms'][name]['mean_wall_seconds']*1000 for name in names]
+        p95=[benchmark['arms'][name]['p95_wall_seconds']*1000 for name in names]
+        fig,ax=plt.subplots(figsize=(10,4.7));y=np.arange(len(names))
+        ax.barh(y,means,color=['#40935c','#7bb08b','#7bb08b','#9363a8','#2776ad']);ax.plot(p95,y,'|',markersize=15,color='#333333',label='95th percentile call, not a confidence bound')
+        for n,value in enumerate(means):ax.text(value+.04,n,f'{value:.3f} ms',va='center',fontsize=9)
+        ax.set_yticks(y,labels);ax.invert_yaxis();ax.set_xlabel('Provider + feature + head wall milliseconds per parent');ax.set_title('Clean CPU1 inference: 30 repeats x64 parents x3 seeds; warm batch1 calls')
+        ax.grid(axis='x',alpha=.15);ax.legend(fontsize=8,loc='lower right');fig.tight_layout();fig.savefig(args.output/'CLEAN_HEAD_MICROCOST.png');fig.savefig(args.output/'CLEAN_HEAD_MICROCOST.pdf');plt.close(fig);extra=['CLEAN_HEAD_MICROCOST']
     # Preserve the exact plotted source numbers in a parallel static table.
     with (args.output/'GATE_SOURCE.csv').open('w') as stream:
         keys=['config','method','MSE_ratio','MSE_ratio_upper_one_sided_98_333333','whole_wall_saving','wall_saving_lower_one_sided_98_333333','CDEV_pass']
         writer=csv.DictWriter(stream,fieldnames=keys);writer.writeheader();writer.writerows({k:r[k] for k in keys} for r in rows)
     metadata=dict(status='COMPLETE',source_results=[str(p) for p in sources],source_phase_correction=str(TRACK/'PHASE_CORRECTION_RECEIPT.json'),
         phase_masks='Original full96/64 anchor q0; no GT phase partition',new_RHS=0,GT_opened_by_plotter=False,
-        figures=['RISK_COST_GATES','PHASE_COSTS','CORRECTED_ANCHOR_PHASE_RISKS'],scope='CDEV development and recorded costs only; no D confirmation')
+        figures=['RISK_COST_GATES','PHASE_COSTS','CORRECTED_ANCHOR_PHASE_RISKS',*extra],scope='CDEV development and recorded costs only; no D confirmation',
+        clean_head_benchmark=str(benchmark_path) if benchmark_path.exists() else None)
     (args.output/'FIGURE_SOURCES.json').write_text(json.dumps(metadata,indent=2)+'\n')
     print(json.dumps(metadata),flush=True)
 

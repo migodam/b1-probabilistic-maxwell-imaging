@@ -1,0 +1,23 @@
+{
+  "status": "FROZEN_BEFORE_THESE_BASELINES_PHYSICAL_QUERIES",
+  "scope": "additional strong-baseline development on already exposed CDEV64; D primary source/statistics unchanged",
+  "chronology": "specified after root noticed the missing direct-Probit baseline and after primary D freeze, before executing these new prior-Probit queries",
+  "parents": "same all64 configs/parents_CDEV.json; no exclusions",
+  "baselines": [
+    {"name": "prior_x0_probit64", "Probit_fresh_state_cap": 64, "total_fresh_state_cap_including_prior_point": 65, "worst_RHS_per_parent": 2600},
+    {"name": "prior_x0_probit128", "Probit_fresh_state_cap": 128, "total_fresh_state_cap_including_prior_point": 129, "worst_RHS_per_parent": 5160}
+  ],
+  "combined_worst_RHS_all64": 496640,
+  "why128": "a strong direct-Probit control should not be artificially restricted to64 when the proposed path can spend Native24 plus Probit64",
+  "initial_point": "pay Original Target.evaluate(q=[zeros64,0.5,0.5]); Original to_probit initialization gives x0=zeros66; no Native optimizer",
+  "optimizer": "unchanged Original R4 probit_optimize; full Probit-coordinate MAP objective, exact TRF/J chain rule, x_scale jac, original tolerance and initialization law",
+  "online_data": "observation plus prior/current paid anchor only; no GT and no future endpoint",
+  "controller": "root sole central shared.physics.Book C/Target; this worker code only",
+  "predictions": "Original frozen deterministic_matched three seeds actual-gradient and qKKT closure, for both64/128 paths; no matching training",
+  "sealing": "all12 prediction NPZ globally BLAKE2b sealed and verified before this evaluation opens CDEV truth",
+  "reference": "previously sealed OriginalFullDet Native96/Probit64 and existing qDet Native24/Probit64; neither rerun",
+  "development_statistics": "20000 paired independent-parent bootstrap; average seed losses before resampling; one-sided98.333% MSE ratio upper<=1.01 and whole-wall saving lower>=0.20; ensemble descriptive separately",
+  "interpretation": "simple competing warm-start/allocation development benchmark; if it competes or dominates, qualify final TAP/novelty claims",
+  "locked_D": "not an added D arm or statistic; no D truth read or unannounced D modification; any prospective supplement is root decision before its own GT unlock",
+  "SHA_checks": false
+}
