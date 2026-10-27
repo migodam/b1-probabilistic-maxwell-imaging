@@ -30,11 +30,12 @@ def main():
         with (out/'OUTPUT.log').open('w') as log:
             p=subprocess.run(cmd,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,preexec_fn=limits)
         r1=resource.getrusage(resource.RUSAGE_CHILDREN)
+        auth=json.loads((ROOT/'AUTHORIZATION.json').read_text())
         rec=dict(job=label,phase=phase,command=cmd,exit_code=p.returncode,
             process_cpu_seconds=time.process_time()-self0+r1.ru_utime+r1.ru_stime-r0.ru_utime-r0.ru_stime,
             wall_seconds=time.monotonic()-t,children_peak_RSS=r1.ru_maxrss,
             RSS_unit='bytes on macOS; high-water, not additive',authority='wrapper own CPU + final child CPU, once',
-            new_pde_authorized=bool(cap))
+            phase_grant_present=bool(cap),new_pde_authorized=bool(cap and cap.get('rhs',0)>0 and cap.get('full_fe',0)>0 and phase not in auth.get('closed_physics_stages',[])))
         book.event(phase,'job_completion',**{k:v for k,v in rec.items() if k!='phase'})
         (out/'RECEIPT.json').write_text(json.dumps(rec,indent=2)+'\n')
         if p.returncode:

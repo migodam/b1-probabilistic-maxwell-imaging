@@ -1,0 +1,202 @@
+{
+  "label": "REPLAY_NOT_NEW_PDE_SPEED_EVIDENCE",
+  "schema": "BGGA_G1_EXPOSED_FINITE24_REPLAY_V1",
+  "created_utc": "2026-10-27T16:15:24.562933+00:00",
+  "data_status": "EXPOSED_DEVELOPMENT_12_PARENTS_X_2_NOISE_REPEATS",
+  "methods": {
+    "M0": "Independent 2950-query exact finite Bayes.",
+    "M1": "Own full-query MAP wall-group; retain its own target conditional and Dirac wall.",
+    "M2": "Own full-query legal nonempty wall maximizing empirical finite-secants minimum retention; missing qualification is NOT_RUN.",
+    "M3": "Own full-query legal wall medoid minimizing matched-pose posterior whitened response risk.",
+    "M4": "Unknown likelihood [0,1]; prior*interval-width/cost queries, stop at unknown-mass upper <=.02.",
+    "M5": "Own full-query stable complete-link wall quotient: potential diameter <=atanh(.02), max-pose whitened response diameter <=.1, prior conditional lift.",
+    "M6": "Ordinary cache/Schur logical exact full-table control; no measured Schur speed claim."
+  },
+  "method_order": [
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6"
+  ],
+  "online_core_inputs": [
+    "prior grid and fixed numerical qualification metadata",
+    "y",
+    "atom-index-only oracle"
+  ],
+  "reference_barrier": "all seven online outputs for all 24 cases written before any reference calculation",
+  "channels": {
+    "TX": [
+      0,
+      1
+    ],
+    "RX": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "sigma_each_real_imag": 0.01
+  },
+  "inputs": {
+    "FINITE_PRIOR_GRID": {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/results/e2e3/finite_bank/online/FINITE_GRID.npz",
+      "keys": [
+        "prior_weight",
+        "pose",
+        "wall_group_id",
+        "support_id",
+        "support",
+        "epsinf",
+        "ell"
+      ],
+      "audit_bytes": 4788
+    },
+    "FINITE_FULL_RESPONSE_CACHE": {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/results/e2e3/finite_bank/online/FINITE_BANK.npz",
+      "keys": [
+        "data"
+      ],
+      "audit_bytes": 2913186
+    },
+    "FINITE_24_DEVELOPMENT_CASES": {
+      "path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/research-w-slam/results/e2e3/finite_bank/online/OBSERVATIONS.npz",
+      "keys": [
+        "data"
+      ],
+      "audit_bytes": 51968
+    }
+  },
+  "observation_keys_read": [
+    "data"
+  ],
+  "case_identity": "parent_index/repeat_index are positional indices in OBSERVATIONS.data; no ID/truth columns opened",
+  "M2": {
+    "geometry_label": "EMPIRICAL_BANK_SECANT_RETENTION",
+    "secant_parameter_scales": [
+      1.0,
+      0.1,
+      0.3,
+      0.2
+    ],
+    "G0_parameter_names": [
+      "epsinf",
+      "ell",
+      "pose_x",
+      "pose_y",
+      "contrast",
+      "target_loss",
+      "radius"
+    ],
+    "G0_parameter_scales": [
+      1.0,
+      0.1,
+      0.3,
+      0.2,
+      1.0,
+      0.1,
+      0.04
+    ],
+    "full_frozen_scale_dictionary": {
+      "epsinf": 1.0,
+      "ell": 0.1,
+      "pose_x": 0.3,
+      "pose_y": 0.2,
+      "contrast": 1.0,
+      "target_loss": 0.1,
+      "radius": 0.04,
+      "gammaR": 0.005,
+      "gammaI": 0.005
+    },
+    "current_secant_nuisance_columns": [
+      "pose_x",
+      "pose_y"
+    ],
+    "G0_fixture_ids": [
+      "strong_center",
+      "right_large",
+      "low_loss_high_contrast"
+    ],
+    "rank_rule": "s > max_fixture ||packj(J-J_reference) diag(frozen_scales)||2",
+    "qualification_source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/results/g0_derivatives",
+    "qualification_NPZ_keys": [
+      "J",
+      "J_reference"
+    ],
+    "missing_qualification": "NOT_RUN with NOT_DEFINED geometry; no machine threshold",
+    "tie_rule": "highest minimum retention, then higher own wall posterior mass, then stable wall-group ID"
+  },
+  "M4": {
+    "checkpoints": [
+      16,
+      64,
+      256,
+      1024,
+      2048,
+      2949,
+      2950
+    ],
+    "unknown_likelihood_interval": [
+      0.0,
+      1.0
+    ],
+    "query_rule": "prior * interval_width / cost; cost=1; exact atoms never requeried",
+    "stop_unknown_mass_upper": 0.02,
+    "log_domain_normalization": true
+  },
+  "M5": {
+    "potential_complete_link_diameter": 0.020002667306849582,
+    "future_complete_link_max_pose_whitened_diameter": 0.1,
+    "future_scope": "25 prior target pose nodes, fixed known intrinsic parameters and gamma",
+    "cluster_order_and_representative": "stable wall-group ID, first-fit complete-link, first legal group representative"
+  },
+  "scoring": {
+    "joint_TV": true,
+    "coordinate_CDF_sup": [
+      "x",
+      "y"
+    ],
+    "events": [
+      "pose_x>=0",
+      "pose_y>=2.1"
+    ],
+    "joint_modes": [
+      "support_id",
+      "x_sign_nonnegative_includes_zero",
+      "y>=2.1"
+    ],
+    "joint_mode_interpretation": "PREDECLARED_JOINT_PARTITION_CELLS_NOT_CONTINUOUS_MODE_DISCOVERY",
+    "x_sign_partition": "negative iff x<0; nonnegative iff x>=0; original finite nodes unchanged; no zero tolerance",
+    "important_reference_joint_mode_min_mass": 0.05,
+    "Bayes_squared_position_regret_limit": ".05*R_ref+(.005)^2",
+    "support_modes": "reported separately",
+    "ground_truth_loss": "NOT_SCORED_NO_GT_ACCESS"
+  },
+  "new_scientific_gates_created": false,
+  "new_actual_full_FE": 0,
+  "new_actual_RHS": 0,
+  "historical_bank_paid_setup": {
+    "rhs": 11800,
+    "full_FE_factorizations": 2950,
+    "process_cpu_seconds": 9288.023039999998,
+    "summed_job_wall_seconds": 9496.344884457765,
+    "source": "52351aee:research/research_w_slam/results/e2e3/finite_bank/online/JOB_COST_FINAL.json:33-49,104-109"
+  },
+  "historical_setup_policy": "2950 FE/11800 RHS/about9288 CPU seconds remain paid historical setup, not a free online speed result",
+  "memory_limit_bytes": 1000000000,
+  "floating_point_roundoff_certified": false
+}

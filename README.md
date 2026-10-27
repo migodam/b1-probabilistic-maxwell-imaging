@@ -168,5 +168,5 @@ input source包来自用户A32附件，命名仅作为来源；项目统一称B1
 <!-- BGGA_START -->
 ## Research W-BGGA
 
-[静态Green吸收实现与资格前检查](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_bgga/)：固定公共目标网格和概率区间核，32项测试通过；新物理待独立资源授权，不写成G0或加速PASS。
+[真实全波与完整联合概率实验报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_bgga/)：3934 RHS / 482 FE；精确公共空间吸收通过，当前完整端口/默认区间加速路线NO-GO。G1为旧bank有限prior重放，G2未启动。[原始数据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-bgga-20261028)。
 <!-- BGGA_END -->

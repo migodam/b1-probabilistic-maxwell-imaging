@@ -1,15 +1,16 @@
-# 理论到可证伪测试
+# 理论、实现与证据的对应
 
-|命题|必要条件|本轮验证|当前身份|
-|---|---|---|---|
-|精确背景重表达保持同一方程|同一FE空间/PML/源接收；L_W和完整L可逆|普通full、resolvent、Schur及原方程residual|标准恒等式；合成单测不是Maxwell资格|
-|跨目标cache保持输出|固定覆盖全部目标合同的公共space；真实b_X；完整反馈|公共mesh+cut-cell目标积分对interface-fitted参考|待物理资格|
-|相对保留率能否授权点吸收|还需绝对信息、proper joint posterior、task/stability|四类各3个预声明parent|不能仅靠angle；物理反例待运行|
-|概率Green压缩保持joint|prior推送、当前likelihood及future task充分；保留条件lift|2950原子区间与完整权重离线评分|未运行正式G1|
-|当前posterior task平均误差小可替换likelihood|一般不成立，必须控制替换后tail|附件二原子反例回归、default[0,1]未查询质量界|标准数学反例，不是新物理结果|
-|新BGGA能省物理工作|省掉FE/RHS必须超过setup/cert/reopen，且普通ROM不能同样获得|新scope真实冷部署|未授权，NOT_RUN|
-|旧joint witness支持新有限任务模量下界|保留原oracle/解析support/数值身份；probe6独立核验|读取固定结果，不重跑|历史条件离散证据；不是calibration omega(1)|
+|命题|必要条件/实际测试|最终证据身份|
+|---|---|---|
+|精确背景重表达|同一公共FE/PML空间，材料依赖b_X，完整输入输出；Full/Schur/resolvent场及方程比较|标准恒等式；本次真实离散全波数值核验通过，不是原创理论|
+|跨目标cache|固定公共ROI、合法材料积分；12个fixed-v-fitted案例|QUALIFIED_DISCRETE_FULLWAVE_FOR_TESTED_CONTRACT，非uniform-prior/continuum界|
+|相对保留率授权单点化|需绝对信息、proper joint、任务；9物理parent/12fixture|C2约98%variance仍存；不能angle-only；部分rank UNRESOLVED|
+|材料不确定但任务稳定|有限15 proper prior、完整响应、固定权重预测替代|C3窄任务支持；不推导新likelihood安全|
+|任务传播差|C4独立argmax审核|C4_1单端口d=.729、future max3.068；主观测可区分，无目标位移|
+|单墙保joint|Q(W=g)=1时TV≥1−P(W=g)|有限概率精确命题；M1最佳单墙仍11/24失败；不涉及保留随机残差的换背景|
+|概率压缩|原prior/likelihood与条件lift；2950全表重放|M5未发生任何merge；M4未省查询；物理posterior未认证|
+|严格数值区间|原F64 vs独立归一化|原界FAIL，正越界保留；一次修复仅限固定log-potential|
+|净成本优势|减少真实FE/RHS超过setup/cert/reopen，强基线同权限|当前机制NO-GO，G2依门停止|
+|旧joint见证|保留oracle/解析support/旧minimum-feature/经验网格身份|历史条件证据，本轮未重算；cal距离3.56不能作cal omega(1)下界|
 
-PDF第5节采用总场常量源写法；旧实现实际解散射场。精确接线已改为显式目标forcing，属于实现必要转换，不是理论新贡献。PML非自伴，不能以最小实部特征值当稳定下界；condition估计/经验细网格差也不当严格PDE证书。
-
-固定posterior预测压缩与改变likelihood后重新反演是两件事。正的task-risk压缩结果不自动授权后者；仅保留边际或cross-covariance不足以恢复非Gaussian joint law。
+PDF的总场常量源公式转为backend散射场时须增加真实b_X，不是理论创新。PML非自伴；最小实部谱、condition估计和经验网格差不自动给稳定下界。Bayesian推送、Schur、sin²/广义保留谱、ordinary smoother/ROM均属已有工具。没有开展新的穷尽文献优先权检索，不作“首次”声明。

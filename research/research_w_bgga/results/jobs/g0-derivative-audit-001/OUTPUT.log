@@ -1,0 +1,26 @@
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+{"case": "strong_center", "duality": {"wall_JVP_adjoint_relative": 3.9264875725206576e-15, "adjoint_backward": {"absolute": 5.921226034287312e-14, "backward": 1.3499281059748004e-18, "rhs_relative": 1.6640339757337138e-14}, "scope": "same discrete equations, independent primal and conjugate-transpose solves"}, "finite_differences": [{"parameter": "epsinf", "h": 0.001, "one_sided": false, "fd_relative": 1.6300226324736824e-05, "absolute_whitened_column_error": 0.0004147239161215329}, {"parameter": "epsinf", "h": 0.0003, "one_sided": false, "fd_relative": 1.4670745882890483e-06, "absolute_whitened_column_error": 3.73265319374296e-05}, {"parameter": "ell", "h": 0.0001, "one_sided": false, "fd_relative": 1.6298935131523306e-07, "absolute_whitened_column_error": 4.146910645098244e-06}, {"parameter": "ell", "h": 3e-05, "one_sided": false, "fd_relative": 1.4651320332410797e-08, "absolute_whitened_column_error": 3.727710783614871e-07}, {"parameter": "pose_x", "h": 0.001, "one_sided": false, "fd_relative": 9.768074142568884e-06, "absolute_whitened_column_error": 0.00020878184407741336}, {"parameter": "pose_x", "h": 0.0003, "one_sided": false, "fd_relative": 9.078203950836693e-07, "absolute_whitened_column_error": 1.9403662729243852e-05}, {"parameter": "pose_y", "h": 0.001, "one_sided": false, "fd_relative": 4.798501483810655e-06, "absolute_whitened_column_error": 0.0001714629477564108}, {"parameter": "pose_y", "h": 0.0003, "one_sided": false, "fd_relative": 4.6681196189309804e-07, "absolute_whitened_column_error": 1.668040643609026e-05}, {"parameter": "contrast", "h": 0.001, "one_sided": false, "fd_relative": 8.410935875370653e-08, "absolute_whitened_column_error": 1.0770066560392584e-07}, {"parameter": "contrast", "h": 0.0003, "one_sided": false, "fd_relative": 7.68437109873129e-09, "absolute_whitened_column_error": 9.839712183567918e-09}, {"parameter": "target_loss", "h": 0.0001, "one_sided": false, "fd_relative": 1.6162282916860703e-09, "absolute_whitened_column_error": 2.06955403491071e-09}, {"parameter": "target_loss", "h": 3e-05, "one_sided": false, "fd_relative": 2.622511245884065e-09, "absolute_whitened_column_error": 3.3580829876799866e-09}, {"parameter": "radius", "h": 0.001, "one_sided": false, "fd_relative": 0.00012149535645480945, "absolute_whitened_column_error": 0.005409104612658238}, {"parameter": "radius", "h": 0.0003, "one_sided": false, "fd_relative": 1.092176033029885e-05, "absolute_whitened_column_error": 0.0004862485769399846}], "fixed_vs_fitted_J_relative": 0.00363720303423153, "empirical_operator_error": 0.2411748039022548, "empirical_FD_operator_error": 0.0004863139469696548, "error_scope": "measured discrepancies, not uniform derivative bounds", "names": ["epsinf", "ell", "pose_x", "pose_y", "contrast", "target_loss", "radius"]}
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/tools/g0_derivatives.py", line 63, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/tools/g0_derivatives.py", line 43, in main
+    plus=fixed.evaluate(shift(w,name,h),label=f'{c["id"]} {name} +{h}').data.copy()
+                        ~~~~~^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/tools/g0_derivatives.py", line 16, in shift
+    return replace(w,pose=p)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/dataclasses.py", line 1596, in replace
+    return _replace(obj, **changes)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/dataclasses.py", line 1630, in _replace
+    return self.__class__(**changes)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "<string>", line 10, in __init__
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_bgga/vendor/wslam/world.py", line 48, in __post_init__
+    if not check['legal']:raise ValueError('Illegal candidate: '+str(check['reasons']))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Illegal candidate: ['target_out_of_range']

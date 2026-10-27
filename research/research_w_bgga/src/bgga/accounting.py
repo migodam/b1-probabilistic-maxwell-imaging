@@ -12,8 +12,8 @@ class BudgetExceeded(RuntimeError):pass
 class ResourceAuthorizationRequired(BudgetExceeded):pass
 
 def _default(v):
-    if hasattr(v,'item'):return v.item()
     if hasattr(v,'tolist'):return v.tolist()
+    if hasattr(v,'item'):return v.item()
     if isinstance(v,complex):return [v.real,v.imag]
     raise TypeError(type(v).__name__)
 
@@ -22,6 +22,7 @@ class BudgetBook:
     def __init__(self,root=ROOT):
         self.root=Path(root).resolve();self.path=self.root/'PHYSICS_LEDGER.jsonl'
         self.lock=self.root/'results'/'ledger.lock';self.lock.parent.mkdir(parents=True,exist_ok=True)
+        self.declared_completion=False
     def records(self):
         return [json.loads(l) for l in self.path.read_text().splitlines() if l] if self.path.exists() else []
     @contextlib.contextmanager
@@ -48,11 +49,22 @@ class BudgetBook:
             raise ValueError('Nonnegative integer charges required')
         with self.locked():
             caps=self.authorization(phase);u=self.snapshot(phase)
+            auth=json.loads((self.root/'AUTHORIZATION.json').read_text())
+            if phase in auth.get('closed_physics_stages',[]) and (rhs or factorizations):
+                raise BudgetExceeded(f'{phase}: physical campaign closed; residual quota is not a new authorization')
             if (u['rhs']+rhs>caps['rhs'] or u['factorizations']+factorizations>caps['full_fe']
                     or u['process_cpu_seconds']>=caps['cpu_seconds']):
                 raise BudgetExceeded(f'{phase}: budget refuses request rhs={rhs}, FE={factorizations}, used={u}')
-            if max(u['rhs']/caps['rhs'],u['factorizations']/caps['full_fe'],u['process_cpu_seconds']/caps['cpu_seconds'])>=.9 and not meta.pop('declared_completion',False):
+            ratio=max([u[k]/limit for k,limit in [('rhs',caps['rhs']),('factorizations',caps['full_fe']),('process_cpu_seconds',caps['cpu_seconds'])] if limit>0]+[0.])
+            if ratio>=.7 and not any(r.get('phase')==phase and r.get('label')=='budget_70_percent_checkpoint' for r in self.records()):
+                checkpoint=dict(phase=phase,label='budget_70_percent_checkpoint',used=u,caps=caps,
+                    policy='90 percent: predeclared necessary verification/closeout only; no new campaign')
+                self._append(dict(kind='checkpoint',**checkpoint))
+                (self.root/'results'/f'{phase}_70_PERCENT_CHECKPOINT.json').write_text(json.dumps(checkpoint,indent=2)+'\n')
+            closing=bool(meta.pop('declared_completion',False) or self.declared_completion)
+            if ratio>=.9 and not closing:
                 raise BudgetExceeded('90% reached: only explicitly predeclared completion/close-out is allowed')
+            if closing:meta['predeclared_closeout']=True
             return self._append(dict(phase=phase,kind='reservation',label=label,rhs=rhs,factorizations=factorizations,**meta))
     def event(self,phase=None,label='',**meta):
         phase=phase or meta.pop('stage',os.environ.get('BGGA_STAGE','PREFLIGHT'))

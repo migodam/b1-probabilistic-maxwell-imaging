@@ -3,6 +3,11 @@ from pathlib import Path
 from bgga.accounting import BudgetBook,ResourceAuthorizationRequired,BudgetExceeded
 
 class Accounting(unittest.TestCase):
+    def test_saved_diagnostic_matrix_serialization(self):
+        import numpy as np
+        from bgga.accounting import _default
+        text=json.dumps(dict(matrix=np.eye(2),scalar=np.int32(2)),default=_default)
+        self.assertEqual(json.loads(text),dict(matrix=[[1.,0.],[0.,1.]],scalar=2))
     def test_no_implicit_resource_grant(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d);(p/'AUTHORIZATION.json').write_text(json.dumps(dict(new_physics_authorized=False,authorized_caps={})))

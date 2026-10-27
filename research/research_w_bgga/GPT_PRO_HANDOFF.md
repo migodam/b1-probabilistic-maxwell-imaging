@@ -1,24 +1,14 @@
-# GPT Pro handoff：当前真实完成边界
+# 给下一轮GPT Pro：哪些机制值得保留，哪些应删除
 
-## 可以使用的新事实
+先读RESEARCH_W_BGGA_REPORT_ZH、GATE_DECISION及COST_SUMMARY，不把准备页当最终结果。
 
-固定公共target ROI的P3 mesh已实现，源项按散射场语义纠正，cut-polygon目标mass/解析incident积分已实现。实际mesh 28,903 DOF，公共2,257 ports；示例目标仅79活跃DOF。面积/质量/矩阵/有限概率单测实际通过，完整数量见CODE_CHECK.json。没有新PDE。
+1. 保留：公共target ROI固定P3离散；材料依赖b_X的正确增量式；完整墙–目标反馈；full/Schur/resolvent一致。12案例独立贴体白化差≤.02033。
+2. 保留问题：材料不确定性与指定传播任务不确定性不等价。C2高相对保留仍98%prior方差；C4_1单端口d=.729、future25 max3.068且自己的argmax经独立复核，但主观测d约2.77，目标不移动。
+3. 删除普遍单点安全主张：最佳MAP-wall仍11/24 jointTV失败；目标行动可好而joint/cross-covariance错误。TV≥1−P(W=g)只约束Dirac墙替代，不能用它否定精确Green重参数化。
+4. 删除当前full-port加速：2257ports、1.026GB images、setup2257RHS，query .572–.871CPU秒，direct .340秒。普通ROM .011秒但held-out误差至6.517。当前无同质量突破。
+5. 默认[0,1]区间策略没有省查询：24case全查2950。current/future complete-link没有合并，始终118簇。一次高精度归一化只修浮点包络，不能替代物理误差界。
+6. G1为旧bank重放，不是新的冷部署。G2/未知支撑/新确认未跑，普通强smoother/FWI没有被击败。旧A0未达仍未达。
 
-118个全部wall groups的完整公共Green eager准备需266,326 RHS，已超过G1建议上限约13.3倍。普通Schur复用同一paid cache，不再二次支付。不能用这个架构直接宣称经济BGGA。
+最有价值的新问题：能否在保持原joint与随机残差材料的情况下，仅计算当前任务确实需要的Green actions，并得到比直接full和ordinary goal-ROM更便宜的likelihood/task包络？应先给可核对的小成本模型；若必须先查全表或全后验，判经济性NO-GO。
 
-## 严格不能说
-
-- G0的独立field精度通过：未运行。
-- 跨目标全波cache合格：未运行。
-- 有2950原子新posterior或interval省查询结果：未运行。
-- 新一般unknown-support anchor：未运行，旧A0失败身份保持。
-- BGGA新调度比ordinary goal-ROM、Schur或joint smoother快：未证实。
-- 资源不足导致科学假说为假：不成立。
-
-## 下一步最小可执行工作
-
-资源授权后先跑tools/g0_qualify.py，固定12条件、同源/噪声/PML、独立interface-fitted参考，第一条白化差>.1即停。数值误差必须小于相应task margin，.1不是posterior证书。完整四类各3个Maxwell stress仍需实现与运行，不能以几何脚本替代。
-
-如G0足够精确，优先寻找真正低成本按需物理界或普通goal-ROM，之后再决定是否值得比较G1各方法。默认[0,1]界可能因高维likelihood太保守而求全表；应接受CERTIFICATE_COST_NO_GO，不用reference weights“帮算法”选择。
-
-原始两个Git来源与缓存地图已保存；旧证据不重写。不自动扩G2，不训练网络，不新开锁定确认，不把SLAM动态模型带回这个静态合同。
+不建议增加NN、Flow、A17模块或先跑30parent确认。未证明新物理信息、posterior calibration或TAP级算法原创。

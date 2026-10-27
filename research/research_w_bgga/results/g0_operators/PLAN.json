@@ -1,0 +1,88 @@
+{
+  "schema": "BGGA_G0_ORDINARY_OPERATOR_COMPARISON_V1",
+  "case_ids": [
+    "weak_center",
+    "strong_center",
+    "left_small",
+    "right_small",
+    "left_large",
+    "right_large",
+    "low_loss_high_contrast"
+  ],
+  "training_ids": [
+    "weak_center",
+    "left_small"
+  ],
+  "held_out_ids": [
+    "strong_center",
+    "right_small",
+    "left_large",
+    "right_large",
+    "low_loss_high_contrast"
+  ],
+  "background": {
+    "support": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "epsinf": 3.75,
+    "ell": 0.125
+  },
+  "background_sparse_lu": 1,
+  "background_primal_rhs": 2,
+  "public_ports": 2257,
+  "public_port_setup_calls": 1,
+  "public_port_rhs": 2257,
+  "paid_background_adjoint_rhs": 16,
+  "full_baseline_target_lu": 7,
+  "full_baseline_target_rhs": 14,
+  "known_non_krylov_physical_rhs": 2289,
+  "krylov_rhs": "Every actual background-preconditioner application is separately reserved",
+  "schur": "schur_from_paid_ports; no independent exterior LU or extra 2259 RHS",
+  "goal_basis": {
+    "snapshot_order": [
+      "background primal (2)",
+      "weak_center full (2)",
+      "left_small full (2)",
+      "background receiver adjoint (16)"
+    ],
+    "candidate_columns": 22,
+    "orthogonalization": "two-pass modified Gram-Schmidt QR",
+    "deflation_relative_tolerance": 1e-12,
+    "rank_rule": "algebraic deflation only; no rank sweep or held-out-field selection"
+  },
+  "core_stability": {
+    "case": "low_loss_high_contrast",
+    "core": "I - C V",
+    "dimension": 2257,
+    "additional_dense_lu": 1,
+    "inverse_one_norm_estimator": {
+      "t": 2,
+      "itmax": 5
+    },
+    "estimator_seed": 271027,
+    "interpretation": "numerical estimate only; not an inf-sup lower bound"
+  },
+  "prior_qualification_source": "results/g0_qualification/RESULTS.json",
+  "ordinary_exact_methods": [
+    "full",
+    "woodbury",
+    "schur_from_paid_ports",
+    "krylov"
+  ],
+  "rom_method": "goal_rom",
+  "strict_identity_threshold": 1e-09,
+  "strict_backward_threshold": 1e-10,
+  "rom_full_equation_residual": "accuracy result; no exactness threshold or automatic fallback",
+  "held_out_policy": "Retain held-out accuracy even when inaccurate; never modify Q/rank",
+  "perturbation_jacobian_and_information_stress_status": "NOT_RUN_BY_THIS_DRIVER",
+  "whole_G0_status": "PARTIAL; independent G0 requirements remain pending",
+  "novelty": "ordinary operator baselines; no BGGA novelty inference",
+  "aggregate_cpu_authority": "tools/run_job.py completion receipt, once"
+}

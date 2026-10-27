@@ -1,23 +1,13 @@
-# G0：算子实现已就绪，Maxwell资格尚未执行
+# G0 — 公共空间与精确吸收资格
 
-## 已经实际运行
+状态：**QUALIFIED_DISCRETE_FULLWAVE_FOR_TESTED_CONTRACT**；机制stress的部分局部rank仍UNRESOLVED；连续与统一prior界未建立。
 
-固定公共PSLG网格：wall ROI为[-1.5,1.5]×[.5,1.25]，target积分ROI为[-1.2,1.2]×[1.4,2.8]。网格key不含未知目标位置、半径或材料。P3 scalar H1场；复128/实64。原被动材料、PML、单位线源与白化保持。
+以固定P3空间、公共完整target ROI，取代依目标位置/半径重网格的旧接口。目标圆盘采用384边形cut-cell积分，解析incident进入材料右端。散射场的增量右端为b_X+V_Xu_W，不能机械套用固定f的total-field公式。完整target feedback由(I−C V)求解保留，full/woodbury/Schur的场、响应与方程残差同时审核。
 
-圆盘按384边形与每个固定三角形相交，积分P3质量及解析incident forcing。不是把目标边界刻入网格，也不是把随机目标换成真值mask。几何测试包括目标域边缘位置、不同半径、常量/线性/四次incident；四次例明确能分辨直接积分与错误P3节点插值。
+12配置fixed-v-fitted白化差.006925–.020328；28精确对照场相对误差最大2.04e−13、响应5.17e−14、backward5.51e−17。实际JVP/实伴随约4e−15，shape有限差分单列。无jitter、伪逆、按结果增秩或full fallback。低损耗高对比inverse-norm估计不是严格稳定下界或共振证明。
 
-测得网格28,903 DOF/28,420 free DOF/6,369 triangles；公共ports 2,257；示例目标79个结构活跃自由度。目标多边形面积0.04523691560091064，分割积分面积差约−6.94e−18。该面积一致性不认证电磁场误差。
+公共2,257端口需要7.64 CPU秒/2257RHS setup；完整Green images1.026GB。7案例平均query CPU：full .33988、woodbury .57170、Schur .87109、背景预条件Krylov .47185。ordinary goal-ROM .01114，但held-out误差.237–6.517不合格。没有独立完整冷部署速度PASS。
 
-散射场增量实现保留`b_X`。小复矩阵测试核对普通full、resolvent、独立外域Schur、共享port Schur、背景预条件GMRES、同空间goal-Galerkin；删掉b_X的负控制确实不一致。这是合成代数验证，**不是新Maxwell实验**。
+原始：[资格结果](results/g0_qualification/RESULTS.json)、[算子结果](results/g0_operators/RESULTS.json)、[setup](results/g0_operators/SETUP.json)、[导数](results/g0_derivatives/RESULTS.json)、[stress表](results/G0_STRESS_TABLE.csv)。NPZ在本轮Release，按阶段目录恢复。
 
-## 尚未执行
-
-`tools/g0_qualify.py`在任何新物理预约前检查AUTHORIZATION。已冻结12个几何/contrast资格条件；每个先做公共固定mesh完整solve，再用原interface-fitted P3独立核验。第一条白化差超过.1即停止后续cache主张，至多另登记一次限定修复；不会因失败提高噪声。低损耗高contrast是事前stress，不预称near resonance。
-
-四类各3个信息/传播stress在`G0_CASES.json`列出公开构造，类别是待检验假设。正式Jacobian/数值秩、absolute Schur谱、joint covariance、有限端点和全部task传播尚未执行；该完整stress驱动尚未交付，不把资格脚本冒充完成整个G0。
-
-## 成本障碍
-
-完整目标ROI的Green images估计1,026,303,040字节，核心81,504,784字节。准备至少2,257 full RHS；每个全目标仅2源RHS。普通Schur可复用同一已付费port。所有接口都有相同数值门，不给BGGA更松误差。
-
-端口矩阵/低秩core的数值条件、真实forward误差、独立网格、伴随及跨目标全波一致性均为NOT_RUN。不得把这里的同离散数学恒等式或小的积分误差写成continuum certificate。
+四类各3fixture，共9独立物理parent，known-support条件研究。C2/C3是匹配观测合同，不能当独立重复。finite15先验与tangent Gaussian信息不混用；C4_1只建立单端口当前观测与future25不同的经验数值见证，主观测能够区分，目标位置没改变。完整解释见中文报告。

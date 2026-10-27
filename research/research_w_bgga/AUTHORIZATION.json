@@ -1,13 +1,49 @@
 {
   "schema": "BGGA_AUTH_V1",
-  "new_physics_authorized": false,
-  "authorized_caps": {},
-  "reason": "User explicitly labels budgets as suggestions; no BGGA-specific resource grant located.",
+  "new_physics_authorized": true,
+  "authorized_caps": {
+    "G0": {
+      "rhs": 4000,
+      "full_fe": 500,
+      "cpu_seconds": 7200
+    },
+    "G1": {
+      "rhs": 20000,
+      "full_fe": 5000,
+      "cpu_seconds": 28800
+    },
+    "G1_LOGIC": {
+      "rhs": 0,
+      "full_fe": 0,
+      "cpu_seconds": 3600
+    },
+    "G2": {
+      "rhs": 80000,
+      "full_fe": 12000,
+      "cpu_seconds": 86400
+    }
+  },
+  "reason": "Human response to the concrete G0 resource question: 都可以执行. Execute the listed staged design; later stages remain conditional on scientific prerequisites and their own caps.",
+  "human_authorization_text": "都可以执行",
+  "authorization_date_client": "2026-10-27 Asia/Singapore",
+  "conditional_stages": {
+    "G1": "G0 numerical qualification required",
+    "G2": "G1 probability fidelity plus a concrete net-physics-saving mechanism required"
+  },
   "allowed": [
     "read-only audit",
     "implementation",
     "zero-PDE tests",
-    "cost projection"
+    "cost projection",
+    "new G0 physical qualification within its cap",
+    "conditional G1/G2 within listed caps only after prerequisites"
   ],
-  "old_budgets_not_transferable": true
+  "old_budgets_not_transferable": true,
+  "closed_physics_stages": [
+    "G0",
+    "G1",
+    "G2"
+  ],
+  "G0_closeout": "12 qualification conditions, three derivative audits, seven-method-condition operator tests, 12 stress fixtures and all75 future probes completed; remaining physical quota sealed. Software reporting may continue within CPU cap.",
+  "scientific_closeout": "G0 complete; G1 logic only; no net-saving mechanism for new G1 cold/G2. Unused quotas sealed, not new campaign permission."
 }

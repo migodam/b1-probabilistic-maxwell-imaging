@@ -1,0 +1,38 @@
+{
+  "schema": "BGGA_G0_STRESS_V1",
+  "status": "FROZEN_BEFORE_STRESS_PHYSICS",
+  "source": "Translate the predeclared G0_CASES stress_constructs; no data-selected parents",
+  "static_worlds": true,
+  "families": {
+    "C1": {"intended": "high relative and absolute information; concentrated finite posterior", "epsinf": [2.5,3.75,5.0], "ell": 0.08, "support": "full 2x2", "observation": "2TX all16RX"},
+    "C2": {"intended": "high relative retention but weak absolute information", "epsinf": 4.0, "ell": 0.08, "support": "single public macrocell row2 columns8,11,14", "observation": "2TX all16RX"},
+    "C3": {"intended": "weak material information and small declared-task change", "worlds_shared_with": "C2", "observation": "TX0 RX8", "future_task": "same single port at fixed declared target"},
+    "C4": {"intended": "weak joint material information but larger future-task propagation change", "epsinf": 3.75, "ell": 0.125, "support": "full2x2, [[1,0],[1,1]], [[1,1],[0,0]]", "observation": "TX0 RX8", "future_task": "25 fixed prior poses, max whitened complete 2TX/16RX response difference"}
+  },
+  "independent_units": "9 distinct physical parent worlds; C2/C3 are a matched observation-contract comparison, not six independent worlds",
+  "common_target": {"pose": [0.2,2.0], "radius": 0.12, "contrast": 3.0, "ell": 0.02},
+  "tangent_scales": {"epsinf": 1.0,"ell":0.1,"px":0.3,"py":0.2,"contrast":1.0,"target_loss":0.1,"radius":0.04,"gammaR":0.005,"gammaI":0.005},
+  "rank_error": "Per fixture spectral norm of fixed-vs-interface-fitted real-whitened full seven-column Jacobian difference after declared scaling. EMPIRICAL, no uniform or continuum claim.",
+  "gaussian_diagnostic": "Identity precision in standardized coordinates. Proper tangent Gaussian only, not the boxed physical prior or exact non-Gaussian posterior.",
+  "bounded_finite_prior": {
+    "identity": "BGGA_G0_LOCAL_FINITE15_V1; conditional known-support mechanism fixture, NOT unknown-support inference",
+    "wall_nodes": "center weight1/3; four (eps +/-.1, ell +/-.01) corners each weight1/6",
+    "target_pose_nodes": "center weight.5; center+/-(.04,.02) each weight.25",
+    "known_intrinsic_and_gamma": true,
+    "atom_count": 15,
+    "noise": "same full64 real Gaussian draw per physical parent, seed=27102700+physical_parent_index; C2/C3 share draw",
+    "central_reference_is_in_prior": true
+  },
+  "finite_pair": {
+    "wall_eps_change": 0.1,
+    "pose_corrector": "One frozen pose-Jacobian ordinary least-squares proposal plus at most two same-Jacobian corrections; only declared current-port residual determines accepted best feasible endpoint",
+    "boundaries": "clip proposal pose to existing legal box; total material must remain legal; no truth-based endpoint selection",
+    "source_identity": "ORACLE_KNOWN_PARENT_MECHANISM_FIXTURE, not online unknown-wall discovery",
+    "finite_corrector_optimality": "No global profile-optimum claim"
+  },
+  "future25": "Sorted cos(pi*i/4) x; y=2.1+.5*sorted cos(pi*i/4), radius.12 contrast3 ell.02; all25 evaluated, never select best probe from data",
+  "future_verification": "Pair endpoints for every selected fixed probe; independent interface-fitted check of argmax for each C4 fixture; empirical margin only",
+  "budget_closeout": "If90% reached while this predeclared job is active, only already-declared endpoint/independent verification closes out; no new campaign",
+  "new_scientific_thresholds": false,
+  "class_assignment": "Measured results may contradict intended class; retain missing/undefined classes without redesign"
+}

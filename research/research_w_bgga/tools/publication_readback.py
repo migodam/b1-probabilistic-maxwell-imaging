@@ -9,6 +9,7 @@ def main():
     urls=dict(raw_report=prefix+'RESEARCH_W_BGGA_REPORT_ZH.md',
         resource_plan=prefix+'RESOURCE_REQUEST.md',
         repository='https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/'+commit+'/research/research_w_bgga',
+        release='https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-bgga-20261028',
         page='https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_bgga/')
     rows=[]
     for kind,url in urls.items():
@@ -19,7 +20,7 @@ def main():
                 with urllib.request.urlopen(request,timeout=20) as response:
                     data=response.read();status=response.status
                 content=data.decode('utf-8',errors='replace')
-                if kind in ('raw_report','page') and '266,326' not in content:raise ValueError('current BGGA report marker missing')
+                if kind in ('raw_report','page') and ('266,326' not in content or '3,934' not in content):raise ValueError('current experiment result marker missing')
                 if kind=='raw_report' and data!=(ROOT/'RESEARCH_W_BGGA_REPORT_ZH.md').read_bytes():raise ValueError('raw report differs from local source')
                 row.update(status=status,bytes=len(data),passed=status==200,attempts=attempt+1);break
             except Exception as exc:

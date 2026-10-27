@@ -1,23 +1,15 @@
-# G1：有限prior概率实现与未运行项目
+# G1 — 有限joint概率与压缩
 
-正式G1未运行。G0还没有新物理资格，且没有G1资源授权。没有计算新的2950原子posterior、没有方法成功率、没有PDE加速数字。
+状态：**有限缓存数值模型的准确性重放完成；无新PDE速度证据。** 12已暴露parent×2noise，2950原子counting prior，已知target intrinsic/gamma，2×2不表达孔洞。
 
-## 已实现并测试的有限概率语义
+全部方法输出先封存，再reference/GT评分。M0独立exact、M4完整joint、M5 prior-conditional lift、M6普通cache逻辑的joint TV为0；所有case概率及位置风险门通过。M5在24/24保留118/118簇，未发生压缩。M4在24/24查询2950/2950原子，默认未知likelihood[0,1]直到穷尽才得到有用遗漏质量界。
 
-`src/bgga/intervals.py`不接受reference、truth或future data，且没有文件读取函数。未知原子的likelihood界为[0,1]，保留prior所有支撑；已查询近似误差不会自动归零。forward/potential经验误差标为EMPIRICAL_INTERVAL，不会因归一化被提升为数学PDE证书。
+M1 confidence MAP-wall与M3 task-medoid选择相同，joint TV均值.113268，仅13/24通过joint门；但位置风险门24/24通过。M2是有限bank secant角度单点消融，非成熟FWI基线，joint门0/24。所有方法都独立计2950逻辑查询；读取完整posterior或任务table的工作没有藏到reference名下。
 
-归一化用事件和补集分式上下界。log域保存微小likelihood和prior尾部；极小值不能因为exp下溢就被当作无质量。查询规则是预先声明的`prior × likelihood区间宽度 / cost`启发式，不使用full reference risk，也不声称最优风险策略。
+对单墙Q，TV(P,Q)≥1−P(W=g)。最佳组为MAP-wall；这仅否定一般单墙Dirac替代，不否定保留随机材料残差的精确Green换背景。保留目标边缘而破坏wall/target cross-covariance的案例实际存在，额外held-out评分在输出封存后执行。
 
-同一观测的模型版本更改只替换旧factor；从base prior和当前factor重建以恢复旧零支撑，拒绝同一observation ID以不同factor重复加入。完整joint pushforward可保留条件核；使用prior条件核的canonical lift默认NOT_CERTIFIED，不能自己把joint TV写成0。
+**原F64区间FAIL必须保留。** 原子posterior越界达2.55e−15、log证据下界差7.11e−15，没有用容差抹除。一次定向高精度归一化修复在168检查点没有观察到越界，范围仅为给定F64 potential的数值归一化，不涵盖FEM/potential形成/连续PDE。额外计算须归方法，未省查询。
 
-任务聚类明确区分`max_probe_l2`和预加权Euclidean任务。前者取每个probe白化范数的最大值，不把多probe拼接L2冒充max。计算簇完整diameter，拒绝仅靠single-link链式合并的推论。浮点directed rounding与统一Maxwell稳定常数都未认证。
+[方法表](results/G1_METHOD_TABLE.csv)、[parent表](results/G1_PARENT_TABLE.csv)、[事实汇总](results/G1_FACTUAL_SUMMARY.json)、[signed audit](results/g1_offline_extra/INTERVAL_AUDIT_SUMMARY.json)、[修复](results/g1_normalization_repair/DECISION.json)、[封存记录](results/g1_replay_001/ALL_ONLINE_OUTPUTS_SEALED.json)、[factor历史](FACTOR_HISTORY.json)。全部原子权重、协方差、证据/质量区间、动作trace在Release。
 
-## 原始数据已定位，未误用
-
-2950原子定义、全波means、24个finite-prior含噪case均存在；它们与连续A0另24case、旧W另24target probe不是同一东西。见[缓存与来源审计](research/delegated/source_audit/SUMMARY.md)。已有全表可供逻辑开发，但重放身份必须为REPLAY_NOT_NEW_PDE_SPEED_EVIDENCE。
-
-M0–M6正式方法矩阵均NOT_RUN；目前只交付概率核，不冒称confidence/angle/task/multi-Green/quotient方法均已完成。未来所有reference由独立评分器持有；在线query只能访问prior、data和自有cache。任何读取reference的依赖必须进入部署费用。
-
-## 是否存在明确节省机制
-
-完整118背景×2,257ports的eager准备为266,326 RHS，已经远超G1建议20,000。全表direct是11,800 RHS且有旧9288 CPU秒记录；旧数值只作量级预测。必须先找到对同一任务有效、普通ROM无法免费获得的按需节省，再申请G2。保守[0,1]区间若要求接近全表查询，结论应为CERTIFICATE_COST_NO_GO，不能删除低prior原子凑成功。
+统计以parent为单位，先平均其两个noise；2000次配对bootstrap仅描述开发不确定性，不升级盲测或论文级PASS。物理posterior保真仍NOT_CERTIFIED，不能把G0 .1白化门当成posterior TV .02保证。

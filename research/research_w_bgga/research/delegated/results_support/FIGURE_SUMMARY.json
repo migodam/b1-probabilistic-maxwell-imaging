@@ -1,0 +1,156 @@
+{
+  "status": "RESULTS_PRESENT",
+  "source": "results/g0_qualification/RESULTS.json",
+  "expected_cases": 12,
+  "measured_cases": 12,
+  "metric_cases": 12,
+  "missing_cases": [],
+  "cases_over_frozen_error_limit": [],
+  "frozen_independent_whitened_max": 0.1,
+  "min_stored_whitened_error": 0.006924982802734923,
+  "max_stored_whitened_error": 0.020328110689468968,
+  "figures": [
+    {
+      "status": "CREATED",
+      "figures": [
+        "figures/g0_qualification/G0_FIXED_VS_FITTED_WHITE.png",
+        "figures/g0_qualification/G0_FIXED_VS_FITTED_WHITE.pdf"
+      ],
+      "data_csv": "figures/g0_qualification/G0_FIXED_VS_FITTED_WHITE.csv"
+    },
+    {
+      "status": "CREATED",
+      "figures": [
+        "figures/g0_qualification/G0_DOFS_AND_PORTS.png",
+        "figures/g0_qualification/G0_DOFS_AND_PORTS.pdf"
+      ],
+      "data_csv": "figures/g0_qualification/G0_DOFS_AND_PORTS.csv"
+    }
+  ],
+  "responses": [
+    {
+      "status": "CREATED",
+      "figures": [
+        "figures/g0_qualification/G0_RESPONSE_WEAK_CENTER.png",
+        "figures/g0_qualification/G0_RESPONSE_WEAK_CENTER.pdf"
+      ],
+      "data_csv": "figures/g0_qualification/G0_RESPONSE_WEAK_CENTER.csv",
+      "case": "weak_center",
+      "source": "results/g0_qualification/weak_center.npz",
+      "shape": [
+        2,
+        16
+      ],
+      "phase_convention": "principal np.angle, radians; raw real/imag retained in CSV"
+    },
+    {
+      "status": "CREATED",
+      "figures": [
+        "figures/g0_qualification/G0_RESPONSE_STRONG_CENTER.png",
+        "figures/g0_qualification/G0_RESPONSE_STRONG_CENTER.pdf"
+      ],
+      "data_csv": "figures/g0_qualification/G0_RESPONSE_STRONG_CENTER.csv",
+      "case": "strong_center",
+      "source": "results/g0_qualification/strong_center.npz",
+      "shape": [
+        2,
+        16
+      ],
+      "phase_convention": "principal np.angle, radians; raw real/imag retained in CSV"
+    },
+    {
+      "status": "CREATED",
+      "figures": [
+        "figures/g0_qualification/G0_RESPONSE_LOW_LOSS_HIGH_CONTRAST.png",
+        "figures/g0_qualification/G0_RESPONSE_LOW_LOSS_HIGH_CONTRAST.pdf"
+      ],
+      "data_csv": "figures/g0_qualification/G0_RESPONSE_LOW_LOSS_HIGH_CONTRAST.csv",
+      "case": "low_loss_high_contrast",
+      "source": "results/g0_qualification/low_loss_high_contrast.npz",
+      "shape": [
+        2,
+        16
+      ],
+      "phase_convention": "principal np.angle, radians; raw real/imag retained in CSV"
+    }
+  ],
+  "port_plan": {
+    "public_ports": 2257,
+    "port_rhs": 2257,
+    "owned_array_lower_estimate_bytes": 1270817392,
+    "setup_status": "NOT_RUN",
+    "reason": "inspect actual qualified solve costs before optional cache setup",
+    "whole_G0_status": "PARTIAL: finite perturbation/Jacobian/12-class stress pending"
+  },
+  "reused_fixed_mesh_figures": [
+    "figures/PUBLIC_MESH_AND_PORTS.png",
+    "figures/PUBLIC_MESH_AND_PORTS.pdf"
+  ],
+  "fixed_mesh_array_source": "results/preflight/FIXED_MESH.npz",
+  "implementation_tests": {
+    "status": "PASS_STORED_32_TESTS",
+    "count": 32,
+    "exit_code": 0,
+    "receipt": "results/jobs/implementation-tests-32/RECEIPT.json",
+    "log": "results/jobs/implementation-tests-32/OUTPUT.log",
+    "new_execution": false,
+    "scope": "Existing algebra/accounting/implementation tests; not new Maxwell or continuum qualification"
+  },
+  "cost_snapshot": {
+    "status": "LEDGER_SNAPSHOT",
+    "source": "PHYSICS_LEDGER.jsonl",
+    "through_time_unix": 1793118206.6224692,
+    "new_full_fe": 482,
+    "new_complex_rhs": 3934,
+    "measured_wrapper_process_cpu_seconds": 394.006962,
+    "wrapper_wall_seconds": 415.28514770930633,
+    "peak_measured_job_RSS_bytes": 2324627456,
+    "by_phase": {
+      "G0": {
+        "new_full_fe": 482,
+        "new_complex_rhs": 3934,
+        "measured_wrapper_process_cpu_seconds": 350.561201,
+        "wrapper_wall_seconds": 359.8720920009073,
+        "completed_wrappers": 10
+      },
+      "G1_LOGIC": {
+        "new_full_fe": 0,
+        "new_complex_rhs": 0,
+        "measured_wrapper_process_cpu_seconds": 19.687359999999998,
+        "wrapper_wall_seconds": 20.248487999895588,
+        "completed_wrappers": 2
+      },
+      "PREFLIGHT": {
+        "new_full_fe": 0,
+        "new_complex_rhs": 0,
+        "measured_wrapper_process_cpu_seconds": 23.758401,
+        "wrapper_wall_seconds": 35.164567708503455,
+        "completed_wrappers": 12
+      }
+    },
+    "completed_wrappers": 24,
+    "reservation_records": 1234,
+    "identical_duplicate_ledger_lines_ignored": [],
+    "unfinished_wrappers": [
+      {
+        "phase": "G0",
+        "job": "g0-qualification-figures"
+      }
+    ],
+    "authority": "FE/RHS from reservation once; CPU/wall from job_completion once; kernel and receipt copies not added",
+    "snapshot_note": "In-child snapshot excludes unfinished wrappers; the final reporting-wrapper receipt supersedes it.",
+    "accounting_gap": "Early source/PDF extraction, worker static reads and publication/network not fully timed. Not zero; no new physical work.",
+    "historical_bank": {
+      "rhs": 11800,
+      "fe": 2950,
+      "cpu_seconds": 9288.02304,
+      "charged_to_new_campaign": false
+    },
+    "standalone_deployment_cost": "NOT_MEASURED",
+    "physical_speed_claim": false
+  },
+  "scientific_scope": "Geometry prerequisite only. Discrete comparison is not a continuum, posterior, speed, or resonance certificate.",
+  "high_sensitivity_status": "low_loss_high_contrast is a stress attempt, not a declared resonance; report actual stability",
+  "gates_modified": false,
+  "physical_solves_executed": false
+}

@@ -1,51 +1,65 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research W-BGGA｜实现与资格前检查</title><style>body{background:#f3f6f8;color:#20323f;font:17px/1.85 system-ui,sans-serif;margin:0}main{max-width:1000px;margin:auto;padding:35px 24px}article{background:white;border:1px solid #dce3ea;border-radius:12px;padding:28px}h1{line-height:1.4;font-size:34px}h2{margin-top:2em}a{color:#126d91}nav{display:flex;flex-wrap:wrap;gap:12px 20px;margin-bottom:24px}p{overflow-wrap:anywhere}img{max-width:100%;height:auto}code,pre{background:#edf2f5;font-size:.9em}pre{padding:14px;overflow:auto}.scroll{overflow:auto}table{border-collapse:collapse;width:100%}td,th{border:1px solid #d5dfe7;padding:9px;text-align:left}figcaption{font-size:14px;color:#536371}.status{border-left:4px solid #bc7f25;background:#fff1d8;padding:12px 18px;margin:20px 0}</style></head><body><main><nav><a href="../">B1研究入口</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/START_HERE.md">代码与报告</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/RESOURCE_REQUEST.md">G0待授权方案</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_w_bgga/RESEARCH_W_BGGA_REPORT_ZH.md">匿名raw</a></nav><div class="status">准备工作已执行；新增全波0。G0资源授权待确认，未宣布物理/概率/速度通过。</div><article><h1>Research W-BGGA：静态概率Green吸收的实现与资格前检查</h1>
-<p>本报告记录真实完成的代码、必要数值测试和公共网格计数；<strong>新增全波实验为零</strong>。当前停在明确资源授权门，不把准备工作写成G0成功，也不把未运行写成物理NO-GO。</p>
-<h2>1. 这次究竟要判断什么</h2>
-<p>这里的墙体W和目标X=(位置p，内禀材料m)在所有源、接收器和频率之间保持静止。不同观测编号不表示目标运动。固定全部数据y后，换Green背景、改basis或重开墙块，只改变计算表示；精确实现时原posterior不变。</p>
-<p>科学上真正困难的不是写出<code>G=(L−V)^{-1}</code>，而是判断哪些传播差异可以舍弃、哪些相关墙–目标解释必须保留，并实际省掉某次昂贵求解。旧W-SLAM已经说明普通joint smoother能回访，旧四块也说明标准代数可以精确；它们没有证明新的BGGA更便宜。</p>
-<p>本轮要求将三项分开：物理/数值资格、有限joint概率正确性、真实冷部署费用。新的角度谱、较少活跃变量或漂亮的wall confidence图都不能替代后两项。</p>
-<h2>2. 固定证据审计</h2>
-<p>已按指定版本读取旧W <code>958a478739d9553269316ded8125fda9df225c0c</code> 与W-SLAM <code>52351aee6ddd41b09851fe5e52d1a8861891ef13</code>；没有用main后续成果替代。审计登记48项来源和18项缓存路径。47项原始本地文件与固定版本逐字节相同；唯一差异是旧COST_SUMMARY发布尾项，科学源码和bank最终费用一致。没有计算hash。</p>
-<p>旧W的条件oracle见证保持：joint距离0.7987161019689071、calibration距离3.5605119112114565、目标平移0.1λ0、24个相同固定target probe完整响应最大差4.81819338103861。任务最大值在probe6，其自己的粗细网格差约.00705/.01317；不能借probe8的精度，也不能把calibration距离3.56写成calibration omega(1)见证。</p>
-<p>它只支持给定解析support和离散核验下的机制压力测试，不自然获得posterior权重，不进入新prior抽样来提高成功率。</p>
-<p>W-SLAM的有限2950原子表、12 parent×2 noise观测和完整paid rows已找到；这是已暴露development数据。其2×2材料类没有孔洞，目标内禀和仪器已知，不能代表一般连续unknown-wall posterior。原A0主72拟合及补优化均触限，<code>A0_ONLINE_NOT_REACHED</code>保持。</p>
-<h2>3. 数学到实现的关键修正</h2>
-<p>附件第5节采用总场常源写法。现有FEM实际求散射场：</p>
-<pre><code>(L_W − V_X) u = b_W + b_X
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research W-BGGA｜精确吸收与计算成本判决</title><style>body{background:#f3f6f8;color:#20323f;font:17px/1.85 system-ui,sans-serif;margin:0}main{max-width:1000px;margin:auto;padding:35px 24px}article{background:white;border:1px solid #dce3ea;border-radius:12px;padding:28px}h1{line-height:1.4;font-size:34px}h2{margin-top:2em}a{color:#126d91}nav{display:flex;flex-wrap:wrap;gap:12px 20px;margin-bottom:24px}p{overflow-wrap:anywhere}img{max-width:100%;height:auto}code,pre{background:#edf2f5;font-size:.9em}pre{padding:14px;overflow:auto}.scroll{overflow:auto}table{border-collapse:collapse;width:100%}td,th{border:1px solid #d5dfe7;padding:9px;text-align:left}figcaption{font-size:14px;color:#536371}.status{border-left:4px solid #bc7f25;background:#fff1d8;padding:12px 18px;margin:20px 0}</style></head><body><main><nav><a href="../">B1研究入口</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/START_HERE.md">源码与结果</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/GATE_DECISION.json">分层判决</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-bgga-20261028">原始数据Release</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_w_bgga/RESEARCH_W_BGGA_REPORT_ZH.md">匿名raw</a></nav><div class="status">G0真实全波3934 RHS / 482 FE；G1为旧bank重放。精确离散吸收通过，当前加速路线NO-GO；G2未启动。</div><article><h1>Research W-BGGA：精确背景吸收、任务传播与完整联合概率</h1>
+<p>2026-10-28；二维scalar-TM；已暴露开发证据。<strong>同离散精确吸收通过，当前完整端口与默认区间策略的计算加速路线NO-GO。</strong> G2冷部署、unknown-support A0和30-parent确认未启动。</p>
+<p><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/START_HERE.md">入口</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/GATE_DECISION.json">机器判决</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/FULL_TABLE.csv">总表</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/COST_SUMMARY.json">成本</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/REPRODUCE.md">复现</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-bgga-20261028">Release数据</a></p>
+<h2>1. 三种不同的“吸收”</h2>
+<p>精确更换Green背景、用代表传播近似一簇材料、把墙体posterior替换成单点，是三种不同操作。第一种保留随机残差材料与完整输入输出时只是重参数化；第二种须控制当前likelihood和指定未来任务；第三种直接丢失材料质量及墙–目标相关性。代数恒等式成立，不推出近似安全或计算便宜。</p>
+<p>W与X在主观测中静止，位置/半径变化的行是不同查询世界或prior原子，不是运动时间。固定数据上的求解、背景替换、区间收紧都不增加信息。外侧TX2/3只在输出封存后作预测评分，不再乘进likelihood。没有新NN、3D、主动测量、locked数据或A17模块。</p>
+<p>本轮实际运行G0新的全波求解：计费3,934 complex RHS、482次材料–频率FE分解。随后在旧2,950原子有限prior上完成12 parent×2 noise×7方法的独立重放，G1新增PDE为零，不能写成PDE加速。</p>
+<h2>2. 来源和统一合同</h2>
+<p>旧W固定提交为958a478739d9553269316ded8125fda9df225c0c，W-SLAM为52351aee6ddd41b09851fe5e52d1a8861891ef13。旧目录与结论不覆盖。Pro PDF理论与提案在source_review和THEORY_TO_TEST单列，不能当成已执行证据。</p>
+<p>公共P3标量H1 FEM采用exp(−iωt)、μr=1、被动介质ε(f)=ε∞+iℓ/f、单位outgoing线源，不拟合复比例。当前f/f0=1、两发16收、仪器已校准。实虚每坐标σ=.01、复方差.0002；先按源/接收器展平，再拼全部实部和全部虚部，除以σ，不除通道数平方根。</p>
+<p>墙ROI为[-1.5,1.5]×[.5,1.25]、宏格边长.125；目标积分ROI为[-1.2,1.2]×[1.4,2.8]。墙ε∞为1.5–6、损耗0–.25，目标contrast0–8、完整ε实部≤9。源、PML、位置/半径与积分细节见<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/CONTRACT.json">CONTRACT</a>、<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/G0_CASES.json">G0_CASES</a>、<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/G0_STRESS_PLAN.json">stress计划</a>。这是新有限合同，不能替代旧W宽材料类。</p>
+<p>公共网格28,903 DOF、28,420自由DOF、6,369三角形，目标移动不改变空间。圆盘用384边形与三角形求交并积分。独立参考仍用高阶interface-fitted网格；经验一致性不是连续PDE证书。</p>
+<h2>3. G0：解决目标依赖网格与材料依赖右端</h2>
+<p>旧Evaluator会把目标边界刻入网格，不同目标矩阵不能直接相减。本次目标不再参与mesh key，公共目标域有2,257端口。一个r=.12圆盘约触及79 DOF、1,147个mass非零项；材料参数少不代表rank1。</p>
+<p>backend采用散射场未知量，右端依赖材料，正确式为：</p>
+<pre><code>(L_W − V_X)u = b_W + b_X
 L_W u_W = b_W
-delta_u = G_W (b_X + V_X u_W + V_X delta_u)</code></pre>
-<p>其中b_X是目标区域上解析incident的真实有限元载荷积分。它随目标材料和几何变化，不能机械设为常数，不能只写<code>V_X @ incident_at_nodes</code>。输出同样保留direct和wall-only response。</p>
-<p>已实现普通full、background-LU、resolvent/Woodbury、独立外域Schur、复用相同paid ports的普通Schur、预条件GMRES、同空间goal-Galerkin。BGGA没有专属更松误差或独占缓存权限。一个材料参数的变化仍可能有上千个结构活跃行。</p>
-<p>合成复矩阵测试核对这些表达并包含“删掉b_X必然出错”的负控制。这只核验程序接线，不证明实际墙体精度、连续Maxwell或新算法优越性。</p>
-<h2>4. 固定公共网格：实际完成的几何benchmark</h2>
-<p>旧<code>Evaluator</code>的key包含pose/radius/f，且网格刻入目标圆边，因此旧不同目标的矩阵不能直接相减做Woodbury。本轮实现不含目标参数的公共mesh：公开wall宏格不变，公共target ROI覆盖所有声明位置与半径；用圆盘384边形与每个固定三角形相交，独立高阶积分质量和解析incident forcing。</p>
-<div class="scroll"><table><tr><th>实际测量</th><th>值</th></tr><tr><td>场DOF</td><td>28,903</td></tr><tr><td>free DOF</td><td>28,420</td></tr><tr><td>三角形数</td><td>6,369</td></tr><tr><td>完整公共目标ROI端口</td><td>2,257</td></tr><tr><td>示例目标结构活跃DOF</td><td>79</td></tr><tr><td>示例质量矩阵非零元</td><td>1,147</td></tr><tr><td>目标积分点数</td><td>10,050</td></tr><tr><td>多边形面积</td><td>0.04523691560091064</td></tr><tr><td>分割面积误差</td><td>约−6.94e−18</td></tr><tr><td>mesh生成kernel CPU</td><td>约.0117秒</td></tr><tr><td>basis/ROI索引kernel CPU</td><td>约.1385秒</td></tr><tr><td>示例目标装配kernel CPU</td><td>约.0333秒</td></tr></table></div>
-<p>这些秒数是几何/装配kernel，不是完整solver或inference latency。权威端到端CPU以wrapper receipt为准。面积精确不等于场精确；新的独立interface-fitted比较还未运行。</p>
-<figure><img src="figures/PUBLIC_MESH_AND_PORTS.png" alt="真实公共网格与端口规模；不是成像结果"><figcaption>真实公共网格与端口规模；不是成像结果</figcaption></figure>
-<p>图片来自保存的实际mesh和目标积分数组；没有手绘预期成像图。普通圆的384边形逼近误差、固定FE场误差与PML误差仍需独立核验。几何测试中的.06半径仅为积分边界测试；正式G0场条件使用旧合法范围交集.08–.16，有限prior仍为.12。</p>
-<h2>5. 已经看得到的计算障碍</h2>
-<p>全部公共Green images需要<code>16 × 28420 × 2257 = 1,026,303,040</code>字节，单个dense核心81,504,784字节。加入三个核心主数组后的分配估计约1.27GB，尚未含FEM、LU和临时内存；不是已测RSS证书。</p>
-<p>每个背景端口准备2,257 RHS，直接新目标只需2源RHS。有限prior有118个wall groups；若全部提前建完整公共cache，仅端口就需266,326 RHS，是G1建议20,000上限约13.3倍，Green images总存储约121GB。串行/按需装卸可以降低同时驻留内存，但不能删除setup/RHS/磁盘成本。</p>
-<p>因此可以在新物理前作一个有限工程判断：<strong>eager全背景full-port实现不适合本轮建议预算。</strong> 这不是关于所有BGGA、goal-ROM或按需区间查询的不可能性定理。也不能把未运行的ROM预写成成功。</p>
-<p>旧direct表真实费用11,800 RHS/2,950 FE/9,288.02304 CPU秒，只提供本机历史量级；新公共网格、cut-cell装配和端口的完整solve时间必须重新实测后才可比较。</p>
-<h2>6. 有限prior区间与joint相关性</h2>
-<p>已实现log-domain likelihood上下界，未查询原子保持[0,1]；事件界使用事件和补集各自的上下界处理归一化分母。极小likelihood不会先exp下溢后被删除，默认不因低prior质量裁掉原子。</p>
-<p>查询使用预声明的prior×区间宽度/cost排序，不读reference risk或GT。版本替换从prior和当前唯一factor重新构造，既不重复乘同一观测，也允许旧零支持恢复。完整joint推送保存簇内条件分布；若只有quotient mass与prior conditional lift，默认joint error为NOT_CERTIFIED。</p>
-<p>任务范数单独声明：有限probe的<code>max_probe_l2</code>不等于把所有probe拼接成L2。簇diameter检查所有成员对，不能single-link链式扩大。经验forward界标EMPIRICAL_INTERVAL；没有directed rounding或统一稳定常数就不宣称严格有限精度PDE证书。</p>
-<p>正式M0–M6的2950原子方法比较、误差表、mass certificate和cold cost均NOT_RUN。当前测试只检验有限概率核，不是本轮新的posterior实验。</p>
-<h2>7. 测试、失败和账本</h2>
-<p>首轮预检查发现：已有scikit-fem/triangle位于旧本地只读<code>.deps</code>，不在venv默认import路径；最初元数据读取失败。wrapper补充既有依赖路径后修复，没有安装新环境。初轮测试发现实矩阵LU接复RHS的类型问题，已统一complex128；并将测试依赖改为标准库unittest。首个mesh benchmark计算完成但JSON int32序列化失败，保留原费用后修复。</p>
-<p>这些失败均在<code>FAILURE_LEDGER.jsonl</code>和逐job OUTPUT/RECEIPT内。没有真实FE/RHS发生。最终必要测试包括固定网格无目标边、clip积分与质量、源项负控制、背景/Schur/resolvent一致性、区间分式、log尾部、因子唯一性、条件lift、任务范数和资源拒绝；数量与结果以<code>CODE_CHECK.json</code>及最新测试receipt为准。</p>
-<p><code>PHYSICS_LEDGER.jsonl</code>只把真正reservation计入物理量，kernel观测计数不重复加入。wrapper总CPU包括自身与child最终CPU；当前报告生成中的CPU须查其完成后的receipt。早期PDF/source读取与worker静态检查未全部包wrapper，明确记为准备费用缺口，不能把已测值称完整campaign费用，更不能用来作加速主张。</p>
-<h2>8. 为什么本轮没有偷偷启动新全波</h2>
-<p>用户任务第0/9节明确将新预算写成建议，要求先检查已有资源授权；不足时先完成代码、合同、benchmark预测和可审查清单。旧W<code>CLOSED.json</code>明确封账且任何新物理需要独立授权；旧W-SLAM caps是原阶段额度，不可转成BGGA。</p>
-<p>已经准备并提交G0单独申请：最多4,000 full RHS、500 FE、7,200 process CPU秒，任一先到即停。无GPU/云资源，不捆绑G1/G2。<code>AUTHORIZATION.json</code>保持false，实际物理入口会在预约前拒绝。该停止来自用户明确资源合同，不是新增科学门。</p>
-<h2>9. 已冻结但尚未运行的下一步</h2>
-<p>先比较12个固定几何/contrast资格条件：公共fixed-space完整响应对旧interface-fitted P3参考。第一条资格失败就停止cache主张；只能保留失败后作一次明确、限定修复。低损耗高contrast实例不预称共振。完整12-parent四类信息/传播stress另外列公开构造，仍未运行，驱动也尚未完整交付。</p>
-<p>G0真正通过后才进行G1。只有不看teacher的概率界能收紧、确实存在省掉物理调用的机制时才进入G2；若必须先求全表才能决定安全，裁决CERTIFICATE_COST_NO_GO。unknown-support A0、30新parent确认、主动测量、NN、3D和新A17模块全部未启动。</p>
-<h2>10. 科研判断</h2>
-<p>目前支持继续检验的是“任务合同下哪些传播不确定性必须保留”这个物理问题。尚未支持的是新的BGGA调度/缓存具有独立算法优势。标准Green重表达、Schur、Bayes推送、用户已有sin²谱和普通smoother都不是本轮原创结果。</p>
-<p>真正下一问仍很具体：<strong>在哪一条实际FE/RHS调用前，算法能只凭合法在线信息判定不必支付，而且付出的判断费用低于普通Schur/goal-ROM？</strong> 本轮尚不能给出已验证的例子。不能回答时应保留机制理论，停止昂贵实现主张，而不是添加NN或更多模块。</p>
-<h2>阅读与复现</h2>
-<p><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/IMPLEMENTATION_PLAN.md">实施计划</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/RESOURCE_REQUEST.md">资源申请</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/G0_OPERATOR_QUALIFICATION.md">G0</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/G1_JOINT_PROBABILITY_AND_COMPRESSION.md">G1</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/G2_COST_REOPEN_AND_A0.md">G2/A0</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/SCIENTIFIC_DECISION.md">分层裁决</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/REPRODUCE.md">复现</a></p>
-<p>历史网页：<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/958a478739d9553269316ded8125fda9df225c0c/research/research_w_p0r_to_p1">旧W固定证据</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/52351aee6ddd41b09851fe5e52d1a8861891ef13/research/research_w_slam">W-SLAM固定证据</a></p></article></main></body></html>
+δu = G_W(b_X + V_X u_W + V_X δu)</code></pre>
+<p>省掉b_X不是精确吸收。本次保留解析入射场积分、接收项和墙–目标全反馈；Full、Woodbury、同付费端口Schur、背景LU预条件Krylov及普通goal-Galerkin共用相同空间。</p>
+<p>12个弱/强目标、位置/半径、非对称/空墙与低损耗高对比案例，fixed-v-fitted白化差为<strong>.00692498–.02032811</strong>，均低于冻结.1。28条精确对照最大内部场相对差2.04e−13、响应差5.17e−14，最大backward residual为5.51e−17。三个原生JVP/实伴随配对约4e−15。</p>
+<p>有限差分另行检查。边界参数改用合法单侧差分，不在box外取样；形状导数有有限步误差，最小步长一侧半径误差仍约百分之一以内，不能称所有导数机器精度。固定-v-fitted Jacobian最大尺度化差.08526，只是经验分辨率，不是统一误差上界。</p>
+<figure><img src="figures/g0_qualification/G0_FIXED_VS_FITTED_WHITE.png" alt="独立贴体资格"><figcaption>独立贴体资格</figcaption></figure>
+<figure><img src="figures/g0_material_fields/STRONG_CENTER_SOURCE0_ACTUAL_TOTAL_FIELD.png" alt="保存数组的真实复场"><figcaption>保存数组的真实复场</figcaption></figure>
+<p>低损耗高对比core的一范数条件数估计约3.49e4，不是inf-sup下界，也不证明物理共振。未使用jitter、伪逆或自动full fallback。</p>
+<p><strong>QUALIFIED_DISCRETE_FULLWAVE_FOR_TESTED_CONTRACT</strong>仅限已测配置，不是2,950原子的统一前向界或连续Maxwell认证。</p>
+<h2>4. 四类机制：材料可辨与任务稳定不等价</h2>
+<p>12个fixture每类3个；C2/C3复用同3个物理parent，故只有<strong>9个独立物理世界</strong>。这些known-support fixture用于机制测试，不是measurement-only墙体发现。分别profile pose、pose+intrinsic、再加共享仪器。proper Gaussian指标仅为tangent Gaussian；另用明确15原子有限prior计算实际非线性posterior及cross-covariance。</p>
+<p>C2的完整nuisance相对保留谱约.60–.95，有限posterior仍保留<strong>98.0%–98.9%</strong>墙体prior方差。高比例可以只表示少量绝对信息被保留，不能因此固定材料。C3材料几乎未定，但窄任务响应差仅.040–.052，说明部分任务可容忍材料不确定。</p>
+<p>部分局部rank在实测Jacobian网格差尺度上为UNRESOLVED，全部保留。完整nuisance谱与已知intrinsic的有限prior不是相同合同，不能拼接成安全证书。</p>
+<figure><img src="figures/g0_mechanisms/FINITE15_WALL_VARIANCE.png" alt="有限prior的材料不确定性"><figcaption>有限prior的材料不确定性</figcaption></figure>
+<h3>一个范围很窄的传播例子</h3>
+<p>C4只用TX0/RX8一个复端口作当前观测。C4_1墙ε∞由3.75变3.85，损耗、支撑及目标(.2,2)不变。有限正确器只找到可行pair，并非全局或已收敛profile optimum。</p>
+<p>当前单端口距离<strong>.729007</strong>；冻结25个相同target probes的完整响应max差<strong>3.068166</strong>，在自己的argmax独立贴体重算为<strong>3.068786</strong>；减两端经验网格差仍约<strong>3.048647</strong>。C4_0、C4_2的max分别2.91587、1.96088，未达3。</p>
+<figure><img src="figures/g0_material_fields/C4_1_ACTUAL_MATERIALS.png" alt="真实材料pair：目标没有位移"><figcaption>真实材料pair：目标没有位移</figcaption></figure>
+<figure><img src="figures/g0_mechanisms/C4_FUTURE25_AND_INDEPENDENT_ARGMAX.png" alt="25个完整任务与各自argmax复核"><figcaption>25个完整任务与各自argmax复核</figcaption></figure>
+<p>这是窄当前端口的task-conditional传播证据。同pair在主两发16收距离约2.7699，可被区分。没有新位移多解或一般unknown-wall ambiguity；经验margin不等于连续误差上界。旧W的.798716 joint见证保持独立oracle身份，本次未重算或赋posterior质量。</p>
+<p>固定15原子posterior下，保持joint weights而用MAP-wall替换任务响应：C3均值响应变化小，但单墙化joint TV下界约.666；C4任务失真大。这个Jensen检查只约束固定posterior的响应均值，不约束重新近似likelihood后的posterior，更不是位置Bayes regret。</p>
+<h2>5. G0成本：精确方法当前不经济</h2>
+<div class="scroll"><table><tr><th>方法</th><th>7案例平均query kernel CPU秒</th><th>精度</th></tr><tr><td>直接Full稀疏求解</td><td>.33988</td><td>同离散reference</td></tr><tr><td>完整端口Woodbury</td><td>.57170</td><td>精确</td></tr><tr><td>同已付端口Schur</td><td>.87109</td><td>精确</td></tr><tr><td>背景LU预条件Krylov</td><td>.47185</td><td>精确验收</td></tr><tr><td>普通goal-ROM</td><td>.01114</td><td>5个held-out均未通过白化.1</td></tr></table></div>
+<p>这些是同进程query kernel，不能当完整独立冷部署。端口setup另需<strong>2,257 RHS、7.64 CPU秒</strong>；Green images约1.026GB、单core约81.5MB、实测job峰值RSS约2.325GB。</p>
+<p>22列goal-ROM只用两个冻结训练状态与背景adjoint；五个held-out白化误差.237、.837、5.331、4.249、6.517。它快但精度不合格，不能算同质量胜出。完整端口查询本身比full慢，加setup后没有正break-even证据。</p>
+<p>若为118个wall groups全建公共Green，仅setup约266,326 RHS、合计121GB images；流式可减驻留内存但不减RHS。这是工作量推算，未实际执行。ordinary Schur/cache享有相同复用权限，没有BGGA独占收益。</p>
+<figure><img src="figures/g0_mechanisms/OPERATOR_ERROR_VS_QUERY_CPU.png" alt="query误差—成本，setup另报"><figcaption>query误差—成本，setup另报</figcaption></figure>
+<h2>6. G1：2,950原子有限joint posterior七方法</h2>
+<p>FINITE_PRIOR_ENUM4_V1包含118墙组×25位置；是离散counting prior，不是连续求积。target intrinsic、gamma已知，2×2不表达孔洞。12个已暴露parent各两noise。<strong>全部168份在线输出先封存，再算reference、打开truth评分。</strong> 在线只读prior、y、原子查询oracle；无locked、旧posterior、GT或未来观测。</p>
+<div class="scroll"><table><tr><th>方法</th><th>含义</th><th>parent等权平均joint TV</th><th>联合概率及风险门通过/24</th><th>每case逻辑查询</th></tr><tr><td>M0</td><td>独立完整有限Bayes</td><td>0</td><td>24</td><td>2950</td></tr><tr><td>M1</td><td>自身MAP-wall单点化</td><td>.113268</td><td>13</td><td>2950</td></tr><tr><td>M2</td><td>有限secant最大保留率单墙消融</td><td>约1</td><td>0</td><td>2950</td></tr><tr><td>M3</td><td>自身posterior任务medoid单点化</td><td>.113268</td><td>13</td><td>2950</td></tr><tr><td>M4</td><td>保留完整joint的区间策略</td><td>0</td><td>24，原F64界另有失败</td><td>2950</td></tr><tr><td>M5</td><td>同时控制current/future的quotient</td><td>0</td><td>24</td><td>2950</td></tr><tr><td>M6</td><td>ordinary cache/Schur概率逻辑</td><td>0</td><td>24</td><td>2950</td></tr></table></div>
+<p>M1–M3是表示消融，不是冷部署FWI强基线。M2为EMPIRICAL_BANK_SECANT_RETENTION而非local-J安全证书；它检验“仅角度足够”，不能用其失败声称成熟FWI失败。</p>
+<p>M1/M3在此选择相同墙组。M1位置CDF门21/24、位置Bayes regret门24/24通过，但joint TV仅13/24。<strong>目标边缘/行动好不代表完整joint正确。</strong> 对任意墙组g，单墙分布Q的joint TV至少为1−P(W=g|y)；保留正确条件位置分布时取等号。因此最佳单墙已是MAP-wall，不是换个评分能普遍修复。这一下界不适用于保留随机残差材料的Green重参数化。</p>
+<figure><img src="research/delegated/g1_figures/G1_parent_joint_TV_and_regret.png" alt="逐parent joint与位置行动regret"><figcaption>逐parent joint与位置行动regret</figcaption></figure>
+<h3>区间正确不等于节约计算</h3>
+<p>M4未计算原子用[0,1]，未按低prior删点。高维likelihood很小，剩一个未知原子的默认包络仍压过已算证据；24个case都查完2,950才满足遗漏质量.02。ESS不能替代遗漏质量界。</p>
+<figure><img src="research/delegated/g1_figures/G1_M4_unknown_mass_queries.png" alt="未知mass与实际查询"><figcaption>未知mass与实际查询</figcaption></figure>
+<p>M5同时约束当前potential完整直径、future25最大响应差，避免链式合并；24/24都保留<strong>118簇/118墙组</strong>，没有merge。概率正确来自未压缩，不是压缩成功。新增目标材料或半径不在该future合同内。</p>
+<p>原F64区间存在正越界：posterior上界最大2.55e−15、下界7.77e−16、log证据下界7.11e−15。按冻结规则原界FAIL，signed结果保留，未加容差抹除。一次限定修复采用60位定向归一化、80位独立复核，168个checkpoint未观察到修订界违规；仅对给定F64 log-potential有效，不涵盖FEM、potential形成或连续PDE误差。额外约10.65 CPU秒，若在线使用须归给方法；查询仍2950。</p>
+<p>G0的.1前向门不能直接认证joint TV .02：高维残差会放大potential误差。因此本轮有限缓存数值posterior正确，物理posterior仍NOT_CERTIFIED。</p>
+<h2>7. 离线质量、相关性与失败</h2>
+<p>输出封存后，M0的GT位置平方误差均值约.35454 λ0²，M1/M3约.35496、M2约.72790。四个等面积墙格复χ MSE约.000713、.001139、7.64453；不是全空间unknown-wall成像。M1/M3使墙–目标cross-covariance变零，相对reference Frobenius差均值.00220，尽管位置行动regret小。</p>
+<p>旧外侧TX2/3的proper predictive log score相对reference平均下降：M1/M3为.50352、M2为124.27836；M0/M4/M5/M6一致。密度包含64实维Gaussian正规化，正log density不是概率大于1。保留全部逐case/covariance数组，没有追加评分门。</p>
+<p>真实缓存观测的TX0/TX1各注册一次，incremental与batch一致；旧factor版本替换不改变posterior，重复observation ID被拒。M4查询不新增数据。详见<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/FACTOR_HISTORY.json">FACTOR_HISTORY</a>。</p>
+<p>失败保留：中心差分走出box后改合法单侧；矩阵序列化失败后复用已保存物理数组；C1_0原duality scalar与3次trial细节未写盘，明确MISSING，不补造。preflight环境失败、原区间失败也保留。65项零PDE测试通过，与Maxwell物理资格分列。</p>
+<p>新计费快照约421.3 process CPU秒，RSS峰值2.325GB；发布收尾以<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_bgga/COST_SUMMARY.json">COST_SUMMARY</a>及最终receipts为准。早期PDF/静态阅读、少量脚本检查和网络准备未完整包裹计时，明确缺口，不当零或据此宣称端到端速度。旧bank的11,800 RHS、2,950 FE、9,288.02 CPU秒是历史已付，不是免费部署准备。</p>
+<h2>8. 分层决定与下一轮</h2>
+<div class="scroll"><table><tr><th>层级</th><th>裁决</th></tr><tr><td>精确离散吸收</td><td>通过，限共同空间及已测配置</td></tr><tr><td>跨目标公共缓存</td><td>数值资格通过；当前不经济，非统一prior/连续认证</td></tr><tr><td>angle-only</td><td>作为普遍安全规则拒绝；rank不确定行保留</td></tr><tr><td>task-conditional传播</td><td>窄单端口C4_1支持；主观测能够区分</td></tr><tr><td>有限joint</td><td>M0/M4/M5/M6条件数值模型正确；原区间失败，修复范围有限</td></tr><tr><td>单点墙吸收</td><td>一般不能保持完整joint；有时位置任务仍好</td></tr><tr><td>unknown-support A0</td><td>新实验NOT_RUN，旧A0_ONLINE_NOT_REACHED未修复</td></tr><tr><td>冷部署成本</td><td>NO_GO_CURRENT_IMPLEMENTATION，未测得完整冷部署优势</td></tr><tr><td>G2/30-parent确认</td><td>科学闸门停止，未消费确认数据</td></tr><tr><td>连续Maxwell、一般posterior、3D</td><td>NOT_ESTABLISHED</td></tr></table></div>
+<p>实际被安全避免的FE/RHS为<strong>0</strong>。G1读旧缓存不算新PDE节约；没有安全merge或提前停止。任务风险读取全bank的费用不能推给reference。ordinary Schur/cache拥有相同接口，本轮没有证明其更差。</p>
+<p>保留Task-Conditional Propagation Identifiability主线。它尚非强TAP新算法结论；标准Schur、resolvent、概率推送、角度谱不构成独立原创。下一轮须先找到真正便宜的likelihood/任务包络，或在保留随机残差材料时减少必要Green actions，并击败相同权限的ordinary Schur/goal-ROM。未出现该机制前，不扩大墙体类、大确认集、NN或A17附加模块。</p></article></main></body></html>
