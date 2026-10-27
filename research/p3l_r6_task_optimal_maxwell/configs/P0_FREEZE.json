@@ -1,0 +1,91 @@
+{
+  "campaign": "P3LR6-20261027",
+  "created_utc": 1793100129.9846861,
+  "prior": "P1 Gaussian64 x Uniform2; Gaussianized X66",
+  "target_id": "P1-CORRELATED-HOST-MIXTURE-TM24-v1-20261018",
+  "sigma": 0.00119211798514519,
+  "grid": 24,
+  "ROI": 256,
+  "sources": 8,
+  "receivers": 32,
+  "packing": "source-major [Re32 Im32] per source, sqrt2/sigma real whitening",
+  "physics_dtype": "complex128",
+  "backward_residual_max": 1e-10,
+  "original_Native96_Probit64": "imported unchanged R4 functions",
+  "historical_confirmation": "CLOSED;1999504 RHS; >=80% HOLD",
+  "physical_worker_count": 1,
+  "BLAS_threads": 1,
+  "max_live_LU_points": 4,
+  "raw_storage": "lossless compressed per-query coordinates and responses; final current/field/material/J",
+  "data_isolation": "generation separate from online anchor/predict and sealed offline scoring",
+  "A": {
+    "submodel_prior": "active independent N(0,1) truncated [-4,4], other X=0; NOT full66 marginal",
+    "sequence": [
+      [
+        0,
+        64
+      ],
+      [
+        0,
+        64,
+        65
+      ],
+      [
+        0,
+        1,
+        64,
+        65
+      ]
+    ],
+    "first_max_states": 19000,
+    "tasks": [
+      "ROI material mean real/imag",
+      "material real increment >0.02",
+      "latent phase fraction >0.5; prior-dependent"
+    ],
+    "reference_material_mean_abs": 1e-05,
+    "reference_mean_SD_fraction": 0.01,
+    "reference_mass_abs": 0.002,
+    "qualification": "float64 refinement Q1/Q2 unless actual validated bounds obtained"
+  },
+  "C": {
+    "dev_parents": 64,
+    "configurations": [
+      "native96_probit64",
+      "native24_probit16",
+      "native48_probit32",
+      "native72_probit48",
+      "adaptive_native72_probit48"
+    ],
+    "cohort": "fresh DEV, never confirmation512",
+    "gate_wall_saving": 0.2,
+    "gate_relative_risk_noninferiority": 0.01,
+    "selection": "minimum measured wall passing paired98.333% upper risk-noninferiority confidence bound; no GT online",
+    "adaptive": "prefix-only, residual/update stability proxy; not posterior certificate"
+  },
+  "D": {
+    "possible_conditions": [
+      "sigma0.5",
+      "sigma2",
+      "source_subset"
+    ],
+    "initial_noise_parents_each": 256,
+    "fresh_seeds": "dedicated namespace, not old R5B/R4 tests",
+    "gate": "C or B has reproducible development gain; no re-tuning on locked",
+    "frozen_model_seeds": [
+      2026102601,
+      2026102602,
+      2026102603
+    ],
+    "bootstrap": 20000,
+    "unit": "independent parent; average seed losses first",
+    "primary_family": [
+      "lowcost vs full same estimator risk noninferiority1%",
+      "new functional vs historicalDistill risk",
+      "lowcost whole-system wall>=20%"
+    ],
+    "familywise_alpha": 0.05,
+    "one_sided_Bonferroni": 0.016666666666666666
+  },
+  "no_probability_claim_for_risk_heads": true
+}
