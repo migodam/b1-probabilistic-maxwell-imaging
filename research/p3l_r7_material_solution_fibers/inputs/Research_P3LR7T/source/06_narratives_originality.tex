@@ -1,0 +1,140 @@
+\section{Research Narratives：三条论文如何讲完整}
+\label{sec:narratives}
+
+\subsection{Paper A：Nonlinear Maxwell Material Ambiguity under Shared Compensation}
+\textbf{A. 起源问题。} 拟由 E2 验证的物理图景是：两幅非均匀、物理合法且确实不同的材料图，在原采集下散射几乎相同；改变照明后其中一组补偿无法维持。单点 Jacobian 只能描述无限小响应，不能告诉人们可隐藏多少实际材料变化，更不能区分 decoder 重复表示。
+
+\textbf{B. 现有方法不足。} current SVD 组织辐射可见性，LIS 组织相对 prior 的 likelihood 变化，RTO 组织正确的随机优化 proposal；它们不自动给出一段可行材料补偿区间的物理解释。高阶散射导数已有，但未经强方向补偿的曲率可能主要是可消去的坐标或材料调整。
+
+\textbf{C. 最小核心思想。} \emph{材料歧义由允许的共同材料补偿及其剩余响应决定；新增采集通过使这些补偿互相冲突而揭示材料。}
+
+\textbf{D. 数学主角。} $(\mu_0,\bar F)$ 上的可行材料 chart、不可补偿 jets $c_n$、有限主导区间，以及联合补偿分歧式 \eqref{eq:compensation-disagreement}。Posterior 体积是第二阶段应用，不与几何见证混同。
+
+\textbf{E. 核心定理。} 当前已可完整证明的，是 current 系数递推、response-aligned 隐函数、联合补偿分歧及条件两点任务下界；这些代数与统计工具有成熟先例。真正有竞争力的中心结果应进一步给出：在被动非均匀 Maxwell 材料类内，由可计算 current/dual 误差控制一段非空可行补偿区间，并预测新增采集下的响应下界。该“有效域与用途”部分目前仍待证明/验证，不能写成已完成原创定理。
+
+\textbf{F. 核心算法。} 方案一：材料正则化、分离 gauge/曲率、低阶 current 递推、强补偿、有限端点验证；以补偿冲突选择新增采集或最有价值的探索方向。概率扩展必须加正确 chart prior 与分支 normalizer。
+
+\textbf{G. 决定性实验。} E1 确认 generic 非均匀材料没有被误判 gauge；E2 在 affine 材料 chart 与原 decoder chart 双重对照中展示：物理高阶项在相同材料位移上超过 decoder-only 预测，且补偿分歧预测新采集的揭示能力。主要比较普通 nonlinear profile/Full-J corrector，不只比较 frozen SVD。
+
+\textbf{H. 最强审稿意见。} “这就是 Lyapunov--Schmidt 和 Born 系列。”“你的三阶来自 quintic。”“为什么不能直接多起点优化？”“只找到几条 arc，它们 prior 质量为零。”“响应不变只是同材料 gauge。”这些质疑都合理；不能用更多网络或更多漂亮图回避。
+
+\textbf{I. 拒稿风险与补救。} 最低必要条件：真实材料距离、无平台控制、同费用强基线、非空有效域、至少一新采集、可复现系数/余项。若加 Bayesian Volume 入标题，必须再有正测度 chart、正确 prior 及可信 branch reference。3D vector witness、实验数据和大域泛化是增强项；但文章若宣称通用向量 Maxwell，向量验证便成为必要项。
+
+\textbf{J. 论文结构。} Introduction 从“单次隐藏、联合揭示”图开始；Theory 先说明三空间和材料度量，再给 current jets、补偿冲突和有效域；Algorithm 给有界 predictor--corrector；Experiments 依次排除 gauge、排除 decoder 曲率、检验采集预测和同费用用途；Limitations 明确局部性及未认证全 posterior。标题不宜在 E3 未通过前加入“Bayesian posterior sampling”。
+
+\subsection{Paper B：Task-Conditional Material Uncertainty in Nonlinear Maxwell Imaging}
+\textbf{A. 起源问题。} 同一观测下，材料均值可以稳定而结构存在概率仍不稳定；局部 Jacobian 甚至为零时，来自相邻材料区域的 posterior 权重仍会改变任务。R2--R5-B 又显示不合格 posterior 特征能帮助材料点估计。
+
+\textbf{B. 现有方法不足。} 全 posterior 的统一 KL/TV 目标可能为不重要的 latent 自由度支付费用；单点 sensitivity 又看不到远分支迁移。但任务降维和 Bayes-risk 原则已经成熟，单说“任务比参数重要”不够。\refl{L7,L17--L20}
+
+\textbf{C. 最小核心思想。} \emph{只需精确计算能改变指定材料判断的概率质量，但必须证明遗漏部分对该判断的影响。}
+
+\textbf{D. 数学主角。} 带分支条件核的材料 posterior、$T_\varphi,V_\varphi$、完整任务信息 $\mathcal O_{a,y}$，以及中心化积分误差。$B_\varphi$ 只是一阶近似，不作全信息替身。
+
+\textbf{E. 核心定理。} 条件方差分解和 Gaussian identity 都是先例；条件尺度定理 \ref{thm:scaling} 说明响应阶、prior 阶和任务阶如何组合。可争取的新结果是把真实 Maxwell 补偿的可验证局部结构接到任务误差界，并给出小于整体概率误差要求的实际费用。若仅在人工平台成立，理论范围需限定。
+
+\textbf{F. 核心算法。} 方案二用材料分块、source-CDF/正确 quotient 求积与任务权重控制精度；必要时将可信低维任务量蒸馏到监督估计器。后者输出材料函数，不能称为全 posterior。
+
+\textbf{G. 决定性实验。} E3 同时评价材料均值、第二矩、事件与后验预测散射；对每个任务比较同误差费用与全分支质量费用。E5 再验证真实 Maxwell task structure 是否超出 raw measurement、同容量 global encoder、decoder-only 与同谱随机特征。所有消融须匹配训练，冻结 head 删通道造成的 OOD 降级不算因果证明。
+
+\textbf{H. 最强审稿意见。} “Spantini 已经做过目标降维。”“这就是监督 conditional mean。”“你没有合格 sampler，为什么给概率解释？”“均值好而事件错，究竟解决了什么？”答复必须落在指定任务和可验证误差，不使用“完整不确定性”泛称。
+
+\textbf{I. 拒稿风险与补救。} 最低必要条件：可信低维 reference；至少连续量、二阶矩和事件；物理增量的公平控制；任务误差与分支质量明确分开；成本包含全部物理。若决定只写高维风险成像，删除 posterior/calibrated UQ 主张，集中独立风险与 Maxwell 特征作用，不能让未校准 density 承担理论解释。
+
+\textbf{J. 论文结构。} Introduction 展示“同数据，不同任务精度需求”；Theory 给双重条件分解、任务响应与高阶盲点，再给误差预算；Algorithm 展示一套自然使用该误差的积分/估计过程；Experiments 展示同一 posterior 下不同任务的成本曲线和强基线；Limitations 区分条件模型与 Full66。标题中保留 Task-Conditional，不宜宣称已建立全局 observability 新学科。
+
+\subsection{Paper C：Goal-Oriented Maxwell Computation for Material Inference}
+\textbf{A. 起源问题。} 物理优化器花费大量工作继续下降其目标，最终材料任务风险却不改善；R6 减少 Native 能节时，而普通 Direct Probit 同样有竞争力。
+
+\textbf{B. 现有方法不足。} 普通优化 residual 不直接控制学习 head 或 posterior task；但 goal-oriented FEM、trust-region、Krylov、delayed acceptance、DINO/LazyDINO 已有相当完整的计算理论。缺口不在“用任务控制计算”这个原则。\refl{L12--L14,L21--L23}
+
+\textbf{C. 最小核心思想。} \emph{只为仍能改变最终材料任务且误差尚未受控的物理动作支付计算。}
+
+\textbf{D. 数学主角。} 可计算的 task dual、状态与 Jacobian defect、局部/全域误差预算。KKT feature 只是一种表示近似，不能代替上述对象。
+
+\textbf{E. 核心定理。} 式 \eqref{eq:task-cov-error} 与 dual residual 是标准数值分析。需要一个 tight、低于重复 Full Maxwell 成本的 Maxwell-specific 估计器，并在真正在线决策中保持任务误差；目前没有这样的实验资格。
+
+\textbf{F. 核心算法。} 方案三，但只能在声明输出类型及误差资格后启动。对 learned head 需要其局部输出敏感性；对 posterior 积分需分支/evidence 控制；对 optimizer functional 只能保证同一目标的未收敛误差。
+
+\textbf{G. 决定性实验。} E4 同窗口、同对象、同目标、同特征比较 Direct Probit、原两阶段、Low-q/Full-q 及新停止器；重复窗口并报 RHS/LU，防止线程/负载改变产生伪速度。若 posterior sampler 是任务对象，再比较正确 RTO/DA；点估计方法与 sampler 不使用不匹配的输出指标硬排名。
+
+\textbf{H. 最强审稿意见。} “你只是删除了冗余优化。”“闭合特征没有省真正的 J。”“Direct Probit 更简单。”“你的停止需要 GT。”“离线 surrogate 费用没有回本。”这些都是当前必须接受的质疑。
+
+\textbf{I. 拒稿风险与补救。} 当前独立主线 NO-GO。只有在线误差与总成本共同过强基线，且机制超出常规优化修复，才重新考虑独立论文；不通过时保留为 B 的工程组件。
+
+\textbf{J. 论文结构。} 如果将来成立，以具体错误预算冲突开篇，随后给 task dual 及计算动作定理、在线算法、同精度完整费用和 break-even。现在不应写独立 Abstract 宣布“任务最优 Maxwell 计算理论”。
+
+\Needspace{11\baselineskip}
+\section{三条路线的比较与两种整体结构}
+\begin{longtable}{p{.16\linewidth}p{.25\linewidth}p{.25\linewidth}p{.25\linewidth}}
+\toprule
+维度 & Paper A & Paper B & Paper C\\
+\midrule
+数学独立性 & 较强，前提是真材料补偿与有效域 & 中等，需超出已有 task Bayes 理论 & 当前弱，普通数值优化竞争直接\\
+现有实证成熟度 & 有候选与反例，关键非均匀机制待证 & 独立材料风险最成熟；概率 reference 弱 & 真实节时有证据，强基线削弱独立性\\
+证明难点 & 可行域、余项、共享补偿及全局覆盖 & 分支质量与任务界、无合格 sampler 的估计 & tight 且廉价的在线误差估计\\
+Maxwell 特异性 & 可来自 current 递推、复场/采集耦合 & 可来自物理分支与任务响应结构 & 必须来自 resolvent/adjoint 而非迭代数\\
+最短路径 & E1+E2，先几何/采集论文核心 & 先 E3 reference，再有条件 E5 & 作为前两者计算模块\\
+主要风险 & 已知 LS 特化，或只剩 decoder 假象 & 普通监督/goal inference 的重新包装 & 优化流程修复被当理论\\
+当前判定 & 条件 GO，最高理论优先级 & 条件 GO，较快算法路径 & 独立 NO-GO，模块 GO\\
+\bottomrule
+\end{longtable}
+
+\subsection{Structure I：先一个核心，再分两篇}
+最合理的分工是 A 聚焦“材料变化为何能被隐藏、何种采集揭示它”，B 聚焦“这些不确定性对材料任务意味着什么及如何省计算”。两者共享物理接口与证据，不应重复主要定理和实验。C 作为 B 的计算一节或独立工程报告。
+
+近期最快的高维算法素材在 R2/R4/R5-B 的材料风险结果；但若没有 E5 的强公平对照，不足以承诺一篇新的强 TAP。A 的数学潜力更高，完成时间更不确定。先做 E2 的小规模决定性检验，可以避免两条线都进入大训练。
+
+\subsection{Structure II：统一论文何时才成立}
+统一题目“Task-Conditional Maxwell Material Uncertainty and Computation”需要同一算法自然使用下列链：
+\[
+\text{补偿后的真实材料响应}
+\Rightarrow
+\text{正测度区域的概率/任务误差}
+\Rightarrow
+\text{在线可计算的工作分配}.
+\]
+当前第一项有理论候选，第二项仅在条件模型中可证明，第三项尚未在真实 Maxwell 成本上建立。六项用户门槛中，统一数学对象可以给出；非平凡 Maxwell 中心定理、三者可证明联系、一个自然算法、因果必要消融及清晰竞争差异尚未全部满足。因此\textbf{当前明确不推荐三线统一论文}。这不是永久否定：E2、E3 若用同一物理补偿 chart 自然打通，就可收窄成 A+B 的统一文章，而无需强行加入 Native 截断。
+
+\section{Originality Audit：具体 claim ledger}
+\label{sec:originality}
+下表的“可争取”均不是首次声明。检索覆盖直接竞争和最新版本，不构成全球无先例证明。
+
+\begin{longtable}{p{.29\linewidth}p{.24\linewidth}p{.39\linewidth}}
+\toprule
+主张 & 资格 & 允许的表述/缺少的证据\\
+\midrule
+decoder 条件核不随 $y$ 变化 & 已知数学，L8 & 对实际非单射 decoder 给可计算核或正确消元，才有算法贡献。\\
+coarea 与 fiber volume & 已知数学/算法，L9,L16 & 不能将普通 determinant 修正称新理论；混合维与原子另处理。\\
+高阶 current/resolvent 系数 & 已知物理数学，L3,L10 & 新候选是补偿后系数、有效域、采集冲突与任务后果。\\
+动态 Jacobian/effective rank & 已知算法，L5,L6,L24 & 需给材料度量、有限噪声与非线性补偿增量。\\
+任务重要性不同于参数敏感性 & 已知理论，L7 & 不能以重命名 observability 作为贡献。\\
+Gaussian conditional covariance identity & 已知数学，L17 & 可作计算工具；允许原子也并非新定理。\\
+层内/层间分解 & 已知全协方差 & 材料分支定义及可控低费用估计有待建立。\\
+$\sigma^{(\alpha+s)/p}$ 条件尺度 & 已知渐近工具的条件组合 & 真实 Maxwell 的 $p$、正测度 chart、余项与实际用途是未证贡献。\\
+联合补偿分歧 & 已知加权最小二乘恒等式的 Maxwell 特化 & 用可复用 current jets 预测新采集揭示材料的能力，仍缺直接 E2。\\
+Full66 大幅 gauge 降维 & 未证且可能不成立 & 先测式 \eqref{eq:rank-decoder}；generic 满秩就删除该普遍主张。\\
+任务积分更便宜 & 候选算法，R6 未建立 & 同 reference、同误差、含 certificate 费用后再判。\\
+KKT closure 降低低噪风险 & 已有限定实验支持 & 不等于全噪声收益、真实 Jacobian 省费或 posterior 资格。\\
+Native96$\to$24 是新定理 & 当前缺乏原创性 & 作为工程优化；Direct Probit 是必要强对照。\\
+置信 provider 近似是真 posterior & 未建立 & 只称 feature/action，另作校准。\\
+材料原子使 latent Flow 不可能 & 错误命题 & latent posterior 仍对原 prior 绝对连续；不能永久否定 Flow。\\
+\bottomrule
+\end{longtable}
+
+\subsection{最新竞争对论文定位的影响}
+\textbf{CoCoS/CoCo-Flow，2026 v3。} 已直接研究正则 hard-constraint small-residual 条件下的 coarea/Fixman 修正，明确区分物理相容与正确 posterior。它并未解决所有正质量平台和混合维材料像，但“给 Flow 加体积因子”已不足以支撑 Paper A。\refl{L16}
+
+\textbf{LazyDINO，JMLR 2026；DINO geometric MCMC，JMLR 2025。} 前者已有导数降维、posterior surrogate 与变分误差的条件理论；后者的真实目标资格来自 delayed-acceptance 校正，并计量有效样本总费用。导数驱动 surrogate/transport 和保持真实目标的校正分别有明确先例；不能混写为 LazyDINO 自带无条件精确校正，也不能声称它们已解决所有多模态后验。\refl{L13,L14}
+
+\textbf{iTSVD，2026-10-19 预印本。} 直接覆盖标量逆散射的有效秩、matrix-free forward/adjoint RSVD 与 Newton 稳定计算。材料分支及任务概率仍是可区分的范围；不能只用“Maxwell”一词忽略其竞争。\refl{L24}
+
+\textbf{Spantini、Dytso、goal-oriented OED。} 已覆盖任务相关低秩、一般条件均值导数、非线性任务测量信息与风险偏好。Paper B 需要用 Maxwell 补偿与真实材料事件证明为什么这些一般对象能被更可靠地计算。\refl{L7,L17--L19}
+
+\textbf{RTO、coarea、contour quotient。} 优化候选需要正确 proposal 校正；观测商还需要条件核。data-consistent contour inversion 与固定 prior+likelihood 的 Bayes inverse 不是同一目标，不能借它允许任意 Ansatz kernel。\refl{L8,L9,L11,L26}
+
+\subsection{哪些可以永久放弃，哪些只暂停}
+应永久放弃的是错误命题：noise-ball 等于 posterior 支持；相容候选的计数或弧长是模式概率；exact constant-rank kernel 本质非可积；任意独立正确边缘都保持材料；latent 维数等于材料更新算子秩；单点 $J=0$ 意味任务无信息；原子使 latent posterior density 不存在；通过 NI 与未通过 NI 可直接推两方法显著不同。
+
+暂时暂停的是具体低收益实现：R6 同一任务蒸馏目标家族的继续放大；无正确质量修正的四段轨迹平均；未先排除简单 Direct Probit 的复杂 stage allocation；在没有可信 reference 前训练更大 Full66 Flow。它们背后的概率输运、多解探索和任务计算问题仍然成立。
+

@@ -1,0 +1,238 @@
+\section{任务精度怎样决定 Maxwell 与 Jacobian 的精度}
+\label{sec:accuracy}
+
+\subsection{不需要稳定每个弱特征向量}
+在已声明的局部线性 Gaussian 模型中，把观测白化，令
+\[
+K=\Lambda+J^*J,\quad C=K^{-1},\qquad
+\widehat J=J+E,\quad \widehat C=(\Lambda+\widehat J^*\widehat J)^{-1},
+\]
+其中 $\Lambda\succeq aI$，$a>0$，是固定真实 prior precision 或明确声明的局部正则近似。对线性任务 $Lm$，
+\[
+\Delta K=J^*E+E^*J+E^*E,\qquad
+\widehat C-C=-\widehat C\,\Delta K\,C.
+\]
+故
+\begin{equation}
+\|L(\widehat C-C)L^*\|
+\le
+\|L\widehat C\|\,\|\Delta K\|\,\|CL^*\|,
+\quad
+\|\Delta K\|\le 2\|J\|\|E\|+\|E\|^2.
+\label{eq:task-cov-error}
+\end{equation}
+该界没有 weak spectral gap 的分母。特征向量在近重根处可以大幅旋转，但 $LC L^*$ 仍稳定。如果只需少数任务，可求 task dual $CL^*$，再针对其实际受影响方向验证 $E$；不必把整个 $J$ 的每个弱 eigenvector 算准。
+
+同一线性问题的均值满足
+\[
+\widehat m-m=
+\widehat C\{E^*(y-Jm)-\widehat J^*Em\}
+\]
+（以相同中心和 prior 线性项定义）。因此任务误差取决于误差在 residual 和 task dual 上的作用，不只取决于 $\|E\|$。这是标准 resolvent/正规方程扰动的任务化应用；只有实际得到廉价方向误差估计，才形成算法收益。
+
+它不能直接认证 nonlinear、多模态、分层 Full posterior。若 $\Lambda$ 只是数值 damping，则相应 covariance 不是自动的 Bayesian covariance；若 posterior 远分支改变 task，局部 Hessian 再精确也无济于事。
+
+\subsection{命题五：可用于在线停止的中心化任务误差界}
+\begin{theorem}[中心化积分证书]
+\label{thm:task-certificate}
+设已计算覆盖域 $C$，$B_b$ 是 $C^c$ 的可数可测分割，并要求下述求和有限。令输出为任意 $t$。若已有严格数值界
+\[
+Z_y\ge Z_L>0,\qquad
+\left|\int_C(\varphi-t)L_y\,d\mu_0-\widehat Q_C\right|\le e_C,
+\]
+并且每个遗漏块上
+\[
+|\varphi(m)-t|\le a_b,\qquad
+\int_{B_b}L_y\,d\mu_0\le U_b,
+\]
+则
+\begin{equation}
+|T_\varphi(y)-t|
+\le
+\frac{|\widehat Q_C|+e_C+\sum_ba_bU_b}{Z_L}.
+\label{eq:centered-certificate}
+\end{equation}
+这里 $e_C$ 必须包括覆盖域内的求积、forward 数值误差及所用 prior 近似误差。
+\end{theorem}
+\begin{proof}
+把 $Z_y(T_\varphi-t)=\int(\varphi-t)L_y\,d\mu_0$ 按 $C$ 及遗漏块分解，对每块取绝对值界，再用 $Z_y\ge Z_L$。
+\end{proof}
+
+如果 $t=\widehat N_C/\widehat Z_C$ 且同一求积规则计算中心化分子，通常 $\widehat Q_C=0$；仍须对真实积分的 defect 给 $e_C$。一个材料均值任务可能有很小的 $a_b$，而事件任务 $a_b$ 接近 1，这才是任务积分可能节省的严格入口。该不等式不是凭有限节点自动获得的证书。
+
+例如在块 $B_b$ 上若有先验质量 $p_b$、可验证的 residual 下界 $\underline r_b$，则
+\[
+U_b\le p_b e^{-\underline r_b^2/2}.
+\]
+无 residual 下界时，$U_b\le p_b$ 虽然正确，却在高 SNR、evidence 很小时可能完全无用。先验 tail 小不自动意味着 posterior tail 小。
+
+\subsection{同 prior 下的任务加权 likelihood 误差}
+对 $\mu\propto e^{-\Phi}\mu_0$、$\widehat\mu\propto e^{-\widehat\Phi}\mu_0$，置
+$\delta=\Phi-\widehat\Phi$、$\widehat T=\E_{\widehat\mu}\varphi$。精确有
+\begin{equation}
+T-\widehat T=
+\frac{\E_{\widehat\mu}[(\varphi-\widehat T)(e^{-\delta}-1)]}
+{\E_{\widehat\mu}e^{-\delta}}.
+\label{eq:weighted-potential}
+\end{equation}
+若可验证 $|\delta(m)|\le b(m)$，
+\[
+|T-\widehat T|
+\le
+\frac{\E_{\widehat\mu}[|\varphi-\widehat T|(e^{b}-1)]}
+{\E_{\widehat\mu}e^{-b}}.
+\]
+该式体现任务振幅与物理误差的乘积。若右侧期望仍需未知 posterior 或难以求积，它只是理想误差表达；不能称作已实现的便宜停机器。PDE potential 误差传递到 posterior 与函数量已有成熟理论。\refl{L21,L22}
+
+\subsection{Maxwell 残差与 adjoint 能提供什么}
+对状态方程 $Lu=b$，近似状态 $\widetilde u$ 的 residual 为 $r_u=b-L\widetilde u$；观测为 $Su$。若
+$L^*z=S^*a$，则
+\[
+a^*(Su-S\widetilde u)=z^*r_u.
+\]
+若仅有近似 dual $\widetilde z$，其 residual
+$r_z=S^*a-L^*\widetilde z$，并有已认证稳定常数
+$\|L^{-1}\|\le\beta^{-1}$，则
+\[
+\left|a^*S(u-\widetilde u)-\widetilde z^*r_u\right|
+\le \beta^{-1}\|r_z\|\,\|r_u\|.
+\]
+这给 task-weighted 输出误差接口。若全白化输出误差界为 $\delta_f$，则
+\[
+|\Phi-\widehat\Phi|
+\le\|\widehat f-y_w\|\delta_f+\tfrac12\delta_f^2
+\]
+在 $\Phi=\frac12\|f-y_w\|^2$ 约定下成立。
+
+关键成本问题是 $\beta$、dual 及全域覆盖是否便宜。计算精确最小奇异值可能与原求解同样贵；passivity 不会自动给紧的 resolvent 界；近共振时界可能爆炸。可用离线 reduced-basis 稳定下界、局部参数盒包络或已付费 LU 的误差估计，但应把建立它们的费用列入账本。若最终还需为每节点重新 Full Maxwell，便没有证明“证书更便宜”。
+
+\subsection{不能由局部样本推出普遍全域证书}
+对没有任何已知全局正则常数的光滑 black-box forward 类，任何仅查询有限点和有限阶导数的算法都可能被反例击穿：在所有已查询点之外选择一个有正 prior 质量的小区域，用光滑 bump 改变 forward，使其产生与 $y$ 相容且任务值不同的新模式；所有已有查询保持不变，而 posterior task 可以改变。自适应查询也可按相同 transcript 构造。
+
+这不是任意固定 Maxwell 材料类的不可能性定理，因为 Maxwell 方程限制了可实现 forward。它说明普遍证书必须利用明确的物理参数类、全域稳定性/覆盖或尾部假设。R6 的局部 GH 加密尚未提供这些信息。\refe{R6-A}
+
+\subsection{四种停止规则的资格}
+\begin{longtable}{p{.24\linewidth}p{.42\linewidth}p{.26\linewidth}}
+\toprule
+规则 & 可以说明什么 & 不能说明什么\\
+\midrule
+GT/oracle 风险停止 & 离线潜力上界 & 在线可执行性。\\
+学习的风险预测器 & 同分布独立集的群体预测误差 & 给定 $y$ 的点态 posterior 积分界。\\
+校准或 conformal 规则 & 满足交换性等条件下的边际覆盖 & 任意分布移位、任意自适应停止的条件覆盖。\\
+式 \eqref{eq:centered-certificate} 的严格界 & 在已声明模型/覆盖/误差条件下的任务误差 & 未覆盖模型、未知外部分支的正确性。\\
+\bottomrule
+\end{longtable}
+已有 task-driven conformal inverse work 已研究任务不确定性和测量停止，不能把边际校准重新命名成全局 Bayesian 证书。\refl{L20}
+
+\subsection{预算分配与 break-even}
+在已有分块 prior 质量 $p_b$ 的 stratified Monte Carlo 中，令
+$\psi=(\varphi-T)L_y$，块内标准差为 $s_b$，每样本费用为 $c_b$。在一阶 ratio 近似成立时，
+\[
+\Var(\widehat T)\approx
+Z_y^{-2}\sum_b\frac{p_b^2s_b^2}{n_b}.
+\]
+给定总费用，Lagrange 乘子给
+\[
+n_b\propto \frac{p_bs_b}{\sqrt{c_b}},
+\qquad
+C_{\min}\approx
+\frac{\left(\sum_bp_bs_b\sqrt{c_b}\right)^2}{Z_y^2\eps_{\rm MC}^2}.
+\]
+这是成本加权 Neyman 分配的应用，$T,s_b,Z_y$ 若未知，pilot plug-in 只有近似资格；完整 finite-sample 保证要额外控制 pilot 与停止的适应性。
+
+实际总误差应分为
+\[
+e_{\rm task}\le
+e_{\rm covered\;integration}
++e_{\rm omitted\;branches}
++e_{\rm forward}
++e_{\rm prior/model},
+\]
+各项预算预先分配，例如参考误差至多容忍度的 $1/5$。Jacobian 误差若只影响 proposal 而最终以真 likelihood 正确修正，主要影响效率；若进入 approximate target 或停止证书，就必须进入偏差预算。
+
+有离线训练/建库费用时，至少达到
+\[
+N_{\rm break-even}>
+\frac{C_{\rm off,new}-C_{\rm off,base}}
+{c_{\rm online,base}-c_{\rm online,new}}
+\]
+且分母为正，才可能获得摊销收益；前提仍是两者达到同样任务误差。教师、reference、缓存建立、失败求解和计时 I/O 都不能免费化。
+
+\section{三个机制不同、可以实现的算法方案}
+\label{sec:algorithms}
+
+\subsection{方案一：材料补偿 chart 与多解探索}
+\textbf{原始问题：} 在正确 prior 的材料空间内，寻找具有实际材料距离而仍数据相容的候选，并预测不同采集如何破坏补偿。历史动态 SVD 只给一阶方向；四段轨迹没有定义概率密度；直接 current 路径可能不对应共享材料。
+
+\textbf{构造：} 在材料 regular strata 建立有限域 response-aligned charts，使用命题 \ref{thm:jets} 计算各方向的强补偿与剩余系数；在 rank/seam 变化处开新 chart。选择方向的依据是可行任务位移、响应界及预计物理费用，不是固定 bottom-$k$ 名称。
+
+\begin{tcolorbox}[title={算法 1：compensated material chart}]
+输入：合法材料中心、prior/decoder、采集、材料度量、任务、预算。\\
+1. 分析 $DG$，验证有限同材料 gauge；只在确认后消去，记录材料 prior 权重。\\
+2. 在材料正交 frame 上求一阶强/弱结构，选定可行 $v,U$，归一化材料弧。\\
+3. 用同一背景 LU 递推到三阶；给每个系数及余项的误差状态。\\
+4. 求低阶/高阶/余项共同允许的非空区间；区间为空时使用普通 nonlinear corrector。\\
+5. 以预测器提议端点，用真实 Maxwell 校正/验证；保留失败和实际费用。\\
+6. 达到 seam、边界或采集改变时更新 chart；分离等材料副本与真正材料候选。\\
+7. 若要 posterior，另计算合法 proposal 密度与 prior/chart 权重，做 MH/IS 或可信求积；否则仅交付候选及相容性。
+\end{tcolorbox}
+
+\textbf{适用条件与复杂度：} 局部强响应满秩、可行材料 chart、状态可逆；每方向 $p$ 阶约需 $pP$ RHS 及低阶 Green actions，另有初始强基构造、有限端点新 LU。$N$ 个内部自由度的 dense LU 为 $O(N^3)$、每 RHS 为 $O(N^2)$；矩阵自由/稀疏 3D 改用实际迭代和预条件费用，不外推固定比例。需缓存场而非保留无限历史 LU。
+
+\textbf{概率接口：} overlapping source images 先把 prior 贡献相加；仅用于覆盖同一材料区域的多个数值 charts 再用 partition of unity 分摊，避免双计。两种“重叠”不能混为一谈。若无法计算 proposal density，不能给出后验权重。
+
+\textbf{强竞争：} 普通 material retraction、Full-J predictor--corrector、nonlinear profile、多起点/RTO、LIS、iTSVD；不能只比较 frozen SVD。决定性实验是 E2 的有限域响应预测及新采集破补偿，再看同费用有效候选或任务距离。
+
+\textbf{失败条件：} 现象全来自 $DG$、真实有限验证不支持高阶工作区间、复杂方法被普通 corrector 覆盖、可行边界截断全部路径。此时暂停其算法优势，不否定有限噪声材料集合存在。原创性来自可验证的 Maxwell 补偿机制与用途；递推公式本身不足。
+
+\subsection{方案二：保留分层材料测度的任务积分}
+\textbf{原始问题：} 准确材料均值、事件和预测散射是否需要相同的分支概率精度？历史局部 Gaussian/独立边缘会丢条件核；全局网格则漏窄 likelihood；普通样本数无法直接保证功能误差。
+
+\textbf{构造：} 用 $\mu_0$ 定义正确对象，把原子、regular charts、seam 与遗漏域分别积分；使用中心化任务 defect 及每块 $a_bU_b$ 分配物理预算。可使用方案一的 charts，但没有它也能独立成立，因此这是不同的数值机制。
+
+\begin{tcolorbox}[title={算法 2：task-certified stratified integration}]
+输入：有界条件材料模型、任务及容忍度、先验分块、全域覆盖规则。\\
+1. 解析保留原子与 exact gauge 质量；为连续块建立 source-CDF 或材料 chart 求积。\\
+2. 以独立 pilot 定位窄 likelihood，明确所有未覆盖块及 prior 质量。\\
+3. 同时维护 $N,Z,Q=N-tZ$ 的上下界；物理节点携带 forward 误差及费用。\\
+4. 计算式 \eqref{eq:centered-certificate}；选 task-weighted 上界最多且可降低的块细化。\\
+5. 需要时增加真实 Maxwell、缩小状态误差或搜索外部分支；每步更新总误差预算。\\
+6. 仅当总界小于 $\eps_\varphi$ 时认证停止；无可靠包络则输出经验收敛状态，不能自称证书。\\
+7. 更换为事件任务后重算振幅与误差，不能继承均值的资格。
+\end{tcolorbox}
+
+\textbf{适用条件与费用：} 首先限于 3--4 维、有限支撑或可控 tail 的真实非均匀条件模型。每新材料节点通常需要一次 LU 和全部源 forward；若求导只为自适应坐标，应检查其节省是否覆盖额外 RHS。不存在一般“降到 quotient 就克服维数灾难”的定理。
+
+\textbf{强竞争与原创性：} source-CDF 自适应积分、defensive IS/SMC、RTO、goal-oriented quadrature、CoCoS 的 regular-volume 思路。新贡献必须是 Maxwell 分支结构让可计算任务界更紧，且同精度总费用更低。若只有人工 quintic 原子有优势，适合作为反例/方法附录，不能撑起一般 Maxwell TAP 主文。
+
+\subsection{方案三：任务 dual 控制的物理精度与求解安排}
+\textbf{原始问题：} 是否值得再解一次 current、adjoint 或 Jacobian？R6 的 residual 稳定/材料更新稳定规则不是风险证书；KKT 特征替代并未免除已支付的真实 $J$。
+
+\textbf{构造：} 对指定、固定的估计目标，计算 task dual 和 stationarity/状态残差，使计算决策针对输出误差。对于局部强凸目标 $\Psi$，
+\[
+m_\star-\widehat m\approx-H^{-1}\nabla\Psi(\widehat m),\quad
+\varphi(m_\star)-\varphi(\widehat m)
+\approx-v_\varphi^*\nabla\Psi(\widehat m),
+\quad H^*v_\varphi=D\varphi^*.
+\]
+可靠余项要求局部 Hessian 下界、Lipschitz 常数及同 basin；该式只控制指定优化器输出的功能误差，不能认证与 Bayes action 的距离。
+
+\begin{tcolorbox}[title={算法 3：task-dual physical work control}]
+1. 固定 Direct Probit 或明确目标；声明最终任务是 optimizer functional、学习 head 还是 posterior integral。\\
+2. 从已有状态取得 stationarity/state residual，不读取 GT 或未来 full endpoint。\\
+3. 只对需要的任务构造 dual，估计 forward、Jacobian、优化未收敛和积分误差。\\
+4. 比较继续 current solve、更新 $J$、扩大分支、继续积分的预计误差下降/实际费用。\\
+5. 对可认证项用上下界决策；对学习风险项标注预测资格。\\
+6. 与相同任务的 Direct Probit、Full-q、低预算强基线同窗口比较，报告离线摊销。
+\end{tcolorbox}
+
+A17 的两侧变化可用于分析 current 模型改变对任务均值和 covariance 的影响；不能只看 $\Delta J$ 范数或信息行列式。既有 goal-oriented PDE、Krylov、trust-region 和 DINO 已覆盖广义原则，故该方案当前作为模块，除非产生新的、便宜而严格的 Maxwell task error 机制。\refl{L13,L14,L21}
+
+\subsection{R6 两阶段目标到底哪里不一致}
+Uniform 属性 $u$ 与 Gaussianized 属性 $x=\Phi^{-1}(u)$ 描述同一 prior 分布；正确换元后 posterior measure 相同，但 density 的最大点不保持不变。Native 与 Probit 各自坐标 MAP 的不同，不等于其中一个 prior 自动写错。它说明先优化一种坐标密度，再优化另一种坐标密度，没有普遍的最优工作分配理由。
+
+Native warm start 可以帮助找到 basin，也可能把属性推向 box 边界，增加后续 Probit 工作。R6 支持后一机制在当前配置中的描述性解释；Direct Probit 的竞争力使“缩短 Native”更像修复原流程。若未来数据表明 Native 在强非线性或大尺度有稳定 basin 收益，再保留，而不是为两阶段结构辩护。
+
+\subsection{更大二维与三维外推的界限}
+三维向量 Maxwell 增加状态分量、网格规模、频率和源数，稀疏/快速迭代的瓶颈与 TM24 dense LU 不同。current RHS 复用可能更有价值，也可能被预条件重建、通信或非正规性主导。必须记录 factorization/preconditioner、RHS、Green matvec、内存、训练、尾部搜索和 end-to-end 时间；只用 $N^3$ 或固定源接收比预测百分比加速不可信。首次理论资格可在 2D 建立；强 TAP 的最终物理论证宜补独立向量 Maxwell 小规模 witness 或清楚限制为 TM 材料研究。
+

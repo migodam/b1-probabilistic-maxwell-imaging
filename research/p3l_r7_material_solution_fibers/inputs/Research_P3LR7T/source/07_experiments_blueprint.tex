@@ -1,0 +1,152 @@
+\section{Decisive Experiments：两条串行最小路线}
+\label{sec:experiments}
+
+本节是下一轮建议协议，不是本轮已运行结果。目标是用少量真实物理区分机制，避免重新启动所有方法的 campaign。路线 A 先做；路线 B 在独立封账后按 reference 资格启动。失败要指向一个明确主张，不能让一个非必要优化门阻止另一数学问题。
+
+\subsection{E1：先检查 Full66 是否真的有可消去 gauge}
+\textbf{数学目的。} 检查式 \eqref{eq:rank-decoder}，区分 exact 等材料、单点 $DG$ 退化与真正材料弱响应。这一步几乎不需要 Maxwell。
+
+\textbf{对象和步骤。} 256 个新 prior decoder 点，分 parent 预先抽定；32 个旧 anchor 只用于开发。固定材料 RMS 度量，计算 $B$、$DG$ 及 $q$ 到 $\range B$ 的距离。记录全 host、全 pure、混合 transition、属性边界。多个数值容限需由 derivative 误差确定，不能择优报告 rank。对候选 kernel 做有限等材料校正，验证它是 exact gauge 而不是 $x^3$ 型临界点。
+
+另建立一个明确的非均匀两 patch 正控制，允许可解析的 $m_i=q_iD_i$，并标记这是新增受控 prior。比较正确 latent joint、正确材料 pushforward+条件核、精确边缘独立组合。不能把为控制而引入的冗余写成原 Full66 普遍结构。
+
+\textbf{正负预测。} 正预测：某些平台或重叠原像必须正确合并，独立化确实造假材料。可能的同样有价值的负预测：generic $DG$ 满 66 秩，几乎无连续 gauge，Full66 大幅 quotient 降维主张应立即删除。
+
+\textbf{成本与资格。} 新 Maxwell RHS=0；记录 decoder/J 的 CPU 与内存。此步骤不需要全域 posterior、MAP 驻点或网络。若只发现一阶小导数而没有有限等材料见证，标为临界/近冗余，不标 gauge。
+
+\subsection{E2：真实材料补偿与新增采集的决定性检验}
+\textbf{数学目的。} 测试 $DG$、prior 曲率、Maxwell 多次散射、高阶强补偿分别贡献什么，以及共享补偿冲突能否预测有限响应。
+
+\textbf{独立对象。} 四个 development 合法材料、八个 locked 新 parent；锁定对象取预先冻结的新 prior 种子顺序中连续八个，不因秩、jet、相容性或方法效果重抽。近常数或平台材料保留并报告；若使用非均匀条件抽样，条件须在物理计算前冻结并限定结论范围。每个在原采集与固定旋转 $\pi/24$ 的新采集下评价。先检查旋转后源/接收仍在合法区域，再冻结。已知材料是几何校准中心，不作为未知成像成功；不要求 inverse optimizer 驻点。后续未知观测验证另开阶段。
+
+每中心预定两个方向：原采集材料广义谱的弱方向，以及同材料范数、与强空间正交的随机对照。两采集共享同一物理强基 $U$，默认取原采集材料正交谱前八维；低维时按预定 $r=\min(8,d-1)$ 规则并报告退化。禁止对两采集分别选基后直接比较补偿坐标。每方向四档真实材料 RMS 距离。development 可在 $\{0.0025,0.005,0.01,0.02\}$ 中确定整个 locked 共用的有效距离集合；最终不得逐对象按结果选最好距离。若越过可行域，保留 infeasible，不能用更小位移冒充完成原尺度。
+
+\textbf{四臂。}
+\begin{enumerate}
+\item 普通材料 retraction，配真实 Full Maxwell 验证。
+\item decoder/prior 曲率补偿，冻结一阶物理响应，隔离非物理来源。
+\item 完整 Maxwell 二/三阶 current 系数与强材料补偿。
+\item 预算匹配的 Full-J nonlinear predictor--corrector，每目标至多三个新状态；未收敛时不称精确 profile。另用少量开发 witness 的更充分 profile 求解核验机制。
+\end{enumerate}
+所有方法使用同样材料约束、同一距离、相同 source/noise 合同，计全部 RHS、LU、line search 和失败。另在 affine 材料 chart 中重复少数关键 witness，排除 quintic 平台。
+
+\textbf{测量价值控制。} 在固定总测量数、发射能量和噪声协方差下比较 joint Fisher/Schur、一阶+普通曲率、finite secant 和补偿冲突指标。可从已计算全接收向量预登记同数量通道子集，避免为了比较选择器大量加求解；相应矩阵作用和统计成本仍记录。最强证据是两候选采集一阶指标接近，而补偿冲突量不同，真实 nonlinear profile 的结果支持后者。不能把“多测一倍数据”当作高阶机制成功。
+
+\textbf{数值门槛。} 单个系数必须超过其误差包络；$p\ge2$ 仅在解析秩亏控制例中作 exact 声明。generic 满秩点报告 $\lambda$、$c_2,c_3$、主导区间与余项。development 预定：在信号远离求解底噪的档位，三阶预测相对输出误差不超过 10\%；有效区间至少覆盖两个相邻固定距离；否则只称局部系数核验。10\% 是建议的工程检验阈值，不是数学定理。小距离通过仅支持局部响应预测；声称任务尺度探索增量时，须在预留的 0.02 材料 RMS 档位实现距离匹配并取得用途增量，不能开发后删去该档仍沿用原主张。
+
+\textbf{成本。} 基础计划为 $24[40+2(40+96+480)]=30{,}528$ complex RHS：24 个材料/采集条件；基础 forward+J 40；每方向高阶预留 40，三非 Full-J 臂四距离验证 96，四距离各三个 Full-J 状态 480。以原八源、32 接收的真实计费为准，推荐硬上限 50,000 RHS，容纳校正、错误和数值验证，不能用缓存重新计作免费。所有方法在同预算下比较达到的相容材料距离、响应预测误差以及采集选择正确率，不必预设复杂方法一定更快。
+
+\textbf{统计资格。} 八个 locked parent 用于机制复核和 paired 描述，不足以支持普遍风险冠军。可预先选一个主方向效果，八 parent 全同向对应双侧 sign-test $p=0.0078125$，但其假设与独立性需成立；多个方向/采集是同 parent 的重复测量，不增加样本数。任何平均算法优势采用 parent 级配对区间；不以小样本不显著否定理论对象。若要正式 20\% 费用结论，需要另行冻结足够 parent，先依据开发方差设计，不从八例反复挑门。
+
+\textbf{如何停止主张。} 如果全部效果来自 gauge/decoder，停止“真实 Maxwell 新几何”主张；若仅保守 IFT/Neumann 充分界为空，暂停严格证书主张，仍完成预算内预定有限距离验证；真实有限验证也不支持工作区间时，才暂停对应算法；若 Full-J 同费用相当，删除加速主张但仍可检验采集预测；若出现明确共享补偿冲突且能预测有限材料允许幅度，Paper A 核心得到推进。
+
+\subsection{E3：可信非均匀条件 posterior 上的任务积分}
+\textbf{启动条件。} 不必等 E2 所有算法胜出；但必须另封账，并先解决 reference。选择两个空间场变量加两个材料属性的真正非均匀四维条件模型，其余 latent 固定且声明；这不是 Full66 边缘，也不是一般高维 posterior。
+
+\textbf{对象。} 两例 reference pilot，覆盖 regular 与 seam/overlap。仅当参考误差达到容忍度五分之一，才冻结四个新 locked parent $\times$ 两采集。不同采集共享 parent，统计单位仍为四。
+
+\textbf{任务与门槛。} ROI 实/虚材料均值与一个二阶矩；材料非 host/阈值事件及一个空间结构事件；后验预测散射。建议材料均值绝对误差 $10^{-5}$、事件概率误差 $0.002$；二阶矩与预测量在 pilot 前按单位明确各自容忍度。若某任务尺度很小，采用事前写明的相对/绝对混合门，不能看到结果后放宽。
+
+\textbf{reference。} 全域分块、原子解析质量、独立 source-CDF 与材料 chart 求积交叉，并控制 tail 与遗漏块；两个算法相同并不证明没有共同遗漏。若只能得到 refinement 稳定，标作经验参考，不能用于“严格证书”主张。参考总误差需小于每项 tol/5，且独立于候选停止器。
+
+\textbf{四个基线。} source-CDF 分层自适应积分；正确 quotient/multi-chart 普通精度分配；方案二的任务分配；成熟 defensive IS/SMC（或 regular 区 RTO proposal，配全支持 mixture、其它分支质量及正确权重）。单一 regular 成功区域不能替代全域 posterior 基线。不得把错误独立边缘当作唯一强基线。
+
+\textbf{成本。} 推荐总硬上限 1,600,000 complex RHS，预留 pilot 260,096、locked reference 784,384、四比较法 524,288、生成/失败/收尾 31,232 RHS；包含微分与物理误差估计器。上限不是要求用满。pilot 无法建立 reference 就不启动 locked 概率效率比较，输出具体缺口；可保留条件几何结果，不将其写成后验失败。
+
+\textbf{两个不同结果。} 解锁 reference 后得到的离线 first-hit 费用曲线是算法潜力；真正在线停止必须只用当前包络和已查询数据。前者不得冒充后者。成功标准是同任务误差、同质量资格下包含证书费用仍有稳定节约；仅均值点误差更小不够。失败则停止“任务积分已省费”的主张，保留正确概率对象和误差分类。
+
+\subsection{E4：Direct Probit 与任务停止，只作为模块}
+必须包括 Full actual、Full-q、Low actual、Low-q、Direct Probit64/128 的同特征比较；目标/容差/初始化身份分别报告。原 cap 是新状态尝试上限，不等于实际迭代数。测试按 parent 交错，并在独立窗口重复；记录 CPU 线程、warm/cold、持久化和 cleanup。
+
+统计风险门建议沿用明确 1\% NI 及 20\% end-to-end 节时目标，但作为新合同重新冻结，不能借用 R6 的原 global8。有限小样本只做开发，不能凭均值过门。在线策略不得读 GT、未来 full endpoint 或同一测试集反复调 cap。若 Direct 方法相当，停止独立 Paper C；不再围绕被覆盖的两阶段分配扩大搜索。
+
+\subsection{E5：任务统计是否具有超出普通 global encoder 的估计价值}
+确定性 Maxwell 特征不增加同一 raw-$y$ 的 Shannon 信息；本实验检验有限学习/计算预算下的任务估计增量。真正的新增统计信息由 E2/E3 中的新采集单独评价。
+先在 E3 的可信参考上比较 $B_\varphi$、完整 $\mathcal I_{a,\varphi}$ 与有限重加权/新增观测的真实任务变化，必须包含一阶协方差为零或接近零的非线性任务。再决定是否值得高维学习。
+
+若进入学习阶段，比较 raw-$y$、同容量 global encoder、decoder-only、同谱随机图、真实 Maxwell 传播信息；同数据、同 prior、同参数/更新预算，并对每臂匹配重训。禁止把通道删除造成的分布外退化当作信息必要性。评价材料均值/事件校准及 proper task score，不以 teacher feature MSE 代替。
+
+八个条件 reference 不能支持大型网络训练或高维泛化。若需新 128-parent 确认，作为下一独立阶段单列预算，不在本轮两条最小路线中自动启动。
+
+\subsection{共同防泄漏和费用合同}
+开发和 locked parent 分离；旧 R5-B512、R6-D512 已暴露，只作历史证据。固定对象由先验种子/元数据选取，不按 GT 风险挑选。冻结代码、方向规则、任务、噪声、采集和误差门后再运行 locked；预测、费用和失败先保存，再读取隐藏参考/GT。参考可由隔离流程构建，但在线候选不得访问。报告全部未通过对象和数值失败，不能通过改 prior、扩大 noise、删除旧失败或重置预算制造成功。
+
+\section{GO/NO-GO：投入次序与决策}
+\begin{longtable}{p{.31\linewidth}p{.19\linewidth}p{.42\linewidth}}
+\toprule
+工作 & 当前判定 & 下一决定性动作\\
+\midrule
+材料度量下的弱方向分类 & GO & E1，纠正 gauge 与物理弱性混淆。\\
+Maxwell 强补偿及采集冲突 & 最高优先级条件 GO & E2，验证有限尺度、非均匀与简单强基线。\\
+正确材料测度与条件核 & GO，作为基础 & 应用于 E1/E3；不单独宣称全新概率理论。\\
+task posterior/事件积分 & 条件 GO & 先两例可靠 reference，再 E3。\\
+高维材料函数量成像 & 条件 GO & 保留 R2/R4/R5-B，E5 验证物理独立增量。\\
+Full66 大 Flow/MCMC 扩大 & 暂停 & 先明确导致失格的条件核、尺度、混合或预算瓶颈。\\
+Native 截断独立理论论文 & NO-GO & 保留工程结果及 Direct Probit 控制。\\
+A+B+C 统一大论文 & 当前 NO-GO & 只有同一机制打通几何、概率、任务费用后再考虑。\\
+\bottomrule
+\end{longtable}
+
+\section{Paper Blueprint：最强路线的章节、公式与图}
+\label{sec:blueprint}
+\subsection{建议题目及 Abstract 论点}
+建议工作题目：
+\emph{Shared Material Compensation and Finite-Scale Observability in Nonlinear Maxwell Inverse Scattering}。
+
+Abstract 应依次写：有限噪声下材料变化可以被其他材料变化补偿，单点 sensitivity 无法充分描述实际允许差异；提出材料正则的 response-aligned chart 与 current 系数递推；利用共享补偿冲突与余项建立可检查的有限幅度响应预测；在非均匀材料及固定新采集中检验，并与普通 nonlinear profile 的同费用结果比较；明确局部与概率范围。结果句只能填入 E2 实际获得的数字，当前不填虚构提升。若 E3 也成功，再增加任务积分段落并调整标题。
+
+\subsection{建议章节结构}
+\begin{enumerate}
+\item Introduction：一张材料差异明显、原观测相近、新采集区分的物理图；提出不确定性来源的混淆。
+\item Problem and material metric：prior 支撑、复场实化、固定噪声形状、可行材料与 gauge。
+\item From weak tangents to compensated responses：$DF\,DG$ 分解、材料广义谱、current jets、共享补偿。
+\item Finite-scale bounds and acquisition：有效域、余项、补偿冲突下界；区分 exact 与 effective order。
+\item Algorithm：有界 chart 提议/普通校正 fallback/计算账本；不预设网络。
+\item Experiments：gauge 控制、affine-vs-decoder、finite-amplitude 预测、新采集、强基线费用。
+\item Optional task-volume section：仅在 E3 合格时纳入条件体积与任务预算。
+\item Limitations：局部域、物理模型、prior、离散化与全局 posterior 未解。
+\end{enumerate}
+
+\subsection{正文只保留的六组核心公式}
+\[
+\mu_y(dm)\propto L_y(m)G_\#\pi_0(dm),\qquad
+\rank(JC)=\rank C-\dim(\range C\cap\ker J);
+\]
+\[
+K_{\rm obs}v=\lambda K_{\rm mat}v;
+\qquad
+L_0j_n=D_{m_n}E_0+\sum_{k<n}D_{m_k}G_Dj_{n-k};
+\]
+\[
+c_n=(I-P_A)b_n,\qquad
+\min_z\sum_a\|A_az+b_a\|^2
+=\sum_a\|c_a\|^2+\sum_a\|z_a-\bar z\|_{H_a}^2;
+\]
+\[
+\|r(h)\|\ge
+\|c_p\||h|^p-\sum_{n<p}\|c_n\||h|^n-\|R_{p+1}(h)\|.
+\]
+任务尺度 $\sigma^{(\alpha+s)/p}$ 与中心化误差界作为有条件扩展，不能让它们压过真实物理主线。
+
+\subsection{核心 Figures 的论证任务}
+\textbf{Figure 1：三种看起来都弱、实际不同的材料变化。}
+同材料 gauge、decoder 临界、真实物理补偿；每列同时显示材料差、响应差和坐标身份，不能仅画 latent trajectory。
+
+\textbf{Figure 2：材料尺度下的响应分解。}
+线性项、decoder/prior 曲率、Maxwell 高阶项和强补偿后的余项，展示向量相消，不只画各项 norm 的饼图。
+
+\textbf{Figure 3：可验证的有限工作区间。}
+横轴实际材料 RMS，纵轴真实响应与预测包络；标出数值底噪、低阶主导区和余项失效区。没有非空区间的案例也显示。
+
+\textbf{Figure 4：共享材料补偿冲突。}
+两采集单独所需 $z_a$、联合共同 $\bar z$、真实 joint response；对照一阶 Fisher 接近但冲突不同的采集，固定测量数和能量。
+
+\textbf{Figure 5：同费用用途。}
+Full-J profile、retraction 与 proposed chart 在同任务距离下的全部 RHS/LU/时间及相容成功率。不要把单次 forward 速度当全算法收益。
+
+\textbf{Figure 6（有条件）：任务与概率需要不同精度。}
+同 posterior reference 上材料均值、方差、结构事件和 branch mass 的误差--费用曲线，旁边标出在线证书与离线 first-hit 的区别。
+
+\subsection{写作时的贡献句}
+可以写“建立了某声明材料类内共享补偿的计算与误差关系”，但仅在证明/实验完成后；不能写“首次发现 inverse problems 存在 fiber 体积”“首次证明条件均值由协方差决定”或“首次通过任务减少 PDE 费用”。当前报告贡献是重建问题、给出完整条件推导及可证伪研究设计，尚未替下一轮数值结果作担保。
+

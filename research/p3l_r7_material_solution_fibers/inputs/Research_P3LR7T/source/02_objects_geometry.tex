@@ -1,0 +1,200 @@
+\section{Core Mathematical Objects：应在哪个空间研究什么}
+\label{sec:objects}
+
+\subsection{以材料测度为主对象，以 latent 和响应为两侧表示}
+把所有复空间实化，并明确体积加权材料度量 $W_M$ 与观测噪声协方差 $\Gamma$。设 $\mathcal X,\mathcal M,\mathcal Y$ 为标准 Borel 空间，实际有限网格可取欧氏空间的 Borel 子集；$G,F$ 可测，
+\[
+X\sim\pi_0,\qquad M=G(X),\qquad R=F(M),\qquad Y=R+\eta.
+\]
+定义
+\[
+\mu_0=G_\#\pi_0,\qquad \nu_0=F_\#\mu_0,\qquad
+L_y(m)=\exp\!\left[-\tfrac12\|\Gamma^{-1/2}(F(m)-y)\|^2\right].
+\]
+在 $0<Z_y=\int L_y\,d\mu_0<\infty$ 时，
+\begin{equation}
+\mu_y(dm)=Z_y^{-1}L_y(m)\mu_0(dm).
+\label{eq:material-posterior}
+\end{equation}
+
+\textbf{正确主对象是 $(\supp\mu_0,F,\mu_0,\varphi)$：带先验测度的可实现材料空间、物理观测映射以及指定任务。} 商空间只负责去掉表征重复；它不能替代 prior，也不能把真正的不同材料合并后忘掉。
+
+\begin{longtable}{p{.23\linewidth}p{.34\linewidth}p{.35\linewidth}}
+\toprule
+问题 & 正确空间/对象 & 常见误置\\
+\midrule
+decoder gauge & $\pi_0(dx\mid G(x)=m)$ & 把同材料不同坐标当多个世界。\\
+材料多解 & $\{m\in\supp\mu_0:F(m)=r\}$，或有限噪声相容域 & 把 latent 小奇异值直接叫材料零空间。\\
+概率体积 & $\mu_0$、$L_y\mu_0$，及其条件分解 & 用欧氏长度、候选个数或均匀表面测度。\\
+任务风险 & $\varphi_\#\mu_y$ 或 $\E_{\mu_y}\ell(a,M)$ & 用低 residual 或高 NLL 改善替代。\\
+计算复杂度 & 原问题及近似算法的实际操作成本 & 把商维数减少当成已有加速定理。\\
+测量设计 & 新响应对旧材料不确定性的细分 & 仅增大单点 Jacobian 行列式。\\
+\bottomrule
+\end{longtable}
+
+\subsection{命题一：双重条件分解与不能删除的纤维}
+\begin{theorem}[双重分解；既有 disintegration 的直接应用]
+\label{thm:disintegration}
+在上述标准 Borel 和可积条件下，存在正则条件核 $K_G(dx\mid m)$ 和 $K_F(dm\mid r)$，分别是先验下 $X\mid M=m$ 与 $M\mid R=r$ 的版本，使得
+\begin{align}
+\pi_y(dx)&=\int K_G(dx\mid m)\,\mu_y(dm),\\
+\mu_y(dm)&=\int K_F(dm\mid r)\,\nu_y(dr),\\
+\nu_y(dr)&=\frac{\exp[-\frac12\|\Gamma^{-1/2}(r-y)\|^2]}{Z_y}\nu_0(dr).
+\label{eq:double-disintegration}
+\end{align}
+各条件核仅需在相应推送测度几乎处处定义。给定材料后，观测不再改变 decoder fiber 的条件分布；给定完整无噪响应后，同一响应 fiber 的材料条件分布也不被该次观测改变。
+\end{theorem}
+\begin{proof}
+对有界可测 $a(x)$，先验条件分解给
+\[
+\int a(x)L_y(G(x))\pi_0(dx)
+=\int \!\left[\int a(x)K_G(dx\mid m)\right]L_y(m)\mu_0(dm).
+\]
+除以 $Z_y$ 即得第一式。对材料函数用同样方式按 $r=F(m)$ 条件化，得第二、三式。似然在相应 fiber 上恒定，因此只改变 fiber 之间的权重，不改变 fiber 内核。推广至可积函数由截断及支配收敛完成。
+\end{proof}
+
+这是一条严密的统一关系，但不是本研究新发明的概率定理。其科学作用在于阻止两种相反错误：保留不影响材料的 gauge 并破坏其相关性；或者为了降维把真正不同材料的 Maxwell fiber 也删除。
+
+定义
+\[
+a_\varphi(r)=\E_{\mu_0}[\varphi(M)\mid R=r],\qquad
+S_\varphi(r)=\Cov_{\mu_0}(\varphi(M)\mid R=r).
+\]
+则
+\begin{align}
+T_\varphi(y)&=\int a_\varphi(r)\nu_y(dr),\\
+\Cov_{\mu_y}(\varphi)
+&=\E_{\nu_y}S_\varphi(R)
++\Cov_{\nu_y}(a_\varphi(R)).
+\label{eq:risk-disintegration}
+\end{align}
+第一项描述同一无噪响应仍无法区分的任务差异，第二项描述含噪响应尚不确定引起的差异。即使原采集变得无噪，第一项一般也不会消失；新测量可以进一步划分这些旧 fibers。
+
+\subsection{商空间不是自动光滑流形}
+$\mathcal X/{\sim_G}$ 可用材料像及其可测结构表示，但不保证它具有单个 Euclidean 坐标系、处处相同维数、可微逆或良好的全局拓扑。平台区域可能整体推到原子；不同源分层可以映射到重叠材料像；交叉、边界和秩变处不允许用一张普通密度表覆盖。
+
+若能建立可数、互斥、足够正则的材料 strata $\mathcal M_s$，可写
+\[
+\mu_0=\sum_s \rho_s\,\mathcal H^{d_s}\!\restriction_{\mathcal M_s}
++\mu_{\mathrm{sing}},
+\]
+其中原子为 $d_s=0$，且必须保留可能的额外奇异部分。这个表示需要正则性证明；一般可测 $G$ 只保证测度推送，不保证上述漂亮分层存在。
+
+对 regular rank-$r$ 区域，coarea 给出材料密度中的 fiber 权重
+\[
+\rho_M(m)=
+\int_{G^{-1}(m)}
+\frac{\rho_X(x)}{J_rG(x)}\,d\mathcal H^{d-r}(x),
+\qquad
+J_rG=\prod_{i=1}^r s_i(DG),
+\]
+以已声明的空间度量和适当正则参数域为前提。同一材料有多个 regular 原像时应相加；正 prior 质量的降秩区域必须另行推送，不能将 $J_rG=0$ 塞进同一全维密度公式。\refl{L8,L9}
+
+材料 posterior 的“mode”也必须指向一个互斥材料事件或明确参考测度；一个原子和二维密度峰不能直接比较密度高度。若采用 small-ball MAP，应先固定材料度量和球半径极限，且不能把它与 native/probit 坐标密度最大值混同。
+
+\subsection{R6 copula 反例的正确推广}
+在 $V=QD$ 的 S3 模型，给定 $v\ne0$，
+\[
+D=v/Q,\qquad
+\E_{\mathrm{ind}}[QD\mid v]=v\,\E[Q\mid v]\E[Q^{-1}\mid v].
+\]
+若 $Q,Q'$ 条件独立同分布，
+\[
+\E Q\,\E Q^{-1}-1
+=\E\frac{(Q-Q')^2}{2QQ'}.
+\]
+$0<q_{\min}\le Q\le q_{\max}$ 时，该量位于
+$\Var(Q)/q_{\max}^2$ 与 $\Var(Q)/q_{\min}^2$ 之间，非退化时严格为正。这是已知条件概率和 Cauchy--Schwarz 的应用；Maxwell 控制实验的价值是证明这种表征错误确实制造错误散射，而不是只有抽象概率后果。\refe{R6-A}
+
+R6 的两次有限置乱，整组 256 复通道的 $L^2/\sigma$ 差均值约 15.53/117.58；对应每通道 complex RMS/$\sigma$ 约 0.970/7.349。它不是 Full66 posterior calibration，也不能单独解释全部 Gaussian/Flow 失败。
+
+对一般 $G$，正确的设计是先表示 $\mu_y$，必要时再通过 $K_G$ lift 回 latent。若 $K_G$ 的积分比原采样更困难，或者 generic 点几乎无 gauge，quotient 不一定降低实际费用。可以保留 latent 建模，但必须保留正确联合条件核，不能任意独立组合边缘。
+
+\subsection{一个直接针对 Full66 的新资格命题}
+\begin{lemma}[均匀 gauge 何时延伸到非均匀场]
+设 $m(z,R,I)=Dq(z)$，$D=R+iI\ne0$，$q\in\R^n\setminus\{0\}$，$B=D_zq$。在两个属性方向均可自由变化的内点，
+\begin{equation}
+\rank_{\R}DG=\rank B+1+\mathbf1_{\{q\notin\range B\}}.
+\label{eq:rank-decoder}
+\end{equation}
+\end{lemma}
+\begin{proof}
+对材料空间作单位复相位旋转，使 $D$ 变为正实数。场变量的导数列张成实子空间 $\range B$。两属性列张成 $\operatorname{span}_{\R}\{q,iq\}$；$iq$ 独立于全部实列，$q$ 当且仅当不属于 $\range B$ 时再增一维。
+\end{proof}
+该命题是本报告给出的针对 P1 结构的线性代数推论，不是已有 Full66 数值发现。它说明：若 $B$ 满 64 秩且 $q\notin\range B$，$DG$ 可以满 66 秩。均匀 S3 的一维 gauge 不能推出一般非均匀材料能大幅降维。host 的 $q=B=0$、pure 的 $B=0,q\ne0$ 要分别处理。边界只能使用可行切锥，不可把被冻结属性当自由方向。
+
+\section{弱方向分类、动态几何与 Jacobian 的正确度量}
+\label{sec:weak}
+
+\subsection{先把两种核分开}
+记 $C=DG(x)$，$J=DF(G(x))$。在一个光滑 regular stratum 上，
+\begin{equation}
+\rank(JC)=\rank C-\dim\big(\range C\cap\ker J\big).
+\label{eq:rank-chain}
+\end{equation}
+因此 $\ker C$ 是一阶表征退化，$\range C\cap\ker J$ 才是该 prior 材料切空间内的一阶物理不敏感性。单点 $\ker C$ 仍未必是 exact gauge：$G(x)=x^3$ 在 $x=0$ 导数为零，却没有非平凡等材料 fiber。
+
+至少应区分如下机制。
+\begin{longtable}{p{.21\linewidth}p{.42\linewidth}p{.29\linewidth}}
+\toprule
+类别 & 结构与诊断 & 可保留的工具\\
+\midrule
+exact decoder gauge & $G(x)=G(x')$；有限材料等同见证 & 商坐标、条件核、Rao--Blackwellization。\\
+decoder 临界/平台 & $DG$ 退化；离开平台可改变材料 & 分层、单侧展开、原子质量。\\
+坐标曲率 & $D^2G$ 的材料切向部分可随重参数化改变 & 材料度量、正则 retraction。\\
+prior image 曲率 & 材料像第二基本形式；不是纯 Maxwell 效应 & 可行材料曲线、曲率约束。\\
+物理一阶弱方向 & $Jv$ 小，$v$ 已按材料尺度归一化 & material Jacobian、广义谱、有限尺度检查。\\
+物理高阶补偿 & 强材料变化抵消弱变化的响应；材料仍变化 & current resolvent jets、非线性 profile。\\
+非局部分支 & 相距较远的材料近观测等价 & 多中心搜索、全局提案、分支积分。\\
+数值伪弱方向 & 求解/离散/差分误差大于信号 & adjoint 一致性、误差包络、网格检查。\\
+\bottomrule
+\end{longtable}
+
+\subsection{比较 Jacobian 应使用材料广义谱}
+定义
+\[
+K_{\rm mat}=C^*W_MC,\qquad
+K_{\rm obs}=C^*J^*\Gamma^{-1}JC.
+\]
+先去掉 $\ker K_{\rm mat}$，再求
+\begin{equation}
+K_{\rm obs}v=\lambda K_{\rm mat}v.
+\label{eq:material-generalized}
+\end{equation}
+这些 $\lambda$ 是单位材料变化的观测敏感性，等价于材料正交 frame 上的受限 Jacobian 奇异值平方。对可逆正则 latent 重参数化，两矩阵作同一合同变换，广义谱不变；直接对 $DH$ 作未归一化 SVD 则会随 latent 尺度任意改变。
+
+$\rank$ 是代数性质；effective rank 必须给定噪声、可行材料位移和误差容限。可用 $\sum_i\lambda_i/(1+\lambda_i)$ 这类平滑维数，但其统计含义需要声明材料先验尺度；不能把数值 LM damping 当作真实 prior precision。一个小 spectral gap 可能使特征向量不稳定，却不必使任务统计不稳定。
+
+\subsection{非对合弱空间没有否定 solution fibers}
+若 $F$ 在光滑材料 stratum 附近常秩，则常秩定理给出局部等值子流形，其切空间恰为 $\ker DF$。因此 exact constant-rank kernel 可积。R2 的 bottom-rank-4 谱空间通常不是这个核；即使 $DF$ 满列秩，仍可选出四个最弱方向，并可能有非零 Lie bracket leakage。
+
+finite-noise 相容域
+\[
+\mathcal S_\epsilon(y)=
+\{m\in\supp\mu_0:\|F(m)-y\|_{\Gamma^{-1}}^2\le\epsilon\}
+\]
+一般是带边界的厚区域或其分层版本，不是一张低维流形；“距离小于阈值”的二元关系不传递。精确 fibers、有限噪声 tubes 和某个人为 weak distribution 是三个对象。
+
+\textbf{动态弱方向仍有价值，但其角色应改变：} 它是局部候选生成器、有限噪声可达方向的诊断和近似概率 proposal 的设计信息。它本身不定义后验体积，也不能从不可积性推出“多解本质上非完整”，更不能用绕圈面积给模式质量。
+
+\subsection{高阶“子空间”通常不是线性子空间}
+一阶核是线性的。已完成一阶补偿、$v$ 为实际材料切向量，并指定材料正交 retraction 的二阶加速度为第二基本形式 $\mathrm{II}(v,v)$ 时，二阶不可补偿系数示意为
+\[
+v\longmapsto c_2(v)=(I-P_A)\left(
+\tfrac12D^2\bar F[v,v]+\tfrac12D\bar F\,\mathrm{II}(v,v)\right).
+\]
+这里 $\bar F=\Sigma^{-1/2}F$，$P_A$ 是同一白化空间的强响应投影。任意其它路径可能还有切向加速度；除非它完全属于已允许的强补偿空间，否则不能省去。
+满足 $c_2(v)=0$ 的集合一般是代数锥或更复杂的零点集，而不是另一个线性子空间。不同方向混合有交叉项，不能把每个方向的阶单独分类后假设其任意线性组合保阶。第三阶还依赖已选二阶补偿。正确分类是“线性切空间 + 高阶 jets 的零点结构 + 有限尺度响应”，而不是无限追加 SVD 子空间名称。
+
+\subsection{SOM/TSOM 与材料弱方向不是同一个分解}
+SOM 的接收算子谱分解首先组织 induced current 的辐射可见性；TSOM 进一步考虑内部传播。材料切向则由
+\[
+J_M=S(I-D_mG_D)^{-1}D_{E^{\rm tot}}
+\]
+决定，包含材料注入、总场、内部反馈及接收返回。current 直接辐射弱，不意味着对应材料任务不重要；一个很强的接收 current，也可能对目标材料任务几乎无用。\refl{L1,L2}
+
+SOM-Net 已联合约束 current、field 和 material，不能把它描述成普通图像 CNN。与它形成实质区别，必须展示：本方法识别的是不同材料世界的非线性补偿和概率/任务后果，且结果不能由其已有 current 分解或普通 null-space completion 解释。
+
+\subsection{工具在这套分类中的具体作用}
+CNN 可估计局部条件材料函数或补偿图，但输出不自动属于原 prior；Flow 可提供有密度的 chart 内 proposal，必须保留 Jacobian、stratum 质量与必要的接受修正；GNN 可编码 source--current--receiver 耦合或多 chart 邻接，但图结构不提供概率归一化；Jacobian/SVD 提供一阶材料尺度诊断；current/adjoint 提供真正的物理系数；全局提案处理局部方法无法证明覆盖的远分支。每种工具应对应一个可测误差，而不是因名称先进而进入主架构。
+
