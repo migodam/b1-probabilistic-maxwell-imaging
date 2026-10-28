@@ -109,3 +109,7 @@ DEV明确复用R6 CDEV前4个，已暴露，不计入新八对象。完整原raw
 本审计不运行新的ScholarQA/网络文献验证，不把R7T文献表当最终先例检索；final novelty由顶层Codex负责。没有读取R7新GT或旧科学大数组来选择方向；仅历史汇总JSON和DEV4头信息。正文中的百分比保留对应原父样本、seed-loss、baseline和区间口径，不跨cohort汇总。
 
 仍需顶层处理：R7真正执行协议与预算、E1/E2方向和距离冻结、物理/decoder机制的最终解释、R7T条件命题逐项证明审查、与成熟算法和最新文献的原创性判断。历史各类成败不能替代这些工作。
+
+## R7实际执行补记
+
+新增37,456 RHS、1325 state/LU、256个零物理prior点与8个新locked测量驱动中心。E0/E1、主128状态、五节点路径、附加普通profile与非均匀gauge/copula控制都实际执行；具体原始来源为本目录RESULTS_SUMMARY.json、RESOURCE_SUMMARY.json、audit/results、analysis与E2封存。B在.02为8/8竞争、7/8 pair≤1；C6/8，未胜B；D1/8。rank66在多cutoff为88/163/186/191；四个局部非均匀尺度曲线支持stratum-specific gauge，而非普遍Full66商。GO_HIGHER_ORDER=NO_GO，EXACT_FIBER=NOT_ESTABLISHED，FINITE_NOISE=SCOPED_GO，FULL66_POSTERIOR=UNQUALIFIED，TAP=REDIRECT。新layout、完整概率体积、neural Explorer均NOT_RUN。所有修正前DEV和费用保留，原R6封账与历史HOLD均不变。
