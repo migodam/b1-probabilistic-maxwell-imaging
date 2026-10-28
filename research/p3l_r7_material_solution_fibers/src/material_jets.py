@@ -61,6 +61,8 @@ def geometry(prior, x, J, seed):
     M = real_material(D)
     U,s,Vh = np.linalg.svd(M,full_matrices=False)
     good = s > max(s[0]*1e-8,1e-10)
+    if not good.any():
+        return dict(rank=0,singular_material=s,material_cutoff=float(max(s[0]*1e-8,1e-10)))
     T = Vh[good].T/s[good][None,:]
     Q = M@T
     K = J@T
@@ -81,10 +83,13 @@ def geometry(prior, x, J, seed):
     latent_U=T@W
     # A normal prior displacement, projected off the SAME material strong frame.
     rng=np.random.default_rng(seed)
-    rw=Q.T@(M@rng.normal(size=66))
-    rw-=W@(W.T@rw)
-    rw/=max(np.linalg.norm(rw),1e-300)
-    rv=T@rw
+    # Project a NATIVE prior displacement using the true material constraints.
+    # Projecting in Q-coordinates then lifting through T spuriously amplifies
+    # nearly null latent coordinates and makes an artificially weak random arm.
+    N=null_space((Q@W).T@M,rcond=1e-10)
+    rv=N@(N.T@rng.normal(size=66))
+    rv/=max(np.linalg.norm(M@rv),1e-300)
+    rw=Q.T@(M@rv)
     if rv[np.argmax(abs(rv))]<0:rv=-rv;rw=-rw
     groups=[slice(0,256),slice(256,512),slice(None)]
     spectra=[];frames=[]
@@ -93,8 +98,11 @@ def geometry(prior, x, J, seed):
         spectra.append(sv)
         frames.append(Q@vh[-min(4,len(vh)):].T)
     angles=np.linalg.svd(frames[0].T@frames[1],compute_uv=False)
+    _,wa=eigh(K[:256].T@K[:256]+T.T@T)
+    va=T@wa[:,0]
+    if va[np.argmax(abs(va))]<0:va=-va
     return dict(D=D,M=M,T=T,Q=Q,K=K,singular_material=s,
-                rank=int(good.sum()),material_cutoff=float(max(s[0]*1e-8,1e-10)),
+                rank=int(good.sum()),material_cutoff=float(max(s[0]*1e-8,1e-10)),v_group_A=va,
                 material_frame=U[:,good],v=v,random_v=rv,strong_U=latent_U,
                 weak_material=real_material(D@v),random_material=real_material(D@rv),
                 generalized_joint_singular=ks,prior_aware_eigenvalues=ev,
@@ -153,10 +161,23 @@ def jets(target, base, v, strong_U):
     group['identity']=dict(joint_squared=float(c2@c2),within=within,conflict=conflict,
                            absolute_defect=abs(float(c2@c2)-within-conflict),
                            shared_lower_order=True,real_coordinate_compensation=True)
+    zd2,_=common_compensation(A,decoder2)
+    xd2=strong_U@zd2
+    md3=decoder_coefficients(target.prior,x,v,xd2)[3]
+    zd3,_=common_compensation(A,response_action(target,base,md3))
+    xd3=strong_U@zd3
+    M=real_material(material_derivative(target.prior,x))
+    uu,ss,vh=np.linalg.svd(M,full_matrices=False)
+    keep=ss>max(ss[0]*1e-8,1e-10)
+    r2=real_material(m2raw)
+    material_coordinate2=uu[:,keep]@(uu[:,keep].T@r2)
+    material_normal2=r2-material_coordinate2
     # Unit material speed; Maxwell first order is generally NONZERO.
     return dict(v=v,strong_U=strong_U,x2=x2,x3=x3,m1=m1,m2raw=m2raw,m2=m2,
                 m3raw=m3raw,m3fixed=m3fixed,m3=m3,j1=j1,j2=j2,j3=j3,
                 c1=f1,c2=c2,c3=c3,b2=b2,b3=b3,decoder2=decoder2,decoder3=decoder3,
+                decoder_only_x2=xd2,decoder_only_x3=xd3,
+                material_coordinate2=material_coordinate2,material_normal2=material_normal2,
                 propagation2=propagation2,propagation3=propagation3,A=A,
                 checks=checks,groups=group)
 
@@ -172,8 +193,14 @@ def match_distance(prior,x0,proposal,distance,max_latent=4.):
     lo=0.; hi=max(distance/8,1e-8)
     for _ in range(100):
         x=proposal(hi)
-        if not np.isfinite(x).all() or np.linalg.norm(x-x0)>max_latent:
-            return None,dict(status='INFEASIBLE_LATENT_RADIUS',last_h=hi)
+        if not np.isfinite(x).all():
+            return None,dict(status='NONFINITE_DECODER_PROPOSAL',last_h=hi)
+        if np.linalg.norm(x-x0)>max_latent:
+            # An overshooting search bracket is not itself an infeasibility proof.
+            hi=brentq(lambda h:np.linalg.norm(proposal(h)-x0)-max_latent,lo,hi)
+            if fun(hi)<0:
+                return None,dict(status='INFEASIBLE_LATENT_RADIUS',last_h=hi,
+                                 maximum_bracket_RMS=float(fun(hi)+distance))
         if fun(hi)>=0:
             h=brentq(fun,lo,hi,xtol=1e-14,rtol=1e-12)
             xx=proposal(h)

@@ -85,13 +85,19 @@ def direct_anchor(target,y,parent,folder,cap=64):
     last=best=None
     best_energy=np.inf
     fresh=0
+    def paid(x,purpose,*,final=False):
+        nonlocal fresh
+        # Reserve the final slot for a possible best-endpoint LU restoration.
+        if fresh>=cap-(0 if final else 1):raise RuntimeError('ANCHOR_STRICT_STATE_CAP')
+        fresh+=1
+        pp=target.evaluate(x,purpose)
+        append(folder/'ANCHOR_HISTORY.jsonl',dict(event='ALL_FRESH_STATE_ATTEMPTS',attempt=fresh,endpoint=pp.key,purpose=purpose))
+        return pp
     def get(x):
         nonlocal last,best,best_energy,fresh
         for p in (last,best):
             if p is not None and np.array_equal(p.x,x):return p
-        if fresh>=cap:raise RuntimeError('ANCHOR_STRICT_STATE_CAP')
-        fresh+=1
-        p=target.evaluate(x,parent+'_direct_probit64')
+        p=paid(x,parent+'_direct_probit64')
         energy=target.objective(p,y)
         append(folder/'ANCHOR_HISTORY.jsonl',dict(attempt=fresh,endpoint=p.key,
           phi=target.phi(p,y),objective=energy,prior=.5*float(x@x),x_norm=float(np.linalg.norm(x))))
@@ -103,7 +109,7 @@ def direct_anchor(target,y,parent,folder,cap=64):
         p=get(x)
         if p.J is None and p is not target._live_point:
             # Rare rejected best-without-J: paid restoration, never an unowned LU.
-            p=target.evaluate(x,parent+'_restore_anchor_J')
+            p=paid(x,parent+'_restore_anchor_J')
         return np.vstack((target.jacobian(p),np.eye(66)))
     status={}
     try:
@@ -117,7 +123,7 @@ def direct_anchor(target,y,parent,folder,cap=64):
     if best is None:raise RuntimeError('no anchor state')
     old=best
     if old is not target._live_point:
-        best=target.evaluate(old.x,parent+'_restore_best_live_LU')
+        best=paid(old.x,parent+'_restore_best_live_LU',final=True)
         if old.T is not None:best.T=old.T.copy()
     target.jacobian(best)
     target.persist_cache(best,folder/'ANCHOR.npz')
@@ -155,6 +161,11 @@ def metrics(target,p,base,y,unit,distance):
     pair=target.white(p.state.data-base.state.data)
     phi=target.phi(p,y);phi0=target.phi(base,y)
     info=decode(target.prior,p.x)[1]
+    base_info=decode(target.prior,base.x)[1]
+    def stratum(a):
+        s=a['field']/target.prior.temperature
+        return np.where(s<=-1,0,np.where(s>=1,2,1))
+    seam_crossings=int(np.sum((stratum(info)!=stratum(base_info))&target.prior.mask))
     rms=float(np.linalg.norm(dm))
     progress=float(unit@dm)
     prior=.5*float(p.x@p.x);prior0=.5*float(base.x@base.x)
@@ -169,17 +180,19 @@ def metrics(target,p,base,y,unit,distance):
        transition_cells=int(np.sum((info['fraction']>0)&(info['fraction']<1)&target.prior.mask)),
        host_cells=int(np.sum((info['fraction']==0)&target.prior.mask)),
        pure_cells=int(np.sum((info['fraction']==1)&target.prior.mask)),
+       seam_crossings=seam_crossings,
        tasks=tasks(target.prior,p.state.chi).tolist(),GT_used=False)
 
 
-def correct(target,base,y,xstart,v,distance,folder,*,frozen=False,max_states=3):
+def correct(target,base,y,xstart,v,distance,folder,*,frozen=False,max_states=3,rowsel=slice(None)):
     unit=real_material(material_derivative(target.prior,base.x)@v)
     unit/=np.linalg.norm(unit)
     x=xstart.copy();best=None;best_obj=np.inf;trust=.5
     previous=None;history=[]
     for i in range(max_states):
         p=target.evaluate(x,folder.name+f'_trial{i}')
-        obj=target.objective(p,y)
+        rr=target.white(p.state.data-y)[rowsel]
+        obj=.5*float(rr@rr+p.x@p.x)
         feasible=feasible_progress(target.prior,base.x,x,unit,distance)
         rho=None
         if previous is not None:
@@ -200,7 +213,8 @@ def correct(target,base,y,xstart,v,distance,folder,*,frozen=False,max_states=3):
                 # already owned a J when it proposed this trial.
                 raise RuntimeError('missing paid best Jacobian')
             J=target.jacobian(current)
-        r=target.white(current.state.data-y)
+        r=target.white(current.state.data-y)[rowsel]
+        J=J[rowsel]
         step,_=gn_step(target.prior,base.x,current.x,v,J,r,trust=trust,
                        material_limit=.5*distance)
         proposal=current.x+step
@@ -210,14 +224,29 @@ def correct(target,base,y,xstart,v,distance,folder,*,frozen=False,max_states=3):
         if xn is None or not feasible_progress(target.prior,base.x,xn,unit,distance):
             row['stop']='NO_FEASIBLE_RETRACTED_STEP';break
         actual_step=xn-current.x
+        # Retraction is nonlinear: enforce the subproblem's trust bounds again.
+        Mnow=real_material(material_derivative(target.prior,current.x))
+        for shrink in range(9):
+            if (np.linalg.norm(actual_step)<=trust*(1+1e-10) and
+                    np.linalg.norm(Mnow@actual_step)<=.5*distance*(1+1e-10)):
+                break
+            proposal=current.x+step*(.5**(shrink+1))
+            xn,match=match_distance(target.prior,base.x,lambda h:base.x+h*(proposal-base.x),distance)
+            if xn is None:break
+            actual_step=xn-current.x
+        if (xn is None or np.linalg.norm(actual_step)>trust*(1+1e-10) or
+                np.linalg.norm(Mnow@actual_step)>.5*distance*(1+1e-10) or
+                not feasible_progress(target.prior,base.x,xn,unit,distance)):
+            row['stop']='POST_RETRACTION_TRUST_CONSTRAINT';break
         augmented=np.r_[r,current.x]
         model_change=np.r_[J@actual_step,actual_step]
         pred=.5*float(augmented@augmented-np.linalg.norm(augmented+model_change)**2)
         row.update(predicted_reduction=pred,step_norm=float(np.linalg.norm(actual_step)),
+                   linear_material_step=float(np.linalg.norm(Mnow@actual_step)),
                    projection_induced_step_change=float(np.linalg.norm(actual_step-step)))
         if pred<=0 or np.linalg.norm(actual_step)<1e-9:
             row['stop']='NONPOSITIVE_PREDICTED_REDUCTION';break
-        previous=(target.objective(current,y),pred)
+        previous=(.5*float(r@r+current.x@current.x),pred)
         x=xn
     if best is None:
         write(folder/'CORRECTION.json',dict(status='NO_FEASIBLE_ENDPOINT',history=history));return None
@@ -264,7 +293,8 @@ def physical_probe():
                 actual=target.white(pp.state.data-prediction)
                 hh=m['h'];pred=hh*j['c1']+hh**2*j['c2']+hh**3*j['c3']
                 trials.append(dict(radius=radius,h=hh,status='EXECUTED',relative_error=float(np.linalg.norm(actual-pred)/max(np.linalg.norm(actual),1e-300))))
-            passed=(max(j['checks'].values())<2e-4 and adjoint_rel<2e-4 and
+            passed=(len(trials)==2 and all(t.get('status')=='EXECUTED' and t['relative_error']<.1 for t in trials) and
+              max(j['checks'].values())<2e-4 and adjoint_rel<2e-4 and
               all(min(r['relative_error'] for r in FD if r['direction']==d)<2e-4 for d in ('weak','random','property')))
             receipt=dict(status='PASS' if passed else 'FAIL_PAUSE',jet_algebra=j['checks'],
                adjoint_relative_error=adjoint_rel,finite_differences=FD,finite_jet_trials=trials,
@@ -275,13 +305,13 @@ def physical_probe():
         finally:target.close()
 
 
-def process_parent(parent):
+def process_parent(parent,job_suffix='FINAL'):
     if json.loads((OUT/'E2/probe/PROBE_RESULT.json').read_text())['status']!='PASS':
         raise RuntimeError('physical derivative gate closed')
     folder=OUT/'E2/parents'/parent
     if (folder/'COMPLETE.json').exists():raise FileExistsError('completed parent: no implicit replay')
     folder.mkdir(parents=True,exist_ok=True)
-    with Book('E2',parent,parent=parent,max_wall=1200) as book:
+    with Book('E2',parent+'_'+job_suffix,parent=parent,max_wall=1200) as book:
         target=Target(book)
         try:
             base,y=load_parent(target,parent,folder)
@@ -290,11 +320,20 @@ def process_parent(parent):
             idx=int(parent.rsplit('_',1)[1])
             g=geometry(target.prior,base.x,target.jacobian(base),np.random.SeedSequence([2026102810,idx,9 if parent.startswith('R7') else 8]))
             save(folder/'BASE_GEOMETRY.npz',**g)
+            if g['rank']==0:
+                write(folder/'COMPLETE.json',dict(parent=parent,anchor_cost=anchor_cost,cost=counters(book),
+                  endpoint_results=[dict(parent=parent,arm=a,radius=d,status='RANK0_NO_NONZERO_MATERIAL_TANGENT')
+                     for a in ['A_FROZEN','B_FULLJ','C_JETS','D_RANDOM'] for d in [.0025,.005,.01,.02]],
+                  online_GT_used=False,new_layout_tested=False,posterior_claim=False))
+                return
             j=jets(target,base,g['v'],g['strong_U'])
             save(folder/'COMPENSATED_JETS.npz',**{k:v for k,v in j.items() if isinstance(v,np.ndarray)})
             write(folder/'JET_QA.json',j['checks']);write(folder/'COMMON_COMPENSATION.json',j['groups'])
             jet_cost=diff_counts(counters(book),anchor_cost)
             if max(j['checks'].values())>2e-4:raise RuntimeError('jet algebra gate')
+            ja=jets(target,base,g['v_group_A'],g['strong_U'])
+            save(folder/'GROUP_A_COMPENSATED_JETS.npz',**{k:v for k,v in ja.items() if isinstance(v,np.ndarray)})
+            write(folder/'GROUP_A_COMMON_COMPENSATION.json',ja['groups'])
             rows=[];endpoints={};rawjet_h=None
             for distance in (.0025,.005,.01,.02):
                 # Cyclic order uses parent ID only; no method receives selected warm starts.
@@ -360,6 +399,27 @@ def process_parent(parent):
                            predicted_group_B=float(np.linalg.norm(pp[256:])),prediction_error=float(np.linalg.norm(actual-pp)))
                 group_rows.append(row)
             write(folder/'GROUP_FINITE_ENDPOINTS.json',group_rows)
+            # A deliberately single-group weak material direction, same U and
+            # complete eight-source output. Extra B channels are NOT a new layout.
+            group_corrected=[]
+            for group,sel in [('A',slice(0,256)),('B',slice(256,512)),('JOINT',slice(None))]:
+                dest=folder/'group_A_weak'/group;dest.mkdir(parents=True,exist_ok=True)
+                xp,ma=match_distance(target.prior,base.x,lambda hh:base.x+hh*g['v_group_A'],.02)
+                if xp is None:group_corrected.append(dict(group=group,status='INFEASIBLE'));continue
+                begin=counters(book)
+                pp=correct(target,base,y,xp,g['v_group_A'],.02,dest,rowsel=sel)
+                if pp is None:group_corrected.append(dict(group=group,status='CORRECTION_INFEASIBLE'));continue
+                row=metrics(target,pp,base,y,real_material(g['D']@g['v_group_A']),.02)
+                row.update(group=group,status='EXECUTED',cost=diff_counts(counters(book),begin))
+                group_corrected.append(row)
+            write(folder/'GROUP_A_WEAK_CORRECTED.json',group_corrected)
+            # Decoder-only curvature control: same legal decoder and material RMS.
+            xp,ma=match_distance(target.prior,base.x,
+                 lambda hh:polynomial(base.x,g['v'],hh,j['decoder_only_x2'],j['decoder_only_x3']),.02)
+            if xp is not None:
+                pp=target.evaluate(xp,'DECODER_ONLY_CURVATURE_CONTROL')
+                target.persist_cache(pp,folder/'DECODER_ONLY_CURVATURE_CONTROL.npz')
+                write(folder/'DECODER_ONLY_CURVATURE_CONTROL.json',metrics(target,pp,base,y,g['weak_material'],.02))
             write(folder/'COMPLETE.json',dict(parent=parent,anchor_cost=anchor_cost,jet_cost=jet_cost,
                cost=counters(book),controlled_main_seconds=time.perf_counter()-start,endpoint_results=rows,
                online_GT_used=False,new_layout_tested=False,posterior_claim=False))
@@ -380,11 +440,17 @@ def seal():
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['probe','generate','parent','seal']);parser.add_argument('--parent')
+    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['probe','generate','parent','seal']);parser.add_argument('--parent');parser.add_argument('--job-suffix',default='FINAL')
     args=parser.parse_args()
+    if args.command=='generate' or (args.command=='parent' and str(args.parent).startswith('R7_')):
+        freeze=json.loads((OUT/'configs/LOCKED_FINAL_FREEZE.json').read_text())
+        for row in freeze['source_files']:
+            path=REPO/row['path']
+            if hashlib.blake2b(path.read_bytes()).hexdigest()!=row['blake2b']:
+                raise RuntimeError('locked code differs from prospective final freeze')
     if args.command=='probe':physical_probe()
     elif args.command=='generate':generate()
-    elif args.command=='parent':process_parent(args.parent)
+    elif args.command=='parent':process_parent(args.parent,args.job_suffix)
     else:seal()
 
 
