@@ -8,7 +8,7 @@ header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140
 <p>本轮已封账，<code>CLOSURE.json</code>阻止在同一账本继续求解。<strong>不要删除closure、清空ledger或覆盖raw来复跑。</strong></p>
 <h2 id="零物理复核">零物理复核</h2>
 <p>使用原Gaussian研究venv（NumPy/SciPy/Matplotlib/threadpoolctl），从独立R7 worktree执行：</p>
-<pre><code data-language="bash">PYTHONDONTWRITEBYTECODE=1 ../../.venv_nn/bin/python research/p3l_r7_material_solution_fibers/audit/results/audit_results.py
+<pre><code data-language="bash">PYTHONDONTWRITEBYTECODE=1 ../../.venv_nn/bin/python research/p3l_r7_material_solution_fibers/audit/results/audit_results.py --output /tmp/r7_independent_array_review
 PYTHONDONTWRITEBYTECODE=1 ../../.venv_nn/bin/python research/p3l_r7_material_solution_fibers/src/theory_controls.py</code></pre>
 <p>第一条读取无损证据中的固定数组与中央账本，独立重算128状态、五节点、成本及封存身份，不读取GT。第二条仅是解析toy。数学/decoder QA脚本位于audit及src/validate_decoder_audit.py，历史原始输出不要覆盖，复核请写独立输出目录或使用包内复核收据。</p>
 <h2 id="原始执行顺序">原始执行顺序</h2>
