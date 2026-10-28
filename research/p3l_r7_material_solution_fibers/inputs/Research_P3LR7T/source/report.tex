@@ -1,0 +1,95 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\ifdefined\ReportFontPath
+\setmainfont[Path=\ReportFontPath,BoldFont=NotoSerifCJKsc-Regular.otf,BoldFeatures={FakeBold=1.5},ItalicFont=NotoSerifCJKsc-Regular.otf,ItalicFeatures={FakeSlant=.14}]{NotoSerifCJKsc-Regular.otf}
+\setmonofont[Path=\ReportFontPath,Scale=.9]{NotoSerifCJKsc-Regular.otf}
+\else
+\setmainfont[BoldFont={Noto Serif CJK SC Bold},ItalicFeatures={FakeSlant=.14}]{Noto Serif CJK SC}
+\setmonofont[Scale=.9]{Noto Serif CJK SC}
+\fi
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 1pt
+\usepackage[a4paper,margin=22mm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{graphicx,booktabs,longtable,tabularx,array,enumitem}
+\usepackage{needspace}
+\usepackage{xcolor,hyperref,fancyhdr,tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black,citecolor=blue!45!black,pdftitle={Research P3L-R7-T 中文理论研究报告},pdfauthor={Research analysis for migodam}}
+\renewcommand{\contentsname}{目录}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.6em}
+\setlength{\tabcolsep}{4pt}
+\setlength{\emergencystretch}{3em}
+\linespread{1.12}
+\setlist{nosep,leftmargin=1.6em,topsep=.35em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Research P3L-R7-T}
+\fancyhead[R]{\small 材料、观测、任务与不确定性}
+\fancyfoot[C]{\thepage}
+\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\refe}[1]{\textcolor{blue!45!black}{[证据 #1]}}
+\newcommand{\refl}[1]{\textcolor{blue!45!black}{[文献 #1]}}
+\newcommand{\qual}[1]{\textbf{\textcolor{teal!60!black}{#1}}}
+\newtheorem{theorem}{命题}
+\newtheorem{lemma}{引理}
+\newtheorem{corollary}{推论}
+\newtheorem{counterexample}{反例}
+\newtheorem{definition}{定义}
+\renewcommand{\proofname}{证明}
+\tcbset{colback=blue!3,colframe=blue!35!black,boxrule=.6pt,arc=1mm}
+\begin{document}
+\begin{titlepage}
+\vspace*{10mm}
+{\Large Research P3L-R7-T\par}
+\vspace{8mm}
+{\Huge\bfseries 从 Maxwell 材料多解到\\[.3em]任务条件信息\par}
+\vspace{7mm}
+{\LARGE 非线性补偿、材料测度与\\任务精度驱动的概率计算\par}
+\vspace{10mm}
+{\large 完整中文研究报告 · 原创性审查 · 下一轮实验任务书\par}
+\vspace{12mm}
+\begin{tcolorbox}
+\textbf{主判断}\quad 应当把“真正不同材料的有限噪声歧义”重新置于研究中心。商空间、概率体积和材料任务是澄清这一对象的必要层次；减少 Native 迭代目前是计算优化分支，尚未构成前述理论的推论。
+
+\textbf{最优先的问题}\quad 消去参数冗余之后，材料扰动被强方向补偿到哪一阶？补偿后的响应阶、材料任务变化阶和先验质量阶，如何共同决定不确定性与所需计算精度？
+\end{tcolorbox}
+\vfill
+\textbf{证据基线}\quad R6 科学版本
+\par\small\texttt{d1bdc8aceae4cd6a843f873b61b019d5eee3cd1d}
+\par\normalsize
+上传的 R6 证据包；固定版本的八份历史原报告；A17 最终理论文件；截至 2026 年 10 月 28 日核查的原始文献。
+\vspace{6mm}
+\par\textbf{本轮范围}\quad 理论推导、已有证据复核与实验设计。新增 Maxwell 求解：0；新增模型训练：0。文中解析图不属于新的 Maxwell 实验。
+\vspace{6mm}
+\par 2026 年 10 月 28 日 · Asia/Singapore
+\end{titlepage}
+\tableofcontents
+\newpage
+\input{01_decisions_evolution.tex}
+\input{02_objects_geometry.tex}
+\input{03_maxwell_jets.tex}
+\input{04_probability_tasks.tex}
+\input{05_accuracy_algorithms.tex}
+\input{06_narratives_originality.tex}
+\input{07_experiments_blueprint.tex}
+\input{08_codex_conclusions.tex}
+\input{09_sources.tex}
+\end{document}
+

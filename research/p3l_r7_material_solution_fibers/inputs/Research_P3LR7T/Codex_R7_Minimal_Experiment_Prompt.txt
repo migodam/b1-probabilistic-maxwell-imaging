@@ -1,0 +1,110 @@
+# Research P3L-R7 — 最小决定性 Maxwell 材料补偿实验
+# 默认执行 MODE=A。MODE=B 为独立的后续任务，只有明确将本文件 MODE 改为 B 时执行。
+# 本任务书的默认授权范围：新目录内实现、修复、运行和审计 MODE=A；不训练大型网络，不发布、不发送消息、不覆盖历史证据。
+
+## 0. 科学目标
+证明或否证一个具体机制：消去同材料 decoder gauge 后，真实非均匀材料变化能否被其他强材料方向补偿；补偿后的有限响应能否由可复用 Maxwell current jets 预测；不同采集要求的共享材料补偿冲突能否预测旧歧义被揭示。
+不要把本任务变成普通复现清单、无限近邻检查、重跑R2-R6、增大Flow，或减少Native迭代的工程比赛。
+当前报告的代数是条件推导，不是已完成原创性或物理优势证明。必须积极构造可证伪的正面机制，不以一个实现失败推断对象不存在。
+
+## 1. 固定输入与证据
+仓库：https://github.com/migodam/b1-probabilistic-maxwell-imaging
+固定科学提交：d1bdc8aceae4cd6a843f873b61b019d5eee3cd1d
+读取上传R6包的 RESEARCH_REPORT_ZH、THEORY_AND_COUNTEREXAMPLES、GO_NO_GO、全部STAGE、GPT_PRO_HANDOFF/START_HERE，以及R7-T报告。
+新工作写入 research/p3l_r7_material_compensation/ 的独立分支/目录；原R2–R6、统计门、原始账本与失败不得修改。
+区分“现有已付费资产复用”与新冷部署成本。若完整solver/decoder资产不在精简包，先按REPRODUCE与manifest恢复真正资产；不拿简化forward冒充Full Maxwell。
+若某项资产不可取得，完成所有可做的零物理推导/实现，明确缺口；不得编造成功。固定提交读不到时不得静默替换main。
+
+## 2. 模型合同
+原P1：Gaussian64×Uniform2，probit Gaussian66，原quintic平台；24×24 TM/VIE、256 ROI、8源×32复接收、原被动材料、原noise与packing。
+复材料使用实Hilbert空间；材料RMS度量明确。以Γ=σ²Σ表示噪声，jets使用Fbar=Σ^(-1/2)F，系数不把σ吸收进去。
+不同源共享同一材料；同材料gauge与不同材料近观测等价分别标记。
+局部几何中心可以是事前抽定、已知合法材料，不要求inverse optimizer驻点。它不是未知材料重建成功。
+不得更换prior、扩大noise-ball或放宽材料距离来制造多解。
+
+## 3. MODE=A：E1 + E2，先完成这一条
+总硬预算50,000个complex RHS；所有新forward、derivative、line search、失败及重试计入。基础规划24[40+2(40+96+480)]=30,528 RHS：12材料×2采集；基础forward+J为40，每方向高阶预留40、三非Full-J臂四距离验证96、四距离各最多3个Full-J状态480。按真实八源和32接收费用核实；其余作验证/修复余量。不得自动进入MODE=B。
+不新增大型NN训练。并行作源码/推导/审计；物理账本须中央唯一，避免重复状态和并行预算竞争。
+
+### E1：零Maxwell的decoder资格
+A. 预定256新prior parent，另32旧anchor仅开发；记录seed/parent及用途。
+B. 对m=Dq(z)，计算B=D_zq、DG、材料度量谱、q到range(B)的距离。核对
+rank_R DG = rank B + 1 + 1{q not in range(B)}
+的内点条件；host、pure、混合transition、属性边界分列。
+C. DG阈值必须来自数值导数误差和材料尺度，不选最漂亮的rank；记录多个合理容限的稳定性。
+D. 候选kernel做有限等材料校正，仅验证材料，不调用Maxwell。G'(0)=0不自动是gauge。
+E. 可加非均匀两patch解析gauge正控制，但明确其新prior身份，不能代替原Full66结论。
+F. 如果generic DG满66，直接删除“Full66普遍大幅gauge降维”主张，仍继续E2。这是有用结论，不是全项目停止条件。
+
+### E2：有限尺度共享材料补偿
+1. 先锁4 development、8 locked新parent。locked取冻结的新prior种子顺序连续八个；不因rank、jet大小、相容性或效果重抽。近常数/平台保留报告；若事先采用非均匀条件抽样，冻结条件并限制结论范围。每个用原采集与固定旋转π/24新采集。旋转合法性检查后冻结，不按结果选角。
+2. 每中心2个方向：原采集材料广义谱的弱方向，以及与强空间正交的同范数随机对照。使用同一个共同物理强基U，默认原采集材料正交谱前8维，低维按r=min(8,d−1)处理并报告退化；两采集不得分别取top-k后直接比较z_a。每方向4个固定材料RMS距离。开发候选{0.0025,0.005,0.01,0.02}，锁定集全局采用同一距离合同；越界保留infeasible，不逐对象偷换距离。
+3. 四臂：
+   - 普通material retraction；
+   - decoder/prior曲率补偿、冻结一阶Maxwell；
+   - full Maxwell二/三阶current jets +强方向补偿；
+   - 预算匹配Full-J nonlinear predictor-corrector，每目标至多3个新状态；未收敛不称精确profile。两例开发witness可各用至多20状态作profile参考，费用从总余量扣除。
+4. 在少量关键witness上使用材料affine chart，去掉quintic影响；同时保留原prior可行chart主实验。人工控制与原prior任务分列。
+5. 实现j=D_m(e_inc+G_Dj)。沿m(h)=m0+Σh^n m_n，
+   L0 j_n = D_mn E0 + Σ_{k=1}^{n-1}D_mk G_D j_{n-k}。
+   复用真实L0分解，不构造高阶全张量。所有sources RHS照实计费。
+6. 选择声明的强材料U，A=D Fbar U。固定投影response-aligned中心由
+   A* [Fbar(m(z,h))-Fbar(m0)]=0
+   定义。逐阶z_n=−A^+b_n，c_n=(I−P_A)b_n。
+   不能把此中心自动叫有噪声全局最优profile；与真实nonlinear profile作对照。
+7. 规定||m'(0)||material=1；gauge的m'(0)=0不能作为物理高阶证据。
+   若material J满列秩，exact p=1，只研究小一阶与高阶有限区间。p>=2须解析/严格rank控制，不能靠浮点阈值制造。
+8. 给系数误差、合法材料范围和余项。p阶主导需
+   Σ_{n<p}||c_n|| |h|^n <= θ1||c_p|| |h|^p，
+   M|h|^(p+1) <= θ2||c_p|| |h|^p，
+   θ1+θ2<1，
+   且落入IFT/resolvent/可行域。区间为空如实报告。仅保守IFT/Neumann充分界为空时，暂停严格证书主张，仍完成预算内预定有限距离Full Maxwell验证；真实验证也不支持工作区间时再暂停算法主张。不能在底噪上拟合高阶。
+9. 多采集：各b_a必须由同一背景、方向、共同U坐标和共同低阶材料系数产生；正确实数化与独立块白化。若新A_a秩亏则报告退化并直接求stacked最小二乘，不静默改basis套满秩公式。对A_a满列，
+   H_a=A_a*A_a，z_a=−A_a^+b_a，c_a=P_Aa^⊥b_a，
+   zbar=(ΣH_a)^−1ΣH_a z_a，
+   min_z Σ||A_a z+b_a||² = Σ||c_a||² + Σ||z_a−zbar||²_Ha。
+   计算“共享材料补偿冲突量”，不能把它叫完整posterior信息。
+10. 对照joint Fisher/Schur、普通二阶曲率、有限secant和昂贵真实nonlinear profile。在相同总测量数、发射能量和noise合同下比较。可从已付费全receiver向量预登记同数量子集，避免新增大求解。
+11. locked阶段冻结代码/方向/步长/任务，预测和成本先封存后评分。无需GT在线挑路径；GT只用于已知材料实验定义和离线任务指标。
+
+### 主要指标与通过含义
+- 数学：gauge身份、material norm、c1/c2/c3与误差、物理/decoder分解、非空有效区间。
+- 数值：远离底噪时预测相对响应误差，建议门10%；至少两个相邻固定距离支持有效区间。小距离通过只支持局部系数；任务尺度探索主张须在预留0.02材料RMS档位实现距离匹配及用途增量，不得删档后沿用该主张。
+- 用途：同材料距离下相容性、同总RHS/LU/wall的有效探索距离；采集冲突对真实joint response的预测。
+- 八locked parent是机制确认，不是大样本风险冠军。所有方向/采集按parent聚类，完整表和paired区间，不把seed当独立对象。
+- 失败分类T/I/B/P/C必须逐claim写；某optimizer不收敛不否定合法几何中心；无exact kernel不否定finite-noise tube。
+- 如果全为decoder/gauge，停止“新Maxwell补偿机制”主张；如果系数正确但普通profile同成本更强，保留物理解释、删除加速主张；如果新采集预测有独立作用，集中深化该用途。
+- 不因为一次negative就追加无限近邻检查；用预先定义四臂回答机制后封账。
+
+## 4. MODE=B：独立后续的任务积分（默认不运行）
+使用2个空间latent+2材料属性的4D非均匀条件模型，其余latent固定，活动prior支撑明确。这不是Full66 marginal。
+先2个reference pilot，后4新locked parent×2采集。总硬上限1,600,000 complex RHS，含reference、全部基线、错误与证书费用；预算预留pilot 260,096、locked reference 784,384、四比较法524,288、生成/失败/收尾31,232 RHS；总额不变，不必用满。
+任务：ROI Re/Im均值、二阶矩、材料threshold/非host事件、空间结构事件、predictive scattering。均值tol建议1e−5、事件0.002，其他单位在pilot前明确。
+参考必须全域覆盖、保留atoms、正确source image overlap合并，并有可用tail/剩余块界；source-CDF与材料chart独立交叉。reference误差<每任务tol/5。
+两例pilot不能满足则停止locked概率效率实验，输出reference缺口和已有理论，不称其“posterior不存在”。
+
+基线：source-CDF分层自适应；正确quotient/multichart普通分配；任务加权分配；成熟defensive IS/SMC或regular区RTO proposal；后者须配全支持mixture、其它分支质量及正确权重，单一regular成功区不能替代全域基线。
+在线维护Z_L以及
+|Tφ−t| <= (|Qhat_C|+e_C+Σ a_b U_b)/Z_L。
+明确每常数是严格包络、经验refinement还是学习预测。无覆盖界不得标certified。
+报告同task误差及同branch质量误差的cold总费用；缓存复用另外报告。
+reference解锁后的离线first-hit曲线不能冒充在线stop。
+只有完成reference/operator验证后再考虑E5，不从8条件启动大型NN或Full66新Flow。
+
+## 5. E4/E5的范围
+E4仅保留Direct Probit64/128、Full/Low actual/q强基线；不另启大型stage-allocation搜索。所有计时同窗口交错，完整费用；GT不能在线停止。
+E5不得把确定性current/Jacobian/KKT特征称为增加raw-y的Shannon信息；检验的是有限容量、数据与计算预算下的任务估计价值。真正新增采集的信息另算。先在可信低维模型验证B=Cov(φ,F)Σ^(-1/2)的局限及完整preposterior任务信息。后续学习若被另外安排，raw-y/global encoder/decoder-only/同谱随机/真实Maxwell必须同数据容量更新预算、匹配重训；冻结head删通道不是独立物理价值证明。
+
+## 6. 必交付
+RESEARCH_REPORT_ZH.md：先结论、再机制、正负证据和资格。
+THEORY_AND_COUNTEREXAMPLES.md：条件、证明、坐标/原子/多维体积边界。
+DECODER_GAUGE_AUDIT.json；COMPENSATED_JETS.npz；COMMON_COMPENSATION.json。
+LOCKED_PROTOCOL.json、PREDICTIONS_SEALED.json、按parent结果。
+PHYSICS_LEDGER.jsonl、RESOURCE_SUMMARY.json、完整状态/LU/RHS/CPU/wall/内存费用。
+GO_NO_GO.md：每个主张分别判，不能整条研究粗暴PASS/FAIL。
+NEXT_THEORY_QUESTIONS.md：只保留2–3个由新证据产生的问题。
+固定材料/响应/区间/采集冲突图；图源manifest，不能只留norm而丢向量。
+复现说明和失败记录；旧R2–R6证据保持。若代码出错，先修复并在预算内继续；不以例行确认代替已授权工作。
+
+最终必须回答：是否确实存在不同材料的非线性补偿；其有限工作区间是否可验证；新增采集的补偿冲突是否优于普通一阶/强profile指标；概率任务有没有因此获得独立收益。没有建立的项目逐项保留，不编造论文结论。
+

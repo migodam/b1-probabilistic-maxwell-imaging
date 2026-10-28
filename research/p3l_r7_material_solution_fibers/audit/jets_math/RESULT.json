@@ -1,0 +1,134 @@
+{
+  "scope": "original prior only; no Maxwell import/solve; no GT",
+  "checks": {
+    "decoder_coefficients": [
+      {
+        "case": "regular",
+        "steps": [
+          0.08,
+          0.04,
+          0.02,
+          0.01
+        ],
+        "RMS_errors": [
+          1.7275850713507427e-06,
+          1.0873005633050705e-07,
+          6.818507132663678e-09,
+          4.2685940316422343e-10
+        ],
+        "convergence_orders": [
+          3.9899340490192565,
+          3.9951510853135357,
+          3.9976230397704677
+        ],
+        "first_derivative_relative": 3.7402466528428214e-11
+      },
+      {
+        "case": "upper_plateau",
+        "steps": [
+          0.08,
+          0.04,
+          0.02,
+          0.01
+        ],
+        "RMS_errors": [
+          1.0590437785942446e-08,
+          6.64803399928114e-10,
+          4.163994357059575e-11,
+          2.6052571184644824e-12
+        ],
+        "convergence_orders": [
+          3.993690657913108,
+          3.996887741690372,
+          3.9984704461951983
+        ],
+        "first_derivative_relative": 3.8523864387452665e-10
+      },
+      {
+        "case": "lower_plateau",
+        "steps": [
+          0.08,
+          0.04,
+          0.02,
+          0.01
+        ],
+        "RMS_errors": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "convergence_orders": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "first_derivative_relative": 0.0
+      }
+    ],
+    "independent_tiny_polynomial_fit": {
+      "step": 0.015,
+      "relative_errors_orders0to3": [
+        5.015048759944894e-16,
+        8.556298029933322e-14,
+        3.7813548589153345e-11,
+        4.89460365321491e-09
+      ]
+    },
+    "real_hilbert": {
+      "real_dot": 0.09792282973595838,
+      "complex_real_dot": 0.09792282973595838,
+      "mapping_error": 5.653965177569457e-16
+    },
+    "common_real_LS": {
+      "normal_residual": 6.159887137044856e-14,
+      "group_identity_absolute_defect": 1.5987211554602254e-14
+    },
+    "GN_real_constraints": {
+      "signed_progress_tangent_defect": 0.0,
+      "latent_step": 0.06352324200929592,
+      "linear_material_step": 0.01,
+      "predicted_reduction": 9.26917065651574,
+      "independent_quadratic_reduction": 9.26917065651574
+    },
+    "saturated_GN_gauge_counterexample": {
+      "priority": "P1",
+      "status": "RESOLVED_BY_ROOT",
+      "function": "gn_step",
+      "issue": "Pre-fix GN retained exact decoder gauges, violating effective-material-only frozen correction arm",
+      "original_prior_rank": 2,
+      "latent_step": 0.0,
+      "kernel_step": 0.0,
+      "actual_material_RMS_change": 0.0,
+      "predicted_prior_reduction": 0.0,
+      "pre_fix_reproduced_kernel_step": 0.5,
+      "pre_fix_reproduced_actual_material_RMS_change": 0.0,
+      "required_fix": "Z=Veff@null_space((unit@M@Veff)[None,:]); Veff uses frozen SVD thresholds"
+    }
+  },
+  "issues": [
+    {
+      "priority": "P1",
+      "status": "RESOLVED_BY_ROOT",
+      "function": "gn_step",
+      "issue": "Pre-fix GN retained exact decoder gauges, violating effective-material-only frozen correction arm",
+      "original_prior_rank": 2,
+      "latent_step": 0.0,
+      "kernel_step": 0.0,
+      "actual_material_RMS_change": 0.0,
+      "predicted_prior_reduction": 0.0,
+      "pre_fix_reproduced_kernel_step": 0.5,
+      "pre_fix_reproduced_actual_material_RMS_change": 0.0,
+      "required_fix": "Z=Veff@null_space((unit@M@Veff)[None,:]); Veff uses frozen SVD thresholds"
+    },
+    {
+      "priority": "GATE",
+      "function": "decoder_coefficients",
+      "issue": "Exact seam points have no single third Taylor coefficient; finite paths crossing seams require regular-stratum handling",
+      "module_scope": "module docstring correctly disclaims global C3; caller must enforce frozen regular-stratum gate"
+    }
+  ],
+  "new_Maxwell_RHS": 0,
+  "new_Maxwell_states": 0,
+  "status": "PASS_WITH_REGULAR_STRATUM_GATE"
+}

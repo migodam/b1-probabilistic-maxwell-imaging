@@ -1,3 +1,11 @@
+<!-- P3LR7_CURRENT -->
+## Research P3L-R7：真实材料弱响应成立，高阶独立优势未建立
+
+256点零物理材料秩审计，4开发＋8新对象，37,456 RHS封账。真实材料RMS 0.02时，普通Full-J为8/8似然竞争端点，7/8响应距离≤1；高阶方法6/8，没有超越强普通基线。有限噪声歧义为限定GO；连续精确纤维未建立，Full66 posterior未认证，TAP REDIRECT。全部失败、路径、同材料gauge与多照明控制公开。
+
+[中文完整报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r7_material_solution_fibers/) · [匿名Markdown](research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md) · [完整原始证据与Pro交接](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr7-material-fibers-20261028)
+<!-- /P3LR7_CURRENT -->
+
 <!-- P3LR6_CURRENT -->
 ## Research P3L-R6：任务最优Maxwell材料计算
 

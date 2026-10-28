@@ -1,0 +1,151 @@
+{
+  "campaign": "P3LR7",
+  "frozen_utc": 1793154136.8532999,
+  "scope": "E0/E1 no physics; E2 original acquisition source-group mechanism; no new layout, no Full66 probability training",
+  "source_base": "177a9ea37ada6dbad8ec67589bf3c6d6b99c0706",
+  "theory_public_reference": "d1bdc8aceae4cd6a843f873b61b019d5eee3cd1d",
+  "prior": "original Gaussian64 x Uniform2 pushforward, Gaussianized66",
+  "sigma": 0.00119211798514519,
+  "grid": 24,
+  "ROI": 256,
+  "sources": 8,
+  "receivers": 32,
+  "source_groups": {
+    "A": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "B": [
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "white": "sqrt2/sigma, source-major Re32 then Im32; material real Hilbert norm /24",
+  "dtype": "float64/complex128",
+  "backward_residual": 1e-10,
+  "anchor": {
+    "DEV": "historical Full Native96/Probit64 x from original raw cache; rerun endpoint only to own live LU, fully billed",
+    "LOCKED": "measurement-only direct Gaussianized Probit TRF from zero x, objective Phi+||x||²/2",
+    "fresh_state_cap": 64,
+    "method": "scipy least_squares trf exact x_scale=jac",
+    "ftol": 1e-09,
+    "xtol": 1e-09,
+    "gtol": 1e-07,
+    "fallback": "best finite observed objective from same history; all failures retained; no GT restart"
+  },
+  "material_geometry": {
+    "rank_relative": 1e-08,
+    "rank_absolute": 1e-10,
+    "sensitivity_ranks": [
+      1e-06,
+      1e-08,
+      1e-10,
+      1e-12
+    ],
+    "selection": "minimum eigenvector K^T K+T^T T on effective material frame; beta=1; excludes numerical decoder kernel, NOT exact Maxwell-null",
+    "strong_frame": "up to8 joint material-normalized top response directions orthogonalized against chosen material direction",
+    "radii": [
+      0.0025,
+      0.005,
+      0.01,
+      0.02
+    ],
+    "distance_relative_tolerance": 0.02,
+    "signed_progress_fraction": 0.5,
+    "max_latent_displacement": 4.0,
+    "max_normalized_prior_cost_increase": 10.0,
+    "prior_cost_gate": "report both with and without this explicit reasonable-prior heuristic; not posterior mass"
+  },
+  "arms": {
+    "A_FROZEN": "shared weak direction, exact decoder distance matching, frozen full-J predictor/corrector",
+    "B_FULLJ": "same weak direction, dynamic full-J GN, all material-effective correction coordinates except signed progress, exact distance retraction",
+    "C_JETS": "same weak direction, exact decoder+Maxwell jets2/3 in common top8 strong coordinates, same dynamic full-J corrector",
+    "D_RANDOM": "frozen seeded native-normal random projected off strong frame, same RMS/progress and dynamic full-J corrector"
+  },
+  "correction": {
+    "new_states_per_target": 3,
+    "trust_latent_radius": 0.5,
+    "trust_material_radius_fraction": 0.5,
+    "original_Gaussian_prior_penalty": true,
+    "actual_predicted_ratio_bounds": [
+      0.25,
+      0.75
+    ],
+    "radius_factors": [
+      0.5,
+      1.5
+    ],
+    "minimum_fractional_material_progress": 0.5,
+    "endpoint_selection": "lowest Phi+.5||x||² among distance/progress feasible paid states, no GT"
+  },
+  "jets": {
+    "max_order": 3,
+    "regular_stratum_only_for_exact_Taylor": true,
+    "all_three_terms": [
+      "propagation feedback",
+      "total-field injection",
+      "decoder curvature and Gaussianized property derivatives"
+    ],
+    "same_real_material_strong_frame": true,
+    "group_compensation": "separate group-A/group-B and joint coefficients at same lower-order material path; explicit real LS",
+    "exact_order_claim": "none from rank threshold, report nonzero first order and finite-noise crossover"
+  },
+  "numeric_gates": {
+    "E0_E1": "zero-physics PASS prior/metric/FD",
+    "first_physical": "three central steps JVP, adjoint identity and jet check; error signal must exceed solver floor",
+    "derivative_relative_max": 0.0002,
+    "jet_prediction_relative_max": 0.1,
+    "jet_validity": "two adjacent radii; 0.02 required for task-scale advantage",
+    "path_t": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "path_selection": "all12 parents: B_FULLJ latent chord to radius.02 and C_JETS raw cubic at radius.02, no success selection",
+    "physical_endpoint_noise_ball": "original 95% circular Gaussian noise ball; separate ΔPhi<=2 competitive heuristic",
+    "delta_phi_max": 2.0,
+    "mean_pair_distance_near_equivalence": 1.0,
+    "material_distance_success": 0.02
+  },
+  "tasks": {
+    "T1": "ROI mean complex chi",
+    "T2": "fixed right-half ROI mean |chi-host|², NOT GT risk or Bayesian risk",
+    "T3": "ROI fraction of cells Re(chi)>=0.75 and event fraction>=0.25; genuine material function"
+  },
+  "resource_forecast": {
+    "anchor_upper_RHS": 20800,
+    "truth_RHS": 64,
+    "development_base_RHS": 160,
+    "main_4arms_4radii_3states_upper_RHS": 18432,
+    "jets_RHS": 576,
+    "path_RHS": 2880,
+    "probe_reserve": 512,
+    "additional_profile_reserve": 1600,
+    "estimated_full_upper_RHS": 45024,
+    "initial_planning_target": 30528,
+    "total_hard_cap": 50000,
+    "remaining_budget_gate": "derivative/solver contract passes, locked paired comparison and required paths remain under unchanged frozen arms/radii; no new learned branch"
+  },
+  "statistics": {
+    "parent_unit": true,
+    "DEV_not_confirmation": true,
+    "locked_n": 8,
+    "paired_bootstrap": 20000,
+    "bootstrap_seed": 2026102811,
+    "main": "C vs B at.02 paired endpoint Phi, competitive material success, paid RHS; all methods report Pareto",
+    "confidence": "descriptive parent percentile95%; no large-population conclusion, no source/node pseudoreplication"
+  },
+  "isolation": "data-generation process writes private GT and public y separately; online runner cannot load offline_truth; all eight predictions seal before scoring",
+  "attachment_conflicts": [
+    "current task replaces proposed rotated new acquisition with original8-source disjoint groups",
+    "current task requires online GT isolation; locked centers are reconstructed from observations, not known truth",
+    "no MODE-B 1.6M RHS authorization",
+    "standing user public existing-B1 preference retained; attachment no-publication default is not an active instruction"
+  ]
+}
