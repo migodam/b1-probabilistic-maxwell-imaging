@@ -30,3 +30,5 @@
 ## 原90分钟与原预算内追加实验
 
 跨形状复用实验及独立QA以单独的 `R10_shape_update_followup.tar.zst` 和 `R10_shape_update_followup_manifest.json` 追加到同一Release，不覆盖原归档。当前报告合并该负结果；最终总费用为309232个256阶RHS、19936个低阶RHS、9665个256阶LU、新576阶RHS为0。追加结果：192/192旧基查询回退，总成本为直接LU的2.249倍；该结论不否定所有TSOM表示。
+
+追加归档26,176,548字节已于19:08 UTC完成匿名逐字节回读，BLAKE2b身份一致。见[FOLLOWUP_PUBLIC_READBACK.json](FOLLOWUP_PUBLIC_READBACK.json)。本轮追加科学提交`3a318b628`，与原冻结Release科学提交分开记录。
