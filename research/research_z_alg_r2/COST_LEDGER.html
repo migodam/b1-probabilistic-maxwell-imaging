@@ -1,0 +1,199 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>Resource and cost audit | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_COMPENDIUM.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>Resource and cost audit</h1><details class="toc"><summary>本文目录 · 5节</summary><ol><li><a href="#section-0">Full RHS breakdown</a></li><li><a href="#section-1">Fresh six-material extension</a></li><li><a href="#section-2">Small algebraic work (not full RHS)</a></li><li><a href="#section-3">Negative evidence and limits</a></li><li><a href="#section-4">Hardware,timing gaps, and publication scope</a></li></ol></details>
+<p><strong>Distinct actual full complex RHS: 53,951.</strong> This preserves the verified prior R2 subtotal <strong>53,903</strong> and adds exactly <strong>48</strong> for the fresh six-material extension. Discrepancies: 0. No physics was run for this accounting update.</p>
+<p>Each canonical event book is charged once. Model counters, target logs, pool summaries, and reused anchors are not additional charges. Full-source and material-J RHS are separate from small algebraic RHS.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th align="right">Full complex RHS</th>
+<th align="right">Known receipt wall (s)</th>
+<th align="right">Known receipt CPU (s)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>blind_engineer</td>
+<td align="right">9,974</td>
+<td align="right">0.591672</td>
+<td align="right">0.566886</td>
+</tr>
+<tr>
+<td>main_branch</td>
+<td align="right">9,710</td>
+<td align="right">30.546853</td>
+<td align="right">30.130062</td>
+</tr>
+<tr>
+<td>adaptive_NEW</td>
+<td align="right">23,591</td>
+<td align="right">7.397774</td>
+<td align="right">6.977569</td>
+</tr>
+<tr>
+<td>quotient_prototype</td>
+<td align="right">10</td>
+<td align="right">0.011729</td>
+<td align="right">0.005668</td>
+</tr>
+<tr>
+<td>quotient_benchmark_NEW</td>
+<td align="right">10,514</td>
+<td align="right">3.501823</td>
+<td align="right">3.438385</td>
+</tr>
+<tr>
+<td>control64_NEW</td>
+<td align="right">22</td>
+<td align="right">0.348282</td>
+<td align="right">0.319985</td>
+</tr>
+<tr>
+<td>holdout_solver_NEW</td>
+<td align="right">64</td>
+<td align="right">2.149258</td>
+<td align="right">2.079704</td>
+</tr>
+<tr>
+<td>holdout_generation_NEW</td>
+<td align="right">8</td>
+<td align="right">0.012935</td>
+<td align="right">0.002806</td>
+</tr>
+<tr>
+<td>CLI_reproduction</td>
+<td align="right">10</td>
+<td align="right">0.005434</td>
+<td align="right">0.004435</td>
+</tr>
+<tr>
+<td>general6_extension_NEW</td>
+<td align="right">48</td>
+<td align="right">1.612868</td>
+<td align="right">1.588242</td>
+</tr>
+</tbody></table>
+<h2 id="section-0">Full RHS breakdown</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th align="right">RHS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>forward_source_RHS</td>
+<td align="right">32,656</td>
+</tr>
+<tr>
+<td>independent_validation_source_RHS</td>
+<td align="right">748</td>
+</tr>
+<tr>
+<td>J_adjoint_RHS</td>
+<td align="right">14,621</td>
+</tr>
+<tr>
+<td>J_tangent_RHS</td>
+<td align="right">5,088</td>
+</tr>
+<tr>
+<td>reference_setup_RHS</td>
+<td align="right">768</td>
+</tr>
+<tr>
+<td>generation_source_RHS</td>
+<td align="right">70</td>
+</tr>
+<tr>
+<td>other_full_RHS</td>
+<td align="right">0</td>
+</tr>
+</tbody></table>
+<p>Setup source and active-column subcounts are included in setup RHS, not added again. Historical adaptive anchor 551 RHS is charged only in the original blind phase. The unsaved 28-RHS cost remains reported with limited saved evidence; its timings/algebraic details are not reconstructed.</p>
+<h2 id="section-1">Fresh six-material extension</h2>
+<ul>
+<li>Total 48 new RHS =18 shared reference setup +21 fresh candidate validation +9 isolated generation. A separate pre-generation geometry audit used 0 full RHS.</li>
+<li>Three sources, one receiver, and 6 independently unknown real material cells;15 quartic minors,15×15 leading block, and 20dimensional quotient.</li>
+<li>The quotient found 2/1/1 qualified legal roots; the frozen64-start reduced Full-J found 1/1/1. All 60 quotient endpoints were numerically distinct,with 0 Newton polish steps.</li>
+<li>The extra same-observation material pair has RMS separation 1.1587903; fresh nonlinear response residuals are 1.94e-14 and 1.71e-14.</li>
+<li>Leading-block condition maximum 106.64; pairwise relative commutator maximum 3.38e-16; eigenvector condition maximum 17840; backsubstitution condition maximum 8.72. These are numerical diagnostics, not exact certification.</li>
+<li>Single-run total wall including setup, validation, and target logging: quotient 0.10442s versus reduced FullJ64 1.51803s. No timing repeats or post-score tuning were performed.</li>
+<li>The64-start baseline has 24 paid optimizer nonconvergences among 192 starts. Its missing root is a failure of this frozen budget, not a proof that stronger local searches cannot recover the root.</li>
+</ul>
+<p>Evidence: <a href="results/general6_SOLVER_FREEZE_RECEIPT.json">solver freeze</a>,<a href="results/general6_PREDICTION_FREEZE_RECEIPT.json">prediction freeze</a>,<a href="results/general6_numeric_audit.json">numeric audit</a>,<a href="results/general6_RESOURCE_SUMMARY.json">extension resources</a>.</p>
+<h2 id="section-2">Small algebraic work (not full RHS)</h2>
+<table>
+<thead>
+<tr>
+<th>Saved counter</th>
+<th align="right">Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>reduced_complex_RHS</td>
+<td align="right">143,150</td>
+</tr>
+<tr>
+<td>reduced_LU</td>
+<td align="right">36,461</td>
+</tr>
+<tr>
+<td>algebraic_linear_solves</td>
+<td align="right">291,792</td>
+</tr>
+<tr>
+<td>quotient_linear_solves</td>
+<td align="right">140</td>
+</tr>
+<tr>
+<td>quotient_eigenproblems</td>
+<td align="right">140</td>
+</tr>
+<tr>
+<td>quotient_recovery_least_squares</td>
+<td align="right">876</td>
+</tr>
+<tr>
+<td>quotient_polish_linear_solves</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>algebraic_determinants</td>
+<td align="right">3,477</td>
+</tr>
+<tr>
+<td>polynomial_evaluations</td>
+<td align="right">366,957</td>
+</tr>
+<tr>
+<td>polynomial_J_evaluations</td>
+<td align="right">365,475</td>
+</tr>
+<tr>
+<td>tracked_paths</td>
+<td align="right">1,482</td>
+</tr>
+<tr>
+<td>determinant_permutation_terms</td>
+<td align="right">1,080</td>
+</tr>
+<tr>
+<td>polynomial_linear_multiplications</td>
+<td align="right">4,320</td>
+</tr>
+</tbody></table>
+<p>These selected counters describe saved reduced systems and algebraic operations. They exclude incomplete unsaved-development details. Small RHS are never added to the full-RHS total. General6 baseline counts actual cached small solves: 3 source RHS per new state and 1 receiver-transpose RHS per Jacobian.</p>
+<h2 id="section-3">Negative evidence and limits</h2>
+<ul>
+<li>Initial six-path studies did not achieve a total-wall GO against FullJ8 despite their full-RHS reduction.</li>
+<li>In the exposed four-material control,both eight-start misses were recovered by 64-start reduced Full-J.</li>
+<li>Fresh four-material holdout coverage was identical across all four methods: root counts 1/1/1/2.</li>
+<li>The old 24-path batch has 8 slices with endpoint collisions: 672 terminal paths represent 662 distinct endpoints.</li>
+<li>Every paid failed/nonconverged attempt is retained. The full inventory now contains 48 optimizer nonconvergences among 1920 inspected attempts;no saved paid physics-operation error was found.</li>
+<li>Numerical finite-dimensional root evidence does not establish exact completeness,continuous-PDE claims,connected components,global material coverage, or posterior inference.</li>
+</ul>
+<h2 id="section-4">Hardware,timing gaps, and publication scope</h2>
+<p>Apple M4, arm64, 10 logical CPU cores, 24 GiB RAM; local CPU with one declared BLAS thread. Python 3.13.13, NumPy 2.5.3, SciPy 1.18.1. GPU jobs 0, cloud jobs 0, neural training runs 0. External compute spend reported 0; local hardware/energy cost was not metered.</p>
+<p>Known wall/CPU sums are partial additive receipt measurements, not campaign elapsed time. The 28 unsaved development RHS and 45 initial aggregate generation RHS have no audited timings here. The separate general6 geometry audit has known wall but no CPU timing.</p>
+<p>Canonical raw receipts and non-overlapping rows are linked in <a href="COST_LEDGER.csv">COST_LEDGER.csv</a>,<a href="COST_LEDGER.json">COST_LEDGER.json</a>, and <a href="results/RESOURCE_SUMMARY.json">RESOURCE_SUMMARY.json</a>. These retain the original phase totals and all known algebraic counters.</p>
+<p>Publication/privacy review remains with the top-level reviewer. This ledger copies no private truth arrays,seeds, or score values and does not authorize publication.</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/COST_LEDGER.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

@@ -1,0 +1,170 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>根、分支、饱和理想与覆盖：六路径内核的正确解释 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>根、分支、饱和理想与覆盖：六路径内核的正确解释</h1><details class="toc"><summary>本文目录 · 8节</summary><ol><li><a href="#section-0">1. 清分母之后真正求解的对象</a></li><li><a href="#section-1">2. 对偶内核的精确 incidence correspondence</a></li><li><a href="#section-2">3. 六根上界究竟对什么有效</a></li><li><a href="#section-3">4. 真正的分支图与函数域</a></li><li><a href="#section-4">5. 坐标切片与 witness slicing 的覆盖区别</a></li><li><a href="#section-5">6. 数值枚举、验证与认证的分级</a></li><li><a href="#section-6">7. 直接可用于推翻过强结论的例子</a></li><li><a href="#section-7">8. 本轮理论交付的边界</a></li></ol></details>
+<p>状态：与 <code>algebraic_structure.md</code> 配套的理论说明。以下固定 Green、每 cell 共享实标量材料、已冻结的观测，以及非奇异 resolvent。没有假设物理群，也不把局部/切片结果提升为全材料域覆盖。</p>
+<h2 id="section-0">1. 清分母之后真正求解的对象</h2>
+<p>对一个四材料切片，使用</p>
+<p><span class="math">\[
+T=R(I-D_zH)^{-1}D_zB,
+\quad \Delta(z)=\det(I-D_zH),
+\quad f_s=T_s\Delta-N_s,\quad s=1,2.
+\tag{1}
+\]</span></p>
+<p>在真实材料 <span class="math">\(z\in\mathbb R^4\)</span> 上，需要 <span class="math">\(\operatorname{Re}f_s=\operatorname{Im}f_s=0\)</span>，并要求 <span class="math">\(\Delta\ne0\)</span>。为讨论复根，把 <span class="math">\(z\)</span> 继续当作四个复代数变量；<span class="math">\(\overline\Delta\)</span> 表示“只共轭固定系数”的多项式，绝不对变量取共轭。复化后的理想可写成</p>
+<p><span class="math">\[
+I=\langle f_1,f_2,\widetilde f_1,\widetilde f_2\rangle
+\subset K[z_1,z_2,z_3,z_4],
+\tag{2}
+\]</span></p>
+<p>其中 <span class="math">\(\widetilde f_s=\overline T_s\,\widetilde\Delta-\widetilde N_s\)</span>，系数域 <span class="math">\(K\)</span> 包含全部冻结复系数及其共轭。归档 binary64 系数可以当作精确二进制有理数；这不自动认证真实 Hankel 函数或连续 PDE。</p>
+<p>对物理域，应使用</p>
+<p><span class="math">\[
+q=\Delta\widetilde\Delta,\qquad I_{\rm sat}=I:q^\infty.
+\tag{3}
+\]</span></p>
+<p>可用一个辅助变量 <span class="math">\(\eta\)</span> 实现：</p>
+<p><span class="math">\[
+I_{\rm sat}=\big(I+\langle\eta q-1\rangle\big)\cap K[z].
+\tag{4}
+\]</span></p>
+<p>饱和删除完全位于 <span class="math">\(q=0\)</span> 的分量。一般高维情形下，饱和理想的闭包仍可能含 <span class="math">\(q=0\)</span> 的极限点，因此最后仍须显式检查 <span class="math">\(q\ne0\)</span>；不能只读一个饱和理想名称就认为极点已逐点排除。</p>
+<h3>1.1 极点基点为什么不是抽象的小问题</h3>
+<p>在简单 resolvent 极点，<span class="math">\(\operatorname{adj}(I-D_zH)=ab^T\)</span> 为秩一，故</p>
+<p><span class="math">\[
+N_s=(Ra)(b^TD_zB_s).
+\]</span></p>
+<p>若 <span class="math">\(Ra=0\)</span>，全部接收分子都消失；若相应入射投影为零，特定源分子也消失。于是 <span class="math">\(T_s\Delta-N_s=0\)</span> 可在分母为零时自动成立。清分母系统会接受这种点，但原状态逆矩阵不存在。不能把它们称为额外材料分支。分母近零但未为零的点也可能数值极难区分，需要保留 resolvent 稳定性门。</p>
+<h2 id="section-1">2. 对偶内核的精确 incidence correspondence</h2>
+<p>为避免“消元后看起来像”的歧义，先保留材料和两份传递行。设 <span class="math">\(w,\widetilde w\in\mathbb C^{1\times4}\)</span>，令</p>
+<p><span class="math">\[
+\begin{aligned}
+wB&amp;=T,&amp;\widetilde w\,\overline B&amp;=\overline T,\\
+w_i&amp;=z_i(R_i+(wH)_i),&amp;
+\widetilde w_i&amp;=z_i(\overline R_i+(\widetilde w\,\overline H)_i),
+\quad i=1,\ldots,4.
+\end{aligned}
+\tag{5}
+\]</span></p>
+<p>第二份使用同一个 <span class="math">\(z_i\)</span>，这是实材料复化的正确表达。再加 <span class="math">\(\eta\Delta\widetilde\Delta=1\)</span>，式 (5) 与原清分母后限制于可逆域的方程等价。</p>
+<p>通过 <span class="math">\(w=w_0+cN\)</span>、<span class="math">\(\widetilde w=\overline{w_0}+d\overline N\)</span> 消去两组线性测量，得到四个双线性方程</p>
+<p><span class="math">\[
+f_i=w_i\widetilde v_i-\widetilde w_i v_i=0,
+\quad v=R+wH,\quad
+\widetilde v=\overline R+\widetilde w\,\overline H.
+\tag{6}
+\]</span></p>
+<p>在所有 <span class="math">\(v_i\widetilde v_i\ne0\)</span> 的开集上，恢复</p>
+<p><span class="math">\[
+z_i=w_i/v_i=\widetilde w_i/\widetilde v_i.
+\tag{7}
+\]</span></p>
+<p>因此两种表示在这一区域有双有理对应。若继续限制 <span class="math">\(\Delta\widetilde\Delta\ne0\)</span>，就是有效材料根的等价参数化。取物理实根还需 <span class="math">\(d=\overline c\)</span>、<span class="math">\(z\in\mathbb R^4\)</span> 及合法盒。</p>
+<p>该双有理对应只在已声明开集成立：不能忽略 <span class="math">\(v=0\)</span> 的节点分量、极点、项目化边界或材料盒边界。物理可逆解中的单个 <span class="math">\(v_i=0\)</span> 会产生沿 <span class="math">\(z_i\)</span> 的真实连续纤维，因此正则孤立物理解不在这种节点上。复杂代数化还可能包含没有物理实固定点的退化分量。</p>
+<h2 id="section-2">3. 六根上界究竟对什么有效</h2>
+<p>四条式 (6) 都属于 <span class="math">\(\mathbb P^2\times\mathbb P^2\)</span> 上的 <span class="math">\((1,1)\)</span> 类，其交数</p>
+<p><span class="math">\[
+(h_c+h_d)^4=6h_c^2h_d^2
+\quad\text{在顶维项上成立。}
+\tag{8}
+\]</span></p>
+<p>因此，在零维目标交集中，最多有六个复项目根，计入重数及无穷远。对非零维目标系统，六是孤立复根的 Bézout 界，不能替代对高维分量的处理。非节点、可逆且实 Jacobian 满秩的每个物理解对应一个简单孤立复根，所以这类物理解最多六个。</p>
+<p>必须分别保留以下对象：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>能否直接计入“合法物理根”</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>非共轭的 <span class="math">\((c,d)\)</span> 根</td>
+<td>否，属于复代数化</td>
+</tr>
+<tr>
+<td>共轭但材料越盒</td>
+<td>否，可保留为域外实根</td>
+</tr>
+<tr>
+<td>原 resolvent 奇异根</td>
+<td>否，原模型未定义</td>
+</tr>
+<tr>
+<td><span class="math">\(v_i=0\)</span> 的实可逆解</td>
+<td>连续纤维事件，不能当作单个正则根</td>
+</tr>
+<tr>
+<td>多重/奇异端点</td>
+<td>待分解与验证；不得按一个简单根冒充全部重数</td>
+</tr>
+<tr>
+<td><span class="math">\(c_0=0\)</span> 或 <span class="math">\(d_0=0\)</span> 的项目根</td>
+<td>坐标无穷远，需与材料变量中的无穷远或有限退化区分</td>
+</tr>
+<tr>
+<td>追踪失败路径</td>
+<td><code>UNKNOWN</code>，不是不存在</td>
+</tr>
+</tbody></table>
+<p>仅在实域孤立并不保证复代数孤立：<span class="math">\(x^2+y^2=0\)</span> 的实原点是简单反例。若打算给出“全部实根”而不仅是“全部正则孤立实根”，必须额外排除这种奇异实点及高维复分量上的实孤点。</p>
+<h2 id="section-3">4. 真正的分支图与函数域</h2>
+<p>设原六材料写成 <span class="math">\(m=(z,a)\)</span>，其中 <span class="math">\(z\in\mathbb R^4\)</span>、<span class="math">\(a\in\mathbb R^2\)</span> 为事前选择的 cell 坐标。响应 <span class="math">\(F(z,a)\in\mathbb R^4\)</span>。在可逆域，考虑</p>
+<p><span class="math">\[
+\mathcal X=\{(z,a,u):F(z,a)=u\},\qquad
+\pi(z,a,u)=(a,u).
+\tag{9}
+\]</span></p>
+<p>若一个点的 <span class="math">\(J_z=\partial F/\partial z\)</span> 可逆，隐函数定理给出单个局部分支</p>
+<p><span class="math">\[
+z=z_\nu(a,u),\qquad
+\frac{\partial z_\nu}{\partial a}=-J_z^{-1}J_a,
+\qquad
+\frac{\partial z_\nu}{\partial u}=J_z^{-1}.
+\tag{10}
+\]</span></p>
+<p>这是真实材料分支图；并没有先假定群。对固定 <span class="math">\(u\)</span>，它描述二维条件纤维在 <span class="math">\(a\)</span> 平面上的局部覆盖。</p>
+<p>在复代数化、dominant 且 generically finite 的不可约分量上，函数域扩张</p>
+<p><span class="math">\[
+K(a,u)\subset K(\mathcal X)
+\tag{11}
+\]</span></p>
+<p>的次数就是该分量的泛型纤维次数。适用上述双有理内核的正则非节点部分，所有这类分量的泛型次数之和至多 6。次数可能小于 6；既不能由六条起始路径推出恰六个材料根，也不能由某个切片只有一个合法实根推出函数域次数为 1。</p>
+<p>有限扩张并不自动 Galois。只有在另外证明存在足够自同构时才谈 Galois 群；普通多值代数逆映射、根的置换和物理对称是三个不同概念。沿复参数避开判别集的闭路可以给 monodromy 置换，作用在某个有限分支集上；该置换一般不保持实材料盒、物理先验、固定观测或实际可执行路径。</p>
+<h3>4.1 要剔除的不只是 Jacobian 行列式</h3>
+<p>要得到一个真正有限、无分歧的覆盖区域，应同时避开：</p>
+<ol>
+<li><span class="math">\(\det J_z=0\)</span> 的临界值；</li>
+<li>原 resolvent 极点或消元坐标失效；</li>
+<li>非适当性导致根逃向无穷远的参数值；</li>
+<li>对偶恢复节点；</li>
+<li>材料合法盒边界，若结论限定在盒内。</li>
+</ol>
+<p>删去临界值只保证局部提升，不单独保证所有根都留在同一紧域。实分支数可以在越过盒边界时改变，即使内部 Jacobian 全程可逆。</p>
+<h3>4.2 路径及逆路径不能制造新根</h3>
+<p>在满足唯一连续提升条件的区域，沿 <span class="math">\(\gamma\)</span> 再沿逆路 <span class="math">\(\gamma^{-1}\)</span> 的提升回到原根。这来自同一局部逆的唯一性。若数值结果换根，应检查 Newton 跳支、失稳、未解析奇点、无穷远或原路径并非精确逆路；不能把换根直接解释为新物理群。</p>
+<h2 id="section-4">5. 坐标切片与 witness slicing 的覆盖区别</h2>
+<p>对固定 <span class="math">\(u\)</span>，六材料系统预期有二维复化纤维。冻结两个事前 cell 坐标 <span class="math">\(a=a_0\)</span> 是坐标切片，保留剩余四变量的逐变量一次结构，且适用上面的六路径内核。</p>
+<p>这样的切片只能覆盖本次 <span class="math">\(a_0\)</span> 上的根。一个分量若在 <span class="math">\(a\)</span> 平面的投影维数低于 2，泛型 <span class="math">\(a_0\)</span> 会完全错过它。即便每个测试切片都完成全部路径，也不能声称整个六材料纤维的所有分量都已发现。</p>
+<p>数值代数几何中通常的 witness set 使用与分量维数匹配的泛型仿射线性切片，并通过延拓/分解研究不可约分量。这种泛型切片不同于冻结两枚 cell：将任意线性材料约束代入后通常不再保留简单四变量多重仿射结构，也不能未经重新计算就套用六路径界。</p>
+<p>可执行的受限覆盖路线是：</p>
+<ol>
+<li>事前冻结 <span class="math">\(a\)</span> 的定义和待查询切片值；逐切片独立枚举全部六条路径。</li>
+<li>对每个正则合法根，以式 (10) 在相邻 <span class="math">\(a\)</span> 上延拓；独立枚举用于检查延拓遗漏，而不把一次局部路径当作全分量证明。</li>
+<li>保存根的匹配、根数变化、盒边界、rank、节点和极点事件；不靠多启动命中频率给根赋概率。</li>
+<li>若需要全 <span class="math">\(a\)</span> 域证明，必须分割参数域并验证分支数不变、边界和奇异集；若需要全部材料分量，还必须处理低维投影分量或改用真正的 witness 分解。</li>
+</ol>
+<p>这是可做的下一步，不是本次六路径求根已经完成的事项。</p>
+<h2 id="section-5">6. 数值枚举、验证与认证的分级</h2>
+<p><code>NUMERICAL_ALL_PATHS_COMPLETED</code>：所有六个泛型起点均有记录的目标端结局；端点残差、相互距离、共轭性、材料合法性与独立 forward 已检查。这个状态给出强数值枚举证据，但仍依赖浮点路径追踪。</p>
+<p><code>REGULAR_ROOT_VALIDATED</code>：通过区间 Newton/Krawczyk、可应用的 alpha-theory 或其它严格包围，证明某个目标端点附近恰有一个根；同时确认其物理域条件。此为单根证书。</p>
+<p><code>COMPLETE_CERTIFIED</code>：目标系统的维数/饱和域已经明确，所有需要的孤立根及无穷远/奇异端点都得到认证，且无未处理路径或分量。若有六个不同的认证简单项目根，可以结合正确的零维次数上界给出零维系统的完整性证明；不能跳过目标系统零维性或高维分量审计。</p>
+<p><code>UNKNOWN</code>：任何未解析路径、近节点、近极点、多重端点、未证维数、或无法区分的根合并均按未知保存。残差很小不等于误差很小，多个数值端点也不必是多个不同真根。</p>
+<p>固定 binary64 系数的根证书，与真实超越 Green 的证书是两层不同证据。若没有对 Hankel/几何/测量误差的严格包围，不能由前者宣称后者。</p>
+<h2 id="section-6">7. 直接可用于推翻过强结论的例子</h2>
+<p><strong>接收不可见 cell。</strong> 取 <span class="math">\(H=0\)</span>、<span class="math">\(R_i=0\)</span>。则 <span class="math">\(Y\)</span> 与 <span class="math">\(z_i\)</span> 无关，存在连续材料自由度；任何有限根算法若声称所有材料只有六个点，立即失败。非零耦合时也可能出现局部 <span class="math">\(v_i=0\)</span>，前述连续性证明仍适用。</p>
+<p><strong>复根多于合法实根。</strong> 六个代数端点可以包含非共轭端点、域外实点及极点基点；只有一个合法实根与六度内核完全相容。</p>
+<p><strong>错误满秩解释。</strong> <span class="math">\(R\)</span> 满行秩但 <span class="math">\(r&lt;k\)</span> 时，<span class="math">\(R^\dagger T\)</span> 只是一个 current 特解。丢掉零空间可删除合法根；只有满列秩才支持直接唯一 current 恢复。</p>
+<p><strong>错误 SVD 截断。</strong> 把很小但非零的源奇异值设为零，会改变精确观测和材料约束。随后出现的连续纤维不是同一个实验合同的等价结构。</p>
+<p><strong>错误实根假设。</strong> 若复化曲线只有一个实点，实点孤立不触发普通零维复根计数。实 Jacobian 满秩或明确的复零维分解是必要的补充条件。</p>
+<p><strong>错误群推断。</strong> 有限多根本身没有提供材料域上的封闭群作用；方程变换、根置换和物理对称不能互相替代。</p>
+<h2 id="section-7">8. 本轮理论交付的边界</h2>
+<p>已给出：精确块消元、多重仿射系数、二变量二次消元、四变量 24 路径界、一接收双源的六路径对偶内核、一般 <span class="math">\(\binom{2s}{s}\)</span> 界、节点连续性、Jacobian 正则性对应、饱和理想与分支图，以及可以实际执行的枚举/认证分级。</p>
+<p>未给出：E1 的最小实际代数次数、所有参数下的六根达到性、完整原材料盒的分量覆盖、真实 Hankel/连续 PDE 的严格根证书、物理群、普遍加速定理或全域条件概率。以上没有靠新实验验证恒等式，也没有依赖新 private GT。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/theory/branches_and_field.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

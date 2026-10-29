@@ -1,0 +1,226 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>Z-ALG-R2 最终独立科学审查 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>Z-ALG-R2 最终独立科学审查</h1><details class="toc"><summary>本文目录 · 8节</summary><ol><li><a href="#section-0">1. 新保留集：流程与结果</a></li><li><a href="#section-1">2. 新保留集：可比较成本</a></li><li><a href="#section-2">3. 已暴露数据、重复计时及64起点控制</a></li><li><a href="#section-3">4. 高频48-cell：保留正负证据</a></li><li><a href="#section-4">5. 资源总账与数学边界</a></li><li><a href="#section-5">6. 建议正文采用的结论</a></li><li><a href="#section-6">7. 最终正文与完整资源总账回读</a></li><li><a href="#section-7">8. 后续一般商定理与六材料盲测扩展</a></li></ol></details>
+<p>审查日期：2026-10-30（Asia/Singapore）；证据时间采用UTC原收据。结论：<strong>PASS_WITH_LIMITS</strong>，适用于已完成的有限离散数值研究及下述限定结论。全球首创、严格全根认证、连续纤维/后验覆盖、大规模Maxwell普遍优势仍为 <strong>HOLD / NOT_ESTABLISHED</strong>。</p>
+<p>审查为只读，未执行新物理或精度试验，未读取private材料/生成种子。读取公开预测、评分、冻结收据、协议、求解驱动与成本账本。此前数学与先例审查见 <code>quotient_review.md</code> 和 <code>novelty.md</code>。底层收据初审后，已完成主报告、数学正文、公式集、算法和完整成本总账的独立回读；最终文稿回读状态为 <strong>PASS_WITH_LIMITS</strong>。第7节记录总账与经验交叉点的复核范围。</p>
+<h2 id="section-0">1. 新保留集：流程与结果</h2>
+<p><code>QUOTIENT_HOLDOUT_CONTRACT.json</code> 在生成前冻结4目标、同一四cell几何、实材料盒[0.5,30]、独立均匀抽样无选择、四方法及原有参数。<code>QUOTIENT_HOLDOUT_RUN_CONTRACT.json</code>保存8/64起点，64起点前8与原8一致。一次驱动守卫修复有独立记录：发生在读取观测/预测前，记录0物理RHS、0预测、0观测载入，核心求解器及科学参数未改。</p>
+<p>16份预测于 <strong>2026-10-29 16:18:12.338590 UTC</strong> 冻结；评分时间为 <strong>16:19:26.754574 UTC</strong>。当前16份预测及冻结列出的全部源码，其size/mtime与收据逐项一致。求解驱动只读取公开观测，评分程序分离且不被求解器导入。这些证据支持“真值对求解线程保留、预测先冻结后评分”的过程盲测；不是操作系统访问隔离或第三方密封试验。</p>
+<p>四方法quotient、six、ReducedFullJ8、ReducedFullJ64各自在QH4_00–03返回 <strong>1、1、1、2</strong> 个合格根，逐目标数值根集相同。全部16个方法×目标候选集合包含真值附近材料，最近候选RMS的全表最大值为 <strong>4.6235093461e−10</strong>。</p>
+<p><strong>必须同时披露：</strong> QH4_03各方法还有第二个合格材料，其对真值RMS约 <strong>1.9679976526</strong>，但响应仍合格。16/16是set containment，不是16个独立目标，也不是求解器自动选择GT、材料唯一可辨识或无歧义成像。GT仅供事后集合评分；不得用最近GT根作在线输出再报告其误差。</p>
+<p>原summary保留 <code>PREDICTIONS_COMPLETE_UNSCORED</code> 是冻结时刻状态，最终报告应与独立 <code>quotient_holdout_scores.json</code> 合读，不要把它误解为尚未评分，也不要改写历史冻结状态。</p>
+<h2 id="section-1">2. 新保留集：可比较成本</h2>
+<table>
+<thead>
+<tr>
+<th>四目标总计</th>
+<th align="right">quotient</th>
+<th align="right">six</th>
+<th align="right">ReducedFullJ8</th>
+<th align="right">ReducedFullJ64</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>含目标JSON日志wall/s</td>
+<td align="right">0.024115583</td>
+<td align="right">0.260219208</td>
+<td align="right">0.187908584</td>
+<td align="right">1.703848750</td>
+</tr>
+<tr>
+<td>CPU/s</td>
+<td align="right">0.018880</td>
+<td align="right">0.237783</td>
+<td align="right">0.186369</td>
+<td align="right">1.663076</td>
+</tr>
+<tr>
+<td>原物理系统complex RHS</td>
+<td align="right">16</td>
+<td align="right">16</td>
+<td align="right">16</td>
+<td align="right">16</td>
+</tr>
+<tr>
+<td>其中共享kernel setup RHS</td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">6</td>
+</tr>
+<tr>
+<td>合格候选完整forward验证RHS</td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td>另记的小块reduced RHS</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">7694</td>
+<td align="right">63926</td>
+</tr>
+<tr>
+<td>合格材料数</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">5</td>
+</tr>
+<tr>
+<td>方法级异常 / fallback</td>
+<td align="right">0 / 0</td>
+<td align="right">0 / 0</td>
+<td align="right">0 / 0</td>
+<td align="right">0 / 0</td>
+</tr>
+</tbody></table>
+<p>方法级异常为零不等于每个优化起点收敛：新保留集中ReducedFullJ8有3个起点、ReducedFullJ64有19个起点达到最大函数评估数而未收敛；它们的已付费成本保留，最终根集由其它起点取得。</p>
+<p>四臂均获相同固定Green/kernel缓存机会；reduced基线使用相同精确rational kernel与解析Jacobian，不是故意让基线反复重建完整物理算子。quotient另有4次6×6特征问题，six有24条路径；这些小型代数计算通过wall与计数保留，不能因full RHS相同而称成本相同，也不能因小块RHS另计而称reduced计算免费。</p>
+<p>四臂求解共64个full RHS，生成4目标另8个，合计 <strong>72</strong>。生成公开收据另记wall <strong>0.012934833秒</strong>；求解summary中生成wall=null表示当时没有给求解线程，不表示最终无法取得。全求解驱动wall <strong>2.226441959秒</strong> 含额外汇总/日志，故不必等于四个方法计时简单和。</p>
+<p>这个fresh四目标批次只有一次运行且固定方法顺序。支持该批次实现的速度比较，不能以其比值给出跨机器稳定加速或总体统计置信区间。日志输出量不同；报告已明确含日志，应同时保留源码/收据中的before-logging数据，避免把序列化开销隐藏为纯数学内核优势。</p>
+<h2 id="section-2">3. 已暴露数据、重复计时及64起点控制</h2>
+<p><code>quotient_bench_summary.json</code>明确标为 <strong>EXPOSED_DATA_DIAGNOSTIC_NOT_FRESH_BLIND</strong>。101个已有切片任务中，quotient与保存six的合格根集101/101一致，实际仅 <strong>24个非空切片、27个合格根</strong>。空集一致是协议一致性，不是成功找到新材料根；不得把101/101写成101个恢复成功目标。</p>
+<p>固定6任务、5次轮换顺序重复的端到端记账时间为：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">median/s</th>
+<th align="right">min/s</th>
+<th align="right">max/s</th>
+<th align="right">每次合格根数</th>
+<th align="right">每次成本归属full RHS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>quotient</td>
+<td align="right">0.059348042</td>
+<td align="right">0.056089167</td>
+<td align="right">0.065034250</td>
+<td align="right">9</td>
+<td align="right">458</td>
+</tr>
+<tr>
+<td>six</td>
+<td align="right">0.418709666</td>
+<td align="right">0.409481125</td>
+<td align="right">0.424594333</td>
+<td align="right">9</td>
+<td align="right">458</td>
+</tr>
+<tr>
+<td>FullJ8</td>
+<td align="right">0.194568959</td>
+<td align="right">0.179603291</td>
+<td align="right">0.209859875</td>
+<td align="right">7</td>
+<td align="right">2398</td>
+</tr>
+<tr>
+<td>ReducedFullJ8</td>
+<td align="right">0.180851125</td>
+<td align="right">0.152748416</td>
+<td align="right">0.203520000</td>
+<td align="right">7</td>
+<td align="right">454</td>
+</tr>
+</tbody></table>
+<p>quotient median约为ReducedFullJ8的1/3.0473，且该8起点少返回2根。然而强控制 <code>quotient_control64_summary.json</code> 已在这两个缺失案例恢复所有quotient根。故可写“相对于冻结8起点，这个有限实验以较低wall取得更多根；64起点关闭了已观察的覆盖差距”。不可写“多起点方法不能发现这些根”或quotient已经证明更强全局覆盖。</p>
+<p>458与454的差异来自quotient多验证2个材料候选的4 RHS，不支持相对reduced8的full RHS减少。表中每次包含420个历史anchor RHS的成本归属；这些不是每次真的重新执行420 RHS。实际新增量：coverage 74，加20个repeat新增RHS合计10440，共 <strong>10514</strong>，与收据一致。64起点追加 <strong>22</strong> 个新RHS，其复用anchor177单独列，不可在累计实际开销重复加算。候选数、复用成本归属和新增执行成本须分栏。</p>
+<h2 id="section-3">4. 高频48-cell：保留正负证据</h2>
+<p>18份预测与实现于 <strong>16:03:37.286625 UTC</strong>冻结，评分记录其后；本次回读size/mtime全部匹配。三材料目标，每个clean及固定1e−3相对复观测扰动，共6个观测条件；这不是18个独立目标。它是新48-cell高频pulse模型，不是原Full66或旧低频几何的扩展验证。</p>
+<table>
+<thead>
+<tr>
+<th>条件/方法</th>
+<th align="right">材料RMS范围</th>
+<th align="right">响应relative范围</th>
+<th align="right">合法盒内数/3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clean FullJ midpoint</td>
+<td align="right">1.9373e−12–8.4259e−10</td>
+<td align="right">1.1704e−12–3.9478e−10</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>clean exactSVD或SVD+FullJ</td>
+<td align="right">7.3456e−13–1.2028e−12</td>
+<td align="right">2.7263e−13–4.3391e−13</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>noisy exactSVD</td>
+<td align="right">0.973350–1.841665</td>
+<td align="right">0.381379–0.546846</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>noisy FullJ midpoint</td>
+<td align="right">2.7520e−4–5.5930e−4</td>
+<td align="right">9.8314e−4–9.8620e−4</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>noisy SVD+FullJ</td>
+<td align="right">2.7520e−4–5.5930e−4</td>
+<td align="right">9.8314e−4–9.8620e−4</td>
+<td align="right">3</td>
+</tr>
+</tbody></table>
+<p>exactSVD在全部三个噪声条件下非法且误差显著。混合方法与FullJ得到几乎相同材料误差/观测残差；它们的 <code>response_fit_pass=false</code> 是沿用无噪声精确拟合阈值的结果，不能静默改写为精确PASS。其噪声残差约为注入噪声尺度，可描述为噪声条件下的拟合质量，不应凭报告临时新增通过标准。</p>
+<p>六条件合计，包含一次共同Green setup、SVD方法另加接收SVD的wall：FullJ midpoint <strong>0.163553957秒</strong>、exactSVD <strong>0.008184793秒</strong>、SVD+FullJ <strong>0.068486748秒</strong>；full RHS分别4136、48、1960。exactSVD最省时不能脱离其噪声失效谈胜出。混合方法的效果是已知SVD初始化加标准FullJ优化的适用性证据，不能计为商代数路线的新颖性或48维六根定理。</p>
+<h2 id="section-4">5. 资源总账与数学边界</h2>
+<p><code>BENCHMARK_RESOURCE_RECEIPT.json</code>只覆盖其执行者负责的initial_blind、新HIGH4、新HF48三组：solver RHS为2438+1347+6144=9929；三组生成RHS为15+6+24=45；合计 <strong>9974</strong>。该收据明确排除branch/adaptive/development及父线程其它工作，不能当成本轮完整累计总成本。上述10514、22、72属于另有收据的执行范围；历史anchor是引用成本，不得把它当新增执行量再次累计。完整总账应由主线程按范围去重，本文没有替未给出的实验补零。</p>
+<p>理论继续保持条件版：固定离散Green模型、单接收双独立源、四个共享实材料、非极点饱和对应；商内核还要求T合格，普通eig恢复需根/分离元条件。T可逆配合共轭交换结构可排除双侧projective无穷远并给长度6，不等于所有几何/目标都满足T条件。数值6个互异端点、满秩诊断和fresh forward支持有限实验，非区间或符号认证。</p>
+<p>Hilbert–Burch、商乘法特征求根、CSI/SOM及多齐次界均为已知构件。可能的论文贡献应限于该物理兼容式的压缩证明、明确失败边界与有账本的数值实现。全球首次、PDE新对称、完整连续纤维、不同连通分支、全局后验、普遍大规模性能、算法自动择GT均未成立。</p>
+<h2 id="section-5">6. 建议正文采用的结论</h2>
+<p>“在所声明的四材料精确离散模型与非退化商条件下，观测兼容方程可压缩到六维商空间，在线用小型线性代数求候选材料，并逐个做独立物理验证。已暴露切片回放和一个四目标新保留集支持该实现的根集一致性与有限成本优势。多解目标仅保证候选集合包含真值附近材料；强多起点控制能够找回已观察的额外根。严格全根认证、全球新颖性及大规模泛化仍未建立。”</p>
+<p>此结论可进入最终报告；是否达到期刊层面的充分新颖性仍需更完整先例与应用价值判断，当前不作接受保证。</p>
+<h3>数学文稿追加回读</h3>
+<p>已独立回读 <code>theory/quotient_solver.md</code>。其第3节的height-2/Hilbert–Burch长度证明、第5节共轭交换排除双侧无穷远与非唯一lift、第6节简单根/分离元限定及转置特征向量约定，与本审查一致。第8节明确浮点SVD投影误差不能被后续rounded cubic证书自动消除，第9节保留失败与回退域。未发现需阻断该条件定理交付的数学错误。数学稿审查状态：PASS_WITH_LIMITS；仍不认证浮点实验的精确根完备性。</p>
+<h2 id="section-6">7. 最终正文与完整资源总账回读</h2>
+<p>已回读 <code>RESEARCH_REPORT_ZH.md</code>、<code>MATHEMATICAL_THEORY.md</code>、<code>FORMULA_COMPENDIUM.md</code>、<code>ALGORITHM.md</code>、<code>COST_LEDGER.md/json</code>。未发现须阻断该有限研究结论交付的科学误述或数值错误。正文保留了：优先权HOLD、简单根/分离元条件、浮点全根未认证、四目标16个方法×目标集合共五个不同材料解而非16个独立真值恢复、64起点关闭暴露覆盖差距、噪声HF48的response_fit_pass=false。标准CSI/SOM、SVD、SMW、Hilbert–Burch及商环求根与可能的物理专门化贡献分开归属。</p>
+<p>新总账的345个canonical rows相加为 <strong>53,903 full complex RHS</strong>，九阶段和与七类别和均独立相加得到同值；111,094个reduced RHS另计。多行共享同一个pool文件表示LOW6/LOW4/HIGH4等不同子book，并非同一book重复计费。总账明确排除再次计入历史anchor；已逐项核过的fresh、重复benchmark、64控制与HF48阶段和与本审查前文一致。</p>
+<p>53,903是声明范围内的完整<strong>记账数</strong>，不应写成每个RHS都有保存端点和独立重现证据：其中28个未保存开发RHS依赖开发摘要，45个早期生成RHS依赖执行者汇总收据，相关wall/CPU仍缺失。总账保留这些缺口，因而适合标为 <code>MATCHES_EXPECTED_WITH_STATED_RECEIPT_GAPS</code>。账本汇总24个付费优化未收敛起点（其中22个在fresh四目标的reduced8/64臂），与正文一致。这里只做账本及已授权收据回读，没有执行新物理，也没有读取private truth或seed。</p>
+<h3>经验成本交叉点的独立复算</h3>
+<p>只把 <code>GREEN_SETUP</code>、<code>RECEIVER_SVD</code>、<code>FIXED_ACTIVE_SETUP</code>三个事件记为固定准备。每个目标的双线性系数、商构造、拒绝、验证和日志均留在目标成本。用四目标总wall（含目标日志）减固定准备，再除4，得到：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">固定准备/s</th>
+<th align="right">批次均摊目标/s</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>quotient</td>
+<td align="right">0.001529124798</td>
+<td align="right">0.005646614532</td>
+</tr>
+<tr>
+<td>six</td>
+<td align="right">0.000194083899</td>
+<td align="right">0.065006281016</td>
+</tr>
+<tr>
+<td>ReducedFullJ8</td>
+<td align="right">0.000196083914</td>
+<td align="right">0.046928125026</td>
+</tr>
+<tr>
+<td>ReducedFullJ64</td>
+<td align="right">0.000339915976</td>
+<td align="right">0.425877208530</td>
+</tr>
+</tbody></table>
+<p>在T(N)=setup+N×mean_target的仿射成本模型下，quotient相对six、Reduced8、Reduced64的连续交点分别为0.0224907、0.0322915、0.00282990个目标；故最小正整数N=1。这个推算在本批次收据下成立，<strong>不是另行测得的单目标交叉点或跨N扩展实测曲线</strong>。它依赖四目标的平均根/拒绝/日志工作量，不证明其它目标分布、机器或规模同样从N=1受益。正文应称“由该四目标批次分摊计时推算的经验交叉点”，不得写成普遍理论阈值。</p>
+<p>最终状态：<strong>PASS_WITH_LIMITS</strong>。此状态支持按上述限定如实交付研究与证据；不授予全球新颖性、严格根完备性、连通分支、全局后验、通用速度优势或发表接受保证。发布/隐私许可仍由主线程负责，本审查不代替该权限判断。</p>
+<h2 id="section-7">8. 后续一般商定理与六材料盲测扩展</h2>
+<p>一般2s材料条件定理和新六材料/三源/单接收协议已独立审阅，详见 <code>GENERAL_QUOTIENT_REVIEW.md</code>。状态 <strong>PASS_WITH_LIMITS</strong>。T可逆→expected height s→Eagon–Northcott/CM→C(2s,s)维次数≤s商基；共轭交换保证有限唯一lift，普通eig仍需简单/分离条件。此为成熟一般工具的物理专门化，不改变全球优先权HOLD。</p>
+<p>新增三目标的Q20根数2/1/1，冻结ReducedFullJ64为1/1/1；两法各3/3集合含GT邻近材料。额外材料对RMS1.1587903，两个原完整forward残差&lt;2e−14。六份预测在评分前冻结，当前size/mtime与五源码均匹配；没有读取private truth/seed。60个复端点是每目标20个的合计，非一个目标60根，且不是严格数值全根证书。</p>
+<p>新阶段总wall含日志0.104421833/1.518027542秒，完整RHS21/18（相同9setup）；Q20因多一个完整验收而多3RHS。普通方法192起点中24个未收敛，费用保留。生成另9，<strong>新增48，旧53903加新阶段为53951</strong>。本文件第7节53903是扩展前已审账本快照；最终总账须纳入此追加范围。有限64起点miss与单次wall优势不应升级为所有普通方法必漏根或普遍加速。</p>
+<p>追加主文回读已完成：六材料段、一般定理、F15公式和算法段与 <code>GENERAL_QUOTIENT_REVIEW.md</code> 一致，仍为 <strong>PASS_WITH_LIMITS</strong>。正文53951总RHS、143150小RHS、48个付费未收敛起点与扩展前账本加新阶段相符；新阶段不是原四材料盲确认的改写。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/audit/FINAL_SCIENTIFIC_REVIEW.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

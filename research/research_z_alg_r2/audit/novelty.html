@@ -1,0 +1,103 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>Z-ALG-R2 聚焦数学与先例审查 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>Z-ALG-R2 聚焦数学与先例审查</h1><details class="toc"><summary>本文目录 · 5节</summary><ol><li><a href="#section-0">1. 代数检查</a></li><li><a href="#section-1">2. 最直接的新颖性反例：转置后的 CSI/SOM</a></li><li><a href="#section-2">3. 文献支持与证据等级</a></li><li><a href="#section-3">4. 检索范围与未决事项</a></li><li><a href="#section-4">5. 公开源码与结果的有限复核（本地日期2026-10-30）</a></li></ol></details>
+<p>日期：2026-10-29。独立审查范围：一个接收端、四个实材料自由度、两个独立复源的接收端 current 消元，以及推广到 k=2s。未读取 private/，未修改求解器或主理论文件。本文件给父线程提供审查意见，最终科学判断仍由主线程作出。</p>
+<p><strong>建议结论：代数变换可成立，6 的复孤立根上界可成立；强新颖性与“任意物理孤立根均获完整认证”暂为 HOLD。</strong> w 表示本身就是转置后的单照明 contrast-source 方程，数据零空间表示与乘积分解路径法均有直接既有构件。尚可保留的狭窄候选贡献是：在指定实材料、单接收、k=2s 离散模型上，把这些构件组合成明确的饱和对应及 binomial 路径计数，并给出诚实的覆盖与成本证据。检索未找到完全同式的已发表定理，不等于证明该定理首次出现。</p>
+<h2 id="section-0">1. 代数检查</h2>
+<p>令 D=diag(δ)，K∈C^(k×k)，L∈C^(1×k)，q∈C^(k×s)，rank(q)=s，测量 y∈C^(1×s)。在 det(I−DK)≠0 的开集，</p>
+<pre><code>w = L(I−DK)^−1D = LD(I−KD)^−1,
+w(I−KD)=LD,
+w=(L+wK)D=:vD,
+wq=y.
+</code></pre>
+<p>因此任何非奇异物理解均给出满足数据的 w。反过来，若 wq=y、所有 v_i≠0，定义 δ_i=w_i/v_i；只要 det(I−KD)≠0，则由线性状态方程唯一性恢复原 rational forward map。这一双向证明没有 Born 或弱散射近似，但仅适用于已经冻结的有限离散模型。</p>
+<p>q 满列秩使数据仿射空间具有复维 k−s。选行零空间基 N∈C^((k−s)×k)，Nq=0，写 w=w0+c^T N。定义系数共轭的独立仿射函数</p>
+<pre><code>ŵ(d)=bar(w0)+d^T bar(N),   ṽ(d)=bar(L)+ŵ(d)bar(K),
+F_i(c,d)=w_i(c)ṽ_i(d)−v_i(c)ŵ_i(d).
+</code></pre>
+<p>F_i 的双次数至多 (1,1)。在物理对角 d=bar(c) 且 v_i≠0 上，F_i=0 当且仅当 δ_i=w_i/v_i 是实数。<strong>独立复变量 d 不是自动等于 bar(c)</strong>；求出的复解必须再检查该反全纯固定点条件及材料范围。</p>
+<p>把系统解释为复代数对应时，须同时使用 v_i≠0、ṽ_i≠0 以及两个 resolvent 非奇异条件。此时 δ_i=w_i/v_i=ŵ_i/ṽ_i，把 (c,d) 与满足原数据方程及其系数共轭方程的复 δ 对应起来。物理对角上两个 resolvent 条件互为共轭，一个非零即可。严格术语可写“两个开集之间的双有理对应”；仅对物理解的叙述可写“实有理解集对应”。</p>
+<h3>零分母饱和会不会漏掉孤立物理解？</h3>
+<p>若某物理解有 v_i=0，则 w_i=δ_i v_i=0。固定这个 w，只改变 δ_i 为 δ_i+t，其他材料坐标不变，恒等式 w=vD 仍然成立。非极点条件是开条件，所以充分小的实 t 仍有唯一状态解且 wq 不变。这构成一条实等数据曲线。</p>
+<p>因此，在各材料坐标可独立局部变化的真实参数域中，任何非极点孤立物理解必有全部 v_i≠0。具有非零宽度的独立闭区间边界也保留单侧曲线；零宽度固定坐标、离散材料字母表、坐标耦合先验或额外等式约束则必须另论。本结论不能用来声称所有正维分支也由当前饱和图册覆盖。</p>
+<h3>6 的含义与证明缺口</h3>
+<p>当 k=2s 时，c,d 各有 s 个复坐标，2s 个方程双齐次化后位于 P^s×P^s。标准多齐次 Bézout 数为</p>
+<pre><code>[x^s y^s](x+y)^(2s) = binom(2s,s).
+</code></pre>
+<p>s=2 时为6。该数是这类起始系统的路径数，以及目标系统<strong>孤立复零点</strong>的上界（按重数计入时需使用相应交数陈述）。有限物理解只是其中满足固定点、非极点和材料域条件的部分。它不是“恰好6个物理解”，也不证明这类受物理约束系数达到通用双线性系统的最大度。</p>
+<p>“实根孤立”一般不蕴含“复化后仍为孤立点”：例如 x²+y²=0 的实零点孤立，而复零集是两条直线。这个例子只证明逻辑蕴含在一般实代数几何中不成立，<strong>不是已构造的 Maxwell 同结构反例</strong>。当前最简修复是明确要求相关饱和复根孤立，或饱和系统为零维；若只想覆盖局部正则物理解，可用满秩实 Jacobian 保证复化后的孤立性。若希望覆盖任意物理孤立奇异根，需要额外证明本结构排除上述现象，不能略过。</p>
+<p>全四变量通用 multiaffine 起始系统的24与这里的6都属于表示相关的上界。不能把24当成同一物理系统必然具有24个真根，也不能把6/24当成已实现的运行时间比。更强稀疏/消元基线可能利用同样结构。</p>
+<h2 id="section-1">2. 最直接的新颖性反例：转置后的 CSI/SOM</h2>
+<p>令 j=w^T、g=L^T、G=K^T、A=q^T。以上方程逐字变为</p>
+<pre><code>j=D(g+Gj),    Aj=y^T.
+</code></pre>
+<p>这就是单照明 contrast-current 状态方程与线性观测方程。这个识别是本次审查的代数推论；它不要求宣称物理上的源—接收互易性成立，也不要求 K 对称。再写 j=j0+Nc，就是熟悉的确定/模糊 current 分解的精确零空间情形。</p>
+<p><a href="https://doi.org/10.4310/MAA.2010.v17.n4.a6">Chen、Zhong、Agarwal (2010)</a> 的作者全文，印刷页416–418，式(28)–(34)，给出了基于数据 SVD 的确定 current、剩余子空间系数以及共同材料的状态约束；页418还明确对照了已有的辐射/非辐射电流与最小范数/截断 SVD。TSOM 在页420–421、式(46)–(47)进一步限制内部场相关子空间。精确零空间、近零奇异值截断和第二重正则化并不完全相同，但“精确零空间所以新颖”仍不足成立。</p>
+<p>因此 full-SVD 直接恢复 current 后逐行恢复材料、接收端转置、current lifting、空空间系数、双线性消元、多齐次起始系统，均不能分别计为原创点。当前可能的实质增量应接受最苛刻比较：<strong>标准 CSI/SOM 对偶表示加标准多齐次路径法，是否已立即给出所有本轮推导？</strong> 目前本审查看来其推导较短，强算法创新论证不足；应用定理、稳健饱和处理和经验证的总成本改善仍可有价值。</p>
+<h2 id="section-2">3. 文献支持与证据等级</h2>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>已核验内容与证据级别</th>
+<th>对本轮的限制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://doi.org/10.1006/jcph.1996.0070">Everett 1996</a>, <em>Homotopy, Polynomial Equations, Gross Boundary Data, and Small Helmholtz Systems</em></td>
+<td>出版社摘要，Tier B：小型离散 Helmholtz/modified Helmholtz 逆问题多项式化、homotopy 枚举实正解；书目信息Tier C</td>
+<td>“波动逆问题首次多项式化/首次找多个精确材料根”不成立。未取得全文，不能声称其已使用本轮特定6路径表示</td>
+</tr>
+<tr>
+<td><a href="https://doi.org/10.1093/gji/ggag432">Everett 2026</a>, <em>Multiple solutions to geophysical inverse problems via tracking flights across a deeply incised model landscape</em></td>
+<td>出版社向Crossref提交的摘要，Tier B，2026-10-08出版；小测试系统的稀疏低阶多项式和等误差材料解间路径跟踪</td>
+<td>同等拟合多解路径搜索有直接先例；不从摘要推断全分支认证或本轮具体消元已存在</td>
+</tr>
+<tr>
+<td><a href="https://doi.org/10.1088/0266-5611/13/6/013">van den Berg、Kleinman 1997</a>, <em>A contrast source inversion method</em></td>
+<td>出版社摘要Tier B，原文未获得；状态lifting的具体公式以2010全文为主要证据</td>
+<td>CSI不是本轮原创；1997摘要本身不足证明某一精确零空间公式</td>
+</tr>
+<tr>
+<td><a href="https://doi.org/10.4310/MAA.2010.v17.n4.a6">Chen、Zhong、Agarwal 2010</a>, <em>Subspace methods for solving electromagnetic inverse scattering problems</em></td>
+<td>原作者全文Tier A，式(28)–(34)、(46)–(47)</td>
+<td>确定/模糊 current、共同材料及二重子空间均为已有构件；没有把该文优化算法误称为6路径枚举</td>
+</tr>
+<tr>
+<td><a href="https://doi.org/10.1016/0096-3003(87)90063-4">Morgan、Sommese 1987</a>, <em>A homotopy for solving general polynomial systems that respects m-homogeneous structures</em></td>
+<td>书目信息Tier C；不以未取得的全文支持细节</td>
+<td>多齐次结构路径法的历史先例；定理细节另见作者教学材料</td>
+</tr>
+<tr>
+<td><a href="https://doi.org/10.1137/0732061">Morgan、Sommese、Wampler 1995</a>, <em>A Product-Decomposition Bound for Bezout Numbers</em></td>
+<td>SIAM摘要Tier B：按乘积结构收紧非奇异解数上界并减少continuation工作</td>
+<td>乘积分解降低路径数不是新的一般思想</td>
+</tr>
+<tr>
+<td><a href="https://homepages.math.uic.edu/~jan/mcs563s14/multihomogenization.pdf">Verschelde 2014作者讲义</a></td>
+<td>作者全文Tier A，slides14–15：线性乘积起始系统及孤立复解的多齐次上界</td>
+<td>6和binom(2s,s)的计数应用标准定理；不能把它自动升级为实奇异根完整性</td>
+</tr>
+</tbody></table>
+<h2 id="section-3">4. 检索范围与未决事项</h2>
+<p>使用 scholarqa-research 的证据分级与账本流程。既有本轮两条focused ScholarQA查询的四项操作均429；本次没有重复广搜，仅对6个明确标识做定向一手来源阅读与书目核对。本次 ScholarQA verify 的五标识批请求仍429，错误保存在 retrieval_verification.json；另以出版商/Crossref正式提交记录核对身份，保存在 retrieval_primary_metadata.json。Everett2026的出版商网页不可直接取得，使用出版商提交的Crossref摘要，非全文。SOM/TSOM全文HTTP200并直接读取，未将第三方全文复制到交付目录。</p>
+<p>本轮是聚焦审查，不是完整Scideator复现：没有SPECTER预筛、100→10检索排序或全套40示例，也没有全球专利/论文穷尽检索。暂不对整个项目打二元“全球Novel”标签；对已明确同构的构件判定为标准方法应用，对狭窄组合定理保留优先权未决。</p>
+<p>需要父线程落实的五点：</p>
+<ol>
+<li>定理写出rank(q)=s、实独立材料、非极点、复孤立性/零维条件，以及复化对应的两个分母集合。</li>
+<li>证明或明确排除奇异实孤立但复正维的情况；不要以数值满秩检查替代所有奇异分支理论。</li>
+<li>路径收据区分：已到达根、无穷远、极点/零分母、非物理复根、奇异未决、数值失败。6个tracker返回状态不等于根认证完成。</li>
+<li>任何性能结论以完整预处理、跟踪、验证、失败处理成本为准；探索E2时间不能支持普遍加速或大规模可扩展性。</li>
+<li>和适用的直接材料稀疏/多齐次基线、公平的精确current基线比较；把“相对于通用24路径表示降低到6”与“相对于最强适用算法更快”分开。</li>
+</ol>
+<p>初版未审查实验计时/求解器正确性；后续公开材料复核见第5节。本文数学审查没有利用私有真值。</p>
+<h2 id="section-4">5. 公开源码与结果的有限复核（本地日期2026-10-30）</h2>
+<p>只读 src/branch_enumerator.py、experiments/contract.json 和公开 results/branch_summary.json、branch_endpoint_audit.json、blind_observation_only_summary.json；未读 private/ 或 blind_scores.json，未重跑求解。这里核对已保存数值收据及算法结构，不能替代独立高精度/区间根认证。</p>
+<ul>
+<li>BilinearDualSystem 的 q.T 空间计算不加共轭，与 wq=y 的复线性约束一致；外积系数、c/d两组变量、六个分组起始根和最终共轭过滤与第1节推导一致。代码明确保留 NOT_RIGOROUSLY_CERTIFIED。</li>
+<li>已保存28个切片中，six共168条路径及168个数值distinct有限端点、无端点碰撞；standard24共672个有限路径收据，但8个切片出现碰撞，总计662个distinct端点。summary的complete=28只能解释为运行/有限路径收据完成，不能称standard24的28切片均实现根覆盖。</li>
+<li>三方法均仅有3个合格材料根、覆盖3个切片，已保存匹配一致；“28切片全部完成”不等于28切片都有物理解，也不等于枚举整个六材料原问题的连续纤维。</li>
+<li>此冻结结果的总wall分别为six 1.483476626 s、standard24 28.508753039 s、FullJ8 0.553369789 s；RHS为174、174、9332。可报告这次实现比通用24路径实现省时、比FullJ8省RHS；不可称其比FullJ8省wall。FullJ8多起点找根也没有全根保证。单次短耗时不支持跨硬件或大规模普遍结论。</li>
+<li>physical filter 的 node_floor=1e−10 会把极小非零v_i也标为 UNRESOLVED_DUAL_NODE。理论只证明精确零v_i不对应孤立物理解，不足以证明该数值阈值没有误拒绝。分母阈值、共轭阈值与奇异条件数阈值同样属于数值资格，不是数学饱和等价的证明。</li>
+<li>作者PDF标题页的顺序为Chen、Zhong、Agarwal；Crossref该条目的作者顺序不同且标题有连写。本审查按原作者PDF保留署名顺序，检索元数据原样留存，不把Crossref顺序覆盖原文。</li>
+</ul>
+<p>追加结论：在已保存28切片上支持“标准构件组合后的特定六路径实现有效且明显减少24路径基线开销”，不支持强首创、全局全根认证、整条连续纤维覆盖或优于FullJ8的wall结论。数值distinct端点不是严格区间认证。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/audit/novelty.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

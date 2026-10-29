@@ -1,0 +1,209 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>六根对偶内核的 quotient solver：一次 4×4 线性解与 6×6 特征分解 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>六根对偶内核的 quotient solver：一次 4×4 线性解与 6×6 特征分解</h1><details class="toc"><summary>本文目录 · 10节</summary><ol><li><a href="#section-0">1. 从已有双线性系统形成 4×3 affine matrix</a></li><li><a href="#section-1">2. 构造系数，不需要多项式拟合</a></li><li><a href="#section-2">3. 主定理：最高 cubic 系数块可逆即给出六维商代数</a></li><li><a href="#section-3">4. 一次 4×4 solve 构造两个 6×6 multiplication matrix</a></li><li><a href="#section-4">5. 该 Maxwell 配对结构排除无限或非唯一的 d-lift</a></li><li><a href="#section-5">6. 从一次 6×6 eigensolve 恢复全部简单根</a></li><li><a href="#section-6">7. 恢复 d、实材料与原物理验收</a></li><li><a href="#section-7">8. 精确且便宜的测量零空间参数化</a></li><li><a href="#section-8">9. 数值条件与成本边界</a></li><li><a href="#section-9">10. 结论与明确不成立的升级</a></li></ol></details>
+<p>状态：精确代数推导，未运行实验，未读取新 private GT。本文研究如何求解已经导出的四条双线性方程；固定 Green、共享实材料、原 resolvent 可逆的物理合同不变。Hilbert–Burch、商代数与 multiplication matrix 都是标准工具；本文件不作最终新颖性或实测加速判断。</p>
+<h2 id="section-0">1. 从已有双线性系统形成 4×3 affine matrix</h2>
+<p>沿用 <code>algebraic_structure.md</code> 的一接收、四材料、两独立照明记号。测量零空间被固定参数化为</p>
+<p><span class="math">\[
+w=w_0+cN,\quad v=v_0+cM,\quad
+v_0=R+w_0H,\quad M=NH,
+\]</span></p>
+<p>其中 <span class="math">\(c=(x,y)\in\mathbb C^2\)</span>、<span class="math">\(N,M\in\mathbb C^{2\times4}\)</span>。把共轭参数独立化为 <span class="math">\(d=(d_1,d_2)\)</span>，四条方程是</p>
+<p><span class="math">\[
+F_i(c,d)=w_i(c)(\overline{v_{0i}}+d\overline M_{:,i})
+-v_i(c)(\overline{w_{0i}}+d\overline N_{:,i})=0.
+\tag{1}
+\]</span></p>
+<p>对每个 <span class="math">\(i=1,\ldots,4\)</span>，定义</p>
+<p><span class="math">\[
+\begin{aligned}
+A_{i0}(c)&amp;=w_i(c)\overline{v_{0i}}-v_i(c)\overline{w_{0i}},\\
+A_{i1}(c)&amp;=w_i(c)\overline{M_{1i}}-v_i(c)\overline{N_{1i}},\\
+A_{i2}(c)&amp;=w_i(c)\overline{M_{2i}}-v_i(c)\overline{N_{2i}}.
+\end{aligned}
+\tag{2}
+\]</span></p>
+<p>因此</p>
+<p><span class="math">\[
+\boxed{F(c,d)=A(c)(1,d_1,d_2)^T,\qquad A(c)=A_0+xA_1+yA_2.}
+\tag{3}
+\]</span></p>
+<p>这里 <span class="math">\(A_j\)</span> 为 <span class="math">\(4\times3\)</span> 常矩阵。复共轭只作用于已冻结系数，不作用于未知 <span class="math">\(x,y,d\)</span>。矩阵 <span class="math">\(A\)</span> 在本节是消元矩阵，不是原 Maxwell 状态 resolvent。</p>
+<p>令</p>
+<p><span class="math">\[
+g_i(x,y)=(-1)^{i+1}\det A_{\widehat i}(x,y),\qquad i=1,\ldots,4,
+\tag{4}
+\]</span></p>
+<p>其中 <span class="math">\(A_{\widehat i}\)</span> 删除第 <span class="math">\(i\)</span> 行。四个 <span class="math">\(g_i\)</span> 的总次数至多 3，且满足三条线性系数 syzygy</p>
+<p><span class="math">\[
+A(c)^Tg(c)=0.
+\tag{5}
+\]</span></p>
+<p>这是它们属于一个 determinantal ideal 的实质结构；把四个独立随机 cubic 代入下述算法不会自动得到相同结论。</p>
+<h2 id="section-1">2. 构造系数，不需要多项式拟合</h2>
+<p>采用列向量单项式</p>
+<p><span class="math">\[
+B=(1,x,y,x^2,xy,y^2)^T,\qquad
+C=(x^3,x^2y,xy^2,y^3)^T.
+\]</span></p>
+<p>唯一写成</p>
+<p><span class="math">\[
+g=TC+QB,
+\quad T\in\mathbb C^{4\times4},\quad Q\in\mathbb C^{4\times6}.
+\tag{6}
+\]</span></p>
+<p>这里 <span class="math">\(Q\)</span> 只是低次数系数矩阵，勿与状态 current 矩阵混淆。可直接用 3×3 行列式的列多线性得到全部系数：对每个删除行的子矩阵 <span class="math">\(L_j=(A_j)_{\widehat i}\)</span>，</p>
+<p><span class="math">\[
+g_i=(-1)^{i+1}\sum_{k_1,k_2,k_3\in\{0,1,2\}}
+\det[L_{k_1}[:,1],L_{k_2}[:,2],L_{k_3}[:,3]]
+x^{\#\{a:k_a=1\}}y^{\#\{a:k_a=2\}}.
+\tag{7}
+\]</span></p>
+<p>这只有 27 个固定组合；可进一步按次数合并。四个最高次系数分别来自三个 <span class="math">\(L_1\)</span> 列、两个 <span class="math">\(L_1\)</span> 加一个 <span class="math">\(L_2\)</span>、一个 <span class="math">\(L_1\)</span> 加两个 <span class="math">\(L_2\)</span>、三个 <span class="math">\(L_2\)</span>。无需采样响应或拟合 cubic。</p>
+<p>当 <span class="math">\(H,N,M,R\)</span> 在同一切片内固定，而目标只通过 <span class="math">\(w_0\)</span> 变化时，<span class="math">\(A_1,A_2\)</span> 的第 1 列对共轭目标 affine，其余两列与目标无关。行列式对该列线性，所以最高次块 <span class="math">\(T\)</span> 也对共轭目标 affine；可缓存对应模板。这一缓存不改变下面的可逆性要求。</p>
+<h2 id="section-2">3. 主定理：最高 cubic 系数块可逆即给出六维商代数</h2>
+<p><strong>定理。</strong> 设 <span class="math">\(A(x,y)\)</span> 为 <span class="math">\(4\times3\)</span> affine-linear 矩阵，<span class="math">\(g_i\)</span> 是它的四个带符号最大子式。若式 (6) 的 <span class="math">\(T\)</span> 可逆，则</p>
+<p><span class="math">\[
+\mathcal A=\mathbb C[x,y]/\langle g_1,g_2,g_3,g_4\rangle
+\]</span></p>
+<p>作为复向量空间恰有维数 6，且 <span class="math">\(B\)</span> 的六个单项式是一个基。该结论按代数重数计数，不声称六个点互异。</p>
+<p><strong>证明。</strong> 引入齐次坐标 <span class="math">\(C_h=(c_0,c_1,c_2)\)</span>，将矩阵齐次化为</p>
+<p><span class="math">\[
+\mathsf A(C_h)=c_0A_0+c_1A_1+c_2A_2,
+\]</span></p>
+<p>最大子式 <span class="math">\(G_i\)</span> 是三变量齐次 cubic。限制在 <span class="math">\(c_0=0\)</span> 后，式 (6) 成为</p>
+<p><span class="math">\[
+G(0,c_1,c_2)=T(c_1^3,c_1^2c_2,c_1c_2^2,c_2^3)^T.
+\]</span></p>
+<p><span class="math">\(T\)</span> 可逆意味着这些子式在无穷远直线没有共同项目零点。正维项目曲线必与任意项目直线相交，因此该 determinantal 零集至多零维。另一方面，4×3 最大子式的 determinantal height 上界为 2；齐次正次数理想是 proper，且 <span class="math">\(T\ne0\)</span> 保证子式不全为零。因此其 height 恰为 2。</p>
+<p>Hilbert–Burch 给出精确分解</p>
+<p><span class="math">\[
+0\longrightarrow S(-4)^3
+\xrightarrow{\mathsf A}
+S(-3)^4\longrightarrow S\longrightarrow S/I\longrightarrow0,
+\quad S=\mathbb C[c_0,c_1,c_2].
+\tag{8}
+\]</span></p>
+<p>于是</p>
+<p><span class="math">\[
+\operatorname{Hilb}_{S/I}(t)=
+\frac{1-4t^3+3t^4}{(1-t)^3}
+=\frac{1+2t+3t^2}{1-t}.
+\tag{9}
+\]</span></p>
+<p>项目零维 scheme 的长度是 6。该 height-2 perfect ideal 是 Cohen–Macaulay，无嵌入的 irrelevant 分量；无穷远没有点意味着 <span class="math">\(c_0\)</span> 是非零因子。故去齐次化得到长度 6 的 affine 商代数，并且没有在去齐次化后凭空出现低于三次的关系。式 (6) 的可逆 <span class="math">\(T\)</span> 又将每个三次单项式写成 <span class="math">\(B\)</span> 的组合，因此 <span class="math">\(B\)</span> 张成且线性无关。证毕。</p>
+<p>这也证明，下述四个三次 reduction 构成任意 degree-compatible 单项式序下的 Gröbner basis：它们的最高单项式恰好是全部四个三次单项式，而实际商维数等于六个 standard monomial 的数量。无需额外运行 Buchberger 才能得到这个结构结论。</p>
+<h2 id="section-3">4. 一次 4×4 solve 构造两个 6×6 multiplication matrix</h2>
+<p>求解六个右端的线性系统</p>
+<p><span class="math">\[
+\boxed{L=-T^{-1}Q,\qquad C\equiv LB\pmod I.}
+\tag{10}
+\]</span></p>
+<p>实际实现用线性 solve，不显式形成 <span class="math">\(T^{-1}\)</span>。令 <span class="math">\(e_j\)</span> 为六维标准基，按零起始索引 <span class="math">\(e_0,\ldots,e_5\)</span> 对应 <span class="math">\(1,x,y,x^2,xy,y^2\)</span>。以“多项式系数列向量”为约定，定义</p>
+<p><span class="math">\[
+\boxed{
+M_x=[e_1,e_3,e_4,L_{0,:}^T,L_{1,:}^T,L_{2,:}^T],}
+\tag{11}
+\]</span></p>
+<p><span class="math">\[
+\boxed{
+M_y=[e_2,e_4,e_5,L_{1,:}^T,L_{2,:}^T,L_{3,:}^T].}
+\tag{12}
+\]</span></p>
+<p>它们分别实现商代数中的乘 <span class="math">\(x\)</span> 和乘 <span class="math">\(y\)</span>。因此精确满足</p>
+<p><span class="math">\[
+M_xM_y=M_yM_x,\qquad g_i(M_x,M_y)=0.
+\tag{13}
+\]</span></p>
+<h3>4.1 不依赖 Hilbert–Burch 引用的代数自检</h3>
+<p>对任何四个最高次系数块可逆的 cubic，都可以造出式 (11)–(12)，但一般未必对易。如果它们<strong>精确对易</strong>，则已经足以证明这组 reduction 完整：</p>
+<ol>
+<li>单位元 <span class="math">\(e_0\)</span> 自动 cyclic，因为 <span class="math">\(B(M_x,M_y)e_0\)</span> 的六项恰为 <span class="math">\(e_0,\ldots,e_5\)</span>。</li>
+<li>四条 cubic reduction 按构造都 annihilate <span class="math">\(e_0\)</span>；对易性使它们 annihilate 每个 <span class="math">\(B_j(M_x,M_y)e_0\)</span>，因此 annihilate 全空间。</li>
+<li>任意高次单项式不断使用 cubic reduction 都降到 <span class="math">\(\operatorname{span}B\)</span>，故多项式商维数至多 6。</li>
+<li>cyclic 的六维表示给出从该商到 <span class="math">\(\mathbb C^6\)</span> 的满射，故维数至少 6。</li>
+</ol>
+<p>于是该表示与商代数同构。对精确最大子式，主定理已经保证对易；浮点 commutator 是有用的构造/条件诊断，不能把“小”替代“精确为零”作为严格证书。</p>
+<h2 id="section-4">5. 该 Maxwell 配对结构排除无限或非唯一的 d-lift</h2>
+<p>对一般 affine matrix，最大子式只是 <span class="math">\(\operatorname{rank}A\le2\)</span> 的条件，可能给出无穷远或多值的 <span class="math">\(d\)</span>。本任务的共轭配对结构更强。</p>
+<p>把式 (1) 齐次化成 <span class="math">\(F(C_h,D_h)\)</span>，其中 <span class="math">\(D_h=(d_0,d_1,d_2)\)</span>。系数构造直接给出反线性 involution</p>
+<p><span class="math">\[
+\boxed{F(C_h,D_h)=-\overline{F(\overline{D_h},\overline{C_h})}.}
+\tag{14}
+\]</span></p>
+<p><strong>引理。</strong> 在式 (14) 成立且 <span class="math">\(T\)</span> 可逆时，每个 determinantal 项目根 <span class="math">\(C_h\)</span> 都有 <span class="math">\(c_0\ne0\)</span>，矩阵 <span class="math">\(\mathsf A(C_h)\)</span> 恰为 rank 2，且它唯一的项目核向量 <span class="math">\(D_h\)</span> 满足 <span class="math">\(d_0\ne0\)</span>。</p>
+<p><strong>证明。</strong> 主定理的开头已经排除全部 <span class="math">\(c_0=0\)</span> 的 determinantal 根，也就排除了全部这样的 incidence 根。若存在 <span class="math">\(d_0=0\)</span> 的 incidence 根，式 (14) 把它换成 <span class="math">\(c_0=0\)</span> 的 incidence 根，矛盾。若某个根处 rank 至多 1，则项目核至少是一条直线，必与 <span class="math">\(d_0=0\)</span> 的项目超平面相交，又得矛盾。因此 rank 恰为 2，项目核唯一且有限。证毕。</p>
+<p>非零的 2×2 minor 给出局部有理反解，因此这不只是点集双射，而是 determinantal scheme 与原项目双线性 incidence scheme 的同构。结论：在<strong>配对结构与精确 <span class="math">\(T\)</span> 可逆</strong>这两个条件下，原双线性系统恰有长度 6 的有限 affine scheme，没有隐藏的 c/d 无穷远根，也没有 rank 降低导致的额外 d-fiber。</p>
+<p>该结论没有排除重根，也没有自动排除材料恢复节点或原 Maxwell 极点。</p>
+<h3>5.1 为何一般矩阵的反例不能省略配对假设</h3>
+<p>一般 Hilbert–Burch 矩阵</p>
+<p><span class="math">\[
+A(x,y)=\begin{pmatrix}
+y&amp;0&amp;0\\
+-x&amp;y&amp;0\\
+0&amp;-x&amp;y\\
+0&amp;0&amp;-x
+\end{pmatrix}
+\]</span></p>
+<p>的最大子式是 <span class="math">\(\pm(x^3,x^2y,xy^2,y^3)\)</span>，所以 <span class="math">\(T\)</span> 可逆，但 <span class="math">\(A(0,0)=0\)</span>，原双线性方程在那里允许任意 <span class="math">\(d\)</span>。determinantal 商仍是长度 6 的 fat point。此例不满足式 (14)，因此不反驳本任务的加强引理；它说明一般的六维商定理与原双线性系统的等价需要正确结构。</p>
+<h2 id="section-5">6. 从一次 6×6 eigensolve 恢复全部简单根</h2>
+<p>若六维商代数 reduced，即六个点互异，则存在一个分离线性形式</p>
+<p><span class="math">\[
+\ell=x+\eta y,
+\qquad M_\ell=M_x+\eta M_y.
+\tag{15}
+\]</span></p>
+<p>对六个不同根，造成特征值碰撞的 <span class="math">\(\eta\)</span> 至多来自 15 个根对的比值，因此泛型 <span class="math">\(\eta\)</span> 分离全部点。<span class="math">\(M_\ell\)</span> 的六个特征值是 <span class="math">\(\ell\)</span> 在六个根的值。</p>
+<p><strong>左右特征向量约定必须正确。</strong> 因为式 (11)–(12) 对系数列向量作用，根 <span class="math">\((x_j,y_j)\)</span> 的 evaluation vector</p>
+<p><span class="math">\[
+b_j=(1,x_j,y_j,x_j^2,x_jy_j,y_j^2)^T
+\]</span></p>
+<p>满足</p>
+<p><span class="math">\[
+b_j^TM_x=x_jb_j^T,\qquad b_j^TM_y=y_jb_j^T.
+\tag{16}
+\]</span></p>
+<p>因此，应取 <span class="math">\(M_\ell^T\)</span> 的<strong>右特征向量</strong>，归一化第零坐标为 1，然后读出 <span class="math">\(x_j=(b_j)_1,y_j=(b_j)_2\)</span>。直接对 <span class="math">\(M_\ell\)</span> 的右特征向量取坐标比一般错误。随后检查剩余三项确为 <span class="math">\(x_j^2,x_jy_j,y_j^2\)</span>，以及两个共同特征方程和原始最大子式残差。</p>
+<p>重复特征值有两种不同原因：所选 <span class="math">\(\eta\)</span> 没有分离不同根，或者商代数本身 nonreduced。可以更换 <span class="math">\(\eta\)</span> 诊断前者；非零重数不会被任意换 <span class="math">\(\eta\)</span> 消除。重根可能只有一个特征向量，需要局部代数、deflation、严格包围或已有同伦端点处理；不能把六个数值特征值强行当成六个不同根。</p>
+<h2 id="section-6">7. 恢复 d、实材料与原物理验收</h2>
+<p>对每个 <span class="math">\(c_j=(x_j,y_j)\)</span>，原配对理论保证 rank 2 且有限 lift。可解</p>
+<p><span class="math">\[
+A(c_j)[:,1:3]\,d_j=-A(c_j)[:,0]
+\tag{17}
+\]</span></p>
+<p>这个 <span class="math">\(4\times2\)</span> 一致满列秩系统；数值实现使用 QR/SVD 并保存残差。等价地，取 <span class="math">\(A\)</span> 右零向量 <span class="math">\(r\)</span>，用 <span class="math">\(d=(r_1/r_0,r_2/r_0)\)</span>。若使用 NumPy 式 SVD，右零向量是 <code>Vh[-1].conj()</code>，不能把 <code>Vh[-1]</code> 直接当列零向量。</p>
+<p>实际物理根须满足</p>
+<p><span class="math">\[
+d_j=\overline{c_j},\qquad
+w_i=z_iv_i,\qquad
+z_i=\frac{\operatorname{Re}(w_i\overline v_i)}{|v_i|^2},
+\tag{18}
+\]</span></p>
+<p>以及 <span class="math">\(v_i\ne0\)</span>、材料合法盒、原 resolvent 可逆和独立完整 forward 的残差要求。特征求解只完成代数候选枚举，不代替这些物理过滤。一个共轭实点若 <span class="math">\(w_i=v_i=0\)</span>，其材料恢复存在连续自由度；它不是普通正则有限材料根。</p>
+<h2 id="section-7">8. 精确且便宜的测量零空间参数化</h2>
+<p>式 (1) 需要 <span class="math">\(w_0B=T_*\)</span>、<span class="math">\(NB=0\)</span> 精确成立。若希望避免在线 SVD 并保留有理系数解释，选两个源矩阵行 <span class="math">\(P\)</span> 使 <span class="math">\(B_P\in\mathbb C^{2\times2}\)</span> 可逆；其余行记为 <span class="math">\(F\)</span>。按 <span class="math">\((P,F)\)</span> 排序，置自由变量 <span class="math">\(c=w_F\)</span>，则</p>
+<p><span class="math">\[
+w_P=(T_*-cB_F)B_P^{-1},\qquad
+w_{0,P}=T_*B_P^{-1},\quad w_{0,F}=0,
+\]</span></p>
+<p><span class="math">\[
+\boxed{N=[-B_FB_P^{-1}\mid I_2].}
+\tag{19}
+\]</span></p>
+<p>这只需要缓存一个稳定的 2×2 solve。取 pivot 时考虑条件数；该坐标并不自动优于正交 SVD 坐标，但它在精确算术中严格保留线性测量等式。归档 binary64 算子可被当作精确有理数进行这样的代数计算。</p>
+<p>如果使用浮点 SVD 取得 <span class="math">\(N,w_0\)</span>，则 <span class="math">\(NB\approx0\)</span>、<span class="math">\(w_0B\approx T_*\)</span> 只是数值关系。对随后 rounded cubic 的严格根证书不能自动变成原冻结物理方程的严格证书；必须包括投影误差，或使用精确参数化。独立 forward 验收无论采用哪种坐标都保留。</p>
+<h2 id="section-8">9. 数值条件与成本边界</h2>
+<p>固定维数的主要在线工作是：构造四个 cubic 的系数、一次 4×4 solve（六右端）、一次 6×6 eigen、最多六次 4×2 backsub，以及材料/物理验收。它消除了逐路径 ODE/Newton continuation，但不因此自动证明实际总时间优势。</p>
+<p>至少记录以下实际诊断：</p>
+<ul>
+<li><span class="math">\(\kappa(T)\)</span> 与线性求解相对 backward residual <span class="math">\(\|TL+Q\|/(\|T\|\|L\|+\|Q\|)\)</span>；</li>
+<li>相对 commutator <span class="math">\(\|M_xM_y-M_yM_x\|/(\|M_x\|\|M_y\|)\)</span>；</li>
+<li>eigenpair residual、特征值最小分离度、特征向量矩阵条件数，以及 evaluation vector 第零分量的归一化稳定性；</li>
+<li>原始最大子式、双线性方程、线性测量和复材料构成残差；</li>
+<li>共轭误差、<span class="math">\(\min_i|v_i|\)</span>、原 resolvent 稳定性、合法材料盒与独立 forward 结果。</li>
+</ul>
+<p>这些指标的阈值应服从既有协议和误差尺度，不在看到结果后放宽。高 <span class="math">\(\kappa(T)\)</span>、近重根和小 <span class="math">\(|v_i|\)</span> 可造成明显放大；行/变量尺度平衡或更高精度有时有帮助，但“小残差”不能单独保证根位置误差小。</p>
+<p>精确 <span class="math">\(T\)</span> 不可逆时，本文的特定基 <span class="math">\(B\)</span> 与直接 eigensolver 不适用；这不是原物理方程无根。应保留失败状态，按授权范围回退既有六路径同伦、另一个项目坐标图或一般 quotient basis 构造。普通 affine 坐标变换不能凭空提高最高次子式张成空间的秩。</p>
+<p><code>QUOTIENT_SIX_SIMPLE_NUMERICAL</code> 可以表示六个数值上分离的共同根和完整物理分类；它仍不是严格的精确系数全根证书。严格完整性需要认证 <span class="math">\(T\)</span> 可逆、配对/投影恒等式、根及分离条件，并处理物理恢复域。没有证据时保留 <code>UNKNOWN</code>，不把一个 eigen call 的完成解释为这些门已经通过。</p>
+<h2 id="section-9">10. 结论与明确不成立的升级</h2>
+<p>对于本任务的共轭配对四条双线性方程，<strong>精确最高 cubic 系数块 <span class="math">\(T\)</span> 可逆</strong>给出长度 6 的有限 affine incidence scheme、固定的二次单项式商基和正确的 multiplication matrices。若该 scheme reduced 且选取分离的 <span class="math">\(\ell\)</span>，一次 6×6 特征分解恢复全部六个复候选，不必在线同伦。</p>
+<p>该结论不保证候选全部为合法实材料，不保证 resolvent 非奇异，不保证在 branch collision 附近稳定，不保证成本超过强普通基线，也不把一个材料切片扩展为完整六材料域的覆盖。以上均需分别给出证据。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/theory/quotient_solver.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>
