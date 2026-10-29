@@ -12,3 +12,7 @@
 10. **未执行。** Full66 posterior/SDE、神经模型、能量边界测量、跨新采集、Research W迁移、跨全材料族最小实现均NOT_RUN。无失败结果改名为新成功。
 
 独立审核没有新增Maxwell RHS，重评分、同节点误差、费用与数学条件均可追溯到 `audit/independent_qa/`。
+
+## 计量范围补充
+
+报告的peak RSS来自实际保存该字段的transfer/压缩/条件重放收据；候选分支未保存完整进程峰值，因此不提供伪造的全campaign峰值内存。最大已记录值151552000 bytes不等于全campaign严格上界。各阶数RHS分别记录；将小阶RHS保守相加只用于预算保护，不代表相等wall成本。新随机目标baseline是冻结12F/8J预算内的RML式局部优化，不宣称每个随机目标全局或充分收敛。

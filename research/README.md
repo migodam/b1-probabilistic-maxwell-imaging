@@ -1,3 +1,11 @@
+<!-- P3LR10_CURRENT -->
+## P3L-R10-BI：双边传递、条件物理复用与材料覆盖边界
+
+[阅读完整中文报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r10_bilateral_structure/) · [140条公式集](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/maxwell_formula_atlas/) · [无损证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr10-bilateral-20261030)
+
+固定形状的320次新幅度查询全部通过误差门；实际32节点冷形状费用节省51.82%。新材料对象的覆盖优势未成立，Full66 posterior仍未认证，强TAP贡献HOLD。完整源码、失败、独立QA与论文草稿已保存。
+<!-- /P3LR10_CURRENT -->
+
 <!-- Z_ALG_R2_CURRENT -->
 ## Research Z-ALG-R2：行列式商代数、材料解枚举与盲成像
 
