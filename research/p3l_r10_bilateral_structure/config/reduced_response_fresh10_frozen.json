@@ -1,0 +1,69 @@
+{
+  "id": "R10_REDUCED_RESPONSE_HELDOUT_SHAPE10_V1",
+  "frozen_utc": 1793297190.2839081,
+  "parents": [
+    "R10BI_FRESH_000",
+    "R10BI_FRESH_001",
+    "R10BI_FRESH_002",
+    "R10BI_FRESH_003",
+    "R10BI_FRESH_004",
+    "R10BI_FRESH_005",
+    "R10BI_FRESH_006",
+    "R10BI_FRESH_007",
+    "R10BI_FRESH_008",
+    "R10BI_FRESH_009"
+  ],
+  "shape_source": "results/candidates_fresh10/parents/{parent}/anchor/ANCHOR.npz:x[:64], fixed original P1 quintic fraction, no GTread",
+  "observation_source": "results/candidates_fresh10/inputs/online/{parent}.npz",
+  "nodes_per_parent": 32,
+  "amplitude_seed_namespace": [
+    20261030,
+    101012
+  ],
+  "amplitude_sampling": "np.random.default_rng(SeedSequence([20261030,101012,i])).uniform(size=(32,2)); delta=.8+u0+i(.03+.15u1)",
+  "rank": 64,
+  "rank_selected_using": "only8DEV rankscan results/reduced_response/RESULTS.json; no heldout shapes/nodes inspected beforefreeze",
+  "rank_relative_cutoff": 1e-12,
+  "methods": [
+    "EXACT_LU256",
+    "EXACT_COMPLEX_SCHUR256",
+    "KRYLOV64_COMPLEX_SCHUR_FULL_RESIDUAL_GATE_EXACT_FALLBACK"
+  ],
+  "order": "rotate3methods by(parentindex+nodeindex)%3 at each matched amplitude",
+  "white_bound_gate": 0.01,
+  "potential_bound_gate": 0.1,
+  "coercivity": "beta=lambda_min((B-B*)/(2i)); bdelta=Im(delta)/abs(delta)^2+beta; ||white(error)|| <=sqrt2/sigma*||L||F*||R-(VQ)u/delta+(BVQ)u||F/bdelta if bdelta>0",
+  "potential": "||white(Fapprox-y)||*error_bound+.5*error_bound\u00b2<=.1",
+  "fallback": "paid exact256complexSchur query when gatefails or rankbreakdown; exactSchur coldsetup allocated to reducedarm iff anyfallback. Shared pairedreference notfreefallback. Allhostshape analyticFh no solve. Hardcap exhausted recordsRIGHT_CENSORED, no crash orbudgetextension.",
+  "caps": {
+    "complex_RHS_all_orders": 8000,
+    "LU256": 400,
+    "RHS576": 0,
+    "wall_seconds": 300
+  },
+  "expected_base": {
+    "RHS_all_orders": 7680,
+    "LU256": 320
+  },
+  "BLAS_threads": 1,
+  "single_worker": true,
+  "basis": "coldbuild to64only from fresh B and R, reorthogonalizedblockKrylov; no cachedQ or shapesetup reuse",
+  "cold_setup": "include commonformation B,L,R; reducedbeta+L_Fnorm+basis64+projection+reducedcomplexSchur+porttransforms; fullSchur exact256decomposition+porttransforms; hostcacheload recordedcommonshared",
+  "M": [
+    1,
+    4,
+    16,
+    32,
+    64,
+    256,
+    1024
+  ],
+  "amortization": "actual32queries measured; otherM are measured-mean cost projections, not invented newqueries",
+  "source_scope": "heldoutshapeprobe relative toDEVcompressionstudy; freshmaterialGT alreadyexposedglobally but unusedinselection; no blindedmaterialclaim, no full66posterior or newtheorem",
+  "qualification": "finite-discrete numerical coercivity/fullresidual, not interval/outwardrounded certificate",
+  "GT_access": false,
+  "original_support": "allquinticplateaus allowed; square rootonlynonnegativefraction, amplitudecomplex separate",
+  "source_blake2b": "3e27c674cd644f1b23415c5488fc8f014282e4f4b124a4ea02ae4ea9bc87cab2",
+  "source_frozen_utc": 1793297301.294296,
+  "basis_source_blake2b": "eb2b96de4ca8e0b2943af1f8dc760a8fdf5367dfa6160053946efd75783f70d5"
+}

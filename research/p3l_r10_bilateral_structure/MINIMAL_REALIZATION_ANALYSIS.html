@@ -1,0 +1,105 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>R10 最小输入输出实现、全材料消去与响应等价</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+ .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}table{display:block;overflow-x:auto}#formula-filter{width:100%;padding:12px;font-size:17px;box-sizing:border-box}.formula-list{columns:2}.formula-list a{display:block;break-inside:avoid;padding:5px}.formula-list a[hidden]{display:none}@media(max-width:800px){.formula-list{columns:1}} </style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="index.html">R10研究</a><a href="../maxwell_formula_atlas/index.html">140条公式</a><a href="GO_NO_GO.html">科学决策</a><a href="RESEARCH_REPORT_ZH.md">原始Markdown</a><a href="PAPER_NARRATIVE_V2_EN.html">英文论文草稿</a></nav><h1>R10 最小输入输出实现、全材料消去与响应等价</h1><p>固定结构 → 可复用响应 → 同任务成本 → 材料覆盖的真实边界</p></header><main><details><summary>章节目录</summary><div class="toc"><a href="#1-正确的压缩对象是传递族">1. 正确的压缩对象是传递族</a><a href="#2-可达不可观测与最小阶">2. 可达、不可观测与最小阶</a><a href="#3-有限矩匹配不等于全传递等价">3. 有限矩匹配不等于全传递等价</a><a href="#4-相似变换是内部坐标等价不是物理材料变换">4. 相似变换是内部坐标等价，不是物理材料变换</a><a href="#5-全-d-固定状态投影为何可能不降维">5. 全 D 固定状态投影为何可能不降维</a><a href="#6-输出商空间的更精确条件">6. 输出商空间的更精确条件</a><a href="#7-非对易性可观测性与端口误差互不替代">7. 非对易性、可观测性与端口误差互不替代</a><a href="#8-对-r10-实验与论文的具体建议">8. 对 R10 实验与论文的具体建议</a><a href="#9-已完成压缩结果的准确定位">9. 已完成压缩结果的准确定位</a></div></details><article><h1 id="r10-最小输入输出实现全材料消去与响应等价">R10 最小输入输出实现、全材料消去与响应等价</h1>
+<p>日期：2026-10-30。标准有限维实现理论在固定形状 Maxwell 传递族上的应用；不是新定理声明。本文不运行物理，不以阈值数值 rank 代替严格 rank。</p>
+<h2 id="1-正确的压缩对象是传递族">1. 正确的压缩对象是传递族</h2>
+<p>固定形状 A 时，令 \(P^2=A\)、\(B=PCP\)、\(L=OP\)、\(R=PE\)。完整响应为</p>
+<div class="math" aria-label="数学公式">\[
+G(\delta)=F(\delta)-F_h=\delta L(I-\delta B)^{-1}R.
+\tag{M1}
+\]</div>
+<p>把 \(z=1/\delta\)，有 \(G(1/z)=L(zI-B)^{-1}R\)。因此是标准严格真有理传递函数，B 为内部状态，R 为输入，L 为输出。这里“时间系统”只是数学实现解释；材料幅度 \(\delta\) 不是物理时间。</p>
+<p>在零附近</p>
+<div class="math" aria-label="数学公式">\[
+G(\delta)=\sum_{k=0}^{\infty}\delta^{k+1}M_k,\qquad M_k=LB^kR.
+\tag{M2}
+\]</div>
+<p>级数在例如 \(|\delta|\|B\|&lt;1\) 下收敛。M1 则在全部无极点点成立，不依赖 Born/Neumann 收敛。</p>
+<h2 id="2-可达不可观测与最小阶">2. 可达、不可观测与最小阶</h2>
+<p>定义</p>
+<div class="math" aria-label="数学公式">\[
+\mathcal R=\operatorname{span}\{R,BR,\ldots,B^{q-1}R\},\qquad
+\mathcal N=\bigcap_{k=0}^{q-1}\ker(LB^k).
+\tag{M3}
+\]</div>
+<p>由 Cayley–Hamilton，二者都对 B 不变；\(\mathcal R\) 包含全部会被源激发的状态，\(\mathcal N\) 包含在任意传递阶都不被接收看见的状态。精确最小实现状态空间是</p>
+<div class="math" aria-label="数学公式">\[
+\mathcal R/(\mathcal R\cap\mathcal N),\qquad
+r_{min}=\dim\mathcal R-\dim(\mathcal R\cap\mathcal N).
+\tag{M4}
+\]</div>
+<p>只删 \(\ker L\) 不合法：\(x\in\ker L\) 可能在下一阶有 \(LBx\ne0\)。只看 rank(R) 或 rank(L) 也不够；单输入单输出系统仍可有 q 个可达可观测模态。</p>
+<p>令块 Hankel 矩阵</p>
+<div class="math" aria-label="数学公式">\[
+H_{a,b}=\begin{bmatrix}
+M_0&amp;M_1&amp;\cdots&amp;M_{b-1}\\
+M_1&amp;M_2&amp;\cdots&amp;M_b\\
+\vdots&amp;\vdots&amp;&amp;\vdots\\
+M_{a-1}&amp;M_a&amp;\cdots&amp;M_{a+b-2}
+\end{bmatrix}
+=\underbrace{\begin{bmatrix}L\\LB\\\vdots\\LB^{a-1}\end{bmatrix}}_{\mathcal O_a}
+\underbrace{[R,BR,\ldots,B^{b-1}R]}_{\mathcal C_b}.
+\tag{M5}
+\]</div>
+<p>当 a,b 足够大（a,b≥q 是充分上界），\(\operatorname{rank}H_{a,b}=r_{min}\)。这是经典 Ho–Kalman/实现理论。短 Hankel 的 rank 仅是最小阶下界；小奇异值截断给经验有效阶，不是证明状态可精确删除。当前 q=256 时，显式构造巨大 Hankel 未必必要，双侧 Krylov/可达可观测基可更经济，但其费用也须计入。</p>
+<h2 id="3-有限矩匹配不等于全传递等价">3. 有限矩匹配不等于全传递等价</h2>
+<p>两个实现若全部 M_k 相同，则在零附近解析相同，并由有理函数延拓在共同无极点区域相同。若两个已知有限状态实现维数分别为 q1、q2，令差实现为 \(\widehat B=\operatorname{diag}(B_1,B_2)\)、\(\widehat L=[L_1,-L_2]\)、\(\widehat R=[R_1^T,R_2^T]^T\)。Cayley–Hamilton 表明：若</p>
+<div class="math" aria-label="数学公式">\[
+M_k^{(1)}=M_k^{(2)},\qquad k=0,\ldots,q_1+q_2-1,
+\tag{M6}
+\]</div>
+<p>则后续全部矩也相同。这是精确代数的充分条件，不是建议以数值近零矩作廉价认证。</p>
+<p>反之，匹配少数 M_k 仅是局部幅度近似。对截断 p 阶的模型，若 \(|\delta|\|B\|&lt;1\)，直接尾界为</p>
+<div class="math" aria-label="数学公式">\[
+\left\|G(\delta)-\sum_{k=0}^{p-1}\delta^{k+1}M_k\right\|
+\le\frac{|\delta|^{p+1}\|L\|\|B\|^p\|R\|}{1-|\delta|\|B\|}.
+\tag{M7}
+\]</div>
+<p>当条件不满足，此界失效，不代表原 resolvent 发散或真实模型无解。强散射时应使用目标幅度域上的有理近似和实际端口误差，不能把低阶 Born 匹配当全域性质。</p>
+<p>有限幅度节点的完全一致也通常不足以认证解析相同；若已知严格分子分母阶并有足够精确独立节点，可以用有理插值唯一性，但浮点噪声、未知阶和极点邻近使其变成条件数问题。R10 有限 sketch 只作为选择/诊断，不作 gauge 认证。</p>
+<h2 id="4-相似变换是内部坐标等价不是物理材料变换">4. 相似变换是内部坐标等价，不是物理材料变换</h2>
+<p>两个最小实现产生同一传递函数时，存在可逆 S 满足</p>
+<div class="math" aria-label="数学公式">\[
+B_2=S^{-1}B_1S,\qquad R_2=S^{-1}R_1,\qquad L_2=L_1S.
+\tag{M8}
+\]</div>
+<p>这表示同一输入输出行为的状态坐标可以不同。一般 S 不保留 \(B=PCP\)、\(L=OP\)、\(R=PE\) 的共同物理因子结构，也不保留对角材料、固定几何或 decoder 像；因此不能解释成两幅物理材料之间的 gauge。</p>
+<p>三层必须分别命名：</p>
+<ol><li><strong>有限观测相容：</strong> 一次 y 或有限节点上预测差在容差内；R10 主候选资格属于此层。</li><li><strong>条件传递等价：</strong> 固定采集、某个形状幅度族在全部允许幅度上相同；需要强得多的证明。</li><li><strong>材料 gauge：</strong> 原材料族内存在明确变换，使声明的完整观测族不变，且通常要求可连续连接/可逆作用等结构。前两层不自动推出这一层。</li></ol>
+<p>有限数据无法区分的材料可以是离散、多分支或近似相容，不必形成光滑纤维。用词“possibility set/候选集合”比“已证 exact material fiber”更符合目前证据。</p>
+<h2 id="5-全-d-固定状态投影为何可能不降维">5. 全 D 固定状态投影为何可能不降维</h2>
+<p>要区分三种不同问题：固定形状只变标量幅度；原受限 decoder 的 D(x)；全部独立对角 D。后者更强，不能把其不可能性未经证据搬给 Full66。</p>
+<p>考虑一个<strong>固定线性状态嵌入</strong> \(h=Vz\)，要求对全部允许 D 与所有源激励精确，并在约化空间内闭合。充分且标准的条件是</p>
+<div class="math" aria-label="数学公式">\[
+\operatorname{range}(DE)\subseteq\operatorname{range}V,
+\qquad DC\operatorname{range}V\subseteq\operatorname{range}V
+\quad\text{对所有 D}.
+\tag{M9}
+\]</div>
+<p>若 D 可独立变化且 E 每一行至少一个源分量非零，则 \(\operatorname{span}_{D}\operatorname{range}(DE)=\mathbb C^q\)：取 D 为单格坐标投影即可得到每个坐标轴。因此 M9 的固定状态空间必须为全 q 维，甚至不必使用 C 连通性。这是对“所有内部状态都由一个固定小基表示”的直接障碍。</p>
+<p>相同结论可由 \(D=t\operatorname{diag}(d)\) 在 t=0 的导数得到；只要允许族含独立对角变化的开邻域，所有首阶 \(DE\) 已激发完整空间。若 decoder 只有受限形状变化，这一论证的前提不成立。</p>
+<h2 id="6-输出商空间的更精确条件">6. 输出商空间的更精确条件</h2>
+<p>内部状态全维不排除某些共同不可观测状态可以商掉。对要求共同线性闭合的 reduction，定义最大的共同不可观测空间</p>
+<div class="math" aria-label="数学公式">\[
+\mathcal N_{all}=\{v: O A_{D_k}\cdots A_{D_1}v=0
+\text{ 对所有有限字及所有 }D_i\},\qquad A_D=DC,
+\tag{M10}
+\]</div>
+<p>其中空字条件为 Ov=0。它是包含于 ker O 且对所有 DC 不变的最大空间。一般这是<strong>同时约化整个算子族</strong>的条件；独立字比冻结同一个 D 的物理轨迹更强，因此不可据此宣称排除所有可能的静态输入输出公式。</p>
+<p>给出一个透明的充分无压缩条件：若 D 是全部对角矩阵，O 的每一列非零，且 C 可逆，则 \(\mathcal N_{all}=\{0\}\)。证明：对 \(v\in\mathcal N_{all}\)，一字条件要求 \(ODCv=0\) 对所有 D。取单格 D 得 \(O_{:,i}(Cv)_i=0\)，故 Cv=0，进而 v=0。更一般在 O 无零列时恰有 \(\mathcal N_{all}=\ker O\cap\ker C\)。</p>
+<p>结合 E 无零行、C 可逆、O 无零列，可判定标准固定线性共同状态嵌入/商 reduction 没有严格降维空间。它不是计算复杂性下界，也不排除：材料相关 Schur 补；直接有理公式；低秩近似加误差校正；某个受限 decoder 的特殊结构；统计任务压缩。</p>
+<p>若从“所有对角 D 与 C 的公共不变子空间”出发，所有 D 不变迫使空间为坐标子集，C 的跨块耦合再排除非平凡子集。这个常见论证同样只针对对应的联合不变性类别。不能把 \([D,C]\ne0\) 这一条现象扩大成一切双边压缩都无效。</p>
+<h2 id="7-非对易性可观测性与端口误差互不替代">7. 非对易性、可观测性与端口误差互不替代</h2>
+<p>非对易性：\([D,C]_{ij}=(d_i-d_j)C_{ij}\)，通常阻止复用一个共同对角化/Schur 三角结构。它不直接给出模型误差数值。</p>
+<p>可观测性：由 \(LB^k\) 的全阶闭包决定，不能只看 L 或 O 的零空间。</p>
+<p>端口误差：若近似状态满足真实残差 r，则 \(\Delta F=O(I-DC)^{-1}r\)。它包含实际材料 resolvent 和最终端口；\(\|[D,C]\|\)、\(\sigma_{k+1}(C)\) 和压缩 rank 都不能直接替代。</p>
+<p>极简结构反例不需新增数值实验：令 L=[1,0]、R=[0,1]^T、B 的 (1,2) 元素非零。则 LR=0（Born 矩为零），但 LBR 非零（第二散射阶可见）。这说明“输入子空间与输出子空间不相交”并不意味着没有响应；内部传播连接两者。相反，C 可以高秩而某个给定形状的 reachable/observable quotient 很小。</p>
+<h2 id="8-对-r10-实验与论文的具体建议">8. 对 R10 实验与论文的具体建议</h2>
+<ul><li>如研究固定形状幅度扫描，报告达到所需端口误差的有效阶、每形状 setup、每幅度评估、原始模型回退及实际摊销点；不要只展示 B 或 Hankel 的奇异值曲线。</li><li>如研究 Full66 材料覆盖，最小实现只提供结构解释。需证据证明 shape/amplitude 分块在原 decoder 内合法，不能用条件族成功替换全材料结果。</li><li>若用 transfer sketch 选择候选，应同时保留材料距离。相同 transfer 行为的不同材料是反演不确定性的一部分，不应全部去掉。</li><li>主张应是结构引导的机制和有限证据；标准最小实现、相似等价、块消元和 resolvent 恒等式不作为新颖性主体。</li></ul>
+<p>经典实现来源：<a href="https://ntrs.nasa.gov/citations/19670049337">Ho and Kalman, 1966, NASA bibliographic record</a>。其 metadata 用于身份；本文件公式给出独立标准推导，未声称逐行核对不可获取的原始全文。相关实质文献证据与检索限制见 <a href="PRIOR_ART_AND_NOVELTY.html">PRIOR_ART_AND_NOVELTY.md</a>。</p>
+<h2 id="9-已完成压缩结果的准确定位">9. 已完成压缩结果的准确定位</h2>
+<p>R10 实测了标准 block Krylov/Galerkin 在固定形状幅度族上的效用。八个 DEV 形状、每形状三十节点中，32 维数值残差/势函数双门为 0/240；64、96、128 维均 240/240。随后冻结 64 维，在十个相对 DEV heldout 的锚点形状上新取三十二个幅度节点，共 320/320 通过、零精确回退。实际 M32 冷核比精确全阶 Schur 节省 63.76%，比直接 LU 节省 51.82%；<a href="REDUCED_RESPONSE_FRESH10.html">完整记录</a> 区分实际 M32 与其他 M 的外推。</p>
+<p>因此，<strong>64 是所测基族、节点、数值门和费用定义下的经验有效阶</strong>。这不等于：M3 的严格 Hankel rank；任意基族的最小准确 rank；所有幅度连续域的认证阶；所有形状的共同压缩阶；或 Full66 后验/材料空间维数。32 维门失败不能证明所有 32 维近似无效，因为该充分误差界可能保守。三百二十个通过节点也不能证明严格可达—可观测商只有 64 维。</p>
+<p>该另组形状核未使用真值，但材料 GT 在其他支线已全局开放，故仅称 heldout-shape kernel probe，不称新的盲法材料测试。严格最小实现计算、向外舍入证书及全幅度统一误差认证仍为 <code>NOT_RUN</code>。该证据支持“固定形状查询有可用低阶近似”，并不与第 5–6 节针对更强 all-D 共同状态约化的限制矛盾。</p></article></main><footer style="padding:30px;max-width:1100px;margin:auto">原P1完整非线性Maxwell。物理核费用、材料可能性与条件概率分别评价。新结果不改写历史结论。</footer></body></html>

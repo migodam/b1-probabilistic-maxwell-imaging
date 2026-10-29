@@ -1,0 +1,18 @@
+# Candidate code and mathematical review before GT scoring
+
+The identical optimizer in all three current arms uses residual r = white(F(x)-y)-eta and gradient g = J^T r + x-xi. Its damped normal matrix is H = J^T J + (1+lambda) I66. It partitions H into A64x64, B64x2, C2x2 and g into gs, ga. Code computes
+
+s = solve(A - B solve(C,B^T), -gs + B solve(C,ga));
+a = solve(C, -ga - B^T s).
+
+The direct-joint reference expression is solve(H, -g). Substitution of the second row gives the displayed first row exactly, so this is ordinary block Gaussian elimination. The 64 shape coordinates and both amplitude coordinates remain free in every arm. There is no nonlinear minimization over amplitude for each fixed shape, no eliminated-profile posterior density, and no physical acceleration attributed to this identity. The normal matrix is positive definite by its explicit identity prior term, even if J is rank deficient. This statement does not prove the invertibility of a separate physical forward operator or a material decoder. No numerical identity experiment is run.
+
+The first arm randomizes all66 prior targets. The second arm uses the same common shape target but fixes the two amplitude targets to zero while still optimizing amplitude. The third arm applies a fixed full-support covariance transform to the same64 shape target and also fixes amplitude targets to zero. Their differences therefore concern randomized target distributions. They are finite possibility generation heuristics; no optimizer pushforward density, posterior covariance, or RTO correction is provided.
+
+For the fixed bilateral target metric, let O be the cached32x256 receiver transfer and E the cached256x8 host incident total field. D is the complex256x64 prior decoder derivative at x=0, including the midpoint complex inclusion increment 1.3+0.105i and the C2 saturation derivative. Source and receiver Grams are Gs_ij = sum_s conj(E_is) E_js and Gr_ij = sum_r conj(O_ri) O_rj. The surrogate real sensitivity Gram is H_B = (2/sigma²) Re[D* (Gr hadamard Gs) D]. The factor2 agrees with the512-real-coordinate standard noise whitening. This is host-field algebra with the decoder tangent at prior center, not the exact nonlinear Maxwell Jacobian at that center. It uses only cached arrays and performs no new forward or adjoint solves.
+
+Source-only and receiver-only pullbacks replace the Hadamard product by Gs or Gr. All comparison metrics normalize trace before comparing them with the cached old anchor J_shape^T J_shape. These comparisons consume no new physics and do not turn the host surrogate into the exact nonlinear operator. Top16 eigenspace overlap is a descriptive alignment diagnostic, independent of any material truth.
+
+The shape covariance eigenvalues are derived from inverse(1+lambda_B/mean(lambda_B)), clipped to[0.25,4] before their trace is renormalized to64. The chosen floor and normalization are fixed design choices. They retain full64 target support and equal total latent target variance, but do not establish posterior calibration or global direction coverage. This mechanism does not enlarge or reuse the old weak8 plane.
+
+Per-proposal budgets are12 paid forward states and8 J states, with the cached shared anchor J re-used at the initial state. Paid new J solves, explicit LU restorations, rejected line searches, failed physical actions, saved exact states, CPU time and wall time are counted in RESOURCE_LEDGER.jsonl. The cached anchor/J and cached ROI setup were already paid in R9; their reuse is shared among all three current arms. Standalone accounting must include those historical costs separately. No new576-dimensional solve is allowed.

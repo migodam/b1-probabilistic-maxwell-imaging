@@ -1,0 +1,248 @@
+# R10 固定双边传播结构：能够复用什么，怎样用于材料可能性
+
+日期：2026-10-30（Asia/Singapore）。本文件保留 R10 事前理论分析，并在末节纳入完成后的证据裁决；所有实验资格来自独立执行记录。本文作者没有新增物理求解或重复恒等式精度测试。标准散射、resolvent、Khatri–Rao、Schur、variable projection 与实现理论均不主张原创。
+
+## 1. 物理直觉与研究目标
+
+一幅材料图必须同时满足两侧约束：已知照明怎样把能量送入材料，以及材料产生的电流怎样被接收器看见。只看接收端的弱电流方向，会遗漏照明激发，也可能产生没有共同材料解释的电流。材料内部还有反复散射，所以两端传播虽然固定，实际穿过材料的场并不固定。
+
+R9 已证明精确固定宿主消元可作为共同计算载体；其 weak8 云却只在主尺度覆盖 6/32 个新对象，而共同 anchor 为 3/32。R10 应检验的是：固定双边信息能否改变候选的方向、目标和预算分配，使有限合法材料集合更有用。准确 posterior 可以独立研究，不是开展覆盖实验的前提。固定算子的数学存在也不等于算法已经实现高覆盖。
+
+## 2. 精确离散模型与固定量
+
+令 ROI 大小为 q，固定源数 n_s、接收数 n_r。沿用精确宿主消元后的记号
+
+\[
+C\in\mathbb C^{q\times q},\quad E\in\mathbb C^{q\times n_s},\quad O\in\mathbb C^{n_r\times q},\quad F_h\in\mathbb C^{n_r\times n_s}.
+\]
+
+材料相对宿主的增量为 \(D=\operatorname{diag}(d)\)。令 \(L_D=I-DC\)、\(R_D=I-CD\)，假设二者可逆，则
+
+\[
+T(D)=(I-DC)^{-1}D=D(I-CD)^{-1},\qquad F(D)-F_h=O\,T(D)\,E.
+\tag{B1}
+\]
+
+\(C,E,O,F_h\) 对固定宿主、频率、采集和 ROI 可缓存。变化的 \(D\)、内部场 \(E_D=R_D^{-1}E\)、接收传播 \(O_D=OL_D^{-1}\) 以及 decoder 导数不可因为两侧固定而一并冻结。q=256 的完整 ROI 与 66 维 latent 是不同对象；低维 latent 不意味着 \(\Delta D C\) 低秩。
+
+这里的 \(T(D)\) 是离散 ROI 的对比响应算子，并非已经归一化到完整远场球谐通道的电磁 transition matrix。有限近场测量矩阵也不自动满足完整散射矩阵的光学定理形式。不能把能量守恒文献中的矩阵不等式未经归一化推导直接施加于 \(OTE\)。
+
+## 3. 两个材料的精确差：非线性仍然具有双边形式
+
+对于两个可解材料 \(D_1,D_2\)，有
+
+\[
+\boxed{T(D_2)-T(D_1)=(I-D_2C)^{-1}(D_2-D_1)(I-CD_1)^{-1}.}
+\tag{B2}
+\]
+
+证明：左乘 \(I-D_2C\)、右乘 \(I-CD_1\)，左侧变为
+\(D_2(I-CD_1)-(I-D_2C)D_1=D_2-D_1\)。再乘回逆即可，不需要 \(D_i\) 可逆。
+
+因此
+
+\[
+F(D_2)-F(D_1)=O_{D_2}(D_2-D_1)E_{D_1}.
+\tag{B3}
+\]
+
+这是**端点相依的精确双边材料差**。令两点趋近，得到
+
+\[
+\mathrm dF=O_D\operatorname{diag}(\mathrm dd)E_D.
+\tag{B4}
+\]
+
+精确响应相等只要求 \(O_{D_2}(D_2-D_1)E_{D_1}=0\)。它不要求 \(D_2=D_1\)，也不代表存在可连续延伸的材料 gauge。有限噪声相容则是该矩阵经原噪声白化后的范数满足阈值；不能用原始复幅度小代替高信噪比下的数据资格。
+
+若所有允许端点有 \(\|O_D\|\le a\)、\(\|E_D\|\le b\)，则由任意相容矩阵范数得到上界 \(\|\Delta F\|\le ab\|\Delta D\|\)。这只是正向稳定性上界，没有给材料恢复的下界。近共振或非正规放大可使 a、b 很大；特征值远离极点也不足以单独控制 resolvent 范数。
+
+## 4. Born 双边 Gram 及其适用边界
+
+在宿主附近，首阶响应是 \(F-F_h\simeq O\operatorname{diag}(d)E\)。按列向量化并定义逐列 Kronecker 积 \(\odot\)，有
+
+\[
+\operatorname{vec}(F-F_h)\simeq K_Bd,\qquad K_B=E^T\odot O.
+\tag{B5}
+\]
+
+第 i 列为 \(E_{i,:}^T\otimes O_{:,i}\)，故
+
+\[
+\boxed{K_B^*K_B=(O^*O)\circ\overline{EE^*}.}
+\tag{B6}
+\]
+
+\(\circ\) 为逐元素乘积。因 \(E^T\) 的 Gram 为 \(\overline E E^T=\overline{EE^*}\)，不能漏掉复共轭。该式同时包含收、发两端的空间相关性；只用 \(O^*O\) 不能描述材料可辨识度。
+
+原非线性材料切向的同一关系是
+
+\[
+K_D=E_D^T\odot O_D,\quad K_D^*K_D=(O_D^*O_D)\circ\overline{E_DE_D^*}.
+\tag{B7}
+\]
+
+若 \(d=d(x)\)、x 为实 latent、\(M=\partial d/\partial x\)，则复 Jacobian 是 \(K_DM\)，实际 Fisher/GN 矩阵须按原噪声规则实化。对独立圆复噪声 \(\sigma\)，\(J_{\mathbb R}^TJ_{\mathbb R}=2\operatorname{Re}(M^*K_D^*K_DM)/\sigma^2\)。一般非可分离源接收噪声须先对白化后的完整 vec 算子构造 Gram；不能默认逐端白化保持 B6。
+
+固定 \(K_B\) 可以组织候选、预条件或便宜筛查；只有在误差被控制时才能替代原 forward。弱 Born 方向在强多次散射中可能变强，反之亦然。R10 对其价值应问“提案与最终覆盖有没有改善”，不再问恒等式能否达到机器精度。
+
+## 5. 形状与复幅度分离：精确的条件族
+
+设允许材料恰有 \(D=\delta A(\theta)\)，其中 \(\delta\in\mathbb C\) 是整体幅度，\(A\) 为固定某个形状参数 \(\theta\) 后的对角形状矩阵。选逐格平方根 \(P^2=A\)，定义
+
+\[
+B=PCP,\qquad L=OP,\qquad R=PE.
+\]
+
+则无需除以 P，直接利用 \((I-\delta AC)P=P(I-\delta PCP)\)，得到
+
+\[
+\boxed{F(\theta,\delta)-F_h=\delta L(\theta)(I-\delta B(\theta))^{-1}R(\theta).}
+\tag{B8}
+\]
+
+若 A 是非负占据权重，则 P 可取实非负平方根。若 A 为一般复对角矩阵，可逐格选复平方根；此处是 \(P^2=A\)，**不是** \(P^*P=A\)。更改平方根符号只改变内部坐标，不改变响应。零占据格点也允许，不能用 \(P^{-1}\) 的推导排除它们。
+
+在固定形状上，B 的一次 Schur 分解可复用于多个 \(\delta\)。不同形状通常需要不同 B、L、R 和不同 Schur；不能把一次形状 setup 计成覆盖全部形状的免费常数。若每个形状仅评估一次幅度，setup 可能不划算。
+
+这类几何—材料谱分离已有直接先例：[Forestiere–Miano 2016](https://doi.org/10.1103/PhysRevB.94.201406) 明确使用与介电常数无关的模式和有理响应系数；[Chen–Bergman–Sivan 2019](https://doi.org/10.1103/PhysRevApplied.11.044018) 的 GENOME 使用 eigenpermittivity。这里用非正规 B 的复 Schur 避免不稳定本征向量归一化，是实现选择，不是发现了此前不存在的形状—材料分离。实质差异必须落到原合同中的误差控制、摊销与候选覆盖证据。
+
+**材料支持边界。** “任何非零 d 都可写 d=\delta a”在代数上正确，但并未自动给出低维、几何纯粹的形状。若 a 仍是任意复 q 向量，只是增加尺度规范。若规定 a 为非负、二值、归一化占据图，则是有内容的材料假设；必须核对原 decoder 是否具有这种结构。将 Full66 的独立实虚空间变化强行替成共同复幅度乘实占据图会改变材料族。合法实现应在原 decoder 坐标内找到真实的 shape/amplitude 分块，或明确标为单独条件模型。幅度为零时形状不可辨识，任何形状规范都应说明该退化。
+
+**当前 P1 已核对的事实：** `src/transfer_campaign.py` 的原 decoder 调用返回非负 quintic occupancy `fraction`，材料为 host 加该 fraction 乘原复幅度；前 64 Gaussian 坐标决定 shape，最后两维经 normal CDF 决定幅度矩形。因此 R10 当前固定 anchor shape、改变原允许幅度的条件族是原支持内合法的。前段关于任意 decoder 的警告不表示这个已核对的 P1 族失配。冻结一个 shape 后的结果依然不能替代变化全部 shape 的覆盖证据。
+
+### 幅度导数与 profile
+
+固定形状、在无极点区域令 \(Q_\delta=(I-\delta B)^{-1}\)。B 与其 resolvent 对易，故
+
+\[
+\partial_\delta F=LQ_\delta^2R,\qquad
+\partial_\delta^2F=2LBQ_\delta^3R.
+\tag{B9}
+\]
+
+holomorphic 复导数可转成两个实幅度方向；若幅度受被动性、上下界或原 prior 约束，内层优化仍须保留这些约束。原 forward 对 \(\delta\) 是有理非线性，不是线性，不能直接套用 Born 的一次线性最小二乘幅度公式。
+
+对给定随机目标 z，定义
+\[
+\phi_z(\theta)=\min_{\delta\in\mathcal D(\theta)}\Psi_z(\theta,\delta).
+\tag{B10}
+\]
+这属于低维内层 profile。内层唯一、光滑且为内点最优时，包络定理给 \(\nabla_\theta\phi_z=\partial_\theta\Psi_z\) 在最优幅度处求值；多个分支、边界或不精确内解需单独处理。profile 不是 marginalization：对幅度积分还需要先验测度、曲率/体积因子、边界与所有分支。
+
+## 6. 三种真正不同的候选机制
+
+以下均是可检验方案，不从标准公式直接推断性能。原观测、原 decoder 与相同精确 ROI 后端应对所有臂共享。
+
+### M1：双边信息与任务/先验共同分配形状提案
+
+在原合法形状坐标 \(\theta\) 中，设 \(M_\theta\) 为 decoder 形状导数，构造固定或训练分布平均的双边曲率 \(G_B=\operatorname{Re}(M_\theta^*K_B^*K_BM_\theta)\)，并保留原 prior metric \(G_P\)。对一个预先声明的任务 T，令 \(B_T=\partial T/\partial\theta\)。方向可以来自
+\[
+B_T^TWB_Tv=\lambda(G_B+G_P+\rho I)v,
+\tag{B11}
+\]
+或从相应全支撑协方差提出形状目标，然后以原 forward 校正。若目的为材料覆盖而非具体任务，任务 metric 必须取材料嵌入/先验代表性，不能只追逐一项易被满足的二元事件。
+
+它区别于旧 weak8 的操作在于：方向需要同时具有任务/材料效用与可承受数据代价，并保留没有被少数最大特征向量覆盖的先验提案预算。它区别于 receive-only TSOM 的对象在于：生成的是原 decoder 内的材料坐标，不是自由电流。广义特征值、目标导向降维和 prior/likelihood 比较均已有先例；潜在贡献只能是特定固定双边构造、分配规则及被证据支持的整体收益。
+
+主要失败模式：Born 曲率失真；训练均值偏离测试；任务可变但偏离 GT；固定有限 rank 再次遗漏方向。必要对照：同 budget 的 receive-only、双边不含任务、完整 rMAP/普通随机目标；若没有实现某项，标 `NOT_RUN`，不能在摘要暗示排除它。
+
+### M2：形状外层、幅度内层的随机反演
+
+对每个预先固定随机 seed，扰动白化数据与 prior 中心，或抽取独立的合法形状 target；在原模型中交替/嵌套优化形状与低维幅度，使用 B8 的幅度复用。所有候选最后对**原始未扰动观测**重新检验资格。
+
+如果目标本身就是随机 data/prior 中心的 MAP，则这是 rMAP/RML 类算法的结构化求解实现，不能改名后声称全新采样原理。若随机的是 shape target 而非 data/prior，其输出分布更不同，但也失去直接 rMAP 分布解释。应把两种随机化分开命名、分别记录。
+
+线性 Gaussian 情形 \(H=J^TJ+I\) 下，随机化两个目标产生
+\[
+p=H^{-1}(J^T\eta+\xi-g),\quad \operatorname{Cov}(p)=H^{-1},
+\quad g=J^Tr+x_a.
+\tag{B12}
+\]
+完整非线性、内层 profile、局部极小值、过滤与去重会改变分布，故只作为候选机制。两种方法若求解同一个随机目标且达到同一全局最优，它们只是求解路径/费用不同；不能期望自动改变统计覆盖。潜在差异必须来自有限预算下更好的求解、不同提案目标，或可解释的分支保留。
+
+主要失败模式：对每个形状重新 setup 吞噬复用收益；幅度 profile 吸收形状错误；同一吸引域重复；强散射幅度目标多峰。必要对照：同随机目标、同初值、同实际费用的普通 joint rMAP；额外报告有限预算下内层目标质量与不同材料数。
+
+#### 本轮实际 block-GN 的单独资格
+
+R10 实际候选臂的幅度 Schur 消去发生在**同一个联合 GN 二次步**内。写 \(x=(\theta,a)\)、\(Hp=-g\)，则
+\[
+(H_{\theta\theta}-H_{\theta a}H_{aa}^{-1}H_{a\theta})p_\theta
+=-g_\theta+H_{\theta a}H_{aa}^{-1}g_a,\qquad
+p_a=-H_{aa}^{-1}(g_a+H_{a\theta}p_\theta).
+\tag{B12a}
+\]
+在相同 H,g、可逆幅度块和相同接受/约束处理下，它等价于直接联合 GN 线性求解；它并未实现 B10 的完整耦合非线性 profile。**完整非线性 profile：`NOT_RUN`。** 当前实际比较的新增机制是随机 target 的协方差/分块选择，不是一个新的 GN 或 posterior 原理。
+
+实际三臂为 `FULL66_RML`、`SHAPE_TARGET_RML_BLOCK`（幅度 target 扰动为零）与 `BILATERAL_TARGET_RML_BLOCK`（固定宿主双边信息和 prior pullback 构造、再作特征值裁剪及 trace 归一化的 target 协方差）。后两臂改变随机目标的分布，但目标中的原 prior 二次惩罚仍保留。不得把“proposal/target covariance 改变”写成“学习到新的材料 prior”，也不得把这些输出称为已校准 posterior。其实际覆盖、费用及失效由封存实验记录报告。
+
+#### target 协方差改变的标准局部后果
+
+在同一 anchor 线性化中，若 data target \(\eta\sim N(0,I)\)、prior target \(\xi\sim N(0,\Sigma_t)\) 独立，仍有
+\[
+p=H^{-1}(J^T\eta+\xi-g),\qquad
+\operatorname{Cov}(p)=H^{-1}(J^TJ+\Sigma_t)H^{-1}.
+\tag{B12b}
+\]
+完整 RML 的 \(\Sigma_t=I\) 给 \(H^{-1}\)。仅形状 target 的 \(\Sigma_t=I-P_a\)（\(P_a\) 投到两个幅度 target 坐标）给
+\[
+\operatorname{Cov}_{shape}(p)=H^{-1}-H^{-1}P_aH^{-1}.
+\tag{B12c}
+\]
+它减少一个至多 rank-2 的局部协方差分量，但经 H 耦合后影响可以遍布形状和幅度状态坐标；绝不是只删除两个最终输出坐标。双边变体则额外给出 \(H^{-1}(\Sigma_{bilateral}-\Sigma_{shape})H^{-1}\) 的差，一般既非半正定也非半负定，trace 相同并不意味着输出材料方差相同。
+
+这些公式只刻画精确线性局部目标的推送分布，说明实际三臂改变的是方向/尺度分配，不能预言非线性覆盖。如果 J 满列秩，即使只随机 shape target，data 随机项本身也可使最终局部位移具有全 rank 协方差；“没有幅度 target 随机数”不等于“幅度没有随机变化”。
+
+### M3：基于传递行为的候选多样性分配
+
+对已经原物理合格的材料/形状，定义预定幅度节点上的 transfer sketch，或矩序列 \(M_k=LB^kR\) 的规范化表示。用 transfer 差异与材料/任务差异联合分配保留槽位，避免把许多等价传播行为重复计为不同机制；必要时为新形状重新分配计算。
+
+它是候选集合的**选择/分配机制**，不同于 M1 的方向构造与 M2 的随机目标。用原观测上的 \(F(D)\) 距离通常没有足够动态范围，因为全部合格者都被同一噪声球限制。离开已观测幅度的 profile/sketch 描述的是模型的反事实行为，不是新测量证据；不能据此淘汰仍可能是真实的不同材料。对于不同 shape–amplitude 规范，必须统一节点与规范，否则 sketch 距离本身不相容。
+
+只最大化 transfer 距离也不等于 GT 覆盖：观测等价但材料不同的形状恰可能是需要保留的不确定性。可采用预定的“两层去重”：同材料且同 transfer 才强去重；材料明显不同但 transfer 相近保留为同响应类的多个代表。对照应是相同候选池下的随机选择、仅材料最远点选择与 transfer 联合选择；池生成费用共同计入。有限节点差异只证明有限节点差异，不证明解析 transfer 全局不等价。
+
+## 7. 误差应面向端口，而不只面向算子谱
+
+若 \(\widetilde C\) 或投影产生近似电流 \(\widetilde h\)，定义真实方程缺陷
+\[
+r=DE-(I-DC)\widetilde h.
+\]
+精确误差为
+\[
+F-\widetilde F=O(I-DC)^{-1}r.
+\tag{B13}
+\]
+对标量输出任务 W，解 \((I-DC)^*Z=O^*W\) 后，有 \(\Delta\ell=\operatorname{Re}\operatorname{tr}(Z^*r)\)。固定 C 的小奇异值尾、固定 B 的小特征值、或小 commutator 都不是这个实际输出误差的替代品。反过来，即使内部场误差很大，端口任务误差也可能很小；应按声明用途衡量。
+
+若白化 forward 误差不超过 \(\epsilon_f\)，近似 residual 为 \(\widetilde r_w\)，则
+\[
+|\Phi-\widetilde\Phi|\le\|\widetilde r_w\|\epsilon_f+\tfrac12\epsilon_f^2.
+\tag{B14}
+\]
+只有数值可用的稳定性/dual 控制才使之成为资格证书。没有证书时，最终合格者仍需原精确离散物理检查；完整 PDE、真实系统误差与材料 GT 误差继续是不同层级。
+
+## 8. R10 可以写和不能写的主张
+
+可以写：固定双边算子提供共享的计算结构、显式材料灵敏度与条件形状幅度传递族；据此设计了某个具体候选机制，并用独立测试检验其集合覆盖、范围、动作与费用。
+
+只有实验支持后才可以写：某机制在声明 prior/noise、有限 K、epsilon 与费用下改善覆盖，或某条件幅度族的 port 模型获得实际摊销收益。
+
+不能写：新 Maxwell 恒等式；固定 Green 自动给全材料低维求解；TSOM 的投影等于子空间交集；T-matrix SVD 给出固定材料弱空间；profile 等于 posterior 积分；多样性等于覆盖；单次/有限节点响应相等构成连续材料 gauge；一个有限检索证明全局新颖性。
+
+标准理论与最接近文献详见 [PRIOR_ART_AND_NOVELTY.md](PRIOR_ART_AND_NOVELTY.md)；精确最小实现与 all-D 边界详见 [MINIMAL_REALIZATION_ANALYSIS.md](MINIMAL_REALIZATION_ANALYSIS.md)。
+
+## 9. 完成后的证据裁决：有用计算与未成功覆盖分开
+
+完整状态残差可以用当前离散模型的强制性下界控制。对固定形状的 \(K_\delta=\delta^{-1}I-B\)，设 \(\beta=\lambda_{min}\operatorname{Im}_H B\)，则
+\[
+-\operatorname{Im}(v^*K_\delta v)\ge
+b_\delta\|v\|^2,\qquad
+b_\delta=\operatorname{Im}\delta/|\delta|^2+\beta>0.
+\]
+由 Cauchy–Schwarz 得 \(\|K_\delta v\|\ge b_\delta\|v\|\)。这不依赖 B 正规。若 \(e=R-K_\delta\widehat u\)，则 \(\|F-\widehat F\|_F\le\|L\|_F\|e\|_F/b_\delta\)。再按原复噪声乘 \(\sqrt2/\sigma\)，即可应用 B14。该标准估计的符号和实现已独立审查于 [pre-run review](theory/ENERGY_REDUCTION_PRERUN_REVIEW.md)。浮点 β/残差没有向外舍入，故当前使用的是数值离散界，不是形式认证。
+
+DEV 的 32/64/96/128 阶扫描中，32 维 0/240 过门，其他三阶均 240/240；64 维是所测列表的最小全通过者。另行冻结的十形状核在 320 个新幅度节点上 320/320 通过，零回退。实际 M32 的冷核费用为 0.115014 秒，比全 Schur 的 0.317346 秒和直接 LU 的 0.238701 秒分别节省 63.76% 与 51.82%。这是固定形状重复查询的实测用途，未证明严格最小阶或全材料共同压缩，也未集成到候选求解器。其他 M 的计时为外推。
+
+Fresh10 K8 主覆盖为 full RML 3/10、shape target 3/10、bilateral target 2/10，anchor 2/10。双边 target 的动作误差区间跨零，没有新增覆盖优势证据。M1 实际启发式受到负结果限制；M2 完整非线性 profile、M3 transfer 多样性分配仍为 `NOT_RUN`。不能用计算核收益回填材料覆盖成功，亦不能由本启发式失败断言所有双边信息无用。
+
+三个固定形状条件积分参考在修订冻结门下通过数值任务资格；Full66 posterior 保持 `UNQUALIFIED_NOT_ESTIMATED`。精确 posterior 从来不是开展有限材料集合研究的先决条件，但条件参考也不能替代真实材料覆盖。完整数字、费用和暴露状态见 [中文论文稿](PAPER_NARRATIVE_V2_ZH.md) 和 [核报告](REDUCED_RESPONSE_FRESH10.md)。

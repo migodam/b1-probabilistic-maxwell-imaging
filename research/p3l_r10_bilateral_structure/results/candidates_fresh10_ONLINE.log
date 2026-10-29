@@ -1,0 +1,16 @@
+CANDIDATE R10BI_FRESH_000 FULL66_RML 0 FORWARD_CAP 232.747 True 12 5
+CANDIDATE R10BI_FRESH_000 SHAPE_TARGET_RML_BLOCK 0 FORWARD_CAP 232.522 True 12 7
+CANDIDATE R10BI_FRESH_000 BILATERAL_TARGET_RML_BLOCK 0 FORWARD_CAP 232.306 True 12 6
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r10-bilateral-structure/research/p3l_r10_bilateral_structure/src/candidate_fresh.py", line 107, in <module>
+    p=argparse.ArgumentParser();p.add_argument('action',choices=['freeze','generate','online','score']);a=p.parse_args();globals()[a.action]()
+                                                                                                                         ~~~~~~~~~~~~~~~~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r10-bilateral-structure/research/p3l_r10_bilateral_structure/src/candidate_fresh.py", line 76, in online
+    row=pv.candidate(ph,base,y,v,radius,arm,g0,dest/arm/f'{k:02d}',c);row.update(parent=parent,k=k,path=row.get('selected_path'),qualified=bool(row.get('primary_qualified')),GT_used=False)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r9-stabilized-subspace/research/p3l_r9_stabilized_subspace/src/possibility_volume.py", line 410, in candidate
+    try:step,extra,M=substep(ph,base,current,v,radius,arm,g0,c,trust)
+                     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-p3l-r9-stabilized-subspace/research/p3l_r9_stabilized_subspace/src/possibility_volume.py", line 369, in substep
+    rr=white(p.prediction-ph.y);A=np.vstack((p.J@Z,Z));res=np.r_[rr,p.x]
+                          ^^^^
+AttributeError: 'ExactROI' object has no attribute 'y'

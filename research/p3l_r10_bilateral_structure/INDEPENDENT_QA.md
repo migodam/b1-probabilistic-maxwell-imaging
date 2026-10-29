@@ -1,0 +1,118 @@
+# R10 独立科学与执行审查
+
+审查人独立于候选生成、传递实验与主线程压缩实现。新增物理求解 **0 RHS、0 LU**。fresh10 运行时没有读取私有真值或查看未解封分数；仅在480条预测seal和GT_SCORING_OPENED出现且核对先后顺序后进行独立评分。最终科学主张仍由主线程裁决。
+
+| 审查项 | 当前判定 | 范围 |
+|---|---|---|
+| 原 P1 prior、decoder、噪声、白化 | PASS | 原 Gaussian64 × Uniform2，经 probit 变换的 Gaussian66；固定绝对 sigma |
+| 新三臂自由度与预算 | PASS | 相同联合66维 GN，12 forward/8 J 上限；目标分布不同 |
+| 双边 Gram 与幅度 Schur | PASS | 复共轭、实 Hilbert 因子、普通联合 GN 消元正确 |
+| 物理能量/互易公式 | PASS（条件式） | E01–E06 符号与条件正确；没有闭边界功率实测 |
+| 固定形状条件积分 | PASS（数值任务） | 已独立重算保存节点；严格全支持/舍入认证未建立 |
+| fresh10 独立评分 | PASS | 240个parent/arm/K统计、463端点，0差异；保留全部10对象 |
+| 全局已完成成本 | PASS | true RHS256306096，另低阶RHS16928；保守合计323024；LU2569273 |
+| 压缩数值/费用复核 | PASS（离散数值） | 960个rank/node，r64/96/128均240/240过门；没有严格舍入认证 |
+| 另行冻结10shape压缩核 | PASS（离散数值） | 320新幅度节点，全通过；相对DEV压缩holdout，材料GT此前已全局暴露 |
+| 实际条件积分工作量复用 | PASS（数值任务重放） | 同一DEV形状/原836节点；原prior条件量一致；不是新独立参考 |
+| Full66 posterior、连续材料纤维、全局覆盖 | NOT_ESTABLISHED | 不由本审查中的有限证据推出 |
+
+## 原统计与物理合同
+
+实际运行导入 sibling R9 的 `possibility_volume.py` 与 sibling R4 的 `p1_material/prior.py`。逐一读回 R9 冻结身份，物理 engine、prior、TARGET、SETUP 与原冻结记录全部一致；本工作树所读代码也与真正运行的 sibling engine 一致，见 `audit/independent_qa/DEPENDENCY_FREEZE_READBACK.json`。
+
+材料由原 C2 quintic 饱和占比产生，固定宿主 `.1+.04i`；增量实部 `[.8,1.8]`、虚部 `[.03,.18]`。Gaussian66 的最后两维经 normalCDF 变回 Uniform2，保留原 pushforward prior；这不意味着 Gaussian 坐标最优点就是材料 MAP。源序实32/虚32打包、`sqrt(2)/sigma` 白化与每实分量方差 `sigma²/2` 一致。所有资格都针对原观测 y 的 `Phi=||F-y||²/sigma²`，不是扰动后的目标观测。
+
+新三臂的两幅度坐标始终自由。幅度 target 为零不等于冻结幅度；2×2 幅度块 Schur 消元与同一正定联合66维 damped GN 系统相同。真正完整非线性幅度 profile 没有实现，应保持 NOT_RUN。新三臂共同随机 eta/xi、同初值与同求解器；可解释的差别来自随机目标分布。旧 R9 三臂使用6F4J、latent radius4、材料半径/进展门，固定或动态 weak8 的校正空间也不同。六臂 equal K 不能称作相同预算的纯机制因果试验。
+
+双边构造使用 `Gr=O*O` 与 `Gs=conj(E) E^T` 的 Hadamard 积；复共轭不能省。对实 latent 正确拉回为 `2/sigma² Re(D* (Gr∘Gs)D)`。该 D 在 prior center，而传播为 host field，是声明的 Born surrogate，不是该中心的完整非线性 J。特征值裁剪再 trace64归一化保留全64 target支撑；不能解释为 posterior covariance 或保证全局材料方向覆盖。
+
+## 能量与互易检查
+
+在 `e^{-iωt}`、实正 μ、E_z=u 下，E01 的 H、时间平均 Poynting 向量、源项符号和吸收负号一致。E02 由 `e=E-Gj` 直接得到 `Im(e*j)=Im(E*j)+j*Im_H(G)j`；零材料格不需除法。E03 的逆矩阵虚部身份中 `−Im_H(D^{-1})+Im_H(C)` 符号正确。
+
+E04 对 `Kδ=δ^{-1}I−B` 给出 `−Im(v*Kδv)≥(Imδ/|δ|²+β)||v||²`，由 Cauchy–Schwarz 控制最小奇异值，适用于非正规 B。原幅度矩形内最小材料损耗项确在 `.03/(1.8²+.03²)`；β轻微负值并未被误称为 PSD。E05 的端口残差界和白化 likelihood potential 差界正确。E06 的 transpose 互易与 Hermitian 性明确分开；32×8非匹配采集不能随意转置为新增观测。
+
+这些是有限离散条件关系。物理功率解释仍需一致质量内积、场归一化、闭边界/角积分和背景吸收；报告已保留这些条件。没有光学定理新定律、闭边界功率验证或连续 PDE 证书。
+
+## 条件积分与失败账本
+
+固定形状只积分原属性矩形，密度1/.15；`exp(-Phi)`无坐标误写。最初带符号旋转 Jacobian 导致NaN失败，9552 RHS/30LU应保留；修复为绝对det后主流程累计40608 RHS/270LU。另行冻结的REV2使用事件边界切分，新增29176 RHS/0LU，总69784 RHS/270LU。独立按逐节点正权、原属性坐标、完整 prior 法域重算9组（3父对象×两级主规则+LOCAL规则）证据、均值与两个事件，和保存报告一致。文件为 `audit/independent_qa/TRANSFER_NODE_RECOMPUTATION.json`。
+
+原未切开事件边界的首版 REFERENCE_UNQUALIFIED 必须保留。REV2 的 NUMERICAL_FIXED_SHAPE_TASK_REFERENCE_PASS 对应声明的有限数值容差；LOCAL GH/GL不是全域认证。尾块有实际数值积分但没有严格未采样峰、尾部与舍入包络，strict/full-support certificate保持false。
+
+## 初审发现与处理要求
+
+1. fresh第一处软件中断发生在任何physics之前（重复phase关键字）；0RHS/0LU/0truth，旧源与refreeze记录保留。
+2. 第二处接口错误是旧 `pv.substep` 依赖 `ph.y`，在parent000三条新方法k0完成后中断。累计2288RHS/86LU包含generation80RHS/10LU；未完成旧方法raw/J额外40RHS/1LU必须计入全局。续跑重用完整三条记录和已付anchor/J、重新做旧方法raw/J是可审计修复，不应将这次失败从方法成本视图中隐去。
+3. `geometry_controls`通用文字把fresh新付anchor/J写成old R9 historical J；执行方已收到更正要求。应保留冻结源，添加明确的fresh provenance更正，而不是假称它没付费。
+4. fresh `JOB_END.wall_seconds` 跨phase为累计值；相加将重复generation和之前phase时间。最终使用snapshot总时间，或相邻累计差；transfer的三次receipt wall为各次增量，可以相加。
+5. R10运行时强制检查候选/fresh源身份；依赖源码、prior、SETUP的完整冻结在本次独立readback确认一致，不能夸大成R10 executable对全部依赖进行了同样的前置强制检查。
+
+所有费用审查用实际逐事件累加，保留失败与拒绝尝试。初始已完成transfer与DEV ledger分别69784/270与103824/4370，序号连续、reserve与actual相符；fresh现已封账，最终五分支数字见文末。完整明细见 `audit/independent_qa/LEDGER_RECONCILIATION.json`。独立脚本不导入physics或原scorer，仅在seal+open后打开私有truth并从保存端点重算。
+
+## 另行冻结压缩探针的代码审查
+
+`reduced_response.py` 的有限维 block Krylov/Galerkin 可作为额外DEV诊断。`R−Vu/δ+BVu`是完整256状态残差，`||L||F||r||F/bδ`是有效但保守的端口上界，白化与potential gate正确；实际误差只作诊断，未参与接受选择。数值β没有outward rounding，不可写严格浮点证书。固定rank的冷启动费用须包含energy+basis-to128+reduced Schur，发生fallback还需full256 Schur setup；adaptive在线时间也须加全部预备费用。基建到128再截短用于固定32/64/96是保守实现费用，不是这些rank的最优实现成本。结果与费用核对见后文。
+
+## fresh10 端点独立复算
+
+检查 chronology：DEV scoring open为1793296356.976968；fresh协议创建1793296480.0099242，root/statistics冻结1793296555.6，generation开始1793296601.7211509；fresh prediction seal1793296900.7443259，fresh scoring open1793296921.9176419。fresh protocol和statistics是在DEV分数已开放之后、fresh生成之前冻结。新三种机制与12F8J参数在DEV评分前已经冻结且保持不变。不要将这两种先后关系混写为“整个fresh计划在任何DEVGT之前冻结”。未发现利用freshGT修改方法/选择端点的路径。
+
+独立脚本仅使用numpy、保存材料/预测、原观测和解封后的truth，不导入候选引擎或原scorer。对10对象×6臂×K1/2/4/8共240行，重新计算合格率、去重、oracle MSE/RMS、.075覆盖、uniform/exp(-Phi)动作MSE、直径、平均pair距离、RMS dispersion、实Hilbert秩、anchor MSE、fallback与失败/费用统计，0差异。463个保存selected端点逐一重新计算原观测Phi、prior合法性和资格，0差异；17个无selected路径的旧方法记录仍留在分母与成本中。所有10个anchor都noise-qualified，无对象被按成功筛掉。见 `audit/independent_qa/FRESH10_SCORE_RECOMPUTATION.json`。
+
+另外按原TARGET与网格单独实现decoder，读回463端点+10anchor，全部保存材料与声明q一致，q最后两维也与probit(x)一致；没有将任意电流场当作合法材料。此项只有decoder代数，没有新的forward/J求解。见 `audit/independent_qa/LEGAL_DECODER_READBACK.json`。
+
+独立20,000次paired bootstrap以parent为单位，共用冻结seed与同一组parent重采样，四个预定主比较使用98.75%双侧percentile区间（.00625/.99375分位）。候选减参考的结果为：
+
+| 比较 | 指标差均值 | 98.75%区间 |
+|---|---:|---:|
+| bilateral − full66 | coverage .075：−.1 | [−.4,0] |
+| bilateral − full66 | uniform action MSE：+0.0000368256 | [−0.000234365,+0.000361607] |
+| full66 − fixedQ8 | coverage .075：0 | [0,0] |
+| full66 − fixedQ8 | uniform action MSE：−0.000385460 | [−0.00148291,+0.000790055] |
+
+见 `audit/independent_qa/INDEPENDENT_PAIRED_BOOTSTRAP.json`。coverage正、MSE负才有利于候选。没有一项区间支持新增优势；10对coverage全相同形成[0,0]只是经验样本ties，不是总体等价证明。N10、离散coverage bootstrap和不相同old/new预算限制仍须保留。主线程若另有bootstrap产物，还需检查其与此独立结果的实现/方向是否一致。
+
+## 最终已完成成本与软件失败
+
+transfer 69784RHS/270LU，DEV103824/4370，fresh118760/4313；三分支合计292368RHS256/8953LU256。fresh精确拆分为480方法记录100624/3806，共享新anchor/J18016/496，生成80/10，首次中断旧raw/J浪费40/1。账本reserved、actual与completed总量一致且序号无重置。失败物理solve=0与软件adapter失败2次是不同指标。
+
+fresh最终snapshot控制时间123.7382975s，CPU114.664251s；它已包含generation与两个ONLINE phases，不能再次相加三个累计JOB_END时间。DEV控制时间163.0669003s；transfer三次增量wall之和13.2381267s。fresh provenance更正已由 `audit/FRESH_GEOMETRY_PROVENANCE_CORRECTION.json`逐对象映射到新付anchor/J，冻结原文字保持可审计。成本同行文件 `CANDIDATE_COST_AND_PROVENANCE.md`与 `results/candidates_fresh10/COST_RECONCILIATION.json`相符。
+
+另行压缩探针新增1920RHS256、0LU256，以及32/64/96/128各1920 RHS（低阶合计7680），总计9600 RHS按最保守方式占原reserve。故截至DEV压缩探针阶段，实际RHS256为294288，低阶7680单列；保守跨阶合计301968，仍低于350000；LU8953低于10000；新增RHS576与LU576均0。264历史setup RHS576/1LU576仍需在独立cold-view披露，不能重新计作本轮新增，也不能写原始采集起的零成本。
+
+## 压缩探针结果复核
+
+`audit/independent_qa/COMPRESSION_AUDIT.json`从保存response数组复算全部960个rank/node误差、白化上界比例、资格与cold/fallback费用，0差异。r32为0/240通过，r64/96/128均240/240；全部已测误差被保存数值界覆盖。固定rank cold表已正确包含发生fallback父对象的full256 Schur setup。adaptive行仍是在线时间，不可独自当作setup-inclusive优势。
+
+DEV的r32回退成本来自已实付的共同full256参考及setup按声明政策分配，未额外启动一个回退solve；这是成本视图，不应写成已经单独执行了回退分支。后续320核与836工作量均0fallback，所以实际fallback执行分支仍未被这些实验触发。原始全局费用只记每次实付操作一次。
+
+此结果支持固定形状、8暴露DEV×30幅度节点上的数值离散复用与压缩。r64是已测rank列表里最小通过者，不是严格最小实现阶，也不是在所有幅度、所有形状或continuous PDE上的最小性/误差证书。重复Schur和Krylov/Galerkin为标准组件。各M摊销表由已测平均节点时间推算，未实际新跑M次。固定形状计算节约不能代替Full66材料覆盖证据。
+
+## 另行冻结的10shape压缩核复核
+
+在DEV压缩rank scan之后，另行冻结固定rank64，在Fresh10的10个anchor形状上生成每形状32个新Uniform2幅度节点；节点namespace `[20261030,101012,i]`。这个“heldout”只相对于DEV压缩研究：Fresh10材料GT此前已全局开放，协议也明确承认这一点，因此不能改称盲法材料泛化验证。该支线只读取anchor形状与原观测，没有GT参与选rank或筛节点。
+
+独立读取320保存response，重算全部白化误差、返回值误差、数值coercivity/残差界比例、原观测potential gate、随机节点、三方法旋转执行顺序及所有cold M费用，0差异。自身源和导入basis源均与该协议冻结身份相同。rank64为320/320通过，0节点fallback；共新增5120RHS256、2560RHS64、320LU256。两条full256基线和reduced节点都实付，未把已做的paired reference视为免费fallback。见 `audit/independent_qa/HELDOUT_COMPRESSION_AUDIT.json`。
+
+本支线的formation包括读anchor和原decoder形状构造；r64 cold费用包含β与L范数、只建到64的basis、reduced Schur与端口变换，若fallback会分配full256 Schur setup。本次没有fallback。M32是实际32节点累计；其余M为已测均值推算。最初全256 Schur复用的21–58节点摊销区间来自另一DEV窗口，不能直接代替此配对窗口中的LU/r64 cold对照。
+
+截至本支线的五分支成本为：299408 RHS256、低阶RHS10240、9273LU256、新增RHS576/LU576=0；跨阶保守占额309648。下面最后一次条件工作量的费用追加到同一总账。
+
+## 836节点条件概率工作量：完整任务切片复核
+
+最后另行冻结一个实际积分切片：DEV父对象000、REV2 fine级原836节点与正权，保持原Uniform2密度1/.15、原事件阈值1.3/.105、原形状和观测，不重新拟合profile、分区或rank。完整Schur与r64都重新形成所需B/L/R与分解，节点配对轮换执行；reduced每节点计算完整残差/coercivity/potential gate，并保留有价fallback政策。
+
+独立从保存response与原观测重新计算836个Phi、证据、属性均值/方差与两个事件，核对原节点/权重逐项一致，并核对节点界、接受、任务冷启动总成本和冻结源，0差异。836/836过门、0fallback；同一积分切片的cold+quadrature费用节省59.224848%。这不是新的积分参考或独立形状确认；历史profile/Hessian/事件分区/节点权重已经支付并共享，其原费用完整保留在transfer69784RHS/270LU中，没有虚构单独grid时间或从总账减去。
+
+这一次新付6688RHS256与6688RHS64、0LU256；见 `audit/independent_qa/PROBABILITY_WORKLOAD_AUDIT.json`。最终六分支实际总计 **306096 RHS256 + 16928低阶RHS、9273LU256、0新增RHS576/LU576**；保守跨阶占额 **323024/350000**。低阶分维度为32阶1920、64阶11168、96阶1920、128阶1920。完整最终费用与控制时间已追加至 `audit/independent_qa/FINAL_COST_RECONCILIATION.json`，没有重置之前的失败或复核成本。
+
+## 主线程最终报告、公式集与决定
+
+独立审核最终 `RESEARCH_REPORT_ZH.md`、中英文论文叙事、`EXPERIMENT_RESULTS.json`、`RESULTS_SUMMARY.json`、`FAILURE_ANALYSIS.md`、`STATISTICAL_ANALYSIS.md`、`REPRODUCE.md`与新增公式章 `research/maxwell_formula_atlas/09_BILATERAL_SHAPE_AMPLITUDE.md`。F-BI-001—018 的材料差、Gram、实化、幅度导数、Krylov矩条件、强制性、residual与likelihood连接均与声明条件一致。F-BI-017 的同支持势差振幅Δ给出TV≤tanh(Δ/4)也正确；节点界不满足全支持前提，正文未把它误用为posterior证书。
+
+十个研究问题的最终决定保持适当范围：固定形状重复幅度计算SCOPED_GO；本轮双边target停止扩大；shape-target覆盖优势未建立；固定条件数值任务通过；严格最小实现/全成像加速/连续fiber/Full66 posterior均未建立或未资格化；强IEEE TAP仍HOLD。没有把64阶条件核自动设为Full66反演的已验证替代。
+
+独立重新计算共同缓存读取的cold口径：将同一0.0160984169s同时加到r64与LU的10形状×32查询费用中，节省48.542739%，与主报告48.54%一致；仍不含从头建立宿主或anchor反演。DEV8的Gram alignment .9649已在主报告标注DEV，未误称Fresh10；六臂比较已改成同K描述性成本—质量比较，未宣称完整Pareto前沿或匹配费用的机制优越性。
+
+主线程总账包裹六份源账本的113050个记录，独立逐记录与原source/line做字面对象比较，全部一致，无遗漏尾部或重复重排；两个汇总JSON、总账index与独立最终成本一致。canonical bootstrap与plan便利副本逐字节相同。见 `audit/independent_qa/ROOT_FINAL_REVIEW.json`。审核整体 **PASS（有限离散科学与执行一致性）**；这项PASS不升级任何未建立的科学资格。
