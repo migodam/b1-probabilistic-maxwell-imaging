@@ -1,5 +1,7 @@
 # 统一数字基准
 
+**视觉资格补充：P目标3本次离线构造丢失中横，标为 `DECODER_REPRESENTABILITY_FAIL_VISUAL_THIS_FIT`。原数值fit门仍PASS，原数据不改；不能将P称为九个清晰数字。见[补充说明](REPORT_QUALIFICATION_UPDATE.md)。**
+
 冻结原P1物理与噪声。统一DejaVuSans-Bold字体112子像素，最大格内inkbox为9×13物理cells，8×8面积采样只构造占比，实际物理网格始终24×24。圆ROI不裁掉关键笔画。字体实际BLAKE2b、数据源和噪声seed在data/GENERATION_CONFIG.json与DATA_GENERATED.json。
 
 N: 新占比256+Gaussianized属性2模型；固定TV/IRLS。P: 原Gaussianized66，原quintic和Gaussian点惩罚。共同材料幅度由原区间生成，truth取1.3+0.105i。该值等于统一属性初始化中点，这是有利设计条件，未知属性初值鲁棒性未检验。

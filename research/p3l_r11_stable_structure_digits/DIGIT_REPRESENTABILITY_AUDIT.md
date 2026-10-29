@@ -1,5 +1,7 @@
 # P1 decoder数字表达能力
 
+**视觉资格补充：P目标3本次离线构造丢失中横，标为 `DECODER_REPRESENTABILITY_FAIL_VISUAL_THIS_FIT`。原数值fit门仍PASS，原数据不改；不能将P称为九个清晰数字。见[补充说明](REPORT_QUALIFICATION_UPDATE.md)。**
+
 先拟合占比再用decoder输出作为物理truth，不把目标字体当作P真值。门在拟合前固定为ROI occupancyMSE≤0.025且阈值IoU≥0.75。全部九个达到该有限图形门，3与5误差明显较大；有限L-BFGS拟合并未全部满足优化收敛。
 
 |数字|P拟合occupancy MSE|阈值IoU|GT latent范数|有限拟合是否收敛|
@@ -19,3 +21,8 @@
 
 ![目标N数字](figures/DIGITS_GT_1_TO_9.png)
 ![真实P decoder数字](figures/P_DIGITS_GT_1_TO_9.png)
+## 实际GT视觉检查
+
+![3与5的真实decoder退化](figures/DECODER_3_5_VISUAL_AUDIT.png)
+
+P3数值门通过而视觉失败；P5有失真但仍可读。不能把本轮构造上限/优化失败等同整个decoder无法表达。全部九个对象不替换。

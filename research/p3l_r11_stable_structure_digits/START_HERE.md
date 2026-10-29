@@ -1,5 +1,7 @@
 # R11-S3 从这里开始
 
+**视觉资格补充：P目标3本次离线构造丢失中横，标为 `DECODER_REPRESENTABILITY_FAIL_VISUAL_THIS_FIT`。原数值fit门仍PASS，原数据不改；不能将P称为九个清晰数字。见[补充说明](REPORT_QUALIFICATION_UPDATE.md)。**
+
 已完成N/P各九个数字、四个物理后端共72次真实逆散射，不是模板分类。主线程已先盲读图像后解封GT。
 
 **整轮资源协议FAIL_CAP_EXCEEDED：28,727全阶LU超过12,000。已停止新增物理，不回写预算。** 数值结果与失败仍完整保留。

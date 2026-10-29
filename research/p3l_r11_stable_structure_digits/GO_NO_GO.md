@@ -8,6 +8,7 @@
 |B固定总场|NO_GO_FOR_TESTED_BASES|anchor128仅14/192，数字forward trials全回退|
 |C全形状界|CONDITIONAL_MATH_PASS|b*=0.009210948658>0，有限浮点条件界|
 |C误差控制加速|NO_GO|全局/局部192节点均全回退；数字也全回退|
+|P全九数字清晰表达|NOT_ESTABLISHED|P3本次拟合中横缺失，视觉表示FAIL；不改数值门，不删该对象|
 |新成像能力|NOT_ESTABLISHED|四后端相同材料输出；孔洞明显缺失|
 |A+B/A+B+C|NOT_RUN|未观察互补增量且物理已STOP；不强行拼框架|
 |B+C|RUN_NO_BENEFIT|C-controlled solver已集成运行|

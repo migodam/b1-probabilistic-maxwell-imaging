@@ -9,3 +9,5 @@
 N为新258模型、P为原66decoder高范数设计真值，不是典型P1parent。N到80J上限；P低范数平滑解更受prior青睐。8双孔未恢复，不能称九图完整成功。
 
 下一项唯一优先物理问题：真正共享材料TSOM/variable projection是否能比普通Full-J减少费用并保留拓扑？当前NOT_RUN。先修好全局费用原子预留，再另开预算，不继续扩大本轮失败Green多项式基。
+
+视觉补充：P目标3真值本轮拟合已丢中横，数值fit门PASS但视觉表示FAIL_THIS_FIT。不能把九个P对象称九个清晰P1数字；保留原对象与全部指标。参见[补充](../REPORT_QUALIFICATION_UPDATE.md)。

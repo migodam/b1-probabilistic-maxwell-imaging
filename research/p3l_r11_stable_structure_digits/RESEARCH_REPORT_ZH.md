@@ -1,5 +1,7 @@
 # Research P3L-R11-S3：稳定 Maxwell 结构与数字 1–9 真正逆成像
 
+**视觉资格补充：P目标3本次离线构造丢失中横，标为 `DECODER_REPRESENTABILITY_FAIL_VISUAL_THIS_FIT`。原数值fit门仍PASS，原数据不改；不能将P称为九个清晰数字。见[补充说明](REPORT_QUALIFICATION_UPDATE.md)。**
+
 本轮完成三条可运行结构算法、两套各九个数字对象，以及 **72 次真实非线性 Maxwell 材料反演**。所有预测先封存，再由主线程实际打开匿名 PNG 盲读，随后解封GT评分。最可靠的正面结果是精确活动支撑的物理核收益；没有证明新的材料成像能力，固定总场与全形状耗散控制没有在本轮形成有效加速。
 
 **必须同时保留资源协议失败。** 自设全阶数LU硬上限为12,000，实际合计28,727，超出16,727。根因是只在分支/单对象执行RHS检查，未建立跨作业LU原子预留。发现后停止全部新增物理求解，未改写上限，也未把all-order LU偷换为LU256。保留数值证据不等于整轮预算PASS。RHS合计363,240/400,000，含144个新增576阶RHS；历史宿主264 RHS576另列。详见[COST_SUMMARY.json](COST_SUMMARY.json)、[失败记录](FAILURE_ANALYSIS.md)。
