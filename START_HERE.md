@@ -1,3 +1,11 @@
+<!-- W_GQ_R2_PUBLICATION -->
+## Research W-GQ-R2：墙体未分辨，目标分辨率与合法补偿
+
+微结构材料 RMS 差 1.13137，held-out 目标族最大传播白化距离 0.159971；受控有限参考定位 0.079224 λ₀，宽墙材料仍可补偿 0.05 λ₀ 目标位移。一般未知墙在线与净加速未成立。722 FE / 5212 RHS，全部失败保留。
+
+[完整中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_gq_r2/) · [中文 Markdown](research/research_w_gq_r2/REPORT_ZH.md) · [GPT Pro 交接](research/research_w_gq_r2/NEXT_PRO_HANDOFF.md) · [完整原始证据与复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gq-r2-20261029)
+<!-- /W_GQ_R2_PUBLICATION -->
+
 <!-- P3LR2_CURRENT -->
 ## P3L-R2 已完成：监督材料风险改善，完整后验仍未合格
 

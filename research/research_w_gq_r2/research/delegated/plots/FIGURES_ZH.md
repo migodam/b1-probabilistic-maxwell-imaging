@@ -1,0 +1,124 @@
+# R2图表清单
+
+只读取保存的实际结果。没有新增PDE、摘要检查或发布。
+
+## F01_MICRO_MATERIAL_MAPS
+
+两个宏观parent的实际材料A/B及其差，采用保存的墙单元边界和材料值。
+
+颜色为真实离散材料，不表示反演恢复；所有父世界及两纹理均显示，空气为1。
+
+PNG: `figures/F01_MICRO_MATERIAL_MAPS.png`；PDF: `figures/F01_MICRO_MATERIAL_MAPS.pdf`。
+
+## F02_MICRO_SCALE_AND_ALL_PROBES
+
+左图显示真实材料RMS；中图分别显示所有尺度共同四探针最大值及所有已保存探针最大值；右图完整列出最细尺度14个f0目标。
+
+各尺度全部探针数不同：n=8/12只运行4个f0探针及两个单目标频率压力点，n=16有14个f0探针。全保存最大值不是整个连续目标族上界。
+
+PNG: `figures/F02_MICRO_SCALE_AND_ALL_PROBES.png`；PDF: `figures/F02_MICRO_SCALE_AND_ALL_PROBES.pdf`。
+
+## F03_INDEPENDENT_GRID_COMPARISON
+
+每个parent及频率在自身argmax处独立细化，并直接比较保存的两端响应及pair差；没有借用其他probe的误差。
+
+经验网格差及端点差和不是连续PDE误差证书，也不覆盖未复核的全部目标。
+
+PNG: `figures/F03_INDEPENDENT_GRID_COMPARISON.png`；PDF: `figures/F03_INDEPENDENT_GRID_COMPARISON.pdf`。
+
+## F04_SAVED_P3_COMPLEX_SCATTERED_FIELD
+
+从保存的自由P3系数、网格及边界自由度重建局部三次多项式，在已知三角形内采样显示散射场实虚部；未将自由DOF误当网格顶点。
+
+仅可视化已保存场；非重新求解。每个细分三角形为真实P3值的平色显示，不声称连续场已认证。
+
+PNG: `figures/F04_SAVED_P3_COMPLEX_SCATTERED_FIELD.png`；PDF: `figures/F04_SAVED_P3_COMPLEX_SCATTERED_FIELD.pdf`。
+
+## F05_SYMMETRY_INFORMATION_AND_BREAKS
+
+显示实际奇偶泄漏、nuisance投影后横向导数保留率及导数差分审核，非对称与左右gain扰动按已保存case全部列出。
+
+中心横向局部任务控制；机器最小二乘rank不是严格rank或全目标定位证书。当前已保存case数=3。
+
+PNG: `figures/F05_SYMMETRY_INFORMATION_AND_BREAKS.png`；PDF: `figures/F05_SYMMETRY_INFORMATION_AND_BREAKS.pdf`。
+
+## F09_OLD_BANK_FOUR_DISTANCE_NOTIONS
+
+固定展示parent00/repeat00的全部6903个墙pair，比较完整响应、目标增量、含残差对比与条件目标TV。
+
+完整表诊断仅在输出封存后计算，不能归为在线节省；横轴单位不同，不比较其数值大小。
+
+PNG: `figures/F09_OLD_BANK_FOUR_DISTANCE_NOTIONS.png`；PDF: `figures/F09_OLD_BANK_FOUR_DISTANCE_NOTIONS.pdf`。
+
+## F10_OLD_BANK_QUALITY_QUERIES_AND_FAILURES
+
+保留全部parent与两noise重复，点误差、posterior误差、查询数及未查质量分开显示；没有隐藏空墙或极差parent。
+
+查询图不是PDE速度图；真实新增FE/RHS为0。没有在线一致性证书，冷PDE支路未触发。
+
+PNG: `figures/F10_OLD_BANK_QUALITY_QUERIES_AND_FAILURES.png`；PDF: `figures/F10_OLD_BANK_QUALITY_QUERIES_AND_FAILURES.pdf`。
+
+## F06_NESTED_TARGET_ERROR_AND_WALL_UNCERTAINTY
+
+左图直接使用保存的绝对MAP误差；右图在封存后由相同有限likelihood重建墙边缘权重，先在每个target parent内平均两次noise，再比较墙方差与目标后验均值误差。
+
+12个target parent但只有2个微结构wall parent。墙方差属于6个宏观墙的近似模型，不是真实微结构posterior，也不保证模型正确或校准。墙均值RMS误差与目标边缘重现差均保存于CSV。
+
+PNG: `figures/F06_NESTED_TARGET_ERROR_AND_WALL_UNCERTAINTY.png`；PDF: `figures/F06_NESTED_TARGET_ERROR_AND_WALL_UNCERTAINTY.pdf`。
+
+## F07_FINITE_COMPENSATION_AND_INFORMATION
+
+一个基准world的两个合法延拓分支完整显示；新增观测在同一端点上评分。独立网格f0复核点另用黑边菱形显示。下排为独立proper切线prior诊断。
+
+两个分支不是两个独立物理parent。找到的端点仅给歧义存在证据，不给全局profile最优或上界；float rank不是认证精确rank，切线Gaussian不是boxed nonlinear posterior。
+
+PNG: `figures/F07_FINITE_COMPENSATION_AND_INFORMATION.png`；PDF: `figures/F07_FINITE_COMPENSATION_AND_INFORMATION.pdf`。
+
+## F08_RETURN_RANK_ERROR_SPECTRUM_AND_PAID_COST
+
+2墙×4目标，共8组合；2train和2heldout全部保留。原始负面平台和一次transpose修复同图显示，各秩不挑选最佳case。谱仅来自保存的小投影core。
+
+whole-C使用同一个仅为H训练的基底，不是最优whole-C对照。Euclidean FE系数core谱不是完整H或物理L2谱；没有operator norm、posterior、连续PDE证书或等成本加速结论。原始/修复/总任务含setup与validation，direct reference只承担评分。
+
+PNG: `figures/F08_RETURN_RANK_ERROR_SPECTRUM_AND_PAID_COST.png`；PDF: `figures/F08_RETURN_RANK_ERROR_SPECTRUM_AND_PAID_COST.pdf`。
+
+## F12_FULL_SELF_AND_BORN_FROM_PAID_CACHE
+
+只重组已付费Bw、q、j0与full参考：Born为dW+Bw q，自散射控制为dW+Bw j0，full来自保存的完整FEM。固定展示W0/T1强椭圆的真实接收响应实虚部。
+
+零新增PDE。2墙×4目标的有限共同空间控制；用完整目标诱导响应作分母，非绝对总场；不是均匀物理或posterior证书。
+
+PNG: `figures/F12_FULL_SELF_AND_BORN_FROM_PAID_CACHE.png`；PDF: `figures/F12_FULL_SELF_AND_BORN_FROM_PAID_CACHE.pdf`。
+
+## F11_MEASURED_FAILURE_BOUNDARIES
+
+同一个实际补偿端点在新增孔径/频率下不再保持原A0噪声尺度等效；非对称墙或差分gain可削弱中心横向任务保护。
+
+这里按同一已找到端点比较，不能断言A1/A2下不存在另一补偿端点。对称压力仅一个物理world的三个控制，不是三个独立重复或一般unknown-wall失败定理。
+
+PNG: `figures/F11_MEASURED_FAILURE_BOUNDARIES.png`；PDF: `figures/F11_MEASURED_FAILURE_BOUNDARIES.pdf`。
+
+## F13_CONTROLLED_MICRO_RISK_TEXTURE_AND_TV_TAILS
+
+4个真实已付费微结构墙×12个联合目标标签的离线有限参考；12个target scenario、2个固定macro parent、每scenario两noise，共24观测。所有微结构组的TV最大值及全部5个>.02尾部逐项保留。
+
+48原子proper有限prior、同生成家族控制；没有修改在线prior。给定真实macro的熵/方差/TV都明确标OFFLINE，不是在线真值选组。全表均已查询，不能据此声称在线停止、查询节省、连续posterior或统一Maxwell证书；两种texture的损耗相同，不能由此宣称loss不确定。
+
+PNG: `figures/F13_CONTROLLED_MICRO_RISK_TEXTURE_AND_TV_TAILS.png`；PDF: `figures/F13_CONTROLLED_MICRO_RISK_TEXTURE_AND_TV_TAILS.pdf`。
+
+## F14_FINAL_FINITE_COMPENSATION_AND_THIRD_GRID
+
+保留A0优化端点、A1重新优化、A2五步及七步端点；三套网格的最终同一pair直接比较。全部真实试探点、最后材料及损耗逐格导出，目标实际位移.05λ0。
+
+这是有界development profile及离散独立细化证据，不是全局profile infimum、精确连续等值族或连续误差上界。原F07/F11只说明原端点在新增测量下的变化；本图显示重新优化可重新找到噪声尺度pair，不能把旧图升级成唯一性。
+
+PNG: `figures/F14_FINAL_FINITE_COMPENSATION_AND_THIRD_GRID.png`；PDF: `figures/F14_FINAL_FINITE_COMPENSATION_AND_THIRD_GRID.pdf`。
+
+## F15_CONTINUOUS_ALL_STARTS_OBJECTIVE_AND_TRUE_ERROR
+
+一个离网格目标world、三个方法各三个公共起点，共9个有界run和90次真实目标函数调用。星号严格按每方法最低best objective选择；真值只用于离线误差评分。普通joint的最低objective分支位置错误，新增公共分支虽位置较好也未被该规则选中。
+
+全部NONCONVERGED_CALL_CAP，不能升级为充分收敛的成熟FWI或普遍成像失败。S2为后登记的中性ROI中心及此前缺失的允许椭圆方向，development adaptation和成本均保留；没有用GT挑起点或挑winner。
+
+PNG: `figures/F15_CONTINUOUS_ALL_STARTS_OBJECTIVE_AND_TRUE_ERROR.png`；PDF: `figures/F15_CONTINUOUS_ALL_STARTS_OBJECTIVE_AND_TRUE_ERROR.pdf`。
+

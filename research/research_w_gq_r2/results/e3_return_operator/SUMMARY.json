@@ -1,0 +1,109 @@
+{
+  "status": "COMPUTED_UNCERTIFIED",
+  "scope": "E3 return-only representation qualification",
+  "plan": {
+    "experiment": "E3 return-only representation qualification",
+    "phase": "E3",
+    "wall_ids": [
+      0,
+      2
+    ],
+    "target_selection": "2 train + first 2 heldout",
+    "frequency": 1.0,
+    "sources": 2,
+    "receivers": 16,
+    "range_columns": 32,
+    "oversampling": 0,
+    "seed": 28102931,
+    "ranks": [
+      4,
+      8,
+      16,
+      32
+    ],
+    "public_ports": "all target-ROI FE free DOFs, independent of current target",
+    "basis_metric": "Euclidean FE coefficients; deterministic complex QR in Gaussian column order",
+    "target_self": "exact free-target sparse FEM factor L0-VX",
+    "ordinary_diagnostic": "whole Cw projected into the same H-fitted basis; not optimal whole-C ROM",
+    "mass_metric": "fixed target-ROI P3 L2 Gram matrix for field errors only",
+    "full_C0_cache": false,
+    "operator_norm_certificate": false,
+    "periodic_angular_claim": false,
+    "cold_Bayesian_run": false,
+    "estimated_rhs": {
+      "range_and_core": 256,
+      "wall_primal": 4,
+      "receiver_adjoint": 32,
+      "exact_target_self": 272,
+      "direct_full_reference": 16,
+      "full_feedback_validation": 128,
+      "total": 708
+    },
+    "estimated_full_fe": {
+      "free": 1,
+      "wall": 2,
+      "target_self": 8,
+      "direct_full_reference": 8,
+      "total": 19
+    },
+    "target_basis_reuse": "separate Q per wall; each exact target template is rebuilt and charged",
+    "output_default": "results/e3_return_operator"
+  },
+  "free_dofs": 23575,
+  "public_target_ports": 2257,
+  "free_factor_bytes": 92010428,
+  "walls": [
+    {
+      "wall_id": 0,
+      "background_factor_bytes": 92025548,
+      "kernel_cpu_seconds": 6.23141,
+      "cost": {
+        "rhs": 354,
+        "full_fe": 9
+      }
+    },
+    {
+      "wall_id": 2,
+      "background_factor_bytes": 92025548,
+      "kernel_cpu_seconds": 6.155176999999999,
+      "cost": {
+        "rhs": 354,
+        "full_fe": 9
+      }
+    }
+  ],
+  "phase_cost": {
+    "rhs": 708,
+    "full_fe": 19
+  },
+  "kernel_cpu_seconds": 13.151906,
+  "wall_seconds": 13.411585999885574,
+  "CPU_charge": "outer R2 run_job receipt only; local CPU fields are informational",
+  "rows": 64,
+  "failed_rows": 0,
+  "certificates": {
+    "operator_norm": false,
+    "probability": false,
+    "continuous_PDE": false,
+    "L2_operator_spectrum": false
+  },
+  "cold_Bayesian": "NOT_RUN_SEPARATE_GATE",
+  "interpretation": "finite common-space representation diagnostic; final scientific review belongs to parent",
+  "whole_C_limitation": "same H-fitted QR basis, not optimal whole-C or all ordinary ROMs",
+  "direct_full_comparison": "direct references use 16 RHS/8 FE; setup and validation costs remain charged",
+  "shared_setup": {
+    "rhs": 292,
+    "full_fe": 3
+  },
+  "return_self_setup": {
+    "rhs": 272,
+    "full_fe": 8
+  },
+  "direct_reference": {
+    "rhs": 16,
+    "full_fe": 8
+  },
+  "validation": {
+    "rhs": 128
+  }
+}

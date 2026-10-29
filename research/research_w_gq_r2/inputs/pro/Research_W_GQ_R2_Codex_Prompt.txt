@@ -1,0 +1,272 @@
+Research W-GQ-R2 — 下一轮 Codex 执行 Prompt
+普通二维未知墙体下的目标分辨率、完整返回传播与目标充分概率计算
+
+你负责在现有 migodam/b1-probabilistic-maxwell-imaging 仓库中执行一轮受控、可复现的研究。
+同时提供的 Research_W_GQ_R2_T_Report_ZH.pdf 是理论研究，不是已运行实验。
+目标是未知目标的真实误差、可辨识性、后验可靠性、完整Maxwell一致性与实际物理成本。
+请在本合同和预算内自主完成所有可完成分支，不因一条算法失败终止其他已授权分支；不要仅写计划。
+不得把任何Pro推导或预测记成Codex实测。不得修改旧提交、旧失败、旧账本或旧裁决。
+
+一、必须先读的固定来源
+
+1. 73ba6eec3746548bf21259f627b635678709df00:
+   research/research_w_bgga/RESEARCH_W_BGGA_REPORT_ZH.md
+   research/research_w_bgga/GATE_DECISION.json
+   research/research_w_bgga/COST_SUMMARY.json
+   research/research_w_bgga/CONTRACT.json
+   及实际引用的G0/G1数组、查询接口、代价账本。
+2. 6fd504785f4e4be74d919f2363e0b2d1ef111534:
+   research/research_w_bgga/RESEARCH_W_BGGA_REPORT_ZH.md
+   注意这版是资格前检查，新增PDE为零。
+3. 958a478739d9553269316ded8125fda9df225c0c:
+   research/research_w_p0r_to_p1/RESEARCH_REPORT_ZH.md
+4. 52351aee6ddd41b09851fe5e52d1a8861891ef13:
+   research/research_w_slam/RESEARCH_W_SLAM_REPORT_ZH.md
+   research/research_w_slam/results/e2e3/finite_bank/
+5. 附件旧W-GQ与本轮R2理论报告。如有更新的Codex W-GQ账本，先定位它的精确提交与真实结果。
+   不以当前main中未注明版本的文件替换冻结证据。
+
+建新目录 research/research_w_gq_r2/，保存：
+START_HERE.md、CONTRACT.json、PRE_REGISTERED_PLAN.md、THEORY_TO_TEST.md、
+EVIDENCE_LEDGER.csv、QUERY_LEDGER.jsonl、PHYSICS_COST.json、
+E1_RESULTS.csv、E2_RESULTS.csv、E3_RESULTS.csv、
+THEOREM_STATUS.md、GO_NO_GO.json、REPORT_ZH.md、NEXT_PRO_HANDOFF.md。
+所有正文数字必须指向保存的实际数组或账本行。
+
+二、不可改变的物理与推断合同
+
+1. 二维非磁Ez scalar-TM，mu_r=1，exp(-i omega t)，被动介质。
+   主频率以f0和lambda0归一化；沿用已审核源、接收器、PML、单位线源、排序和白化。
+2. W、X、共享gamma在一组采集中静止。换目标配置是新独立世界，不是轨迹。
+   solver迭代、换Green、查bank、算adjoint不是新观测。
+3. 保持实虚每坐标sigma=0.01，不除通道数平方根。
+   明确64实维基础数据与新增嵌套数据的维数。区分均值pair距离和含噪discrepancy。
+4. 墙容器沿用BGGA公开ROI；目标ROI沿用公共目标域。
+   真实mask、真实平均墙、真实目标位置不进入在线算法。
+   使用墙容器、已知均匀间隔、材料上下界或低维宏观参数时，要明确这是新受限合同。
+5. 墙跨频共享epsilon(f)=epsilon_inf+i ell/f；不允许每频独立造墙或任意gain。
+   主仪器已校准；另设共享幅度[0.99,1.01]、相位[-0.01,0.01]压力测试。
+6. 墙占据区域epsilon_inf在[1.5,6]、ell在[0,0.25]；空气孔隙为epsilon=1。
+   新微结构家族与旧minimum_feature合同不同，要事前明确尺度，不能回写旧资格。
+7. 新目标族：位置、尺寸、epsilon实部、损耗、圆/椭圆至少两分支。
+   建议半径或等面积半径0.08/0.12/0.16 lambda0，epsilon实部2/4/7，ell 0/0.1/0.2；
+   椭圆纵横比1.5，固定两个事前方向。先小规模组合，不全笛卡尔膨胀。
+   若这些值与旧公共ROI有冲突，只在冻结前修正几何可行域，并在合同说明。
+8. 散射场FEM必须保留材料依赖载荷：
+   (L_W - V_X) u_sc = b_W + b_X。
+   b_X使用真实弱式incident积分，不能机械用节点incident或常右端替代。
+9. 新传播表示必须保留目标自身与墙返回所有阶反馈：
+   C_W = C_free + H_W
+   T_X^0 = V_X (I-C_free V_X)^(-1)
+   F = d_W + B_W T_X^0 (I-H_W T_X^0)^(-1) a_W。
+   Born只作负对照，不作主物理替代。
+
+三、资源与审计
+
+本轮默认是小规模物理pilot，不启动大型PDE训练或全新巨大bank。
+建议硬上限：
+E1：2000 complex RHS，300次材料-频率FE分解，3 process CPU小时。
+E2：2800 RHS，400 FE，3 CPU小时。
+E3冷pilot：1200 RHS，200 FE，2 CPU小时。
+总计6000 RHS、900 FE、8 CPU小时；阶段余额不自动转移。
+峰值RSS不超过16GB与实际可用RAM的70%两者较小值；实际机器不足则按比例缩小同时驻留。
+E3旧bank逻辑开发不新增PDE，单独计CPU，不隐含免费teacher。
+
+所有assembly、FE factorization、complex RHS、adjoint、随机验证probe、失败、回退、
+目标模板、dense闭环、离线分组及资格成本都入账。
+wrapper CPU与内部kernel不重复相加；列出未计时缺口。
+区分实测时间、工作量公式、历史已付成本、当前方法部署成本和评分reference成本。
+达到上限即封账并报告未决，不松门槛、不隐藏失败、不自动扩为30-parent确认。
+
+四、阶段0：最小必要审计与零PDE开发
+
+1. 核对已有正负证据：
+   G0精确吸收已通过；C2/C3不独立；C4目标不动；
+   M0位置MSE约0.35454 lambda0^2；小regret不等于准确；
+   M4全查2950、M5保留118组；实际避免FE/RHS为0。
+   最终BGGA账本435.690883 CPU秒优先于正文早期421.3秒快照。
+2. 阅读旧GQ报告，建立“旧已证明 / 本轮新推导 / 尚无实验”的表。
+3. 只为新接口做必要代数核对：
+   T_X^0分离，contrast差分恒等式，四块余切，材料依赖载荷mixed derivative。
+   不扩大无关unit tests，不重跑已合格的整套G0。
+4. 冻结新world seeds、目标探针、质量门、预算、primary任务。
+   所有后续改动登记原因；门槛不按结果移动。
+
+五、E1：物理存在性、在线识别和泛化分开
+
+E1-P主正例：普通二维微结构。
+A. 选择至少两个非均匀宏观墙，含一个平滑或折线不规则边界。
+B. 每个宏观墙构造两种局部复均值相同、纹理不同的有界普通材料。
+   可用二维颗粒与交错纹理；另有小空气孔隙臂，但保持合法体积分数与均值。
+   不把完全不可见区域当主机制。
+C. 初始eta/lambda0建议1/8、1/12、1/16；以独立分辨率能解析为前提。
+   若更细网格成本不允许，标记尺度范围不足，不能用未解析微结构伪造等效。
+D. 真实材料L2/RMS差应明显，建议RMS至少0.5；该值冻结后不追结果改。
+E. 对一组事前冻结目标族计算完整响应，比较：
+   材料差、全任务最大白化响应差、闭环放大代理、目标与墙间距。
+   至少一个尺度达到pair距离<=1才记为噪声尺度等效正例；
+   同时保留未达1但呈尺度趋势的机制证据，两者不能混为成功。
+F. 至少一个强散射目标要求Born与full明显不同。
+   independent mesh/PML/积分检查用于最差探针，不能借另一个probe的误差。
+   经验网格差不叫连续统一证书。
+
+E1-S结构正对照：镜像墙。
+A. 任意二维镜像非均匀墙，允许对称空腔，目标居中。
+B. 成对源/收与一致白化；检验P_- A近零、P_+ B_x近零及B_x非零。
+C. 加入非对称墙扰动或左右仪器偏差，检查保护是否丧失。
+D. 只宣称居中横向任务的结论；离中心、深度、材料估计另评。
+
+E1-N负例：全波产品核满射与有限补偿。
+A. 在严格被动墙内选允许的epsilon/loss bump，组装实白化墙Jacobian。
+B. 报告秩、最小奇异值、导数数值误差；不得把小非零奇异值随意删掉。
+C. 若确有满射裕度，指定目标方向，用有界continuation+Full-J正确器追踪补偿。
+D. 验证实际full响应、合法性、独立网格、有限位移尺度和新增观测破坏。
+E. 未找到分支标为优化/预算未达；不判不存在多解。
+
+E1-O在线未知目标。
+A. 另冻结独立位置、半径、材料、损耗和形状parent，建议初始12 parent、每parent2噪声。
+B. 数据生成进程保存truth；在线只读y、prior和公开几何容器。
+C. 比较：
+   真实墙oracle（诊断上界）；
+   zero-data prior；
+   充分的普通联合Full-J/TR或L-BFGS/多起点FWI；
+   普通先估墙后固定；
+   未知宏观参数的有效传播推断；
+   保留多背景的目标marginal方法。
+D. 不用真实均值墙作在线初值；不从truth筛选正确branch。
+   支撑搜索与连续优化分开归因。
+   给普通基线充分同预算，记录stationarity/约束残差；不能用旧6次短拟合当成熟FWI。
+E. 主定位门在新数据打开前冻结为RMSE<=0.1 lambda0，同时报中位、90分位、最坏误差。
+   半径、材料、损耗和形状分别评分；不把位置成功写成所有属性准确。
+F. 输出先封存再评分。若仅oracle成功，标为存在性成功、在线识别未建立。
+
+E1-G泛化与破坏。
+冻结未用于构造的更近墙、更大目标、更高频、另一形状、低损耗强反馈与宏观空腔。
+同一墙对不能针对每个测试目标再拟合。
+分别诊断尺度失效、反馈共振、宏观模型错误、观测不足与优化未达。
+
+六、E2：同一世界的真正嵌套测量
+
+A0：原两发16收、f0。
+A1：完整保留A0数据，加入原外侧两个源、同16收、f0。
+A2：保留A1，加入0.85 f0与1.15 f0的四源16收。
+新noise独立生成，旧noise保留；固定总能量导致旧SNR改变的设计另列，不能套嵌套定理。
+
+同时测：
+1. K_W|X,gamma 与 K_X|W,gamma，位置/尺寸/材料任务分别尺度化。
+2. exact algebraic rank、数值阈值rank、物理幅度受限信息分列。
+   A_full可能满行而K_exact=0；截小mode后信息必须标constraint/noise contract。
+3. 多个目标方向的有限profile：
+   给定目标位移，优化合法W及其他nuisance；
+   保存全波端点、实际材料变动、误差、convergence、budget。
+   只有找到的pair能给omega下界；没找到不是omega上界。
+4. 二阶mixed compensation：
+   不只用一个A伪逆解，要允许ker(A)及合法边界方向；
+   支撑/拓扑间用finite secant。
+5. 若尝试有限盒上界，验证J0伪逆下的Jacobian变化界<1；
+   抽样最大值只是经验界，不能当整个盒的认证sup。
+6. 目标真实误差、posterior风险、CDF/event、形状概率、coverage与predictive score。
+7. 同时给wall材料方差/误差，寻找目标明显改善而wall细节仍宽的世界。
+8. 新测量单次真值误差可以上升；按parent配对汇总，不删反例。
+9. 不以新的source/frequency测量成本冒充内部solver迭代成本。
+
+七、E3：先旧bank，后有限冷启动
+
+E3-L受控查询接口。
+1. 旧118墙×25位置、2950原子仅为明确离散counting prior。
+   target intrinsic/gamma已知；不能声称验证未知材料、孔洞或连续posterior。
+2. 在线进程仅见prior元数据、主观测y和query(atom_id)。
+   外侧TX2/3、全部表、完整posterior、truth禁止预读。
+   每个响应、导数、离线teacher和代表模型构建都记录。
+3. 比较完整response距离、目标increment距离、
+   包含背景残差投影的contrast距离、条件目标posterior/decision距离。
+4. 不免费删除每背景anchor likelihood：
+   D_W(X)=<r_W0,Delta_WX>-0.5||Delta_WX||^2。
+   相同Delta不够，还要控制背景残差投影。
+5. 新机制是conditional consensus：
+   p_X=sum beta_g p_g。
+   若所有p_g距代表<=epsilon，可以不准确计算beta；
+   若仅共同动作regret小，只输出decision certificate；
+   若目标分歧大，必须计算组间质量。
+   相关prior需包括conditional target prior；非法anchor用共同支撑分块。
+6. 实现基线：
+   全枚举；
+   普通自适应求积/默认未知质量包络；
+   普通response ROM/插值；
+   普通分离返回表示+统一输出精度；
+   同表示+contrast余切/二阶界+conditional consensus。
+7. 任何从完整表离线得到的分组/谱/方差仅作offline诊断，不记在线节省。
+   如果现有bank缺少物理证书，不得用完整表拟合证书后当零成本oracle。
+
+E3-P有限冷PDE（仅在上述机制有逻辑与可获得证书证据后）。
+1. 新小prior建议8墙×25目标原子，至少两种内禀模板；先冻结再生成观测。
+2. 保留C_free精确自散射，只压缩H_wall；r从4、8、16、32逐步提升。
+   不把r等同旧22列goal-ROM；旧失败不直接决定新表示。
+3. 固定圆盘位置变化可共享每频Mie/T模板及平移；普通基线同享。
+   FEM/PML与连续自由空间模板混接必须独立检查。
+4. 用普通全域Full、普通Schur/两物体T-matrix、Krylov、goal-ROM和概率策略作同质量对照。
+5. 若用随机action证书：
+   E固定于此前历史，fresh g~N(0,I)覆盖完整声明离散输入空间；
+   t=Phi^-1((1+alpha^(1/q))/2)；
+   ||E||<=max||Eg||/t以概率>=1-alpha成立。
+   计入求解误差，使用正确迹范数，每wall/frequency/轮次做alpha spending。
+   只认证离散E，不能覆盖未建接口尾、连续PDE和PML。
+   alpha_total建议1e-4，事前冻结；这是算法验证随机性而非Bayes可信度。
+6. 闭环稳定界与contrast二阶余项必须使用；当前一阶score近零不够。
+7. 每种部署从相同空缓存、同权限启动，实际FE/RHS/CPU/RSS全部计入。
+8. 查询数、RHS数、FE数和总秒数分别判门；不得用较少表访问代替冷部署加速。
+9. 若证书算得比Full贵，记录CERTIFICATE_COST_FAILURE；不降低质量标准。
+
+八、冻结质量门与概率范围
+
+1. 物理：主检验保留完整目标反馈和材料右端；每个关键结论有独立数值资格。
+2. 定位：新E1/E2主任务RMSE<=0.1 lambda0；给与prior及oracle的差距。
+   如果只某个受限对称点通过，不能扩成一般二维定位。
+3. 目标posterior：有限reference下TV、事件/CDF误差建议<=0.02。
+4. 决策：平方位置regret另列，绝不替代绝对MSE。
+5. coverage：给parent-level区间，12 parent只是pilot；不以24/24覆盖宣布精确校准。
+6. posterior数值界、FEM误差、模型误差分开。
+   若osc log(mtilde/m)<=kappa，可用tanh(kappa/4)；
+   forward白化0.1不自动认证TV0.02。
+7. 保留浮点上下界正越界，不用新增容差抹除。
+   对固定浮点log-potential的高精度归一化证书不升级为物理posterior证书。
+8. 所有数据分支、形状分支及未计算质量有记录；ESS不能认证遗漏质量。
+9. 新模型包含的microstructure平均机制是受限物理合同，不是任意墙正确的证明。
+10. 无新增NN、3D、大模型训练或无关A17模块。
+
+九、必须输出的科学图与表
+
+图1：同均值不同二维墙材料；对应整个冻结目标族响应差与eta。
+图2：真实目标误差与wall误差/不确定性二维散点，标prior和oracle。
+图3：嵌套测量下目标绝对信息、有限补偿、目标风险与wall剩余不确定性。
+图4：Born、完整目标自散射、完整墙返回反馈的受控差异。
+图5：完整response、increment、contrast、conditional-target分歧的比较。
+图6：相同质量下query/RHS/FE/CPU曲线，setup/证书/fallback全列。
+图7：一个按理论发生的失效反例（近墙、非对称、共振或非法gauge）。
+
+这些图只能使用保存的实际数据；不手绘预期“成像成功”图。
+统计先在同parent内汇总重复noise，再进行paired分析，报告全部parent与失败分母。
+
+十、最终交付与分合同裁决
+
+每个命题标：
+PROVED_UNDER_STATED_ASSUMPTIONS / NUMERICALLY_SUPPORTED / NOT_ESTABLISHED /
+OPTIMIZATION_NOT_REACHED / MODEL_MISMATCH / IDENTIFIABILITY_FAILURE /
+COMPRESSION_FAILURE / CERTIFICATE_COST_FAILURE / NET_SPEEDUP_NOT_ESTABLISHED。
+
+至少回答：
+A. 普通二维wrong wall–correct target是否有新完整全波正例？
+B. 只是存在性，还是measurement-only在线成功？
+C. 哪些目标/频率/孔径扩展破坏原等价？
+D. 目标改善是否同时要求wall材料改善？
+E. 是否必须精算所有背景质量？
+F. 哪个具体Green action或FE/RHS被安全跳过？
+G. 收益来自标准T-matrix/Schur结构还是新增目标概率规则？
+H. 目标绝对误差是否真正下降，而非仅复制不准确reference？
+I. 连续Maxwell、全prior和一般unknown-support哪些仍未认证？
+J. 哪一条最值得形成IEEE TAP贡献，哪一条应停止？
+
+最终提供完整中文报告、机器判决、可复现命令、全部成本与失败、
+关键实际数组、数学命题的实现合同以及下一轮Pro handoff。
+不把一次局部优化失败当成无解；不因一个算法不加速终结目标可辨识性主线。
+
