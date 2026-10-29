@@ -1,0 +1,47 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="九数字 24×24 全未知材料的完整非线性 Maxwell 盲成像：强普通对照、GlobalDual、小 Gram 梯度、真实图像和费用。"><title>R3-DIGITS 算法草稿 | Z-ALG-R3-DIGITS</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1440px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · 576 UNKNOWN MATERIALS · 9 DIGITS · NONLINEAR TM VIE</small><a href="index.html"><strong>Z-ALG-R3-DIGITS / 24×24 Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_REUSE_MAP.html">关键公式</a><a href="MATHEMATICAL_SCALING.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">24×24 全未知材料 · 九数字完整盲测 · top1 与 oracle 分开报告 · 失败、费用与适用范围保留</div><h1>R3-DIGITS 算法草稿</h1><details class="toc"><summary>本文目录 · 7节</summary><ol><li><a href="#section-0">同一个物理问题</a></li><li><a href="#section-1">公共排序目标与正则项</a></li><li><a href="#section-2">DEV v2 冻结前的公共初始化调整</a></li><li><a href="#section-3">两个完整解析 Jacobian 基线</a></li><li><a href="#section-4">GlobalDual 的小 Gram 提案</a></li><li><a href="#section-5">预算和审计边界</a></li><li><a href="#section-6">DEV v2 到主批次的等价实现调整</a></li></ol></details>
+<p>这是固定 576 单元、12 入射源和 48 接收位置上的完整非线性标量 TM 离散 VIE。所有方法只读取公开观测与算子，初始材料均为 1，盒约束均为 <code>[0.5,20]</code>。没有使用数字模板、已知支撑、类别标签或材料真值。</p>
+<h2 id="section-0">同一个物理问题</h2>
+<p>令 <code>D=diag(m)</code>，<code>M=I-DG</code>。每次试探材料都在完整 576 维物理网格上计算</p>
+<p><span class="math">\[
+M j=D E_0,\qquad Q=E_0+Gj,\qquad F=Sj.
+\]</span></p>
+<p><code>G</code> 和 <code>S</code> 使用圆盘脉冲的积分 Hankel 核，<code>G</code> 的对角采用同一圆盘的解析自项。每次前向只有一次 576 维复 LU，12 个入射右端共用这一次 LU。不在每次前向计算 576 维 SVD。</p>
+<p>8×8、12×12、24×24 是材料参数的逐级释放，不是降低物理网格。非负、行和为 1 的双线性矩阵 <code>P</code> 将粗材料系数映射到 576 单元，最后 <code>P=I_576</code>。Native 使用 <code>m=Pz</code>；Reciprocal 使用 <code>m=P(1/η)</code>，因此两种方法每一级具有完全相同的可行材料图像集合。导数链为 <code>J_m P</code> 和 <code>J_m P diag(-z²)</code>。下一层材料系数由前一级双线性延拓。</p>
+<h2 id="section-1">公共排序目标与正则项</h2>
+<p>所有被计算过的有限可行试探材料，都按同一完整物理目标在线排序：</p>
+<p><span class="math">\[
+f(m)=\frac12\frac{\|F(m)-Y\|_F^2}{\|Y\|_F^2}
++\lambda_s\operatorname{mean}(d^2)
++\lambda_{TV}\operatorname{mean}(\sqrt{d^2+\epsilon^2}-\epsilon),
+\]</span></p>
+<p>其中 <code>d</code> 是相邻物理单元材料差除以盒宽 19.5。默认 <code>λ_s=λ_TV=10^-4</code>，<code>ε=.01</code>。所有方法用同一组权重。正则项依赖完整物理材料，而非内部坐标。保留多个不同材料候选；排序、热启动和最终 top1 均不读取真值。</p>
+<h2 id="section-2">DEV v2 冻结前的公共初始化调整</h2>
+<p>初版 DEV 六个预测先冻结再独立评分，其来源和结果保留。DEV v2 的所有方法在 8×8 与 12×12 层都从材料 1 运行同一个 Native Full-J，每层最多 320 次 GN 迭代；这些步骤在每个方法中重新执行、重新付费，不读取其他方法缓存。只有 24×24 层分成 Native、Reciprocal 和 GlobalDual+Native 校正。各阶段记录初始完整材料、初始粗系数、付费种子成本、实际迭代数和是否被阶段时间截断。若阶段时间截断，不能声称不同方法具有完全相同的细层初值，必须核对记录。</p>
+<p>固定 Gram 比例参考始终来自公共均匀材料 1 的第一笔粗层前向；最终层才调用 GlobalDual 时也不会用该层材料重新定义比例。该状态已是公共初始化的一部分，不另做一次参考 LU。</p>
+<h2 id="section-3">两个完整解析 Jacobian 基线</h2>
+<p>每个 Full-J 构建利用保留的 <code>M</code> 的 LU 做 48 个接收转置右端，得到 <code>T=S M^-1</code>，再计算</p>
+<p><span class="math">\[
+\frac{\partial F_{rs}}{\partial m_i}=T_{ri}Q_{is}.
+\]</span></p>
+<p>没有 576 次有限差分。Native 和 Reciprocal 都使用带盒投影、阻尼、自适应接受/拒绝的 Gauss–Newton / Levenberg–Marquardt，正则项用对应的 IRLS 正定曲率近似。每次试探步都使用完整非线性前向和相同在线排序目标。Full-J 构建、正规方程和 LM 分解均计数、计时。</p>
+<h2 id="section-4">GlobalDual 的小 Gram 提案</h2>
+<p>GlobalDual 只把下面的材料相关度量当成提案目标：</p>
+<p><span class="math">\[
+R=F-Y,\quad H=Q^*Q\in\mathbb C^{12\times12},\quad
+\psi=\operatorname{tr}(R H^{-1}R^*).
+\]</span></p>
+<p>定义 <code>X=R H^-1</code>、<code>C=X*X</code>，则用同一个前向 LU 解 12 个伴随右端</p>
+<p><span class="math">\[
+M^*\Lambda=S^*X-G^*(QC),\qquad
+\nabla_i\psi=2\Re\sum_s\overline{\Lambda_{is}}Q_{is}.
+\]</span></p>
+<p>这是完整材料依赖的精确梯度；没有把 <code>Q</code>、Gram 或物理状态冻结。每个有梯度的提案前向成本为 1 LU + 12 源右端 + 12 伴随右端，另有 12×12 Gram 分解。普通数据目标也能用 12 源伴随右端计算梯度，因此不能把这个右端数优势表述为相对所有一阶优化器的优势。</p>
+<p>提案使用固定参考比例 <code>(.5 trace(H_ref)/12)/||Y||²</code>；参考取第一阶段共同初始材料 1，随后各阶段保持同一比例。提案目标加同一材料正则项，由 L-BFGS-B 优化。每阶段默认前 45% 的剩余阶段时间做提案，其余时间做 Native Full-J 校正。提案状态已经经过完整非线性前向，均按公共原始数据目标入档；提案度量不参与最终候选排名。</p>
+<p>Gram 每次记录 12 维特征值条件诊断。正常路径使用 Cholesky；条件数过大、分解失败或解残差过大时，改用 576×12 thin QR 和三角解，不引入固定 ridge/jitter。数值秩亏显式失败。不会做 576×564 的消元 QR。</p>
+<h2 id="section-5">预算和审计边界</h2>
+<p>默认每方法每图 75 秒，三个阶段的累计预算比例为 <code>.23,.27,.50</code>；提前收敛的时间可被下一阶段使用。耗时运算前检查预算，正在执行的单次运算允许少量超出，输出实际 wall、CPU 和 overshoot。单线程 BLAS 由入口和 <code>threadpoolctl</code> 双重限制。</p>
+<p>结果包含候选材料、原始数据残差、公共正则值、在线发现时间/成本、各阶段参数数、失败原因、LU、源/伴随/接收转置 RHS、Full-J、Gram、正规方程及操作时间。预算停止保留所有已经付费计算过的候选。开发过程的失败另留审计记录，不冒充零成本或成功。</p>
+<p>这里没有全局最优、全局分支完备或数字识别能力保证。多尺度初始化、强非线性、材料相关提案度量与阻尼选择都可能影响局部极小点；准确率由冻结预测后独立评分，有限数据拟合本身不能证明材料恢复。</p>
+<h2 id="section-6">DEV v2 到主批次的等价实现调整</h2>
+<p>DEV v2 六个预测冻结后，源码完整保存在 <code>audit/SOLVER_DEV_V2_SOURCE/</code>。主批次开始前仅做以下等价实现与记录调整：最后一级显式单位基不再参与冗余稠密矩阵乘法；最后一级的全新 IRLS 正则曲率用物理网格的稀疏相邻差分精确组装；增加与物理 RHS 分开的 Gram 小矩阵 RHS 计数；通过零额外 RHS 的回调记录 L-BFGS-B 已接受迭代。浮点求和顺序和单位墙钟内的迭代吞吐量可以变化，目标、导数、初始化、材料族和优化算法均未改变。该调整没有再次运行 DEV 或读取 holdout；详情见 <code>audit/SOLVER_DEV_TO_MAIN_EXACT_SPEED_EDITS.json</code>。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3_digits/ALGORITHM.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

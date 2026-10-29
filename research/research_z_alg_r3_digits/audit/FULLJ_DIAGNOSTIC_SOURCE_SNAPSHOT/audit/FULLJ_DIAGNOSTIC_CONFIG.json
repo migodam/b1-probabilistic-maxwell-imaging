@@ -1,0 +1,66 @@
+{
+  "name": "MATURE_SCIPY_TRF_FULLJ_DIAGNOSTIC",
+  "development_status": "POST_MAIN_GT_DEVELOPMENT_NOT_FRESH_BLIND",
+  "config": {
+    "wall_seconds": 90.0,
+    "stages": [
+      8,
+      12,
+      24
+    ],
+    "stage_fractions": [
+      0.23,
+      0.27,
+      0.5
+    ],
+    "smooth_weight": 0.0001,
+    "tv_weight": 0.0001,
+    "tv_epsilon": 0.01,
+    "max_gn_iterations": 1000000000,
+    "initial_damping": 0.01,
+    "damping_min": 1e-08,
+    "dual_fraction": 0.45,
+    "dual_maxiter": 1000,
+    "dual_maxfun": 2000,
+    "dual_ftol": 1e-12,
+    "dual_gtol": 1e-08,
+    "archive_size": 32,
+    "min_material_rms": 0.0001,
+    "lower": 0.5,
+    "upper": 20.0,
+    "initial_material": 1.0,
+    "relative_step_tolerance": 1e-06,
+    "projected_gradient_tolerance": 1e-08,
+    "common_coarse_native": false,
+    "coarse_gn_max_iterations": 320
+  },
+  "scipy_options": {
+    "method": "trf",
+    "tr_solver": "exact",
+    "x_scale": "jac",
+    "ftol": 1e-10,
+    "xtol": 1e-10,
+    "gtol": 1e-10,
+    "max_nfev": 1000000000
+  },
+  "public_cases": [
+    "obs_a63df7f20566",
+    "obs_42c48e795766"
+  ],
+  "selection": "already-visible high original-data residual; no private material or label read",
+  "unchanged": [
+    "576 nonlinear VIE",
+    "bounds.5..20",
+    "uniform material1",
+    "same generic smooth/TV prior",
+    "8/12/24 material family",
+    "90seconds"
+  ],
+  "changed": [
+    "Mature reflective trust-region optimizer replaces all customGN stages",
+    "x_scale=jac and explicit mature termination",
+    "No320customcoarseGNcap; stagewall budgets still.23/.27/.50"
+  ],
+  "truth_access": "NONE",
+  "formula_experiments": "NONE_ADDED"
+}

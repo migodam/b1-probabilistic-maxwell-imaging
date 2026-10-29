@@ -1,0 +1,81 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="九数字 24×24 全未知材料的完整非线性 Maxwell 盲成像：强普通对照、GlobalDual、小 Gram 梯度、真实图像和费用。"><title>从 12 到 576 材料：精确小 Gram 目标与伴随梯度 | Z-ALG-R3-DIGITS</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1440px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · 576 UNKNOWN MATERIALS · 9 DIGITS · NONLINEAR TM VIE</small><a href="index.html"><strong>Z-ALG-R3-DIGITS / 24×24 Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_REUSE_MAP.html">关键公式</a><a href="MATHEMATICAL_SCALING.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">24×24 全未知材料 · 九数字完整盲测 · top1 与 oracle 分开报告 · 失败、费用与适用范围保留</div><h1>从 12 到 576 材料：精确小 Gram 目标与伴随梯度</h1><details class="toc"><summary>本文目录 · 8节</summary><ol><li><a href="#section-0">1. 统一物理变量</a></li><li><a href="#section-1">2. 继承 R3 的精确消元，改变计算方式</a></li><li><a href="#section-2">3. 不构建 Full-J 的精确梯度</a></li><li><a href="#section-3">4. 与普通方法的真实比较</a></li><li><a href="#section-4">5. 多尺度是参数化，不是 Maxwell 秩降阶</a></li><li><a href="#section-5">6. 条件、极点与最终验收</a></li><li><a href="#section-6">7. 来源和原创性边界</a></li><li><a href="#section-7">8. 这个目标怎样改变图像搜索：材料相关的照明归一化</a></li></ol></details>
+<p>本文件保留决定实现的推导。模型为固定几何、固定频率的有限二维 scalar-TM disk-pulse VIE；材料为实数对比度，576 个物理单元全部未知。它不是 Born、连续 PDE 认证或三维矢量 Maxwell。下述矩阵求解均包含完整多次散射。</p>
+<h2 id="section-0">1. 统一物理变量</h2>
+<p>采用源为列的约定，<span class="math">$G\in\mathbb C^{N\times N}$</span>、<span class="math">$E_0\in\mathbb C^{N\times s}$</span>、<span class="math">$S\in\mathbb C^{r\times N}$</span> 固定。令</p>
+<p><span class="math">$$D=\operatorname{diag}(m),\quad M=I-DG,\quad B=I-GD,$$</span>
+<span class="math">$$J=M^{-1}DE_0,\quad Q=E_0+GJ=B^{-1}E_0,\quad F=SJ=SDQ.$$</span></p>
+<p>假设 <span class="math">$M$</span> 可逆；由 <span class="math">$\det M=\det B$</span>，<span class="math">$B$</span> 同时可逆。材料可以高度非均匀，不假设 <span class="math">$D$</span> 与 <span class="math">$G$</span> 对易。<span class="math">$Q$</span> 是完整总场，<span class="math">$J=DQ$</span> 是对比电流。</p>
+<h2 id="section-1">2. 继承 R3 的精确消元，改变计算方式</h2>
+<p>R3 用接收对偶矩阵 <span class="math">$W$</span> 满足 <span class="math">$WE_0=Y$</span>，并最小化共同材料兼容性。其消元目标已严格推导为</p>
+<p><span class="math">$$\psi(m)=\operatorname{tr}\{R H^{-1}R^*\},\qquad R=F(m)-Y,\quad H=Q^*Q.\tag{D1}$$</span></p>
+<p>适用条件是 <span class="math">$E_0$</span> 满列秩、物理系统可逆。因此 <span class="math">$Q$</span> 满列秩，<span class="math">$H$</span> 正定。该式与 R3 硬数据 variable projection <strong>严格相同</strong>，不是额外的物理降阶。两种形式的标量归一化也必须一致后再比较。</p>
+<p>旧实现对 <span class="math">$A^T=[Z(I-GD)]^T\in\mathbb C^{N\times(N-s)}$</span> 做 QR，<span class="math">$ZE_0=0$</span>。本轮 <span class="math">$N=576,s=12$</span>，每次是 <span class="math">$576\times564$</span> 的分解。D1 改为一次完整物理解及 <span class="math">$576\times12$</span> 总场的薄 QR，避免该宽辅助矩阵。它<strong>没有免除 576 阶 LU</strong>。</p>
+<p>若 <span class="math">$Q=UT$</span> 是满列秩薄 QR，则</p>
+<p><span class="math">$$H=T^*T,\qquad \psi=\|RT^{-1}\|_F^2.\tag{D2}$$</span></p>
+<p>实现应使用三角求解，不显式求 <span class="math">$H^{-1}$</span>。当源列条件尚可时也可对 <span class="math">$12\times12$</span> Gram 做 Cholesky；形成 Gram 会平方 <span class="math">$Q$</span> 的条件数，因此须报告病态状态与回退。增加未声明的对角 jitter 会改变目标，不能再声称严格等价。</p>
+<h2 id="section-2">3. 不构建 Full-J 的精确梯度</h2>
+<p>令</p>
+<p><span class="math">$$A=RH^{-1}\in\mathbb C^{r\times s},\qquad C=A^*A\in\mathbb C^{s\times s}.$$</span></p>
+<p>对实材料微分，<span class="math">$dH=dQ^*Q+Q^*dQ$</span>，于是</p>
+<p><span class="math">$$d\psi=2\operatorname{Re}\langle A,dF\rangle_F
+ -2\operatorname{Re}\langle QC,dQ\rangle_F.\tag{D3}$$</span></p>
+<p>这里利用 <span class="math">$dH^{-1}=-H^{-1}(dH)H^{-1}$</span>；第二项是变化的材料度量的导数，<strong>不能冻结 Gram 而省略</strong>。</p>
+<p>从电流方程微分得到</p>
+<p><span class="math">$$M\,dJ=\operatorname{diag}(dm)Q,\quad dF=S\,dJ,\quad dQ=G\,dJ.$$</span></p>
+<p>用已有 LU 解伴随系统</p>
+<p><span class="math">$$M^*\Lambda=S^*A-G^*(QC).\tag{D4}$$</span></p>
+<p>代入 D3 即得</p>
+<p><span class="math">$$\boxed{\frac{\partial\psi}{\partial m_i}
+=2\operatorname{Re}\sum_{a=1}^{s}\overline{\Lambda_{ia}}Q_{ia}.}\tag{D5}$$</span></p>
+<p>对实材料这是实梯度；复共轭转置不能与普通转置混用。若目标乘一个固定归一化常数，梯度同乘该常数；若常数也依赖材料，必须再求其导数。本轮不采用随迭代变化而未求导的归一化。</p>
+<p><strong>算法后果：</strong> 目标加梯度一次只需要一份 <span class="math">$N$</span> 阶 LU、<span class="math">$s$</span> 个源 RHS、<span class="math">$s$</span> 个伴随 RHS、小型 Gram/薄 QR 和矩阵乘法。没有逐材料有限差分，也不需要 <span class="math">$N-s$</span> 个辅助投影变量的每步 QR。</p>
+<h2 id="section-3">4. 与普通方法的真实比较</h2>
+<p>原数据损失 <span class="math">$\ell=\|F-Y\|_F^2$</span> 的伴随梯度是</p>
+<p><span class="math">$$M^*\Lambda_d=S^*R,\qquad
+\partial_{m_i}\ell=2\operatorname{Re}\sum_a\overline{\Lambda_{d,ia}}Q_{ia}.\tag{D6}$$</span></p>
+<p>所以最优普通伴随梯度同样只需 <span class="math">$s$</span> 个伴随 RHS。<strong>小 Gram 不构成对一切普通反演的梯度成本优势定理。</strong> GlobalDual 的差异首先是优化的非零残差几何，不是魔法减少物理维数。</p>
+<p>普通 Full-J/GN 则通过</p>
+<p><span class="math">$$T_s=SM^{-1},\qquad
+\frac{\partial F_{ra}}{\partial m_i}=(T_s)_{ri}Q_{ia}\tag{D7}$$</span></p>
+<p>构造解析 Jacobian。<span class="math">$T_s$</span> 可用一个转置求解的 <span class="math">$r$</span> 个 RHS 得到；本合同 <span class="math">$r=48&lt;N$</span>。实化后 Jacobian 为 <span class="math">$2rs\times N=1152\times576$</span>。GN 还需要形成或作用于法方程，以及材料空间步的线性求解；这些时间必须记账。若改用 matrix-free GN 或 L-BFGS，该费用会变化，不能只凭 RHS 数断言快慢。</p>
+<p>倒数参数 <span class="math">$\eta_i=1/m_i$</span>（本合同 <span class="math">$m_i&gt;0$</span>）满足</p>
+<p><span class="math">$$\frac{\partial F}{\partial\eta_i}=-m_i^2\frac{\partial F}{\partial m_i}.\tag{D8}$$</span></p>
+<p>这改变优化坐标，不改变材料范围、物理前向或允许的图像。</p>
+<h2 id="section-4">5. 多尺度是参数化，不是 Maxwell 秩降阶</h2>
+<p>每阶段用已声明的确定性 prolongation <span class="math">$P_h$</span> 将 <span class="math">$h\times h$</span> 材料参数映射到同一个 24×24 物理网格：<span class="math">$m=P_hz$</span>。Native 坐标的链式导数为</p>
+<p><span class="math">$$\nabla_z f=P_h^T\nabla_m f,\qquad J_z=J_mP_h.$$</span></p>
+<p>若使用正权重行和为 1 的插值，则参数 box 的像仍位于同一物理材料 box。最终 <span class="math">$h=24$</span> 时 <span class="math">$P_h=I$</span>，576 个物理材料自由度全部释放。粗阶段少的是优化未知量；<span class="math">$\operatorname{diag}(P_h\,dz)$</span> 一般仍可满秩，因此完整 Maxwell 系统始终是 576 阶。</p>
+<p>正则项在物理图像上计算，并对所有方法使用同一公式、权重安排、材料范围和初值权限。若 coarse reciprocal 使用 <span class="math">$m=1/(P_h\eta)$</span>，其粗材料空间与 <span class="math">$m=P_hz$</span> 一般不同，必须改成相同物理图像映射或明确申报差异，不能偷偷把两者当作相同先验。</p>
+<h2 id="section-5">6. 条件、极点与最终验收</h2>
+<p>D1 与原数据目标在可逆域中有相同精确零点，但通常有不同非零极小点。且</p>
+<p><span class="math">$$\frac{\|R\|_F^2}{\sigma_{\max}(Q)^2}
+\le\psi\le
+\frac{\|R\|_F^2}{\sigma_{\min}(Q)^2}.$$</span></p>
+<p>接近极点时，<span class="math">$\|Q\|$</span> 增大可令兼容性目标虚降；R3 已给出严格反例。因此候选在线选择与最终验收必须回到所有源接收的原始数据损失及共同正则项，并检查材料合法与物理解的数值稳定性。小 <span class="math">$\psi$</span> 本身不是恢复材料的证据。</p>
+<p>独立端点重求解只验证同一有限离散 VIE 的实现和保留预测，不是跨网格或独立连续物理模型验证。数值相符不证明唯一性；观测数 1152 大于材料数 576 也不证明 Jacobian 满秩。</p>
+<h3>本轮实现的归一化与共同先验</h3>
+<p>对每幅观测，<span class="math">$b=\|Y\|_F^2$</span>。原数据评分为 <span class="math">$\ell_d=\|R\|_F^2/(2b)$</span>。兼容性候选使用固定参考 <span class="math">$m_{ref}=\mathbf1$</span> 的总场，令 <span class="math">$a=\|Q_{ref}\|_F^2/s$</span>，优化 <span class="math">$a\psi/(2b)+\mathcal R(m)$</span>。<span class="math">$a$</span> 在本次求解内固定；即使首次兼容性阶段出现在24×24，它也不由变化的当前材料重设。这个尺度让平均总场能量可比，不把各个源方向的度量变成原数据目标。</p>
+<p>在物理网格边上定义 <span class="math">$d_e=(m_j-m_i)/19.5$</span>，实现共同正则项</p>
+<p><span class="math">$$\mathcal R(m)=\lambda_2\,\operatorname{mean}_e d_e^2+
+\lambda_{TV}\,\operatorname{mean}_e\left(\sqrt{d_e^2+\epsilon^2}-\epsilon\right).$$</span></p>
+<p>它是各向分边的平滑 TV 与二次平滑，不是数字模板。Native、reciprocal、GlobalDual 的在线排序全部使用 <span class="math">$\ell_d+\mathcal R$</span>。兼容性方向和该排序的下降方向可以不同；每个候选仍保留原物理评分。原数据校正采用有界阻尼 GN 和标准滞后扩散/IRLS 二次模型，不把其正则化 Hessian 近似说成精确二阶导数。</p>
+<p>在原图差分矩阵 <span class="math">$D_e$</span> 下，这个每步更新的正则曲率是</p>
+<p><span class="math">$$H_{\mathcal R}^{IRLS}=D_e^T\operatorname{diag}\!\left[
+\frac{2\lambda_2+\lambda_{TV}/\sqrt{d_e^2+\epsilon^2}}{n_{edge}}
+\right]D_e.$$</span></p>
+<p>它保留相邻网格的固定稀疏结构。最终 <span class="math">$P=I$</span> 时，可直接稀疏组装再加到数据法方程；无须用稠密单位基反复做矩阵乘法。权重仍随材料改变，既没有冻结非线性曲率，也没有假设材料与传播算子交换。这是标准 IRLS 与稀疏代数的工程复用，不能称为新的物理近似或新定理。</p>
+<h2 id="section-6">7. 来源和原创性边界</h2>
+<p>D1 直接继承 R3 的全观测消元；QR/Gram、隐式微分、伴随和多尺度是标准工具。R3 已明确其与 CSI/SOM、variable projection 和材料相关 PDE 残差度量的直接关系。本轮首先是一项 576 材料盲成像的规模验证。是否出现新的算法证据，必须由所有九数字的冻结比较决定；不能仅凭把宽 QR 换成薄总场 QR 宣称新的 Maxwell 代数定理。</p>
+<p>材料相关 Gram 残差度量的直接理论先例可参见 van Leeuwen 与 Yang 的<a href="https://arxiv.org/html/2403.15292v2">作者全文</a>。该文处理 PDE 约束松弛并推导加权非线性最小二乘及解的 Gram 权重。本轮固定离散电流、硬数据消元和实材料梯度须按上述条件逐项推导；记号和约束不同不构成原创性的充分理由。</p>
+<h2 id="section-7">8. 这个目标怎样改变图像搜索：材料相关的照明归一化</h2>
+<p>这条解释不需要增加任何物理实验。对当前合法材料的总场作薄 SVD，<span class="math">$Q=U\Sigma V^*$</span>，则</p>
+<p><span class="math">$$\boxed{\psi(m)=\|R V\Sigma^{-1}\|_F^2
+=\sum_{a=1}^s\frac{\|R v_a\|_2^2}{\sigma_a(Q)^2}.}\tag{D9}$$</span></p>
+<p>固定材料时，Maxwell 方程对照明线性，因此源组合 <span class="math">$E_0V\Sigma^{-1}$</span> 的总场恰为 <span class="math">$U$</span>，内部场列两两正交且范数为 1。GlobalDual 相当于比较这些<strong>按当前内部总场归一化的照明组合</strong>的观测误差。普通数据目标按原始照明幅度计量；两者非零残差的几何自然不同。</p>
+<p>这里的 <span class="math">$V,\Sigma$</span> 随材料变化，不是一次固定 SVD 解决所有材料，更不是额外测量提供新信息。D3–D5 已包含这种变化的完整导数。该重加权可以改变优化吸引域，但不保证改变方向有利，也不保证跨越所有局部极小点。</p>
+<p>若观测噪声每个接收行在源坐标中是独立、等方差复噪声，方差为 <span class="math">$\sigma_\eta^2$</span>，则固定材料下</p>
+<p><span class="math">$$\mathbb E\|\eta V\Sigma^{-1}\|_F^2
+=r\sigma_\eta^2\operatorname{tr}(H^{-1}).\tag{D10}$$</span></p>
+<p>所以小场奇异值方向的噪声会被放大；不能把该目标直接当作原噪声 likelihood。这个解析结果说明为什么无噪声成功不能自动推广为噪声鲁棒性。它不是本轮已完成的带噪实验证据。</p>
+<p>最后，GlobalDual 提案由 L-BFGS-B 求解，普通主基线是 GN/LM；因此“GlobalDual 结果更好”本身不能区分<strong>目标变化</strong>与<strong>优化器更换</strong>的作用。本轮在任何主 GT 揭晓前另冻结普通数据伴随 L-BFGS-B＋相同 Full-J 校正的匹配对照，保留该补充在数据生成之后才冻结的边界。只有相对于这个对照的额外优势，才支持 Gram 目标具有独立搜索增量；仍不能据此证明普遍因果规律或全局收敛。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3_digits/MATHEMATICAL_SCALING.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>
