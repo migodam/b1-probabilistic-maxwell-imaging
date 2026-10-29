@@ -1,0 +1,51 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>10 · TSOM 如何作用于双边 Maxwell 传递</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+ .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}table{display:block;overflow-x:auto}#formula-filter{width:100%;padding:12px;font-size:17px;box-sizing:border-box}.formula-list{columns:2}.formula-list a{display:block;break-inside:avoid;padding:5px}.formula-list a[hidden]{display:none}@media(max-width:800px){.formula-list{columns:1}} </style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="../p3l_r10_bilateral_structure/index.html">R10研究</a><a href="index.html">持续公式集</a><a href="../p3l_r10_bilateral_structure/GO_NO_GO.html">科学决策</a><a href="../p3l_r10_bilateral_structure/RESEARCH_REPORT_ZH.md">原始Markdown</a><a href="../p3l_r10_bilateral_structure/PAPER_NARRATIVE_V2_EN.html">英文论文草稿</a></nav><h1>10 · TSOM 如何作用于双边 Maxwell 传递</h1><p>固定结构 → 可复用响应 → 同任务成本 → 材料覆盖的真实边界</p></header><main><details><summary>章节目录</summary><div class="toc"><a href="#f-bi-019">F-BI-019 · 从双边逆算子还原电流方程</a><a href="#f-bi-020">F-BI-020 · 两次筛选是投影像，不是交集</a><a href="#f-bi-021">F-BI-021 · 共享材料与含噪数据的联合目标</a><a href="#f-bi-022">F-BI-022 · 电流系数的小规模消元</a><a href="#f-bi-023">F-BI-023 · 若目的是直接压缩中间逆：低秩 Green 与 Woodbury</a><a href="#f-bi-024">F-BI-024 · 完整物理缺陷给出投影的失效位置</a><a href="#本次判断与未执行边界">本次判断与未执行边界</a></div></details><article><h1 id="10-tsom-如何作用于双边-maxwell-传递">10 · TSOM 如何作用于双边 Maxwell 传递</h1>
+<p>2026-10-30，回应用户关于 $O(I-DC)^{-1}DE_R$ 的追问。本章为解析推导与算法定位，新增 Maxwell RHS=0；不改写 R10 已冻结实验。结论是：<strong>可以使用 SOM/TSOM，材料与 Green 不对易并不构成否决理由。</strong> 要区分绕开内层完整正演的电流辅助反演，与降低每次完整正演成本的近似算子求解。</p>
+<p>实质文献依据为作者公开的 <a href="https://renchengsong.github.io/papers/TGRS2329032.pdf">Xu、Zhong、Song、Chen、Ran，MR-FFT-TSOM，DOI 10.1109/TGRS.2014.2329032</a>，§II，式(3)—(11)。该文明确重述接收 SVD、内部传播基的投影及数据/状态双残差。以下符号吸收了原文电流中的频率常数；原论文算法、这里的噪声修正、variable projection 和低秩正演必须分开归属。没有声称已逐式读到2009原篇。</p>
+<h2 id="f-bi-019">F-BI-019 · 从双边逆算子还原电流方程</h2>
+<p>令 $N=256$，$n_s=8$，$h\in\mathbb C^{N\times n_s}$ 为固定宿主消元后的 ROI 对比电流，$y=Y-F_h$。定义 $K_D=I-DC$。当 $K_D$ 可逆时：</p>
+<p>$$h=K_D^{-1}DE_R\quad\Longleftrightarrow\quad h=D(E_R+Ch),\qquad F-F_h=Oh.$$</p>
+<p>这是精确等价式。原完整正演只需解8个右端，并不显式构造256×256逆矩阵或整个 $\mathcal T(D)$。SOM/TSOM 的入口是将 $h$ 作为辅助未知量，以固定投影组织它，同时满足上述状态方程与数据方程。它不要求 $D$ 与 $C$ 对易，也不要求真实材料解集线性。</p>
+<h2 id="f-bi-020">F-BI-020 · 两次筛选是投影像，不是交集</h2>
+<p>设 $S=WO$，其中 $W$ 为已固定的逐源噪声白化；$S=U\Sigma V^*$。保留噪声下可靠的前 $\ell$ 个方向：</p>
+<p>$$h_d=V_\ell\Sigma_\ell^{-1}U_\ell^*Wy,\qquad P_\ell=V_\ell V_\ell^*.$$</p>
+<p>令 $V_{C,r}$ 为固定内部算子 $C$ 的所选右奇异向量，或使用明确声明的 Fourier 基 $V_{F,r}$。TSOM式表示为</p>
+<p>$$Z=(I-P_\ell)V_{C,r},\qquad Q=\operatorname{orth}(Z),\qquad h=h_d+Q\alpha.$$</p>
+<p>这里 $\operatorname{orth}$ 删除相关/零列，保留相同列空间。$\operatorname{range}Z$ 是投影后的像，一般不等于两空间交集；$ZZ^\dagger$ 才是该像的正交投影。截断接收强方向后，$OQ$ 通常非零，不能省略数据残差。原作者的 twofold 内部基/Fourier构造支持这个位置；它不是从材料 Jacobian 的 weak8 方向构造电流。</p>
+<p><strong>固定缓存：</strong> $Q,CQ,OQ,V_\ell,CV_\ell$；同一观测的 $h_d,Ch_d$。宿主消元后的 $C$ 一般不再具有完整均匀网格的卷积形式，Fourier作为基仍合法，但不能未经推导声称 $C$ 乘法自动具有FFT卷积加速。</p>
+<h2 id="f-bi-021">F-BI-021 · 共享材料与含噪数据的联合目标</h2>
+<p>原 P1 材料保持 $D=D(x)=\operatorname{diag}(\delta(x)a(x))$，$x\in\mathbb R^{66}$。不得逐源恢复不同材料，或用自由像素代替原 decoder。为不把含噪接收强系数硬锁在 $h_d$ 上，可加入其修正：</p>
+<p>$$R=[V_\ell,Q],\qquad h=h_d+R\beta,\qquad \beta\in\mathbb C^{q\times n_s}.$$</p>
+<p>采用明确的候选生成目标（归一化权重需单独冻结）：</p>
+<p>$$\mathcal J_\lambda(x,\beta)=\|S(h_d+R\beta)-Wy\|_F^2+\lambda\|K_{D(x)}(h_d+R\beta)-D(x)E_R\|_F^2+\mathcal R(x),\quad\lambda&gt;0.$$</p>
+<p>对全部源共享同一个 $D(x)$；$\mathcal R$ 可为原先验惩罚或事先固定的随机化目标。没有 $N$ 阶逆出现在目标计算中：$K_DR=R-D(CR)$，因此固定的 $CR$ 可预计算，材料更新主要是对角行缩放。</p>
+<p>有限 $\lambda$ 允许状态残差，所以这是优化辅助目标，不等于原 Maxwell likelihood。作为材料可能性生成器完全可以使用；候选需由原完整正演验证。不要求先解决精确 posterior 才能研究这个生成器。若把接收强系数固定不动，则应将其标为传统截断数据近似，而非原含噪模型的精确等价。</p>
+<h2 id="f-bi-022">F-BI-022 · 电流系数的小规模消元</h2>
+<p>对固定 $D$，将上一目标的两项堆叠：</p>
+<p>$$T_\lambda(D)=\begin{bmatrix}SR\\\sqrt\lambda K_DR\end{bmatrix},\qquad B_\lambda(D)=\begin{bmatrix}Wy-Sh_d\\\sqrt\lambda(DE_R-K_Dh_d)\end{bmatrix}.$$</p>
+<p>若 $R$ 满列秩且 $K_D$ 可逆，则 $T_\lambda$ 满列秩：其下块已经满列秩。于是</p>
+<p>$$\beta_*(D)=T_\lambda(D)^\dagger B_\lambda(D),\qquad \min_\beta\mathcal J_\lambda=\|(I-T_\lambda T_\lambda^\dagger)B_\lambda\|_F^2+\mathcal R(x).$$</p>
+<p>采用薄 QR/SVD 求解，不应为了书写方便在实现中显式形成 $(T^*T)^{-1}$。若 $q\ll N$，主要内层费用约为 $O((N+n_r)q^2+q^3)$，多个源共享同一QR；不再需要每一步 $N\times N$ LU。若 $q$ 很大或需要大量恢复迭代，收益可能消失。</p>
+<p>令 $r=T_\lambda\beta_*-B_\lambda$，正交性 $T_\lambda^*r=0$ 给出</p>
+<p>$$d\|r\|_F^2=2\operatorname{Re}\operatorname{tr}\{r^*[(dT_\lambda)\beta_*-dB_\lambda]\}.$$</p>
+<p>因此约化目标求导不用显式求 $d\beta_*$，但它仍是上述有限罚目标的导数，不是原 Maxwell posterior 的梯度。这是标准 variable projection；是否比精确256阶Full-J更好需要真正的同质量成本比较。</p>
+<h2 id="f-bi-023">F-BI-023 · 若目的是直接压缩中间逆：低秩 Green 与 Woodbury</h2>
+<p>另一条路线固定近似 $C_r=AB^*$，$A,B\in\mathbb C^{N\times r}$（例如截断SVD因子）。令 $g=DE_R$。在 $I-B^*DA$ 可逆时：</p>
+<p>$$\widetilde h=(I-DC_r)^{-1}g=g+DA(I-B^*DA)^{-1}B^*g.$$</p>
+<p>这是标准 Woodbury 恒等式，对近似算子 $C_r$ 精确。对每个新材料仍需更新 $B^*DA$ 并解 $r$ 阶系统，但不用重新分解 $N$ 阶矩阵。若 $C=C_r$ 是实际精确低秩，则也是原离散物理的精确表达；一般截断情况下只是近似。</p>
+<p>这与 TSOM 有共同的固定传播压缩哲学，但算法对象不同：TSOM主要减少反演中未知电流系数；此式直接压缩正演求解器。不能用“把 $C$ 分解一次”推出“所有 $D$ 下的逆都已分解一次”。同样不要求 $D$ 与 $C$ 对易。</p>
+<h2 id="f-bi-024">F-BI-024 · 完整物理缺陷给出投影的失效位置</h2>
+<p>对任意近似电流 $\widetilde h$ 定义真实缺陷</p>
+<p>$$r_D=DE_R-K_D\widetilde h.$$</p>
+<p>当 $K_D$ 可逆，精确误差恒为</p>
+<p>$$h-\widetilde h=K_D^{-1}r_D,\qquad F-\widetilde F=OK_D^{-1}r_D.$$</p>
+<p>在 F-BI-023 的低秩算子求解中，进一步有</p>
+<p>$$r_D=D(C-C_r)\widetilde h.$$</p>
+<p>这说明被删传播的实际影响同时受材料、内部场和resolvent放大控制；只看固定Green的奇异值尾不够。若有稳定性界 $\|K_D^{-1}\|\le b_D^{-1}$，则 $\|W(F-\widetilde F)\|_F\le\|WO\|_2\|r_D\|_F/b_D$；无可靠界时用完整校正/验证。</p>
+<p>对纯TSOM，缺陷可能来自电流子空间不足、有限罚优化未收敛或材料与电流失配，不能全部叫“流形不稳定”。误差超门时先考虑扩大固定电流基或精确校正，不必默认更新材料弱方向。</p>
+<h2 id="本次判断与未执行边界">本次判断与未执行边界</h2>
+<ol><li><strong>成立：</strong> 双边式天然允许TSOM式固定电流表示；完整非线性仍在状态方程中，没有使用Born替代。</li><li><strong>成立：</strong> 固定基缓存+小系数QR有实际避开内层完整LU的路径；这比只说“可能做SVD”更具体。</li><li><strong>尚未实测：</strong> 原66维decoder内的上述TSOM/variable-projection候选生成器是否改善材料覆盖及总费用。本次没有执行，不将R10双边Gram随机目标的失败当作它的失败。</li><li><strong>已有但不同：</strong> R10固定形状的rank64传递压缩与条件幅度积分得到有范围的正面计算结果；它不是这里完整的TSOM反演实验。</li><li><strong>下一项有辨别力的实验：</strong> 共享同一精确ROI验证器和材料decoder，对照普通Full-J随机目标与固定TSOM电流系数+材料优化，按合格材料覆盖、遗漏/拒绝及完整费用比较。先不扩大弱8射线，不把准确posterior作为启动门。</li></ol>
+<p>本章数学结论属于已知状态分裂、投影、最小二乘消元和Woodbury的具体组合。潜在论文增量只能来自原材料支持下更好的合法可能性生成或总费用；不能将这些标准公式本身写成新定理。</p></article></main><footer style="padding:30px;max-width:1100px;margin:auto">原P1完整非线性Maxwell。物理核费用、材料可能性与条件概率分别评价。新结果不改写历史结论。</footer></body></html>

@@ -81,3 +81,7 @@ IOP/IEEE 部分原文页面不可访问，TSOM/FFT-TSOM 原篇本轮为身份 C 
 64 维由八个 DEV 形状的 32/64/96/128 阶扫描选定，再在十个另组锚点形状上验证；这建立经验有效阶，不建立严格最小实现阶。320 节点核的材料真值在其他支线已曝光，当前仅相对 DEV 压缩 heldout，不能写新的盲法材料测试。只有 M32 是该核实际完整查询工作量，其余 M 是实测均值外推。标准 Krylov/Galerkin、Schur 与 eigenpermittivity 思想均不重新命名为新物理。
 
 Fresh10 的 N10 配对统计不足以声称高概率覆盖；三种新臂 matched solver/caps，历史三臂有更小 cap 和不同约束，不能将六臂称为费用匹配。已有证据不支持原创覆盖机制成功，也没有否定所有可能的结构提案。全文证据链接为 [候选评分](results/candidates_fresh10/STATISTICS.json)、[独立统计与审计](INDEPENDENT_QA.md)、[另组形状核](REDUCED_RESPONSE_FRESH10.md)。有限检索不认证全球新颖性。
+
+## 2026-10-30 TSOM追问：新增作者全文依据
+
+补读作者公开的[MR-FFT-TSOM全文](https://renchengsong.github.io/papers/TGRS2329032.pdf)，DOI 10.1109/TGRS.2014.2329032，§II式(3)—(11)：接收SVD确定/模糊电流分解、内部传播谱基的投影、Fourier替代、数据与状态残差均有直接正文支持。该补充不声称读到了2009原篇。纠正本轮理论稿旧措辞“receive-only TSOM”：TSOM本来就使用内部传播筛选；本轮双边Gram方案的负结果不能否定TSOM。零新增物理计算。
