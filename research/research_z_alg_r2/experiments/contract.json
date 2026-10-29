@@ -1,0 +1,243 @@
+{
+  "schema": "Z-ALG-R2-BLIND-v1",
+  "frozen_utc": "2026-10-29T15:45:07.247838+00:00",
+  "materials": {
+    "real_box": [
+      0.5,
+      4.0
+    ],
+    "imaginary": 0,
+    "initialization": "fixed box midpoint 2.25, all cells",
+    "hidden_distribution": "independent uniform on [0.5,4.0], three targets per preset"
+  },
+  "physics": {
+    "k": 6.283185307179586,
+    "radius": 0.04,
+    "noise": "none",
+    "basis": "constant disk pulse Green VIE"
+  },
+  "input_contract": {
+    "allowed": [
+      "preset geometry",
+      "material box",
+      "complex observations y",
+      "case identifier",
+      "declared noise model"
+    ],
+    "forbidden": [
+      "hidden materials",
+      "generator seed",
+      "hidden current or field",
+      "GT-derived initialization or support choices"
+    ],
+    "packing": "source major, receiver major, real then imaginary"
+  },
+  "baseline": {
+    "method": "scipy.optimize.least_squares TRF exact analytic full-J adjoint",
+    "bounds": [
+      0.5,
+      4.0
+    ],
+    "max_nfev": 120,
+    "ftol": 1e-12,
+    "xtol": 1e-12,
+    "gtol": 1e-12,
+    "loss": "linear",
+    "x_scale": 1.0,
+    "initial": 2.25,
+    "frozen_J": "same TRF settings, one midpoint Jacobian"
+  },
+  "validation": {
+    "independent": "fresh numpy.linalg.solve at every returned endpoint",
+    "response_relative_max": 1e-08,
+    "state_relative_max": 1e-10,
+    "material_RMS_success": 1e-05,
+    "legal_box_tolerance": 1e-10,
+    "resolvent_sigma_min_floor": 1e-06,
+    "nonunique_policy": "E1 response-fit and material error separate; never infer uniqueness"
+  },
+  "budget": {
+    "max_nfev_per_method_case": 120,
+    "actual_complex_rhs_per_method_case": 15000,
+    "wall_seconds_per_method_case": 120,
+    "single_thread": true
+  },
+  "presets": {
+    "E1_LOW6": {
+      "centers": [
+        [
+          -0.29,
+          -0.15
+        ],
+        [
+          0.04,
+          -0.23
+        ],
+        [
+          0.33,
+          -0.08
+        ],
+        [
+          -0.22,
+          0.22
+        ],
+        [
+          0.09,
+          0.13
+        ],
+        [
+          0.38,
+          0.27
+        ]
+      ],
+      "sources": [
+        [
+          -0.61,
+          -0.72
+        ],
+        [
+          0.63,
+          -0.57
+        ]
+      ],
+      "receivers": [
+        [
+          0.17,
+          0.86
+        ]
+      ]
+    },
+    "INFO12": {
+      "centers": [
+        [
+          -0.3,
+          -0.24
+        ],
+        [
+          -0.1,
+          -0.24
+        ],
+        [
+          0.1,
+          -0.24
+        ],
+        [
+          0.3,
+          -0.24
+        ],
+        [
+          -0.3,
+          0.0
+        ],
+        [
+          -0.1,
+          0.0
+        ],
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.3,
+          0.0
+        ],
+        [
+          -0.3,
+          0.24
+        ],
+        [
+          -0.1,
+          0.24
+        ],
+        [
+          0.1,
+          0.24
+        ],
+        [
+          0.3,
+          0.24
+        ]
+      ],
+      "sources": [
+        [
+          -0.65,
+          -0.7
+        ],
+        [
+          0.72,
+          -0.48
+        ],
+        [
+          -0.67,
+          0.42
+        ]
+      ],
+      "receivers": [
+        [
+          0.9476065307100335,
+          0.06739334504010144
+        ],
+        [
+          0.8496839619985173,
+          0.4248966518137113
+        ],
+        [
+          0.6224047124770227,
+          0.7177132950464236
+        ],
+        [
+          0.30036998759366984,
+          0.9012645951955389
+        ],
+        [
+          -0.06739334504010135,
+          0.9476065307100335
+        ],
+        [
+          -0.4248966518137114,
+          0.8496839619985173
+        ],
+        [
+          -0.7177132950464237,
+          0.6224047124770226
+        ],
+        [
+          -0.9012645951955389,
+          0.3003699875936697
+        ],
+        [
+          -0.9476065307100335,
+          -0.06739334504010151
+        ],
+        [
+          -0.8496839619985173,
+          -0.4248966518137113
+        ],
+        [
+          -0.6224047124770227,
+          -0.7177132950464237
+        ],
+        [
+          -0.3003699875936705,
+          -0.9012645951955387
+        ],
+        [
+          0.06739334504010103,
+          -0.9476065307100336
+        ],
+        [
+          0.4248966518137113,
+          -0.8496839619985173
+        ],
+        [
+          0.7177132950464233,
+          -0.6224047124770229
+        ],
+        [
+          0.9012645951955386,
+          -0.30036998759367056
+        ]
+      ]
+    }
+  }
+}

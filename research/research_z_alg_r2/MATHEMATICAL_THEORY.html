@@ -1,0 +1,98 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>数学理论：共享实材料的行列式商代数 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_COMPENDIUM.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>数学理论：共享实材料的行列式商代数</h1><details class="toc"><summary>本文目录 · 10节</summary><ol><li><a href="#section-0">1. 范围与假设</a></li><li><a href="#section-1">2. 命题A：先精确消去观测，再施加实材料兼容</a></li><li><a href="#section-2">3. 命题B：节点意味着真实连续自由度</a></li><li><a href="#section-3">4. 定理C：非奇异前导块给出六维商环</a></li><li><a href="#section-4">5. 定理D：共轭交换保证有限唯一提升</a></li><li><a href="#section-5">6. 定理E：一次小特征分解恢复简单候选</a></li><li><a href="#section-6">7. 标准界、域扩张与未完成的群结构</a></li><li><a href="#section-7">8. 固定与变化：缓存的准确边界</a></li><li><a href="#section-8">9. 证明与实现证据分层</a></li><li><a href="#section-9">10. 定理F：平衡采集的一般行列式商，而非只限四材料</a></li></ol></details>
+<p>本轮得到一个平衡采集下的条件商代数公式族：四材料对应六维商，六材料对应20维商。下面先完整推导四材料特例，第10节给出一般2s材料定理。此结果使用成熟的消元、Hilbert–Burch与商环工具；以下定理的物理专门化和算法价值与其优先权分别判断。</p>
+<h2 id="section-0">1. 范围与假设</h2>
+<p>考虑固定几何、固定背景Green、独立实标量对比度的离散标量TM/VIE。所有源共享同一材料。全模型可以包含任意多单元，但本定理只允许四个独立单元变化，其余材料须事前已知或明确固定；一复接收、两独立复照明。实材料取非零宽度的有限box。没有假定人工空间对称、Born近似或decoder弱坐标。</p>
+<p>参考材料m0不依赖GT且M0可逆。活动单元选择矩阵U必须是坐标列，不是任意低维decoder方向。通过精确Schur/SMW可得到</p>
+<p><span class="math">\[
+Y-Y_0=L(I-DK)^{-1}Dq,\quad D=\mathrm{diag}(\delta_1,\ldots,\delta_4),
+\quad q\in\mathbb C^{4\times2},\ L\in\mathbb C^{1\times4}.
+\]</span></p>
+<p>要求rank(q)=2。矩阵K、L、q、Y0在给定参考与支持下固定，完整Maxwell解的非奇异性等价于det(I−DK)≠0。完整证明及物理Green系数见<a href="FORMULA_COMPENDIUM.html">公式集F03/F06</a>。</p>
+<h2 id="section-1">2. 命题A：先精确消去观测，再施加实材料兼容</h2>
+<p>定义接收传递行w=L(I−DK)^{-1}D。从矩阵恒等式推出</p>
+<p><span class="math">\[
+wq=t:=Y-Y_0,\qquad w=(L+wK)D.
+\]</span></p>
+<p>由rank(q)=2，wq=t的解可写成w=w0+cN，其中c∈C²、Nq=0。置v=L+wK。若v_i≠0，则实材料条件严格等价于</p>
+<p><span class="math">\[
+f_i(c,d)=w_i(c)\bar v_i(d)-v_i(c)\bar w_i(d)=0,
+\quad d=\bar c,\quad i=1,\ldots,4.
+\]</span></p>
+<p>横线在多项式中只共轭系数，d是独立复变量；求根后才检查d=conj(c)。每个f_i对c和d两组变量分别仿射。此变换在材料节点和两个复化resolvent分母非零的开集上给出双有理对应；在物理对角上，两分母互为共轭。</p>
+<p><strong>算法后果：</strong> 不再求每个源的完整未知电流。先消掉测量方程后，只需处理四条双线性兼容式。接收对偶式本身转置后就是已有CSI/SOM结构，不能计为新构件。</p>
+<h2 id="section-2">3. 命题B：节点意味着真实连续自由度</h2>
+<p>若物理解某个v_i=0，则w_i=δ_i v_i=0。固定w并小幅改变该δ_i，w=vD仍成立；非极点条件在邻域保持，所以观测仍是wq=t。该材料点因此属于一条真实连续解族，不是独立材料坐标域内的孤立物理解。闭box边界至少保留单侧变化。</p>
+<p>本命题只排除精确零节点的孤立根；代码中有限node_floor会把极小非零节点也列为UNRESOLVED，不能用此命题证明数值过滤完全无漏根。耦合decoder、离散材料字母表与零宽度坐标要另论。</p>
+<h2 id="section-3">4. 定理C：非奇异前导块给出六维商环</h2>
+<p>令c=(x,y)，将四条兼容式写成A(x,y)(1,d1,d2)ᵀ=0，其中A是4×3仿射线性矩阵。四个最大子式g_i为三次式。以</p>
+<p><span class="math">\[
+B=(1,x,y,x^2,xy,y^2)^T,\quad H=(x^3,x^2y,xy^2,y^3)^T
+\]</span></p>
+<p>排列，写g=TH+RB。若T可逆，则</p>
+<p><span class="math">\[
+\dim_{\mathbb C}\mathbb C[x,y]/\langle g_1,g_2,g_3,g_4\rangle=6,
+\]</span></p>
+<p>且B是商基。</p>
+<p><strong>证明。</strong> 齐次化到P²，T可逆使无穷远线上的四个最大子式张成全部二元三次式，因此没有无穷远公共零点。正维射影曲线必与该线相交；结合4×3 maximal-minor理想高度至多2，得高度恰为2。Hilbert–Burch分解</p>
+<p><span class="math">\[
+0\to S(-4)^3\to S(-3)^4\to S\to S/I\to0
+\]</span></p>
+<p>给出Hilbert series (1+2t+3t²)/(1−t)，长度为6。perfect/CM性质及无无穷远零点保证去齐次化不损失长度。T可逆使每个三次单项式降到B，高次式递归归约；长度6保证B线性无关。证毕。</p>
+<p>该长度按重数计；T可逆不等于六个简单根。对任意四个无结构三次式，上述高度和Hilbert–Burch结论不能直接使用。</p>
+<h2 id="section-4">5. 定理D：共轭交换保证有限唯一提升</h2>
+<p>本问题的双线性系数为C_i=W_i V_i*−V_i W_i*，故C_i*=-C_i。齐次零集在(C,D)↦(bar D,bar C)下不变。定理C的T可逆已排除C0=0；若D0=0有根，共轭交换会产生C0=0根，矛盾。</p>
+<p>任一投影根满足rankA≤2。若rankA≤1，其至少二维右核必包含D0=0的非零向量，同样矛盾。因此rankA=2，唯一右核向量可归一为(1,d1,d2)。局部非零2×2子式使回代为有理函数，从而投影与有限双线性scheme局部同构。</p>
+<p><strong>算法后果：</strong> 本结构的T可逆给出长度6的有限兼容系统，解决了泛泛多齐次根界必须另加零维假设的问题。但它不消除重根、物理节点或resolvent极点。</p>
+<p>一般非配对双线性矩阵有反例；完整反例和审阅见<a href="audit/quotient_review.html">audit/quotient_review.md</a>。不能删去共轭结构后照搬本定理。</p>
+<h2 id="section-5">6. 定理E：一次小特征分解恢复简单候选</h2>
+<p>解Q=−T^{-1}R，实际用线性solve。以列为系数约定，令</p>
+<p><span class="math">\[
+M_x=[e_1,e_3,e_4,Q_0^T,Q_1^T,Q_2^T],\quad
+M_y=[e_2,e_4,e_5,Q_1^T,Q_2^T,Q_3^T].
+\]</span></p>
+<p>它们在商环中表示乘x与乘y，严格对易。若scheme约化，且ℓ=x+ηy分离各根，则(Mx+ηMy)ᵀ的特征向量与评价向量(1,x,y,x²,xy,y²)ᵀ成比例。恢复c后回代d；检查共轭、节点、材料box和两分母，最后以原完整非线性forward验收。</p>
+<p>采用转置是系数列约定的结果，不能误用普通右特征向量的坐标比。源码使用同一共同特征向量的联合Rayleigh商恢复x,y，随后原双线性方程检查。</p>
+<p>重根会产生Jordan结构；固定η也可能偶然混合不同根。数值特征分解不是自动重根认证。代码保留条件数、间隙、回代秩、残差、去重，并允许计费同伦fallback。</p>
+<h2 id="section-6">7. 标准界、域扩张与未完成的群结构</h2>
+<p>直接四材料多重仿射表示的标准根界24；双线性表示在P²×P²的标准界6。一般k=2s、单接收、s独立照明得到binom(2s,s)界，但前述6×6商基针对s=2；第10节完成一般定理，本轮另实现并盲测s=3的20维商。</p>
+<p>在合格系数的非分歧开集上，有限商可解释为有限代数覆盖；约化与不可约性决定它是一个域扩张还是多个分量的代数。重根判别集组织分支碰撞。<strong>本轮没有确定Galois群、monodromy置换群或不可约分量。</strong> 六个复候选不构成六个物理对称副本；实性、正材料box及非极点限制不会自动被复分支置换保持。</p>
+<p>六材料四实观测的二维纤维用两个固定材料坐标切片，只提供这些切片的候选根。固定坐标切片不是一般线性witness set，可能漏掉投影较低维的组件；多个切片样点也不自动证明连通性。</p>
+<h2 id="section-7">8. 固定与变化：缓存的准确边界</h2>
+<p>Green、E0、S可一次准备；给定参考与支持的K/L/q/Y0固定；相同q的零空间/左逆可缓存；跨切片可用Schur式复用大核。新目标改变w0，因此T、R和乘法矩阵一般都改变。最高三次块T对共轭目标仿射，可缓存模板，但本轮没有把T^{-1}冒称为任意观测通用常量。</p>
+<p>SVD直接材料逆在接收矩阵满列秩、局部场不为零时也是完整非线性精确式。其噪声放大界见公式集F05；这条标准路线用于48单元盲成像，不作为商代数创新的一部分。</p>
+<h2 id="section-8">9. 证明与实现证据分层</h2>
+<ul>
+<li><strong>严格推导：</strong> 固定核、兼容式、六维商定理、共轭提升、条件特征恢复。</li>
+<li><strong>明确假设：</strong> 四独立实材料、单接收双源、rankq=2、T可逆、简单/分离条件、非节点非极点。</li>
+<li><strong>数值支持：</strong> 有限已运行实例的互异候选、完整forward验收、盲GT包含、费用改善。</li>
+<li><strong>未认证：</strong> 原超越Hankel系数区间包围、浮点投影与系数舍入的全根证书、连续PDE、全材料域与全连通分量。</li>
+<li><strong>优先权未决：</strong> 特定物理组合的原创性；一般消元和商环特征方法已有直接先例。</li>
+</ul>
+<p>完整计算式：<a href="FORMULA_COMPENDIUM.html">FORMULA_COMPENDIUM.md</a>。完整技术附录：<a href="theory/algebraic_structure.html">algebraic_structure</a>、<a href="theory/branches_and_field.html">branches_and_field</a>、<a href="theory/quotient_solver.html">quotient_solver</a>。</p>
+<h2 id="section-9">10. 定理F：平衡采集的一般行列式商，而非只限四材料</h2>
+<p>前述四材料特例可推广。设有 <strong>2s个独立实材料、一个复接收、s个独立照明</strong>，其余物理假设和非节点/非极点限制不变。rank(q)=s时，c、d各有s个复坐标。2s条兼容式写成</p>
+<p><span class="math">\[
+ A(c)(1,d_1,\ldots,d_s)^T=0,\qquad
+ A(c)\in\mathbb C[c]^{2s\times(s+1)}.
+\]</span></p>
+<p>取全部最大子式，数量K=binom(2s,s+1)，每式次数至多s+1。s个变量中总次数恰为s+1的单项式也有K个。把子式写成g=TH+RB，其中H列出这些最高次项，B列出总次数至多s的全部D=binom(2s,s)个单项式。</p>
+<p><strong>条件定理。</strong> 若精确T可逆，则最大子式仿射商代数维数为D，B是基；物理配对结构保证每个投影根唯一提升到有限d。若该scheme约化且线性分离式有效，用D×D乘法矩阵的联合特征恢复全部兼容候选。</p>
+<p><strong>推导。</strong> T可逆排除齐次化后的c0=0公共零点。任何正维射影支撑都会与这超平面相交，所以最大子式理想高度至少s；行列式高度上界又是2s−(s+1)+1=s。因此高度恰为s，Eagon–Northcott分解使商环为一维Cohen–Macaulay环。c0不消灭任何支撑，是非零因子。模掉c0后，全部最大子式恰张成所有s+1次单项式，故</p>
+<p><span class="math">\[
+ (S/I)/(c_0)\cong
+ \mathbb C[c_1,\ldots,c_s]/(c_1,\ldots,c_s)^{s+1},
+\]</span>
+<span class="math">\[
+ \operatorname{Hilb}_{S/I}(t)=
+ \frac{\sum_{j=0}^{s}\binom{s+j-1}{j}t^j}{1-t},\qquad
+ \operatorname{length}=\sum_{j=0}^{s}\binom{s+j-1}{j}=\binom{2s}{s}.
+\]</span></p>
+<p>去齐次化保留长度。T解出的最高次归约使B张成商，长度又保证独立。共轭交换排除d0=0；若rank A低于s，则至少二维核中存在d0=0向量，矛盾。因此rank A=s，有限唯一提升成立。证毕。</p>
+<p>s=3时有15个四次最大子式、20个三次及以下商基。Eagon–Northcott分解为</p>
+<p><span class="math">\[
+ 0\to S(-6)^{10}\to S(-5)^{24}\to S(-4)^{15}\to S\to S/I\to0,
+\]</span></p>
+<p>Hilbert分子为1+3t+6t²+10t³。求根需要一个15×15线性系统（20列右端）、三个20×20乘法矩阵和一次分离线性组合的特征分解。四材料/六维、六材料/20维是同一个公式族的两个实际实现。</p>
+<p><strong>非必要性与失败边界。</strong> T可逆只是充分条件。抽象固定核取K=0、L为全1、q由I_s与iI_s上下拼接，响应为Y_j=m_j+i m_{s+j}，材料可唯一线性恢复，但双线性最高次块T为零。这是有理核类中的反例，不声称真实非零Maxwell Green能取K=0。它证明“前导块退化”不能一般地解释为物理不可辨识。实际物理T条件失败应转交其它消元/局部求解器，保留UNRESOLVED。</p>
+<p><strong>归因。</strong> Eagon–Northcott、行列式理想次数和商乘法矩阵均为成熟工具；<a href="https://doi.org/10.1080/03081087.2014.959516">Ito–Noma–Ohno</a>已有最大子式张成最高次形式的直接先例。本文一般公式是这些工具在共享实材料兼容系统中的专门化，全球首创仍未确证。完整证明与复杂度见<a href="theory/general_quotient.html">general_quotient</a>，检索边界见<a href="audit/general_quotient_prior_art.json">补充先例记录</a>。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/MATHEMATICAL_THEORY.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

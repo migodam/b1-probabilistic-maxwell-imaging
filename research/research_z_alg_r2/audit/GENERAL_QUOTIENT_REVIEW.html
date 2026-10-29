@@ -1,0 +1,112 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>平衡2s材料商代数与GENERAL6独立审查 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>平衡2s材料商代数与GENERAL6独立审查</h1><details class="toc"><summary>本文目录 · 6节</summary><ol><li><a href="#section-0">1. 定理攻击：前导块到商长度</a></li><li><a href="#section-1">2. 定理攻击：共轭交换与提升</a></li><li><a href="#section-2">3. 源码、冻结与盲性</a></li><li><a href="#section-3">4. 根与验收的独立回读</a></li><li><a href="#section-4">5. 比较公平性与成本</a></li><li><a href="#section-5">6. 先例与最终结论边界</a></li></ol></details>
+<p>日期：2026-10-30（Asia/Singapore）。结论：<strong>PASS_WITH_LIMITS</strong>。适用于精确条件定理及新三目标、六材料、三照明、单接收的有限离散数值实验；不提供全球新颖性、浮点严格全根、普遍速度或全规模成像认证。</p>
+<p>本审查只读一般理论、求解源码、公开预测、评分、冻结和成本收据；没有读取private truth/seed，没有新运行物理、调整参数或补试验。基础四材料审查仍见 <code>FINAL_SCIENTIFIC_REVIEW.md</code>；本文件是后续扩展，不能把原四材料盲测和当前新协议混成一次冻结实验。</p>
+<h2 id="section-0">1. 定理攻击：前导块到商长度</h2>
+<p>记S=C[c0,c1,…,cs]，A为2s×(s+1)齐次线性矩阵，I为<strong>全部最大子式</strong>理想。共有K=C(2s,s+1)个最大子式，恰等于s个变量次数s+1的单项式数。精确K×K前导块T可逆，意味着I在c0=0的限制就是(c1,…,cs)^(s+1)。因此项目零集不交无穷远超平面。</p>
+<p>正维射影闭子集必交超平面，故项目支持至多零维；同时最大子式高度上界为s，排除仅支持于原点的height s+1情形。因此ht I=s。S是多项式正则环，达到expected height使Eagon–Northcott成为自由分解，并使S/I为维数1的Cohen–Macaulay环。不存在被忽略的irrelevant嵌入分量；c0避开所有关联素理想，是非零因子。</p>
+<p>模掉c0得到明确截断环C[c1,…,cs]/(c1,…,cs)^(s+1)，其Hilbert函数为次数j=0,…,s上的C(s+j−1,j)。由非零因子正合列得到S/I的Hilbert series分子正是这些项，项目长度及c0=1去齐次商维数为D=C(2s,s)。次数≤s的D个单项式张成；长度相同保证独立，确为商基。没有发现必须另加泛型矩阵假设的缺口。</p>
+<p>s=3时Betti数(15,24,10)，分解次数(4,5,6)，Hilbert分子1+3t+6t²+10t³，长度20，与文稿一致。不能对任意15条四次式照搬此证明；其关键是最大子式理想及expected height。</p>
+<p>T可逆仍只是充分条件。文稿K=0、L全1、q=[I;iI]的抽象例给出可唯一线性恢复的材料问题而T=0；它正确阻止“商图失败即物理不可辨识”的误述，但不是实际Green几何构造。</p>
+<h2 id="section-1">2. 定理攻击：共轭交换与提升</h2>
+<p>共享实材料给出F(C,D)=−conj(F(conj D,conj C))。若某incidence点有d0=0，共轭交换会产生c0=0点，与T条件矛盾。对投影根若rank A≤s−1，核至少二维，必有非零核向量落于d0=0，仍矛盾。故rank A=s、核一维且唯一核向量可归一化d0=1。</p>
+<p>尾部s列必满列秩；否则其非零核向量正是d0=0的全矩阵核。选取非零s×s子式局部消元，余下s条方程既生成最大子式理想，也生成解出d后的incidence理想。因此不止点集双射，局部scheme亦同构，长度/重数保留。文稿这一强化成立，且明确依赖共轭配对；一般非配对矩阵不能套用。</p>
+<p>这不排除物理节点和resolvent极点，也不保证商约化。普通一次eig恢复仍要求简单根与分离线性形式。完整乘法矩阵、转置特征向量约定与Rayleigh共同坐标恢复一致。精确对易与数值小commutator须分开；浮点的rank、T条件和20个小残差端点均不是原Hankel模型全根证书。</p>
+<p>一般D~4^s/sqrt(pi s)，K/D=s/(s+1)。规模仍组合增长，且当前行列式装配显式枚举(s+1)!项。把同伦改成小线性代数不等于多项式时间大规模成像算法。当前冻结可执行入口明确只接受s=3；一般公式不应被写成任意s已完成实现验证。</p>
+<h2 id="section-2">3. 源码、冻结与盲性</h2>
+<p><code>GENERAL6_CONTRACT.json</code>时间16:55:44.896217 UTC；核心源码/参数冻结16:58:25.596211；生成16:58:40.942590；全部六份预测冻结16:58:57.940958；公开评分16:59:16.941019。审查时六预测及五源码的size/mtime全部匹配冻结收据，生成前后的源码snapshot相同。</p>
+<p>驱动只读公开manifest/观测，不导入生成器或评分器。两个方法均以事前固定参考m0=0.5、同一精确核处理全部六个未知材料，普通方法64个起点来自冻结的midpoint+Sobol列表，max_nfev=120，没有oracle固定两坐标。这支持进程流程上的truth withholding；共享文件系统不是OS隔离，也不是外部第三方封存。</p>
+<p>六份预测对应<strong>三目标×两方法</strong>，不是六个独立目标。当前结果是独立新目标/新三照明采集协议，不是把此前六材料双源切片的两个固定坐标泄露给算法。所有当前目标无噪声；本轮没有六材料噪声鲁棒性或更大s试验。</p>
+<h2 id="section-3">4. 根与验收的独立回读</h2>
+<p>三个目标Q20分别返回2/1/1个合格材料，ReducedFullJ64为1/1/1。两方法各3/3候选集合包含GT邻近材料；评分只用于冻结后的集合评估，不能据GT选择在线材料。最近GT的全六集合RMS最大值为3.903337271e−10；Q20自己的最大值为1.584861308e−11。</p>
+<p>GENERAL6_00的两个Q20材料RMS间隔1.158790302694795。二者完整独立前向response residual分别1.9415906174e−14和1.7088043038e−14，state residual约3e−16，resolvent最小奇异值0.355921/0.316633，均在冻结box内。它支持有限精度下的真实数据歧义，额外根不是更接近GT的“改进重建”。该目标冻结64起点仅返回第一根，不能推出任何多起点/其它全局优化都找不到第二根，更不推出不同连续连通分支。</p>
+<p>60个复端点逐目标20个互异，全部回代rank3，最大原双线性端点残差3.001534918e−14，Newton polish总步数0。过滤构成为：</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th align="right">非共轭</th>
+<th align="right">盒外实材料</th>
+<th align="right">合格材料</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GENERAL6_00</td>
+<td align="right">18</td>
+<td align="right">0</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>GENERAL6_01</td>
+<td align="right">16</td>
+<td align="right">3</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>GENERAL6_02</td>
+<td align="right">12</td>
+<td align="right">7</td>
+<td align="right">1</td>
+</tr>
+</tbody></table>
+<p>这里60是三次独立代数系统的端点合计，不是同一观测有60根。全部合格材料最小节点模≥0.00119763；最大共轭残差≤6.39e−14、本构残差≤6.86e−14，距离代码有限node_floor明显较远。四个合格材料均通过<code>FRESH_NUMPY_SOLVE</code>的原完整系统验收。</p>
+<p>T条件数范围86.763885–106.644120，最大相对commutator3.380884e−16，最小相对分离间隙0.0131963。特征向量矩阵条件数最大17840.0066，比四材料例更差，应保留；端点J最大条件数132.7644、回代最大8.72157。小残差及这些诊断支持已算结果，但没有区间包围、逐根存在/唯一性证书或原精确系数误差界。</p>
+<h2 id="section-4">5. 比较公平性与成本</h2>
+<table>
+<thead>
+<tr>
+<th>三目标合计</th>
+<th align="right">Q20</th>
+<th align="right">ReducedFullJ64</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>总wall含目标日志/s</td>
+<td align="right">0.104421833064</td>
+<td align="right">1.518027542159</td>
+</tr>
+<tr>
+<td>CPU/s</td>
+<td align="right">0.094527</td>
+<td align="right">1.504253</td>
+</tr>
+<tr>
+<td>完整complex RHS</td>
+<td align="right">21</td>
+<td align="right">18</td>
+</tr>
+<tr>
+<td>其中一次共享准备</td>
+<td align="right">9</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>其中独立完整候选验证</td>
+<td align="right">12</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>另记reduced complex RHS</td>
+<td align="right">0</td>
+<td align="right">32056</td>
+</tr>
+<tr>
+<td>另记reduced LU</td>
+<td align="right">0</td>
+<td align="right">8268</td>
+</tr>
+<tr>
+<td>合格材料数</td>
+<td align="right">4</td>
+<td align="right">3</td>
+</tr>
+</tbody></table>
+<p>两个方法缓存机会一致；ReducedFullJ64采用相同精确核、解析材料Jacobian和已缓存小系统LU，3个小源RHS/新状态及1个小接收转置RHS/J，未被迫重复完整物理求解。Q20完整RHS反而多3，因为多验收一个材料候选；不能声称相对该基线减少完整RHS。</p>
+<p>单次批次wall比约14.5375，含setup、过滤、验证和目标JSON日志。方法固定顺序且仅一个批次，不是重复中位数或跨实例/机器的总体加速结论；目标JSON量不同，应保留计时口径。baseline三目标共192起点，24个达到max_nfev而未收敛（21/3/0），所有付费成本保留。其它成功终止也不等于找到了可验收根，最终只有三个独立验收材料。</p>
+<p>两方法39个full RHS，数据生成另9，总新增48。旧53903加48得到 <strong>53951</strong>；这是阶段扩展算术，不应在最终总账更新前把旧53903写成覆盖新阶段的全数。一般方法计3个15×15多右端solve、3个20×20 eig、60个6×3回代，0个Newton polish。所有小运算已留在wall与对应收据，不能按零full RHS称之免费。</p>
+<h2 id="section-5">6. 先例与最终结论边界</h2>
+<p><code>general_quotient_prior_art.json</code>将Ito–Noma–Ohno（2015）的最高次最大子式张成先例、标准Eagon–Northcott和2024结构化Gröbner算法列为明确已有技术。本轮补充先例仅publisher/author摘要级B；本次审查没有重新读取这些全文，不能升级为全文核验或排他新颖性证明。</p>
+<p>一般化扩展了这个物理条件公式的范围，不能改变已有一般工具的归属。合适候选贡献是平衡共享实材料的精确兼容参数化、共轭提升证明、明确条件/失败边界及有账本的实际实现。针对结构化双线性/行列式专门求解器的对照仍缺失，仅比较冻结64起点不足以建立代数求解领域最优性。</p>
+<p><strong>建议结论：</strong> 在精确T可逆等已声明条件下，2s共享实材料、一接收、s独立照明的兼容系统具有C(2s,s)维商代数；本轮s=3实现在三个新无噪声目标上得到20个数值互异复端点，并取得4个完整前向合格实材料。冻结64起点在其中一个目标少返回一个合法材料，单次批次Q20总wall较低。根完备认证、全球优先权、鲁棒性及规模普适性仍未建立。</p>
+<h3>最终主文回读</h3>
+<p>新增部分已回读到 <code>RESEARCH_REPORT_ZH.md</code> 第5.1节、主表/成本/下一步、<code>MATHEMATICAL_THEORY.md</code> 第10节、<code>FORMULA_COMPENDIUM.md</code> F15及 <code>ALGORITHM.md</code> Q20段。正文明确沿用E1几何后增加第三照明，限定三目标一次计时与冻结64起点遗漏，保留特征向量条件数、未认证全根、组合增长、s≥4未运行及结构化代数对照缺失。未发现阻断交付的科学误述。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/audit/GENERAL_QUOTIENT_REVIEW.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

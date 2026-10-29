@@ -1,0 +1,154 @@
+{
+  "schema": "Z-ALG-R2-BRANCH-v1",
+  "frozen_utc": "2026-10-29T15:53:51.940163+00:00",
+  "batch": "ONE_INITIAL_BATCH",
+  "case_policy": "E2 public reference;three existing blind E1 observations;never private/scores",
+  "E2": {
+    "stage": "E2",
+    "public_reference_material": [
+      1.0,
+      3.0,
+      2.0,
+      1.4
+    ],
+    "active": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "slices": [
+      []
+    ]
+  },
+  "E1": {
+    "cases": [
+      "E1_LOW6_00",
+      "E1_LOW6_01",
+      "E1_LOW6_02"
+    ],
+    "active": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "free": [
+      4,
+      5
+    ],
+    "slice_values": [
+      0.75,
+      2.25,
+      3.75
+    ],
+    "choice": "Fixed geometric cell order;no weak-coordinate selection or GT"
+  },
+  "material_box": [
+    0.5,
+    4.0
+  ],
+  "primary": "BILINEAR_DUAL_SIX_PATH_HOMOTOPY",
+  "standard": "MULTIAFFINE_24_PATH_HOMOTOPY",
+  "homotopy": {
+    "six_seed": 2026102904,
+    "standard_seed": 2026102903,
+    "tolerance": 2e-11,
+    "max_steps": 4000,
+    "initial_step": 0.01,
+    "min_step": 1e-09,
+    "max_step": 0.04,
+    "max_newton": 12,
+    "wall_seconds": 60
+  },
+  "baseline": {
+    "method": "BOUNDED_FULLJ_TRF_8_STARTS",
+    "starts": [
+      [
+        2.25,
+        2.25,
+        2.25,
+        2.25
+      ],
+      [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      [
+        3.125,
+        1.375,
+        1.375,
+        1.375
+      ],
+      [
+        1.375,
+        3.125,
+        3.125,
+        3.125
+      ],
+      [
+        1.8125,
+        1.8125,
+        2.6875,
+        3.5625
+      ],
+      [
+        3.5625,
+        3.5625,
+        0.9375,
+        1.8125
+      ],
+      [
+        2.6875,
+        0.9375,
+        3.5625,
+        2.6875
+      ],
+      [
+        0.9375,
+        2.6875,
+        1.8125,
+        0.9375
+      ]
+    ],
+    "max_nfev": 120,
+    "ftol": 1e-12,
+    "xtol": 1e-12,
+    "gtol": 1e-12,
+    "loss": "linear",
+    "x_scale": 1.0,
+    "residual": "all labeled observations divided by fixed target norm",
+    "Jacobian": "full material exact receiver transpose solves then slice columns",
+    "start_policy": "midpoint plus first7 distinct unscrambled Sobol4 points;midpoint duplicate skipped"
+  },
+  "validation": {
+    "independent": "fresh numpy full nonlinear solve at every unique legal candidate",
+    "response_relative": 1e-08,
+    "state_relative": 1e-10,
+    "resolvent_sigma_min": 1e-06,
+    "merge_material_RMS": 1e-07
+  },
+  "denominator_audit": {
+    "relative_singular_gap_floor": 1e-07,
+    "conjugate": "conjugate coefficients,keep same complex x"
+  },
+  "scope": {
+    "root_coverage": "unique independently qualified legal roots per fixed slice",
+    "path_counts": "numerical finite endpoint resolution only",
+    "completeness": "NOT_RIGOROUSLY_CERTIFIED",
+    "connected_components": "UNKNOWN",
+    "posterior": "NOT_COMPUTED",
+    "global_fiber": "NOT_COVERED_BY_NINE_SLICES"
+  },
+  "accounting": {
+    "single_BLAS_thread": true,
+    "prior_unsaved_development_actual_complex_RHS": 28,
+    "development_detail": "first24 run10;second24 collision inspection8;first6 run10;no private input",
+    "full_RHS": "source or receiver adjoint RHS",
+    "reduced": "algebraic counts separately",
+    "per_method_slice_wall_seconds": 120,
+    "per_method_slice_RHS": 15000
+  }
+}

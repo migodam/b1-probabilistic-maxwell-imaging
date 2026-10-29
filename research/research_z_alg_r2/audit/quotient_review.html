@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R2：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>六维商代数路线：独立数学与先例审查 | Z-ALG-R2</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R2 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>六维商代数路线：独立数学与先例审查</h1><details class="toc"><summary>本文目录 · 6节</summary><ol><li><a href="#section-0">1. 前导块可逆实际保证什么</a></li><li><a href="#section-1">2. 一般双线性反例，以及本物理结构怎样排除它</a></li><li><a href="#section-2">3. 特征分解并不自动处理重根</a></li><li><a href="#section-3">4. 源码与复用边界</a></li><li><a href="#section-4">5. 先例与本轮增量边界</a></li><li><a href="#section-5">6. 目前可核验的公开结果范围</a></li></ol></details>
+<p>日期：2026-10-30（Asia/Singapore）。范围：<code>src/quotient_solver.py</code> 初始原型、公开 <code>results/quotient_prototype.json</code>、<code>results/adaptive_branch_distinct_pair.json</code> 和主线程给出的定理候选。未读 private 或 blind_scores，未改求解器/理论。本文的证明检查是独立推理；最终科学取舍由主线程决定。</p>
+<p><strong>结论：在准确写出共轭结构、前导块可逆以及特征恢复条件后，六维商路线的数学核心可成立。它确实能在这一合格域内用有限线性代数替换在线同伦。一般商代数特征求根、Hilbert–Burch及双线性求解均已有直接先例；目前尚不能据此认定新通用算法。</strong> 可保留的具体贡献是物理实兼容结构的条件化压缩、退化边界说明，以及完整成本/新增合格材料根的实例证据。</p>
+<h2 id="section-0">1. 前导块可逆实际保证什么</h2>
+<p>设四个双线性方程写成 A(c)[1,d1,d2]^T=0，c=(x,y)，A为4×3仿射线性矩阵。四个最大子式 p_i 的三次项系数矩阵为T；低次项按B=(1,x,y,x²,xy,y²)写为R。假设det T≠0。</p>
+<ol>
+<li>在c的无穷远直线z=0上，四个齐次子式等于T(x³,x²y,xy²,y³)^T。T可逆使它们不可能在任何[x:y]共同为零，故投影行列式零集不接触c∞。</li>
+<li>齐次子式理想I⊂C[z,x,y]是最大子式理想，height至多2。其生成元均为正次齐次式，理想proper；没有无穷远点排除正维projective成分，因此height恰为2。</li>
+<li>标准Hilbert–Burch分解为 <code>0→S(-4)^3→S(-3)^4→S→S/I→0</code>，Hilbert series分子为 <code>1−4t³+3t⁴</code>，projective零维scheme长度为6。这里长度含代数重数，并非六个互异点。</li>
+<li>无c∞点把全部长度放到z=1仿射图。T可逆给出四个三次单项式的精确低次归约 <code>CUBICS=−T^−1 R B</code>。所有更高单项式反复归约到B，故B张成；商空间长度为6又给出线性无关。因此B确为基，构造的Mx、My确为交换乘法矩阵。</li>
+</ol>
+<p>这个论证需要最大子式的确定性结构。对任意四个三次多项式，单独知道三次前导块T可逆，只能立即得维数≤6，不能擅自假设维数恰好6；额外低次关系可使长度下降。原型中的子式结构正是Hilbert–Burch所需内容。</p>
+<h2 id="section-1">2. 一般双线性反例，以及本物理结构怎样排除它</h2>
+<p>一般情况下，“六维投影商”不能自动推出“六个可回代的有限双线性解”。例如</p>
+<pre><code>A(x,y) = [[x+1, 0, 0],
+          [y,   x, 0],
+          [0,   y, x],
+          [0,   0, y]].
+</code></pre>
+<p>四个最大子式是 <code>y³,(x+1)y²,(x+1)xy,(x+1)x²</code>，所以T为可逆排列矩阵。原点rank A=1，projective右核是d0=0上的一条P¹；仿射方程A[1,d1,d2]^T=0却只有x=−1、y=d1=d2=0一个解。此例只攻击<strong>一般矩阵版本</strong>的过强表述，不是Maxwell同结构反例。</p>
+<p>本问题具有更强性质，足以修复这一缺口。每条双线性系数矩阵来自 <code>C_i=W_i V_i*−V_i W_i*</code>，故 <code>C_i* = −C_i</code>，这里*为共轭转置。对齐次变量u,v有</p>
+<pre><code>f_i(u,v) = −overline(f_i(overline(v),overline(u))).
+</code></pre>
+<p>因此公共零集在 <code>(u,v)↦(bar v,bar u)</code> 下不变。由T可逆已排除u0=0的全部projective根；若存在v0=0根，共轭交换会产生u0=0根，矛盾。于是<strong>两侧均没有无穷远根</strong>。</p>
+<p>进一步，在任一投影根c处，rank A≤2。若rank A≤1，其projective右核维数至少1，必与v0=0超平面相交，再次矛盾。因此rank A恰为2，唯一核向量可归一为[1,d1,d2]。等价地A[:,1:]满列秩。局部选一个非零2×2子式即可按有理公式回代，所以投影与双线性零scheme局部同构。</p>
+<p><strong>审查建议：定理必须显式使用这种共轭交换结构。</strong> 加上它后，T可逆确可同时推出有限唯一回代，而无需把一般双线性反例当成致命问题；删去该结构则必须另列rank/回代假设。源码的逐点rank诊断仍有数值意义。</p>
+<h2 id="section-2">3. 特征分解并不自动处理重根</h2>
+<p>如果该长度6 scheme约化，且η使六个值x_j+ηy_j互不相同，Mη=Mx+ηMy的转置具有六个相互独立的评价特征向量。由于Mx、My交换，每个Mη的一维特征空间同时是两者的特征空间，故可从对应特征值/Rayleigh商恢复x_j、y_j，然后回代d。</p>
+<p>需要保留三个区别：</p>
+<ul>
+<li>T可逆不保证理想radical，不保证双线性Jacobian满秩，也不保证所选固定η是分离元。</li>
+<li>非约化商仍有维数6，但乘法矩阵可能含Jordan块；普通<code>eig</code>的六列不等于六个独立根，缺失的方向是重数结构。固定η碰撞也会混合不同点的特征空间。</li>
+<li>对六个最终互异、残差小、Jacobian数值正则的端点，现有原型可给出强数值支持；它仍使用浮点系数、阈值和聚类，不能替代精确/区间认证。未通过条件时应保持UNRESOLVED，不能以剩下的干净根补足六根覆盖。</li>
+</ul>
+<p>这个商路线在T合格时解决了早先“实孤立但复正维”的普遍缺口：复化双线性scheme已由上述结构证明为零维。然而物理材料对应仍要饱和排除v_i=0、原与系数共轭resolvent极点；被压缩的对偶节点可能代表材料正维自由度，不能冒充物理孤立根。</p>
+<h2 id="section-3">4. 源码与复用边界</h2>
+<p>当前原型的四子式、T/R分块、三次归约、按列构造乘法矩阵、使用转置矩阵的评价特征向量以及回代d，均与上述约定一致。<code>np.vdot</code>用于同一向量的Rayleigh商，在简单共同特征向量情形没有转置/共轭错误。</p>
+<p>源码显式检查T的数值条件、交换子、回代rank、端点残差、Jacobian条件数以及六端点互异，并标记 <code>NUMERICAL_QUOTIENT_NOT_CERTIFIED</code>。原型只记录特征向量条件数，没有把固定η的分离性质证明为所有输入通用；未解退化情况应按实际收据报告。本次没有修改这些阈值，也没有提出为了挽救结果而扩大协议。</p>
+<p>固定kernel、同一线性数据算子下，N、NH及部分系数可复用。<strong>完整T、R、Mx、My通常依赖观测y</strong>：w0随y变化，v0=L+w0K变化；A关于c的系数中，其d0列含bar(w0)、bar(v0)，所以最大子式的三次前导块一般也会随观测变化。只有进一步证明目标无关的因子分解，才可把整个T逆算作跨观测离线缓存。切片改变固定材料后，kernel本身也可能变化。成本表应写清楚实际复用边界，不能把一次固定问题的预处理称为任意目标免费。</p>
+<h2 id="section-4">5. 先例与本轮增量边界</h2>
+<ul>
+<li><a href="https://doi.org/10.1145/2930889.2930919">Emiris、Mantzaflaris、Tsigaridas (2016), DOI10.1145/2930889.2930919</a>，<a href="https://www.ricam.oeaw.ac.at/files/reports/16/rep16-17.pdf">作者机构全文</a>，Tier A：针对同一类(n1,n2)双线性系统构造结构化消元、根表示与隔离；双线性binomial界是基础输入，并讨论退化情况。因此“四个(1,1)方程可借代数消元替换路径跟踪”本身没有新颖性资格。</li>
+<li><a href="https://doi.org/10.1145/3208976.3209011">Bender、Faugère、Mantzaflaris、Tsigaridas (2018), DOI10.1145/3208976.3209011</a>，<a href="https://arxiv.org/abs/1805.05060">作者全文arXiv1805.05060</a>，Tier A：第4节明确把有限商空间、乘法矩阵特征值和特征向量恢复坐标作为既有解法；该文扩展到两种支持的Koszul结构。不能把本轮eigen求根描述为新的一般原则，也不能误称该文研究了本轮Maxwell物理模型。</li>
+<li><a href="https://sites.lsa.umich.edu/kesmith/wp-content/uploads/sites/1309/2024/07/janosoctober97.pdf">Karen E. Smith记录Kollár讲义</a>，Tier A：六点与4×3线性矩阵最大子式、Hilbert–Burch分解是经典几何。本文采用的长度6证明是标准定理的具体应用。</li>
+<li>CSI/SOM的精确转置current关系仍按前一审查 <code>novelty.md</code> 处理。由标准current兼容式得到特殊低度商，并不把原有current构件重新变成原创。</li>
+</ul>
+<p>定向检索“inverse scattering quotient algebra”“inverse scattering multiplication matrix”“Helmholtz quotient polynomial inverse”未发现完全相同的四材料实兼容六维商求根应用。<strong>这是检索缺口，不是全球新颖性证书</strong>。本轮没有重复已429的广泛ScholarQA查询；以上新来源直接按作者/出版记录识别并读取全文。没有运行全套Scideator检索/嵌入排序。</p>
+<p>可谨慎表述的候选贡献：针对固定Green、单接收双源、四个共享实材料的精确兼容方程，给出可检查的六维商压缩条件及物理饱和对应；展示它在已声明实例上通过完整线性代数恢复先前多起点未返回的合格材料解，并计入实际预处理、验证及失败成本。这个表述仍需实验支持和更完整的优先权查核，不能写成首次多项式逆散射或首次六维特征求根。</p>
+<h2 id="section-5">6. 目前可核验的公开结果范围</h2>
+<p><code>quotient_prototype.json</code>：六个数值互异有限端点，T条件数3.42098，交换子相对量7.33e−17，特征向量矩阵条件数371.12；两个盒内材料分别经fresh forward验证，response relative约2.33e−15与1.91e−15。总wall约0.01173秒，RHS=10。这个单例支持实现可运行，不能作为冻结多实例性能优势结论。</p>
+<p><code>adaptive_branch_distinct_pair.json</code>：E1_LOW6_02的同一固定切片保存两个合法非极点材料，材料RMS间隔0.6280685，响应relative约5.85e−11与1.64e−11；同收据8起点基线只返回1根。这支持“该切片找到两个数值可验证材料解，其中一个未由这8起点返回”。收据明确component关系unknown；不得升级为不同连通分支、全材料纤维枚举、全局后验或通用找新根效率保证。</p>
+<p>后续benchmark由另一个执行线程进行，本文件未读取尚未完成的汇总。建议只在其最终冻结收据齐全后更新跨方法cost/new-root结论。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r2/audit/quotient_review.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>
