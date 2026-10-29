@@ -1,0 +1,98 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>R11 Sol-C：全局耗散界、总场近似求解与真实回退费用</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+ .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}.formula-list{columns:2}.formula-list a{display:block;break-inside:avoid;padding:5px}.formula-list a[hidden]{display:none}#formula-filter{width:100%;padding:12px;font-size:17px}@media(max-width:800px){.formula-list{columns:1}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="../index.html">R11报告</a><a href="../DIGITS_VISUAL_REVIEW_ZH.html">逐数字视觉审查</a><a href="../GO_NO_GO.html">科学裁决</a><a href="../RESEARCH_REPORT_ZH.md">原始Markdown</a><a href="../../maxwell_formula_atlas/index.html">158条公式</a></nav><h1>R11 Sol-C：全局耗散界、总场近似求解与真实回退费用</h1><p>严格支撑 · 固定总场 · 条件耗散界 · 数字1–9真实逆成像</p></header><main><div class="notice"><strong>R11资源协议 FAIL_CAP_EXCEEDED：</strong>全阶LU 28,727 / 12,000。数值与图像证据保留；预算未改写，新增物理已停止。</div><details><summary>章节目录</summary><div class="toc"><a href="#已执行结论">已执行结论</a><a href="#1-物理直觉损耗能限制被遗漏传播的放大">1. 物理直觉：损耗能限制被遗漏传播的放大</a><a href="#2-不随形状变化的耗散下界">2. 不随形状变化的耗散下界</a><a href="#3-从总场缺陷到输出与势误差">3. 从总场缺陷到输出与势误差</a><a href="#4-已运行的算法与反演接口">4. 已运行的算法与反演接口</a><a href="#5-同一-r10-路径的实际结果">5. 同一 R10 路径的实际结果</a><a href="#6-费用检查与证据边界">6. 费用、检查与证据边界</a><a href="#产物">产物</a></div></details><article><h1 id="r11-sol-c全局耗散界总场近似求解与真实回退费用">R11 Sol-C：全局耗散界、总场近似求解与真实回退费用</h1>
+<h2 id="已执行结论">已执行结论</h2>
+<p>固定宿主消元后的离散 Green 算子确实允许一个覆盖全部合法占据率和属性矩形的正耗散下界。其数值为</p>
+<div class="math" aria-label="数学公式">\[
+\lambda_{\min}(\operatorname{Im}_H C)=-4.5739299047015534\times10^{-5},\qquad
+b_*=0.009210948658001952&gt;0.
+\]</div>
+<p>因此无需每换一个形状就重新计算 256 阶加权矩阵的最小耗散特征值，也能对<strong>已计算的完整物理缺陷</strong>给出条件误差界。它不是免费解决正演：本次固定 Green 总场空间的 32/64/96/128 阶实测仍不准确。在同一批 R10 的 192 个路径节点上，全局界和局部界均为 <strong>0/192 通过，192/192 精确回退</strong>。128 阶实际白化响应误差的最小值为 0.0839293，已超过 0.01 门；故本批失败不能全部归因于保守界太松。</p>
+<p>实现已接入主线程数字反演。这里报告的是独立的历史路径核验；数字反演质量和费用由主线程另行封存与评分。没有用真值选择空间、阶数、回退或路径节点。主线程随后发现整个 R11 实验的 all-order LU 总数超过其自冻结的 12,000 门，整体资源状态记为 <strong>CAP_EXCEEDED</strong>；本分支的数学界和局部限额不能将整个实验恢复为资源合规或成本 GO。</p>
+<h2 id="1-物理直觉损耗能限制被遗漏传播的放大">1. 物理直觉：损耗能限制被遗漏传播的放大</h2>
+<p>误差问题可以分为两步。先把近似场放回原完整状态方程，测量它没有满足的那部分激励；再问原系统会把这部分激励放大多少。材料的正虚部为第二步提供损耗控制。Green 算子自身的 Hermitian 虚部略有负特征值，所以不能直接假设其半正定；必须保留实际负值，并由材料损耗抵消它。</p>
+<p>这里沿用原 P1 离散物理。ROI 阶数为 256，8 个源、32 个接收端，噪声固定为 \(\sigma=0.00119211798514519\)。固定算子为 \(C,O,E,F_h\)。材料增量为 \(D=\delta A\)，其中 \(A=\operatorname{diag}(a)\)、\(0\le a_i\le1\)，\(\delta=x+iy\) 满足 \(x\in[.8,1.8]\)、\(y\in[.03,.18]\)。</p>
+<p>原总场方程与输出是</p>
+<div class="math" aria-label="数学公式">\[
+(I-\delta C A)e=E,\qquad F=F_h+\delta O A e.
+\]</div>
+<p>令 \(P=A^{1/2}\)、\(B=PCP\)、\(K_\delta=\delta^{-1}I-B\)。即使某些占据率为零，以下推导也无需 \(P^{-1}\)。</p>
+<h2 id="2-不随形状变化的耗散下界">2. 不随形状变化的耗散下界</h2>
+<p>记 \(H_C=(C-C^*)/(2i)\)，定义</p>
+<div class="math" aria-label="数学公式">\[
+\beta_*:=\min\{0,\lambda_{\min}(H_C)\}.
+\]</div>
+<p>对任意向量 \(v\)，有</p>
+<div class="math" aria-label="数学公式">\[
+v^*\operatorname{Im}_H(B)v=(Pv)^*H_C(Pv)
+\ge \beta_*\|Pv\|^2
+\ge \beta_*\|v\|^2.
+\]</div>
+<p>最后一步同时使用 \(0\preceq P^2\preceq I\) 与 \(\beta_*\le0\)。因此即使 \(H_C\) 的最小特征值为正，也应选择 0 作为对所有可含零格点的形状统一有效的下界；不能把正特征值直接沿用给每个 \(PCP\)。</p>
+<p>另一方面，</p>
+<div class="math" aria-label="数学公式">\[
+-\operatorname{Im}_H K_\delta
+=\frac{\operatorname{Im}\delta}{|\delta|^2}I+\operatorname{Im}_H B.
+\]</div>
+<p>在本矩形内，\(y/(x^2+y^2)\) 随正 \(x\) 递减；因 \(y&lt;x\)，它随 \(y\) 递增。因此其最小值发生于 \((x,y)=(1.8,.03)\)：</p>
+<div class="math" aria-label="数学公式">\[
+\min_\delta\frac{\operatorname{Im}\delta}{|\delta|^2}
+=\frac{.03}{1.8^2+.03^2}=0.009256687957048967.
+\]</div>
+<p>故</p>
+<div class="math" aria-label="数学公式">\[
+b_*:=\frac{.03}{1.8^2+.03^2}+\beta_*=0.009210948658001952.
+\]</div>
+<p>若 \(b_*&gt;0\)，Cauchy–Schwarz 给出 \(\sigma_{\min}(K_\delta)\ge b_*\)，从而 \(\|K_\delta^{-1}\|_2\le b_*^{-1}\)。这个推导不要求 \(C\) 正规或与 \(A\) 对易。若实际计算得到 \(b_*\le0\)，代码明确拒绝用该界验收，并进行精确回退；没有把无效稳定性量裁剪为正数。</p>
+<h2 id="3-从总场缺陷到输出与势误差">3. 从总场缺陷到输出与势误差</h2>
+<p>给任意近似总场 \(\widetilde e\)，必须在原完整算子上计算</p>
+<div class="math" aria-label="数学公式">\[
+r_E=E-(I-\delta C A)\widetilde e.
+\]</div>
+<p>由原状态方程，有</p>
+<div class="math" aria-label="数学公式">\[
+K_\delta[\delta P(e-\widetilde e)]=P r_E,
+\qquad F-\widetilde F=OP K_\delta^{-1}P r_E.
+\]</div>
+<p>因此白化输出误差的全局稳定性界为</p>
+<div class="math" aria-label="数学公式">\[
+\epsilon_F:=\|W_\sigma(F-\widetilde F)\|_2
+\le \frac{\sqrt2\,\|OP\|_2\,\|P r_E\|_F}{\sigma b_*}.
+\]</div>
+<p>代码对每个新形状计算 32 行接收矩阵的谱范数，随后在同形状的属性节点间复用。也提供统一 \(\|O\|_2\) 选项，因为 \(\|OP\|_2\le\|O\|_2\)，但本次路径比较使用前者。全局稳定性界不意味着全部门控量都与形状无关。</p>
+<p>采用实际观测 \(y\)，\(\widetilde\rho=\|W_\sigma(\widetilde F-y)\|\)，有</p>
+<div class="math" aria-label="数学公式">\[
+|\Phi(F)-\Phi(\widetilde F)|\le\widetilde\rho\,\epsilon_F+\tfrac12\epsilon_F^2,
+\qquad \Phi(F)=\|F-y\|_F^2/\sigma^2.
+\]</div>
+<p>只有当白化界不超过 0.01 且势误差界不超过 0.1 时，近似输出才被返回。缺失观测、无效域、非有限量或非正稳定性量都不能验收。</p>
+<p>零占据率与支持出生不使上述变换除零。总场注入 \(E\) 固定，改变的是传播 \(CA\)、输出 \(OA\) 与缺陷权重 \(P\)。这移除了 R10 加权状态 anchor 基在新支持上严格为零的注入障碍，却没有证明一个低阶固定总场空间足以覆盖全部形状。</p>
+<h2 id="4-已运行的算法与反演接口">4. 已运行的算法与反演接口</h2>
+<p>固定空间由 \(C\) 与 \(E\) 的 block Krylov 构造，注入为固定总场 \(E\)。嵌套阶数为 32、64、96、128，不补零伪造缺失阶数。每个新形状实际计算并缓存 \(CAV\)、\(OAV\)、\(V^*CAV\) 与 \(V^*E\)，依次求解</p>
+<div class="math" aria-label="数学公式">\[
+(I-\delta V_r^*CAV_r)z_r=V_r^*E,
+\qquad \widetilde e=V_rz_r.
+\]</div>
+<p>每次都计算完整 256 行的 \(r_E\)，由上述物理界决定接受或扩大到下一个预定阶数；全部失败则真正执行一笔新的 256 阶、8 RHS 精确求解。没有用与真值或缓存参考的实际误差决定接受。全局臂和局部臂使用同一个 Galerkin 实现、相同空间与节点，只改变耗散分母；局部臂每形状重新计算 \(\lambda_{\min}(\operatorname{Im}_H PCP)\)，并使用当前 \(\delta\)。</p>
+<p><code>controlled_solver.py</code> 的 <code>GlobalControlledSolver.evaluate(a, delta, need_jac=False, y=None)</code> 返回 <code>F(32,8)</code>。要求 Jacobian 时，直接返回一致的精确场与源优先排列的 <code>J_occ(256,256)</code>、<code>J_delta(256)</code>，实付 8 个正演加 32 个接收转置 RHS。<strong>近似导数未受控、未使用</strong>；不能把总场近似的输出界宣称为梯度误差界。</p>
+<p>共享数值引擎来自 Sol-B 的 <code>fixed_total_field.py</code>，全局界与门控对象由 Sol-C 实现。它是标准 Galerkin、耗散 resolvent 界与 exact fallback 的组合；没有把它称为原始 TSOM 算法或新的最小实现定理。</p>
+<h2 id="5-同一-r10-路径的实际结果">5. 同一 R10 路径的实际结果</h2>
+<p>输入为已暴露的 8 个 parent、每个 parent 的 3 个真实 decoder 路径形状、每个形状 8 个已存属性节点，共 24 个形状、192 个节点。参考是 R10 先前付费保存的 <code>DIRECT_LU</code> 输出；本次没有为它重新求解。观测来自仅含观测的 online 文件。没有读取真值文件，也没有材料覆盖评分。</p>
+<div class="table-wrap"><table><tr><th>项目</th><th>全局界</th><th>局部界</th></tr><tr><td>近似验收 / 节点</td><td>0 / 192</td><td>0 / 192</td></tr><tr><td>精确回退 / 节点</td><td>192 / 192</td><td>192 / 192</td></tr><tr><td>新保守 RHS</td><td>7,680</td><td>7,680</td></tr><tr><td>128 阶实际白化误差，中位数</td><td>0.336543</td><td>0.336543</td></tr><tr><td>128 阶实际白化误差，最小—最大</td><td>0.0839293—1.934887</td><td>相同</td></tr><tr><td>128 阶白化界，中位数</td><td>188.765</td><td>22.5789</td></tr><tr><td>当前形状界 setup 累计 / 秒</td><td>0.005478</td><td>0.190358</td></tr><tr><td>带回退的求解器冷组件 / 秒</td><td>1.235662</td><td>1.419127</td></tr></table></div>
+<p>全局界相对于局部界的白化上界比为 1.476—23.702，中位数 6.588；局部耗散分母为 0.0135993—0.218322。全局界较松是实测事实，但即使使用实际误差，128 阶也没有节点达到 0.01 白化门。全部 1,536 个已计算近似节点的实际响应误差和势误差都被相应浮点界覆盖；这是本批保存节点的复核结果，不能取代精确谱量或 outward rounding。</p>
+<p>24 个形状中 20 个有严格新支持，最多 27 格；另外 4 个没有新支持，对应 32 个属性节点的 128 阶实际白化误差仍为 0.0839293—1.88319。由此只能说固定 Green 总场空间仍有不足，不能把支持出生当作唯一原因，也不能由此否定所有固定空间方法。</p>
+<figure><a href="figures/GLOBAL_LOCAL_PATHS.png"><img loading="lazy" decoding="async" src="figures/GLOBAL_LOCAL_PATHS.png" alt="全局与局部界、实际误差及支持出生"></a><figcaption>全局与局部界、实际误差及支持出生</figcaption></figure>
+<p>图中带状区域为节点间四分位范围，并非置信区间；24 个形状分组于 8 个 parent，不作为 24 个独立抽样单位。面板 C 显示每个形状在 8 个属性节点上的平均实际误差。</p>
+<h2 id="6-费用检查与证据边界">6. 费用、检查与证据边界</h2>
+<p>历史路径研究新增 15,360 个保守复 RHS：32、64、96、128、256 阶各 3,072；共 1,920 次各阶 LU，其中精确回退 LU256 为 384。另有一次真实支持出生形状的反演接口核验，付费 80 RHS256、2 LU256（本臂 40，独立共享精确参考 40）。<strong>Sol-C 合计 15,440 RHS，新增 RHS576=0</strong>，低于 20,000 分支限额。两个不可覆盖的 append-only ledger 均保留。</p>
+<p>包含接口核验后，本分支各阶 LU 为 32/64/96/128 阶各 384 次、256 阶 386 次，<strong>all-order LU 合计 1,922</strong>。不能把 all-order LU 改写成仅计 LU256。</p>
+<p>接口检查确认源优先 Jacobian 与共享精确实现一致；差值只用于接口排列与实现核验，不新增科学验收门。最终主反演仍应独立精确核验候选材料。</p>
+<p>路径窗口总墙钟为 3.207848 秒，含读取、参考误差后处理和捕获既有数组的仪器开销。表内两个求解器冷组件之和为 2.654789 秒，剩余 0.553059 秒属于研究记录与审计开销，包括额外未使用的界对象构造。应保留这两个计时边界。单线程 BLAS 不等于独占整台机器；这是一次窗口的描述性成本，<strong>没有统计加速比结论</strong>。全局界省掉了局部大特征值计算，但本次两臂都新增了完整回退费用，故不存在由此推出的正演或反演净加速。</p>
+<figure><a href="figures/GLOBAL_LOCAL_COSTS.png"><img loading="lazy" decoding="async" src="figures/GLOBAL_LOCAL_COSTS.png" alt="实际组件费用和保守 RHS"></a><figcaption>实际组件费用和保守 RHS</figcaption></figure>
+<p>固定宿主缓存本身不是冷获取免费：原 R9 已付费的 setup 为 264 RHS576、1 LU576，本次只复用它，新增费用另列。本次不改写历史文件，不扩阶补救失败，也不以路径结果宣称全先验后验、连续 PDE、精确纤维或数字识别成功。</p>
+<p>数学不等式对精确离散谱量成立。实际实现采用 complex128/float64 特征值与范数，没有区间运算、外向舍入或连续离散化误差界，资格为 <strong>数值离散、有限浮点、条件有效</strong>。即使全局系数对材料域统一，逐查询的场残差与门控也不自动构成全支持概率误差证书。</p>
+<h2 id="产物">产物</h2>
+<ul><li><code>dissipative_bound.py</code>：全局/局部耗散门控；<code>controlled_solver.py</code>：主反演接口。</li><li><code>path_campaign.py</code>：保守 20,000 RHS 上限、实际近似与回退研究；<code>path_results/</code> 保留 CSV、JSON 与原始费用 ledger。</li><li><code>analyze_and_report.py</code>：零求解后处理；<code>RANK_SUMMARY.csv</code>、<code>ANALYSIS.json</code> 与 PNG/PDF 图。</li><li><code>API_VERIFICATION.json</code>、<code>API_COST_LEDGER.jsonl</code>：真实支持出生形状的接口核验。</li><li><code>INDEPENDENT_WHITENING_JACOBIAN_AUDIT.md</code>：共享白化、链式导数与原噪声标定的只读审查。</li></ul>
+<p>运行环境为 Gaussian 根下既有 <code>.venv_nn</code>；图表后处理不会调用正演求解器。数字反演主实验及其 GT 评分不包含在本报告的验收率中。</p></article></main><footer style="padding:30px;max-width:1100px;margin:auto">N/P材料模型、物理核与整成像收益分别评价。标准恒等式、数值条件界与实测结果分开。未认证Full66 posterior。</footer></body></html>
