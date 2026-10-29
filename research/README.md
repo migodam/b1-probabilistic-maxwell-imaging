@@ -1,3 +1,11 @@
+<!-- Z_ALG_R2_CURRENT -->
+## Research Z-ALG-R2：行列式商代数、材料解枚举与盲成像
+
+四材料六维商与六材料20维商求解器已实现。六材料新盲测返回2/1/1个合法根，固定64起点对照为1/1/1；双方包含GT，额外材料相距1.15879 RMS。三目标单批次0.1044秒对1.5180秒，仅支持本协议。48单元成像及SVD噪声失败独立保留。53,951完整复RHS；全球新颖性与严格全根认证仍HOLD。
+
+[中文报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r2/) · [15组推导公式](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r2/FORMULA_COMPENDIUM.html) · [原始Markdown](research_z_alg_r2/RESEARCH_REPORT_ZH.md) · [阅读包与完整代码数据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r2-20261030)
+<!-- /Z_ALG_R2_CURRENT -->
+
 <!-- P3LR9_CURRENT -->
 ## P3L-R9-S：材料可能性体积、稳定子空间与长期公式集
 
