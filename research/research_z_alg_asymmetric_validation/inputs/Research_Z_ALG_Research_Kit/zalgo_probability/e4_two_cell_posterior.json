@@ -1,0 +1,245 @@
+{
+  "title": "E4 finite-noise posterior quadrature for the frozen two-cell scalar-TM VIE",
+  "source_witness": "/workspace/scratch/770d0cc14ac3/zalgo_maxwell/two_cell_witness.json",
+  "source_witness_sha256": "9bf58b0a67d2eba46930cc4e0124c75b7055740ef171fb2b441e3d062d420ba4",
+  "source_script_sha256": "f665a815cbc0fbeebdaf5335977a6b7f53c1af8a266d50e34f0ebb0ea302791e",
+  "contract": "2D scalar TM exp(-i omega t), k=2*pi, two circular pulse bases, exact disk-integrated Green at collocation centers; real contrast domain [0.5,4]^2",
+  "material_box": [
+    0.5,
+    4.0
+  ],
+  "prior": {
+    "density": "rho(x1,x2)=x1/C on [0.5,4]^2",
+    "C": 27.5625,
+    "type": "Asymmetric physical-material prior, deliberately not the original Full66 prior."
+  },
+  "center_material": [
+    1.0,
+    3.0
+  ],
+  "observed_noiseless_center_data": {
+    "real": [
+      [
+        0.0029733674820610805,
+        0.0014886250927413156
+      ],
+      [
+        0.001458414170517202,
+        -0.0038564064246644878
+      ]
+    ],
+    "imag": [
+      [
+        -0.0065850677569416136,
+        0.005646550421038213
+      ],
+      [
+        0.005774192936208703,
+        -0.002880262871184767
+      ]
+    ]
+  },
+  "noise": {
+    "sigma_each_real_imag_component": 0.001,
+    "real_data_dimension": 8,
+    "whitening": "Flatten all 2 receiver x 2 source complex data, realify to R^8; W=I_8/sigma.",
+    "complex_variance_E_abs_n_squared": 2e-06,
+    "likelihood": "L=exp(-||F(x)-y||_F^2/(2 sigma^2)); normalized constant (2 pi sigma^2)^(-4).",
+    "log_likelihood_normalization_constant": 47.91053396621972
+  },
+  "quadrature": {
+    "rule": "Gauss-Legendre tensor quadrature; original box and two different triangular parameterizations",
+    "levels": [
+      32,
+      64
+    ],
+    "criteria_frozen_before_integration": {
+      "evidence_relative": 1e-07,
+      "material_mean_absolute": 1e-07,
+      "event_probability_absolute": 1e-07,
+      "nonlinear_task_absolute": 1e-06
+    },
+    "certification": "Numerical n versus 2n convergence and independent-domain agreement; not a rigorous interval error bound."
+  },
+  "coefficient_sanity": {
+    "g0": {
+      "real": 0.06238559663242005,
+      "imag": 0.04921936706313507
+    },
+    "g": {
+      "real": -0.02441747218554278,
+      "imag": -0.0027051141447446076
+    },
+    "full_complex_response_scale_matrix": {
+      "real": [
+        [
+          0.0004428745460017749,
+          0.0005058407823181669
+        ],
+        [
+          0.000503270384423651,
+          -0.0009372236213788212
+        ]
+      ],
+      "imag": [
+        [
+          -0.0015385861488098245,
+          0.001191017038050608
+        ],
+        [
+          0.0012199692222845215,
+          -0.0005091407845114638
+        ]
+      ]
+    }
+  },
+  "response_checks_against_direct_numerical_solve": [
+    {
+      "material": [
+        1.0,
+        3.0
+      ],
+      "direct_relative_error": 1.4521229028835662e-16,
+      "quotient_relative_error": 2.482695730187743e-16
+    },
+    {
+      "material": [
+        3.0,
+        1.0
+      ],
+      "direct_relative_error": 1.9230878433434776e-16,
+      "quotient_relative_error": 3.221971436690654e-16
+    },
+    {
+      "material": [
+        0.7,
+        3.8
+      ],
+      "direct_relative_error": 1.6297332343015122e-16,
+      "quotient_relative_error": 1.065389944058217e-16
+    },
+    {
+      "material": [
+        2.2,
+        1.7
+      ],
+      "direct_relative_error": 2.460590115266234e-16,
+      "quotient_relative_error": 2.126544390942086e-16
+    },
+    {
+      "material": [
+        3.6,
+        3.5
+      ],
+      "direct_relative_error": 2.558828211358059e-16,
+      "quotient_relative_error": 1.3528026617091034e-16
+    }
+  ],
+  "exact_conditional_sanity_at_pair_1_3": {
+    "weight_of_1_3": 0.25,
+    "weight_of_3_1": 0.75,
+    "conditional_mean": [
+      2.5,
+      1.5
+    ],
+    "event_x1_gt_x2": 0.75,
+    "psi_x1_squared": 7.0
+  },
+  "results": {
+    "32": {
+      "original_box": {
+        "scaled_evidence": 0.1595738662712911,
+        "log_normalized_gaussian_evidence": 46.07528561367823,
+        "mean_x1": 2.3865979378130424,
+        "mean_x2": 1.7218354675819025,
+        "event_x1_gt_x2": 0.6751644720134716,
+        "psi_x1_squared": 6.254154001642284,
+        "wall_seconds": 0.0019272740000815247,
+        "analytic_likelihood_evaluations": 2048
+      },
+      "ordered_quotient": {
+        "scaled_evidence": 0.15957386592214498,
+        "log_normalized_gaussian_evidence": 46.075285611490244,
+        "mean_x1": 2.38659793993731,
+        "mean_x2": 1.7218354682474488,
+        "event_x1_gt_x2": 0.6751644713027343,
+        "psi_x1_squared": 6.254154013768204,
+        "wall_seconds": 0.000936228000000483,
+        "analytic_likelihood_evaluations": 1024,
+        "uniform_branch_wrong_control": {
+          "mean_x1": 2.0542167040923793,
+          "mean_x2": 2.0542167040923793,
+          "event_x1_gt_x2": 0.5,
+          "psi_x1_squared": 4.914981817234604,
+          "scaled_evidence": 0.15957386592214498,
+          "qualification": "Correct quotient evidence retained; deliberately wrong conditional branch law."
+        }
+      }
+    },
+    "64": {
+      "original_box": {
+        "scaled_evidence": 0.15957386627129155,
+        "log_normalized_gaussian_evidence": 46.07528561367824,
+        "mean_x1": 2.3865979378130406,
+        "mean_x2": 1.7218354675819043,
+        "event_x1_gt_x2": 0.6751644709269238,
+        "psi_x1_squared": 6.254154001642276,
+        "wall_seconds": 0.004742890999978044,
+        "analytic_likelihood_evaluations": 8192
+      },
+      "ordered_quotient": {
+        "scaled_evidence": 0.15957386627129147,
+        "log_normalized_gaussian_evidence": 46.07528561367824,
+        "mean_x1": 2.3865979378130415,
+        "mean_x2": 1.7218354675819043,
+        "event_x1_gt_x2": 0.675164470926924,
+        "psi_x1_squared": 6.254154001642279,
+        "wall_seconds": 0.0014082179998240463,
+        "analytic_likelihood_evaluations": 4096,
+        "uniform_branch_wrong_control": {
+          "mean_x1": 2.0542167026974734,
+          "mean_x2": 2.0542167026974734,
+          "event_x1_gt_x2": 0.5,
+          "psi_x1_squared": 4.914981808046369,
+          "scaled_evidence": 0.15957386627129147,
+          "qualification": "Correct quotient evidence retained; deliberately wrong conditional branch law."
+        }
+      }
+    }
+  },
+  "n_to_2n_differences": {
+    "original_box": {
+      "scaled_evidence": 2.7829695439920373e-15,
+      "mean_x1": 1.7763568394002505e-15,
+      "mean_x2": 1.7763568394002505e-15,
+      "event_x1_gt_x2": 1.0865478516919325e-09,
+      "psi_x1_squared": 7.993605777301127e-15
+    },
+    "ordered_quotient": {
+      "scaled_evidence": 2.187992919242893e-09,
+      "mean_x1": 2.1242683168054555e-09,
+      "mean_x2": 6.655445083936229e-10,
+      "event_x1_gt_x2": 3.7581027179101056e-10,
+      "psi_x1_squared": 1.2125925152872696e-08
+    }
+  },
+  "box_vs_quotient_at_2n": {
+    "scaled_evidence": 5.218067894985073e-16,
+    "mean_x1": 8.881784197001252e-16,
+    "mean_x2": 0.0,
+    "event_x1_gt_x2": 2.220446049250313e-16,
+    "psi_x1_squared": 2.6645352591003757e-15
+  },
+  "numerical_reference_gate_passed": true,
+  "cost_ledger": {
+    "direct_current_analytic_response_evaluations": 10245,
+    "quotient_rational_response_evaluations": 5125,
+    "likelihood_evaluations": 15360,
+    "numerical_two_by_two_factorizations": 5,
+    "numerically_solved_complex_rhs": 10,
+    "note": "Every analytic response/likelihood evaluation has arithmetic cost and is counted. Closed-form two-cell evaluation is not a generic free Maxwell solve; no nonlinear optimization, training, or branch-search costs are claimed here.",
+    "cpu_seconds": 0.011070989999999892,
+    "wall_seconds_total": 0.011079620999908002
+  },
+  "scope": "Positive probability-consistency control for known Z2 symmetry in this frozen two-basis VIE. Does not validate nonsymmetric branch discovery, Full66 fibers, or a general speedup."
+}

@@ -1,0 +1,156 @@
+\section{优先架构：共享材料约束的加权纤维图册}
+
+\subsection{为什么选择这条路线}
+
+本报告建议将 Research Z-ALG 的主线收敛到一个具体结构：\textbf{接收兼容电流的线性参数化、共享材料的代数筛选、材料分支图册及原先验条件积分}。群生成元只在已证明存在时作为该结构中的低成本操作；monodromy 只在有限覆盖子问题中启用。
+
+选择依据有三点。第一，它把 TSOM/PairTSOM 最关键的缺口写成显式、可证伪的共同材料方程，而不是借用 receiver nullspace 作为材料自由度。第二，材料 prior 可以保留在原空间，允许 Gaussian、Fourier、小波和电流坐标各做其擅长的计算。第三，它把发现分支、证明覆盖和计算概率分开，失败时可以准确知道失败在哪里。
+
+这个架构仍需计算费用证明。其线性电流分解和材料恢复已接近 CSI/SOM 的成熟构件，不能只换术语便作为创新。新增研究应聚焦：\emph{是否能用这些约束构建可认证、可复用的材料分支关系，并在同任务误差下确实少算物理。}
+
+实现上采用\textbf{材料为主、状态按需提升}：已有便宜材料 chart 时直接使用；只有 current 坐标确实简化局部约束或分支连接时才切换。全量 current lift 是小型代数检验工具，不作为原 Full66 默认状态空间。这一选择使架构能在实际比较中放弃昂贵表示，而保留统一的材料与测度合同。
+
+\subsection{可执行的六步主流程}
+
+\begin{enumerate}
+\item \textbf{冻结物理与先验。} 确定材料类、带标签采集、噪声、原 prior 和所有 decoder 的支持。原 Full66 与新完整材料 prior 分开建模。
+\item \textbf{先检验结构是否存在。} 用解析对称、独立材料歧义见证或正则维数定理建立入口。只有数值弱方向时，进入有限噪声探索，不启用精确群叙述。
+\item \textbf{选择可计算的商或基变量。} 有明确 separating invariants 时用它们；否则可用局部观测像坐标或 $u=\F(m)$，并承认尚未取得商反演费用收益。对带噪数据必须推断 $u$ 的分布。
+\item \textbf{构建合法纤维图册。} 以式 \eqref{eq:current-param} 满足接收条件，用共享材料 minors、节点 chart、原材料支持与 resolvent 条件求可行集。通过材料恢复、Full-J 或区间方法建立局部参数化；不同表示在材料层合并。
+\item \textbf{按已证明的关系扩展覆盖。} 精确对称复用已有预测；正则流沿同一连通分量 continuation；离散分支用独立种子、有限覆盖 monodromy 或限定域代数证书。为每条箭头保存 source、target、适用域、逆映射资格和物理残差。
+\item \textbf{计算原先验权重并积分任务。} 使用 prior disintegration、coarea 和图册重叠分配；在所有外层 $u$ 上积分。只有权重通过参考检验后，才将输出称为 posterior recovery。
+\end{enumerate}
+
+最终多值 decoder 应输出一个\emph{结构化对象}，包括材料域、分支代表、连续参数域、材料恢复函数、节点/边界事件、过渡关系、条件权重、覆盖资格和验证账本。一个代表 latent 加普通单值 decoder 无法承担这些功能。
+
+\Needspace{8\baselineskip}
+\subsection{对六个候选模块的排序}
+
+\begin{longtable}{p{.12\textwidth}p{.35\textwidth}p{.45\textwidth}}
+\toprule 模块 & 本轮定位 & 进入主算法的条件\\\midrule\endhead
+A 商成像 & 有条件的外层模块 & 已有不变量且 likelihood 与 prior 推前可便宜计算；仅写 $u=F(m)$ 不计收益。\\
+B 对称生成 & 已证明时最高性价比 & 全域或明确局部恒等式、合法逆、固定标签与 prior 权重全部明确。\\
+C 分层遍历 & 核心组织方式 & 有真实局部 chart 与事件处理，不只建立一个等价关系数据库。\\
+D Monodromy & 可选分支搜索器 & 有限无分歧覆盖及判别式控制；复路径与合法实端点分开记录。\\
+E 多 chart & 核心实现层 & 同一材料支持和测度，或明确区分支持变更；往返误差和转移费用可查。\\
+F 概率纤维 & 声称 Bayesian 结果的必需项 & 原 prior 条件核、重叠去重、分支质量和遗漏资格通过验证。\\\bottomrule
+\end{longtable}
+
+优先做 E1 的实际材料约束及 E4 的低维概率对照；不要先训练能够输出漂亮材料图的 generator。若已知的二单元对称是唯一成功实例，则它只是架构阳性测试，不足以支持一般 Maxwell 方法论文。
+
+\section{跨 Gaussian Fourier Wavelet TSOM 与 Current 表示}
+
+\subsection{共轭关系与可交换图}
+
+若两个表示在共同材料区域真为可逆坐标，$G_i,G_j$ 的逆存在，则
+\begin{equation}
+T_{ij}=G_j^{-1}G_i,\qquad
+\widetilde T_j=T_{ij}\widetilde T_iT_{ji}.
+\end{equation}
+该共轭保留组合、逆和轨道结构；$G_j\widetilde T_j=T_MG_j$ 给出材料层可交换关系。不同维数或多对一 decoder 下，应在 gauge quotient/局部 section 上使用此式，或改用对应关系；不能形式上写一个不存在的 $G_j^{-1}$。
+
+计算复杂度不在共轭下保持。一个材料变换在局部小波坐标中可能稀疏，在 Gaussian nonlinear decoder 中则需要非线性逆。若 $T_M$ 已知且容易执行，可直接变换材料，再选择最便宜的合法表示作为后续数值坐标。收益来自实现和预条件，不是新增自由度。
+
+例如二单元置换在 cell 空间为一次交换；在任意完整线性基 $B$ 中为 $B^{-1}PB$。它可能变成稠密矩阵，在非线性 decoder 中可能变成复杂局部映射。反过来， Fourier 的某个简单相位乘法通常对应空间平移；固定源接收系统若不平移对称，它就不保持观测。
+
+若输出材料不属于目标 decoder 像，跨表示操作必须返回 ``无合法原像'' 或一个明确的新模型，不能通过近似编码悄悄改变材料。一般 learned decoder 的逆求解可能和原反演一样昂贵，这项成本必须计入。
+
+\Needspace{8\baselineskip}
+\subsection{各表示在统一架构中的职责}
+
+\begin{longtable}{p{.18\textwidth}p{.35\textwidth}p{.39\textwidth}}
+\toprule 表示 & 可复用的优势 & 必须保留的限制\\\midrule\endhead
+Gaussian / learned & 原 prior 密度与层结构；条件采样器；某些材料相关性易表达。 & 非单射和饱和需关联状态；跨 chart 逆可能昂贵；不能独立拼条件边缘。\\
+完整 Fourier & 传播卷积、谱预条件、结构化线性代数。 & 可逆换基不增加材料解；频谱裁剪改变支持；简单谱作用未必保持带标签数据。\\
+完整 Wavelet & 局部与多尺度更新、全材料 prior 的正则性表示。 & 需保留全部正方差系数才能声称完整材料维数；截断与系数独立化可能改 prior。\\
+材料 TSOM/tangent & 识别对实际材料和任务有效的低维更新；预条件与候选 chart。 & current 子空间须先投影到共同材料响应的像；局部切向不是全局材料 chart。\\
+受约束 current & 接收方程线性化、共享材料二次方程、Green 反馈显式化。 & 零空间维数可能极大；需节点、pole、被动性与 prior 检查；平坦 current 测度错误。\\
+Hybrid & 分开离散拓扑、连续材料参数及辅助状态；在合法 chart 间切换。 & 每个分支的维数、支持、权重和过渡需明示，不能假定全局一个 Gaussian latent。\\\bottomrule
+\end{longtable}
+
+对 TSOM 候选电流模式 $v=(v_s)$，应检验它与联合材料切向算子
+\begin{equation}
+\mathcal K_m\delta m
+=\left(A^{-1}\diag(E_s)D_mx\,\delta m\right)_s
+\end{equation}
+的像之间的距离。只有 $v\in\im\mathcal K_m$ 才有一阶共同材料实现；接着还需观察 $D\F_m\delta m$、材料边界与 $D\psi_m\delta m$。分别报告电流内部反馈强度、材料可实现性、观测响应与任务响应，避免用一个 singular value 解释四个不同问题。
+
+\subsection{什么样的循环可以有真实拓扑意义}
+
+严格保材料的多 decoder 循环不能改变物理材料。非平凡 latent 回返可能来自 gauge bundle 的 section/连接；要报告具体 base loop、提升规则和 gauge 终点，而非一串编码误差。
+
+真正切换材料分支的 monodromy，需要改变观测或控制基变量再返回。若路径始终固定同一 $u$，普通光滑流只能在可达连通分量中运动；要跳到另一个离散分支需另有离散箭头。若这些离散变换正规化连续作用，才可能形成半直积或扩张；否则保留群胚/对应的较一般组织更准确。
+
+\section{成本与成熟基线：何时真的划算}
+
+\subsection{必须计入的全部费用}
+
+令 $C_F$ 表示实际前向费用，区分矩阵构建/分解与多源 RHS；$C_J$ 包括 JVP/VJP/全 Jacobian；$C_B$ 为结构构建。一个最基本的账本为
+\begin{equation}
+C_{str}=C_B+C_U+N_U(C_{fiber}+C_{weight})+N_{check}C_F.
+\end{equation}
+$C_B$ 包含零空间、$G_DN_s$、符号消元、chart 建立、失败轨迹和认证；$C_{weight}$ 包括 prior pullback、coarea、重叠处理及分支归一化。``无需新的 Maxwell RHS'' 不等于免费，代数求解也有 CPU、内存和数值条件数成本。
+
+对严格证明的离散置换，生成另一支可以只需一次 permutation 并复用预测，这是明确的正面收益。对每个候选都要做完整 Full-J corrector 的方法，它在物理成本上仍可能只是换坐标的 continuation。除非有更好覆盖、条件数或少量迭代的独立证据，否则不能宣称新代数能力。
+
+同一合同重复 $Q$ 次任务时，设直接在线费用与结构在线费用差 $\Delta C>0$，则至少需
+\begin{equation}
+Q>C_B/\Delta C
+\end{equation}
+才能摊平构建成本。若 $\Delta C\le0$，重复使用不会自动变划算。更换源接收、噪声合同或材料支持后，原结构也可能失效。
+
+\subsection{Current lift 的维数反例}
+
+原网格 $N=576$、每源 32 个复接收数据，即使 $S_s$ 满行秩，每源暗电流也有 544 个复系数，八源共 4352 个复系数；若接收秩更低，只会更多。与 66 个实材料有效坐标相比，这是显著的状态膨胀。
+
+因此不建议直接在 Full66 上全量构造暗电流代数系统。可以在极小系统建立证据，再测试材料相关的局部 current chart 或稀疏结构；任何截断零空间都必须承认只搜索受限子族，不能继续引用全零空间定理的全覆盖结论。
+
+对于新完整材料 prior，暗电流表述仍可能很大；其优势只可能来自消掉大量接收约束、便宜的多项式检查、稀疏求解或跨外层参数复用，必须和直接材料隐函数 chart 比较。一个直接以 $(u,\theta)$ 解决 $r$ 个材料变量的 Full-J continuation，可能更简洁。
+
+\subsection{少量生成元并不保证廉价概率}
+
+\begin{proposition}[完全已知轨道的精确质量仍可困难]
+假设某一模型确有完整 $S_n$ 置换轨道，已知互异材料值 $v_1,\ldots,v_n$，且共同 Jacobian 因子已知。若独立但非同分布的原 prior 为 $\prod_i p_i(x_i)$，则全部轨道 prior 因子为
+\begin{equation}
+\sum_{\sigma\in S_n}\prod_i p_i(v_{\sigma(i)})
+=\operatorname{perm}(A),\qquad A_{ij}=p_i(v_j).
+\end{equation}
+$S_n$ 只需 $n-1$ 个相邻交换生成元，但精确轨道归一化包含永久积计算问题。
+\end{proposition}
+\begin{proof}
+这是 permanent 的定义。严格的有理输入例可取各 cell 的 categorical prior 为 $p_i(v_j)=A_{ij}/\sum_kA_{ik}$，则观测到每个 $v_j$ 恰一次的质量为 $\operatorname{perm}(A)/\prod_i\sum_jA_{ij}$。0--1 permanent 是已知的 \#P-complete 问题。[R20]
+
+若要求所有排列都有正 prior，可对 0--1 矩阵 $B$ 取 $A(t)=B+t\mathbf1\mathbf1^\top$，在 $t=1,\ldots,n+1$ 计算精确轨道质量；$\operatorname{perm}(A(t))$ 为次数至多 $n$ 的多项式，插值到零即恢复 $\operatorname{perm}(B)$。故全正支持也不能消除一般精确困难。
+\end{proof}
+
+这不是一般 Maxwell 的复杂性定理，而是反驳 ``有限生成元必然使全部概率积分便宜'' 的条件反例。非负 permanent 已有随机近似方案，故也不能由精确困难推断近似概率恢复不可能。[R21] 对称 prior、可因子化 branch 权重、低维条件积分等特殊结构仍可能带来很大收益。
+
+\subsection{必须比较的成熟基线}
+
+\begin{longtable}{p{.19\textwidth}p{.35\textwidth}p{.38\textwidth}}
+\toprule 基线 & 它已经能做什么 & Z-ALG 必须额外证明什么\\\midrule\endhead
+动态 Full-J & 在原材料域校正弱方向、沿正则等值或近等值曲线走。 & 更多合法覆盖、可认证分支、独立费用下降；不能重演 R7 Jets 无增益。\\
+multi-start & 从不同 basin 找候选离散解。 & 超出种子碰运气的稳定分支发现或限定域覆盖；命中率不当概率。\\
+普通 continuation & 追踪已知正则分支与检测事件。 & 额外的离散连接、解析生成元或省物理校正的结构。\\
+CSI/SOM/TSOM & 材料--电流联合优化、确定/模糊电流分解及相关子空间。 & 把材料一致性推进到分支图册、覆盖和正确测度，不把已有 lifting 当首创。\\
+MCMC/SMC & 在已定义 prior 与 likelihood 下生成后验样本。 & 相同任务误差、校准和有效样本标准下省成本或改善分支混合。\\
+LIS/DILI & 对 prior--posterior 变化重要的方向做统计压缩和高效采样。 & 精确商资格或可验证的误差/任务收益；LIS 不等于精确 kernel。\\
+条件积分 & 解析或数值边缘化 nuisance，Rao--Blackwell 降方差。 & 一个 Maxwell 特有、可便宜计算的 $K$ 或 branch mass，而非重述分解公式。\\\bottomrule
+\end{longtable}
+
+LIS 是成熟的 posterior 重要方向方法；带条件 likelihood profile 的认证降维也已有 KL 误差理论，在相应 prior 的函数不等式等条件下成立。它们自身也有梯度和积分费用，比较时要完整计入。[R17,R18] 若仅关心少量任务，已有 goal-oriented Bayesian reduction 是合理的独立基线，其特别的线性 Gaussian 保证不能无条件移植到非线性 Maxwell。[R19]
+
+已知精确\emph{有限群}物理对称下，还必须加入便宜的 symmetry MCMC。若 $T_g$ 是同一 regular stratum 上的可逆变换，$p_M$ 为该层适当体积测度的密度，$q$ 为群元素的离散提议概率，并与逆提议配对，则接受率为
+\begin{equation}
+\alpha=\min\left\{1,
+\frac{p_M(T_gm)|\det DT_g(m)|\,q(g^{-1}\mid T_gm)}
+{p_M(m)\,q(g\mid m)}\right\},
+\end{equation}
+likelihood 因精确等价而消去。这里的 Jacobian 是相应材料层上的体积 Jacobian；一般分层 prior 应改用适当 Radon--Nikodym 比。纯 permutation 的 Jacobian 为一；同一轨道内均匀提议也不消除非对称 prior 比。连续群扩展还须处理群参数反演的参考测度，不能无条件照搬离散式。该跳步仍须与改变 quotient 的更新结合，才能采完整带噪 posterior。
+
+当任务平方可积，且 $N_U$ 个独立外层样本各配 $N_f$ 个独立条件样本时，任务均值估计方差为
+\begin{equation}
+\frac{\operatorname{Var}(\overline\psi(U)\mid y)}{N_U}
++\frac{\E[\operatorname{Var}(\psi\mid U)\mid y]}{N_UN_f}.
+\end{equation}
+廉价条件积分的价值可由这项分解衡量。MCMC 有相关性时需使用适当的有效样本或渐近方差，不能直接套独立样本公式宣称加速。

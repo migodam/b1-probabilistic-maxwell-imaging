@@ -1,0 +1,72 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont[Path=../tmp/pdf_fonts/,BoldFont=NotoSerifCJKsc-Regular.otf,BoldFeatures={FakeBold=2},ItalicFont=NotoSerifCJKsc-Regular.otf,ItalicFeatures={FakeSlant=0.15}]{NotoSerifCJKsc-Regular.otf}
+\setsansfont[Path=../tmp/pdf_fonts/,BoldFont=NotoSerifCJKsc-Regular.otf,BoldFeatures={FakeBold=2},ItalicFont=NotoSerifCJKsc-Regular.otf,ItalicFeatures={FakeSlant=0.15}]{NotoSerifCJKsc-Regular.otf}
+\setmonofont{DejaVu Sans Mono}[Scale=0.86]
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 1pt
+\usepackage[margin=23mm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{graphicx,booktabs,longtable,array,tabularx,enumitem,xcolor}
+\usepackage{needspace}
+\usepackage[unicode,colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!45!black,breaklinks=true]{hyperref}
+\usepackage{fancyhdr}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small Research Z-ALG}\fancyhead[R]{\small 材料等价结构与概率纤维}\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\linespread{1.14}
+\setlist{nosep,leftmargin=1.7em,topsep=4pt,itemsep=3pt}
+\setlength{\emergencystretch}{2em}
+\allowdisplaybreaks[2]
+\newtheorem{proposition}{命题}[section]
+\newtheorem{theorem}[proposition]{定理}
+\newtheorem{corollary}[proposition]{推论}
+\theoremstyle{definition}\newtheorem{example}[proposition]{例}
+\newtheorem{remark}[proposition]{说明}
+\renewcommand{\proofname}{证明}
+\renewcommand{\contentsname}{目录}
+\renewcommand{\figurename}{图}
+\newcommand{\M}{\mathcal M}\newcommand{\Z}{\mathcal Z}\newcommand{\Y}{\mathcal Y}\newcommand{\U}{\mathcal U}
+\newcommand{\F}{{\mathcal F_a}}\newcommand{\rank}{\operatorname{rank}}\newcommand{\im}{\operatorname{im}}
+\newcommand{\diag}{\operatorname{diag}}\newcommand{\TV}{\operatorname{TV}}\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}\newcommand{\C}{\mathbb C}\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}\newcommand{\Hh}{\mathcal H}
+\newcommand{\tagstd}{\textbf{资格：标准数学及其直接推论。}}
+\newcommand{\tagphy}{\textbf{资格：本报告给出的 Maxwell 条件推导，不作数学首创声明。}}
+\newcommand{\tagnumer}{\textbf{资格：本轮实际完成的小型数值验证。}}
+\hypersetup{pdftitle={Research Z-ALG Maxwell材料等价结构与概率纤维},pdfauthor={Research Z-ALG},pdfsubject={严格数学框架、Maxwell专化、分支覆盖、条件测度与最小实验协议}}
+\begin{document}
+\pagenumbering{gobble}
+\begin{titlepage}
+\vspace*{18mm}
+{\LARGE\bfseries Research Z-ALG\par}
+\vspace{10mm}
+{\huge\bfseries Maxwell 材料等价结构\par}
+\vspace{4mm}
+{\huge\bfseries 可观测商与概率纤维\par}
+\vspace{12mm}
+{\large 从多表示的合法对应到精确分支生成与正确条件测度\par}
+\vspace{12mm}
+{\large 中文理论科研报告\par}
+{\normalsize 2026 年 10 月 29 日\par}
+\vspace{12mm}
+\textbf{主判断}\quad 值得建立独立的 Research Z-ALG，但研究主轴应是可验证的材料等价关系、限定域分支覆盖与条件概率积分。一般 Maxwell 观测纤维不必是简单群的轨道；群胚的存在也不会自动给出可计算生成元。
+
+\textbf{优先架构}\quad 用精确接收约束参数化同观测电流，再用多照明共享材料的代数约束恢复合法材料；在有证据的对称分支上复用物理计算，在其余分支上保留明确的覆盖资格，最终从原材料先验构造条件核。
+
+\textbf{本轮实质结果}\quad 给出严格条件定理和反例，完成二单元 Hankel-Green TM/VIE 的离散交换等价、商反演和暗电流反例，核验解析 toy 的复 monodromy。上述小型见证不构成 Full66 全后验恢复或一般 Maxwell 全解枚举的证据。
+\vfill
+\small 物理材料、表示冗余、观测等价、有限噪声相容及后验质量分别定义。所有新算法与大规模外推均有独立的适用条件。
+\end{titlepage}
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\input{sections/01_framework.tex}
+\input{sections/02_geometry.tex}
+\input{sections/03_maxwell.tex}
+\input{sections/04_probability.tex}
+\input{sections/05_algorithm.tex}
+\input{sections/06_experiments.tex}
+\input{sections/07_references.tex}
+\end{document}

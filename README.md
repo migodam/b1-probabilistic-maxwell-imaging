@@ -1,3 +1,11 @@
+<!-- Z_ALG_E1_CURRENT -->
+## Research Z-ALG-E1：非对称材料局部图册成立，电流法总成本门未通过
+
+真实6-cell Green-VIE两照明系统，三份公开参考材料；普通材料图册与共享材料电流图册均通过147/147固定局部网格目标。公平完整轨迹窗口总节时13.6%，未到20%；没有额外覆盖。四cell分支搜索31/33合格仅1根，全域分支完备性未认证。局部coarea核正确数值一致，漏质量无非平凡界；不扩大原Full66。保守封账21,279/30,000 RHS-equivalent，失败与原始数组保留。
+
+[中文完整报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_asymmetric_validation/) · [匿名Markdown](research/research_z_alg_asymmetric_validation/RESEARCH_REPORT_ZH.md) · [完整证据与Pro交接](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-asymmetric-validation-20261029)
+<!-- /Z_ALG_E1_CURRENT -->
+
 <!-- P3LR7_CURRENT -->
 ## Research P3L-R7：真实材料弱响应成立，高阶独立优势未建立
 

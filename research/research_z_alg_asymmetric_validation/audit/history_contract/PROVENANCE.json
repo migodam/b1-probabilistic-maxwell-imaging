@@ -1,0 +1,465 @@
+{
+  "audit_date": "2026-10-29",
+  "audit_mode": "read_only_historical_document_extraction",
+  "root": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-z-alg-asymmetric-validation",
+  "new_physics_rhs": 0,
+  "new_training": 0,
+  "network_used": false,
+  "truth_read": false,
+  "historical_numeric_reexecution": false,
+  "hash_checks_performed": false,
+  "original_contract_id": "P1_FULL66_TM24_8x32complex",
+  "new_contract_status": "SEPARATE_NEW_CONTRACT_REQUIRED_FOR_6_TO_8_REAL_MATERIAL_N_GT_K",
+  "dimension_count_rule": "k counts real coordinates; raw Ns*Nr complex observations have 2*Ns*Nr real coordinates",
+  "provenance": [
+    {
+      "id": "P1_CONTRACT",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/RESEARCH_REPORT_ZH.md",
+      "line_start": 15,
+      "line_end": 15,
+      "source_excerpt": "仍是原P1：Gaussian64×Uniform2，经精确probit得到Gaussian66；24×24 TM/VIE、576全网格、256ROI、8源×32复接收；原quintic精确平台、被动复材料、source-major packing；sigma=.00119211798514519。原Native96及Probit64优化器数学与容差未改。新低成本方案另有身份，未冒称原完整配置。",
+      "qualification": "ORIGINAL_FROZEN_CONTRACT",
+      "contract_firewall": "Full66=66 latent,576 grid,256ROI,8x32 complex; new small real support must be distinct"
+    },
+    {
+      "id": "R6_LOW_DIM",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/THEORY_AND_COUNTEREXAMPLES.md",
+      "line_start": 7,
+      "line_end": 7,
+      "source_excerpt": "只保留 (X0,X64,X65)，其余 latent 为0；活动先验明确截断于[-4,4]，不是完整66维后验的边缘。令 a=1/1.3，Z0=Φ(4)−Φ(−4)，Q=H(1.3X0)。host、pure 的场 prior 质量均为 p=(Φ(−a)−Φ(−4))/Z0。Gaussianized 属性变成独立、精确归一化的矩形均匀 D=(R,I)。",
+      "qualification": "RESTRICTED_MODEL",
+      "contract_firewall": "Truncated active variables are not Full66 marginal"
+    },
+    {
+      "id": "R6_Q_MINUS2",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/THEORY_AND_COUNTEREXAMPLES.md",
+      "line_start": 11,
+      "line_end": 11,
+      "source_excerpt": "    p φ(0) + ∫ φ(v) [ p r_D(v) + ∫_{−a}^{a} φ_N(z)/Z0 · r_D(v/Q(z))/Q(z)^2 dz ] dv.",
+      "qualification": "STANDARD_CHANGE_OF_VARIABLE",
+      "contract_firewall": "Host atom and Q^-2 material density; pure/transition images add"
+    },
+    {
+      "id": "R6_GAUGE",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/RESEARCH_REPORT_ZH.md",
+      "line_start": 35,
+      "line_end": 35,
+      "source_excerpt": "上接缝未补偿真实Maxwell响应的末三点斜率约2.989。只允许实属性补偿，还剩8.098%的首项法向系数；实虚属性都可调时，D/Q补偿让材料相同，材料RMS差约1.48e−16，观测差落到浮点底噪。它是同材料gauge，不是发现另一种材料世界，也不能在数值底噪上拟合更高接缝阶。",
+      "qualification": "SAME_MATERIAL_ONLY",
+      "contract_firewall": "Full complex compensation does not create distinct material"
+    },
+    {
+      "id": "R6_COPULA",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/RESEARCH_REPORT_ZH.md",
+      "line_start": 43,
+      "line_end": 43,
+      "source_excerpt": "两例各32对合法条件纤维，在固定一次置乱后保持经验边缘却破坏配对。材料均值ROI位移为.002485/.026078，完整复观测的归一化L2差均值15.53/117.58；实际新增448 RHS，十个完全相同材料命中缓存。总体精确边缘乘积的实均值偏差为.002638/.018028，与有限32对单次置乱分别报告。",
+      "qualification": "CONTROLLED_COUNTEREXAMPLE",
+      "contract_firewall": "448 RHS; fixed conditional control not full posterior draws"
+    },
+    {
+      "id": "R6_PROB_GAP",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/FAILURE_ANALYSIS.md",
+      "line_start": 16,
+      "line_end": 16,
+      "source_excerpt": "准确的 prior 网格在 regular/overlap 情况下仍会漏掉极窄的 Maxwell likelihood。局部 GN 白化 GH 加密可稳定材料矩和纤维权重，但没有全域尾部或其他模式质量证书。Q1/Q2数值收敛不升格为完整后验认证；没有用离散节点经验测度报告连续 TV≈0。",
+      "qualification": "NOT_CERTIFIED",
+      "contract_firewall": "No global tails/mode bound or continuous TV certificate"
+    },
+    {
+      "id": "R6_HOST_MASS",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/FAILURE_ANALYSIS.md",
+      "line_start": 18,
+      "line_end": 18,
+      "source_excerpt": "本轮没有建立“材料均值认证比模式质量认证更省物理费用”的任务成本分离。host 小例中粗网格两者均过门，regular 的全局规则又未通过均值门；不能选择有利例子取代该结论。四维扩大未启动。Full66后验原子质量仍未知，二维/三维host约22%不能替代Full66先验约0.0688%的原子。",
+      "qualification": "NOT_ESTABLISHED",
+      "contract_firewall": "No task-vs-branch certified cost separation,Full66 posterior atom unknown"
+    },
+    {
+      "id": "R6_GATE",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/GO_NO_GO.md",
+      "line_start": 9,
+      "line_end": 9,
+      "source_excerpt": "|GO-C 真实物理费用|限定GO；强化控制HOLD|原冻结global8中，两噪声均过1%风险NI和20%完整系统wall门。更强Full-q基线下，低噪1% NI未确立；同窗口小样本复测的低噪20%节时下界也不足。|",
+      "qualification": "SCOPED_GO_WITH_HOLD",
+      "contract_firewall": "Original pass vs stronger control hold preserved"
+    },
+    {
+      "id": "R6_COST",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/RESEARCH_REPORT_ZH.md",
+      "line_start": 5,
+      "line_end": 5,
+      "source_excerpt": "物理实验已封账：**6,860,984 RHS、210,355个新状态/LU**，低于8,000,000硬上限。33个新训练阶段保留全部checkpoint、日志和失败。新确认使用512个独立parent，不复用R5-B的已暴露512。两组noise分开统计，不合并成一个有利均值。",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "6860984 RHS,210355state/LU,33training stages,cap8000000"
+    },
+    {
+      "id": "R6_COST_SPLIT",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/RESEARCH_REPORT_ZH.md",
+      "line_start": 112,
+      "line_end": 117,
+      "source_excerpt": "|A分层/补偿/控制|158144|\n|B复用数据学习|0|\n|C开发/匹配anchor/普通强控制|2864200|\n|D新512/补充/同窗口重放|3838640|\n|总计|6860984|\n",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "Stage table and resource paragraph"
+    },
+    {
+      "id": "R6_TIME",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/RESEARCH_REPORT_ZH.md",
+      "line_start": 118,
+      "line_end": 118,
+      "source_excerpt": "中央JSONL逐行与快照对账，无活动action/job、无物理数值失败；一项JSON报告失败原样保留，独立审计后零新增物理恢复。物理job wall5147.36秒，solver kernel3310.51秒；保守MPS训练job .2414 device-hour。它们不是把所有编辑/文献I/O都伪称已经逐条CPU profiling。其他分析、推断和交付费用有各自收据，详见[资源](RESOURCE_SUMMARY.json)。",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "wall5147.36s,kernel3310.51s,MPS.2414devicehour"
+    },
+    {
+      "id": "R6_FINAL_HOLD",
+      "source_path": "research/p3l_r6_task_optimal_maxwell/FAILURE_ANALYSIS.md",
+      "line_start": 37,
+      "line_end": 37,
+      "source_excerpt": "原global8在两噪声条件的风险/成本门均通过。将同一q闭合放到完整anchor后，低噪1% NI没有确立；不能只选有利完整基线。原窗口与评分后同窗口重放的端点逐字节数值一致，绝对wall却改变；新窗口低噪20%下界16.82%，Direct与Low的优势区间跨零。原通过不抹去，跨窗口与更强参考的资格也不升级。见track_d/FULL_Q_REFERENCE_POSTHOC.json和audit/r6_evidence/TIMING_DRIFT_REVIEW.md。",
+      "qualification": "HISTORICAL_FROZEN_BOUNDARY",
+      "contract_firewall": "Full-q NI gap,timing drift16.82% bound; do not overwrite original pass"
+    },
+    {
+      "id": "R7_CONTRACT",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 13,
+      "line_end": 13,
+      "source_excerpt": "保持原Gaussian64×Uniform2、精确probit Gaussian66、quintic平台、host、被动材料、TM24/VIE、256 ROI、8源×32复接收、sigma=.00119211798514519及source-major sqrt2/sigma白化。原R4 prior/target和A30 frozen solver只读复用。输入理论包CRC与BLAKE2b身份、47页PDF及TeX逐节核查；不把精简包当全部原始数据。",
+      "qualification": "ORIGINAL_FROZEN_CONTRACT",
+      "contract_firewall": "source-major sqrt2/sigma whitening"
+    },
+    {
+      "id": "R7_GAUGE",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 21,
+      "line_end": 21,
+      "source_excerpt": "四个无pure且transition行可独立调整的点有弯曲同材料数值路径，四档参数步都合法，最大材料RMS残差2.42e−16。另一个无pure点并不满足这种降维。严格局部IFT解释了何种stratum允许尺度补偿；有pure格或材料Jacobian满66时不能普遍删除一个尺度。独立gesvd与三档全列差分完成，数值阈值敏感和一个rank公式不一致例保留。",
+      "qualification": "STRATUM_SPECIFIC",
+      "contract_firewall": "Not universal scale quotient;rank threshold dependent"
+    },
+    {
+      "id": "R7_RANK_THEORY",
+      "source_path": "research/p3l_r7_material_solution_fibers/THEORY_AND_PROOFS.md",
+      "line_start": 17,
+      "line_end": 17,
+      "source_excerpt": "反之，DG满列秩时选取一个可逆66输出minor，逆函数定理给局部单射，故无非平凡局部同材料gauge；它不排除远处不连通的相同材料原像。原prior包含不同开放strata，所以不能将“某regular stratum满秩”改成整个prior几乎处处无gauge。",
+      "qualification": "CONDITIONAL_THEOREM",
+      "contract_firewall": "Local injectivity not absence of remote preimages or all-prior gauge"
+    },
+    {
+      "id": "R7_J_COST",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 34,
+      "line_end": 34,
+      "source_excerpt": "每档最多三个新trial，明确叫budgeted corrector；另两例DEV给最多20态普通参考。每次新state8 RHS、首次receiver-J32 RHS、每阶八源jet8 RHS，所有拒绝和恢复均付费。首次实际探针200 RHS，伴随误差1.95e−15，chain/递推误差约1e−13，小有限材料响应预测误差2.2e−9/1.4e−8。完整decoder与Maxwell二阶向量均保存。",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "state8,receiverJ32,jet8 RHS;all trials charged"
+    },
+    {
+      "id": "R7_ENDPOINTS",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 43,
+      "line_end": 43,
+      "source_excerpt": "|B Full-J|8|7|",
+      "qualification": "SCOPED_FINITE_NOISE_GO",
+      "contract_firewall": "B competitive8/8 but pair<=1 only7/8"
+    },
+    {
+      "id": "R7_SETUP",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 49,
+      "line_end": 49,
+      "source_excerpt": "在两方法都有端点的六对象上，C−B Phi均值−.01154，描述95%配对区间[−.06022,.02133]；C还要24 RHS setup，四档摊销每档另6 RHS。缺少端点导致费用较少不是加速。8 parent只支持机制小样本，不是总体算法冠军。",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "C setup24RHS=6 per four amplitudes; missing endpoints not speedup"
+    },
+    {
+      "id": "R7_SAMPLED_PATH",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 57,
+      "line_end": 57,
+      "source_excerpt": "B八条弦在五个固定t节点均竞争，C六条可用原始cubic路径也通过。它们只取得sampled-path资格，不证明所有节点之间相容，不证明连续exact fiber。C端点预测相对误差约.86%–4.73%，仍跨1–6个decoder接缝。",
+      "qualification": "SAMPLED_PATH_ONLY",
+      "contract_firewall": "Five nodes not continuous exact fiber"
+    },
+    {
+      "id": "R7_RESPONSE_RANK",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 59,
+      "line_end": 59,
+      "source_excerpt": "八个中心的材料有效rank都是66，最小材料响应奇异值约.0308–.0956；所选方向c1 norm约8.33–16.53。材料首速度为1，响应一阶非零，因此没有把decoder三次平坦冒称为Maxwell三阶null。条件渐近仅由明确toy验证，不写成Full66物理率。",
+      "qualification": "NUMERICAL_RANK_ONLY",
+      "contract_firewall": "rank66,c1 nonzero8.33-16.53,no exact null"
+    },
+    {
+      "id": "R7_WEAK_DISTRIBUTION",
+      "source_path": "research/p3l_r7_material_solution_fibers/THEORY_AND_PROOFS.md",
+      "line_start": 63,
+      "line_end": 63,
+      "source_excerpt": "常秩映射的精确kernel可积；截断bottom-k弱谱分布未必可积。有限噪声near-equivalence也不是传递的等价关系。冻结rank不能当解流形维数。",
+      "qualification": "NOT_EQUIVALENCE",
+      "contract_firewall": "Weak spectra may not integrate;finite noise adjacency not transitive"
+    },
+    {
+      "id": "R7_TWO_POINT",
+      "source_path": "research/p3l_r7_material_solution_fibers/THEORY_AND_PROOFS.md",
+      "line_start": 71,
+      "line_end": 71,
+      "source_excerpt": "固定两个材料世界后，Gaussian数据均值的白化距离d给KL=d²/2、TV=2Φ(d/2)−1。标准两点检验归约给指定标量任务的两世界最大平方风险下界Δψ²(1−TV)/8。R7保存这些数值，但只作**未来固定候选对的两点统计子实验**条件界，不是原prior Bayes风险，也不是用同一观测搜索后获得的posterior可信区间。",
+      "qualification": "CONDITIONAL_TWO_POINT_BOUND",
+      "contract_firewall": "Not original-prior Bayes risk or data-selected credible interval"
+    },
+    {
+      "id": "R7_COPULA_PRIOR",
+      "source_path": "research/p3l_r7_material_solution_fibers/THEORY_AND_PROOFS.md",
+      "line_start": 77,
+      "line_end": 77,
+      "source_excerpt": "四个非均匀Full66受控等权离散纤维验证了此映射效应，并有128 RHS物理控制。等权四点不是实际prior条件核，不给Full66 posterior质量。generic满秩区域不能照搬这个尺度商；需要真正保留其联合推前测度。",
+      "qualification": "CONTROLLED_EQUAL_WEIGHT",
+      "contract_firewall": "Not original prior conditional kernel;128 RHS"
+    },
+    {
+      "id": "R7_COST",
+      "source_path": "research/p3l_r7_material_solution_fibers/RESEARCH_REPORT_ZH.md",
+      "line_start": 83,
+      "line_end": 83,
+      "source_excerpt": "共37,456 RHS，10,600 forward、26,856 derivative，1,325 state/LU；19个物理job，物理动作失败0。物理job总wall72.21秒、动作wall14.77秒、CPU67.47秒，进程峰值约190 MB。E1另7.18秒、490 MB；编辑、检索及交付时间不伪称被这个物理账本完整profile。没有GPU/网络训练。",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "37456=10600forward+26856derivative;1325LU;19jobs;timings distinct"
+    },
+    {
+      "id": "R7_GATES",
+      "source_path": "research/p3l_r7_material_solution_fibers/GO_NO_GO.md",
+      "line_start": 5,
+      "line_end": 10,
+      "source_excerpt": "|GO_HIGHER_ORDER|NO_GO|冻结C未优于普通B，覆盖6/8对8/8，另有setup费用；只针对本实现，不否定所有高阶理论。|\n|GO_PHYSICAL_FIBER|NOT_ESTABLISHED|没有连续exact Maxwell fiber证明，c1非零、仅有限节点。|\n|GO_FINITE_NOISE_AMBIGUITY|SCOPED_GO|真实材料RMS.02、B8/8竞争且7/8 pair≤1，原prior/物理/噪声内成立。|\n|FULL66_POSTERIOR|UNQUALIFIED|本轮没有试图用12个上下文认证全后验。|\n|TASK_IDENTIFIABILITY|LOCAL_OR_EMPIRICAL_ONLY|固定任务与照明的局部导数及有限见证，不是credible interval/Bayes风险。|\n|GO_TAP|REDIRECT|高阶导数、商测度、LS冲突均有先例；未建立优于强普通方法的Maxwell新机制。|",
+      "qualification": "FROZEN_STATUS",
+      "contract_firewall": "NO_GO,NOT_ESTABLISHED,SCOPED_GO,UNQUALIFIED,LOCAL_OR_EMPIRICAL_ONLY,REDIRECT"
+    },
+    {
+      "id": "INPUT_SCOPE",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/01_framework.tex",
+      "line_start": 9,
+      "line_end": 9,
+      "source_excerpt": "第二，\\textbf{更宽材料类中的正维精确纤维也有严格成立的条件}。原 Full66 的八个重建中心不满足这一前提；完整的 $24\\times24$ 固定复相位材料类则具有 576 个实自由度，而 $8\\times32$ 个复观测最多为 512 个实坐标。在合法内点且常秩 $r$ 的区域，精确纤维维数是 $576-r\\ge64$。这改变了 prior/support，不能回写成原 Full66 的结果。",
+      "qualification": "NEW_SUPPORT_CONDITIONAL",
+      "contract_firewall": "576real vs512obs changes support,not Full66"
+    },
+    {
+      "id": "INPUT_HISTORY",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/01_framework.tex",
+      "line_start": 24,
+      "line_end": 29,
+      "source_excerpt": "R6 同材料纤维 & 固定 $V=QD$ 的联合配对给相同材料；保持经验边缘却打乱依赖，Full 响应白化控制距离均值约 15.526 与 117.578。 & 属 decoder gauge 与条件依赖反例；不是新材料 Maxwell nullspace，也不是完整 posterior 样本。\\\\\nR6 分层概率 & host、transition、pure 源层及材料像重叠须分开；局部积分收敛不能证明远分支和尾部已覆盖。 & 不能把单点 Jacobian 为零等同于全局任务对数据不响应；不能用 prior 归一化合格代替 posterior 资格。\\\\\nR7 Full66 & 四个特定无 pure-cell 点存在数值同材料路径，最大材料 RMS 约 $2.42\\times10^{-16}$；另有无 pure 点不满足同样降维。 & gauge 是分层和局部的，不存在已证明的通用一维尺度商。数值秩依赖阈值。\\\\\nR7 八个新对象 & 普通动态 Full-J 均找到 $0.02$ 材料 RMS 的竞争端点，其中七例另满足成对距离不超过 1；八中心材料有效响应数值秩均为 66。 & 有限噪声歧义成立；精确连续材料纤维未建立；局部满秩不排除远处离散多解。\\\\\nR7 高阶路线 & Jets 当前实现未胜普通 Full-J；实现范围和接缝限制均保留。 & 不将高阶反馈重新命名为群生成元；也不把实现 No-Go 当作所有高阶理论的否定。\\\\\nF/F3 与旧 Z & 局部候选和若干补偿并未建立跨拓扑全解覆盖；旧 Z 是 2026-10-15 理论设计包，无新训练或 Maxwell 后验样本。 & 新正面见证必须独立建立；扩大材料类须明确新 prior，不能改写原 P0 结果。\\\\",
+      "qualification": "HISTORICAL_RESTATEMENT",
+      "contract_firewall": "History summary agrees on gauges/finite ambiguity"
+    },
+    {
+      "id": "INPUT_MATERIAL_PRIOR",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/03_maxwell.tex",
+      "line_start": 114,
+      "line_end": 114,
+      "source_excerpt": "在 $e^{-i\\omega t}$ 约定下，正频率被动标量介电率要求相应虚部非负；一般张量使用 Hermitian 虚部 $(\\chi-\\chi^\\dagger)/(2i)\\succeq0$。区间、相分区、多项式几何约束和该半正定条件可形成半代数条件。非代数 Gaussian/probit decoder 或 learned prior 仍应按原定义检查，不能为套用 Gröbner basis 而将其替换成另一个 prior。Full66 材料测度在高维网格空间上通常奇异，必须与其实际 decoder 像相交。",
+      "qualification": "SUPPORT_FIREWALL",
+      "contract_firewall": "Algebraization must not replace decoder/prior"
+    },
+    {
+      "id": "INPUT_TWO_CELL",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/03_maxwell.tex",
+      "line_start": 124,
+      "line_end": 124,
+      "source_excerpt": "本轮使用二维 scalar-TM 的 $e^{-i\\omega t}$ 约定，波长为一，$k=2\\pi$。两个半径 $a=0.04$ 的圆盘 pulse basis 位于 $(-0.2,0)$ 与 $(0.2,0)$，在圆盘中心 collocation，使用圆盘积分 Green 系数。两个源位于 $(0,-0.7),(0,-1.1)$，两个接收器位于 $(0,0.8),(0,1.2)$。每一个固定标签都处于镜面对称轴上；没有交换测量标签。",
+      "qualification": "SYMMETRIC_FROZEN_WITNESS",
+      "contract_firewall": "Fixed labels symmetric two cell,not asymmetric discovery"
+    },
+    {
+      "id": "INPUT_NEW_PROPOSAL",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/06_experiments.tex",
+      "line_start": 61,
+      "line_end": 61,
+      "source_excerpt": "\\textbf{推荐下一项最小问题}：一个非对称 4--9 cell TM 系统，预先固定全部标签，选择合法实材料内点和明确的新 prior。先构造 $n>k$ 的小型子问题，以常秩与 $n-r>0$ 作为精确局部纤维存在的独立依据；再比较共享材料 current chart 与直接材料隐函数/Full-J chart 对同一连通纤维的合法覆盖和条件积分费用。这里的目标不是发现维数计数已保证的 null，而是检验图册是否\\emph{更可计算}。",
+      "qualification": "PROPOSED_NOT_EXECUTED",
+      "contract_firewall": "4-9cells,n>k new prior;6-8 is new run scope"
+    },
+    {
+      "id": "INPUT_DONT_DELETE_RECEIVER",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/06_experiments.tex",
+      "line_start": 63,
+      "line_end": 63,
+      "source_excerpt": "另设 $n\\le k$ 或满列秩子问题寻找远处分支，允许结果为没有发现。不要在看到结果后删 receiver 来制造成功；如需不同采集，建立新 contract ID。原 Full66 的离散远分支问题与新完整材料的连续纤维问题应分别注册。",
+      "qualification": "NEW_ACQUISITION_CONTRACT",
+      "contract_firewall": "Do not post-hoc remove receivers to create success"
+    },
+    {
+      "id": "INPUT_BUDGET",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/06_experiments.tex",
+      "line_start": 67,
+      "line_end": 67,
+      "source_excerpt": "以下是后续\\emph{建议预算}，不是本轮已经使用的费用：每 run 最多 10,000 个实际复线性 RHS、2 CPU 小时、8 GB 峰值内存；整轮 30,000 RHS 硬上限。CPU 按线程累计，wall time 另记。结构构建、失败路径与认证都计入，不通过另开 run 绕过总上限。",
+      "qualification": "PROPOSED_NOT_ACTUAL_COST",
+      "contract_firewall": "10000RHS/run,2CPUhours,8GB;30000round cap"
+    },
+    {
+      "id": "INPUT_COAREA",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/04_probability.tex",
+      "line_start": 85,
+      "line_end": 85,
+      "source_excerpt": "若原数据维数大于实际秩 $r$，不能直接用 $\\det(D\\F D\\F^\\top)=0$ 作分母；应选局部 $r$ 维观测像坐标，或相对于该像的 Hausdorff 测度使用非零奇异值乘积。交叉像分支须分别处理。[R15]",
+      "qualification": "STANDARD_CONDITIONAL_THEORY",
+      "contract_firewall": "Actual rank/image coordinates,not singular ambient determinant"
+    },
+    {
+      "id": "INPUT_DISINTEGRATION",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/04_probability.tex",
+      "line_start": 46,
+      "line_end": 46,
+      "source_excerpt": "可将 $K_y$ 换回原 $K$ 的充要条件是 $L_y(m)=\\ell_y(\\pi(m))$，$\\mu_0$ 几乎处处成立。若 $\\F=h\\circ\\pi$ 且噪声仅依赖预测均值，条件自动满足。",
+      "qualification": "STANDARD_CONDITIONAL_THEORY",
+      "contract_firewall": "Reusable prior kernel iff likelihood factorizes"
+    },
+    {
+      "id": "INPUT_NOISY_QUOTIENT",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/04_probability.tex",
+      "line_start": 54,
+      "line_end": 54,
+      "source_excerpt": "先反演 quotient 的精确输出应是 $\\nu^y$，而不是单点 $\\widehat u$。有限噪声下，即使每个精确纤维都已完整生成，仍需对不同 $u$ 的后验不确定性积分。固定 $\\widehat u$ 后生成材料仅给条件世界，未给完整 noisy posterior。",
+      "qualification": "NOISY_POSTERIOR_FIREWALL",
+      "contract_firewall": "Need nu^y,not single quotient center"
+    },
+    {
+      "id": "INPUT_E4_COST",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/06_experiments.tex",
+      "line_start": 30,
+      "line_end": 30,
+      "source_excerpt": "总费用为 15,360 次完整解析 likelihood 计算，其中原 current 解析响应 10,245 次、quotient 有理响应 5,125 次（含响应独立校验）；另有五次 $2\\times2$ 数值分解、十个复 RHS。微小模型的毫秒级时间不用于宣称一般方法加速。此轮只完成已知 $C_2$ 结构的几何与概率阳性对照，尚未建立非对称分支发现、全材料图册或 Full66 后验结果。",
+      "qualification": "HISTORICAL_REPORTED_COST",
+      "contract_firewall": "Analytic evaluations charged;10numericalRHS;not general speedup"
+    },
+    {
+      "id": "INPUT_E4_CERTIFICATE",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/report_source/sections/06_experiments.tex",
+      "line_start": 28,
+      "line_end": 28,
+      "source_excerpt": "32 到 64 阶的最大证据相对差约 $2.19\\times10^{-9}$，最大任务差约 $1.21\\times10^{-8}$；两种 64 阶协议的差约为 $10^{-15}$。这是数值收敛和独立参数化的交叉验证，没有严格区间积分误差证书。",
+      "qualification": "NUMERICAL_NOT_INTERVAL",
+      "contract_firewall": "Convergence and independent parameterization not rigorous enclosure"
+    },
+    {
+      "id": "KIT_C1",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 3,
+      "line_end": 5,
+      "claim": "Useful fixed-label C2 material symmetry exists in the frozen two-cell TM/VIE.",
+      "qualification": "analytic conditional structure and floating-point witness",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C2",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 8,
+      "line_end": 10,
+      "claim": "Two distinct regular branches obtained via symmetric p,q coordinates.",
+      "qualification": "conditional complete two-root theorem for the declared discrete real two-cell family; no interval enclosure of Hankel coefficients",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C3",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 13,
+      "line_end": 15,
+      "claim": "Receiver-dark current may lack any common scalar material across sources.",
+      "qualification": "analytic criterion plus executed counterexample",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C4",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 18,
+      "line_end": 20,
+      "claim": "Original posterior and correct quotient/fiber integration agree in finite-noise E4.",
+      "qualification": "executed numerical quadrature convergence and independent-parameterization check, not interval-certified integration",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C5",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 23,
+      "line_end": 25,
+      "claim": "Uniform branch weights can preserve evidence yet give wrong material tasks.",
+      "qualification": "executed E4 positive counterexample",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C6",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 28,
+      "line_end": 30,
+      "claim": "Full66 locally full rank forbids a smaller smooth lossless local forward quotient.",
+      "qualification": "standard rank-chain-rule implication conditional on mathematical full rank; historical evidence is numerical rank",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C7",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 33,
+      "line_end": 35,
+      "claim": "Full576 real material prior has regular local fibers of dimension at least64 with512 real observations.",
+      "qualification": "conditional dimension theorem for a new support/prior, not an executed new576 experiment",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C8",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 38,
+      "line_end": 40,
+      "claim": "General nonsymmetric Maxwell branch coverage and speedup.",
+      "qualification": "NOT ESTABLISHED; next-step experiment only",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C9",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 43,
+      "line_end": 45,
+      "claim": "Exact posterior disintegration, coarea and error/omission bounds.",
+      "qualification": "standard theory applications and explicit derivations; not claimed as new mathematics",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    },
+    {
+      "id": "KIT_C10",
+      "source_path": "research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/CLAIM_LEDGER.json",
+      "line_start": 48,
+      "line_end": 50,
+      "claim": "Periodic retracing target path yields identity under unique regular lifting.",
+      "qualification": "proved; singular branch switching remains possible",
+      "contract_firewall": "Retain exactly stated conditional/executed/not-established scope"
+    }
+  ],
+  "imported_actual_cost_ledgers": {
+    "zalgo_maxwell/two_cell_witness.json": {
+      "forward_solves_two_complex_rhs": 8,
+      "analytic_sensitivity_solves_two_complex_rhs": 1,
+      "resolvent_inverse_for_error_certificate": 1,
+      "quotient_real_2x2_solves": 1,
+      "independent_green_disk_quadratures": 2,
+      "optimization_steps": 0,
+      "training_steps": 0
+    },
+    "zalgo_probability/e4_two_cell_posterior.json": {
+      "direct_current_analytic_response_evaluations": 10245,
+      "quotient_rational_response_evaluations": 5125,
+      "likelihood_evaluations": 15360,
+      "numerical_two_by_two_factorizations": 5,
+      "numerically_solved_complex_rhs": 10,
+      "note": "Every analytic response/likelihood evaluation has arithmetic cost and is counted. Closed-form two-cell evaluation is not a generic free Maxwell solve; no nonlinear optimization, training, or branch-search costs are claimed here.",
+      "cpu_seconds": 0.011070989999999892,
+      "wall_seconds_total": 0.011079620999908002
+    }
+  },
+  "caveats": [
+    "Source-reported cost,not independently recomputed job ledger",
+    "6-8 scope supplied for new run;input report recommendation is4-9cells",
+    "Final scientific claim and novelty judgment reserved to parent Codex"
+  ]
+}

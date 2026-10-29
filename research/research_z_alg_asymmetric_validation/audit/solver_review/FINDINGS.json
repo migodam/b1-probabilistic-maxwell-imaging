@@ -1,0 +1,64 @@
+{
+  "review_status": "CORE_ALGEBRA_PASS_PREPHYSICS_NOTES_CLOSED",
+  "execution_scope": "Fake dense algebra only; no real Model/Book; zero new physics RHS; no campaign ledger mutation",
+  "reviewed_files": [
+    "EXPERIMENT_CONTRACT.json",
+    "src/accounting.py",
+    "src/physics.py",
+    "src/charts.py",
+    "src/probe.py"
+  ],
+  "passed": [
+    "TM disk external and self coefficient static check",
+    "exact material derivative and transpose",
+    "source-major realification",
+    "shared-real-material current Jacobian",
+    "current/direct material tangent consistency",
+    "per-instance single-live-LU and failed-paid Maxwell RHS logic"
+  ],
+  "evidence": [
+    "audit/solver_review/ALGEBRAIC_QA.json",
+    "audit/solver_review/CURRENT_ALGEBRAIC_QA.json",
+    "audit/solver_review/algebraic_qa.py"
+  ],
+  "findings": [
+    {
+      "id": "CPU_RESTART",
+      "severity": "P2",
+      "status": "FIXED_BY_PARENT_STATIC_REVIEW",
+      "file": "src/accounting.py",
+      "description": "Book now rejects any prior RUN_START with the same run name before appending or executing actions; finished and interrupted runs cannot silently reset CPU."
+    },
+    {
+      "id": "REAL_RHS",
+      "severity": "P3",
+      "status": "FIXED_BY_PARENT_STATIC_REVIEW",
+      "file": "src/charts.py",
+      "description": "Real multi-column RHS count now uses b.shape[1]."
+    },
+    {
+      "id": "ALGEBRA_OVERHEAD",
+      "severity": "P3",
+      "status": "FIXED_BY_PARENT_STATIC_REVIEW",
+      "file": "src/charts.py",
+      "description": "CURRENT_CHART_SETUP explicitly records algebraic complex factorization, ns RHS, receiver dimension; failed direct real solves record separate FALLBACK_SVD and its RHS."
+    },
+    {
+      "id": "PROBE_GATES",
+      "severity": "P2",
+      "status": "FIXED_BY_PARENT_STATIC_REVIEW",
+      "file": "src/probe.py",
+      "description": "Probe now gates current center residual <=2e-13 and square current-J rank at relative 1e-12; material finite differences cover every coordinate at each declared step. Current directional FD remains a separate derivative diagnostic."
+    },
+    {
+      "id": "ENDPOINT_CALLER_GATES",
+      "severity": "INFO",
+      "status": "CALLER_OBLIGATION",
+      "file": "src/charts.py",
+      "description": "Corrector success is residual convergence. Full box/node/rank/resolvent/independent validation gates remain required before any accepted endpoint claim."
+    }
+  ],
+  "scientific_acceptance": "PARENT_OWNED_NOT_ASSESSED",
+  "physical_validation": "NOT_RUN_BY_REVIEWER",
+  "refresh_scope": "Read-only source review after parent fixes; no additional numerical tests or physics execution."
+}

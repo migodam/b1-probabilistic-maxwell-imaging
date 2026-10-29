@@ -1,0 +1,122 @@
+\section{研究判断与证据边界}
+
+\subsection{五个直接结论}
+
+本研究的总体答案是\textbf{有条件地肯定}。Maxwell 多解可以比一组无关联的优化终点更有结构，但不存在一套对所有材料类、所有采集和所有先验都适用的简单群。真正可用的结构应满足四个条件：连接的是不同合法材料；保持完整带标签观测；能以较低费用生成或验证；能保留原先验的条件质量。
+
+第一，\textbf{精确有限对称确实可以产生不同材料的离散等价分支}。本轮二单元 TM/VIE 例子中，交换两个镜像位置的材料保持全部复观测。可先反演两个对称不变量，再用二次方程列出该材料族中的全部两支。两个分支附近的材料响应都满秩，所以它没有连续精确 null 方向。局部满秩与远处多解可以同时成立。
+
+第二，\textbf{更宽材料类中的正维精确纤维也有严格成立的条件}。原 Full66 的八个重建中心不满足这一前提；完整的 $24\times24$ 固定复相位材料类则具有 576 个实自由度，而 $8\times32$ 个复观测最多为 512 个实坐标。在合法内点且常秩 $r$ 的区域，精确纤维维数是 $576-r\ge64$。这改变了 prior/support，不能回写成原 Full66 的结果。
+
+第三，\textbf{多数材料等价关系更适合用受约束纤维、分支图册与对应关系组织}。关系群胚可以准确记账，却不会自动给出生成元；有群作用也只说明轨道包含在纤维内，不说明覆盖全部逆解。正维连续纤维不能由有限个固定变换的有限字词逐点列完。
+
+第四，\textbf{无损商反演的关键是 likelihood 因子化和可计算的条件核}。若 $\F=h\circ\pi$，且 $K(dm\mid u)$ 是原材料 prior 的条件分布，则只反演 $u$ 后可精确恢复材料后验。写出这个分解不保证计算变简单；有限群商通常不降低连续维数，条件权重也可能很难算。
+
+第五，\textbf{最值得先做的架构是共享材料约束的电流纤维图册}。先精确满足接收方程，再以多照明共享材料的二次约束排除假电流，并针对场节点、材料支持和 resolvent 给出完整条件。已证明的物理对称可免去重复 Maxwell 求解；其他关系必须继续支付校正、分支发现或认证费用。
+
+\subsection{历史证据如何进入本报告}
+
+已核查 R6 指定科学版本的主报告、理论、分层概率和 copula 控制；R7 主报告、Full66 gauge 审计、E2、理论、费用及 Go/No-Go；旧 Research Z 的主报告、理论与 claim ledger；SOM/TSOM 原作者综述。R6/R7 原始大实验未在本轮重跑，下面把文档核验与本轮新增小型计算分别标识。[I1--I4]
+
+\begin{longtable}{p{.18\textwidth}p{.38\textwidth}p{.36\textwidth}}
+\toprule
+证据 & 保留的结论 & 对 Z-ALG 的约束\\\midrule\endhead
+R6 同材料纤维 & 固定 $V=QD$ 的联合配对给相同材料；保持经验边缘却打乱依赖，Full 响应白化控制距离均值约 15.526 与 117.578。 & 属 decoder gauge 与条件依赖反例；不是新材料 Maxwell nullspace，也不是完整 posterior 样本。\\
+R6 分层概率 & host、transition、pure 源层及材料像重叠须分开；局部积分收敛不能证明远分支和尾部已覆盖。 & 不能把单点 Jacobian 为零等同于全局任务对数据不响应；不能用 prior 归一化合格代替 posterior 资格。\\
+R7 Full66 & 四个特定无 pure-cell 点存在数值同材料路径，最大材料 RMS 约 $2.42\times10^{-16}$；另有无 pure 点不满足同样降维。 & gauge 是分层和局部的，不存在已证明的通用一维尺度商。数值秩依赖阈值。\\
+R7 八个新对象 & 普通动态 Full-J 均找到 $0.02$ 材料 RMS 的竞争端点，其中七例另满足成对距离不超过 1；八中心材料有效响应数值秩均为 66。 & 有限噪声歧义成立；精确连续材料纤维未建立；局部满秩不排除远处离散多解。\\
+R7 高阶路线 & Jets 当前实现未胜普通 Full-J；实现范围和接缝限制均保留。 & 不将高阶反馈重新命名为群生成元；也不把实现 No-Go 当作所有高阶理论的否定。\\
+F/F3 与旧 Z & 局部候选和若干补偿并未建立跨拓扑全解覆盖；旧 Z 是 2026-10-15 理论设计包，无新训练或 Maxwell 后验样本。 & 新正面见证必须独立建立；扩大材料类须明确新 prior，不能改写原 P0 结果。\\
+SOM/TSOM & 确定电流与模糊电流分解、内部传播相关子空间、Fourier 加速已有成熟前例。 & current relevance、材料可实现性、材料可辨识性与任务风险必须分开。\\\bottomrule
+\end{longtable}
+
+特别是 R6 的 ``均匀 $V=QD$'' 指的是所考察的均匀材料子模型，\emph{并不表示条件 prior 自动均匀}。其复属性到材料的条件 Jacobian 含 $Q^2$，正确纤维权重包含 $Q^{-2}$。后文另给的简单双曲线 toy 使用显式指定的新 prior，不能替代 R6 原先验。
+
+\subsection{结果资格}
+
+\textbf{标准数学}包括常秩定理、逆函数定理、轨道与群胚、覆盖空间、coarea、disintegration、MH 和已有数值代数几何。
+
+\textbf{Maxwell 条件推导}包括固定标签的交换条件、共享材料 minors 的等价条件、残差到真实数据的 resolvent 证书，以及二单元商恢复公式。本文给出证明，但不把这些标准工具的组合自动宣布为文献首创。
+
+\textbf{本轮实际计算}包括二单元离散 VIE、真实 Green 圆盘积分复核、暗电流反例、解析 Jacobian 对照、三次多项式 monodromy 与若干低维积分公式。它们支持本报告所标明的有限范围。
+
+\textbf{待验证研究主张}是非对称小型 Maxwell 系统中的更完整分支发现、更便宜的任务积分、全 prior 质量恢复及跨 decoder 的独立费用收益。后续实验协议不把这些主张预写为成功。
+
+\section{统一的材料与多 Decoder 框架}
+
+\subsection{先固定物理与统计合同}
+
+将所有复变量视为实向量空间，避免把复自由度和实自由度混算。一次采集 $a$ 包括频率、源场、接收位置与极化、标签、背景、离散化和噪声约定。合法材料集合 $\M$ 同时包含被动性、几何范围、构成关系、边界条件和本次声明的 prior 支持。不同支持集对应不同反问题。
+
+设材料先验为概率测度 $\mu_0$，已知噪声协方差为 $\Gamma_a\succ0$，取 $W_a^\top W_a=\Gamma_a^{-1}$。观测模型为
+\begin{equation}
+M\sim\mu_0,\qquad Y=\F(M)+\eta,\qquad
+L_y(m)=\exp\left[-\tfrac12\norm{W_a(\F(m)-y)}^2\right].
+\end{equation}
+对原复 circular Gaussian 数据，实化时的 $\sqrt2/\sigma$ 约定必须与历史合同一致。若噪声协方差、源增益或校准也依赖未知量，应将相应变量加入模型，不能继续把均值 $\F(m)$ 的相等当作整个 likelihood 家族相等。
+
+在唯一、稳定的前向求解域内，$\F$ 是单值映射。若宣称包括非唯一的 Maxwell 边值问题，必须先定义物理解选择或联合状态关系，不能使用没有定义的单值 resolvent。
+
+\subsection{单值 Decoder 与关系 Decoder}
+
+对单值 $G_i:\Z_i\to\M$，可直接定义 $H_i=\F\circ G_i$。对关系
+\begin{equation}
+\mathcal D_i\subset\Z_i\times\M,
+\end{equation}
+必须保留潜变量和材料的\textbf{关联状态}：
+\begin{equation}
+\mathcal E_i=\{(z,m):(z,m)\in\mathcal D_i\},\qquad
+\mathcal E=\bigsqcup_i\mathcal E_i,\qquad p(i,z,m)=m.
+\end{equation}
+然后研究 $\mathcal E\xrightarrow{p}\M_{\rm cov}\xrightarrow{\F}\Y_a$，其中 $\M_{\rm cov}=p(\mathcal E)$ 只是这些表示实际覆盖的材料。
+
+\begin{example}[共享某个原像不构成 latent 等价]
+若 $\mathcal D(z_1)=\{a\}$、$\mathcal D(z_2)=\{a,b\}$、$\mathcal D(z_3)=\{b\}$，则前两者及后两者各有共同材料，但 $z_1,z_3$ 没有。故 ``存在某个共同材料'' 不传递。引入 $(z,m)$ 后，这一漏洞消失。
+\end{example}
+
+仅给 $z$ 的 prior 和一个多值关系也不足以定义材料 prior。还需给 $m\mid z$ 的选择核，或直接给 $\mathcal E_i$ 上的概率测度；否则不同关系分支的概率根本尚未定义。
+
+\subsection{三种关系及任务层}
+
+在 $\mathcal E$ 上定义
+\begin{align}
+\mathcal R_G&=\mathcal E\times_{\M}\mathcal E,\\
+\mathcal R_{\rm obs}&=\mathcal E\times_{\Y_a}\mathcal E.
+\end{align}
+前者记录同材料重复表示，后者允许不同材料但相同观测。先识别 $\mathcal R_G$，再判断 $\mathcal R_{\rm obs}$ 的箭头是否真正改变材料。对单值 decoder，得到用户提出的 $z_i\sim_Gz_j$。
+
+材料层的精确关系为 $m\sim_{\F}m'\iff\F(m)=\F(m')$。相应集合商 $\M/\!\sim_\F$ 总是存在，但其拓扑未必是一张流形；若直接取 $\U=\Y_a$ 和 $\pi=\F$，测度论上最稳妥，然而没有获得降维或免费生成能力。
+
+有限噪声距离
+\begin{equation}
+d_a(m,m')=\norm{W_a(\F(m)-\F(m'))}
+\end{equation}
+是材料上的伪距离：不同材料可有距离零。阈值关系 $d_a\le\epsilon$ 一般不传递。例如 $F(x)=x$，三点 $0,0.75\epsilon,1.5\epsilon$ 两两相邻成链，首尾却不相容。因此其连通分量不能作为精确等价类。
+
+给定任务 $\psi:\M\to\R^k$，可定义纤维振幅
+\begin{equation}
+\operatorname{osc}_\psi(u)
+=\sup_{m,m'\in\pi^{-1}(u)}\norm{\psi(m)-\psi(m')}.
+\end{equation}
+若它为零，任务在该纤维上确定。它没有包含概率，既不等于条件方差，也不等于 Bayes 风险。一个极低 prior 权重的极端分支可使振幅大而对后验风险影响小。
+
+\subsection{表示图册的合法过渡}
+
+\begin{proposition}[多 Decoder 材料图册的条件]
+在一个共同的 $d$ 维正则材料 stratum $N\subset\M$ 上，设 $G_i:\Z_i\to N$ 是局部满射 submersion。局部可选 section $\sigma_i:N_i\to\Z_i$，满足 $G_i\sigma_i=\mathrm{id}$。定义
+\begin{equation}
+T_{ij}=\sigma_j\circ G_i.
+\end{equation}
+则 $G_jT_{ij}=G_i$，但一般 $T_{ji}T_{ij}=\sigma_iG_i\ne\mathrm{id}$。只有在选定 gauge-fixed section 或真正材料商坐标上，才得到可逆图册过渡。
+\end{proposition}
+\begin{proof}
+submersion 的局部标准形为 $(x,v)\mapsto x$，固定 $v$ 得 section。两次复合会丢弃原 gauge 坐标，仅保留材料，故通常不可逆。限制在 section 上则普通图册的逆映射与 cocycle 条件成立。
+\end{proof}
+
+不同 latent 维数不是困难本身；困难在于它们是否覆盖同一材料 stratum、是否已除去冗余、是否保持同一测度。完整 Fourier 与完整 Wavelet 的可逆换基可以满足这些条件；截断 Fourier、截断小波和局部 TSOM 材料子空间一般覆盖不同子集。投影残差不能被叫作 decoder gauge。
+
+沿严格保材料的循环 $T_{31}T_{23}T_{12}$，终点必给同一材料。它可能回到另一个 latent gauge 代表，却不可能产生新的物理世界。若图册是实际可逆的材料坐标，三重重叠上应满足通常的 cocycle。非闭合误差首先是实现误差、近似投影或 section 选择；本报告中基于跨 decoder 输运的 holonomy 需指定基空间路径和相应提升规则，例如明确的连接。一般 foliation holonomy 有自身的标准定义，不能用数值循环误差替代。
+
+\subsection{三种 gauge 的区别}
+
+电磁势的规范变换保持 $E,B$ 和材料不变；decoder gauge 改变表示而保持材料不变；物理观测等价允许材料改变但固定采集的观测不变。它们不能互相证明。在唯一 VIE 解的模型内，固定材料已经唯一决定所有照明的体电流；此时 ``同材料的不同独立体电流'' 本身不是合法 gauge。表面等效源的表示冗余需要其自身的边界关系，不能借来扩大体材料纤维。

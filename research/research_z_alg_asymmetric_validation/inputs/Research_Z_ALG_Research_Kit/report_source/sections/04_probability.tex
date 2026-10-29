@@ -1,0 +1,212 @@
+\section{可观测商的充分性与维数下界}
+
+\subsection{四种不变量不能混同}
+
+给定一个已证明的物理群 $G$，$I(T_gm)=I(m)$ 只说明 $I$ 在其轨道上不变。若它进一步区分所有不同轨道，才是 separating invariant。若 $\F=h\circ I$，它足以计算指定固定噪声模型的 likelihood；若 $\psi=\widetilde\psi\circ I$，它对该任务充分。仅有 invariant 不推出后三项；完整 separating invariants 确定群轨道，故在适当可测性条件下也足以确定对该群不变的观测，但计算未必便宜，也不自动对任意材料任务充分。
+
+尤其要注意：\textbf{观测充分的 $I$ 仍可以包含额外不可观测信息}。若 $h$ 在 $I(\M)$ 上非单射，不同 $I$ 值仍可产生同一数据。因此 $I^{-1}(u)$ 只是完整观测纤维的一部分：
+\begin{equation}
+\F^{-1}(r)=\bigcup_{u:h(u)=r}I^{-1}(u).
+\end{equation}
+一个真正完整的观测商还需 $I(m)=I(m')\iff\F(m)=\F(m')$。当已知群轨道严格小于观测纤维时，群的 separating invariants 也不会自动成为该完整商。
+
+常见 orbit recovery 文献从已指定的群和随机群作用观测模型出发，研究用不变量恢复轨道；固定带标签 Maxwell 采集是否具有这个群，仍须独立证明。[R3] 不可把现成 invariant feature extractor 的输出直接叫作完整材料成像 latent。
+
+\begin{proposition}[光滑无损商的维数下界]
+若 $\F=h\circ\pi$，$\pi:\M\to\U^r$ 与 $h$ 为 $C^1$，则
+\begin{equation}
+\rank D\F_m\le\rank D\pi_m\le r.
+\end{equation}
+因此材料有效响应数学上满列秩 66 的邻域，不可能存在维数小于 66 的光滑无损 forward quotient。有限群商一般不改变连续维数，只合并分支。
+\end{proposition}
+\begin{proof}
+链式法则给出 $D\F=Dh\,D\pi$，矩阵乘积秩不超过各因子秩。
+\end{proof}
+
+这不禁止低维任务边缘化、带误差界的统计压缩、粗粒度观测或扩大材料类后的降维。它限制的是适用于整个数据模型的精确可计算光滑商。纯集合论的实数编码，以及只对某一次 $y$ 选择 $\pi(m)=L_y(m)$ 的形式技巧，不具有这项几何含义；它们的条件核可能同样难求。
+
+\subsection{精确 Bayesian 商分解定理}
+
+\begin{theorem}[何时可复用原先验条件核]
+设 $\M,\U$ 为标准 Borel 空间，$\mu_0$ 为材料先验，$\pi:\M\to\U$ 可测。记 $\nu_0=\pi_\#\mu_0$，$K(dm\mid u)$ 为先验 disintegration：
+\begin{equation}
+\mu_0(dm)=\int K(dm\mid u)\nu_0(du).
+\end{equation}
+对任意非负 likelihood $L_y$，假设 $0<Z_y=\int L_y\,d\mu_0<\infty$。定义
+\begin{align}
+\overline L_y(u)&=\int L_y(m)K(dm\mid u),\\
+\nu^y(du)&=Z_y^{-1}\overline L_y(u)\nu_0(du),\\
+K_y(dm\mid u)&=\frac{L_y(m)}{\overline L_y(u)}K(dm\mid u)
+\quad\text{在 }\overline L_y(u)>0\text{ 时}.
+\end{align}
+则材料后验精确满足
+\begin{equation}
+\mu^y(dm)=\int K_y(dm\mid u)\nu^y(du).
+\end{equation}
+可将 $K_y$ 换回原 $K$ 的充要条件是 $L_y(m)=\ell_y(\pi(m))$，$\mu_0$ 几乎处处成立。若 $\F=h\circ\pi$ 且噪声仅依赖预测均值，条件自动满足。
+\end{theorem}
+\begin{proof}
+将 $K_y,\nu^y$ 代入，$\overline L_y$ 约掉后正是 $Z_y^{-1}L_y\mu_0$。若 likelihood 因子化，则它在先验条件纤维中为常数，$K_y=K$。反之，后验条件核的几乎处处唯一性给出 $L_y/\overline L_y=1$，从而得到所需因子化。零边缘 likelihood 的纤维没有后验质量，可任意定义其核。[R15,R16]
+\end{proof}
+
+对正定固定协方差 Gaussian 噪声，若对整个 $y$ 家族均可复用 $K$，则等价于 $\F=h\circ\pi$ 在先验几乎处处成立。两种材料的 log-likelihood 差是关于 $y$ 的仿射函数；对所有 $y$ 为零迫使两个预测均值相同。这解释为什么只选一个廉价任务变量并不能一般恢复完整材料后验：通常还得在纤维内重新计算 $K_y$。
+
+先反演 quotient 的精确输出应是 $\nu^y$，而不是单点 $\widehat u$。有限噪声下，即使每个精确纤维都已完整生成，仍需对不同 $u$ 的后验不确定性积分。固定 $\widehat u$ 后生成材料仅给条件世界，未给完整 noisy posterior。
+
+\subsection{任务风险与条件积分的收益}
+
+在充分商条件下，对任何可积任务，令
+\begin{equation}
+\overline\psi(u)=\int\psi(m)K(dm\mid u).
+\end{equation}
+则 $\E[\psi(M)\mid y]=\int\overline\psi(u)\nu^y(du)$。对平方可积任务，平方损失下的方差分解为
+\begin{equation}
+\operatorname{Var}(\psi\mid y)
+=\operatorname{Var}(\overline\psi(U)\mid y)
++\E[\operatorname{Var}(\psi\mid U)\mid y].
+\end{equation}
+后一项是在固定当前观测商后仍存在的材料任务不确定性；数据可通过重新分配 $u$ 的质量改变其整体贡献，但无法在同一精确观测纤维内区分材料。新实验合同可进一步打破原纤维，例如二单元的离轴接收器。
+
+若 $K$ 能低成本积分，则 Rao--Blackwell 化可以减少估计方差。这是标准统计收益，不依赖新群论。关键实验是：相对于直接材料采样，节省的物理调用能否超过计算 $K$ 和 $\overline\psi$ 的代价。
+
+\section{纤维上的正确概率测度}
+
+\subsection{Coarea：概率不是数点或数群元素}
+
+设一个 $d$ 维光滑材料 stratum 上先验密度为 $p_M$，$\pi$ 到 $r$ 维坐标为 submersion。在正交切空间坐标下
+\begin{equation}
+J_\pi(m)=\sqrt{\det(D\pi_mD\pi_m^\top)}.
+\end{equation}
+coarea 给出 quotient 密度与条件核
+\begin{align}
+q(u)&=\int_{\pi^{-1}(u)}\frac{p_M(m)}{J_\pi(m)}\,d\Hh^{d-r}(m),\\
+K(dm\mid u)&=\frac{p_M(m)/J_\pi(m)}{q(u)}\,d\Hh^{d-r}(m).\label{eq:coarea}
+\end{align}
+若原数据维数大于实际秩 $r$，不能直接用 $\det(D\F D\F^\top)=0$ 作分母；应选局部 $r$ 维观测像坐标，或相对于该像的 Hausdorff 测度使用非零奇异值乘积。交叉像分支须分别处理。[R15]
+
+有限 regular 根 $m_k$ 的情形为
+\begin{equation}
+w_k(u)=\frac{p_M(m_k)/|\det D\pi(m_k)|}
+{\sum_j p_M(m_j)/|\det D\pi(m_j)|}.\label{eq:root-weights}
+\end{equation}
+即使 prior 在材料空间均匀，也未必均匀数根：$f(x)=x^3-3x$、$x\sim\mathrm{Unif}[-2,2]$、$u=0$ 时，三根导数绝对值为 $(6,3,6)$，正确权重为 $(1/4,1/2,1/4)$。因此
+\begin{equation}
+\Pr(|x|<1\mid u)=1/2,\qquad \E[x^2\mid u]=3/2;
+\end{equation}
+均匀枚举则给 $1/3$ 和 $2$。错误发生在普通正则根，不需要奇点。
+
+在 $z^n$ 的非零复根上，实 Jacobian 为 $n^2|z|^{2n-2}$；同一纤维的根模相同，故相对权重由 prior 在各根的取值决定。各根 prior 密度相同才给均匀权重；$C_n$ 不变足够，无需对整个 $U(1)$ 不变，单个纤维上的偶然相等也可以。
+
+\subsection{群、稳定子与非紧轨道}
+
+若紧群合法作用且材料 prior 对该作用不变，则 orbit 上的条件概率可取归一化 Haar 测度的推前。有限群在一个指定轨道上均匀抽群元素，也会均匀抽到不同轨道点，因为每点具有相同的稳定子重数。\emph{这不决定不同轨道或不同 strata 的总质量。}
+
+非对称 prior 下应使用式 \eqref{eq:coarea} 或其离散形式。非等距作用还需要正确轨道参数化的 Jacobian。非紧群一般没有有限均匀 Haar 概率；个别商轨道可能有有限不变测度，例如 $\R$ 在圆上的周期作用，因此应检查具体的 $G/G_m$，不能仅按群是否非紧作统一结论。
+
+例如 $H(a,b)=a+b^2$、二维标准 Gaussian prior。在 $u$ 上用 $b$ 参数化整条纤维，弧长因子与 coarea 分母抵消，得到
+\begin{equation}
+p(b\mid u)\propto
+\exp\left[-\tfrac12\{(u-b^2)^2+b^2\}\right].
+\end{equation}
+平移群完全覆盖纤维，条件 prior 仍明显不均匀。无限连续生成能力与正确概率是两个问题。
+
+\subsection{二单元的分支概率：一个不同材料的实例}
+
+在本轮真实 TM 二单元域 $[0.5,4]^2$ 上另指定先验 $p_M(x_1,x_2)\propto x_1$。对 $(p,q)=(4,3)$，两支 $(1,3)$ 与 $(3,1)$ 的 $|\det D\pi|=|x_1-x_2|=2$ 相同，故
+\begin{equation}
+w(1,3)=1/4,\qquad w(3,1)=3/4.
+\end{equation}
+正确条件材料均值为 $(2.5,1.5)$，位置敏感事件 $\Pr(x_1>x_2\mid p,q)=3/4$。均匀群元素给均值 $(2,2)$ 和事件 $1/2$，都错误。
+
+材料均值通常不是一个相容材料世界：上述均值的乘积为 $3.75$，不是该纤维的 $q=3$。它是平方损失下的 Bayes 决策；样本、分支和事件概率承担描述可能世界的功能。不能要求平均材料也满足原非线性等观测约束。
+
+数值积分可改用有序代表 $(x_+,x_-)$，$x_+\ge x_-$，quotient prior 为
+\begin{equation}
+p_M(x_+,x_-)+p_M(x_-,x_+),
+\end{equation}
+两支分别按这两项归一化抽取。这样可避免 $(p,q)$ 坐标在对角线上的 $1/\sqrt{p^2-4q}$ 密度奇性。对角线若在原 prior 下有原子或低维质量，必须单独计数，不能重复加两次。
+
+\subsection{\texorpdfstring{$V=QD$}{V=QD}：正确边缘仍不能拼出正确联合}
+
+为了给出可精确积分的独立对照，令 $Q,D$ 原先独立且均为 $\mathrm{Unif}[1,2]$，$V=QD$。在 $V=2$ 的条件纤维上
+\begin{equation}
+p(q\mid V=2)=\frac{1}{q\log2},\quad 1\le q\le2,\qquad D=2/Q.
+\end{equation}
+于是 $\E[Q\mid V=2]=\E[D\mid V=2]=1/\log2$。若独立抽取这两个完全正确的条件边缘，几乎必然破坏 $QD=2$，并且
+\begin{equation}
+\E[Q^*D^*]=\frac{1}{(\log2)^2}\simeq2.081368981\ne2.
+\end{equation}
+这与 R6 的物理控制具有相同逻辑：条件 coupling 是生成同材料的组成部分。这个新 toy 的 prior 与 R6 不同，数值不作互换。
+
+尺度轨道 $(Q,D)\mapsto(e^tQ,e^{-t}D)$ 只生成同一个 $V$，属于 decoder gauge；方形支持把它截为有限弧段。无限多个潜变量配对不是无限多个材料世界。
+
+\subsection{原子、饱和平台和分层 prior}
+
+若 $\mu_0=\sum_\alpha w_\alpha\mu_\alpha$，各层维数、输出秩和原子结构可能不同。先分别推前 $\nu_\alpha=\pi_\#\mu_\alpha$，再令 $\nu_0=\sum_\alpha w_\alpha\nu_\alpha$。条件层权重为
+\begin{equation}
+\lambda_\alpha(u)=w_\alpha\frac{d\nu_\alpha}{d\nu_0}(u),
+\qquad K(dm\mid u)=\sum_\alpha\lambda_\alpha(u)K_\alpha(dm\mid u).
+\end{equation}
+在可用 coarea 的层上再使用式 \eqref{eq:coarea}。不同维数测度不能强行放进同一个 Lebesgue 密度，prior 也未必对每层 Hausdorff 测度绝对连续。
+
+最简单例子为 $Z\sim N(0,1)$、$M=\max(Z,0)$。材料 prior 是 $\frac12\delta_0+\phi(m)1_{m>0}dm$。对 $F(m)=m$ 和 Gaussian 噪声，host 原子后验质量为
+\begin{equation}
+w_0(y)=\frac{\tfrac12e^{-y^2/(2\sigma^2)}}
+{\tfrac12e^{-y^2/(2\sigma^2)}+
+\frac{\sigma}{\sqrt{1+\sigma^2}}e^{-y^2/[2(1+\sigma^2)]}
+\Phi\!\left(\frac{y}{\sigma\sqrt{1+\sigma^2}}\right)}.
+\end{equation}
+虽然 $z<0$ 平台的局部 Jacobian 为零，host 与非 host 的 posterior 权重仍随观测变化。这正解释了 R6 的限制，完全无需把平台解释成可观测方向。
+
+disintegration 只在 $\nu_0$ 几乎处处唯一。临界观测或像交叉上的某个零测度异常值，不能用 $p/J$ 除以零来定义唯一概率。原有限噪声模型通常仍良好；若采用零噪声极限，要明确噪声模型、缩放与逼近路径。
+
+\subsection{电流图册与多表示的测度一致性}
+
+唯一状态域内，材料到联合状态的图映射为 $\kappa:m\mapsto(m,J(m))$。与原 prior 等价的 lifted prior 必须是 $\kappa_\#\mu_0$；不能另给暗电流系数 $c$ 平坦先验。
+
+若某合法纤维图册由 $m=M(u,\theta)$ 单射参数化，$\theta\in\R^{d-r}$，则
+\begin{equation}
+dK(\theta\mid u)\propto
+\frac{p_M(M(u,\theta))}{J_\pi(M(u,\theta))}
+\sqrt{\det\{(D_\theta M)^\top D_\theta M\}}\,d\theta.\label{eq:current-weight}
+\end{equation}
+若 $(u,\theta)\mapsto m$ 是等维局部微分同胚，也可直接使用联合坐标 Jacobian。高维 current constraint surface 上的面积因子必须限制在其真正切空间上计算；场节点需保留显式材料坐标，避免恢复映射失去单射性。
+
+不同 decoder 使用同一 prior 的条件是
+\begin{equation}
+(G_i)_\#\mu_i=\mu_0,
+\end{equation}
+并不是各 latent 都采标准 Gaussian。完整 Fourier/Wavelet 换基可以保留测度，但密度或 covariance 随之变换；截断通常改变支持。图册重叠积分应采用材料层 partition of unity，$\rho_i(m)\ge0$、$\sum_i\rho_i(m)=1$，或者明确的唯一代表划分，不能重复加质量。
+
+如果 decoder 原本给出不同材料 priors，应定义明确的模型混合 $\sum_i\alpha_i\mu_{0,i}$，后验模型权重为 $\alpha_iZ_i/\sum_j\alpha_jZ_j$。把不同模型的 ``材料概率'' 直接相加没有统计意义。
+
+\subsection{有限噪声近似和遗漏质量的可用误差界}
+
+设在区域 $A$ 上 $\norm{W_a(\widehat F-F)}\le\delta$ 且 $\norm{W_a(F-y)}\le R$。Gaussian likelihood 满足
+\begin{equation}
+|\log\widehat L_y-\log L_y|\le\eta:=R\delta+\delta^2/2.
+\end{equation}
+若全目标域均满足该界，且使用同一 prior 和固定噪声模型，则归一化后的 posterior 有
+\begin{equation}
+\TV(P,\widehat P)\le\tanh(\eta/2).\label{eq:tv}
+\end{equation}
+\begin{proof}
+令 $w=\widehat L/L\in[a,b]$，$Z=\E_Pw$。对绝对值函数使用区间端点的凸性上界，可得
+\[
+\TV(P,\widehat P)\le\frac{(b-Z)(Z-a)}{(b-a)Z}
+\le\frac{\sqrt b-\sqrt a}{\sqrt b+\sqrt a}.
+\]
+右端在 $Z=\sqrt{ab}$ 取得；取 $a=e^{-\eta},b=e^\eta$ 得式 \eqref{eq:tv}。更一般 log-ratio 的振幅不超过 $\omega$ 时，上界为 $\tanh(\omega/4)$。
+\end{proof}
+
+若只在 $A$ 认证，且另有 $P(A^c\mid y)\le\beta$，输出在 $A$ 内归一化的近似 $Q_A$，则
+\begin{equation}
+\TV(P,Q_A)\le\beta+(1-\beta)\tanh(\eta/2).
+\end{equation}
+有界任务 $\psi\in[a_\psi,b_\psi]$ 的均值误差不超过 $(b_\psi-a_\psi)\TV$；无界任务还需尾部矩控制。
+
+对未覆盖域 $B$，若原先验质量 $\mu_0(B)\le\alpha$、$\sup_BL_y\le L_{max}$，且已覆盖证据下界 $Z_A\ge z_A>0$，则
+\begin{equation}
+P(B\mid y)\le\frac{L_{max}\alpha}{z_A+L_{max}\alpha}.\label{eq:omission}
+\end{equation}
+对精确纤维的遗漏分支，不能用 ambient prior 的零质量代替该界，须控制相应 coarea 分支密度或条件质量。没有这些证书时应写 ``未获得遗漏质量界''。multi-start 的命中频率属于优化种子的 basin 测度，通常不是材料后验质量。

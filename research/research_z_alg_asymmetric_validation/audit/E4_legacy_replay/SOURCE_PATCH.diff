@@ -1,0 +1,35 @@
+--- /Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-z-alg-asymmetric-validation/research/research_z_alg_asymmetric_validation/inputs/Research_Z_ALG_Research_Kit/zalgo_probability/e4_two_cell_posterior.py
++++ /Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/B1/b1-z-alg-asymmetric-validation/research/research_z_alg_asymmetric_validation/audit/E4_legacy_replay/e4_two_cell_posterior_adapted.py
+@@ -92,6 +92,9 @@
+         q = xplus * xminus
+         rational = (p + 2 * (g - g0) * q) / (1 - g0 * p + (g0 * g0 - g * g) * q)
+         return rational[..., None, None] * scale_matrix
++
++    response_direct = _formula_wrapper(response_direct, "direct_current_analytic_response")
++    response_quotient = _formula_wrapper(response_quotient, "quotient_rational_response")
+ 
+     def likelihood(pred):
+         counts["likelihood_evaluations"] += int(np.prod(pred.shape[:-2]))
+@@ -170,8 +173,9 @@
+         return out
+ 
+     levels = [args.n, 2 * args.n]
+-    results = {str(n): {"original_box": integrate_box(n),
+-                        "ordered_quotient": integrate_ordered_quotient(n)} for n in levels}
++    results = {"32": {"original_box": integrate_box(32), "ordered_quotient": integrate_ordered_quotient(32)},
++               "64": _frozen_64}
++
+ 
+     metrics = ["scaled_evidence", "mean_x1", "mean_x2", "event_x1_gt_x2", "psi_x1_squared"]
+     def difference(a, b):
+@@ -191,8 +195,8 @@
+     out = {
+         "title": "E4 finite-noise posterior quadrature for the frozen two-cell scalar-TM VIE",
+         "source_witness": str(args.witness),
+-        "source_witness_sha256": hashlib.sha256(frozen_bytes).hexdigest(),
+-        "source_script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
++        "source_witness_blake2b": hashlib.blake2b(frozen_bytes).hexdigest(),
++        "source_script_blake2b": hashlib.blake2b(Path(__file__).read_bytes()).hexdigest(),
+         "contract": frozen["contract"],
+         "material_box": [lower, upper],
+         "prior": {"density": "rho(x1,x2)=x1/C on [0.5,4]^2", "C": prior_normalizer,

@@ -1,0 +1,191 @@
+\section{Maxwell 电流与共享材料的代数结构}
+
+\subsection{固定标签的物理对称：一个可直接检验的充分条件}
+
+考虑同一频率的离散系统，$X(m)$ 为材料乘法算子，$G_D$ 为内部 Green 算子，$S_s$ 为第 $s$ 个照明的固定接收算子。设一个可逆线性状态变换 $Q$ 和材料变换 $T$ 满足
+\begin{align}
+X(Tm)&=QX(m)Q^{-1}, & QG_D&=G_DQ,\\
+Qe_s^{inc}&=e_s^{inc}, & S_sQ&=S_s \quad\text{对每个带标签的 }s.
+\end{align}
+若变换前后的合法材料都具有唯一状态解，则 $j_s(Tm)=Qj_s(m)$，故 $\F(Tm)=\F(m)$。
+\begin{proof}
+把 $Qj_s$ 代入变换后的状态方程，利用四个恒等式得
+\[
+Qj_s=X(Tm)(e_s^{inc}+G_DQj_s).
+\]
+唯一性识别状态；逐个接收算子作用后数据不变。
+\end{proof}
+
+若只有 $QE^{inc}=E^{inc}P_{src}$ 或 $SQ=P_{rec}S$，结论通常是数据数组的置换等变，\emph{不是同一带标签数据不变}。一组材料交换只有在整个所声明域保持上述恒等式和材料合法性时，才构成可复用的物理生成元。prior 是否对称是独立问题，不在该定理的假设中。
+
+\subsection{接收零空间的完整参数化}
+
+暂取每个 cell 一个复标量对比度 $x_i$，令 $X=\diag(x)$，$S$ 个照明共享同一个 $x$。在唯一前向域内
+\begin{equation}
+A(x)=I-XG_D,\qquad
+j_s=A(x)^{-1}Xe_s^{inc},\qquad y_s=S_sj_s.
+\end{equation}
+设 $u=(u_s)$ 为\textbf{潜在无噪声数据}，不把含噪实测 $y$ 强制当作可实现状态。对每个 $u_s\in\im S_s$，选择 $S_sj_s^0=u_s$，并令 $N_s$ 的列为完整的 $\ker S_s$ 基。所有满足接收方程的电流恰为
+\begin{equation}
+j_s=j_s^0(u_s)+N_sc_s.\label{eq:current-param}
+\end{equation}
+接收方程被线性解掉，但 $c_s$ 不是自由材料参数。记
+\begin{equation}
+E_{is}=\left(e_s^{inc}+G_Dj_s\right)_i,\qquad
+J_i=(j_{i1},\ldots,j_{iS}),\quad E_i=(E_{i1},\ldots,E_{iS}).
+\end{equation}
+
+\begin{theorem}[共享标量材料的精确可实现性]
+若 $E_i\ne0$，存在一个对所有照明共同的复数 $x_i$ 使 $J_i=x_iE_i$，当且仅当
+\begin{equation}
+C_{i,st}:=j_{is}E_{it}-j_{it}E_{is}=0\qquad\text{对全部 }s<t.\label{eq:minors}
+\end{equation}
+此时材料唯一，且
+\begin{equation}
+x_i=\frac{\sum_s\overline{E_{is}}j_{is}}{\sum_s|E_{is}|^2}.\label{eq:recover-x}
+\end{equation}
+若 $E_i=0$，必须同时有 $J_i=0$；满足后该 cell 的 $x_i$ 必须作为额外未知量保留。将所有 cells 的这些条件、原材料合法性与 prior 支持，以及 $\det A(x)\ne0$ 一起施加，则在固定零空间基、保留节点材料变量，并将重叠图册按同一物理状态识别后，式 \eqref{eq:current-param} 的合法解与 $\F^{-1}(u)\cap\M$ 的材料一一对应。
+\end{theorem}
+\begin{proof}
+必要性由 $j_{is}=x_iE_{is}$ 直接得到。充分性方面，选一个 $E_{it}\ne0$；全部 minors 给出 $j_{is}=j_{it}E_{is}/E_{it}$，所以共同 $x_i=j_{it}/E_{it}$ 存在，等价于式 \eqref{eq:recover-x}。节点条件由原构成方程直接得到。逐 cell 恢复后，所有源满足同一 $X$ 的状态方程；可逆性保证它们恰为真实前向解。反过来，每个合法材料的唯一电流满足接收方程，因完整零空间表示而被包含；电流唯一排除了人为新增的状态自由度。
+\end{proof}
+\tagphy\ 该定理把一个可计算、必要且充分的材料筛选条件放在接收零空间之上，但线性零空间分解、CSI 的联合材料--状态表述及显式材料最小二乘更新都有成熟前例。[R10,R11]
+
+由于 $J,E$ 对 $c$ 仿射，$C_{i,st}$ 是次数不超过二的复多项式。它们的二次交叉项说明：两个分别合法的暗电流增量相加后，通常不再合法。因此 $\ker S_s$ 的加法群不会自动限制成材料纤维上的作用。只有在进一步证明某个变换保持这些二次约束、材料域和 pole 排除条件后，才有物理群生成元。
+
+\subsection{节点、安全材料恢复与真实数据误差}
+
+最小二乘材料 $\widehat x_i$ 仍由式 \eqref{eq:recover-x} 定义，设
+\begin{equation}
+R_i=J_i-\widehat x_iE_i.
+\end{equation}
+复 Lagrange 恒等式给出
+\begin{equation}
+\norm{R_i}^2
+=\frac{\sum_{s<t}|j_{is}E_{it}-j_{it}E_{is}|^2}{\norm{E_i}^2}.\label{eq:minors-residual}
+\end{equation}
+所以不能只检查未归一化 minors：在 $E_i$ 很小时，minors 可以很小而真实构成关系误差仍大；在 $E_i=0$ 时，所有 minors 对任意 $J_i$ 都为零，若省略 $J_i=0$ 就产生假解。
+
+把 $R_s=j_s-\widehat X(e_s^{inc}+G_Dj_s)$ 代入状态方程，令 $j_s^{phys}$ 为 $\widehat x$ 的真实前向电流，则
+\begin{equation}
+j_s^{phys}-j_s=-A(\widehat x)^{-1}R_s.
+\end{equation}
+堆叠全部源，令 $\mathcal A^{-1}$ 为对应块对角 resolvent，$\mathcal S$ 为固定接收块算子，得到
+\begin{equation}
+\norm{W_a\{\F(\widehat x)-u\}}
+\le \norm{W_a\mathcal S\mathcal A^{-1}}\,\norm{R}.\label{eq:physical-certificate}
+\end{equation}
+它给出电流一致性残差到真实物理预测的明确误差传递。接近 pole 时即使 $R$ 小也可能不够；$\det A\ne0$ 只保证定义，不能替代稳定性下界。实际使用必须计算或可靠界定算子范数，并把这项费用入账。若 $\widehat x$ 不满足被动性、实值或 prior 支持，即使数据证书很好也不是本问题的合法材料。
+
+实际零空间或 particular current 若只有数值精度，右端还须加上 $\norm{W_a(\mathcal SJ-u)}$。对材料作被动性或实值投影后，必须用投影后的 $X$ 重新计算 $R$ 和 resolvent，不能沿用投影前的最小二乘证书。
+
+在材料切向层面，合法电流变化也受强约束：
+\begin{equation}
+\delta j_s=A(x)^{-1}\diag(E_s)\delta x.
+\end{equation}
+所有源的 $\delta j_s$ 由同一个 $\delta x$ 驱动。任意各自选择的 receiver-null 向量通常不在这张联合材料响应图的切空间中。这是 current relevance 与 material relevance 的直接区别。
+
+\subsection{矢量、张量与多频率推广}
+
+三维各向同性标量材料下，将每个 cell 的三分量场在所有照明上拼接成长度 $3S$ 的向量，仍可使用同一比例条件。对一般张量材料，令 $E_i,J_i\in\C^{3\times S}$，要求 $J_i=\chi_iE_i$。存在某个线性张量的充要条件为
+\begin{equation}
+\ker E_i\subseteq\ker J_i.
+\end{equation}
+全部线性解可写为
+\begin{equation}
+\chi_i=J_iE_i^\dagger+B_i(I-E_iE_i^\dagger),
+\end{equation}
+前提还包括 $J_i=J_iE_i^\dagger E_i$。若 $E_i$ 满行秩，则 $\chi_i$ 唯一；互易性、对称性、被动性和已知材料参数族会进一步缩小可行集合。若只允许标量材料，不能把合法张量恢复当成成功。
+
+多频率时共享的是原材料参数 $m$ 及其色散关系 $X_\omega(m)$，而不必是频率无关的同一个复对比度。把每个频率的 $x_\omega$ 独立求出再拼接，会丢失共同材料和因果色散限制。原测量合同的频率关系必须在联立系统中保留。
+
+\subsection{代数化与 resolvent 极点}
+
+在固定离散化、已知 $G_D,S_s,e_s^{inc}$、且 $X$ 对材料参数为多项式的情况下，原联立方程
+\begin{equation}
+j_s-X(m)e_s^{inc}-X(m)G_Dj_s=0,\qquad S_sj_s=u_s
+\end{equation}
+是材料--电流空间中的复多项式系统；实化后仍为实多项式系统。Green 系数包含 Hankel 函数并不妨碍此说法，因为此处它们是固定系数。若几何位置或频率也作为未知量，系数对它们未必多项式，须重新评估。
+
+若精确代数算法把浮点 Green 系数视为有理数，它认证的是该冻结系数近似系统。要把结论用于具有真实超越系数的离散 Green 模型，还需区间系数包围、稳定性或解析恒等式；不能用 ``多项式'' 一词跳过系数误差。
+
+有理材料前向为 $S_sA^{-1}Xe_s^{inc}$。直接乘以 $\Delta=\det A$ 清除分母会把 $\Delta=0$ 的非物理解引进来。可在复代数系统中加入辅助变量 $t\Delta-1=0$；在实化系统中可用 $t|\Delta|^2-1=0$。理想饱和 $I:\Delta^\infty$ 适用于代数消元，但得到的闭包仍可能包含极限边界，最终物理筛选必须保留 $\Delta\ne0$。
+
+在 $e^{-i\omega t}$ 约定下，正频率被动标量介电率要求相应虚部非负；一般张量使用 Hermitian 虚部 $(\chi-\chi^\dagger)/(2i)\succeq0$。区间、相分区、多项式几何约束和该半正定条件可形成半代数条件。非代数 Gaussian/probit decoder 或 learned prior 仍应按原定义检查，不能为套用 Gröbner basis 而将其替换成另一个 prior。Full66 材料测度在高维网格空间上通常奇异，必须与其实际 decoder 像相交。
+
+小系统可用消元或 resultants 描述商变量关系，用 Gröbner basis 做根数/分支分析，用 homotopy continuation 找孤立复根，用 witness set 处理正维分量，再对真实、被动及支持内的部分做认证。但方程低次并不代表容易：未知数可按源数膨胀，Bézout 根数、稀疏结构破坏、近奇异跟踪和实可行性筛选都可能主导成本。Helmholtz 小系统的多项式化与 homotopy 全根研究至少在 1990 年代已有先例；地球物理 PDE 逆问题的代数表述也有成熟文献。[R12,R13]
+
+一般连续 Maxwell 方程的解集不等同于有限多项式簇。这里的精确代数资格属于冻结离散模型；若要向连续场结论推进，还需离散收敛、稳定性和误差分析。
+
+\section{本轮完成的二单元 Maxwell 见证}
+
+\subsection{物理合同与完整逆像}
+
+本轮使用二维 scalar-TM 的 $e^{-i\omega t}$ 约定，波长为一，$k=2\pi$。两个半径 $a=0.04$ 的圆盘 pulse basis 位于 $(-0.2,0)$ 与 $(0.2,0)$，在圆盘中心 collocation，使用圆盘积分 Green 系数。两个源位于 $(0,-0.7),(0,-1.1)$，两个接收器位于 $(0,0.8),(0,1.2)$。每一个固定标签都处于镜面对称轴上；没有交换测量标签。
+
+采用材料对比度 $x\in[0.5,4]^2$，为被动无损实材料。内部矩阵为
+\begin{equation}
+G_D=\begin{pmatrix}g_0&g\\g&g_0\end{pmatrix},\quad
+g_0=\frac{i\pi ka}{2}H_1^{(1)}(ka)-1,\quad
+g=\frac{i\pi ka}{2}J_1(ka)H_0^{(1)}(kd),\quad d=0.4.
+\end{equation}
+每个源在两个 collocation 点的入射值相同，每个 receiver 对两圆盘的积分系数相同。交换矩阵 $P$ 满足前节全部条件。因此 $T(x_1,x_2)=(x_2,x_1)$ 是合法的 $C_2$ 物理作用。
+
+令 $p=x_1+x_2$、$q=x_1x_2$，把任一非零通道的观测除以其已知入射和接收公共因子，记为 $Y$，则
+\begin{equation}
+Y=\frac{p+2(g-g_0)q}{1-g_0p+(g_0^2-g^2)q}.\label{eq:2cell-rational}
+\end{equation}
+全部 $2\times2$ 复数据在此离散家族中共享这个归一化响应。它们的冗余被明确保留，不虚构独立观测数。由一条复方程
+\begin{equation}
+(1+Yg_0)p+\{2(g-g_0)-Y(g_0^2-g^2)\}q=Y\label{eq:2cell-linear}
+\end{equation}
+实化为一个 $2\times2$ 实线性系统。其行列式非零时可唯一恢复 $(p,q)$；随后
+\begin{equation}
+t^2-pt+q=0
+\end{equation}
+给出全部材料值及其排列。在 $p^2>4q$、两根位于材料区间、且 resolvent 可逆时，该冻结二单元实材料家族的完整逆像正好有两点。
+
+这是真正的 ``先商变量，再全部材料分支''，但商仍有两个连续维数。它消除了离散排列搜索，并没有把二维材料信息压缩为一维。在 $p^2=4q$ 处，两分支合并、稳定子增大，需单独处理。
+
+\subsection{实际数值结果与对照}
+
+\begin{longtable}{p{.52\textwidth}p{.40\textwidth}}
+\toprule 检查项 & 本轮结果\\\midrule\endhead
+材料对 & $(1,3)$ 与 $(3,1)$\\
+材料欧氏距离 & $2.8284271247461903$\\
+完整 $2\times2$ 复观测相对差 & $1.22\times10^{-16}$\\
+独立圆盘求积复核误差 & 自项 $4.56\times10^{-16}$；互项 $8.15\times10^{-18}$\\
+恢复的 $(p,q)$ & $(4,3)$，浮点误差约 $10^{-15}$\\
+式 \eqref{eq:2cell-linear} 的实行列式 & $-0.1184665575$\\
+单复通道实 Jacobian 奇异值 & $2.6805742\times10^{-3}$，$3.7816321\times10^{-4}$\\
+解析导数与中心差分相对差 & $4.10\times10^{-11}$\\
+$A(x)$ 最小奇异值 & $0.8087481$\\
+将一个 receiver 改到 $(0.12,0.8)$ & 交换后的预测相对差 $20.637\%$\\\bottomrule
+\end{longtable}
+
+表中数据差均采用未白化的模型范数，不能直接解释为噪声单位。精确性由交换恒等式和条件商系统推导支撑；具体 Hankel 常数未做区间包围，浮点结果不是连续 Maxwell 全域的区间证书。此处是物理 Green 系数构成的离散 TM/VIE，\emph{不是任意手填矩阵，也不是 Born 线性化}。关于该模型完整两根的结论仅限冻结的两维材料家族；圆盘内真实连续场有额外空间变化，不能用这个根数替代连续逆问题的全解数量。
+
+满列秩与两个远处分支同时成立，直接回答了 R7 后续研究的一个关键逻辑点。另一方面，只改变一个固定 receiver 就破坏等价，说明对称是材料类和实际采集的共同性质。
+
+\subsection{同观测暗电流却没有共同材料：实际反例}
+
+为测试多源共享材料，保持对称接收器，另用源 $(0,-0.7),(0.1,-0.9)$，明确记为另一合同。每个源的接收零空间包含 $(1,-1)$。从材料 $(1,3)$ 的真实电流出发，分别加
+\begin{equation}
+\Delta j_1=0.01(1,-1),\qquad
+\Delta j_2=0.015i(1,-1).
+\end{equation}
+接收预测保持到相对 $3.56\times10^{-17}$，但两源给出的各 cell 材料比 $j_{is}/E_{is}$ 不一致，共享材料最小二乘残差为 $0.0063510$。即便允许任意复材料，也不存在一个精确共同标量材料实现这组候选电流。
+
+最小二乘恢复得到
+\begin{equation}
+\widehat x\simeq(1.077826+0.106201i,\ 2.942083-0.064937i),
+\end{equation}
+还违反原实材料支持。用该复材料重新解真实状态方程，数据偏差为 $5.46\times10^{-5}$；式 \eqref{eq:physical-certificate} 给出的上界为 $2.17\times10^{-4}$，数值上覆盖了实际偏差。
+
+这是接收器暗电流与材料自由度不等价的正面反例。它比仅指出 ``还要物理校正'' 更具体：失败的位置就是跨源比例条件，而校正残差可传递到实际 Maxwell 数据。一般非辐射源文献讨论的是源映射的零空间，不会自动满足这种共同材料构成关系。[R14]
+
+\subsection{本轮费用与尚未完成事项}
+
+冻结脚本记录了八次各含两复 RHS 的前向求解、一次两 RHS 的解析灵敏度求解、一次证书用矩阵逆、一次实 $2\times2$ 商求解与两次独立 Green 求积。优化和训练次数均为零。反例中更换源与破坏对称的 receiver 检查也计入此账本。
+
+这组实验没有测量一般问题的加速比，也没有完成非对称材料分支的全局枚举。它证明的是：真实离散 Maxwell 中存在有用的精确离散作用；商与材料分支能解析联接；单独的电流暗空间仍可生成无材料原像的假候选。更强的原创性应在非对称系统与正确概率积分中检验。
