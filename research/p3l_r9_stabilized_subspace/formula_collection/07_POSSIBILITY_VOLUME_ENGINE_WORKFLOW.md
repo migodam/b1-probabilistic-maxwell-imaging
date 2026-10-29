@@ -1,6 +1,6 @@
 # 07 可能材料云：新目标、算法与证据流
 
-这是新 possibility-volume namespace 的源码流程说明，写作时没有读取新 truth 或运行新物理。它不改变03章保留的原 E2/E3与REV1。执行批准、最终协议冻结、生成、在线运行与封存由 root负责；统计配置独立冻结。
+这是新 possibility-volume namespace 的源码流程说明，写作时没有读取新 truth 或运行新物理。它不改变03章保留的原 E2/E3与REV1。最终协议已由 root批准，分别是 config/possibility_volume_protocol.json 与 config/possibility_statistics_frozen.json。生成、在线运行、封存及单独评分仍由 root负责；本章不根据批准状态宣称实验已完成。
 
 ## 目标变化必须明示
 

@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "campaign": "R9_S_EXPLORATION",
+  "frozen_utc": 1793287211.523206,
+  "exposed_DEV_objects": [
+    "R7_LOCKED_000",
+    "R7_LOCKED_001",
+    "R7_LOCKED_002",
+    "R7_LOCKED_003",
+    "R7_LOCKED_004",
+    "R7_LOCKED_005",
+    "R7_LOCKED_006",
+    "R7_LOCKED_007"
+  ],
+  "radii": [
+    0.01,
+    0.02
+  ],
+  "weak_rank": 4,
+  "arms": [
+    "A_NATIVE_FULLJ",
+    "B_FIXED_WEAK",
+    "C_DYNAMIC_WEAK",
+    "S2_GLOBAL",
+    "D_FOURIER",
+    "D_WAVELET",
+    "E_SOM",
+    "F_FROZENJ",
+    "R_RANDOM",
+    "U_UNCORRECTED"
+  ],
+  "max_states": 3,
+  "trust_initial": 0.5,
+  "trust_material_fraction": 0.5,
+  "max_latent_radius": 4.0,
+  "match_tolerance": 0.02,
+  "weak_definition": "four smallest eigenvectors of K.T K + T.T T with M T orthonormal, effective material cutoff max(s0*1e-8,1e-10)",
+  "B": "Qweak=QR(T Wweak) Gaussian-orthonormal; exclude fixed anchor Qweak from latent correction dx",
+  "C": "exclude recomputed current Gaussian-orthonormal Qweak(x,J(x)), Procrustes aligned to anchor; same initial v as B",
+  "A": "exact R7 native material-effective corrector",
+  "D": "fixed 16-column Fourier or4x4Haar scaling material targets; mapped by M pseudoinverse into original x66; weakest prior-aware direction",
+  "S2_GLOBAL": "original R7 four dev weak Gaussian-projector mean top4; fixed correction complement; deterministic top aggregate vector direction in global Qweak, anchor material-unit normalized",
+  "E": "one SOM ambiguous current outside receiver row space; require shared all-source material and decoder tangent lift error<=1e-6 else MATERIAL_LIFT_FAIL",
+  "paths": [
+    "B_FIXED_WEAK",
+    "C_DYNAMIC_WEAK"
+  ],
+  "path_radius": 0.02,
+  "path_nodes": [
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1
+  ],
+  "path_claim": "five nodes sampled along actual accepted correction polyline by material arclength; no continuous certificate",
+  "retraction": "A,F,R,D exact R7 radial; B,C,S2 decoder-only Newton constrained to respective Qs; A/B not pure basis causal comparison",
+  "C_scope": "current weak-complement refresh only; same anchor initial direction as B; no multistep direction-coverage claim",
+  "prior_and_gates": "EXACT R7",
+  "GT_online": false,
+  "cap_RHS": 24000,
+  "costprobe_max_RHS": 56,
+  "single_worker": true,
+  "live_LU_max": 1,
+  "BLAS_threads": 1,
+  "dtype": "float64/complex128",
+  "physics_enable_required": true
+}

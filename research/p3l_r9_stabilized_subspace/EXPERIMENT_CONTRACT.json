@@ -1,0 +1,76 @@
+{
+  "id": "P3L-R9-S-20261029",
+  "freeze_utc": "2026-10-29T15:14:25.847101+00:00",
+  "source_base": "9cd323cbc88af89c5dcbdef8b39049218f8dfcdf",
+  "stages": {
+    "E0": {
+      "new_rhs": 0
+    },
+    "exploration_development": {
+      "new_full_complex_rhs_cap": 24000,
+      "contexts": "R7 locked000..007 now development; original dev for global basis only",
+      "radius": [
+        0.01,
+        0.02
+      ]
+    },
+    "probability_initial": {
+      "new_full_complex_rhs_cap": 4000,
+      "reduced_256_system_work": "separate charged CPU, LU, reduced RHS and node ledger; never free physics"
+    },
+    "confirmation": {
+      "status": "GATED_NOT_STARTED",
+      "budget": "freeze after development actual measured costs and scientific gates",
+      "minimum_fresh_parents": 32
+    }
+  },
+  "initial_full_rhs_cap": 28000,
+  "single_physical_worker": true,
+  "BLAS_threads": 1,
+  "live_LU_per_process": 1,
+  "peak_memory_target_bytes": 8000000000,
+  "no_cloud": true,
+  "local_target_finish": "2026-10-30T03:00:00+08:00",
+  "physics_contract": {
+    "N": 24,
+    "cells": 576,
+    "ROI": 256,
+    "sources": 8,
+    "receivers": 32,
+    "sigma": 0.00119211798514519,
+    "prior": "original P1 Gaussian64 + Uniform2, probit Gaussianized66",
+    "dtype": [
+      "float64",
+      "complex128"
+    ],
+    "white_scale": "sqrt(2)/sigma; exact historical source-major packing"
+  },
+  "R7_gates": {
+    "material_RMS": "norm(pack(material difference))/24",
+    "radius_relative_tolerance": 0.02,
+    "signed_progress_fraction": 0.5,
+    "deltaPhi_max": 2,
+    "noise_ball": "chi2.ppf(.95,512)/2",
+    "deltaPrior_max": 10
+  },
+  "comparison": {
+    "weak_rank_initial": 4,
+    "B": "anchor fixed exploration Qw with current Full-J restricted complement corrector",
+    "C": "dynamic Qw with same initial direction, correction rules and material radius",
+    "SVD_charge": "no repeated RHS if current J already paid; marginal CPU only",
+    "efficiency_gate": 0.2,
+    "statistics_unit": "parent",
+    "failure_cost": "all attempts; no conditioning speed claim on both successes"
+  },
+  "probability_qualification": [
+    "NUMERICAL_TASK_PASS",
+    "CERTIFIED_CONDITIONAL_PASS only full support and outward physics/quadrature",
+    "REFERENCE_UNQUALIFIED"
+  ],
+  "historical_assets": "read-only; no cost recycling as new",
+  "subagents": {
+    "theory": "gpt-6-astra high",
+    "exploration": "gpt-6.1-sol high",
+    "probability": "gpt-6.1-sol high"
+  }
+}

@@ -1,0 +1,96 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>06 · 由算子结构推出的优化与裁决</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+ .math{overflow-x:auto;overflow-wrap:normal} mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden} #formula-filter{width:100%;padding:12px;border:1px solid #9eb8c7;border-radius:6px;font-size:17px}.formula-list{columns:2}.formula-list a{display:block;break-inside:avoid;padding:5px}.formula-list a[hidden]{display:none}@media(max-width:800px){.formula-list{columns:1}} </style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="index.html">公式总集</a><a href="../p3l_r9_stabilized_subspace/index.html">R9研究</a><a href="../p3l_r9_stabilized_subspace/RESEARCH_REPORT_ZH.md">原始报告</a><a href="FORMULA_ATLAS.md">完整公式Markdown</a></nav><h1>06 · 由算子结构推出的优化与裁决</h1><p>推导 → 固定与变化算子 → 计算决策 → 实际证据</p></header><main><details><summary>章节目录</summary><div class="toc"><a href="#f-opt-001">F-OPT-001 · 固定宿主消元是所有搜索方法共享的强基线</a><a href="#f-opt-002">F-OPT-002 · 多源、多参数与接收端口：三种导数成本不同</a><a href="#f-opt-003">F-OPT-003 · 电流残差消元与 variable projection 的精确边界</a><a href="#f-opt-004">F-OPT-004 · 能否只解接收可见的少量端口</a><a href="#f-opt-005">F-OPT-005 · 精确可达子空间与近似端口压缩</a><a href="#f-opt-006">F-OPT-006 · 全列稳定基的 GN 求解，不必先寻找弱方向</a><a href="#f-opt-007">F-OPT-007 · 仿射约束、局部消元与最小刷新判据</a><a href="#f-opt-008">F-OPT-008 · 消去强坐标：profile 与概率积分不相同</a><a href="#f-opt-009">F-OPT-009 · 与材料兼容的电流投影</a><a href="#f-opt-010">F-OPT-010 · 嵌套缓存与错误的低秩推断</a><a href="#f-opt-011">F-OPT-011 · 由数学直接裁决的优先级</a><a href="#f-opt-012">F-OPT-012 · 只保留能改变论文结论的实验</a><a href="#来源与资格">来源与资格</a></div></details><article><h1 id="06-由算子结构推出的优化与裁决">06 · 由算子结构推出的优化与裁决</h1>
+<p>本章回答“固定什么才真的减少计算”。优先级由第02章的精确结构决定：先消去固定背景，复用多源 factorization 和接收端口，再决定是否需要更低维近似。冻结四维弱方向只是搜索策略；如果仍然每步计算相同的完整 Jacobian，它并未自动减少物理线性求解。以下候选均区分恒等式、近似与尚未证实的速度收益；没有新增物理实验。</p>
+<h2 id="f-opt-001">F-OPT-001 · 固定宿主消元是所有搜索方法共享的强基线</h2>
+<p>由 F-OP-008，原非均匀 Full66 支持上的完整预测为</p>
+<p>$$L_Dh=DE_R,\qquad L_D=I-DC,\qquad F=F_h+Oh.$$</p>
+<p>固定项是 $C\in\mathbb C^{256\times256}$、$E_R\in\mathbb C^{256\times8}$、$O\in\mathbb C^{32\times256}$、$F_h$。每个材料只更新对角 $D$，解256阶完整系统。它保留原 decoder、噪声模型和 likelihood，所以 fixed-B、dynamic-C、随机探索、普通 Full-J corrector 以及概率积分都应共享它；不能只把这一优化赋给欲证明优越的一臂。</p>
+<p>相比576阶稠密 LU，其 leading factorization 规模由 $N^3$ 变成 $q^3$；这不是实际速度比，因为 setup、BLAS、端口收缩、I/O 和状态数量均有成本。已发生的16个暴露 DEV 状态、3次计时重复的核比较，只支持该窗口的效率判断。它不是新的代数身份，也不是新对象上的完整算法加速。</p>
+<p><strong>直接决策：</strong> 后续方法强基线应为精确256 ROI solver。只有原有瓶颈转移后仍存在的成本，才值得进一步压缩。固定算子低秩近似与真实 residual 校正见 F-ERR-002—006。</p>
+<h2 id="f-opt-002">F-OPT-002 · 多源、多参数与接收端口：三种导数成本不同</h2>
+<p>由 F-OP-010，$\delta F=T D_{\delta d}E$，其中 $T=OL_D^{-1}$，本节 $E=E_{ROI}$。同一材料的所有源和所有导数共享一个 $L_D$ factorization。</p>
+<ol><li><strong>完整66列 Jacobian：</strong> 8 forward RHS 得 $E$，32 transpose RHS 得 $T$，再与 $M=\partial d/\partial x$ 收缩。传播费用为40个 reduced RHS，而非 $8\times66$ 个 tangent RHS。</li><li><strong>仅一个实标量目标的梯度：</strong> 设 $\Phi=\|F-Y\|_F^2/\sigma^2$，解</li></ol>
+<p>$$L_D^*\Lambda=O^*(F-Y)/\sigma^2,\qquad c_i=\sum_s E_{is}\overline{\Lambda_{is}}.$$</p>
+<p>则 $d\Phi=2\operatorname{Re}\sum_i c_i\,\delta d_i$，所以</p>
+<p>$$\nabla_x\Phi=2\operatorname{Re}(M^Tc).$$</p>
+<p>只需8个 adjoint RHS；若含标准 Gaussian prior，梯度再加 $x$。这里 $M^T$ 而非 $M^*$ 与定义的 $c$ 配对；也可采用全共轭的等价写法，但不能混配。</p>
+<ol><li><strong>矩阵自由 GN 作用：</strong> 一个 $v\mapsto\mathcal J^T\mathcal Jv$ 通常需8 tangent RHS 加8 adjoint RHS，在已有 forward/factorization 之后约16个 reduced RHS。对66维当前问题，若每步迭代次数超过少数次，可能比一次32 RHS构造全 Jacobian更贵；需要计入实际迭代、预条件与收缩成本。</li></ol>
+<p>因此，“矩阵自由”“只更新少数方向”不天然更便宜。应先写清目标到底需要梯度、全 Jacobian，还是某几个作用，再选择算子。不同材料状态通常需要不同 factorization；不同源在同状态则不应重复 factorization。</p>
+<h2 id="f-opt-003">F-OPT-003 · 电流残差消元与 variable projection 的精确边界</h2>
+<p>原材料目标可以等价写成带硬物理约束的联合问题</p>
+<p>$$\min_{m,J_c}\ \|WSJ_c-WY\|_F^2+R(m),\qquad L_mJ_c=D_mE^{inc}.$$</p>
+<p>当 $L_m$ 可逆时，约束唯一决定 $J_c=L_m^{-1}D_mE^{inc}$。消去 $J_c$ 正好返回原 forward 目标；它没有凭空免除求解。</p>
+<p>若改为有限罚参数 $\beta&gt;0$，固定 $m$ 的内层是线性最小二乘：</p>
+<p>$$\min_{J_c}\ \left\|\underbrace{\begin{bmatrix}WS\\\sqrt\beta L_m\end{bmatrix}}_{A_\beta(m)}J_c-\underbrace{\begin{bmatrix}WY\\\sqrt\beta D_mE^{inc}\end{bmatrix}}_{b_\beta(m)}\right\|_F^2.$$</p>
+<p>在 $L_m$ 可逆时 $A_\beta$ 满列秩，故</p>
+<p>$$J_*(m)=A_\beta^\dagger b_\beta,\qquad \psi_\beta(m)=\|(I-A_\beta A_\beta^\dagger)b_\beta\|_F^2.$$</p>
+<p>这是标准 variable projection。令 $r_\beta=A_\beta J_*-b_\beta$，由 $A_\beta^*r_\beta=0$，微分时含 $dJ_*$ 的项消去：</p>
+<p>$$d\psi_\beta=2\operatorname{Re}\operatorname{tr}\{r_\beta^*[(dA_\beta)J_*-db_\beta]\}.$$</p>
+<p>这给出准确的 reduced 梯度，并解释为何联合变量的内层可消元。但有限 $\beta$ 允许不满足 Maxwell 的电流；它改变了 likelihood。$\beta\to\infty$ 在适当条件下逼近硬约束，同时可能恶化条件数。用它产生初值后再做原物理验证，可以作为优化流程；不能把有限罚目标直接称为原 posterior。此处未主张它比256阶精确求解更快。</p>
+<p>实现上优先 QR/SVD 或合适的增广求解，而不是无条件形成 $A_\beta^*A_\beta$；后者平方条件数。若原材料用66 latent 表示，增加每源256复 current 会引入4096实状态变量，变量数上未必占优。</p>
+<h2 id="f-opt-004">F-OPT-004 · 能否只解接收可见的少量端口</h2>
+<p>为说明障碍，令固定接收的完整正交基为 $[V_o,V_n]$，$V_o\in\mathbb C^{q\times r}$，$V_n\in\mathbb C^{q\times(q-r)}$，$OV_n=0$。写 $h=V_oa+V_nb$，原约束为</p>
+<p>$$L_DV_oa+L_DV_nb=DE_R.$$</p>
+<p>因为 $L_D$ 可逆，$B_D=L_DV_n$ 满列秩。取其左零空间正交基 $U_D\in\mathbb C^{q\times r}$，即 $U_D^*B_D=0$。乘上 $U_D^*$ 消去 $b$： $$\underbrace{U_D^*L_DV_o}_{T_D^{port}}a=U_D^*DE_R.$$</p>
+<p>$T_D^{port}$ 可逆。若 $T_D^{port}a=0$，则 $L_DV_oa\in\operatorname{range}(L_DV_n)$，由 $L_D$ 可逆得 $V_oa\in\operatorname{range}V_n$，正交性迫使 $a=0$。求得 $a$ 后</p>
+<p>$$b=B_D^\dagger(DE_R-L_DV_oa),\qquad F=F_h+OV_oa.$$</p>
+<p>这是精确端口消元，但 $U_D$ 随材料变化；每次为 $q\times(q-r)$ 矩阵求 QR/零空间可能花费与原 LU 同阶的工作。把最终 $r\times r$ 方程很小当作整体计算很小，是漏记消元成本。固定 $CV_o,CV_n$ 可以缓存，$D$ 的行缩放也很便宜，但不能因此免费得到变化的 $U_D$。</p>
+<p>另一种块 Schur 方法需要 $V_n^*L_DV_n$ 可逆，这是比 $L_D$ 可逆更强的假设：矩阵 $\begin{bmatrix}0&amp;1\\1&amp;0\end{bmatrix}$ 可逆，而任一单坐标对角块均为零。不可未经检查使用该块逆。</p>
+<p>真正免费的固定闭合需要额外结构，例如 F-OP-006 的 $P_oDCP_n=0$；原非均匀材料族没有给出这种闭合。<strong>结论：接收 rank 小是输出维数事实，不能单独证明可同样便宜地求解非线性状态。</strong></p>
+<h2 id="f-opt-005">F-OPT-005 · 精确可达子空间与近似端口压缩</h2>
+<p>均匀幅度 $D=vI$ 时，固定可达子空间</p>
+<p>$$\mathcal R=\operatorname{span}\{E_R,CE_R,\ldots,C^{q-1}E_R\}$$</p>
+<p>包含所有源列，并由 Cayley–Hamilton 定理对 $C$ 不变。若 $Q_c$ 为其正交基，$C Q_c=Q_cC_c$、$E_R=Q_cB_c$，则</p>
+<p>$$h=Q_c\,v(I-vC_c)^{-1}B_c,\qquad F=F_h+OQ_c\,v(I-vC_c)^{-1}B_c.$$</p>
+<p>这是精确可达部分消元；若可达 rank 仍为 $q$，没有降维收益。进一步删除不可观测状态需要正确的不变子空间商或最小实现条件，不能仅把 $\ker O$ 删掉。有限阶 Krylov 截断通常只是矩匹配近似，除非已达到完整不变闭包。</p>
+<p>非均匀材料则需一个对所有允许 $D C$ 共同不变、且包含所有 $DE_R$ 的固定空间。受限 decoder 也许有特殊结构，但“latent仅66维”本身并不证明这种不变性；对角材料变化可激发许多独立空间方向。其一般障碍见 F-ERR-001。</p>
+<p><strong>实际优化路线：</strong> 若没有精确小闭包，只把固定压缩作为预条件/初值，计算真实 residual，再依 F-ERR-003—006 校正或回退。判据应是接收或任务误差以及总费用，不是单独的 $C$ 奇异值尾。当前256阶系统已经很小，不预设低秩路线必胜。</p>
+<h2 id="f-opt-006">F-OPT-006 · 全列稳定基的 GN 求解，不必先寻找弱方向</h2>
+<p>在当前实 latent $x$，白化 residual 为 $r$、Jacobian 为 $\mathcal J$。标准 Gaussian prior 下 GN 二次模型是</p>
+<p>$$q(p)=\tfrac12\|r+\mathcal Jp\|^2+\tfrac12\|x+p\|^2=\tfrac12\|Ap+b\|^2,$$ $$A=\begin{bmatrix}\mathcal J\\I\end{bmatrix},\qquad b=\begin{bmatrix}r\\x\end{bmatrix}.$$</p>
+<p>取任意满列秩变化基 $T\in\mathbb R^{66\times k}$，令 $p=T\xi$，正确问题是</p>
+<p>$$\min_\xi\left\|\begin{bmatrix}\mathcal JT\\T\end{bmatrix}\xi+\begin{bmatrix}r\\x\end{bmatrix}\right\|^2.$$</p>
+<p>只有 $T^TT=I$ 时，步长的 prior 二次项才能当作单位 metric；若 $T$ 是材料归一化或 generalized eigenvector 基，通常不能把下块 $T$ 换成 $I$。即便正交，prior 线性项也必须保留 $T^Tx$。</p>
+<p>用薄 QR $AT=UR$，解 $R\xi=-U^Tb$；数值 rank 存疑时用 pivoted QR/SVD。这样避免显式形成正规方程导致条件数平方。若 $k=66$ 且 $T$ 可逆，这是同一个 GN 步的重参数化；若 $T$ 完整正交，奇异值和二范数条件数甚至完全不变，不能宣称旋转本身改善条件数。若 $k&lt;66$，才是限制搜索空间，需明确遗漏下降量。</p>
+<p><strong>直接决策：</strong> corrector 可以直接用完整稳定基求解；只有 proposal、诊断、预条件或明确的低维近似需要额外弱谱。不要为了一个普通 GN 步每次额外计算无用的 generalized eigensystem。</p>
+<h2 id="f-opt-007">F-OPT-007 · 仿射约束、局部消元与最小刷新判据</h2>
+<p>若要求 $Cp=c$，先检查可行性，取一个特解 $p_0$ 和 $\ker C$ 的正交基 $Z$。所有可行步为 $p=p_0+Z\xi$，所以只需求解</p>
+<p>$$\min_\xi\|AZ\xi+(Ap_0+b)\|^2.$$</p>
+<p>固定弱<strong>绝对坐标</strong> $Q_w^T(x+p-x_0)=w_*$ 对应 $Q_w^Tp=w_*-Q_w^T(x-x_0)$，通常是仿射约束；不能总写成齐次 $Q_w^Tp=0$。同时满足两组约束应叠成一个线性系统。连续施加两个投影，只有相应正交投影对易且仿射偏置相容时才可当作交集投影。非线性半径与 retraction 的细节另见第03章。</p>
+<p>令 $H=A^TA\succ0$、$g=A^Tb$、无约束最优步 $p_*=-H^{-1}g$。对固定可行<strong>线性</strong>子空间 $\mathcal S$，约束最优步 $p_S$ 是 $p_*$ 的 $H$-正交投影，且</p>
+<p>$$q(p_S)-q(p_*)=\tfrac12\|p_S-p_*\|_H^2.$$</p>
+<p>证明：完成平方，$q(p)=q(p_*)+\tfrac12\|p-p_*\|_H^2$。仿射可行集也有相同最近点解释。于是刷新不应只看弱空间“旋转角”：若当前固定空间已经含有有效下降步，旋转很大也可能无关；旋转很小而刚好遗漏重要下降，也可能有影响。</p>
+<p>若现成 full Jacobian 已给出 $H,g$，可在不新增物理调用的条件下估计固定限制损失。<strong>最小有意义的刷新触发</strong>是：当前约束仍可行，且可释放的二次下降超过已声明的刷新成本/目标容差，同时真实步的接受比提示局部模型仍可信。它是决策准则，不是全局最优刷新定理；强非线性、硬事件或 retraction 失真可使局部收益预测失败。若已经算了全 Jacobian，刷新只增加小矩阵 CPU，不能把它虚记成新的 Maxwell RHS。</p>
+<h2 id="f-opt-008">F-OPT-008 · 消去强坐标：profile 与概率积分不相同</h2>
+<p>完整正交 $[Q_s,Q_w]$ 下写 $p=Q_ss+Q_ww$，令 $A_s=AQ_s$、$A_w=AQ_w$。固定 $w$，对强变量作 QR：$A_s=U_sR_s$。则</p>
+<p>$$s_*(w)=-R_s^{-1}U_s^T(b+A_ww),$$ $$\min_s\|A_ss+A_ww+b\|^2=\|(I-U_sU_s^T)(A_ww+b)\|^2.$$</p>
+<p>这给出稳定的强坐标消元与弱坐标二次模型。等价 Schur Hessian 是 $H_{ww}-H_{ws}H_{ss}^{-1}H_{sw}$，但计算上可用 QR 避免显式平方条件数。</p>
+<p>若把同一严格二次函数作为 Gaussian 积分，则</p>
+<p>$$\int_{\mathbb R^{d_s}}e^{-q(s,w)}ds=(2\pi)^{d_s/2}\det(H_{ss})^{-1/2}e^{-q(s_*(w),w)}.$$</p>
+<p>该式假设无限强变量域、正定强块和准确二次形式。非线性模型中 $H_{ss}$ 可随 $w$ 变化，边界、多个分支和非二次余项也会改变积分。只输出 corrector 最优点是 profile，不是 marginalization；把 determinant 当常数或省掉分支会改变概率。对第07章“可能性云”的候选构造，profile 可以是合法优化手段，但不因此获得 posterior 权重。</p>
+<h2 id="f-opt-009">F-OPT-009 · 与材料兼容的电流投影</h2>
+<p>在合法材料 $x$，所有可实现的一阶 current 变化来自</p>
+<p>$$\delta h_s=L_D^{-1}\operatorname{diag}(E_{:,s})M\,\delta x.$$</p>
+<p>按实部/虚部堆叠得到 $\mathcal T\in\mathbb R^{2qn_s\times66}$，即 $\delta h_{real}=\mathcal T\delta x$。任意 current proposal $u$ 若要一阶材料兼容，应投到 $\operatorname{range}\mathcal T$，而不是直接接受接收暗空间中的任意向量。Euclidean 正交投影为 $\mathcal T\mathcal T^\dagger$；若 current metric 为 $W_c\succ0$，对应</p>
+<p>$$P_{\mathcal T}^{W_c}=\mathcal T(\mathcal T^TW_c\mathcal T)^\dagger\mathcal T^TW_c.$$</p>
+<p>该式给出加权投影，但实现宜对白化后的 $W_c^{1/2}\mathcal T$ 做 QR/SVD。它一般不是普通 Euclidean 对称投影。</p>
+<p>要同时一阶材料合法且数据不变，应先解 $\mathcal J\delta x=0$，再映射 $\mathcal T\delta x$；其空间是 $\operatorname{range}\mathcal T\cap\ker A_{obs}$，其中 $\mathcal J=A_{obs}\mathcal T$。材料投影与接收暗投影通常不对易，因此两次串联不等于该交集。若 $\mathcal J$ 在实 latent 空间满列秩，就没有非零 latent 一阶精确数据零方向；小奇异值只给近似弱方向。</p>
+<p>构造完整 $\mathcal T$ 本身可能比已需的512×66观测 Jacobian贵得多。因此该式主要用于合法性解释；不建议为了“做一个投影”无条件构造巨大 current tangent。已知 decoder 的 latent proposal 加真实 corrector，通常更直接地维持原材料支持。</p>
+<h2 id="f-opt-010">F-OPT-010 · 嵌套缓存与错误的低秩推断</h2>
+<p>可按依赖顺序缓存：固定几何 $K,S,E^{inc}$ → 固定宿主 $C,E_R,O,F_h$ → 当前 $D,L_D$ factorization → 当前 $h,E,T$ → decoder 导数与 GN 小矩阵。该层次明确指出缓存何时失效。</p>
+<p>材料增量若只改变 $k$ 个格点，$\Delta D\,C$ 的秩至多 $k$，可以考虑对应 Woodbury 更新；但 latent维数66不意味着 $\operatorname{rank}(\Delta D C)\le66$。一个 latent方向可能同时改变全部256个格点，使对角 $\Delta D$ 满秩。低维参数流形与每次矩阵更新低秩是不同性质。</p>
+<p>完整 current 的重建 $J_c=J_h+V_hh$ 只在物理诊断或输出确实需要时做；接收预测与 ROI material Jacobian 不必每次重建576格场。若合同要求某项完整诊断，其成本仍必须保留。各源、各receiver和各 latent 参数应共享现成 factorization；重复 setup、重复求源和遗漏回退均会扭曲成本。</p>
+<h2 id="f-opt-011">F-OPT-011 · 由数学直接裁决的优先级</h2>
+<div class="table-wrap"><table><tr><th>候选</th><th>代数能确认的事实</th><th>仍需证据的事实</th><th>当前建议</th></tr><tr><td>完整固定ROI消元</td><td>原模型完全等价，全部非均匀支持保留</td><td>实际全流程费用</td><td>作为各臂公共强基线</td></tr><tr><td>8源共享因子、32receiver端口导数</td><td>完整66列导数无需528 tangent RHS</td><td>收缩和I/O的实际比例</td><td>直接采用正确结构</td></tr><tr><td>完整稳定基 QR corrector</td><td>保留原GN目标，避免正规方程条件数平方</td><td>是否改进具体求解器稳定性</td><td>普通稳定实现，不作为新理论</td></tr><tr><td>均匀幅度固定Schur</td><td>精确三角复用</td><td>特定任务是否值得复用</td><td>只用于真正均匀的条件模型</td></tr><tr><td>固定receiver SVD/TSOM表示</td><td>固定投影可组织current；截断有明确改变</td><td>整体速度与合法材料覆盖</td><td>不把表示优势冒称完整物理降维</td></tr><tr><td>current variable projection</td><td>内层可消元；有限罚目标不同</td><td>是否帮助难优化与总费用</td><td>低优先级，先与精确ROI强基线比较</td></tr><tr><td>低秩C、端口Krylov、网络初值</td><td>可接真实residual与fallback</td><td>误差界是否有用、是否摊销</td><td>见第05章，不先开rank sweep</td></tr><tr><td>冻结少量weak坐标</td><td>定义一种受限搜索；可能有可行性障碍</td><td>候选覆盖和收敛率</td><td>不宣称减少完整Jacobian成本</td></tr></table></div>
+<h2 id="f-opt-012">F-OPT-012 · 只保留能改变论文结论的实验</h2>
+<p>以下物理核端到端对照和额外严格证书实验是设计建议，不是新授权。可能性云E5则已另行批准并冻结，当前实施以 <a href="../p3l_r9_stabilized_subspace/config/possibility_volume_protocol.json">最终E5协议</a> 与 <a href="../p3l_r9_stabilized_subspace/config/possibility_statistics_frozen.json">最终统计协议</a> 为准；不能把它仍称为DRAFT或待批准。</p>
+<p><strong>优化器/物理核主张：</strong> 同一原始材料支持、同一任务、同一候选规则与接受条件，对比完整576系统和精确256系统的端到端费用；计入固定 setup、所有实际状态、导数、fallback和必要诊断。若只是相同16个 DEV 材料状态计时，只能报告核层结果，不能扩张成完整重建或新对象泛化。</p>
+<p><strong>可能性体积成像主张：</strong> 应比较相同候选数量/费用下的 GT邻域覆盖、数据相容性和集合大小；其具体无后验前提设计见第07章。这是当前主方向，不被严格后验资格阻塞。</p>
+<p><strong>严格概率或证书主张：</strong> 仅在明确提出该额外主张时，才要求原prior全支持、数值参考资格或严格积分包络，并与使用同一精确solver的强普通积分对照。该要求不应自动套在有限合法候选云上。</p>
+<p>不为标准投影身份、Schur恒等式或QR换基追加小型公式实验；已批准的32个parent来自明确的新E5合同，不是DEV结果自动扩展，也不授权进一步扩容；不把新增名字当作先例不存在。最终科学取舍由主线程依据目标与成本决定。</p>
+<h2 id="来源与资格">来源与资格</h2>
+<p>以上为标准背景消元、伴随求导、variable projection、正交投影、QR最小二乘、Schur补与条件Gaussian积分的显式推导。SOM/TSOM背景见第02章及 <code>PRIOR_ART_AND_CLAIMS.md</code>。与概率降维相关的已读原始作者论文为 <a href="https://arxiv.org/html/1403.4680v2">Cui等2014 LIS</a> 和 <a href="https://arxiv.org/html/1807.03712v4">Zahm等 certified reduction</a>；二者不支持把当前有限候选云或profile直接叫成准确posterior。</p>
+<p>本章执行新增物理RHS为0，没有运行代数数值测试。近似算法只是推导，不因写出公式而成为已验证实现。</p></article></main><footer style="padding:30px;max-width:1100px;margin:auto">公式编号保持稳定；证明、数值证据和待验证机制分开。近似候选权重不自动成为已认证posterior。每条数据以其来源和范围为准。</footer></body></html>

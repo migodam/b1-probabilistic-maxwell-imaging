@@ -1,0 +1,286 @@
+# 07 · 材料可能性体积：候选、覆盖、规模与成本
+
+本章的主目标是：从一份观测产生多幅原材料模型内、与数据相容的候选，使真实材料在这些候选的邻域内出现的频率足够高。准确 posterior 是可选的更强目标，不是开始验证可能性体积成像的前置门。有限候选集合可以有真实实用价值，同时必须避免三种虚增：用越来越大的集合换覆盖却不报告体积，用 GT 选择候选却称可部署结果，以及把启发式权重称为后验概率。
+
+下文给出完整定义与代数先行的候选方法。当前E5实施身份为已批准的 [最终生成/运行协议](../config/possibility_volume_protocol.json) `R9_POSSIBILITY_VOLUME_V1` 与 [最终统计协议](../config/possibility_statistics_frozen.json) `R9_POSSIBILITY_VOLUME_STATISTICS_V1`；`DRAFT`文件只保留设计历史，不作为当前实施依据。本文不读取E5结果或GT，运行/封存状态由对应正式receipt给出。以下标注 `NOT_IMPLEMENTED` 的备选不属于E5，也不修改已冻结的R7/R9历史门。
+
+## F-VOL-001 · 有限候选云及其资格
+
+对观测 $y$，算法输出至多 $K$ 个不同材料
+
+$$\mathcal C_K(y)=\{m_1(y),\ldots,m_{K_y}(y)\},\qquad 0\le K_y\le K.$$
+
+每个 $m_j=\mathcal G(x_j)$ 必须处于原 decoder 像、保留固定宿主/ROI 支持，并用原非线性物理解验证。设数据相容集合为 $\mathcal A_\tau(y)$，实际合格云为
+
+$$\mathcal C_K^{qual}(y)=\mathcal C_K(y)\cap\mathcal A_\tau(y).$$
+
+不能用同一个 anchor 的重复拷贝补齐 $K$，也不能把失败候选从分母静默移走。应记录提案数、完整求解数、合格数、去重后数、终止原因与成本。候选云并不天然是一张分布；在高维连续材料空间中，有限点集合的体积为零，所谓“体积”需要明确邻域厚度或另一个集合构造。
+
+## F-VOL-002 · 覆盖的事件与 ε 管状集合
+
+采用原全576格复材料 RMS 距离
+
+$$d_M(m,m')=\|m-m'\|_2/24.$$
+
+对真实材料 $m^*$，定义候选距离与覆盖指示
+
+$$D_K(y,m^*)=\min_{m\in\mathcal C_K^{qual}(y)}d_M(m,m^*),\qquad I_{K,\varepsilon}=\mathbf1\{D_K\le\varepsilon\}.$$
+
+空集时 $D_K=+\infty$。这等价于 $m^*$ 属于
+
+$$\mathcal V_{K,\varepsilon}(y)=\bigcup_{m\in\mathcal C_K^{qual}(y)}B_M(m,\varepsilon),$$
+
+即以候选为中心的材料邻域并集。实验中的经验覆盖为 $\widehat C_{K,\varepsilon}=n^{-1}\sum_{i=1}^nI_{K,\varepsilon}^{(i)}$。它必须注明 parent来源、噪声分布和 $\varepsilon$；不能从有限样本升级为全材料族覆盖定理。
+
+固定前缀顺序时，$D_{K+1}\le D_K$，所以更多候选不会降低 best-of-K覆盖。这是集合单调性，不是算法学到更多物理的证据。必须同时报告 $K=1,2,4,8,16$ 等预定前缀、实际计算预算和至少一组预定 $\varepsilon$。顺序应按半径/方向交错，不能看 GT 后重新排序。
+
+## F-VOL-003 · 覆盖与体积必须成对报告
+
+候选云直径
+
+$$\operatorname{diam}_M\mathcal C=\max_{a,b\in\mathcal C}d_M(a,b)$$
+
+以及相对 anchor 的最大半径、最近邻间距、去重后数量，描述了云是否坍缩或无限扩散。一个更大的云更容易碰到 GT，但也更不确定。二维材料图的逐格最小/最大包络可作可视化；其笛卡尔积可能包含大量不满足 decoder 或物理的组合，不能称那些组合都是合法材料。
+
+仅有有限点的 covariance 或凸包，也不自动给出真实体积：若点数 $K$ 小于材料局部维数，covariance秩至多 $K-1$；在非线性材料支持中，点间线性插值还可能非法。可报告 covariance有效秩作为离散分散度，但不把其行列式当作 Full66 posterior体积。
+
+推荐联合结果是：同一资格下的 $C_{K,\varepsilon}$、$D_K$分布、云直径/实际半径、合格率/去重数量、总费用。若在相同 $K$ 与费用下覆盖改善只是来自更大半径，应明确展示这一取舍。
+
+## F-VOL-004 · GT覆盖容量与可部署决策不同
+
+离线 oracle 最佳候选为 $j_*(y,m^*)=\arg\min_jd_M(m_j,m^*)$。其损失衡量云的表示容量，但需要 GT，不可部署。部署时的选择规则 $\widehat j(y)$ 只能依赖观测、候选、预先固定的目标和预算，不能读取 $m^*$。
+
+应分别报告
+
+$$R_{oracle,K}=\mathbb E\min_jd_M(m_j,M)^2,\qquad R_{deploy}=\mathbb E d_M(m_{\widehat j(Y)},M)^2.$$
+
+显然 $R_{oracle,K}\le R_{deploy}$，差距是选择难度，不是可以免费兑现的成像收益。若输出候选加权平均，材料 decoder 像非凸时该平均可能不是可实现材料；可将其称决策估计，并另行验证或投回原支持，不能自动把它列为物理候选。
+
+主实验可先证明有限云的 coverage/capacity，而不假装已经解决部署选择。若论文标题或产品主张涉及最终单幅重建，必须增加不看 GT 的选择器结果。
+
+## F-VOL-005 · 数据资格：绝对噪声一致性与历史相对竞争门
+
+原噪声为256个独立复观测，每个复方差 $\sigma^2$。对正确物理模型生成的真实材料 $M$，F-BASE-002 的 residual 满足
+
+$$r(M)\sim\mathcal N(0,I_{512}),\qquad \|r(M)\|^2\sim\chi^2_{512}.$$
+
+因此可预定 $\alpha$，用
+
+$$\mathcal A_\tau(y)=\{\mathcal G(x):\|r(x;y)\|^2\le\tau\},\qquad \tau=\chi^2_{512}(1-\alpha).$$
+
+在精确模型和该噪声分布下，$\Pr\{M\in\mathcal A_\tau(Y)\}=1-\alpha$。这是数据相容**集合**的重复噪声资格，不是云已找到其中GT邻域的保证，更不是posterior credible mass。模型误差、噪声估计误差、相关噪声和数据预处理都会改变这一资格。
+
+历史 $\Delta\Phi\le2$ 相对优化 anchor 是另一指标。拟合参数会降低 anchor residual；真实 GT 的 loss 可以合理地高于优化最优值，尤其在许多可拟合方向存在时。因此不能未经分析把该门同时当作“真实材料必然应通过”的噪声资格。旧结果与旧门保持原样；最终E5协议已经采用绝对噪声门，并将旧门通过比例列为辅助诊断。
+
+一个可选的解析保守阈值由标准Gaussian平方和尾界给出：对 $t>0$，$\Pr\{\chi^2_n\ge n+2\sqrt{nt}+2t\}\le e^{-t}$。可取 $n=512,t=\log(1/\alpha)$；精确分位数通常更紧。此界不需要把真实 GT 用于阈值选择。
+
+## F-VOL-006 · 固定弱方向负责提案，完整 corrector 负责合法修正
+
+在 anchor $x_a$，计算完整 whitened $\mathcal J_a$ 与材料导数 $M_a$。令
+
+$$G_a=\operatorname{Re}(M_a^*M_a)/576,\qquad H_a=\mathcal J_a^T\mathcal J_a+I.$$
+
+若按 material单位变化寻找低数据敏感方向，可在可识别材料切向上分析 $\mathcal J_a^T\mathcal J_a v=\mu G_av$；若希望同时抑制 prior代价，则分析 $H_av=\nu G_av$。二者目标不同，必须预先选择。$G_a$ 可能奇异；不能把 decoder零方向当作高价值弱材料方向，须在实际材料非零的切向中求解或显式正则化并说明影响。
+
+取所选 $r_w=8$ 方向的 latent张成空间，做 Euclidean QR 得正交 $Q_w\in\mathbb R^{66\times8}$。这保留空间但不保留逐列 material归一化；实际提案幅度由真实 $d_M(\mathcal G(x_a+t v),\mathcal G(x_a))$ 决定。沿初始射线搜索所需幅度只涉及 decoder，不调用 Maxwell；若给定bracketing与latent cap下未找到目标半径，记录搜索失败，不把它提升为非线性材料全局不可行证明，也不修改材料支持。
+
+**固定B：** 所有候选从同一 anchor frame 生成。**动态C：** 只有在预先声明的 continuation状态/当前候选处刷新 frame，并明确下一次提案如何从该状态产生。若所有候选都直接从同一个 anchor独立发射，而且 corrector完全相同，所谓动态frame并未影响任何动作，B/C应数学上相同；不能靠多算一个分解制造“动态臂”。
+
+**当前实现的准确限制见F-VOL-012：** B/C使用完整66列物理Jacobian，但corrector步限制在 $Q_s$ 加一条weak直线的59维空间，再施加signed-progress切向行；它不是 unrestricted Full66 corrector。弱幅度允许为正或负，最终协议明确历史 `*_RAY` 名称应解释为weak line；signed material progress不等于weak系数为正。这避开旧E2“固定weak幅度加精确半径”的特定几何障碍。R随机控制采用完整66维可行切向，属于更强的corrector几何类。合法材料由decoder保证，数据资格由原forward验证。
+
+## F-VOL-007 · 为何普通MAP修正可能让云坍缩，以及一个平滑修正
+
+如果每个提案最终都无约束地最小化同一个 $\Phi(x)+\|x\|^2/2$，所有轨迹可能返回同一局部MAP。多方向、多半径不能单独阻止坍缩。**当前实现已经使用硬半径与正signed progress防止返回anchor，见F-VOL-012；本节tether状态为 `NOT_IMPLEMENTED`，不能写成当前方法。** 若未来硬半径导致低可行率，可另行考虑到达数据资格立即停止并限制提案附近的trust region，或增加平滑tether。后者为
+
+$$\Psi(x;x_p)=\Phi(x)+\tfrac12\|x\|^2+\frac\lambda2\|\mathcal G(x)-\mathcal G(x_p)\|_M^2.$$
+
+它仍可用 ordinary Full-J增广GN求解，仅多出 decoder导数块；没有新增 Maxwell参数方向。材料残差用实/虚拼接后除以24，不能混入观测的 $\sqrt2/\sigma$。
+
+在 anchor驻点附近，设 $p=x-x_a$、提案位移 $\delta=x_p-x_a$，局部模型为
+
+$$\tfrac12p^TH_ap+\tfrac\lambda2(p-\delta)^TG_a(p-\delta).$$
+
+其最优位移为
+
+$$p_\lambda=(H_a+\lambda G_a)^{-1}\lambda G_a\delta.$$
+
+在 $G_a$ 正定的有效切向及 $H_av=\nu G_av$ 的方向上，位移保留比例为 $\lambda/(\nu+\lambda)$。取 $\lambda=\nu$ 得局部一半保留；取 $\lambda$ 不小于所选弱空间最大 $\nu$，可使该空间每个广义分量局部保留至少一半。这给 tether尺度一个可解释的起点，而不是凭经验为每个GT调参。
+
+这只是局部二次解释，不保证非线性最终半径，也不保证数据门可通过。实际半径、tether目标、物理数据loss、prior代价须分别记录；若所有候选仍坍缩，判该策略失败。$\Psi$ 是候选生成目标，不是新定义的 posterior。
+
+## F-VOL-008 · 全秩混合支持与其有限保证
+
+纯 $Q_w$ 低维提案对其张成空间外没有 latent Lebesgue支持。**本节状态为 `NOT_IMPLEMENTED`；当前B/C没有混合全秩分支，R是独立对照臂，不能借R的方向支持给B/C作保证。** 后续可在 Gaussianized prior坐标采用
+
+$$\delta\sim(1-\eta)\,\mathcal N(0,Q_w\Lambda Q_w^T)+\eta\,\mathcal N(0,\Sigma_0),\quad 0<\eta\le1,\quad\Sigma_0\succ0.$$
+
+它虽含低维分量，但整体对任意非空 latent开集给正概率，因为全秩分量密度处处为正。另一方案是单一满秩 Gaussian协方差 $Q_w\Lambda Q_w^T+\eta I$，此时每个方向都有小的全空间扰动。$\Lambda$ 应在prior尺度上定义；material归一化的非正交列不自动维持标准Gaussian prior。
+
+这里保证的是**提案支持**，不是有限 $K$ 的高覆盖，也不是正确prior抽样。对某个GT邻域 $B$，若一次合格保留提案进入它的概率为 $p_B>0$，独立 $K$ 次至少命中一次的概率才是 $1-(1-p_B)^K$；有限 $p_B$ 可能极小。动态、antithetic或去重的提案并不独立，不能直接套用此式。
+
+此外，归一到有限几个固定半径后，绝对连续支持会变成若干壳面；固定半径列表不能再声称完整latent支持。确定性corrector也可能把满支持提案压到一个点。若需要保留“合格开集仍可被发现”的结构保证，可用概率 $\eta$ 独立抽原完整prior或满支持局部proposal，保留已经通过数据门的原提案，不强制修正；不合格者再进入corrector或按预算记失败。这一分支仍可能接受率很低，不是免费覆盖。
+
+有限 $K=16$ 下可预定少数全秩探索槽位来防止完全零探索，但它不能保证每个邻域被看到。候选物理支持、proposal支持和posterior权重是三个不同问题。
+
+## F-VOL-009 · 去重、信赖区域与费用控制
+
+在预定材料阈值 $\delta_{dup}$ 下，若新候选与已接受候选最小距离小于阈值，则标为重复；可保留数据loss较低者，同时保留原重复记录。候选是否入云只依赖观测与候选，不依赖GT。去重前后数量、重复率和追加尝试必须计入费用；不能不断重试直到凑够16个而称各臂预算相同。
+
+每个候选限制相同最大 forward/full-J次数、line-search次数与总费用；通过数据门后可提前停。若设置提案附近的 trust region，需报告它在latent还是material metric中定义。固定提案半径不是最终半径；correction、边界和prior均可改变后者。
+
+总费用应包含 anchor、固定operator setup、初始/刷新frame、所有失败提案、solver、corrector和验证。固定setup可跨同采集复用，但按每观测与跨观测摊销分别报告。GT离线评估不计入部署推断费用，但也不能从评估中导出一个未付成本的部署选择器。
+
+## F-VOL-010 · 已冻结E5与设计取舍
+
+当前实施以本章开头链接的最终协议为准：32个fresh parent、B/C/R三臂、每臂16个非anchor槽位、四个固定半径。旧8个parent已暴露，不能冒称本轮fresh总体；“新噪声但同材料”与“新材料”也须分别注明。本节保留设计理由，不再把已批准协议写成待冻结建议。
+
+**实际对照：** 共享anchor A、固定弱偏置云 B、动态弱偏置云 C、全空间随机云 R，均采用精确ROI solver、相同噪声资格与半径/费用合同。B/C的corrector几何为弱补空间加一条weak line，R为完整有效66维，不能称三臂corrector空间完全相同。C更新当前允许步空间，具体见F-VOL-012；其作用并非只重算一个不影响算法的frame。平滑tether未实施。
+
+冻结的 $K=16$ 表示非anchor方向槽位，不是保证得到16个不同合格材料；最多再加入一个满足噪声/合法性门的共享anchor。当前采用8个随机弱方向的正负配对，每个半径安排2对，共4个半径、16个提案；连续Gaussian系数在8维弱空间中几乎必然线性独立，但有限角度/半径覆盖仍很稀疏。这只是有限方向设计，不具有F-VOL-008的完整支持保证。若未来需要全秩混合探索，应另行预先冻结槽位安排，不在当前结果出来后额外补点。
+
+半径 $0.02/0.05/0.10/0.15$ 已冻结为广域探索安排，不是已证明处处可达的材料尺度。给定decoder搜索未找到bracket时直接消耗该槽位并记失败，不能读GT后改半径或补点。coverage主容差已冻结为 $\varepsilon=0.075$，辅助容差为0.03/0.05/0.10/0.15；$\varepsilon$ 与提案半径是不同对象。
+
+**parent数量：** 冻结的32个新parent可支持有意义的配对效果描述，但不足以用点估计宣称接近保证的高覆盖。即使32/32全部覆盖，一侧95%二项下界仅为 $0.05^{1/32}\approx0.911$；若要求95%覆盖的一侧95%下界，在零失败时也至少需要59个独立parent。这个算式决定结论强度，不改变已批准32个parent的合同，也不授权扩展59个parent。
+
+如果实际执行因硬预算提前终止，必须保留未完成状态，并遵守最终协议对全部32个parent封存后评分的门；不能把少数完成parent悄然改成原确认性分析。32个parent中的配对差异、失败与coverage区间，比堆更多次计时重复有信息。冻结K前缀为0/1/4/8/16，复用同一批候选，不另跑候选数sweep。
+
+**最终合同的关键项：** parent生成与暴露状态、绝对噪声门、旧门辅助诊断、K与固定前缀、RMS分母、coverage容差、候选与corrector规则、去重阈值 $10^{-6}$、全费用上限、封存后离线GT评估均已写入最终协议。资格云为空时保留parent失败，不作complete-case删样；任务动作可明确标记anchor fallback，但fallback不恢复资格云coverage。
+
+## F-VOL-011 · 近似权重可以有用途，但不能改名为posterior
+
+对已合格候选，可以给出均匀权重、基于loss的软权重或明确的质量评分，用于浏览和排序。若提案密度、corrector映射的多对一质量、拒绝规则和有限覆盖未被处理，则
+
+$$w_j\propto e^{-\Phi(x_j)-\|x_j\|^2/2}$$
+
+通常不是原posterior的离散近似权重：候选出现次数本身已受到提案与优化吸引域影响。去重也会改变出现频率。把这些权重标为“候选评分”即可，不应显示为可信事件概率。
+
+若后续确实需要准确posterior，才进入原prior条件积分、重要性校正、MCMC或已证实的传输/测度处理；相关资格见第04章及 `PRIOR_ART_AND_CLAIMS.md`。当前主方向首先检验：有限物理合格云能否以可接受的大小和成本覆盖更多真实材料。
+
+## F-VOL-012 · 当前候选引擎的静态证明核对
+
+本节依据 `src/possibility_volume.py`、已批准的 [最终E5协议](../config/possibility_volume_protocol.json) 与 [冻结统计协议](../config/possibility_statistics_frozen.json) 静态阅读，不运行求解或读取GT。源身份按最终协议的 `source_files` 记录；本节优先于前文 `NOT_IMPLEMENTED` 备选，DRAFT不再作为当前方法依据。
+
+**提案与模型。** 每parent先从零latent求一个prior权重1的anchor。令 $M_k$ 为完整材料导数实化后除以24的矩阵，$M_k=U\Sigma V^T$。在保留的非零材料切向上取 $T=V\Sigma^{-1}$，对
+
+$$T^T(\mathcal J_k^T\mathcal J_k+I)T$$
+
+求最小8个特征方向并映回latent，得到material归一化 `weaklift`；其Euclidean QR给 $Q_{w,k}$。因此当前弱方向明确考虑data加prior，权重都是1。数值秩阈值定义的是实际实现切向，不是数学证明decoder具有精确零方向。
+
+四个半径 $\rho\in\{0.02,0.05,0.10,0.15\}$ 各有两条独立Gaussian弱方向及其正负号；B/C共享原提案，R使用独立66维Gaussian方向。初始方向 $v_0$ 令 $\|M_av_0\|=1$。decoder-only标量搜索得到 $x=x_a+t v_0$，要求实际材料RMS为 $\rho$，并限制 $\|x-x_a\|\le4$。不同半径独立从anchor开始，不沿半径串行continuation。
+
+**B的弱直线。** 固定 $Q_w=Q_{w,a}$，取 $Q_s$ 为其正交补。每步允许空间
+
+$$\mathcal S_B=\operatorname{range}[Q_s,v_0],\qquad \dim\mathcal S_B=59.$$
+
+由初始 $x-x_a\in\operatorname{span}(v_0)$，若 $p\in\mathcal S_B$，则 $Q_w^T(x+p-x_a)$ 仍平行于 $Q_w^Tv_0$。径向retraction $x^+=x_a+h(x+p-x_a)$ 只乘一个实标量，故继续保留该弱直线，系数允许改变并可为负。它没有锁住弱投影长度，也没有证明保持正向射线。最终协议为保留历史ID而使用 `FIXED_Q8_RAY`，数学含义以 `weak_line_sign_policy` 为准。
+
+**C的逐步弱直线。** 在当前状态重算 $Q_{w,k}$，令
+
+$$a_k=Q_{w,k}Q_{w,k}^T(x_k-x_a),\quad \mathcal S_{C,k}=\operatorname{range}[Q_{s,k},a_k].$$
+
+当 $a_k\ne0$ 时，若 $p\in\mathcal S_{C,k}$，则对某标量 $b$，
+
+$$Q_{w,k}^T(x_k+p-x_a)=(1+b)Q_{w,k}^T(x_k-x_a).$$
+
+径向retraction再乘 $h$，所以保留**当前frame下**的直线，$h(1+b)$不被要求为正。下次frame变化可以改变其坐标；没有跨frame运输，也不将其余7个当前弱坐标清零。若 $a_k$ 过小，代码用 $Q_{w,k}Q_{w,k}^Tv_0$ 作已记录fallback；仍为零则该候选几何失败。C虽不改变初始提案，但会改变corrector的允许空间，因此不是名义上的动态臂。
+
+**signed-row GN与真正的接受规则。** 定义固定材料方向 $u=M_av_0$，$\|u\|=1$。在上述allowed空间内再去除数值材料零方向，并施加
+
+$$u^TM_kp=0.$$
+
+这是signed material progress的一阶保持条件，不是材料RMS半径的一阶切向条件。随后用完整数据Jacobian求解
+
+$$\min_{p\in\mathcal S_k,\ u^TM_kp=0}\ \tfrac12\|r_k+\mathcal J_kp\|^2+\tfrac12\|x_k+p\|^2,$$
+
+限制latent步长与材料线性步长，再作decoder径向retraction。真正评估的步为 $e=x_{trial}-x_k$；代码用该 $e$ 而非retraction前的 $p$ 计算GN预测下降，这避免错用切向模型。只有预测MAP下降为正才付forward；实际接受要求data $\Phi$ 降低，允许总MAP目标上升，并用总MAP实际/预测比调trust。这是明确的混合启发式：不能称MAP单调下降算法，也不能称纯data最小化。
+
+**最终几何与数据资格。** 对每个真实visited state计算 $\Delta m=\operatorname{pack}_{material}(m-m_a)/24$，需满足
+
+$$\big|\|\Delta m\|-\rho\big|\le0.02\rho,\qquad u^T\Delta m\ge0.5\rho,$$
+
+以及decoder合法和 $\Phi\le282.8737921622988=\chi^2_{512}(0.95)/2$。正半径和signed progress排除返回anchor，故当前方法没有无约束MAP坍缩到anchor的问题；不同射线仍可能落到相同/相近材料，须保留去重结果。半径加signed门也可能降低合格率，这是要检验的结果，不是必须救回的实现错误。
+
+每方向在实际visited且几何合法状态中选择最小dataPhi点；若最小者也不满足噪声门，则该slot失败。存储的 `PRIMARY_CLOUD.npz` 是allselected加资格flags，不是已过滤的posterior样本；统计再按flags、合法性和噪声门构造合格云。原始点和所有visited噪声合法点保留为secondary变量K云，不与最多16个非anchor点加合格anchor的主云混算。最终统计已要求不合格anchor从qualified云过滤，同时单独保留无条件anchor baseline与显式action fallback。
+
+**不作过强支持主张。** B/C受初始弱空间、corrector allowed空间、半径壳面与latent半径4限制；R也受后两项限制。三者均不是全prior支持抽样。`original_prior_support=True`应解释为每个输出位于原模型支持内，绝不是算法覆盖整个prior支持。
+
+**已明确命名的搜索失败。** `match_radius`逐渐增大标量并在末端检查距离。一般非线性decoder的沿射线材料距离不保证单调；端点低于 $\rho$ 不能排除两个采样点间曾超过 $\rho$。最终代码使用 `RADIUS_BRACKET_NOT_FOUND_WITHIN_LATENT_CAP`，只表示当前bracketing/cap下未找到目标半径，不能报告为数学不可行证书。失败保留，不追加未授权密集搜索。
+
+**费用。** 32parent×3臂×16提案=1536提案，每提案最多6次forward和4次完整J，费用上界为 $8\times6+32\times4=176$ reduced RHS。加每parent最多64个anchor状态以及32次数据生成：
+
+$$1536\times176+32\times64\times40+32\times8=352512,$$
+$$1536\times6+32\times64+32=11296\quad\text{个 reduced LU}.$$
+
+它们位于最终批准的400000 RHS256与12000 LU256上限内；7200秒与内存上限仍可能先终止，不能由RHS算式保证完成。已有264 RHS576 setup作为已支付复用成本，完整研究历史2184 RHS576与当前新增RHS256分别列账，不混称同规模物理费用。
+
+**静态结论。** 该设计作为有界、无GT在线选择的可能性云生成器，在以上声明下没有发现致命代数矛盾。它检验固定/动态受限corrector与更强随机corrector的整体策略差异；不是只隔离proposal方向的因果试验，也不认证posterior、全support或总体高覆盖。是否启动及最终科学判断仍由主线程负责。
+
+## F-VOL-013 · 噪声资格与算法漏覆盖的分解
+
+令 $A_\alpha(Y)$ 为F-VOL-005中原噪声模型下的材料相容集合，$\Pr\{M\in A_\alpha(Y)\}\ge1-\alpha$。把算法本身的漏覆盖量定义为**联合概率**
+
+$$\beta_{K,\varepsilon}=\Pr\{M\in A_\alpha(Y),\ d_M(M,\mathcal C_K^{qual}(Y))>\varepsilon\}.$$
+
+事件按GT是否噪声合格分割，立即得到
+
+$$\Pr\{d_M(M,\mathcal C_K^{qual}(Y))\le\varepsilon\}\ge1-\alpha-\beta_{K,\varepsilon}.$$
+
+该下界还允许 $M\notin A_\alpha(Y)$ 时恰好被某个合格候选的 $\varepsilon$ 邻域覆盖；这些额外命中没有被下界计入。$\beta$不是条件漏失率，不能再乘一次 $1-\alpha$。若选择定义条件漏失 $\widetilde\beta=\Pr\{D_K>\varepsilon\mid M\in A_\alpha(Y)\}$，才有相应 $(1-\alpha)(1-\widetilde\beta)$ 型下界。
+
+这个分解把两类任务分开：噪声阈值决定物理模型下的资格失配 $\alpha$，候选算法决定剩余的搜索/表示漏失 $\beta$。当前方法没有证明 $\mathcal C_K$ 是 $A_\alpha$ 的全局 $\varepsilon$-net，所以 $\beta$必须通过独立parent实测并给出不确定区间；不能因为K变大或有8个弱方向就假定它接近零。该分解不要求posterior准确，也不提供免费的coverage保证。
+
+如未来额外裁去prior概率至多 $\delta$ 的材料区域，可用union bound得到 $1-\alpha-\delta-\beta$ 型下界，其中 $\beta$须相应定义在剩余区域内。当前没有以已证明prior质量为依据的硬裁剪；latent距anchor≤4也不是一个已计算质量的prior置信区域，不能自行填入某个 $\delta$。
+
+## F-VOL-014 · 集合行动风险与覆盖曲线
+
+若云始终非空，定义集合行动损失 $L_{set}(M,\mathcal C)=\min_{m\in\mathcal C}d_M(M,m)^2$。由非负随机变量的尾积分恒等式，
+
+$$R_{set,K}=\mathbb E D_K^2=\int_0^\infty\Pr\{D_K^2>t\}\,dt
+=2\int_0^\infty\varepsilon\,[1-C_{K,\varepsilon}]\,d\varepsilon.$$
+
+所以一整条coverage曲线对应一个集合容量风险；单个 $\varepsilon$ 的高覆盖不足以控制尾部损失。若另有全局 $D_K\le R_{max}$，可得 $R_{set,K}\le\varepsilon^2+R_{max}^2\Pr(D_K>\varepsilon)$，但这里的有界性必须真实成立。
+
+若qualified云可能为空，按F-VOL-002定义其距离为无穷，则该风险可以为无穷。最终E5统计保留全部32个parent，空云coverage=false，最近材料误差记未定义/无穷右删失；禁止complete-case主对比，也没有发明有限失败罚值。任务动作使用明确标记的anchor fallback，与集合coverage分开。未来合同可另选有界任务罚损，但它是 `NOT_IMPLEMENTED` 备选。原始anchor始终可用的未过滤云可另报有限容量风险，但它与qualified云不是同一对象。
+
+$R_{set,K}$不是单幅Bayes决策风险：它允许损失计算在看到GT后从集合中取最好者。部署选择器的风险仍是F-VOL-004的 $R_{deploy}$。同时报告集合直径/规模，才能解释降低集合风险付出了多少不确定性。以上是标准集合覆盖与尾积分关系，不作新概率定理主张。
+
+## F-VOL-015 · 任务加权覆盖—分散度界及完整推导
+
+**假设。** 固定一次观测与非空有限合格云 $\{m_j\}_{j=1}^{K_y}$，真实材料为 $M$。任务 $T:\mathcal M\to\mathbb R^p$、固定权重矩阵 $W\succeq0$，写 $z(m)=W^{1/2}T(m)$。假设在所讨论材料域有任务Lipschitz条件 $\|z(m)-z(m')\|\le L_Td_M(m,m')$。候选权重 $w_j\ge0$、$\sum_jw_j=1$，定义
+
+$$\bar z=\sum_jw_jz(m_j),\qquad V_w=\sum_jw_j\|z(m_j)-\bar z\|^2.$$
+
+令 $G_\varepsilon=\{j:d_M(m_j,M)\le\varepsilon\}$，并假设其总权重 $a=\sum_{j\in G_\varepsilon}w_j>0$。则
+
+$$\boxed{\|\bar z-z(M)\|\le L_T\varepsilon+\sqrt{\frac{1-a}{a}V_w}.}$$
+
+**推导。** 当 $0<a<1$ 时，定义两组条件加权均值
+
+$$\bar z_G=a^{-1}\sum_{j\in G_\varepsilon}w_jz(m_j),\qquad
+\bar z_B=(1-a)^{-1}\sum_{j\notin G_\varepsilon}w_jz(m_j).$$
+
+由Lipschitz条件、非负权重及三角不等式，$\|\bar z_G-z(M)\|\le L_T\varepsilon$。整体均值为 $\bar z=a\bar z_G+(1-a)\bar z_B$。以各组均值展开平方，组内交叉项为零，得到完整方差分解
+
+$$V_w=\sum_{j\in G_\varepsilon}w_j\|z_j-\bar z_G\|^2
++\sum_{j\notin G_\varepsilon}w_j\|z_j-\bar z_B\|^2
++a(1-a)\|\bar z_G-\bar z_B\|^2.$$
+
+前两项非负，而 $\bar z_G-\bar z=(1-a)(\bar z_G-\bar z_B)$，所以
+
+$$\|\bar z_G-\bar z\|^2\le\frac{1-a}{a}V_w.$$
+
+再对 $\bar z-z(M)=(\bar z-\bar z_G)+(\bar z_G-z(M))$ 用三角不等式，即得结论。$a=1$ 时所有正权重候选都位于GT的ε邻域，直接有 $\|\bar z-z(M)\|\le L_T\varepsilon$；$a=0$ 时该界不适用，即使云中存在权重为零的近GT候选也不能使用。
+
+均匀权重且至少一个近GT候选时，$a\ge1/K_y$，有保守界 $L_T\varepsilon+\sqrt{(K_y-1)V_w}$。另一个恒等式
+
+$$V_w=\tfrac12\sum_{i,j}w_iw_j\|z_i-z_j\|^2$$
+
+把分散度与加权任务pair距离直接联系起来。两式共同说明：更多候选可以改善集合覆盖，却不自动改善加权动作；近GT候选被极小权重压制或其他候选过于分散时，集合容量可能无法兑现为单一决策收益。
+
+**资格与部署限制。** 该结论是标准组间方差分解与三角不等式的条件结果，不作为原创数学定理。$V_w$可在部署时由候选计算，但 $G_\varepsilon$ 与 $a$依赖未知GT，当前没有它们的在线下界。因此本式用于理论解释和封存后的分析，**不是在线误差证书**，不授权读GT、更改冻结权重或追加统计门。硬阈值任务未必Lipschitz，不能无条件套用；空云须按最终E5失败/fallback规则单独处理。任务平均 $\sum_jw_jT(m_j)$ 也不等于一般非线性任务在材料平均上的值 $T(\sum_jw_jm_j)$。更一般的任务margin与总体风险推导见 `PAPER_CORE_AND_ORIGINALITY.md` 的F-PAPER-002—004。
+
+## 结论与资格
+
+本章给出的方向是一个可验证的有限集合成像目标，不宣称新概率定理。当前机制是固定/动态弱偏置提案、保持弱直线而允许signed幅度变化的合法修正、随机全空间方向对照、固定候选/费用预算，以及GT不可见的去重和资格规则。平滑tether与全秩混合支持为 `NOT_IMPLEMENTED` 备选。它与严格posterior任务并行，而不是等待后者认证才开始。
+
+本章维护没有执行新物理调用或数值测试；E5的parent数、K、半径与对照已经按最终协议冻结，不能再当作可随结果调整的建议。覆盖、范围和费用的实际结论必须取自正式封存后的E5证据；本文不据配置或代数推导宣称实验已经完成或成功。

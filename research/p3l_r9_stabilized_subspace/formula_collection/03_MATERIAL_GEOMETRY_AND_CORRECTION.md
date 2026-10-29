@@ -1,6 +1,6 @@
 # 03 原材料先验、有效几何与实际校正器
 
-本章只整理源码与推导，没有新 Maxwell 求解、数值 QA、训练或 fresh parents。2026-10-29 用户要求先整理公式与理论，fresh confirmation 保持 NOT_RUN。稳定编号 F-MAT-001 起；函数、行号和历史身份见 SOURCE_FORMULA_INDEX.csv。原 R9 E0–E3 与后来单独冻结的 REV1 分开记录，后者不覆盖前者的负面证据。
+本章只整理源码与推导，没有新 Maxwell 求解、数值 QA、训练或 fresh parents。2026-10-29 formula-first steering下，历史 E2/E3/REV1 的 fresh confirmation 保持 NOT_RUN；后来用户另行批准了独立 E5 possibility-volume 合同，见最终 config/possibility_volume_protocol.json 与 config/possibility_statistics_frozen.json。此处不从合同状态推断 E5 结果。稳定编号 F-MAT-001 起；函数、行号和历史身份见 SOURCE_FORMULA_INDEX.csv。原 R9 E0–E3 与后来单独冻结的 REV1 分开记录，后者不覆盖前者的负面证据。
 
 物理上先分清三件事：潜变量变化可能完全不改变材料；非零材料变化可能只有很小接收响应；局部弱方向走到有限距离后也可能不再弱。因此 decoder gauge、材料灵敏度和有限校正器不是同一条零空间结论。
 
@@ -536,7 +536,7 @@ R_V=V(V^*LV)^{-1}V^*,\quad
 - 已执行的是 Qs GN + scalar radius root，未求解完整63变量 GN。
 - 动态 C 只刷新 complement；没有唯一弱方向的显式运输或4维弱空间覆盖。
 - pred≤0 或初始点停止会降低成本，不能自动叫速度优势；拒绝、失败、endpoint-J 和路径诊断均需保留成本。
-- 已有结果未达到20%成本优势门槛；此次用户 steering 后不开展 fresh confirmation。
+- 历史 E2/E3/REV1 结果未达到20%成本优势门槛，其原 fresh confirmation 没有开展；后续 E5 是用户另行批准的可能性覆盖任务，不能回填原门槛或覆盖原失败。
 - 真实 finite-path spectral gap、rank变化、seam、可微retraction和候选完整性仍未获得统一保证。五节点检查不是连续路径证明，候选集合不是 posterior。
 
 本章源码核对与解析推导新增 Maxwell RHS=0；未读取大型原始数组。

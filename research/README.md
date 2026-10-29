@@ -1,3 +1,11 @@
+<!-- P3LR9_CURRENT -->
+## P3L-R9-S：材料可能性体积、稳定子空间与长期公式集
+
+32个全新parent先封存预测再评分。固定方法354/512个方向预算产生不同且数据相容的材料，但精细GT覆盖仅6/32（anchor3/32），高概率覆盖未建立。相对动态方法整链wall节省2.75%，未达到20%门。固定host精确ROI消元的匹配物理核节时58.65%；不冒称全系统收益。正确低维积分与全部失败独立保留。
+
+[中文完整报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/p3l_r9_stabilized_subspace/) · [长期维护的122条推导公式](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/maxwell_formula_atlas/) · [匿名Markdown](p3l_r9_stabilized_subspace/RESEARCH_REPORT_ZH.md) · [证据与复现](p3l_r9_stabilized_subspace/EVIDENCE_PACKAGE.md)
+<!-- /P3LR9_CURRENT -->
+
 <!-- P3LR4_CURRENT -->
 ## P3L-R4 已完成：风险成像与完整条件概率分别裁决
 
