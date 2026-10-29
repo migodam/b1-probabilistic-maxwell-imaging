@@ -1,0 +1,170 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>R3：条件代数成像、目标延拓与全观测验收 | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_REUSE_MAP.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>R3：条件代数成像、目标延拓与全观测验收</h1><details class="toc"><summary>本文目录 · 10节</summary><ol><li><a href="#section-0">1. 对象、接口与真实适用范围</a></li><li><a href="#section-1">2. 多重仿射的更强后果：单像素只走一条 Möbius 曲线</a></li><li><a href="#section-2">3. 直接观测延拓：局部可达，但不自动下降</a></li><li><a href="#section-3">4. 任意分支的全损失账本，以及 tau=0 的意义</a></li><li><a href="#section-4">5. 明确反例：互易、无极点也会丢失全部实根</a></li><li><a href="#section-5">6. 错误补集的补偿误差可以显式写出</a></li><li><a href="#section-6">7. 一个有条件的下降目标，以及它的局限</a></li><li><a href="#section-7">8. 物理分支与 quotient chart 是不同的故障层</a></li><li><a href="#section-8">9. 提案、修正和接受必须分开</a></li><li><a href="#section-9">10. 本轮可检验假说与停止边界</a></li></ol></details>
+<p>状态：理论推导；未运行实验，未读取 GT/private 数据。只使用冻结 R2 的 F06/F09/F11/F12/F14/F15、<code>theory/general_quotient.md</code>、<code>src/general_quotient_solver.py</code> 与 <code>src/physics.py</code> 接口。本文不重新主张 SMW、隐函数定理或商环特征值法的原创性，也不对 R3 实验或新颖性作最终裁决。</p>
+<p>物理直觉是：固定错误的背景以后，四个或六个活动像素可以补偿一小组观测，但补偿可能把其它观测推得更远。Q6/Q20 的作用是一次提出这一条件切片中的多个远距离材料候选。它既不把错误背景变正确，也不保证某个目标具有合法实根。全观测损失负责决定是否值得接受；全变量修正负责检验远处候选能否进入更好的吸引域。</p>
+<h2 id="section-0">1. 对象、接口与真实适用范围</h2>
+<p>总材料维度为 <span class="math">\(N=12\!\sim\!16\)</span>，活动坐标集合 <span class="math">\(B\)</span> 大小 <span class="math">\(k=2s\)</span>，其中 <span class="math">\(s=2\)</span> 或 <span class="math">\(3\)</span>。补集 <span class="math">\(C\)</span> 固定在当前估计 <span class="math">\(\bar m_C\)</span>，不假定它正确。写</p>
+<p><span class="math">\[
+F_B(x)=F(m_B=x,m_C=\bar m_C)\in\mathbb C^{n_r\times n_s},\qquad
+L(x)=\|F_B(x)-Y^{\rm obs}\|_W^2.
+\]</span></p>
+<p>除非另说明，<span class="math">\(W\)</span> 为固定的正对角观测权重；无权情形取单位阵。对全观测实化后记残差 <span class="math">\(e=f(x)-y\)</span>、Jacobian <span class="math">\(J_B\)</span>。</p>
+<p>Q6/Q20 选择<strong>一个复接收行和 <span class="math">\(s\)</span> 个独立源列</strong>，对应 <span class="math">\(k\)</span> 个实约束。记选择为 <span class="math">\(P\)</span>，<span class="math">\(h(x)=Pf(x)\in\mathbb R^k\)</span>，<span class="math">\(J_S=PJ_B\)</span>。这不是任意 <span class="math">\(k\)</span> 个实线性组合都自动支持的接口：一般混合接收/源的实投影未必保留一个接收传递行的双线性结构。</p>
+<p>精确活动核仍为</p>
+<p><span class="math">\[
+F_B(x_0+\delta)=Y_0+L_0(I-D_\delta K)^{-1}D_\delta q.
+\tag{1}
+\]</span></p>
+<p>完整核保存全部接收和源；只在求商根时取 <span class="math">\(L_S=L_0[r,:]\)</span>、<span class="math">\(q_S=q[:,\mathcal S]\)</span>、<span class="math">\(Y_{0,S}\)</span>。须验证 <span class="math">\(\operatorname{rank}_{\mathbb C}q_S=s\)</span>。所有原始候选及修正候选的排序均使用完整观测。</p>
+<p>冻结求解器当前从 <code>kernel.model.nr/ns</code> 读取平衡尺寸。因此应给它一个明确的只读单接收/选源视图，并保留完整核用于评分及统一计费；不能只切 <code>q</code> 却继续暴露完整 <code>ns</code>。材料恢复必须仍是完整 <span class="math">\(m=m_0+U\delta\)</span>，且 <span class="math">\(U\)</span> 是坐标选择矩阵。</p>
+<p>Q6/Q20 的 6/20 是条件复代数长度；它不是 <span class="math">\(N\)</span> 维成像的候选总数或全局覆盖数。</p>
+<h2 id="section-1">2. 多重仿射的更强后果：单像素只走一条 Möbius 曲线</h2>
+<p>固定其它坐标，令一个实像素增量为 <span class="math">\(t\)</span>。式 (1) 给出全观测共同的表示</p>
+<p><span class="math">\[
+F(t)=F(0)+a\,\zeta(t),\qquad
+\zeta(t)=\frac{t}{1-\kappa t},
+\tag{2}
+\]</span></p>
+<p>其中 <span class="math">\(a\)</span> 是完整复观测向量，<span class="math">\(\kappa\)</span> 为复数。不是每个观测各有一套极点：该坐标的全部观测共享同一个分母。</p>
+<p><strong>命题 1（坐标不可见性是精确的）。</strong> 在无极点的实区间内，若所选观测的当前 Jacobian 列为零，则这一坐标在该选择下对整个区间都不可见。</p>
+<p>证明：<span class="math">\((PF)'(0)=Pa\)</span>，而 <span class="math">\((PF)'(t)=Pa/(1-\kappa t)^2\)</span>。故 <span class="math">\(Pa=0\)</span> 使 <span class="math">\(PF(t)\equiv PF(0)\)</span>。证毕。这个结论只针对固定其它坐标的一维切片；改变另一活动坐标后，新的 <span class="math">\(a\)</span> 可以非零。</p>
+<p>因此单坐标零梯度不能被解释成“强非线性在更远处也许会恢复该坐标信息”。同一切片没有这种恢复。一个掩码可完全屏蔽某像素，而完整观测的 <span class="math">\(a\)</span> 仍非零。</p>
+<p>当 <span class="math">\(\operatorname{Im}\kappa\ne0\)</span> 时，<span class="math">\(\zeta\)</span> 满足</p>
+<p><span class="math">\[
+\operatorname{Im}\zeta=(\operatorname{Im}\kappa)|\zeta|^2;
+\]</span></p>
+<p>所以实坐标在一个复仿射直线中走圆弧。若 <span class="math">\(\kappa\)</span> 为实数则走实直线，可被实极点分成两段。多重仿射不是多元凸性、实根存在性或无局部极小性的保证。</p>
+<p><strong>可实施的精确坐标后备。</strong> 令 <span class="math">\(r=F(0)-Y^{\rm obs}\)</span>、<span class="math">\(b=a-\kappa r\)</span>，以固定正 Hermitian 权重定义内积，则</p>
+<p><span class="math">\[
+L(t)=\frac{At^2+Bt+C}{Dt^2+Et+1},
+\quad
+A=\|b\|_W^2,\ B=2\operatorname{Re}\langle r,b\rangle_W,
+C=\|r\|_W^2,\ D=|\kappa|^2,\ E=-2\operatorname{Re}\kappa.
+\]</span></p>
+<p>驻点只需解</p>
+<p><span class="math">\[
+(AE-BD)t^2+2(A-CD)t+(B-CE)=0.
+\tag{3}
+\]</span></p>
+<p>比较合法实根、盒端点和当前点，排除真实极点，即可全局最小化这一坐标的数据损失。若 <span class="math">\(a\ne0\)</span>，真实极点处损失发散；若 <span class="math">\(a=0\)</span>，损失在合法域上恒定。额外的正则项或人为的状态条件数可行域会改变此候选集合，不能直接沿用二次式的全局最小化结论。</p>
+<h2 id="section-2">3. 直接观测延拓：局部可达，但不自动下降</h2>
+<p>考虑用户可解释的直接目标</p>
+<p><span class="math">\[
+y_{S,\tau}=h(x_0)+\tau(y_S-h(x_0)),\qquad 0\le\tau\le1.
+\tag{4}
+\]</span></p>
+<p><strong>命题 2（局部合法实根）。</strong> 若 <span class="math">\(x_0\)</span> 在材料盒内部、原状态矩阵可逆、<span class="math">\(J_S(x_0)\)</span> 可逆，则存在 <span class="math">\(\epsilon&gt;0\)</span>，使 <span class="math">\(|\tau|&lt;\epsilon\)</span> 时有唯一的邻近实光滑分支 <span class="math">\(x(\tau)\)</span>，满足 <span class="math">\(h(x(\tau))=y_{S,\tau}\)</span>、<span class="math">\(x(0)=x_0\)</span>。分支保持盒内和无极点，且</p>
+<p><span class="math">\[
+x'(0)=-J_S^{-1}e_S.
+\tag{5}
+\]</span></p>
+<p>证明直接由实隐函数定理及开集条件得到。这里没有使用“背景正确”；对任何固定补集均成立。结论仅保证邻近分支，既不保证 <span class="math">\(\tau=1\)</span> 可达，也不保证当前 quotient chart 能稳定表示它。</p>
+<p>取无权全数据损失，则</p>
+<p><span class="math">\[
+\frac{dL(x(\tau))}{d\tau}\bigg|_0
+=-2e^T J_B(PJ_B)^{-1}Pe.
+\tag{6}
+\]</span></p>
+<p><span class="math">\(J_B(PJ_B)^{-1}P\)</span> 是斜投影，其二次型不必非负。一个局部线性反例取 <span class="math">\(J_B=(1,2)^T\)</span>、<span class="math">\(P=(1,0)\)</span>、<span class="math">\(e=(1,-1)^T\)</span>，式 (6) 等于 <span class="math">\(+2\)</span>。所选残差下降而全残差上升。可用块对角复制得到偶数活动维度。</p>
+<p><strong>结论：</strong> 当所有正 <span class="math">\(\tau\)</span> 候选被全数据拒绝时，继续缩小 <span class="math">\(\tau\)</span> 不是必定成功的数学补救。</p>
+<h2 id="section-3">4. 任意分支的全损失账本，以及 tau=0 的意义</h2>
+<p>把全部观测分为所选 <span class="math">\(S\)</span> 和其余 <span class="math">\(H\)</span>。对式 (4) 的任意精确材料根 <span class="math">\(z\)</span>，无论它离 <span class="math">\(x_0\)</span> 多远，都有</p>
+<p><span class="math">\[
+\boxed{L(z)-L(x_0)=-(2\tau-\tau^2)\|e_S(x_0)\|_{W_S}^2
++\|e_H(z)\|_{W_H}^2-\|e_H(x_0)\|_{W_H}^2.}
+\tag{7}
+\]</span></p>
+<p>证明：所选残差恰为 <span class="math">\((1-\tau)e_S(x_0)\)</span>，再按对角权重分拆损失。因而全观测评分给出接受的必要充分条件；无需用局部 GN 预测来替代这个判据。密集跨观测权重会产生交叉项，必须直接算完整加权损失。</p>
+<p>若数值根存在目标误差 <span class="math">\(\eta\)</span>，所选部分还须加上</p>
+<p><span class="math">\[
+2(1-\tau)\operatorname{Re}\langle e_S,\eta\rangle_{W_S}+\|\eta\|_{W_S}^2.
+\tag{8}
+\]</span></p>
+<p><strong>tau=0 不是无意义的调用。</strong> 它枚举
+<span class="math">\(h(z)=h(x_0)\)</span> 的其它条件材料根。当前点属于这一纤维；任何另一个合法根只要改善其余观测，就严格降低完整损失。只跟踪从当前点出发的分支看不到这些远处根。</p>
+<p>若 <span class="math">\(x_0\)</span> 已是全数据的严格局部极小点，那么任何足够小的非零可行扰动都不能降低全损失。特别地，式 (5) 的当前分支不能通过任意小的正 <span class="math">\(\tau\)</span> 逃离它。全数据驻点处式 (6) 为零；若 Hessian 正定，非零分支方向的二阶变化为正。远处同掩码根、较远的延拓候选或别的活动块仍可能有用，但没有存在保证。</p>
+<h2 id="section-4">5. 明确反例：互易、无极点也会丢失全部实根</h2>
+<p>取两个实材料坐标 <span class="math">\((x,z)\)</span> 及下列精确约化核：</p>
+<p><span class="math">\[
+K=\begin{pmatrix}0&amp;i\\i&amp;0\end{pmatrix},\qquad
+L_0=(1,1),\qquad q=(1,1)^T.
+\]</span></p>
+<p>它给出</p>
+<p><span class="math">\[
+F(x,z)=\frac{x+z+2ixz}{1+xz}.
+\tag{9}
+\]</span></p>
+<p>这是对称互易核的代数例；未声称它是本轮具体 scalar-TM 几何的 Green 矩阵。它足以检验仅以多重仿射和互易性为依据的推理。</p>
+<p>起点 <span class="math">\((2,3)\)</span> 的观测是 <span class="math">\(5/7+12i/7\)</span>。向 <span class="math">\(5/7+i\)</span> 作式 (4) 的直线延拓。若 <span class="math">\(\beta=(12-5\tau)/7\)</span>，任何实根必须满足</p>
+<p><span class="math">\[
+x+z=\frac{10}{2+5\tau},\qquad
+xz=\frac{12-5\tau}{2+5\tau}.
+\]</span></p>
+<p>两根的判别式为</p>
+<p><span class="math">\[
+\Delta(\tau)=\frac{4(1-50\tau+25\tau^2)}{(2+5\tau)^2}.
+\tag{10}
+\]</span></p>
+<p>它在
+<span class="math">\(\tau_*=1-2\sqrt6/5\approx0.0202041\)</span>
+变为零，之后到 <span class="math">\(\tau=1\)</span> 均为负。两个实分支碰撞后成为一对非实材料根。碰撞位置 <span class="math">\(x=z=(7+2\sqrt6)/5\)</span> 在常用材料盒内部，沿实分支 <span class="math">\(1+xz&gt;0\)</span>，没有物理极点。</p>
+<p>因此“从当前可行点出发”“目标连续”“分母不为零”“kernel 互易”仍不足以保证目标具有实根。实根缺失可以是几何不可达，不能一律归咎于 quotient 数值实现。</p>
+<h2 id="section-5">6. 错误补集的补偿误差可以显式写出</h2>
+<p>下面仅为理论敏感度分析，算法不使用真值。设一个理想参考材料为 <span class="math">\(m^*\)</span>，补集偏差为小量 <span class="math">\(h_C\)</span>。在参考点实化 Jacobian 并分为 <span class="math">\(J_{SB},J_{SC},J_{HB},J_{HC}\)</span>。若 <span class="math">\(J_{SB}\)</span> 可逆，则令活动块精确拟合所选观测的邻近解满足</p>
+<p><span class="math">\[
+h_B=-J_{SB}^{-1}J_{SC}h_C+O(\|h_C\|^2),
+\]</span></p>
+<p>而其余观测残差为</p>
+<p><span class="math">\[
+\boxed{e_H=\left[J_{HC}-J_{HB}J_{SB}^{-1}J_{SC}\right]h_C
++O(\|h_C\|^2).}
+\tag{11}
+\]</span></p>
+<p>证明：对所选观测的一阶展开先求 <span class="math">\(h_B\)</span>，再代入其余观测。这个条件灵敏度说明：所选观测可以被错误活动材料精确补偿，完整观测仍保留背景不一致。<span class="math">\(J_{SB}\)</span> 条件差还会放大补偿幅度及材料盒越界风险。</p>
+<p>即使某根也拟合全部观测，也只能说明数据相容；缺少全局可辨识性时，不自动证明材料就是参考材料。</p>
+<h2 id="section-6">7. 一个有条件的下降目标，以及它的局限</h2>
+<p>若希望小步延拓具有下降保证，可先用<strong>完整观测</strong>构造可行活动方向 <span class="math">\(d\)</span>，满足 <span class="math">\(e^T WJ_Bd&lt;0\)</span>，再把目标改成</p>
+<p><span class="math">\[
+\widetilde y_{S,\tau}=h(x_0)+\tau J_Sd.
+\tag{12}
+\]</span></p>
+<p>在命题 2 的条件下，当前分支满足 <span class="math">\(x(\tau)=x_0+\tau d+O(\tau^2)\)</span>，所以小正 <span class="math">\(\tau\)</span> 严格下降。这是与式 (4) <strong>不同的算法变体</strong>，应单独标记和计费，不能偷偷更换冻结协议。</p>
+<p>例如阻尼块 GN 方向</p>
+<p><span class="math">\[
+d=-(J_B^TWJ_B+\lambda I)^{-1}J_B^TWe,\quad \lambda&gt;0,
+\]</span></p>
+<p>给出
+<span class="math">\(e^TWJ_Bd=-d^T(J_B^TWJ_B+\lambda I)d&lt;0\)</span>
+（当 <span class="math">\(d\ne0\)</span>）。盒边界需要另行构造可行下降方向；盒内部定理不能直接套用。</p>
+<p>这只保证当前分支的局部下降，不保证枚举出的所有分支下降；在全数据驻点其方向为零，也不提供逃逸机制。它的价值是把“方向是否下降”与“代数枚举是否提供远距离候选”拆成两个可检验问题。</p>
+<h2 id="section-7">8. 物理分支与 quotient chart 是不同的故障层</h2>
+<p>对于一个真实简单材料根，实系数实化方程及隐函数定理保证其沿实 <span class="math">\(\tau\)</span> 局部保持真实。它成为非实根之前必须遭遇根的奇异/碰撞，或离开所讨论的合法域。全程可达至少还需要排除：所选 Jacobian 奇异、盒边界、原 resolvent 极点、发散到无穷远。</p>
+<p>Q6/Q20 额外依赖最高次块 <span class="math">\(T\)</span> 可逆、可分离特征问题及稳定 lift。这些是表示/求解条件，不等同物理可达性。冻结 R2 的 <span class="math">\(K=0\)</span>、线性可逆观测例已有 <span class="math">\(T=0\)</span>：quotient 失败可以发生在物理解唯一且良态的地方。</p>
+<p><strong>一个可缓存的延拓结构。</strong> 固定核、掩码和双线性零空间基，在未作目标相关行归一化的系数下，最高次块沿仿射目标满足</p>
+<p><span class="math">\[
+T(\tau)=T_0+\tau T_1.
+\tag{13}
+\]</span></p>
+<p>原因是 maximal minor 的首列最高次项对共轭目标仿射，其余列的最高次项固定。因此若 <span class="math">\(\det T\)</span> 不是零多项式，chart 奇异参数至多为 <span class="math">\(\dim T\)</span> 个复值（计重）：Q6 为 4，Q20 为 15。若 <span class="math">\(T_0\)</span> 可逆，当然不是零多项式。此结论不限制实材料折叠次数，也不保证特征根分离。</p>
+<p>冻结代码使用依赖目标的方程/子式归一化；其数值 <span class="math">\(T\)</span> 不必仍对 <span class="math">\(\tau\)</span> 仿射。模板优化必须在原始系数或固定归一化上实现；不能直接对动态归一化矩阵作两点插值。归一化因子非零时，精确零集不变。</p>
+<p>即使每个给定 <span class="math">\(\tau\)</span> 的 6/20 个复根都数值解析完成，有限 <span class="math">\(\tau\)</span> 网格仍可能漏掉狭窄的实分支窗口。有限块/掩码/目标的联合探索不是所有材料或所有延拓参数的覆盖认证。</p>
+<h2 id="section-8">9. 提案、修正和接受必须分开</h2>
+<p>可按下列顺序实现，不增加任何 GT 依赖：</p>
+<ol>
+<li>保存当前完整材料及全观测损失，作为始终可保留的 incumbent。</li>
+<li>每个活动块/掩码使用冻结的 <span class="math">\(\tau\)</span> 集合（应包含 <span class="math">\(0\)</span>）产生候选；记录 quotient 与物理过滤状态。</li>
+<li>对每个合法候选用完整约化核评分；按完整材料距离去重。把与 incumbent 重合的根单独记为 <code>CURRENT_ROOT</code>，不要让它占满非局部修正配额。</li>
+<li>在预定预算内可修正若干<strong>原始损失较差</strong>但不同的候选。原始提案只是新的初始化；若只允许原始损失优于 incumbent 才修正，可能事先删除能进入更好吸引域的候选。</li>
+<li>全变量修正后的候选重新通过盒、状态和完整 forward 检查。只有完整损失实际下降才替换 incumbent，否则保留原点。原始损失、修正损失、修正成本及接受原因分别记录。</li>
+</ol>
+<p>这允许“上坡提案、下降后的结果才接受”。它保证被接受损失序列非增，不保证有限时间找到更好盆地、最终驻点、真材料或全局极小。</p>
+<p>若单次修正必须从其输入单调下降，也不构成矛盾：一个比 incumbent 高的种子仍可沿自身下降路径到达比 incumbent 更低的点。需要比较的是修正输出与原 incumbent，而不只是输出与种子。</p>
+<p>建议将状态至少分为 <code>QUOTIENT_UNRESOLVED</code>、<code>NO_ELIGIBLE_REAL_CANDIDATE</code>、<code>CURRENT_ROOT</code>、<code>FULL_OBJECTIVE_REJECTED</code>、<code>CORRECTION_NO_IMPROVEMENT</code>、<code>ACCEPTED_AFTER_FULL_VALIDATION</code>。若 6/20 根未完整解析，不能把没有筛出候选写成“已证明无实根”；即使全部数值解析，仍不是严格无根证书。</p>
+<h2 id="section-9">10. 本轮可检验假说与停止边界</h2>
+<ul>
+<li><strong>H1：远处条件根有用。</strong> 在相同完整 forward/修正预算下，tau=0 或其它 tau 的不同合法根，至少有一个经完整修正优于当前盆地。证据需给材料距离、原始/修正损失和完整成本；仅 quotient 残差小不支持 H1。</li>
+<li><strong>H2：错误补集主要制造补偿根。</strong> 所选误差显著下降、其余误差上升或材料越界，与式 (7)/(11) 一致。此结果是有效负证据，不能以更多未冻结目标补救后再隐藏失败。</li>
+<li><strong>H3：掩码正则性影响可用率。</strong> 较差的 <span class="math">\(J_S\)</span> 或源秩应伴随较大补偿/更低可用率；但 <span class="math">\(T\)</span> 条件差与物理 Jacobian 条件差必须分别报告，不能混作同一原因。</li>
+<li><strong>H4：非局部修正调度影响收益。</strong> 排除 incumbent 重复根并允许预算内上坡初始化，可能比只修正最低原始损失根更有效。是否改善必须由冻结预算下实验决定。</li>
+</ul>
+<p>若没有不同合法候选、候选修正全部失败或成本超过同预算完整局部基线，应保留这些负结果。本文已证明的只是条件可达、精确损失分解、故障区分和接受逻辑；没有证明 Q6/Q20 能突破本轮具体 scalar-TM 局部极小，更没有证明规模扩展或总体效率优势。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/theory/ALGEBRAIC_IMAGING.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

@@ -1,0 +1,349 @@
+{
+  "schema": "Z-ALG-R3-HOLDOUT12-V1",
+  "frozen_utc": "2026-10-29T18:05:25.641494+00:00",
+  "role": "Four fresh confirmatory targets after method/source freeze; no target-dependent retuning",
+  "geometry": {
+    "centers": [
+      [
+        -0.3,
+        -0.191
+      ],
+      [
+        -0.10832482744838721,
+        -0.19513727924718677
+      ],
+      [
+        0.1108829407128572,
+        -0.2037453215289243
+      ],
+      [
+        0.2940976979019952,
+        -0.208909932469404
+      ],
+      [
+        -0.2907438191671131,
+        -0.008909932469404008
+      ],
+      [
+        -0.11054816702129452,
+        -0.005882792587772507
+      ],
+      [
+        0.10453330333765933,
+        0.002552959669169036
+      ],
+      [
+        0.304621837405093,
+        0.008641532579853292
+      ],
+      [
+        -0.2899977283049175,
+        0.2086415325798533
+      ],
+      [
+        -0.10307357048018818,
+        0.20678512028908974
+      ],
+      [
+        0.09401576778021693,
+        0.1986904996957225
+      ],
+      [
+        0.31089668091264355,
+        0.1917998276430379
+      ]
+    ],
+    "sources": [
+      [
+        -0.65,
+        -0.72
+      ],
+      [
+        0.72,
+        -0.51
+      ],
+      [
+        -0.68,
+        0.45
+      ]
+    ],
+    "receivers": [
+      [
+        0.17,
+        0.88
+      ],
+      [
+        0.83,
+        0.21
+      ],
+      [
+        -0.38,
+        0.82
+      ]
+    ],
+    "radius": 0.04,
+    "k": 6.283185307179586
+  },
+  "material_box": [
+    0.5,
+    30.0
+  ],
+  "unknowns": "all12 independent real cell values; geometry known; no oracle support",
+  "prior": "random background Uniform[.7,3], two random cell centers without replacement, blobs radius Uniform[.19,.29], each amplitude Uniform[10,28]; latest blob overwrites overlap",
+  "noise": "none",
+  "objective": "unweighted all-observation squared residual; top1=min data loss, deterministic tie/order; no GT selection",
+  "methods": [
+    "FullJ1024",
+    "FullJReciprocal1024",
+    "Coordinate",
+    "ABAR4_coordpre",
+    "GlobalDual"
+  ],
+  "max_nfev_per_correction": 120,
+  "wall_budget_seconds": 3.0,
+  "threading": "one BLAS thread per worker",
+  "metrics": [
+    "online top1 material RMS",
+    "offline best@K material RMS",
+    "all-data relative residual",
+    "distinct material RMS distances",
+    "candidate discovery wall and cumulative full RHS"
+  ],
+  "scope": "finite scalar TM disk pulse VIE, nonlinear multiple scattering; no continuous-PDE or 3D certification",
+  "generation_split": "GT private NPZ, observations only public NPZ; scoring only after predictions frozen",
+  "holdout_count": 4,
+  "method_configs": [
+    {
+      "name": "FullJ1024",
+      "method": "fullj",
+      "config": {
+        "wall_seconds": 3.0,
+        "seed": 2026103001,
+        "fullj_nstarts": 1024,
+        "start_policy": "strong_constants_sobol",
+        "fullj_max_nfev": 200,
+        "algebraic_initial_starts": 1,
+        "initial_max_nfev": 80,
+        "correction_max_nfev": 20,
+        "correction_per_block": 1,
+        "beam_width": 3,
+        "rounds": 8,
+        "blocks_per_round": null,
+        "active_size": 4,
+        "taus": [
+          1.0,
+          0.5,
+          0.25,
+          0.0
+        ],
+        "merge_rms": 1e-05,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11,
+        "full_rhs_limit": null,
+        "full_lu_limit": null,
+        "stop_relative_residual": 1e-10,
+        "coordinate_sweeps": 8,
+        "coordinate_correction_max_nfev": 0,
+        "coordinate_pre_sweeps": 0,
+        "beam_diversity_rms": 0.0,
+        "parameterization": "material",
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10
+      },
+      "DEV_config_source": "results/dev_mechanism_DEV12_00_FullJ1024.json"
+    },
+    {
+      "name": "FullJReciprocal1024",
+      "method": "fullj",
+      "config": {
+        "wall_seconds": 3.0,
+        "seed": 2026103001,
+        "fullj_nstarts": 1024,
+        "start_policy": "strong_constants_sobol",
+        "fullj_max_nfev": 200,
+        "algebraic_initial_starts": 1,
+        "initial_max_nfev": 80,
+        "correction_max_nfev": 20,
+        "correction_per_block": 1,
+        "beam_width": 3,
+        "rounds": 8,
+        "blocks_per_round": null,
+        "active_size": 4,
+        "taus": [
+          1.0,
+          0.5,
+          0.25,
+          0.0
+        ],
+        "merge_rms": 1e-05,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11,
+        "full_rhs_limit": null,
+        "full_lu_limit": null,
+        "stop_relative_residual": 1e-10,
+        "coordinate_sweeps": 8,
+        "coordinate_correction_max_nfev": 0,
+        "coordinate_pre_sweeps": 0,
+        "beam_diversity_rms": 0.0,
+        "parameterization": "reciprocal",
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10
+      },
+      "DEV_config_source": "results/dev_mechanism_DEV12_00_FullJReciprocal1024.json"
+    },
+    {
+      "name": "Coordinate",
+      "method": "coordinate",
+      "config": {
+        "wall_seconds": 3.0,
+        "seed": 2026103001,
+        "fullj_nstarts": 32,
+        "start_policy": "strong_constants_sobol",
+        "fullj_max_nfev": 200,
+        "algebraic_initial_starts": 1,
+        "initial_max_nfev": 80,
+        "correction_max_nfev": 20,
+        "correction_per_block": 1,
+        "beam_width": 3,
+        "rounds": 8,
+        "blocks_per_round": null,
+        "active_size": 4,
+        "taus": [
+          1.0,
+          0.5,
+          0.25,
+          0.0
+        ],
+        "merge_rms": 1e-05,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11,
+        "full_rhs_limit": null,
+        "full_lu_limit": null,
+        "stop_relative_residual": 1e-10,
+        "coordinate_sweeps": 8,
+        "coordinate_correction_max_nfev": 0,
+        "coordinate_pre_sweeps": 0,
+        "beam_diversity_rms": 0.0,
+        "parameterization": "material",
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10,
+        "include_q20": false,
+        "trace_roots": true
+      },
+      "DEV_config_source": "results/dev_reduced_strong_DEV12_00_Coordinate.json"
+    },
+    {
+      "name": "ABAR4_coordpre",
+      "method": "algebraic",
+      "config": {
+        "wall_seconds": 3.0,
+        "seed": 2026103001,
+        "fullj_nstarts": 32,
+        "start_policy": "strong_constants_sobol",
+        "fullj_max_nfev": 200,
+        "algebraic_initial_starts": 1,
+        "initial_max_nfev": 80,
+        "correction_max_nfev": 120,
+        "correction_per_block": 1,
+        "beam_width": 3,
+        "rounds": 8,
+        "blocks_per_round": null,
+        "active_size": 4,
+        "taus": [
+          1.0,
+          0.5,
+          0.25,
+          0.0
+        ],
+        "merge_rms": 1e-05,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11,
+        "full_rhs_limit": null,
+        "full_lu_limit": null,
+        "stop_relative_residual": 1e-10,
+        "coordinate_sweeps": 8,
+        "coordinate_correction_max_nfev": 0,
+        "coordinate_pre_sweeps": 8,
+        "beam_diversity_rms": 1.0,
+        "parameterization": "material",
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10
+      },
+      "DEV_config_source": "results/dev_mechanism_DEV12_00_ABAR4_coordpre.json"
+    },
+    {
+      "name": "GlobalDual",
+      "method": "globaldual",
+      "config": {
+        "wall_seconds": 3.0,
+        "seed": 2026103001,
+        "fullj_nstarts": 32,
+        "start_policy": "strong_constants_sobol",
+        "fullj_max_nfev": 200,
+        "algebraic_initial_starts": 1,
+        "initial_max_nfev": 80,
+        "correction_max_nfev": 20,
+        "correction_per_block": 1,
+        "beam_width": 3,
+        "rounds": 8,
+        "blocks_per_round": null,
+        "active_size": 4,
+        "taus": [
+          1.0,
+          0.5,
+          0.25,
+          0.0
+        ],
+        "merge_rms": 1e-05,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11,
+        "full_rhs_limit": null,
+        "full_lu_limit": null,
+        "stop_relative_residual": 1e-10,
+        "coordinate_sweeps": 8,
+        "coordinate_correction_max_nfev": 0,
+        "coordinate_pre_sweeps": 0,
+        "beam_diversity_rms": 0.0,
+        "parameterization": "material",
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10
+      },
+      "DEV_config_source": "results/dev_mechanism_DEV12_00_GlobalDual.json"
+    }
+  ],
+  "solver_revision": "R3_PUBLIC_V6_GLOBALDUAL_RECIPROCAL_CONTROL",
+  "source_snapshot": "audit/HOLDOUT_SOURCE_SNAPSHOT",
+  "source_manifest": "audit/HOLDOUT_SOURCE_FREEZE.json",
+  "primary_method": "GlobalDual",
+  "primary_baseline": "FullJ1024",
+  "data_accepted_relative_residual": 1e-06,
+  "independent_validation": "all returned candidates",
+  "original_geometry_and_prior_changed": false,
+  "budget_boundary": "Maximum 3 s numerical wall per method/case; terminal atomic overshoot is measured; no retry or retune",
+  "reporting": "Residual-selected top1 RMS primary; offline oracle best@K separately labeled; all costs retained"
+}

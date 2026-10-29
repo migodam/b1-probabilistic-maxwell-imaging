@@ -1,0 +1,160 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>Frozen V6 holdout result | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_REUSE_MAP.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>Frozen V6 holdout result</h1>
+<p>Four fresh targets; five frozen methods; maximum 3 s numerical wall per method/case. Top1 is selected by all-data residual before truth scoring. Oracle coverage is a separate offline diagnostic.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="right">Top1 data-fit cases (residual ≤ 1e-6)</th>
+<th align="right">Mean top1 RMS</th>
+<th align="right">Median top1 RMS</th>
+<th align="right">Mean oracle best RMS</th>
+<th align="right">Mean numerical s</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ABAR4_coordpre</td>
+<td align="right">1/4</td>
+<td align="right">8.68048</td>
+<td align="right">10.5601</td>
+<td align="right">4.57169</td>
+<td align="right">1.0643</td>
+</tr>
+<tr>
+<td>Coordinate</td>
+<td align="right">1/4</td>
+<td align="right">8.18233</td>
+<td align="right">10.2709</td>
+<td align="right">5.44329</td>
+<td align="right">0.192883</td>
+</tr>
+<tr>
+<td>FullJ1024</td>
+<td align="right">1/4</td>
+<td align="right">7.91041</td>
+<td align="right">10.4076</td>
+<td align="right">6.30546</td>
+<td align="right">2.25324</td>
+</tr>
+<tr>
+<td>FullJReciprocal1024</td>
+<td align="right">2/4</td>
+<td align="right">4.8076</td>
+<td align="right">4.61388</td>
+<td align="right">3.76623</td>
+<td align="right">1.58415</td>
+</tr>
+<tr>
+<td>GlobalDual</td>
+<td align="right">2/4</td>
+<td align="right">4.24797</td>
+<td align="right">4.15804</td>
+<td align="right">3.05578</td>
+<td align="right">1.80982</td>
+</tr>
+</tbody></table>
+<p>GlobalDual succeeds on cases 00 and 03, fails on 01 and 02; reciprocal FullJ succeeds on 00 and 01. Native FullJ, coordinate and ABAR4 succeed only on 01. GlobalDual therefore does not dominate the reciprocal control. On case 02 its lower residual and better oracle coverage do not produce a recovered image. These four finite targets support complementarity observations, not global enumeration, an accepted general advantage, or a novelty claim. The V6 scientific disposition remains HOLD.</p>
+<p>All 3,500 archived candidates passed independent fresh NumPy full-VIE validation, at a cost of 10,500 additional full RHS. This validates physical evaluation and stored residuals; it does not upgrade unsuccessful reconstructions. Forty-nine raw dual endpoints that had merged with nearby archive candidates were additionally validated at 147 full RHS for exact phase analysis.</p>
+<h2 id="section-0">Pure dual endpoints and full-J corrections</h2>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Pure endpoint residual top1</th>
+<th align="right">Pure endpoint material RMS</th>
+<th align="right">Final residual top1</th>
+<th align="right">Final top1 RMS</th>
+<th align="right">Endpoint full RHS</th>
+<th align="right">Correction full RHS</th>
+<th align="right">Inner QR / LS RHS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">1.1319e-06</td>
+<td align="right">9.45654e-05</td>
+<td align="right">5.21095e-11</td>
+<td align="right">6.33262e-09</td>
+<td align="right">36</td>
+<td align="right">2562</td>
+<td align="right">1106 / 3318</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">0.259419</td>
+<td align="right">8.26475</td>
+<td align="right">0.250984</td>
+<td align="right">8.31609</td>
+<td align="right">426</td>
+<td align="right">50001</td>
+<td align="right">13738 / 41214</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">0.0801225</td>
+<td align="right">8.65379</td>
+<td align="right">0.0588328</td>
+<td align="right">8.67579</td>
+<td align="right">468</td>
+<td align="right">42789</td>
+<td align="right">15987 / 47961</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">3.60095e-06</td>
+<td align="right">0.000249047</td>
+<td align="right">1.10886e-15</td>
+<td align="right">1.51708e-13</td>
+<td align="right">156</td>
+<td align="right">16392</td>
+<td align="right">5211 / 15633</td>
+</tr>
+</tbody></table>
+<p>Phase counts are exact for these frozen receipts: completed correction fit counters plus raw endpoint fees reproduce the total full cost. QR/LS work is charged separately. The dual objective is a proposal metric; all rankings in this table use the independently evaluated original-data residual.</p>
+<h2 id="section-1">Public-receipt complementarity audit</h2>
+<p>These rows inspect existing public prediction receipts only. They do not run a guarded pipeline or reuse V6 targets as new blind evidence.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Native FullJ first-start residual</th>
+<th align="right">First fit s</th>
+<th align="right">First fit available s</th>
+<th align="right">GlobalDual final top1 discovered s</th>
+<th>GlobalDual goal reached</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">0.400719</td>
+<td align="right">0.0101887</td>
+<td align="right">0.0226375</td>
+<td align="right">0.182953</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">2.05891e-13</td>
+<td align="right">0.00425275</td>
+<td align="right">0.0116406</td>
+<td align="right">0.0394568</td>
+<td>no</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">0.451407</td>
+<td align="right">0.00641021</td>
+<td align="right">0.0130833</td>
+<td align="right">0.622541</td>
+<td>no</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">0.676565</td>
+<td align="right">0.0108665</td>
+<td align="right">0.0202905</td>
+<td align="right">1.05485</td>
+<td>yes</td>
+</tr>
+</tbody></table>
+<p>No method was retuned after V6 truth scoring. <code>HOLDOUT_V6_METRICS.csv</code> preserves every case/method metric; <code>HOLDOUT_V6_SUMMARY.json</code> retains this summary plus first-fit operation counters. Complete paid exploration, setup, full/reduced/inner-LS work, independent validation and end-to-end subprocess time remain in <code>COST_LEDGER.json</code>.</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/results/HOLDOUT_V6_SUMMARY.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

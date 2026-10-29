@@ -1,0 +1,223 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>Z-ALG-R3：代数候选如何帮助真正的 Maxwell 成像 | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_REUSE_MAP.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>Z-ALG-R3：代数候选如何帮助真正的 Maxwell 成像</h1><details class="toc"><summary>本文目录 · 11节</summary><ol><li><a href="#section-0">1. R3相对R2究竟增加了什么</a></li><li><a href="#section-1">2. 历史与公式复用，而非重做R2</a></li><li><a href="#section-2">3. 多重仿射带来的真正算法启发</a></li><li><a href="#section-3">4. 第一条路线的真实失败：远根很多，成像价值尚未成立</a></li><li><a href="#section-4">5. 方向转换：全部观测先满足，再要求一个共同材料</a></li><li><a href="#section-5">6. 第一轮独立盲测：互补成立，支配不成立</a></li><li><a href="#section-6">7. 最终新盲测：用普通结果保护搜索</a></li><li><a href="#section-7">8. 计算收益来自哪里，又没有来自哪里</a></li><li><a href="#section-8">9. 对复杂场景的回答：latent 与 characteristic subspace各负责什么</a></li><li><a href="#section-9">10. 原创性裁决：成果真实，命名不能替代贡献</a></li><li><a href="#section-10">11. 交付、限制和最短下一步</a></li></ol></details>
+<p><strong>结论先说：我们实现并检验了两条路线。局部商代数确实产生很多不同材料，但本轮没有证明它改善 GT recovery；转向全观测本构兼容性与普通物理修正后，最终四个新盲目标中多恢复了一个目标。独立论文主张仍为 HOLD。</strong></p>
+<p>最终冻结比较中，普通求解保护＋全接收兼容性候选达到3/4个预声明数据拟合门，保护＋倒数材料 Full-J 达到2/4。新增成功案例的在线材料 RMS 为 <strong>2.12×10⁻¹⁰ 对10.94</strong>。这是真正由观测排序的 top1，不是事后用GT从候选中挑选。另一方面，两种方法都失败了一例；总 wall 没有下降，而且有效路线与成熟 CSI/SOM、变量投影和约束松弛有直接关系。</p>
+<p>所有实验都是 <strong>12个实际材料单元全部未知、3源×3复接收、完整非线性二维 scalar-TM VIE</strong>。没有扩大成Full66、24/48单元或连续/三维 Maxwell；没有神经网络训练。源代码、公开观测、原始预测、冻结记录、图、失败和成本已完整保存。科学实验在开始后33.4分钟封账，后续只做推导整理、复核、图与发布。</p>
+<figure><a href="figures/confirm_v7_materials.png"><img src="figures/confirm_v7_materials.png" alt="最终新盲目标：GT、强普通对照、在线重建和明确标注的离线oracle候选" loading="lazy"></a><figcaption>最终新盲目标：GT、强普通对照、在线重建和明确标注的离线oracle候选</figcaption></figure>
+<h2 id="section-0">1. R3相对R2究竟增加了什么</h2>
+<p>R2建立的小型商代数仍然成立：4材料的Q6和6材料的Q20能把特定平衡观测下的兼容性方程变成小型乘法矩阵特征问题。R2六材料盲实验中，Q20在一例多找到一个合法等响应材料。这是重要正面结果，但没有回答更多未知材料的图像如何恢复。</p>
+<p>本轮最初的想法是把这些小型求根器放进12材料搜索：固定当前其它材料，在4/6个实际单元上生成多个根，再用所有观测评分和全材料 Full-J 修正。这个方法已经实际实现，不是只写了一个方案。它遇到的关键困难正是用户指出的：固定的其它材料一般是错误的，选定的子数据可能不可达，即使有根，也未必对完整图像有帮助。</p>
+<p>因此本轮没有继续放大商环。我们先用决定性实验检验小块路线，再作一次主要方向转换：保留全部材料和全部观测，用共享材料本构方程生成不同优化目标下的候选。最后增加一个便宜的普通求解保护阶段，并重新冻结、生成新数据验证。</p>
+<h2 id="section-1">2. 历史与公式复用，而非重做R2</h2>
+<p>前7.62分钟完成定向审计：核对已发布R2、R9公式库及独立复核、同级worktree目录、近期数学文件目录，并从公式索引读到A17X相关实现。近期328个文件是<strong>目录检索记录</strong>，不宣称逐个读完；实际采用来源逐项列于<a href="FORMULA_REUSE_MAP.html">FORMULA_REUSE_MAP.md</a>。旧实验没有重跑，旧报告和源文件未修改。</p>
+<p>真正用于本轮计算的资产如下。</p>
+<table>
+<thead>
+<tr>
+<th>历史资产</th>
+<th>本轮用途</th>
+<th>不能由它推出什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R2 F06/F11固定有理核与Schur复用</td>
+<td>固定补集的小块求根、全部观测的小核精确评分</td>
+<td>不能把条件切片当全材料域；变化补集仍有分解成本</td>
+</tr>
+<tr>
+<td>R2 F09、F14/F15</td>
+<td>Q6/Q20候选；全部接收的共享实材料兼容性</td>
+<td>不能直接建立全12材料小商环或宣称全域枚举</td>
+</tr>
+<tr>
+<td>R2 F12</td>
+<td>精确有理单坐标最小化，成为必须面对的廉价强对照</td>
+<td>坐标全局最优不等于多材料全局最优</td>
+</tr>
+<tr>
+<td>R9 F-OP-008/010、F-OPT-002</td>
+<td>正确的固定算子及Full-J费用；所有方法共享解析导数后端</td>
+<td>不能用故意昂贵的Jacobian对照制造优势</td>
+</tr>
+<tr>
+<td>R9 F-ERR系列</td>
+<td>不交换性、实际物理缺陷、独立原方程验收</td>
+<td>小辅助残差不能自动证明数据拟合或稳定性</td>
+</tr>
+<tr>
+<td>R9 F-POST及A17X共同材料拟合</td>
+<td>区分材料移动、覆盖、在线选择与事后GT几何；处理共同材料及节点</td>
+<td>不以GT方向选择提案，不把current子空间成员当合法材料</td>
+</tr>
+</tbody></table>
+<p>符号统一为 <span class="math">$G$</span> 表示原固定传播、<span class="math">$K$</span> 表示约化传播、<span class="math">$m$</span> 表示实际材料、<span class="math">$j$</span> 表示电流；latent Jacobian和电流不会共用一个含混的J。R9的576格点、ROI和Full66噪声归一化没有被搬到本轮12格点合同中。</p>
+<h2 id="section-2">3. 多重仿射带来的真正算法启发</h2>
+<p>用户给出的增广行列式关于每个独立材料的一次性，最有用的启发不是“它可以被称作代数簇”，而是：<strong>固定其它材料后，全部测量沿一个材料坐标共同经过同一个一次分母。</strong></p>
+<p>因此 <span class="math">$Y(t)=Y_c+at/(1-\kappa t)$</span>。全观测平方损失是两个实二次式之比，导数最高次项抵消，驻点最多通过二次方程寻找。比较驻点与盒端点便能完成精确有理坐标更新。我们直接实现这条公式，没有为标准恒等式另做高精度测试。</p>
+<p>另一个重要推导是子数据与完整目标的精确分解。若一个根拟合目标路径 <span class="math">$F_S(m)+\tau[y_S-F_S(m)]$</span>，则</p>
+<p><span class="math">$$\Delta\mathcal L=-(2\tau-\tau^2)\|r_S\|^2+\Delta\|r_H\|^2.$$</span></p>
+<p>所选观测的收益可能被剩余观测的恶化抵消。<span class="math">$\tau=0$</span>允许寻找同子数据的远根，但不保证这样的根存在。我们还构造了互易、无极点而实根在短目标路径上碰撞消失的代数反例。完整假设与证明见<a href="MATHEMATICAL_THEORY.html">数学理论</a>。</p>
+<p>这使研究方向可裁决：问题不是求根器是否输出足够多的数字，而是这些根是否跨越了有用的材料吸引域。</p>
+<h2 id="section-3">4. 第一条路线的真实失败：远根很多，成像价值尚未成立</h2>
+<p>初始开发目标暴露出一个常见误判：只从材料盒中点和均匀起点出发，普通Full-J会失败；加入事前合理的低材料常数初值后，其中一个目标立即恢复。我们把同样的起点给所有方法，保留原先失败和费用，没有把初始化收益归给商代数。</p>
+<p>随后修正了一个具体实现问题：重复incumbent不再占据每块有限的Full-J修正名额。新且较远的候选，即使原始完整误差较高，也可以得到一次普通物理修正，然后与保留结果比较。</p>
+<p>在冻结V6的四个新目标中，ABAR4共执行864次Q6求根，产生538个新合法存档候选，其中462个相对其当前点的材料RMS至少为1。<strong>原始Q6候选直接改善全局最佳完整数据残差的次数是0。</strong> 后续普通Full-J带来部分改善，但没有增加达到数据门的目标数；ABAR和精确坐标法都仅1/4，而那一例在商根/坐标机制开始前就由共同普通初值解决。</p>
+<p>这不证明小块商根永远无用。它证明了在本轮合同下，“很多合法远根”不足以支持成像贡献。若要隔离Q的因果作用，还需与相同成本的其它提案生成器比较；本轮不能把后续GN的改善全部归给Q。</p>
+<h2 id="section-4">5. 方向转换：全部观测先满足，再要求一个共同材料</h2>
+<p>小块路线固定了错误补集。替代路线则保留全部材料，先把观测约束写成</p>
+<p><span class="math">$$Wq=T,\qquad W=(L+WK)\operatorname{diag}(m-m_0).$$</span></p>
+<p>其中每个接收行都必须对应同一个实材料。第一次方程通过固定零空间完全消去：<span class="math">$W=W_0+CZ$</span>，<span class="math">$Zq=0$</span>。给定材料，<span class="math">$C$</span>只需一次共享复最小二乘。将它消去后，对12个实际材料做有界优化；每次内层为12×9 QR、三个复右端。没有搭建924维商环，也没有假装仍在枚举所有代数根。</p>
+<p>最重要的理论解释是消元目标</p>
+<p><span class="math">$$\psi(m)=\operatorname{tr}\{R_d(Q_m^*Q_m)^{-1}R_d^*\},\qquad Q_m=(I-GD_m)^{-1}E^{inc}.$$</span></p>
+<p>它与原数据误差在可逆域具有相同的精确零点，但用一个随材料变化的度量改变非零损失地形。因此它可能到达普通Full-J遗漏的区域，也可能丢失普通方法容易解决的区域。近极点时还可能虚降，不能作为停止验收或噪声likelihood。</p>
+<p>实现始终用原完整Maxwell残差评价端点、按需要Full-J修正、在线选择top1。开发难例中，它先产生相对残差约1.29×10⁻⁶的材料，再由已计费的3次Full-J函数/导数评价进入近零残差。此前120次修正的费用也全部保留，不能只报最后成功的那3次。</p>
+<h2 id="section-5">6. 第一轮独立盲测：互补成立，支配不成立</h2>
+<p>V6在源码、采集、起点、预算全部冻结后生成四个新目标。每种方法每例最多3秒，普通法最多1024起点，并另加入倒数材料坐标的强对照；后者仍使用相同物理初值和精确导数。</p>
+<table>
+<thead>
+<tr>
+<th>V6方法</th>
+<th align="right">达到完整相对残差≤10⁻⁶的目标</th>
+<th align="right">平均在线材料RMS</th>
+<th align="right">平均离线best@K RMS</th>
+<th align="right">平均数值wall秒</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原材料Full-J</td>
+<td align="right">1/4</td>
+<td align="right">7.910</td>
+<td align="right">6.305</td>
+<td align="right">2.253</td>
+</tr>
+<tr>
+<td>倒数材料Full-J</td>
+<td align="right">2/4</td>
+<td align="right">4.808</td>
+<td align="right">3.766</td>
+<td align="right">1.584</td>
+</tr>
+<tr>
+<td>精确有理坐标</td>
+<td align="right">1/4</td>
+<td align="right">8.182</td>
+<td align="right">5.443</td>
+<td align="right">0.193</td>
+</tr>
+<tr>
+<td>坐标＋Q6提案＋Full-J</td>
+<td align="right">1/4</td>
+<td align="right">8.680</td>
+<td align="right">4.572</td>
+<td align="right">1.064</td>
+</tr>
+<tr>
+<td>全部观测兼容性＋Full-J</td>
+<td align="right">2/4</td>
+<td align="right">4.248</td>
+<td align="right">3.056</td>
+<td align="right">1.810</td>
+</tr>
+</tbody></table>
+<p>新路线在case03恢复了普通方法遗漏的材料，却在case01失败，而普通低初值已能恢复case01。倒数Full-J在case00也成功，不能只挑原材料坐标的弱结果作展示。</p>
+<figure><a href="figures/holdout_materials.png"><img src="figures/holdout_materials.png" alt="V6混合结果：固定使用倒数Full-J对照，保留新方法的失败案例" loading="lazy"></a><figcaption>V6混合结果：固定使用倒数Full-J对照，保留新方法的失败案例</figcaption></figure>
+<p>因此这轮结果支持“不同吸引域的互补”，不支持新方法支配普通方法。数据拟合门和材料RMS分开报告，没有事后发明一个材料成功阈值。</p>
+<h2 id="section-6">7. 最终新盲测：用普通结果保护搜索</h2>
+<p>根据V6的明确失败，V7先运行一次便宜的原材料Full-J：最多80评价、最多0.20秒。若已达到停止门则直接保留；否则将实际剩余总预算交给兼容性候选，或交给强倒数Full-J对照。两臂共同保护阶段、总3秒、缓存和最后的原残差排序一致。</p>
+<p>V6结果成为这个修订版的开发依据；它们没有再次被算作新的盲验证。V7另行冻结12份源码/配置，然后生成四个 <strong>NEWCONFIRM12</strong> 目标；八份预测全部冻结以后才验收和评分。</p>
+<table>
+<thead>
+<tr>
+<th>新目标</th>
+<th align="right">保护＋兼容性：在线材料RMS</th>
+<th align="right">其完整相对残差</th>
+<th align="right">保护＋倒数Full-J：在线材料RMS</th>
+<th align="right">其完整相对残差</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00</td>
+<td align="right">2.12×10⁻¹⁰</td>
+<td align="right">5.91×10⁻¹²</td>
+<td align="right">10.9402</td>
+<td align="right">0.0970</td>
+</tr>
+<tr>
+<td>01</td>
+<td align="right">11.1686</td>
+<td align="right">0.1080</td>
+<td align="right">16.0621</td>
+<td align="right">0.1324</td>
+</tr>
+<tr>
+<td>02</td>
+<td align="right">1.71×10⁻⁷</td>
+<td align="right">3.75×10⁻¹⁰</td>
+<td align="right">4.92×10⁻¹⁰</td>
+<td align="right">1.33×10⁻¹²</td>
+</tr>
+<tr>
+<td>03</td>
+<td align="right">9.57×10⁻¹⁰</td>
+<td align="right">4.00×10⁻¹¹</td>
+<td align="right">6.29×10⁻¹⁵</td>
+<td align="right">7.22×10⁻¹⁶</td>
+</tr>
+</tbody></table>
+<p>这批在预先规定的完整数据门10⁻⁶下是3/4对2/4；额外一例同时表现为明显的实际材料恢复。更严格的内部搜索停止门10⁻¹⁰则是双方2/4，新方法case02虽未触发停止门，却早已达到声明的数据接受门。两种门没有混用。</p>
+<p>所有在线重建列都是冻结前按原数据残差选出的top1。oracle列和best@K只在预测冻结后使用GT。case01即使返回很多候选也仍未恢复，本轮明确保留失败。四例太少，不能推出一般成功概率或跨场景优势；四个保护阶段本身也均未直接成功，因此这批不单独隔离保护步骤的因果贡献。</p>
+<h2 id="section-7">8. 计算收益来自哪里，又没有来自哪里</h2>
+<table>
+<thead>
+<tr>
+<th>V7四目标合计</th>
+<th align="right">保护＋兼容性</th>
+<th align="right">保护＋倒数Full-J</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>总outer wall秒</td>
+<td align="right">6.8748</td>
+<td align="right">6.7698</td>
+</tr>
+<tr>
+<td>完整12维复杂RHS列</td>
+<td align="right">116,994</td>
+<td align="right">207,213</td>
+</tr>
+<tr>
+<td>额外12×9 QR</td>
+<td align="right">45,389</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>额外复最小二乘RHS</td>
+<td align="right">136,167</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>完整数据门通过</td>
+<td align="right">3/4</td>
+<td align="right">2/4</td>
+</tr>
+</tbody></table>
+<p>完整物理RHS少约43.5%，<strong>总wall却略高</strong>。这说明计算被转移到兼容性线性代数，不能说成整体加速。合理的有限结论是在近似相同总计算时间下，本批多找到一个接近GT且通过数据门的在线结果。</p>
+<figure><a href="figures/confirm_v7_cost_coverage.png"><img src="figures/confirm_v7_cost_coverage.png" alt="最终相同最大预算下的在线图像、离线候选覆盖与真实计算费用" loading="lazy"></a><figcaption>最终相同最大预算下的在线图像、离线候选覆盖与真实计算费用</figcaption></figure>
+<p>所有开发、初版低效实现、负面路径、最终求解、生成和独立验收共计 <strong>1,120,095个完整复杂RHS列</strong>，另有23,316个约化RHS和289,302个复最小二乘RHS。完整系统维数均为12；这些数字不能直接与576格点物理RHS比较。全部求解器数值/outer wall合计63.008937秒；推导、编码、审阅与发布时间另外记录。V6/V7子进程启动与IO耗时也分别保存，不能与其包含的数值wall重复相加。</p>
+<p>总计4,468个归档候选逐个独立重建并求解原完整矩阵，另验证49个去重前端点，13551个验收RHS全部计费。这里是独立求解、共用已知离散算子，不是独立离散化或连续PDE误差认证。最大终止原子操作/记账超时0.0128075秒；新增成功在时间门内已经到达，未靠超时制造结果。</p>
+<h2 id="section-8">9. 对复杂场景的回答：latent 与 characteristic subspace各负责什么</h2>
+<p>代数关系来自材料—电流—传播—观测；latent适合限定材料结构，固定传播/观测子空间适合消元和计算复用。一个latent同时改变许多单元时，材料对角更新可能仍是满秩；即使 <span class="math">$m_i=z$</span> 只有一个latent，<span class="math">$\det(I-zG)$</span>一般也有N次。因此不能把四个latent直接当作Q6的四个独立材料单元。</p>
+<p>更自然的接法是直接在合法decoder <span class="math">$m=\mathcal D(z)$</span> 中优化共同材料兼容性。内层变量投影不变，外层梯度变成 <span class="math">$J_{\mathcal D}^Tg_m$</span>，并始终以 <span class="math">$F(\mathcal D(z))$</span> 的原物理目标修正。这保留材料结构，避免先生成不可表示的像素图再投影回latent破坏拟合。</p>
+<p>若characteristic subspace是固定SVD空间，完整数据零空间表示可以精确；截断它则可能排除真实材料对应的传递矩阵。投影是可计算工具，不是自动的物理等价。所有条件、复材料decoder梯度、更新秩反例和嵌套子空间误差不等式已整理为<a href="theory/LATENT_AND_CHARACTERISTIC_SUBSPACES.html">专门公式说明</a>。<strong>这一迁移未实现、未运行Full66实验。</strong></p>
+<h2 id="section-9">10. 原创性裁决：成果真实，命名不能替代贡献</h2>
+<p>增广行列式、多重仿射、SMW、Schur、Hilbert–Burch/Eagon–Northcott、商环特征求根均有成熟数学来源。Everett1996已研究小型波动逆问题多项式化与多解同伦；R2不会因此成为“第一次代数逆散射”。</p>
+<p>本轮有效的全材料方程经转置正好成为多照明contrast-source状态/数据方程，所以直接面对CSI/SOM先例。内层消元和梯度是标准变量投影；材料相关Gram加权误差又有van Leeuwen与Yang2025等直接分析。不能把这条路线包装为新的代数根枚举理论。<a href="audit/PAPER_NOVELTY.html">独立审查</a>按原始资料分级核对，保留检索429及最终身份核验记录。</p>
+<p>当前最有价值的是三个可复用结果：条件商根为何不能自动改善完整图像的推导与负面实验；全部观测兼容性目标的清楚实现、风险和费用；一个有严格盲测顺序的有限恢复增益。它们足以形成后续研究的可靠起点，尚不足以接受强独立论文主张。具体候选结构见<a href="PAPER_CANDIDATE.html">PAPER_CANDIDATE.md</a>。</p>
+<h2 id="section-10">11. 交付、限制和最短下一步</h2>
+<ul>
+<li><a href="ALGORITHM.html">算法与端到端入口</a>、<a href="REPRODUCE.html">复现命令</a>、<a href="BLIND_EXPERIMENT.html">实验合同与GT隔离</a>。</li>
+<li><a href="MATHEMATICAL_THEORY.html">数学理论</a>、<a href="FORMULA_REUSE_MAP.html">公式复用清单</a>、<a href="theory/LATENT_AND_CHARACTERISTIC_SUBSPACES.html">latent/子空间接口</a>。</li>
+<li><a href="RESULTS_SUMMARY.json">机器结果</a>、<a href="COST_LEDGER.html">完整费用</a>、<a href="audit/FINAL_SCIENTIFIC_REVIEW.html">最终独立科学复核</a>。</li>
+</ul>
+<p>未运行：24/48/Full66、含噪新实验、NN、全12材料商环、严格全根认证、大规模或连续Maxwell验证。没有把R2旧结果或未执行计划填进这些空缺。</p>
+<p>下一轮最短路径是保持原P3L/Full66 decoder与观测，将本轮兼容性梯度接到latent，并与成熟CSI/SOM/约束松弛及强latent Full-J作同预算对照。核心问题是受材料结构约束以后，吸引域互补是否仍可重复，以及能否在当前近立方的内层QR费用上取得真正的规模收益。若不成立，应接受本轮是一个有用的有限比较和失败机制研究。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/RESEARCH_REPORT_ZH.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

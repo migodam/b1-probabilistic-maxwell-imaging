@@ -1,3 +1,11 @@
+<!-- Z_ALG_R3_CURRENT -->
+## Research Z-ALG-R3：代数候选与真正的盲成像
+
+12个材料全部未知的非线性VIE盲成像。新四例中，完整物理残差在线选出的兼容性候选组合通过3/4个数据门，强倒数Full-J对照2/4；总wall没有下降。局部Q6/Q20分支搜索未证明成像增益，失败保留。一般优势与独立论文新颖性仍HOLD。
+
+[中文报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r3/) · [latent与特征子空间推导](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r3/theory/LATENT_AND_CHARACTERISTIC_SUBSPACES.html) · [原始Markdown](research/research_z_alg_r3/RESEARCH_REPORT_ZH.md) · [代码、图像与完整复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r3-20261030)
+<!-- /Z_ALG_R3_CURRENT -->
+
 <!-- P3LR10_CURRENT -->
 ## P3L-R10-BI：双边传递、条件物理复用与材料覆盖边界
 

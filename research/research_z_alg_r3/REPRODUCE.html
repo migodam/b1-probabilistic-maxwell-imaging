@@ -1,0 +1,41 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>R3复现：运行、验收、公开评分 | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_REUSE_MAP.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>R3复现：运行、验收、公开评分</h1><details class="toc"><summary>本文目录 · 5节</summary><ol><li><a href="#section-0">环境与目录</a></li><li><a href="#section-1">从一个未知观测输入求材料</a></li><li><a href="#section-2">零物理费用重现原冻结评分</a></li><li><a href="#section-3">冻结身份与不可比的重放</a></li><li><a href="#section-4">发布边界</a></li></ol></details>
+<h2 id="section-0">环境与目录</h2>
+<p>使用Python、NumPy、SciPy、threadpoolctl；画图另需Matplotlib。实际版本列于<code>experiments/requirements.txt</code>和<code>audit/EXPERIMENT_RUNTIME.json</code>。本轮用现有Apple Silicon CPU环境，BLAS每个worker限制为一线程，没有安装新数值软件、使用GPU或训练网络。</p>
+<p>从既有B1仓库进入：</p>
+<pre><code class="language-bash">git clone https://github.com/migodam/b1-probabilistic-maxwell-imaging.git
+cd b1-probabilistic-maxwell-imaging/research/research_z_alg_r3
+</code></pre>
+<p>也可解压Release的<code>FULL_REPRODUCIBILITY.zip</code>后进入<code>research_z_alg_r3/</code>。完整包包含原始输出、冻结快照、公开观测及评分后公开的材料。Reading Kit是阅读/代码摘要，不含全部原始结果。</p>
+<h2 id="section-1">从一个未知观测输入求材料</h2>
+<pre><code class="language-bash">python run_portfolio.py \
+  --public public_data/confirm/NEWCONFIRM12_00.npz \
+  --method guarded_globaldual \
+  --output /tmp/r3_observation_only_prediction.json
+</code></pre>
+<p>同一输入、同一默认3秒总预算的强普通对照：</p>
+<pre><code class="language-bash">python run_portfolio.py \
+  --public public_data/confirm/NEWCONFIRM12_00.npz \
+  --method guarded_reciprocal \
+  --output /tmp/r3_ordinary_prediction.json
+</code></pre>
+<p>默认就是冻结V7配置；显式配置可通过<code>--config</code>传JSON。两臂均包含同样的原材料Full-J保护阶段。所有输出文件必须为新路径。新观测只需相同NPZ输入字段，不需要GT、seed或评分器。运行在已公开数据上属于暴露后重放，不能再叫新盲测。</p>
+<p>基础入口<code>run_solver.py</code>支持<code>fullj</code>、<code>coordinate</code>、<code>algebraic</code>、<code>globaldual</code>。完整V6配置在<code>experiments/HOLDOUT12_CONTRACT.json</code>，最终组合配置在<code>experiments/CONFIRM_V7_CONTRACT.json</code>。不要用默认基础入口重新解释历史各臂的参数。</p>
+<h2 id="section-2">零物理费用重现原冻结评分</h2>
+<pre><code class="language-bash">python experiments/score_predictions.py \
+  --split confirm \
+  --freeze-manifest audit/CONFIRM_V7_FINAL_FREEZE.json \
+  --truth-root truth_after_freeze \
+  --disclosed-truth-replay \
+  --output /tmp/r3_v7_replay_scores.json
+</code></pre>
+<p>V6对应把split换成<code>holdout</code>，manifest换成<code>audit/HOLDOUT_V6_FINAL_FREEZE.json</code>。本轮已经执行公开材料重放，全部V7评分行与原结果完全一致，新增物理RHS=0。该flag明确放宽Git克隆后的mtime身份要求，并检查已记录字节长度；不使用SHA，也不冒充严格的密码学数据认证。</p>
+<p>原独立验证器为<code>experiments/validate_predictions.py</code>：只读取公开算子及冻结候选，独立NumPy解完整原矩阵，不调用求解器和约化核，不读取GT。若重新运行，会新增真实物理RHS；原4517次独立验证已经完整保存，无需为了读报告重算。</p>
+<h2 id="section-3">冻结身份与不可比的重放</h2>
+<p>V6八份源码以及20份预测、V7十二份源码/配置以及八份预测均有字节对照快照。V6所有结果保留，随后用于V7设计；V7四目标是在其独立冻结以后新生成。</p>
+<p>最终方法受wall预算限制，机器负载、BLAS、解释器和硬件变化会改变预算结束时已到达的起点/候选，所以重放不保证逐位或逐候选相同。原预测、费用、时间轨迹和评分是主证据。只读评分重放则可精确再现同一冻结输出的指标。</p>
+<p>开发阶段17次输出和当时配置全部保留；最早几版源码没有独立版本快照，因此不声称能用最终代码逐条重建早期重复修正等实现行为。主结论的V6/V7源码均独立冻结。首个生成失败消耗0RHS，其wall及早期部分评分wall未留存，账本明示缺口。</p>
+<h2 id="section-4">发布边界</h2>
+<p><code>private_truth/</code>不入Git、不入压缩包。<code>truth_after_freeze/</code>仅包含10份评分后公开的<code>m</code>数组，不含随机目标生成seed。公开优化器seed属于算法配置，和私有目标seed不同。</p>
+<p>新数据生成脚本需要同级冻结R2的<code>src/physics.py</code>；原仓库已有该文件，完整ZIP另包含最小同级依赖。它只复用物理实现，不读R2材料真值或旧实验结果。</p>
+<p>更细的原始输入/输出合同、数值wall与子进程wall边界、候选去重、phase计费及全部命令见<a href="EXPERIMENT_TECHNICAL_NOTES.html">EXPERIMENT_TECHNICAL_NOTES.md</a>。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/REPRODUCE.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>
