@@ -1,3 +1,10 @@
+<!-- Z_ALG_R3_DIGITS -->
+## Z-ALG-R3-DIGITS · 576 材料九数字盲成像与基线审计
+
+[中文报告](research_z_alg_r3_digits/RESEARCH_REPORT_ZH.md) · [九数字真实图](research_z_alg_r3_digits/figures/digits_1to9_reconstruction.png) · [代码与复现](research_z_alg_r3_digits/REPRODUCE.md)
+
+九数字全部运行，清楚形状恢复有限；Native实现、成熟TRF及跨session物理区间已审计。保留失败、GT后诊断、噪声14/27与完整费用；不声明普遍Full-J优势或九数字成功。
+
 <!-- Z_ALG_R3_CURRENT -->
 ## Research Z-ALG-R3：代数候选与真正的盲成像
 
