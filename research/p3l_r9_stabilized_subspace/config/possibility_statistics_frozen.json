@@ -1,0 +1,163 @@
+{
+  "id": "R9_POSSIBILITY_VOLUME_STATISTICS_V1",
+  "status": "FROZEN_BEFORE_NEW_GENERATION",
+  "execution_status": "NOT_EXECUTED_NO_TRUTH_READ",
+  "expected_parent_count": 32,
+  "parent_ids": [
+    "R9V_FRESH_000",
+    "R9V_FRESH_001",
+    "R9V_FRESH_002",
+    "R9V_FRESH_003",
+    "R9V_FRESH_004",
+    "R9V_FRESH_005",
+    "R9V_FRESH_006",
+    "R9V_FRESH_007",
+    "R9V_FRESH_008",
+    "R9V_FRESH_009",
+    "R9V_FRESH_010",
+    "R9V_FRESH_011",
+    "R9V_FRESH_012",
+    "R9V_FRESH_013",
+    "R9V_FRESH_014",
+    "R9V_FRESH_015",
+    "R9V_FRESH_016",
+    "R9V_FRESH_017",
+    "R9V_FRESH_018",
+    "R9V_FRESH_019",
+    "R9V_FRESH_020",
+    "R9V_FRESH_021",
+    "R9V_FRESH_022",
+    "R9V_FRESH_023",
+    "R9V_FRESH_024",
+    "R9V_FRESH_025",
+    "R9V_FRESH_026",
+    "R9V_FRESH_027",
+    "R9V_FRESH_028",
+    "R9V_FRESH_029",
+    "R9V_FRESH_030",
+    "R9V_FRESH_031"
+  ],
+  "methods": [
+    "FIXED_Q8_RAY",
+    "DYNAMIC_Q8_RAY",
+    "RANDOM66_FULL"
+  ],
+  "radii": [
+    0.02,
+    0.05,
+    0.1,
+    0.15
+  ],
+  "pairs_per_radius": 2,
+  "nonanchor_direction_budget": 16,
+  "cloud_maximum_with_anchor": 17,
+  "K_semantics": "K nonanchor direction budgets. Include shared anchor in primary cloud ONLY if legal and absolute95%noise-qualified; always report unconditional anchor baseline separately and allow explicitly flagged action fallback.",
+  "K_prefixes": [
+    0,
+    1,
+    4,
+    8,
+    16
+  ],
+  "immutable_direction_order": "pair1: r.02 +/-, r.05 +/-, r.10 +/-, r.15 +/-; then pair2 in the same order. Preserve all failures in slot order.",
+  "primary_online_qualification": {
+    "absolute_original_noise_Phi_max": 282.8737921622988,
+    "decoder_legal_required": true,
+    "relative_radius_tolerance": 0.02,
+    "material_RMS_definition": "sqrt(sum(abs(material-anchor)^2)/576), original full-grid RMS",
+    "selection": "per direction select the lowest data-Phi endpoint among radius-qualified legal noise-ball candidates; no GT. All trial states retained separately.",
+    "legacy_DeltaPhi_le2_and_DeltaPrior_le10": "SECONDARY_DIAGNOSTIC_ONLY; never filter the primary cloud",
+    "signed_progress_minimum_fraction_of_radius": 0.5
+  },
+  "uniqueness": {
+    "material_RMS_threshold": 1e-06,
+    "algorithm": "greedy first representative in immutable online order; anchor first; not a posterior multiplicity rule"
+  },
+  "epsilon_primary": 0.075,
+  "epsilon_secondary": [
+    0.03,
+    0.05,
+    0.1,
+    0.15
+  ],
+  "coverage_definition": "GT lies in C_epsilon=union of full-material RMS balls around actual qualified unique cloud members plus anchor. No pixel-box claim, no 576D Lebesgue volume estimate.",
+  "primary_comparison": {
+    "candidate": "FIXED_Q8_RAY",
+    "reference": "DYNAMIC_Q8_RAY",
+    "K": 16,
+    "qualification_endpoint": "mean across32 parents of qualified unique nonanchor count/16; shared anchor excluded",
+    "qualification_noninferiority_absolute_margin": 0.1,
+    "coverage_endpoint": "paired parent hit difference at epsilon.075; no invented coverage noninferiority margin",
+    "matched_random": "report the same paired estimates against RANDOM as a secondary comparison",
+    "qualification_noninferiority_role": "secondary predeclared bootstrap diagnostic; not a nominal-proof claim with n32",
+    "family_of_four_confirmatory_contrasts": [
+      "FIXED_Q-DYNAMIC_Q tube coverage epsilon.075 K16",
+      "FIXED_Q-RANDOM tube coverage epsilon.075 K16",
+      "FIXED_Q-DYNAMIC_Q best-of-K material MSE K16 (offline capacity only)",
+      "FIXED_Q-DYNAMIC_Q standalone full-system all-attempt wall seconds K16"
+    ],
+    "random_reference": "RANDOM66_FULL"
+  },
+  "uncertainty": {
+    "replicate_unit": "parent only; directions/seeds/radii/sources are not independent replications",
+    "paired_bootstrap_resamples": 20000,
+    "statistical_rng_seed": 202610290731,
+    "confidence": 0.95,
+    "bootstrap": "percentile parent-paired bootstrap; same resampled parent indices across arms and all endpoints",
+    "small_n_coverage": "Wilson two-sided95% and exact Clopper-Pearson one-sided95% lower bound additionally reported",
+    "primary_joint_claim": "four predeclared root contrasts at98.75% two-sided paired-parent bootstrap; yield noninferiority is secondary95% diagnostic",
+    "iid_parent_scope_required": "population generalization conditional on the sealed fresh-parent sampling contract",
+    "familywise_two_sided_confidence": 0.9875
+  },
+  "probable_GT_claim": {
+    "epsilon": 0.075,
+    "delta": 0.1,
+    "method": "FIXED_Q8_RAY",
+    "K": 16,
+    "rule": "only support an empirical parent-population claim P(hit)>=1-delta when exact one-sided95% binomial lower bound>=1-delta; never interpret ensemble weight as posterior confidence"
+  },
+  "tasks": {
+    "ROI_size": 256,
+    "mean": "mean Re(material) on original ROI",
+    "pixel_threshold": 0.75,
+    "event_count_threshold": 64,
+    "soft_occupancy_temperature": 0.02
+  },
+  "actions": [
+    "uniform mean of primary qualified unique cloud; anchor fallback explicitly flagged if empty",
+    "exp(-Phi) normalized on same primary qualified unique cloud; no prior/Jacobian/proposal correction; anchor fallback if empty; approximate ensemble only"
+  ],
+  "geometry": [
+    "full-material pair diameter",
+    "mean pair distance",
+    "RMS dispersion about cloud mean",
+    "max distance from anchor",
+    "epsilon-tube outer diameter = cloud diameter+2epsilon",
+    "greedy packing count",
+    "connected components of epsilon-ball overlap graph"
+  ],
+  "soft_occupancy": "sigmoid((Re material-.75)/.02); scalar ROI mean range and descriptive pixelwise range; no joint material-box coverage",
+  "width_bins_for_descriptive_coverage": [
+    0.0,
+    0.05,
+    0.1,
+    0.2,
+    0.3,
+    0.5,
+    1000000.0
+  ],
+  "cost": {
+    "include": "all attempted/rejected/failed states, full RHS/LU, correction and geometry setup, anchor acquisition, I/O and all measured online work",
+    "study_allocation": "shared anchor/(3 arms); shared global setup/(32 parents*3 arms); group totals sum to campaign totals once",
+    "standalone_deployment_allocation": "each arm receives full per-parent anchor; global setup/32 per parent for each standalone arm; do not sum these repeated deployment views as research total",
+    "right_censor": "time/cost to first qualified alternative censored at actual spent budget if none; no successful-only timing average",
+    "timing": "root rotates arm order within same parent timing window; keep actual window/order metadata"
+  },
+  "gate_before_truth": "all32 parents/all3 arms/all16 direction slots sealed, including failures; root-approved frozen statistics config and separate root approval after prediction seal required; no correction/selection/model change after GT access",
+  "prior_R9_failures": "retain immutable original exploration/REV1/probability evidence; this is a new possibility-set objective, not a retrospective posterior success",
+  "approved_by_root": true,
+  "expected_protocol_id": "R9_POSSIBILITY_VOLUME_V1",
+  "empty_cloud_policy": "all32 retained: coverage=false, nearest material error undefined/infinite right-censored; no complete-case primary contrast and no invented finite penalty; action falls back to anchor",
+  "fresh_seed_namespace": "read exact runner manifest [20261030,900901] plus role101/102/103/104,parent index; no old R7 DEV reuse",
+  "frozen_utc": 1793290281.700592
+}

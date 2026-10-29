@@ -1,0 +1,542 @@
+# 03 原材料先验、有效几何与实际校正器
+
+本章只整理源码与推导，没有新 Maxwell 求解、数值 QA、训练或 fresh parents。2026-10-29 用户要求先整理公式与理论，fresh confirmation 保持 NOT_RUN。稳定编号 F-MAT-001 起；函数、行号和历史身份见 SOURCE_FORMULA_INDEX.csv。原 R9 E0–E3 与后来单独冻结的 REV1 分开记录，后者不覆盖前者的负面证据。
+
+物理上先分清三件事：潜变量变化可能完全不改变材料；非零材料变化可能只有很小接收响应；局部弱方向走到有限距离后也可能不再弱。因此 decoder gauge、材料灵敏度和有限校正器不是同一条零空间结论。
+
+## 1. 坐标、decoder 与先验
+
+### F-MAT-001 原 P1 维度与参考测度
+
+\[
+q=(z,u_R,u_I)\in\mathbb R^{64}\times[0,1]^2,\quad
+z\sim N(0,I_{64}),\quad u_R,u_I\overset{\rm iid}{\sim}U[0,1].
+\]
+
+材料 \(\chi\in\mathbb C^{576}\)，24×24 网格，8个照明、每照明32个复接收通道；\(F(\chi)\in\mathbb C^{32\times8}\)。先验密度相对于 \(dz\,du_Rdu_I\)，不是材料 Lebesgue 体积。原 P1 不是1152个独立实材料像素。
+
+### F-MAT-002 probit Gaussian66
+
+用 \(\Phi_N,\varphi_N\) 表示标准正态 CDF/PDF，与似然代价 \(\Phi_y\) 区分：
+
+\[
+x=(z,\xi_R,\xi_I),\quad u_a=\Phi_N(\xi_a),\quad
+\varphi_N(t)=(2\pi)^{-1/2}e^{-t^2/2},\quad
+du_a=\varphi_N(\xi_a)d\xi_a.
+\]
+
+内点精确变换使 \(x\sim N(0,I_{66})\)，没有额外添加物性先验。原生 \(u_a=0,1\) 对应无限 probit 坐标。R4 仅初始化时将原生边界移入 \([10^{-4},1-10^{-4}]\)；这不是普遍的边界等价证明。
+
+### F-MAT-003 坐标 MAP 与 GN Hessian
+
+\[
+U_q=\Phi_y+\tfrac12\|z\|^2,\qquad
+U_x=\Phi_y+\tfrac12\|x\|^2.
+\]
+
+正确 Jacobian 描述同一后验测度，但两个参考测度下的密度众数通常不同。R6 native 阶段使用 \(U_q\)，probit 阶段使用 \(U_x\)；R7/R9 的实际校正选择用 \(U_x\)。probit-coordinate mode 不能称为 native MAP。
+
+\[
+\nabla^2U_x=J_x^TJ_x+I+\sum_{i=1}^{512}r_i\nabla^2r_i,\qquad
+H_{\rm GN}=J_x^TJ_x+I.
+\]
+
+GN 矩阵不是自动等于精确后验 Hessian，数值驻点也不是 posterior calibration。
+
+### F-MAT-004 原相关场
+
+令 \(X_i=p_{i1}+1/2,\;Y_i=p_{i2}+1/2\)，63个非恒定模态为 \(0\le k,l\le7,\;(k,l)\ne(0,0)\)：
+
+\[
+a_{kl}=\{1+(\pi\ell)^2(k^2+l^2)\}^{-1},\quad \ell=.08,
+\]
+\[
+b_{kl}(i)=c_kc_l\cos(\pi kX_i)\cos(\pi lY_i),\quad
+c_0=1,\;c_j=\sqrt2\ (j>0),
+\]
+\[
+A=[\,\sigma_0\mathbf1,\ \sigma_f[b_{kl}]\operatorname{diag}(a)/\|a\|\,]
+\in\mathbb R^{576\times64},\quad f=\mu\mathbf1+Az.
+\]
+
+实际 \(\sigma_0=.65,\sigma_f=1,\mu=0\)。这是固定 DCT 相关先验，没有逐对象峰值归一化。
+
+### F-MAT-005 原 C2 饱和 decoder
+
+\[
+t(s)=\operatorname{clip}((s+1)/2,0,1),\quad h(s)=10t^3-15t^4+6t^5,
+\]
+\[
+m_i=1_{\|p_i\|\le.38},\quad a_i=m_i h(f_i/\tau),\quad \tau=.5,
+\]
+\[
+\delta=(.8+u_R)+i(.03+.15u_I),\qquad
+\boxed{\chi_i=\chi_h+\delta a_i},\quad \chi_h=.1+.04i.
+\]
+
+\(a=0\) 是 host，不是空气；\(a=1\) 是纯 inclusion。\(h\) 在 \(s=\pm1\) 为 C2，但三阶导数一般跳变，跨 seam 的统一 C3 展开没有由此成立。
+
+### F-MAT-006 一至三阶饱和导数
+
+在 \(|s|<1\)：
+
+\[
+h'=\frac{15}{16}(1-s^2)^2,\quad
+h''=\frac{15}{4}(s^3-s),\quad
+h'''=\frac{15}{4}(3s^2-1).
+\]
+
+plateau 内导数为零。代码三阶 jet 使用严格内区指示，其 seam 取值约定不建立三阶可微性。
+
+### F-MAT-007 decoder Jacobian 与 probit 链式因子
+
+\[
+B=\operatorname{diag}(m h'(f/\tau)/\tau)A\in\mathbb R^{576\times64},
+\]
+\[
+D_q\chi=[\,\delta B,\ \Delta_Ra,\ i\Delta_Ia\,]\in\mathbb C^{576\times66},
+\quad \Delta_R=1,\ \Delta_I=.15,
+\]
+\[
+D_x\chi=D_q\chi\operatorname{diag}(1,\ldots,1,\varphi_N(\xi_R),\varphi_N(\xi_I)).
+\]
+
+链式因子只乘最后两列。有限实数下精确 \(\varphi_N>0\)；尾部浮点下溢或有效秩截断不能作为精确新 gauge 的证明。
+
+### F-MAT-008 decoder jet 的无阶乘系数
+
+代码采用 \(x(h)=x_0+hv+h^2x_2+h^3x_3\)，而非直接以二、三阶导数作系数。令 \(s_j=A(x_j)_z/\tau,\;x_1=v\)：
+
+\[
+a_1=mh's_1,\quad a_2=m(h's_2+\tfrac12h''s_1^2),
+\]
+\[
+a_3=m(h's_3+h''s_1s_2+\tfrac16h'''s_1^3).
+\]
+
+任一尾物性坐标 \(\xi\) 的区间宽度为 \(\Delta\)，\(p=\Delta\varphi_N(\xi)\)：
+
+\[
+d_1=pv_\xi,\quad d_2=p((x_2)_\xi-\tfrac12\xi v_\xi^2),
+\]
+\[
+d_3=p((x_3)_\xi-\xi v_\xi(x_2)_\xi+(\xi^2-1)v_\xi^3/6).
+\]
+
+组成复数 \(\delta_j\) 后，
+
+\[
+\chi_1=\delta_0a_1+\delta_1a_0,\quad
+\chi_2=\delta_0a_2+\delta_1a_1+\delta_2a_0,
+\]
+\[
+\chi_3=\delta_0a_3+\delta_1a_2+\delta_2a_1+\delta_3a_0.
+\]
+
+这部分 decoder 曲率与物性非线性不能全部归为 Maxwell 多次散射。
+
+## 2. 实化、目标和有限端点条件
+
+### F-MAT-009 两种 packing
+
+\[
+\mathcal R_m(v)=\frac1{24}\binom{\Re v}{\Im v}\in\mathbb R^{1152},
+\qquad\|\mathcal R_m(v)\|=\|v\|/24.
+\]
+
+材料实化把全部实部与全部虚部分块。接收数据 pack 则是 source-major：每个照明先放32个实部、再放32个虚部，然后进入下一照明。因此前256个白化实分量是前4个照明，不是所有照明的实部块。
+
+### F-MAT-010 白化与 likelihood
+
+\[
+\mathcal W(Y)=\frac{\sqrt2}{\sigma}\operatorname{pack}(Y),\quad
+\sigma=.00119211798514519,
+\]
+\[
+r(x)=\mathcal W(F(\chi(x))-y)\in\mathbb R^{512},\quad
+\Phi_y(x)=\tfrac12\|r(x)\|^2=\|F(\chi(x))-y\|_F^2/\sigma^2,
+\]
+\[
+U_x(x)=\Phi_y(x)+\tfrac12\|x\|^2.
+\]
+
+sigma 是固定绝对仪器噪声，不按每个 parent 信号幅度重缩放。原 P1 只从历史 F3 acquisition 复制 sigma，未复制 P0 decoder 或固定每对象 SNR。
+
+### F-MAT-011 原 R7/R9 有限门槛
+
+令 \(\Delta m=\mathcal R_m(\chi(x)-\chi(x_0))\)，\(u_0=M_0v_0/\|M_0v_0\|\)，目标半径 \(\rho>0\)：
+
+\[
+|\|\Delta m\|-\rho|\le.02\rho,\qquad u_0^T\Delta m\ge.5\rho,
+\]
+\[
+\Delta\Phi_y\le2,\quad \Phi_y(x)\le\tfrac12\chi^2_{512,.95},\quad
+\Delta P=\tfrac12(\|x\|^2-\|x_0\|^2)\le10,
+\]
+
+加原生 prior.legal(q)。R9 qualified 是这些条件的合取；DeltaPrior≤10 是 heuristic，不是先验硬支撑的定理。
+
+pair 向量 \(d=\mathcal W(F(x)-F(x_0))\) 满足
+
+\[
+\boxed{\Delta\Phi_y=r_0^Td+\tfrac12\|d\|^2}.
+\]
+
+故 pair≤1、DeltaPhi≤2、绝对 noise ball 不可互相替代。
+
+## 3. 有效材料秩、gauge 和谱
+
+### F-MAT-012 有效材料截断
+
+\[
+M(x)=\mathcal R_m(D_x\chi)\in\mathbb R^{1152\times66}
+=U\Sigma V^T,
+\]
+\[
+\epsilon_M=\max(10^{-8}\sigma_1(M),10^{-10}),\qquad
+r_M=\#\{\sigma_j(M)>\epsilon_M\}.
+\]
+
+这是 R7 material_jets.geometry 和 R9 的实际阈值。较早 decoder_geometry.rank 的默认相对阈值是 \(10^{-10}\)，F 为 \(10^{-7}\)，不能混作同一个数学秩。被截断的小非零奇异值不等于精确 gauge。
+
+### F-MAT-013 plateau 同材料 gauge
+
+设 \(\mathcal T=\{i:m_i=1,|f_i|<\tau\}\)。固定物性且 \(A_{\mathcal T}\dot z=0\) 时 transition 场精确不变。只要其余 ROI 点不跨 plateau seam，材料也精确不变。一个保守对称区间为
+
+\[
+|t|\le\min_{i\notin\mathcal T,\ m_i=1,\ (A\dot z)_i\ne0}
+\frac{|f_i|-\tau}{|(A\dot z)_i|}.
+\]
+
+margin 为0时无正区间保证。这是同材料坐标冗余，不能计入非零 material RMS 的散射多解。
+
+### F-MAT-014 物性径向补偿与 rank
+
+对 \(\delta\ne0\)、有限 probit 内点、\(a\ne0\)，
+
+\[
+\operatorname{rank}_{\mathbb R}D_x\chi
+=\operatorname{rank}B+1+1_{\{a\notin\operatorname{range}B\}}.
+\]
+
+证明：\(\delta B\) 贡献 \(r_B\) 维；两物性列形成 \(\{ca:c\in\mathbb C\}\) 的2维实空间；与前者在 \(a\in\operatorname{range}B\) 时交1维，否则交0维。全 host 的 \(a=0\) 应直接用原矩阵，不能套非零公式。
+
+若试图 \(\dot\delta=c\delta\)，一阶抵消要求 \(B\dot z=-ca\)。不在 range 时只能给残差；即便一阶可消，也没有普遍的有限 gauge，因为 quintic 不满足一般齐次律 \(\alpha h(f/\alpha)=h(f)\)。
+
+### F-MAT-015 材料单位 lift 与 prior 度量
+
+\[
+T=V_r\Sigma_r^{-1}\in\mathbb R^{66\times r},\quad
+Q_m=MT=U_r,\quad Q_m^TQ_m=I_r,\quad
+K=J_xT\in\mathbb R^{512\times r}.
+\]
+
+\(T\) 一般不正交，其坐标中的 Gaussian prior 精度是 \(T^TT\)，不是 I。若 r<66，仅在 \(\operatorname{range}V_r\) 采样还删掉原坐标支撑；材料截断几何不是完整后验替代。
+
+### F-MAT-016 两种广义弱谱
+
+纯响应材料单位谱为 K 的奇异值：
+
+\[
+\sigma_{\min}^2(K)
+=\min_{\substack{v\in\operatorname{range}V_r\\v^TM^TMv=1}}
+v^TJ_x^TJ_xv.
+\]
+
+R7/R9 实际初始方向却取
+
+\[
+A_M=K^TK+T^TT,\quad A_Mw_j=\lambda_jw_j,\quad v_0=Tw_1,
+\]
+\[
+\lambda_1=\min_{\substack{v\in\operatorname{range}V_r\\v^TM^TMv=1}}
+v^T(J_x^TJ_x+I)v.
+\]
+
+prior-aware eigenvalues 不等于 generalized_joint_singular 的平方。这个选择最小化局部 GN 二次曲率，不包含 \(r^TJv\) 的当前梯度交叉项，也不保证有限 likelihood 最优。符号按最大绝对 native 分量为正固定，独立于 GT。
+
+### F-MAT-017 Gaussian 正交 frame 与 anchor 平移
+
+下列按有效材料秩 r≥4 写。代码实际取 k=min(4,r) 个最小本征向量；若 r<4，以下4与62应分别替换为 k 与66-k。rank=0时这些非零方向公式不适用。取 A_M 最小4个本征向量 W_w：
+
+\[
+Q_{m,w}=MTW_w\in\mathbb R^{1152\times4},\quad
+Q_w=\operatorname{qr}(TW_w)\in\mathbb R^{66\times4},
+\]
+\[
+Q_s=\operatorname{null}(Q_w^T)\in\mathbb R^{66\times62},\qquad
+Q=[Q_w,Q_s]\in O(66).
+\]
+
+材料 frame 与 Gaussian frame 是不同对象。固定完整正交 Q 时，\(x=Qz'\) 保留 \(z'\sim N(0,I)\)。但 anchor-centred \(x=x_0+Q\eta\) 对应
+
+\[
+\eta\sim N(-Q^Tx_0,I),\quad
+\tfrac12\|x_0+Q\eta\|^2=\tfrac12\|Q^Tx_0+\eta\|^2.
+\]
+
+不能把平移后的 eta 又设成中心标准正态。随状态刷新的 Q(x) 是移动校正 frame，不自动构成单位 Jacobian 的全局密度变换。
+
+### F-MAT-018 source-group 谱和共同补偿
+
+R7 对前4照明 \(K_A=K_{1:256,:}\)、后4照明 \(K_B=K_{257:512,:}\)、以及 joint K 分别 SVD；各组最弱4个右奇异向量通过 Q_m 提升为材料 frame，再算主角余弦。
+
+\[
+\|Kv\|^2=\|K_Av\|^2+\|K_Bv\|^2.
+\]
+
+不同观测块不存在用相反符号相互抵消 residual 的自由。各组必须共用材料方向与补偿系数。对共同补偿 \(z_*=-A_c^+b\)，若各组单独最优为 z_g，
+
+\[
+\min_z\sum_g\|A_gz+b_g\|^2
+=\sum_g\|A_gz_g+b_g\|^2+
+\sum_g(z_g-z_*)^TA_g^TA_g(z_g-z_*).
+\]
+
+第二项是共享材料的组间冲突；为不同 source 单独设置材料不是同一问题。
+
+### F-MAT-019 projector、gap 与资格
+
+对同秩正交 frame \(Q_a,Q_b\)，令 \(c_j=\sigma_j(Q_a^TQ_b)=\cos\theta_j\)：
+
+\[
+\|Q_aQ_a^T-Q_bQ_b^T\|_2
+=\sin\theta_{\max}=\sqrt{1-c_{\min}^2},
+\]
+\[
+\|Q_aQ_a^T-Q_bQ_b^T\|_F^2=2\sum_j(1-c_j^2).
+\]
+
+R9 最终 projector_drift 用第一式；不需要组装1152阶 projector。不同 rank 时不能静默套同秩公式。
+
+简并谱簇内的单个向量可任意旋转，应比较整个簇。按 prior-aware 本征值选弱4维时，边界 gap 是 \(\lambda_5(A_M)-\lambda_4(A_M)\)，不能误用 K 的响应奇异 gap；按纯响应 K 选簇时才用对应奇异值分离。稳定性推论还需要同一度量、固定截断和算子扰动界。当前程序未计算 outward gap 证书或沿有限路径的统一分离界，因此没有已认证的稳定子空间保证。
+
+作为未在当前程序认证的条件化理论：若已经把两个 Hermitian 矩阵放到同一个正交坐标空间，\(H_1=H_0+\mathcal E\)，目标为最小k个本征值的簇，边界 gap \(\delta=\lambda_{k+1}(H_0)-\lambda_k(H_0)>0\)，且 \(\varepsilon=\|\mathcal E\|_2<\delta/2\)，标准谱投影扰动界给出一个保守形式
+
+\[
+\|P_1-P_0\|_2\le 2\varepsilon/\delta.
+\]
+
+本式只是条件清单，不是已执行数值结论。尤其当前 \(A_M=T^T(J^TJ+I)T\) 的T也随材料变化：首先必须固定rank并对齐r维frame；即使本征向量W的子空间稳定，Gaussian lift \(\operatorname{range}(TW)\) 还需要T的变化界和lift的非退化条件。材料frame \(\operatorname{range}(MTW)\) 又包含M的变化。因此“一个 A_M gap 很大”本身不能直接证明实际 Gaussian 或材料 weak projector 沿有限路径稳定。
+
+## 4. 实际 GN、有限 RMS retraction 与 revision
+
+### F-MAT-020 R7 native/Frozen-J 子问题
+
+令 E_k 为 M_k 保留的右奇异向量：
+
+\[
+Z_k=E_k\operatorname{null}(u_0^TM_kE_k),\quad
+a_*=-\binom{J_kZ_k}{Z_k}^{+}\binom{r_k}{x_k},\quad d_k=Z_ka_*.
+\]
+
+native A 用当前 J_k；Frozen-J 用 J_0，但依然计算真实非线性 F、当前 decoder M 和真实 prior。Frozen-J 不等于固定探索 frame，也不是只算一次 forward。
+
+\[
+d_k\leftarrow\gamma d_k,\quad
+\gamma=\min\{1,\Delta_k/\|d_k\|,(\rho/2)/\|M_kd_k\|\}.
+\]
+
+这是最小二乘后统一缩步，不是精确求解两个球约束的 trust-region 子问题。
+
+### F-MAT-021 R7 原 radial retraction
+
+对 proposal p=x_k+d_k：
+
+\[
+x^+=x_0+h(p-x_0),\quad
+\|\mathcal R_m(\chi(x^+)-\chi(x_0))\|=\rho,\quad
+\|x^+-x_0\|\le4.
+\]
+
+代码从小正 h 起以1.35倍扩展，首个符号变化后用 Brent 求根，失败保留。decoder 距离未证明沿射线全局单调；此操作不是最近点投影、测地线或全局最优匹配。
+
+### F-MAT-022 实际 retraction 后的 trust model
+
+用实际增量 e=x^+-x_k 重查 \(\|e\|\le\Delta_k\)、\(\|M_ke\|\le\rho/2\) 和有限 signed progress；必要时原 d 减半、重做 retraction，最多9轮。
+
+\[
+\operatorname{pred}(e)=\tfrac12\left[
+\left\|\binom{r_k}{x_k}\right\|^2-
+\left\|\binom{r_k}{x_k}+\binom{J_ke}{e}\right\|^2\right].
+\]
+
+只有 pred>0 且步长不退化才支付下个真实状态。下次实际改善比为
+
+\[
+\varrho_k=\{U_x(x_k)-U_x(x^+)\}/\operatorname{pred}(e).
+\]
+
+小于.25则 trust 减半，大于.75则乘1.5并截到1。最多3个真实试点，保留最低 U_x 的可行点；不保证收敛 profile。拒绝/失败成本不能删掉。
+
+### F-MAT-023 原 R9 E2/E3 固定弱系数
+
+原 B 用固定 anchor Q_w，C 用当前刷新 Q_w,k。除了 signed row，又添加 radial tangent 行：
+
+\[
+n_k=\Delta m_k/\|\Delta m_k\|,\quad
+Z_k=E_k\operatorname{null}
+\begin{bmatrix}Q_{w,k}^TE_k\\u_0^TM_kE_k\\n_k^TM_kE_k\end{bmatrix}.
+\]
+
+再在 \(P_s=I-Q_{w,k}Q_{w,k}^T\) 中用 decoder Newton 恢复 RMS。令 \(g=\|\Delta m\|-\rho\)：
+
+\[
+a=P_sM^T\Delta m/\|\Delta m\|,\qquad
+\delta x=-g\,a/(a^Ta).
+\]
+
+实际另有步长上限、回溯和30轮上限。这固定弱系数，不只是固定 basis。
+
+**零旋转也可能阻断的解析反例：** M=I，\(x-x_0=\alpha e_1+s,\;s\perp e_1\)。若固定 \(\alpha=\rho\)，又要求 \(\|x-x_0\|=\rho\)，则 \(\rho^2+\|s\|^2=\rho^2\Rightarrow s=0\)。因此原停止不能直接归因于弱子空间旋转。这个反例也不自动证明每个真实 nonlinear 试点的具体失败原因。
+
+### F-MAT-024 REV1 固定弱射线、幅度自由
+
+REV1 删去 radial tangent 行，恢复原 R7 radial root：
+
+\[
+Z_k=E_k\operatorname{null}
+\begin{bmatrix}Q_{w,k}^TE_k\\u_0^TM_kE_k\end{bmatrix},\quad
+x^+=x_0+h(x_k+d_k-x_0).
+\]
+
+B 固定 \(Q_{w,k}=Q_{w,0}\)。若初始位移为 \(\alpha_0v_0\)，\(v_0\in\operatorname{range}Q_{w,0}\)，由 \(Q_{w,0}^Td_k=0\) 归纳：
+
+\[
+x_k-x_0=\alpha_kv_0+Q_{s,0}s_k,\quad
+Q_{w,0}^T(x^+-x_0)=hQ_{w,0}^T(x_k-x_0).
+\]
+
+固定的是弱射线方向，幅度随 radial root 合法改变。固定 basis、固定 weak coefficient、固定 weak ray 是三件事。
+
+这不是在 \((\alpha,s)\in\mathbb R^{1+62}\) 的63个变量上共同做 GN。代码先做 Qs 内受 signed-row 限制的 GN，再做一维 decoder root。满材料秩且约束独立时，GN 校正空间至多61维；原 E2多一行后至多60维。不能称完整63维 GN、精确 constrained profile 或其收敛解。
+
+### F-MAT-025 动态 C 究竟保持什么
+
+C 每次需要当前 J_k 时重建 Q_w,k；若 \(Q_{w,k}^TQ_{w,0}=U\Sigma V^T\)，作 \(Q_{w,k}\leftarrow Q_{w,k}UV^T\) 是 Procrustes 对齐，不改变子空间/补空间。
+
+对当前一步 \(w_k=Q_{w,k}^T(x_k-x_0)\in\mathbb R^4\)：
+
+\[
+Q_{w,k}^T(x^+-x_0)=hw_k.
+\]
+
+w_k 一般有4个非零分量；代码没有把其中3个置零。下次换 frame 后也没有显式平行运输或投回 anchor ray。准确描述是当前弱补空间刷新，不是跟踪唯一动态弱方向或覆盖整个动态4维弱空间。
+
+### F-MAT-026 有限弱射线缺陷
+
+\[
+w_0=Q_{w,0}^Tv_0,\quad w=Q_{w,0}^T(x-x_0),\quad
+c=w^Tw_0/(w_0^Tw_0),
+\]
+\[
+\epsilon_{\rm ray}=\|w-cw_0\|,\quad
+\epsilon_{\rm rel}=\epsilon_{\rm ray}/\max(\|w\|,10^{-30}).
+\]
+
+它检查方向，允许幅度 c 改变。还需单独看 c 的符号、有限 signed progress 和 RMS，不能以一个投影残差替代原门槛。
+
+## 5. 其他实际 arms 与 F/F3/A17X 接缝
+
+### F-MAT-027 global DEV frame 与随机对照
+
+\[
+C_G=\sum_{j=1}^{4}Q_{w,j}Q_{w,j}^T,\qquad
+Q_{w,G}=\operatorname{eigvec}_{\rm top4}(C_G).
+\]
+
+global frame 仅用原4个 development anchors；当前 anchor 只用于材料速度归一化。随机对照在 Gaussian native 坐标取 \(\eta\sim N(0,I)\)，投到指定 material strong 约束的 native nullspace 后材料单位归一化；不是在 whitened 材料坐标各向同性取样再通过病态 T 提升。
+
+### F-MAT-028 Fourier/Haar 目标回到原 latent 支撑
+
+16列目标 \(B_m\in\mathbb R^{1152\times16}\) 先乘 ROI mask 与 anchor inclusion increment：
+
+\[
+L=M^+B_m,\quad \widehat B_m=ML,\quad
+\epsilon_B=\|\widehat B_m-B_m\|_F/\|B_m\|_F.
+\]
+
+对 \(\widehat B_m=U_B\Sigma_BV_B^T\) 截断，\(T_B=LV_{B,r}\Sigma_{B,r}^{-1}\)，再对 \(JT_B\) 和 \(T_B^TT_B\) 的 prior-aware 二次型选方向。端点仍由原 decoder 生成。“Wavelet”实际为4×4 Haar scaling/piecewise-constant目标，不是完整多尺度变换。受限子空间与投影误差意味着它们不是完整66维问题的无损换基。
+
+### F-MAT-029 SOM dark-current 的共享材料 lift
+
+若 \(S=U\Sigma V^*\)，所选候选为
+
+\[
+\dot j=(I-VV^*)j_0,\quad
+b=(I-\operatorname{diag}(\chi_0)G)\dot j.
+\]
+
+所有照明共用 \(\dot\chi\) 应满足 \(b_{i,p}=\dot\chi_iE_{i,p}\)。逐格 LS 候选：
+
+\[
+\dot\chi_i=
+\frac{\sum_p\overline{E_{i,p}}b_{i,p}}{\sum_p|E_{i,p}|^2}.
+\]
+
+检查共享材料残差及 \(\mathcal R_m(\dot\chi)\) 对 range(M) 的 lift 残差，两个相对阈值均为 \(10^{-6}\)。R9 分母用 \(10^{-30}\) 下限，而 A17X row_fit 对零场显式 undetermined；epsilon-clipping 不证明数学唯一性。MATERIAL_LIFT_FAIL 只否定所选候选，不否定全部 SOM null directions。
+
+### F-MAT-030 旧 F/F3 P0 quotient 与当前 P1 不同
+
+F 的8个均匀参数对应 max-normalized Gaussian 固定 family；其 material frame 采用 \(10^{-7}\) relative cutoff 和纯响应最弱奇异方向。F3 积分掉共同正权重缩放 gauge 得7维 quotient。原权重独立均匀于 [.4,.9]，a=log(9/4)：
+
+\[
+\rho_w=\log(w_0/w_1),\quad t=(\rho_w+a)/(2a),
+\]
+\[
+p_{\rho_w}(\rho_w)=
+\{.81e^{-|\rho_w|}-.16e^{|\rho_w|}\}/.5,\quad
+p_t(t)=2a\,p_{\rho_w}(2at-a).
+\]
+
+这不是给7维 chart 均匀 prior。边界材料合法而连续先验点密度为0。固定最大格 j 的局部层内，F3 max-normalization 导数为
+
+\[
+D_q\chi=1.2V\{(D_qz)/z_j-z(D_qz)_j/z_j^2\}.
+\]
+
+最大格改变需分层；该 P0 gauge 不能搬给不做峰值归一化的当前 P1。7维 latent 也不等于物理 \(\Delta X=\operatorname{diag}(\Delta\chi)\) 的 rank=7。
+
+### F-MAT-031 A17X 的物理接缝与边界
+
+\[
+L=I-\operatorname{diag}(\chi)G,\quad
+\dot j=L^{-1}\operatorname{diag}(\dot\chi)E,\quad
+\dot F=S\dot j.
+\]
+
+必须再通过 \(D_x\chi\) 拉回原 prior，才能得到 R7/R9 的 \(J_x\in\mathbb R^{512\times66}\)。ambient current nullspace 不自动给合法材料自由度。
+
+声明 \(\Delta X=UDU^*\) 的端口模型用 \(Q_H(D)=(I-DH)^{-1}D\)。A17X current-space exchange 为
+
+\[
+R_V=V(V^*LV)^{-1}V^*,\quad
+\bar C=(I-R_VL)C,\quad \Gamma_C=C^*L\bar C,
+\]
+\[
+\Delta P=\bar C\Gamma_C^{-1}C^*(U-LR_VU).
+\]
+
+这些需要 core/Schur 可逆条件，是 current-space 公式，不是材料 decoder、prior-preserving换基或 finite-RMS retraction。R9 B/C 没有使用该 exchange 核，不能称已验证 A17 exchange。
+
+### F-MAT-032 条件化局部无精确 fiber 界
+
+历史 F3/A17X 兼容性文件给出：在合法固定度量 chart，若 \(f=\mathcal W\circ F\circ\chi\) 为 C1，\(\sigma_{\min}(Df(x_0))=\beta>0\)，段上 Df 为 L-Lipschitz，则
+
+\[
+\|f(x_0+h)-f(x_0)\|\ge\beta\|h\|-\tfrac12L\|h\|^2.
+\]
+
+这在 \(0<\|h\|<2\beta/L\) 排除该 chart 的非零 exact-isodata endpoint，不排除有限噪声宽度、远处模式或别的 chart/prior。R9 没有统一 outward beta/L 界；数值 full-column-rank SVD 不能升级为已认证应用。
+
+## 6. 从公式得出的简化与未成立的声称
+
+- 材料度量 T 与 Gaussian 正交 Q 分开；TᵀT 与 anchor 平移不能漏。
+- 固定基不要求固定幅度；原 E2固定弱系数可能阻断校正，REV1固定弱射线是不同算法。
+- 已执行的是 Qs GN + scalar radius root，未求解完整63变量 GN。
+- 动态 C 只刷新 complement；没有唯一弱方向的显式运输或4维弱空间覆盖。
+- pred≤0 或初始点停止会降低成本，不能自动叫速度优势；拒绝、失败、endpoint-J 和路径诊断均需保留成本。
+- 已有结果未达到20%成本优势门槛；此次用户 steering 后不开展 fresh confirmation。
+- 真实 finite-path spectral gap、rank变化、seam、可微retraction和候选完整性仍未获得统一保证。五节点检查不是连续路径证明，候选集合不是 posterior。
+
+本章源码核对与解析推导新增 Maxwell RHS=0；未读取大型原始数组。
