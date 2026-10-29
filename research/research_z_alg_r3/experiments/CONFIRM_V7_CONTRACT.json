@@ -1,0 +1,183 @@
+{
+  "schema": "Z-ALG-R3-CONFIRM-V7-V1",
+  "frozen_utc": "2026-10-29T18:15:51.518702+00:00",
+  "role": "Fresh confirmatory targets after V7 revision freeze. Exposed V6 holdout results are development for V7, preserved unchanged.",
+  "geometry": {
+    "centers": [
+      [
+        -0.3,
+        -0.191
+      ],
+      [
+        -0.10832482744838721,
+        -0.19513727924718677
+      ],
+      [
+        0.1108829407128572,
+        -0.2037453215289243
+      ],
+      [
+        0.2940976979019952,
+        -0.208909932469404
+      ],
+      [
+        -0.2907438191671131,
+        -0.008909932469404008
+      ],
+      [
+        -0.11054816702129452,
+        -0.005882792587772507
+      ],
+      [
+        0.10453330333765933,
+        0.002552959669169036
+      ],
+      [
+        0.304621837405093,
+        0.008641532579853292
+      ],
+      [
+        -0.2899977283049175,
+        0.2086415325798533
+      ],
+      [
+        -0.10307357048018818,
+        0.20678512028908974
+      ],
+      [
+        0.09401576778021693,
+        0.1986904996957225
+      ],
+      [
+        0.31089668091264355,
+        0.1917998276430379
+      ]
+    ],
+    "sources": [
+      [
+        -0.65,
+        -0.72
+      ],
+      [
+        0.72,
+        -0.51
+      ],
+      [
+        -0.68,
+        0.45
+      ]
+    ],
+    "receivers": [
+      [
+        0.17,
+        0.88
+      ],
+      [
+        0.83,
+        0.21
+      ],
+      [
+        -0.38,
+        0.82
+      ]
+    ],
+    "radius": 0.04,
+    "k": 6.283185307179586
+  },
+  "material_box": [
+    0.5,
+    30.0
+  ],
+  "unknowns": "all12 independent real cell values; geometry known; no oracle support",
+  "prior": "random background Uniform[.7,3], two random cell centers without replacement, blobs radius Uniform[.19,.29], each amplitude Uniform[10,28]; latest blob overwrites overlap",
+  "noise": "none",
+  "objective": "unweighted all-observation squared residual; top1=min data loss, deterministic tie/order; no GT selection",
+  "methods": [
+    "GuardedGlobalDual",
+    "GuardedReciprocal"
+  ],
+  "max_nfev_per_correction": 120,
+  "wall_budget_seconds": 3.0,
+  "threading": "one BLAS thread per worker",
+  "metrics": [
+    "Residual-selected top1 material RMS",
+    "All-data relative residual",
+    "Offline oracle best@K RMS",
+    "Full/reduced/inner-LS costs",
+    "Actual outer wall and overrun",
+    "Guard versus continuation phase costs"
+  ],
+  "scope": "finite scalar TM disk pulse VIE, nonlinear multiple scattering; no continuous-PDE or 3D certification",
+  "generation_split": "GT private NPZ, observations only public NPZ; scoring only after predictions frozen",
+  "split": "confirm",
+  "case_prefix": "NEWCONFIRM12",
+  "confirm_count": 4,
+  "method_configs": [
+    {
+      "name": "GuardedGlobalDual",
+      "method": "guarded_globaldual",
+      "config": {
+        "wall_seconds": 3.0,
+        "guard_wall_seconds": 0.2,
+        "guard_max_nfev": 80,
+        "seed": 2026103001,
+        "start_policy": "strong_constants_sobol",
+        "stop_relative_residual": 1e-10,
+        "fullj_nstarts": 1024,
+        "fullj_max_nfev": 200,
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11
+      }
+    },
+    {
+      "name": "GuardedReciprocal",
+      "method": "guarded_reciprocal",
+      "config": {
+        "wall_seconds": 3.0,
+        "guard_wall_seconds": 0.2,
+        "guard_max_nfev": 80,
+        "seed": 2026103001,
+        "start_policy": "strong_constants_sobol",
+        "stop_relative_residual": 1e-10,
+        "fullj_nstarts": 1024,
+        "fullj_max_nfev": 200,
+        "globaldual_nstarts": 1024,
+        "globaldual_maxiter": 200,
+        "globaldual_maxfun": 1000,
+        "globaldual_correction_max_nfev": 120,
+        "globaldual_ftol": 1e-12,
+        "globaldual_gtol": 1e-10,
+        "fit_ftol": 1e-11,
+        "fit_xtol": 1e-11,
+        "fit_gtol": 1e-11
+      }
+    }
+  ],
+  "solver_revision": "R3_PUBLIC_V7_GUARDED_PORTFOLIO",
+  "runner": "run_portfolio.py",
+  "source_manifest": "audit/CONFIRM_V7_SOURCE_FREEZE.json",
+  "source_snapshot": "audit/CONFIRM_V7_SOURCE_SNAPSHOT",
+  "prior_development_evidence": "results/HOLDOUT_V6_SUMMARY.json",
+  "common_guard": "One native-material FullJ low-constant public start, max_nfev80, cap0.20s, residual goal1e-10; retain every guard candidate",
+  "continuation": "Only remaining measured total3s budget; V6GlobalDual exactDEVconfig versus V6reciprocalFullJ1024",
+  "total_wall_boundary": "Outer pipeline timer includes public load, common guard, repeated setup, continuation and wrapper bookkeeping; actual overrun reported",
+  "candidate_selection": "Minimum original all-observation residual across all guard and continuation candidates; no GT",
+  "source_checks": "All eight V6 source/CLI files byte-identical to their existing immutable freeze; new portfolio wrapper and CLI frozen separately",
+  "primary_comparison": "GuardedGlobalDual versus GuardedReciprocal after same common guard",
+  "data_accepted_relative_residual": 1e-06,
+  "independent_validation": "all returned candidates",
+  "original_geometry_and_prior_changed": false,
+  "prohibitions": [
+    "No V7 tuning after new-confirm GT scoring",
+    "No reuse of exposed V6 cases as V7 blind evidence",
+    "No budget extension or silent retries",
+    "No N24 expansion in this contract"
+  ]
+}

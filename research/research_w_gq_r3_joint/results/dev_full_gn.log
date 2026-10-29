@@ -1,0 +1,40 @@
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+wall_only_initialization accepted 1 eval 2 obj 365.986426 pg 20.08193
+wall_only_initialization accepted 2 eval 3 obj 265.619972 pg 10.34878
+wall_only_initialization accepted 3 eval 4 obj 230.668855 pg 6.18949
+wall_only_initialization accepted 4 eval 5 obj 225.785403 pg 2.21661
+wall_only_initialization accepted 5 eval 6 obj 225.708133 pg 0.2948
+wall_only_initialization accepted 6 eval 7 obj 225.704611 pg 0.05285
+wall_only_initialization accepted 7 eval 8 obj 225.704315 pg 0.01135
+wall_only_initialization accepted 8 eval 9 obj 225.704286 pg 0.00445
+wall_only_initialization accepted 9 eval 10 obj 225.704282 pg 0.0012
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gq_r3_joint/tools/run_r3.py", line 29, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gq_r3_joint/tools/run_r3.py", line 24, in main
+    obs=np.load(a.observation);y=obs['y'];invert(model,y,out,method=a.method,options=c.get('inverse',{}))
+                                          ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gq_r3_joint/src/r3/inverse.py", line 80, in invert
+    zi=z.copy();zi[:nwall]=wallz[:nwall];zi[-7:]=[x,yy,rx,ry,3.,.06,ang];pi=model.forward(zi,label='measurement-only coarse seed');fi=objective(model,y,zi,pi);ci=trace.record(zi,pi,fi,stage='coarse_initialization',kind='coarse');candidates.append((fi,zi,pi,ci))
+                                                                            ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gq_r3_joint/src/r3/physics.py", line 117, in forward
+    st=ev.evaluate(wall,target,label=label);data.append(st.data.copy());diag.append(dict(residual=st.residual,timings=st.timings,ndofs=ev.p.ndofs))
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gq_r2/src/r2/physics.py", line 574, in evaluate
+    factor, matrix, storage = self._factor(matrix, label+' LU')
+                              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gq_r2/src/r2/physics.py", line 545, in _factor
+    native = splu(matrix, permc_spec='COLAMD')
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/lib/python3.13/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py", line 444, in splu
+    return _superlu.gstrf(N, A.nnz, A.data, indices, indptr,
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                          csc_construct_func=csc_construct_func,
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                          ilu=False, options=_options)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

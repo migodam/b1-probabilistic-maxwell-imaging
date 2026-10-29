@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>R3：哪些代数结构真正改变了成像计算 | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_REUSE_MAP.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>R3：哪些代数结构真正改变了成像计算</h1><details class="toc"><summary>本文目录 · 7节</summary><ol><li><a href="#section-0">1. 行列式多重仿射真正告诉我们什么</a></li><li><a href="#section-1">2. 小块商根与成像之间缺少的那一步</a></li><li><a href="#section-2">3. 全部观测先消元，避免冻结错误的补集</a></li><li><a href="#section-3">4. 标准 variable projection 得到什么目标</a></li><li><a href="#section-4">5. 为什么不能把上述公式称为新代数理论</a></li><li><a href="#section-5">6. 普通求解保护与多方法组合</a></li><li><a href="#section-6">7. 未成立的猜想和未实施的路线</a></li></ol></details>
+<p>本轮采用有限二维 scalar-TM disk-pulse VIE，固定 Green、源、接收和几何，材料为独立实对比度。以下恒等式在这个离散模型内精确；没有连续 PDE、三维矢量 Maxwell、全域唯一性或全根数值认证。完整分支论证见<a href="theory/ALGEBRAIC_IMAGING.html">条件块理论</a>，完整全材料消元见<a href="theory/ALTERNATIVE_STRUCTURE.html">替代结构推导</a>。</p>
+<h2 id="section-0">1. 行列式多重仿射真正告诉我们什么</h2>
+<p>设 <span class="math">$D_m=\mathrm{diag}(m)$</span>，<span class="math">$M=I-D_mG$</span>，<span class="math">$j=M^{-1}D_mE^{inc}$</span>，<span class="math">$Y=Sj$</span>。对一个接收和一个源，增广行列式</p>
+<p><span class="math">$$P(m;y)=\det\begin{pmatrix}M&amp;D_me_s\\S_r&amp;y\end{pmatrix}$$</span></p>
+<p>等于 <span class="math">$\det(M)[y-S_rM^{-1}D_me_s]$</span>。每个独立 <span class="math">$m_i$</span> 只进入一行，所以每个变量的次数至多一；清分母后仍须排除 <span class="math">$\det M=0$</span>。这是标准行列式性质，R2 已完成推导。</p>
+<p><strong>R3-01：固定其它材料后的全观测响应是共同分母的 Möbius 族。</strong> 对单坐标实增量 <span class="math">$t$</span>，</p>
+<p><span class="math">$$Y(t)=Y_c+\frac{a t}{1-\kappa t}.$$</span></p>
+<p>这里 <span class="math">$a$</span> 同时包含全部源和接收，<span class="math">$\kappa$</span> 是该材料方向的自反馈。若所选观测的 <span class="math">$a$</span> 为零，这一坐标在整个合法切片上精确不可见；不只是当前一阶导数小。改变其它材料后，这个结论须重新计算。</p>
+<p>令 <span class="math">$r=Y_c-Y_{obs},b=a-\kappa r$</span>，则纯数据损失</p>
+<p><span class="math">$$\phi(t)=\frac{At^2+Bt+C}{Dt^2+Et+1},$$</span></p>
+<p>其中 <span class="math">$A=\|b\|^2,B=2\Re\langle r,b\rangle,C=\|r\|^2,D=|\kappa|^2,E=-2\Re\kappa$</span>。驻点满足</p>
+<p><span class="math">$$ (AE-BD)t^2+2(A-CD)t+(B-CE)=0. $$</span></p>
+<p><strong>证明与算法后果：</strong> 对二次式比值求导，三次项抵消。比较合法实根、盒端点和当前值即可完成单坐标全局最小化；因此没有必要通过多次完整 forward 做普通线搜索。循环坐标更新仍非全局优化。附加 TV 或状态稳定性硬约束会改变候选清单，本轮没有把它们偷偷纳入这条二次公式。</p>
+<h2 id="section-1">2. 小块商根与成像之间缺少的那一步</h2>
+<p>固定补集后，R2 精确核</p>
+<p><span class="math">$$Y=Y_0+L(I-\Delta K)^{-1}\Delta q$$</span></p>
+<p>可同时保留所有观测。Q6/Q20 只取一个接收和两个/三个源生成候选；完整评分仍用原核全部行列。Schur 限制省去重新建立全参考算子，但变化补集的分解不是免费计算。</p>
+<p><strong>R3-02：任意目标空间分支的精确损失分解。</strong> 令 <span class="math">$S$</span> 为生成根的观测子集，<span class="math">$H$</span> 为剩余观测，<span class="math">$r=F(m)-y$</span>。若一个候选满足</p>
+<p><span class="math">$$F_S(m')=F_S(m)+\tau[y_S-F_S(m)],$$</span></p>
+<p>则</p>
+<p><span class="math">$$\Delta\mathcal L=-(2\tau-\tau^2)\|r_S\|^2+\|F_H(m')-y_H\|^2-\|r_H\|^2.$$</span></p>
+<p><strong>证明：</strong> 子集残差严格变为 <span class="math">$(1-\tau)r_S$</span>，再按正交观测坐标分拆平方范数。固定对角白化同理；密集白化需保留交叉项。</p>
+<p><strong>算法后果：</strong> 全评分是接受准则，而非装饰性的最后检查。<span class="math">$\tau=0$</span> 时另一个同子观测根仍可能改善剩余观测；但是实根可能不存在，或全部根均变差。全数据严格局部最小点附近的连续当前根不能通过无限缩小步长逃逸。允许较高原始损失的新根先做全变量修正、再与保留的 incumbent 比较，才是真正检验换吸引域的操作。</p>
+<p><strong>反例：</strong> 对称约化核 <span class="math">$K=\begin{psmallmatrix}0&amp;i\\i&amp;0\end{psmallmatrix},L=(1,1),q=(1,1)^T$</span> 给出 <span class="math">$F=(x+z+2ixz)/(1+xz)$</span>。从 <span class="math">$(2,3)$</span> 的数据直线走向 <span class="math">$5/7+i$</span>，实根在 <span class="math">$\tau=1-2\sqrt6/5$</span> 碰撞消失，且分母仍非零。完整判别式见条件块理论。这个代数例不冒称实际 Hankel 几何；它否定“多重仿射和互易自动保证实路径可达”的一般推理。</p>
+<h2 id="section-2">3. 全部观测先消元，避免冻结错误的补集</h2>
+<p>下面的结构仍来自同一个固定有理核，但所有 <span class="math">$N$</span> 个材料均可变化。记 <span class="math">$T=Y_{obs}-Y_0$</span>，<span class="math">$R_\delta=I-K\Delta$</span>，假设 <span class="math">$q\in\mathbb C^{N\times s}$</span> 满列秩。</p>
+<p><strong>R3-03：数据约束与共同实材料的精确对应。</strong> 引入接收传递矩阵 <span class="math">$W\in\mathbb C^{r\times N}$</span>，满足</p>
+<p><span class="math">$$Wq=T,\qquad W=(L+WK)\Delta.$$</span></p>
+<p>当 <span class="math">$R_\delta$</span> 可逆时，这与完整物理响应等价：第二式给出 <span class="math">$W=L\Delta R_\delta^{-1}$</span>，再代第一式即可。取固定左零空间基 <span class="math">$Zq=0,ZZ^*=I$</span> 和 <span class="math">$W_0=Tq^\dagger$</span>，全部精确匹配观测的矩阵写成</p>
+<p><span class="math">$$W=W_0+CZ.$$</span></p>
+<p>这不是把辅助矩阵 <span class="math">$W$</span> 当作实际材料；只有共同实材料兼容且原 resolvent 可逆时，它才是物理状态。当前 <span class="math">$N=12,s=r=3$</span>，<span class="math">$C$</span> 是 <span class="math">$3\times9$</span> 复矩阵，并未压成一个12维线性解空间。</p>
+<h2 id="section-3">4. 标准 variable projection 得到什么目标</h2>
+<p>固定实材料 <span class="math">$\delta$</span>，用一个共享复最小二乘求</p>
+<p><span class="math">$$\psi(\delta)=\min_C\|W_0+CZ-[L+(W_0+CZ)K]\Delta\|_F^2.$$</span></p>
+<p>令 <span class="math">$A=Z(I-K\Delta)$</span>，<span class="math">$B_0=W_0-(L+W_0K)\Delta$</span>；实现解 <span class="math">$A^TC^T\simeq-B_0^T$</span>。当前是一次 <span class="math">$12\times9$</span> 带列主元 QR，三个接收 RHS；每次目标/梯度评价都重新分解并计费。</p>
+<p><strong>R3-04：精确包络梯度。</strong> 在内层保持满秩处，令最优残差 <span class="math">$E=W-(L+WK)\Delta$</span>、<span class="math">$V=L+WK$</span>，有</p>
+<p><span class="math">$$\partial_{\delta_i}\psi=-2\Re\sum_a\overline{E_{ai}}V_{ai}.$$</span></p>
+<p><strong>证明：</strong> 对原平方范数求导；内层最优性使 <span class="math">$C_*(\delta)$</span> 的导数项与残差正交。剩余显式材料导数为第 <span class="math">$i$</span> 列的 <span class="math">$-V_{:,i}$</span>。这是标准可分离最小二乘包络性质。本轮用带盒约束 L-BFGS-B 优化该目标，不声称求出所有驻点或全部材料根。</p>
+<p><strong>R3-05：材料相关数据度量及其风险。</strong> 设 <span class="math">$Q_\delta=R_\delta^{-1}q$</span>，真实数据残差 <span class="math">$R_d=T-L\Delta R_\delta^{-1}q$</span>。任何数据相容 <span class="math">$W$</span> 的本构残差满足 <span class="math">$EQ_\delta=R_d$</span>；反之每个满足这个式子的 <span class="math">$E$</span> 都对应一个这样的 <span class="math">$W$</span>。最小范数解给出</p>
+<p><span class="math">$$\boxed{\psi=\operatorname{tr}\{R_d(Q_\delta^*Q_\delta)^{-1}R_d^*\}.}$$</span></p>
+<p>因此在可逆域中两个目标有相同精确零点，却可有不同非零局部极小点。并且</p>
+<p><span class="math">$$\frac{\|R_d\|_F^2}{\sigma_{\max}(Q_\delta)^2}\le\psi\le\frac{\|R_d\|_F^2}{\sigma_{\min}(Q_\delta)^2}.$$</span></p>
+<p>这解释了改变目标可能进入普通 Full-J 没到达的区域，也解释了近极点时兼容性损失可以虚降。替代结构文件给出严格反例：真实数据误差保持1而 <span class="math">$\psi\to0$</span>。<strong>本轮因此始终以原完整 Maxwell 残差排序，以独立 full forward 验收，并为此前失败候选的修正照常计费。</strong></p>
+<h2 id="section-4">5. 为什么不能把上述公式称为新代数理论</h2>
+<p>令 <span class="math">$U=W^T,H=K^T,F=L^T,P=q^T,d=T^T$</span>，共同材料方程逐字变为</p>
+<p><span class="math">$$U=\Delta(F+HU),\qquad PU=d.$$</span></p>
+<p>这是熟悉的多照明 contrast-source 状态/数据方程；不需要 Green 对称或物理源接收互易假设。因此本轮全材料路线应归因于数据硬约束的 CSI/SOM 形式与标准 variable projection。它不是 Q20 在12维上的全根扩展，也不是新的群作用。</p>
+<p>材料相关 Gram 加权残差亦有直接先例：<a href="https://doi.org/10.1088/1361-6420/adab89">van Leeuwen 与 Yang，2025</a>，其<a href="https://arxiv.org/html/2403.15292v2">作者全文</a>分析 PDE 约束松弛及相应度量。我们的具体接收对偶、材料相关源项和硬数据合同须逐项映射，不能把两个公式不加条件地说成完全相同；同样不能据记号差异宣称创新。完整归因见<a href="audit/PAPER_NOVELTY.html">审查</a>。</p>
+<h2 id="section-5">6. 普通求解保护与多方法组合</h2>
+<p>若先花一个固定小预算运行普通 Full-J，把合法结果保留，再将剩余预算交给兼容性候选生成和原目标修正，最后按全观测损失选 top1，则最终损失不大于已保留普通结果的损失。这只是一条有限候选最小值性质，属于标准组合策略。</p>
+<p>它不保证材料 RMS 不增，不保证剩余预算仍足够找到某个候选，也不保证比同总预算的普通多起点更好。本轮提出这一改动，是因为冻结 V6 出现明确互补：兼容性路线解决一个普通法遗漏的目标，同时遗漏普通初值已经能解决的目标。新版本必须重新冻结并使用新目标，不能把事后合并两个各3秒候选集冒称3秒算法。</p>
+<h2 id="section-6">7. 未成立的猜想和未实施的路线</h2>
+<ul>
+<li>“小块商代数提升多材料 GT recovery”：当前实证尚未支持；远根的存在与有用性是不同问题。</li>
+<li>“硬数据兼容性目标普遍更好”：V6 已有反例，只能研究吸引域互补。</li>
+<li>“一次固定 Green 分解即可解决任意非均匀材料”：对角材料与传播算子一般不交换，错误。</li>
+<li>“更多材料可直接扩大商环而保持便宜”：中央二项式维数增长仍在；本轮没有构造全12材料商环。</li>
+<li>块全观测有理损失的二变量全局消元、按判别式选择观测以及带严格误差门的近似传播保留为未来问题，没有用未运行结果补充本轮结论。</li>
+</ul>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/MATHEMATICAL_THEORY.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

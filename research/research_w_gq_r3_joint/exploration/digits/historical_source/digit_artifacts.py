@@ -1,0 +1,23 @@
+"""Zero-PDE aliases and pipeline audit from sealed estimates/public inputs only."""
+from pathlib import Path
+import os,json,argparse
+for k in ['OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS']:os.environ[k]='1'
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+ROOT=Path(__file__).resolve().parents[1];EX=ROOT/'exploration/digits'
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--output',type=Path,default=EX/'results/digit8');p.add_argument('--measurement',type=Path,default=EX/'online/observation.npz');p.add_argument('--runtime-source',type=Path,default=ROOT/'results/jobs/digit8_online/RECEIPT.json');a=p.parse_args();out=a.output
+ if not (out/'ONLINE_SEALED.json').exists():raise RuntimeError('Only sealed predictions may be aliased')
+ q=np.load(out/'endpoint.npz');z=q['z'];chi=z[12:61].reshape(7,7);loss=z[61:].reshape(7,7);x=q['target_x_edges'];y=q['target_y_edges'];np.save(out/'target_material.npy',np.stack([1+chi,loss],axis=-1));np.savez_compressed(out/'predicted_measurement.npz',data=q['data'],y_pred=q['data'],frequencies=[.85,1,1.15])
+ for kind,arrs,extent,titles,limits in [('target',[chi,loss],[x[0],x[-1],y[0],y[-1]],['Reconstructed target contrast (all49 free)','Reconstructed target loss (all49 free)'],[(0,8),(0,.25)]),('wall',[z[:6].reshape(2,3),z[6:12].reshape(2,3)],[-1.5,1.5,.5,1.25],['Reconstructed unknown wall epsilon','Reconstructed unknown wall loss'],[(1,6),(0,.25)])]:
+  fig,axes=plt.subplots(1,2,figsize=(9,4),layout='constrained')
+  for ax,arr,title,lim in zip(axes,arrs,titles,limits):
+   im=ax.imshow(arr,origin='lower',extent=extent,interpolation='nearest',aspect='equal',vmin=lim[0],vmax=lim[1],cmap='viridis');ax.set(title=title,xlabel='x / reference wavelength',ylabel='y / reference wavelength');fig.colorbar(im,ax=ax,shrink=.8)
+  fig.suptitle('Actual free material-grid estimate; no truth or glyph input in this artifact step',fontsize=11);fig.savefig(out/f'reconstructed_{kind}.png',dpi=180,bbox_inches='tight');plt.close(fig)
+ runtime=json.loads(a.runtime_source.read_text());records=[json.loads(l) for l in (EX/'PHYSICS_LEDGER.jsonl').read_text().splitlines() if l];own=[r for r in records if r['pid']==runtime['pid']];runtime.update(job_physical_cost=dict(full_fe=sum(r['factorizations'] for r in own),rhs=sum(r['rhs'] for r in own)),exploration_total_physical_cost=dict(full_fe=sum(r['factorizations'] for r in records),rhs=sum(r['rhs'] for r in records)),no_physics_in_alias_step=True,source_receipt=str(a.runtime_source))
+ (out/'runtime_cost.json').write_text(json.dumps(runtime,indent=2)+'\n');(out/'reconstruction.json').write_text(json.dumps(dict(parameterization='unknownwall12 + independently free targetcontrast49/loss49',target_x_edges=x.tolist(),target_y_edges=y.tolist(),target_material_format='(7,7,2): real epsilon=1+contrast and loss ell at f1',no_ellipse=True,no_shape_template=True,stop=json.loads((out/'ONLINE_SEALED.json').read_text())['starts']),indent=2)+'\n')
+ events=[json.loads(l) for l in (out/'FILE_ACCESS.jsonl').read_text().splitlines() if l];opens=[r for r in events if r.get('event')=='file_open'];bad=[r for r in opens if not r.get('write') and ('/exploration/digits/private/' in r['path'] or r['path'].endswith('/digit_patterns.py'))];denied=[r for r in opens if r.get('denied')];keys=list(np.load(a.measurement).keys());sealed=json.loads((out/'ONLINE_SEALED.json').read_text());first=json.loads((EX/'FIRST_HEAVY_STARTED.json').read_text());cost=runtime['exploration_total_physical_cost'];checks=dict(public_input_y_only=keys==['y'],online_no_private_or_glyph_reads=not bad,guard_no_denied_attempts=not denied,guard_finished=any(r.get('event')=='guard_finished' for r in events),scoring_after_seal=(out/'SCORES.json').stat().st_mtime>=(out/'ONLINE_SEALED.json').stat().st_mtime,within450FE=cost['full_fe']<=450,within3600RHS=cost['rhs']<=3600,first_heavy_before_original_cutoff=first['time_unix']<=1793297721,online_sealed_before1830=sealed['time_unix']<=1793298600,no_ellipse=not sealed['ellipse_used'],no_template=not sealed['template_used'])
+ audit=dict(pipeline_dataflow_audit_passed=all(checks.values()),checks=checks,python_open_events=len(opens),forbidden_reads=bad,scope='Python open log + file ordering/cost; no OS sandbox or image-success certificate',reconstruction_success_claimed=False,nonconvergence_retained=sealed['starts']);(EX/'AUDIT.json').write_text(json.dumps(audit,indent=2)+'\n');print(json.dumps(dict(pipeline_dataflow_audit_passed=audit['pipeline_dataflow_audit_passed'],checks=checks,cost=cost,open_events=len(opens))))
+if __name__=='__main__':main()

@@ -1,0 +1,44 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>复杂场景：代数结构应放在 latent，还是 characteristic subspace？ | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_REUSE_MAP.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>复杂场景：代数结构应放在 latent，还是 characteristic subspace？</h1><details class="toc"><summary>本文目录 · 4节</summary><ol><li><a href="#section-0">L1：最简单的反例——一个 latent 不等于一次材料更新</a></li><li><a href="#section-1">L2：latent 可以直接进入全观测兼容性求解</a></li><li><a href="#section-2">L3：固定 characteristic subspace 适合消元，但截断会改变问题</a></li><li><a href="#section-3">L4：适合现有 P3L/Full66 的下一步接口</a></li></ol></details>
+<p>这是响应本轮执行过程中用户追问的理论接口。<strong>本文件仅推导，未实现 Full66 或新的 latent 成像实验，不计作 R3 的已验证性能。</strong></p>
+<p>代数关系来自材料、本构、传播与观测。latent 可以规定允许的材料结构；固定传播或观测子空间可以承载消元及计算复用。两者不是互斥选择，也不是把同一个小型商环随意换一套坐标。</p>
+<h2 id="section-0">L1：最简单的反例——一个 latent 不等于一次材料更新</h2>
+<p>若一个 latent 控制全部单元，<span class="math">$m_i=z$</span>，则</p>
+<p><span class="math">$$M(z)=I-zG,\qquad\det M(z)=\det(I-zG),$$</span></p>
+<p>其次数一般为 <span class="math">$N$</span>。原来关于每个独立 <span class="math">$m_i$</span> 的一次性，并没有变成关于 <span class="math">$z$</span> 的一次性。一个标量变化 <span class="math">$h$</span> 对应 <span class="math">$D_{m(z+h)}-D_{m(z)}=hI$</span>，非零时秩是 <span class="math">$N$</span>，不是1。</p>
+<p>更一般地，若 <span class="math">$m=m_0+Bz$</span>，则 <span class="math">$\mathrm{rank}\,\mathrm{diag}(Bh)$</span> 是 <span class="math">$Bh$</span> 中非零分量数，通常仍为 <span class="math">$N$</span>。因此小 latent 维数不自动给出同阶 SMW 更新，也不允许把 Q6 的四个实际单元换成四个稠密 latent。非线性 decoder 还可能完全破坏有限多项式结构；若 decoder 是已知多项式，当然可以重新研究其次数和稀疏性，但必须重做分析。</p>
+<p><strong>成立的特殊情况：</strong> latent 直接对应少数独立材料单元时，原多重仿射结构保留。若一个参数共享于多个单元，次数至多为它控制的行数，而非一。固定 support 的精确 ROI 消元仍可用，收益由未知 support 大小决定。</p>
+<h2 id="section-1">L2：latent 可以直接进入全观测兼容性求解</h2>
+<p>设固定网格材料 decoder 为 <span class="math">$m=\mathcal D(z)$</span>，固定参考 <span class="math">$m_0$</span>，<span class="math">$\Delta(z)=\mathrm{diag}(\mathcal D(z)-m_0)$</span>。全部观测已通过</p>
+<p><span class="math">$$W=W_0+CZ,\qquad Wq=T$$</span></p>
+<p>精确消元。直接在 latent 中求</p>
+<p><span class="math">$$\psi(z)=\min_C\|W-(L+WK)\Delta(z)\|_F^2$$</span></p>
+<p>即可保证每个被提出的材料都来自 decoder，不需要先生成任意像素图再投影回 latent。</p>
+<p>假设内层最小二乘满秩、decoder 在当前点可微，令最优残差 <span class="math">$E=W-(L+WK)\Delta$</span>、<span class="math">$V=L+WK$</span>。对实材料 decoder，</p>
+<p><span class="math">$$g_i=-2\Re\sum_r\overline{E_{ri}}V_{ri},\qquad\nabla_z\psi=J_{\mathcal D}(z)^Tg.$$</span></p>
+<p>若 decoder 输出复材料而 latent 仍为实，直接用</p>
+<p><span class="math">$$\frac{\partial\psi}{\partial z_a}=-2\Re\sum_{r,i}\overline{E_{ri}}V_{ri}\frac{\partial\mathcal D_i}{\partial z_a}.$$</span></p>
+<p><strong>证明：</strong> 内层正交性消去 <span class="math">$dC_*$</span> 项，再对显式本构材料项用链式法则。它不需要 decoder 为多项式，也不需要构造一个 latent 商环。饱和 seam、不可微 decoder 或变化内层秩需分别处理；先验约束和正则项必须明确加入。</p>
+<p><strong>计算含义：</strong> 外层未知量从 <span class="math">$N$</span> 变成 latent 维数。只有事先保证 <span class="math">$\mathcal D(\mathcal Z_{admissible})\subset\mathcal M_{physical}$</span> 时，decoder 才同时保证 box、被动性等材料合法条件；仅仅属于某个 decoder 的像并不足够。内层矩阵仍由实际物理 support 决定，不能把 <span class="math">$N\times(N-s)$</span> QR 算作 latent 尺寸的求解。原始 Maxwell likelihood 仍是最终排序目标，兼容性目标不是新先验密度。</p>
+<h2 id="section-2">L3：固定 characteristic subspace 适合消元，但截断会改变问题</h2>
+<p>如果这里的 characteristic subspace 是固定 Green 或接收算子的 SVD 空间，需分两种情况。</p>
+<ol>
+<li><strong>精确仿射数据消元。</strong> 完整 <span class="math">$Zq=0$</span> 保留所有满足数据的 <span class="math">$W$</span>。这是等价表示，真正省掉观测约束的反复优化；几何和采集不变时可复用。</li>
+<li><strong>截断候选空间。</strong> 若只保留 <span class="math">$Z_k$</span> 的部分行、仍保证 <span class="math">$Z_kq=0$</span>，则 <span class="math">$W=W_0+C_kZ_k$</span> 继续精确满足观测，但可表达的物理传递矩阵变少。</li>
+</ol>
+<p>对嵌套行空间 <span class="math">$\mathrm{row}(Z_k)\subset\mathrm{row}(Z_{k+1})\subset\mathrm{row}(Z)$</span>，固定材料处有</p>
+<p><span class="math">$$\psi_k(m)\ge\psi_{k+1}(m)\ge\psi(m).$$</span></p>
+<p>证明是最小化可行集合逐步扩大。完整物理真根也可能在截断空间具有正兼容性误差；因此不能把截断后的失败解释成没有对应材料。零代数残差依然能在可逆条件下验证物理解，但完整性可能丢失。</p>
+<p>同理，材料对角算子一般不保持固定传播子空间：<span class="math">$[D_m,G]_{ij}=(m_i-m_j)G_{ij}$</span>。固定 SVD 有助于投影、提案和近似预条件，不能无条件把非线性 resolvent 永久压缩为同一个小系统。若做近似，需要 R9 缺陷校正与实际残差规则。</p>
+<p>SOM/TSOM 的多重作用可以用投影和投影像表达；两个投影的复合一般不是交集上的正交投影。应保留具体作用顺序及其物理意义，而不是用一个难以计算的“空间交集”替代实际算法。</p>
+<h2 id="section-3">L4：适合现有 P3L/Full66 的下一步接口</h2>
+<pre><code class="language-text">固定网格与采集：G、S、Einc，按合法未知 support 作精确 ROI 消元
+材料模型：沿用原 decoder D(z)、其 Jacobian 和合法 prior/box
+数据消元：固定传播/测量子空间，形成 W0、Z、ZK
+候选生成：在 z 中优化共同材料兼容性；每个候选已经属于 decoder 像
+物理修正：对 F(D(z)) 使用原全观测 Jacobian/adjoint
+选择：预声明 likelihood/结构目标，独立 full Maxwell 验收
+评估：冻结以后才计算 GT top1/best@K
+</code></pre>
+<p>若形状 latent 只改变固定网格中的材料占据，固定 Green 假设可以保留；若 latent 实际移动网格、边界、源接收或改变背景 Green，则 <span class="math">$K,q,L,Z$</span> 也变化，上述梯度必须包含它们的导数，不能继续声称全固定复用。</p>
+<p>本轮没有运行这个 Full66 接口。最短的下一轮实验是：在原冻结 decoder 和相同观测/初始化下，对照原 latent Full-J 与上述 latent 兼容性提案＋原物理修正，保留完整内层 QR 与 decoder 费用。只有这一步能回答复杂场景中的实用收益，当前12单元成功不能替代它。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/theory/LATENT_AND_CHARACTERISTIC_SUBSPACES.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

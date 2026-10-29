@@ -1,0 +1,298 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>R3 implementation and mechanism audit | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_REUSE_MAP.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>R3 implementation and mechanism audit</h1><details class="toc"><summary>本文目录 · 5节</summary><ol><li><a href="#section-0">Result and causal interpretation</a></li><li><a href="#section-1">Exact coordinate and Q6 branch generation</a></li><li><a href="#section-2">All-receiver variable projection</a></li><li><a href="#section-3">Generation, scoring and correction costs</a></li><li><a href="#section-4">Scope and implementation judgment</a></li></ol></details>
+<p>This audit reads exactly the 20 public holdout solver receipts listed in <code>MECHANISM_STATS.json</code> and the frozen V6 implementation. It reads no private material targets, scoring files, or independent validation receipt, and runs no new physics. All values below concern the online unweighted complex all-observation residual. They do not establish material reconstruction accuracy.</p>
+<h2 id="section-0">Result and causal interpretation</h2>
+<p>The Q6 branch generator produces legal and often distant materials, but its direct proposals never improve the global best data residual in any holdout. ABAR improves the fixed eight-sweep coordinate arm on the three nontrivial cases only through subsequent ordinary FullJ correction. The all-receiver variable-projection arm changes the proposal metric and finds different basins: it succeeds on two cases, improves a third, and fails on the case that ordinary initialization solves immediately. Neither mechanism supports a uniform advantage.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Native FullJ</th>
+<th align="right">Reciprocal FullJ</th>
+<th align="right">Coordinate</th>
+<th align="right">ABAR+coordinate pre</th>
+<th align="right">GlobalDual+FullJ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">0.0680012232</td>
+<td align="right">5.42032163e-13</td>
+<td align="right">0.159169949</td>
+<td align="right">0.093355582</td>
+<td align="right">5.21094867e-11</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">2.05890969e-13</td>
+<td align="right">3.69445431e-16</td>
+<td align="right">2.05890969e-13</td>
+<td align="right">2.05890969e-13</td>
+<td align="right">0.250984297</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">0.126533227</td>
+<td align="right">0.0916969995</td>
+<td align="right">0.257922942</td>
+<td align="right">0.169747046</td>
+<td align="right">0.0588327909</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">0.0457520823</td>
+<td align="right">0.0457520823</td>
+<td align="right">0.306735126</td>
+<td align="right">0.0579594687</td>
+<td align="right">1.1088615e-15</td>
+</tr>
+</tbody></table>
+<p>Native and reciprocal FullJ use the same physical start prefix and exact common forward/Jacobian implementation. All methods share cached public <code>G,E0,S</code>. A 3-second cap is a maximum search budget, not a requirement to spend the entire budget: coordinate and ABAR can finish their frozen finite schedules early.</p>
+<h2 id="section-1">Exact coordinate and Q6 branch generation</h2>
+<p>The one-cell restriction is an exact fixed-complement rational VIE response. Its all-data squared loss is a real quadratic divided by a real quadratic; stationary candidates come from a degree-at-most-two derivative numerator. Endpoints and incumbent are included, poles rejected, and the all-data incumbent is retained. Eight sweeps are a finite coordinate procedure; they are not convergence certification.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Coordinate steps</th>
+<th align="right">Unique coordinate outputs</th>
+<th align="right">Coordinate improving steps</th>
+<th align="right">Q calls</th>
+<th align="right">New legal Q roots</th>
+<th align="right">Q roots RMS ≥1</th>
+<th align="right">Direct Q global-best updates</th>
+<th align="right">Q GN corrections</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">96</td>
+<td align="right">287</td>
+<td align="right">68</td>
+<td align="right">288</td>
+<td align="right">118</td>
+<td align="right">103</td>
+<td align="right">0</td>
+<td align="right">32</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">96</td>
+<td align="right">263</td>
+<td align="right">54</td>
+<td align="right">288</td>
+<td align="right">183</td>
+<td align="right">172</td>
+<td align="right">0</td>
+<td align="right">52</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">96</td>
+<td align="right">286</td>
+<td align="right">65</td>
+<td align="right">288</td>
+<td align="right">237</td>
+<td align="right">187</td>
+<td align="right">0</td>
+<td align="right">60</td>
+</tr>
+</tbody></table>
+<p>“New legal” means a physically filtered root that created a new archive entry; “RMS ≥1” is absolute material RMS distance from that root’s own incumbent. It is distinct from the beam separation rule and from the box-normalized archive merge tolerance. Repeated/unchanged roots are excluded from correction slots. Worse initial full-data proposals remain eligible for charged FullJ correction, while the incumbent stays archived.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Coordinate-pre best</th>
+<th align="right">Best new raw Q root from coordinate/initial incumbent</th>
+<th align="right">Best raw Q root anywhere later</th>
+<th align="right">ABAR final</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">0.159169949</td>
+<td align="right">0.305063309</td>
+<td align="right">0.0945335908</td>
+<td align="right">0.093355582</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">2.05890969e-13</td>
+<td align="right">—</td>
+<td align="right">—</td>
+<td align="right">2.05890969e-13</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">0.257922942</td>
+<td align="right">0.262284975</td>
+<td align="right">0.178221983</td>
+<td align="right">0.169747046</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">0.306735126</td>
+<td align="right">0.321279088</td>
+<td align="right">0.0729200033</td>
+<td align="right">0.0579594687</td>
+</tr>
+</tbody></table>
+<p>No new root produced directly from a coordinate-pre/initial incumbent beats the coordinate-pre best. Some later raw Q archives have lower residual than the original coordinate result, but they occur after GN has already found better basins. The exact best-so-far trace has zero updates with a <code>q6_</code> origin across all four cases. Therefore those later raw archives cannot be used as evidence that direct Q solving caused the improvement. The observed causal route is legal branch proposal → FullJ basin correction. A comparison against other equally charged proposal generators would be needed to isolate a Q-specific benefit.</p>
+<p>The Q6 quotient uses one receiver and two source channels at a time, current-complement exact Schur restriction, target τ∈{1,.5,.25,0}, physical conjugacy/material/box/pole filters, and all-observation scoring via a four-dimensional reduced solve. Numerical resolution of six endpoints is explicitly not a rigorous root-completeness certificate. Source rank, quotient conditioning and masked material-J regularity are different requirements.</p>
+<h2 id="section-2">All-receiver variable projection</h2>
+<p>At the zero reference, q=E0, K=G and L=S. The observed-data constraint Wq=Y is represented as W=W0+CZ with W0=Y pinv(q), Zq=0. For material m, the shared receiver solve minimizes ||W−(L+WK)diag(m)||² over C. Each objective/gradient call shares one rectangular QR across all receiver right-hand sides. The envelope gradient is −2 Re Σ_receiver conjugate(error)·(L+WK). The box L-BFGS-B variables are all material coordinates.</p>
+<p>This dual norm is a material-dependent metric, not the original data likelihood. It can distort the landscape, including near poles. Each completed endpoint is scored with a fresh full VIE forward, archive ranking uses the original data residual, and a new endpoint can receive the frozen FullJ polish budget. A low dual norm alone never qualifies an output.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Dual starts attempted</th>
+<th align="right">Scored endpoints</th>
+<th align="right">Best exact unmerged pure endpoint</th>
+<th align="right">Final after charged search/polish</th>
+<th align="right">QR</th>
+<th align="right">Rank failures</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">1.13190109e-06</td>
+<td align="right">5.21094867e-11</td>
+<td align="right">1106</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">143</td>
+<td align="right">142</td>
+<td align="right">0.259419151</td>
+<td align="right">0.250984297</td>
+<td align="right">13738</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">157</td>
+<td align="right">156</td>
+<td align="right">0.0801226391</td>
+<td align="right">0.0588327909</td>
+<td align="right">15987</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">52</td>
+<td align="right">52</td>
+<td align="right">3.60094697e-06</td>
+<td align="right">1.1088615e-15</td>
+<td align="right">5211</td>
+<td align="right">0</td>
+</tr>
+</tbody></table>
+<p>The per-start records in <code>MECHANISM_STATS.json</code> give dual objective/termination, exact pure-proposal residual when retained unmerged, the archival representative otherwise, correction accounting, and exact global-improvement traces. Deduplication can merge a pure endpoint or corrected endpoint into a nearby existing material; the receipts then do not separately retain that endpoint’s true full residual. Such scores are marked unavailable rather than reconstructed by an uncharged forward. “Best exact unmerged pure endpoint” is therefore an observed retained minimum, not a guaranteed minimum over every paid endpoint.</p>
+<p>The case01 failure is decisive negative evidence against universal improvement: GlobalDual uses its full 3-second budget and returns residual ≈0.251, while both ordinary FullJ parameterizations solve from their first shared low-material start. Case00 is also not a unique GlobalDual success: reciprocal FullJ reaches the data goal. The native/reciprocal difference demonstrates that an ordinary coordinate change can substantially alter the landscape.</p>
+<h2 id="section-3">Generation, scoring and correction costs</h2>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">GlobalDual QR / algebraic RHS</th>
+<th align="right">Endpoint-score full LU / RHS</th>
+<th align="right">All GN full LU / RHS</th>
+<th align="right">GN wall (s)</th>
+<th align="right">Total wall (s)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">1106 / 3318</td>
+<td align="right">12 / 36</td>
+<td align="right">451 / 2562</td>
+<td align="right">0.098580</td>
+<td align="right">0.183145</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">13738 / 41214</td>
+<td align="right">142 / 426</td>
+<td align="right">8734 / 50001</td>
+<td align="right">1.889675</td>
+<td align="right">3.000532</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">15987 / 47961</td>
+<td align="right">156 / 468</td>
+<td align="right">7488 / 42789</td>
+<td align="right">1.698732</td>
+<td align="right">3.000360</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">5211 / 15633</td>
+<td align="right">52 / 156</td>
+<td align="right">2869 / 16392</td>
+<td align="right">0.652042</td>
+<td align="right">1.055258</td>
+</tr>
+</tbody></table>
+<p>These four GlobalDual receipts have no rank failures, no failed starts and no budget interruption inside a FullJ correction. Cases01/02 stop during the dual objective. Hence the sum of completed fit counters is the exact total GN cost for these receipts, and the remainder is exactly one 3-RHS endpoint forward per recorded scored endpoint. There is no unallocated full LU/RHS in this table.</p>
+<p>Frozen V6 has a real accounting limitation: if budget exhaustion occurs inside a fit, that terminal fit row omits its counters. Total solver operation counters still remain exact. The audit preserves this limitation rather than claiming completed-fit sums are always sufficient. With a terminal GN interruption, endpoint-event evidence and failed-forward branches must be audited before assigning the residual work. No such ambiguity occurs in these four GlobalDual holdouts.</p>
+<p>The dual-event wall includes proposal optimization, endpoint scoring and its subsequent correction. Subtracting recorded GN fit wall gives proposal+endpoint+bookkeeping time, not isolated pure-dual time. Exact QR work and separate operation timing are retained in the JSON. Endpoint scoring inside the solver and later independent frozen-candidate verification are separate costs; this audit does not read or count the latter receipt.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">ABAR full LU / RHS</th>
+<th align="right">ABAR reduced LU / RHS</th>
+<th align="right">Q-correction full LU / RHS</th>
+<th align="right">Coordinate full RHS / reduced RHS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HOLDOUT12_00</td>
+<td align="right">1173 / 6930</td>
+<td align="right">885 / 3039</td>
+<td align="right">1142 / 6735</td>
+<td align="right">195 / 1698</td>
+</tr>
+<tr>
+<td>HOLDOUT12_01</td>
+<td align="right">13 / 78</td>
+<td align="right">0 / 0</td>
+<td align="right">0 / 0</td>
+<td align="right">78 / 0</td>
+</tr>
+<tr>
+<td>HOLDOUT12_02</td>
+<td align="right">2030 / 11721</td>
+<td align="right">876 / 3012</td>
+<td align="right">2002 / 11544</td>
+<td align="right">177 / 1656</td>
+</tr>
+<tr>
+<td>HOLDOUT12_03</td>
+<td align="right">2528 / 14463</td>
+<td align="right">913 / 3123</td>
+<td align="right">2492 / 14238</td>
+<td align="right">225 / 1692</td>
+</tr>
+</tbody></table>
+<p>ABAR full cost includes initial GN and the one all-N kernel setup in addition to the listed Q corrections. Reduced cost includes eight coordinate-pre sweeps, complementary Schur restrictions, and all-data rational scoring of Q roots. Frozen receipts have aggregate reduced counters without stage snapshots, so a precise Q-only versus coordinate-pre reduced split is not asserted. The all-N setup is charged as a full factorization with ns+N complex RHS; the method does not hide that setup behind a “small solve” label.</p>
+<h2 id="section-4">Scope and implementation judgment</h2>
+<p>The implementation is consistent with the intended finite discrete nonlinear scalar-TM VIE model and online observation-only selection. It does not establish continuous-PDE claims, global inverse-image enumeration, uniqueness, posterior coverage, general imaging performance, or mathematical novelty. Q is an exact conditional slice representation with numerical enumeration; variable projection is an all-receiver alternative search metric with mandatory original-data scoring.</p>
+<p>The safe claim is that these public finite holdouts show distinct optimization basins and an auditable proposal/correction mechanism. They also contain strong failures and ordinary-control successes. Any claim of improved material recovery must use the separate blinded scorer and independent verification evidence, neither of which this audit accessed.</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/audit/MECHANISM_AND_IMPLEMENTATION.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

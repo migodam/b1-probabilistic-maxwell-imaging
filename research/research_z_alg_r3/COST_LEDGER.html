@@ -1,0 +1,92 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>R3 cost ledger | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_REUSE_MAP.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>R3 cost ledger</h1>
+<p>All RHS below are actual complex columns for 12-dimensional full systems. Reduced and algebraic least-squares RHS are reported separately, never converted to full RHS equivalents. Every original DEV and holdout receipt is charged once; frozen copies are not new runs.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th align="right">Full RHS</th>
+<th align="right">Reduced RHS</th>
+<th align="right">Algebraic LS RHS</th>
+<th align="right">Full factors</th>
+<th align="right">Reduced factors</th>
+<th align="right">Inner QR</th>
+<th align="right">solver/validation wall s</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dev_solver</td>
+<td align="right">249318</td>
+<td align="right">9096</td>
+<td align="right">45009</td>
+<td align="right">44086</td>
+<td align="right">2542</td>
+<td align="right">15003</td>
+<td align="right">21.746799</td>
+</tr>
+<tr>
+<td>holdout_solver</td>
+<td align="right">532989</td>
+<td align="right">14220</td>
+<td align="right">108126</td>
+<td align="right">94318</td>
+<td align="right">4260</td>
+<td align="right">36042</td>
+<td align="right">27.617566</td>
+</tr>
+<tr>
+<td>confirm_v7_solver</td>
+<td align="right">324207</td>
+<td align="right">0</td>
+<td align="right">136167</td>
+<td align="right">58109</td>
+<td align="right">0</td>
+<td align="right">45389</td>
+<td align="right">13.644571</td>
+</tr>
+<tr>
+<td>all_solver</td>
+<td align="right">1106514</td>
+<td align="right">23316</td>
+<td align="right">289302</td>
+<td align="right">196513</td>
+<td align="right">6802</td>
+<td align="right">96434</td>
+<td align="right">63.008937</td>
+</tr>
+<tr>
+<td>generation</td>
+<td align="right">30</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.008526</td>
+</tr>
+<tr>
+<td>independent_validation</td>
+<td align="right">13551</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">4517</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.334443</td>
+</tr>
+<tr>
+<td>scoring</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">2.380141</td>
+</tr>
+</tbody></table>
+<p>holdout_v6 end-to-end subprocess time: 42.805927 s including interpreter/imports and result IO. This contains the numerical wall above and is not added to it.</p>
+<p>confirm_v7 end-to-end subprocess time: 18.631361 s including interpreter/imports and result IO. This contains the numerical wall above and is not added to it.</p>
+<p>Generation operation time is separately retained in JSON. Shared geometry setup is charged there. Solver time includes cached operator import and all numerical work; Python startup/import and file IO are excluded. The failed initial generation consumed zero RHS; its elapsed time and legacy DEV scoring times were not retained.</p>
+<p>The JSON provides per-run method/revision, termination status, all operation counts/times, fit invocations, candidate counts and rejection counts. No R2 experiment is rerun or charged as new work.</p>
+<p>Grand paid physical full RHS including all DEV/V6/V7 solver work, target generation and independent validation: 1120095. Separately, reduced RHS: 23316; algebraic complex least-squares RHS: 289302. The stage subtotals and all-solver total are overlapping views and must not be added together.</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/COST_LEDGER.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

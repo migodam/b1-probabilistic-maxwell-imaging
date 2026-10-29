@@ -1,0 +1,36 @@
+{
+  "root": {
+    "model": "gpt-6-astra",
+    "role": "theory,scientific decisions,interpretation"
+  },
+  "workers": [
+    {
+      "task": "r3_sol_core",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "role": "physics and inverse implementation, serial primary experiments"
+    },
+    {
+      "task": "r3_sol_eval",
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "role": "independent generator,post-seal scoring,controls,plots"
+    },
+    {
+      "task": "r3_sol_sources",
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "role": "primary-source formula audit,algebra review,matched mechanism script"
+    },
+    {
+      "task": "r3_astra_narrative",
+      "model": "gpt-6-astra",
+      "effort": "high",
+      "role": "independent Chinese paper narrative and reviewer counterarguments; explicit user request; no PDE"
+    }
+  ],
+  "transport": "native collaboration.spawn_agent with explicitmodel, fork_turns=none",
+  "file_ownership": "core src/r3;eval generate/score/controls/plots;sources delegated/source and chart_mechanism;roottheoryreports",
+  "heavy_concurrency": 1,
+  "model_identity": "Recorded from actual explicit spawn arguments, no same-Astra worker labeled Sol"
+}

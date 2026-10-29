@@ -1,0 +1,122 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>R3｜数字8真实实验</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#172633;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}main{max-width:1120px;margin:auto;padding:32px 24px 70px}nav{display:flex;gap:10px 22px;flex-wrap:wrap;margin-bottom:32px}a{color:#17668d;text-underline-offset:3px}h1{font-size:clamp(29px,4.5vw,44px);line-height:1.35;letter-spacing:-.03em}h2{font-size:26px;line-height:1.5;margin-top:2.1em}h3{line-height:1.5}article,.panel{background:#fff;border:1px solid #dce3e8;border-radius:14px;padding:28px;margin:22px 0}.eyebrow{font-size:14px;color:#526575;letter-spacing:.04em}.lede{font-size:21px;line-height:1.8}.status{padding:17px 21px;border-left:4px solid #9a7035;background:#fff4df;border-radius:4px;margin:24px 0}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:26px 0}.metric{background:#eaf1f5;border:1px solid #dce5eb;border-radius:12px;padding:18px}.metric strong{display:block;font-size:30px;line-height:1.3;color:#164d68}.metric span{font-size:14px;color:#405766}.muted,figcaption{font-size:14px;color:#506374}figure{margin:30px 0}img{max-width:100%;height:auto;display:block;background:white}figure a{font-size:14px}.table-scroll{overflow-x:auto;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:15px}td,th{border:1px solid #d5dfe6;padding:9px 12px;text-align:left;vertical-align:top}th{background:#edf3f7}code,pre{background:#edf2f5;font-size:.88em}code{padding:2px 4px;border-radius:4px}pre{padding:16px;overflow:auto;border-radius:8px}p,li{overflow-wrap:anywhere}.math{overflow-x:auto;margin:22px 0}footer{border-top:1px solid #d5dfe6;margin-top:38px;padding-top:20px;font-size:14px;color:#526575}blockquote{margin:20px 0;padding:2px 20px;border-left:3px solid #9fb4c1}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}@media(max-width:600px){main{padding:22px 14px 50px}article,.panel{padding:20px}nav{font-size:15px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script></head><body><main><nav><a href="../../">B1 首页</a><a href="index.html">R3 概览</a><a href="report.html">中文报告</a><a href="formulas.html">41组公式</a><a href="gallery.html">真实图像</a><a href="digits.html">数字8</a><a href="handoff.html">Pro交接</a><a href="evidence.html">下载与复现</a></nav><p class="muted">发布记录：2026-10-30，按用户“发布”请求公开。科研于2026-10-29 18:25 UTC封账；原报告中的“未发布/未授权”描述当时状态，原始裁决与归档不回写。发布没有新增物理计算。</p><article><h1>数字8：新非参数全波探索</h1>
+<p>只对数字8生成了真实PDE观测并进行了实际110实变量反演；1..9图片是公共字形定义，不能称为九个成像结果。该探索与原椭圆盲测分开。</p>
+<p>未知量为墙6个实部/6个loss，以及7×7目标全部49个contrast和49个loss。无模板分类、无ellipse、未提供笔画support；目标为独立box且无空间正则。笔画宽0.2λ₀，对象1.0×1.4λ₀，两个真孔约0.6×0.4λ₀。模型材料格0.2λ₀；FEM公共targetstep0.1λ₀、P3，生成与反演同离散，不是独立细网格PASS。</p>
+<p>完整110变量weighted-adjoint L-BFGS-B，每次完整梯度3FE/24RHS，至多两start×40iter，真实calls/450FE/3600RHS/18:30先到停止。初始化为全target统一contrast0.1/loss0.03，不知道数字ID或真墙。原频率、四发十六收和每实虚坐标σ0.01不变。</p>
+<p>结果图truth_vs_reconstruction.png的contrast色轴固定0..8、loss固定0..0.25；不得自动拉色轴制造成功。support示例χ≥1；以下同时报告0.5/1/2阈值，不选择最好者，也不新增PASS门。</p>
+<pre><code>{
+  &quot;stops&quot;: [
+    {
+      &quot;start&quot;: 0,
+      &quot;calls&quot;: 44,
+      &quot;stop&quot;: &quot;STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT&quot;
+    },
+    {
+      &quot;start&quot;: 1,
+      &quot;calls&quot;: 44,
+      &quot;stop&quot;: &quot;STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT&quot;
+    }
+  ],
+  &quot;metrics&quot;: {
+    &quot;target_complex_contrast_relative_L2&quot;: 0.779265072370431,
+    &quot;target_epsilon_complex_relative_L2_f1&quot;: 0.5791412892823169,
+    &quot;contrast_RMSE&quot;: 1.738434759077241,
+    &quot;loss_RMSE&quot;: 0.04528445362387194,
+    &quot;contrast_centroid_error&quot;: 0.04803406002566643,
+    &quot;offstroke_contrast_mass_fraction&quot;: 0.42267348361767854,
+    &quot;padding_contrast_mass_fraction&quot;: 0.2672762609367155,
+    &quot;truehole_contrast_mass_fraction&quot;: 0.15539722268096298,
+    &quot;wall_epsilon_RMSE&quot;: 0.09203300814272711,
+    &quot;wall_loss_RMSE&quot;: 0.07063163448153766,
+    &quot;observation_white_norm&quot;: 19.205094524468976,
+    &quot;observation_white_RMS&quot;: 0.9800558759764195,
+    &quot;same_discrete_clean_prediction_white_RMS&quot;: 0.4559952093726813,
+    &quot;threshold_diagnostics&quot;: [
+      {
+        &quot;threshold&quot;: 0.5,
+        &quot;support_IoU&quot;: 0.47368421052631576,
+        &quot;estimated_enclosed_holes&quot;: 4,
+        &quot;true_hole_representative_components&quot;: [
+          0,
+          6
+        ],
+        &quot;two_true_holes_remain_distinct_enclosed_background&quot;: false
+      },
+      {
+        &quot;threshold&quot;: 1.0,
+        &quot;support_IoU&quot;: 0.40540540540540543,
+        &quot;estimated_enclosed_holes&quot;: 1,
+        &quot;true_hole_representative_components&quot;: [
+          0,
+          4
+        ],
+        &quot;two_true_holes_remain_distinct_enclosed_background&quot;: false
+      },
+      {
+        &quot;threshold&quot;: 2.0,
+        &quot;support_IoU&quot;: 0.35714285714285715,
+        &quot;estimated_enclosed_holes&quot;: 0,
+        &quot;true_hole_representative_components&quot;: [
+          2,
+          2
+        ],
+        &quot;two_true_holes_remain_distinct_enclosed_background&quot;: false
+      }
+    ]
+  },
+  &quot;cost&quot;: {
+    &quot;full_fe&quot;: 276,
+    &quot;rhs&quot;: 2172
+  }
+}</code></pre>
+<p>以上属于限定时间、粗材料格、单个预声明digit8的实际探索。未收敛/失败不得解释为物理无解；不能证明1..9复杂目标已恢复，也不改变原R3结论。</p>
+<h2>目视结论与执行停止</h2>
+<p>连续contrast图并未清楚恢复数字8：笔画断裂、空白出现显著材料、两个孔洞未可靠分开。固定阈值0.5/1/2均未保留两个真孔中心对应的独立闭背景。不能将本次实际反演输出称为成功识别8。两个start均达到40iter上限，故也不能据此宣布该观测物理上无法成像数字。</p>
+<p>唯一直方mixed方向梯度相对差为2.64e-8，只核对实现导数，不是成像证据。实际276FE/2172RHS，online124.04CPU秒/127.32wall秒；生成2.92CPU秒。18:15:09UTC已封存，随后仅评分/文件工作，无新增其他数字PDE。见RUN_DIGITS.md。</p>
+<h2>0PDE：真值与封存候选的同一训练目标对照</h2>
+<p>真值恰在相同7×7合法材料类中，使用已存clean均值、y和相同墙prior即可精确计算该离散真值目标，无需新PDE。各start点只按既有训练目标最小规则从已封存候选读出，不根据真值选点。</p>
+<pre><code>{
+  &quot;time_unix&quot;: 1793298158.011735,
+  &quot;new_PDE&quot;: 0,
+  &quot;true_model_in_exact_same_legal_7x7_class&quot;: true,
+  &quot;truth_full_objective&quot;: 213.69369246714248,
+  &quot;truth_data_objective&quot;: 212.60283758158374,
+  &quot;truth_wall_prior_objective&quot;: 1.090854885558739,
+  &quot;actual_noise_raw_complex_norm&quot;: 0.2062051588014149,
+  &quot;actual_noise_white_norm&quot;: 20.62051588014149,
+  &quot;n_complex_channels&quot;: 192,
+  &quot;sigma_each_real_imag&quot;: 0.01,
+  &quot;per_start_saved_points&quot;: [
+    {
+      &quot;start&quot;: 0,
+      &quot;selected_saved_call&quot;: 44,
+      &quot;selection&quot;: &quot;minimum already-sealed full measured objective within start; no truth selection/no refit&quot;,
+      &quot;trace_objective&quot;: 185.70888701976637,
+      &quot;recomputed_full_objective&quot;: 185.70888701976637,
+      &quot;data_objective&quot;: 184.4178278468941,
+      &quot;wall_prior_objective&quot;: 1.2910591728722627,
+      &quot;full_objective_minus_truth&quot;: -27.984805447376118,
+      &quot;lower_training_objective_than_truth&quot;: true,
+      &quot;clean_mean_distance_raw_complex_norm&quot;: 0.08935644704933203,
+      &quot;clean_mean_distance_white_norm&quot;: 8.935644704933203,
+      &quot;distance_not_divided_by_channel_count&quot;: true,
+      &quot;last_saved_call&quot;: 44
+    },
+    {
+      &quot;start&quot;: 1,
+      &quot;selected_saved_call&quot;: 44,
+      &quot;selection&quot;: &quot;minimum already-sealed full measured objective within start; no truth selection/no refit&quot;,
+      &quot;trace_objective&quot;: 218.54041899452056,
+      &quot;recomputed_full_objective&quot;: 218.54041899452056,
+      &quot;data_objective&quot;: 217.33642135250597,
+      &quot;wall_prior_objective&quot;: 1.2039976420145988,
+      &quot;full_objective_minus_truth&quot;: 4.846726527378081,
+      &quot;lower_training_objective_than_truth&quot;: false,
+      &quot;clean_mean_distance_raw_complex_norm&quot;: 0.1005987049247578,
+      &quot;clean_mean_distance_white_norm&quot;: 10.05987049247578,
+      &quot;distance_not_divided_by_channel_count&quot;: true,
+      &quot;last_saved_call&quot;: 44
+    }
+  ],
+  &quot;limits&quot;: &quot;Finite noisy training-objective comparison only; not exact fiber, global nonidentifiability, global optimum, or physical impossibility proof; no online change or hyperparameter adjustment&quot;
+}</code></pre>
+<p>错误材料图即使训练目标低于真值，也不能据较低residual宣称形状恢复。这里的clean均值距离是完整192复通道Euclidean/white范数，不除通道数。此有限带噪对照不证明exact fiber、全局不可辨或物理无解，也未触发调参/重选/重跑。</p></article><footer>二维 scalar-TM · 受限未知宏格墙＋连续椭圆目标 · 有限开发样本。<br><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_gq_r3_joint/GO_NO_GO.json">分项裁决</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_gq_r3_joint/results/COST_AGGREGATION.json">完整费用</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_w_gq_r3_joint/FAILURE_LEDGER.jsonl">失败账本</a> · <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_w_gq_r3_joint/REPORT_ZH.md">匿名原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gq-r3-ji-20261030">完整证据 Release</a></footer></main></body></html>

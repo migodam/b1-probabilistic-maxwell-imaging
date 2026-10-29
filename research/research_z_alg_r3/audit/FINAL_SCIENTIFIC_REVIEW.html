@@ -1,0 +1,263 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Research Z-ALG-R3：完整非线性离散 Maxwell 的条件代数求根、盲成像、真实成本与失败证据。"><title>R3 最终科学审查：V6与V7的有限证据 | Z-ALG-R3</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1180px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · FULL NONLINEAR DISCRETE VIE</small><a href="../index.html"><strong>Z-ALG-R3 / Algebraic Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_REUSE_MAP.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">限定方法结果 · 全域覆盖与全球新颖性尚未建立 · 原始数据、失败及证据边界均保留</div><h1>R3 最终科学审查：V6与V7的有限证据</h1><details class="toc"><summary>本文目录 · 9节</summary><ol><li><a href="#section-0">1. V6实际证明了什么</a></li><li><a href="#section-1">2. 冻结与独立验收</a></li><li><a href="#section-2">3. 收益应归因于完整组合</a></li><li><a href="#section-3">4. 总成本与公平比较</a></li><li><a href="#section-4">5. 论文与理论裁决建议</a></li><li><a href="#section-5">6. V7执行前的组合审查意见（历史保留，执行结果见第7节）</a></li><li><a href="#section-6">7. V7新鲜留出最终审查</a></li><li><a href="#section-7">8. latent与characteristic subspace推导专项复核</a></li><li><a href="#section-8">9. 主交付文件出版前文字复核</a></li></ol></details>
+<p>状态：<code>PASS_WITH_LIMITS</code>，仅针对这个有限离散模型的已冻结V6/V7比较、公开数值资格与诚实方法定位。<code>STRONG_NOVELTY_HOLD</code>、<code>GENERAL_DOMINANCE_NOT_ESTABLISHED</code>、<code>LATENT_EXTENSION_NOT_IMPLEMENTED</code>同时保留。最终研究方向与科学裁决归主线程。</p>
+<p><strong>最终建议：可报告V7在新鲜四例上3/4恢复，对照为2/4；只能称这一小批上多恢复一例，不能称新代数理论、总体支配或普遍更快。</strong> V6原四例仍为2/4对2/4的互补结果；V6被用于设计V7，不能把两批合并成单一冻结方法的5/8确认成绩。下文保留V6原审查，并在第7节追加V7验证。</p>
+<p>本审查只读公开源码、合同、冻结收据、独立验收及离线评分摘要；未打开private_truth/，未读取GT值，未运行实验或公式恒等式测试。审查意见不改变冻结结果。</p>
+<h2 id="section-0">1. V6实际证明了什么</h2>
+<p><strong>GlobalDual+原目标Full-J校正与倒数参数化Full-J均恢复2/4样例，成功集合不同；不存在逐例支配，也没有证据支持强新算法主张。</strong> 下表为在线按完整数据残差选择的top1材料RMS，来自results/holdout_scores.json，不使用oracle best@K换根。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">H00 RMS</th>
+<th align="right">H01 RMS</th>
+<th align="right">H02 RMS</th>
+<th align="right">H03 RMS</th>
+<th align="right">数据门内样例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FullJ1024</td>
+<td align="right">10.8265</td>
+<td align="right">1.26e-11</td>
+<td align="right">10.8125</td>
+<td align="right">10.0026</td>
+<td align="right">1/4</td>
+</tr>
+<tr>
+<td>FullJReciprocal1024</td>
+<td align="right">4.27e-11</td>
+<td align="right">3.39e-15</td>
+<td align="right">9.2278</td>
+<td align="right">10.0026</td>
+<td align="right">2/4</td>
+</tr>
+<tr>
+<td>Coordinate</td>
+<td align="right">10.7413</td>
+<td align="right">1.26e-11</td>
+<td align="right">9.8004</td>
+<td align="right">12.1876</td>
+<td align="right">1/4</td>
+</tr>
+<tr>
+<td>ABAR4_coordpre</td>
+<td align="right">12.2878</td>
+<td align="right">1.26e-11</td>
+<td align="right">13.6017</td>
+<td align="right">8.8324</td>
+<td align="right">1/4</td>
+</tr>
+<tr>
+<td>GlobalDual+Full-J</td>
+<td align="right">6.33e-9</td>
+<td align="right">8.3161</td>
+<td align="right">8.6758</td>
+<td align="right">1.52e-13</td>
+<td align="right">2/4</td>
+</tr>
+</tbody></table>
+<p>数据门为合同已定的相对残差≤1e-6，不增设材料阈值。门内样例恰有极小材料误差，是本有限测试结果，不推出数据门普遍保证材料唯一性。</p>
+<ul>
+<li>H03只有GlobalDual组合成功；这是一次明确的独胜。H01只有GlobalDual失败，普通低材料初值的Full-J已经恢复；这是同样明确的反例。</li>
+<li>H00倒数Full-J与GlobalDual都成功；H02所有方法都失败。不能只保留H03来支持优势。</li>
+<li>H01的Coordinate/ABAR结果只有1个候选、13个全LU与78个复RHS，来自共有初始Full-J，尚未触发坐标/商根机制；不能把该1/4算成坐标或Q的特有成像收益。</li>
+<li>H00/H02上ABAR降低了相对于Coordinate的数据残差，却使top1材料RMS更差；H03上两者均改善但仍未恢复。新增候选、低残差或更低oracle best@K不是在线成像成功。</li>
+</ul>
+<h2 id="section-1">2. 冻结与独立验收</h2>
+<p>公开时间链：方法/源码于18:05:25.641 UTC冻结；四个新目标18:05:34.982生成；18:05:43.198–18:06:26.038执行；预测18:06:44.221封存；独立验收18:06:48.083；GT离线评分18:06:53.096。源冻结声明目标尚未生成，执行声明未读GT；评分程序要求冻结manifest并明确将GT仅用于离线指标。该链支持V6的前瞻留出性质，审查未进行文件系统级敌手取证。</p>
+<p>results/holdout_validation.json覆盖全部3500返回候选，3500/3500通过：材料box、原状态/本构方程、非极点数值资格及存储残差一致性。验收额外支付10500复RHS、3500全分解、0.149079s。raw端点与近重复归档候选不同的49项另支付147复RHS、49分解、0.004437s，收据单独保留。</p>
+<p>“验收通过”表示报告的预测/残差与新形成的完整矩阵求解一致，<strong>不表示该候选拟合数据成功</strong>。验证器用独立NumPy solve，不导入求解器、缓存LU或reduced kernel，但仍使用同一公开G/E0/S算子；所以这是同一有限离散模型的独立求解验证，不是独立网格、无inverse-crime物理验证或连续Maxwell证书。</p>
+<h2 id="section-2">3. 收益应归因于完整组合</h2>
+<p>results/holdout_globaldual_mechanism.json中，成功H00/H03的纯VP端点分别为：</p>
+<table>
+<thead>
+<tr>
+<th>样例</th>
+<th align="right">纯VP原数据相对残差</th>
+<th align="right">纯VP材料RMS</th>
+<th align="right">最终组合原数据残差</th>
+<th align="right">最终材料RMS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>H00</td>
+<td align="right">1.13190e-6</td>
+<td align="right">9.45654e-5</td>
+<td align="right">5.21095e-11</td>
+<td align="right">6.33262e-9</td>
+</tr>
+<tr>
+<td>H03</td>
+<td align="right">3.60095e-6</td>
+<td align="right">2.49047e-4</td>
+<td align="right">1.10886e-15</td>
+<td align="right">1.51708e-13</td>
+</tr>
+</tbody></table>
+<p>纯VP已产生接近正确材料的候选，但两者均略高于冻结1e-6数据门，最终成功需要原目标Full-J校正。机制收据把raw端点与校正成本分开；去重可使某条correction引用旧归档候选，不能由该引用索引单独推断最终机器精度端点。以最终独立验收和保存的best-paid-trial为准。</p>
+<p>可以说“改变目标后的VP提供了普通Full-J在这个预算内未达到的可恢复候选”；不能说“商代数寻找新根使H03成功”，也不能说“VP单独通过数据门”。同一起点前缀不意味着各方法在3s内访问相同个数起点。</p>
+<h2 id="section-3">4. 总成本与公平比较</h2>
+<p>共同合同是每方法/样例最多3s数值wall；实际完成者提前结束，所以应称共同wall上限，不能称每臂实际花费相同。最大观察到的终末原子操作越界为0.000606s，合同允许记录这种越界。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">4例数值wall总和(s)</th>
+<th align="right">全复RHS</th>
+<th align="right">全分解</th>
+<th>额外主要代数/小核成本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FullJ1024</td>
+<td align="right">9.01295</td>
+<td align="right">219531</td>
+<td align="right">38448</td>
+<td>无</td>
+</tr>
+<tr>
+<td>FullJReciprocal1024</td>
+<td align="right">6.33659</td>
+<td align="right">166761</td>
+<td align="right">30114</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Coordinate</td>
+<td align="right">0.77153</td>
+<td align="right">675</td>
+<td align="right">108</td>
+<td>5046小核RHS，1586小核分解</td>
+</tr>
+<tr>
+<td>ABAR4_coordpre</td>
+<td align="right">4.25720</td>
+<td align="right">33192</td>
+<td align="right">5744</td>
+<td>9174小核RHS，2674小核分解，商代数/SVD另有计数</td>
+</tr>
+<tr>
+<td>GlobalDual+Full-J</td>
+<td align="right">7.23929</td>
+<td align="right">112830</td>
+<td align="right">19904</td>
+<td>36042次12×9 QR，108126复LS RHS，12次setup SVD</td>
+</tr>
+</tbody></table>
+<p>这些是求解收据，不含独立验收与共享数据生成。公开生成收据另记12复RHS、4分解以及Green构建/SVD；验收费用见上节。不能只比较全Maxwell RHS而遗漏GlobalDual大量QR，也不能把12阶分解累计维数之和误读为576维物理网格。</p>
+<p>GlobalDual比native Full-J在这4例上的成功数更多且总数值wall较少，但与更强的倒数Full-J相比成功数持平、总wall较多；本轮不支持普遍加速。坐标/ABAR按其冻结sweep/round上限提前停止，结论仅针对这些配置，不推出所有3s重新启动版本的最优表现。</p>
+<h2 id="section-4">5. 论文与理论裁决建议</h2>
+<ul>
+<li><code>SUPPORTED_FINITE_SCOPE</code>：全部12材料未知、3源3接收、无噪声scalar-TM disk pulse VIE的冻结四例比较；完整校正与独立同模型验收。</li>
+<li><code>SUPPORTED_COMPLEMENTARITY</code>：GlobalDual和Full-J不同参数化有互补成功集；改变辅助目标可产生有用候选，也可丢失原目标的容易吸引域。</li>
+<li><code>NOT_SUPPORTED</code>：本轮Q分支搜索新增精确恢复；新全局代数成像算法；全根/全材料域覆盖；所有候选物理拟合；普遍更快或更准。</li>
+<li><code>HOLD_STRONG_NOVELTY</code>：接收对偶方程转置即CSI/SOM形式；变量投影和包络梯度为标准机制；van Leeuwen/Yang2025提供直接Gram残差度量先例。见PAPER_NOVELTY.md。</li>
+<li><code>NOT_RUN</code>：本审查范围内的N16、新几何、含噪数据、网格不匹配、连续PDE/3D、跨硬件重复；不要求为补足论文而扩充本轮预算。</li>
+</ul>
+<p>ψ的近极点反例否定通用“小兼容性误差即物理解”停止规则；同零点关系仍依赖q满列秩和原resolvent可逆。该反例为代数模型解析反例，不是本轮Hankel几何已观测到的失败。</p>
+<h2 id="section-5">6. V7执行前的组合审查意见（历史保留，执行结果见第7节）</h2>
+<p>可诚实命名为“Full-J先行的接收对偶变量投影组合”，类别B。一次公开低初值Full-J保护，再将剩余预算交给VP+原目标校正，是标准求解器组合，不是新的代数全局法。其动机来自已经暴露的V6结果；V6必须保留为这一修订的开发/设计证据，不能再作为修订算法的确认集。</p>
+<p>若主线程决定继续，应在新目标生成前冻结保护初值、保护上限、剩余时间、停止与最终选择规则；保护/固定setup/VP/校正全部归入同一3s。新鲜四例可以检验这一固定组合在另一小批的表现，但即使4/4也不自动证明总体支配或机制原创。若未运行新留出，本组合只保持建议，不能用各臂V6成功集合的并集作为实际组合成绩。</p>
+<h2 id="section-6">7. V7新鲜留出最终审查</h2>
+<h3>7.1 冻结、GT隔离与实现</h3>
+<p>CONFIRM_V7_CONTRACT明确标识V6暴露结果是V7开发依据，先冻结两臂相同的公开低初值native Full-J保护（max_nfev80、搜索上限0.20s），再给各自continuation实际剩余的3s总预算。它没有事后合并两个各3s结果。</p>
+<p>时间链为：18:15:51.519 UTC源码/合同冻结；18:16:02.269四个新目标生成；18:16:02.399–18:16:21.045执行；18:17:26.268预测封存；18:17:26.794独立验收；18:17:27.355离线评分。审查时12个源码/合同快照及8个预测快照的字节长度、mtime_ns仍与manifest一致，并与当前对应文件逐字节相同；V6核心源码与旧冻结快照相同。未计算SHA。这里只核验保存证据的内部一致性，不声称敌手级防篡改认证。</p>
+<p>src/portfolio.py只载入公开数据并调用原solve_case；不导入评分/私有数据模块。候选合并后只按原完整观测残差排序；两臂每个样例的guard输出残差相同，全部候选保留。每个组合的全/小核LU与RHS均精确等于其phase_receipts之和，包含两次算子导入、失败和保护成本。代码没有给continuation重置一个额外3s预算。</p>
+<h3>7.2 实际结果</h3>
+<p>下表仍为残差选top1，不采用离线oracle换根；“数据合格”使用先定1e-6门。</p>
+<table>
+<thead>
+<tr>
+<th>新样例</th>
+<th>GuardedGlobalDual RMS / 相对残差</th>
+<th>GuardedReciprocal RMS / 相对残差</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00</td>
+<td>2.11855e-10 / 5.91450e-12</td>
+<td>10.94017 / 0.0970395</td>
+<td>Dual组合独胜</td>
+</tr>
+<tr>
+<td>01</td>
+<td>11.16857 / 0.1079832</td>
+<td>16.06209 / 0.1324182</td>
+<td>两者失败</td>
+</tr>
+<tr>
+<td>02</td>
+<td>1.70670e-7 / 3.75382e-10</td>
+<td>4.91879e-10 / 1.32611e-12</td>
+<td>两者恢复；Reciprocal更快且误差更小</td>
+</tr>
+<tr>
+<td>03</td>
+<td>9.57434e-10 / 4.00144e-11</td>
+<td>6.28527e-15 / 7.21951e-16</td>
+<td>两者恢复</td>
+</tr>
+</tbody></table>
+<p>支持的结论是这四例上的3/4对2/4，差额由一例决定。样本太小，且同一几何、同一无噪声blob生成分布，不能据此推断一般成功率提升。两臂四个guard都未成功，最终top1均来自continuation；所以本新批并未单独验证“guard提高成功率”的因果收益。也不能把不同目标批上的V6 2/4和V7 3/4直接当作保护机制的消融实验。</p>
+<h3>7.3 完整成本与边界</h3>
+<table>
+<thead>
+<tr>
+<th>四例合计</th>
+<th align="right">GuardedGlobalDual</th>
+<th align="right">GuardedReciprocal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>记录的outer pipeline wall(s)</td>
+<td align="right">6.874817</td>
+<td align="right">6.769754</td>
+</tr>
+<tr>
+<td>全复RHS</td>
+<td align="right">116994</td>
+<td align="right">207213</td>
+</tr>
+<tr>
+<td>全分解</td>
+<td align="right">20534</td>
+<td align="right">37575</td>
+</tr>
+<tr>
+<td>额外12×9 QR</td>
+<td align="right">45389</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td>额外复LS RHS</td>
+<td align="right">136167</td>
+<td align="right">0</td>
+</tr>
+</tbody></table>
+<p>Dual组合以更多小QR换取较少完整物理解，但总记录wall略多；不支持“总体更快”。该outer timer从公开数据载入开始，覆盖保护、continuation、重复setup及返回前汇总；Python进程启动、最终JSON转换/写盘等属于更外层process wall，执行收据另有记录。不能把此表叫完整端到端CLI时延。</p>
+<p>最大outer overrun为0.0128075s（样例02 Dual），如实保留，不声称严格零超时3秒。该例最早合格raw候选在保守累计1.273642s，最终best-paid-trial在1.273877s已发现，均小于3秒；因此恢复不由超时工作创造。其运行状态仍是BUDGET_EXHAUSTED，因为内部停止目标1e-10比最终数据验收门1e-6更严格。不能把EXHAUSTED改写成“优化正常收敛”，也不能把它误判成最终数据未通过。</p>
+<p>results/confirm_v7_validation.json用新全矩阵NumPy求解验证全部968候选，968/968通过数值资格；额外2904复RHS、968全分解、0.180927s。新目标生成另外12复RHS、4分解，费用未隐入零成本。独立性仍是同一公开离散算子的重新求解，不是独立物理离散或真实实验验证。</p>
+<h3>7.4 理论文件与latent/特征子空间扩展</h3>
+<p>已审MATHEMATICAL_THEORY.md第1–7节，其CSI转置映射、标准变量投影包络梯度、Gram残差先例、保护组合的有限候选最小值性质均保留必要范围；没有把改变记号当原创。强首创仍HOLD，但这不阻止发布有负结果和完整边界的有限方法比较。</p>
+<p>用户要求的latent或特征子空间扩展若采用m=D(z)，完整物理观测应保持F(D(z))，材料梯度通过J_D(z)^T链式传播；固定仿射子空间只是特例。此链式规则不赋予低秩对角材料更新、全根覆盖、decoder像外材料合法性或额外成像证据。<strong>已补审theory/LATENT_AND_CHARACTERISTIC_SUBSPACES.md的L1–L4推导，见第8节；未实现/实验的状态仍为NOT_IMPLEMENTED，不能纳入V7性能通过范围。</strong> 新推导与当前全12独立材料实验必须分开。</p>
+<h3>7.5 最终可用表述</h3>
+<blockquote>
+<p>在同一无噪声有限离散散射模型的新鲜四例上，预先冻结的Full-J保护＋接收对偶变量投影＋原目标校正组合恢复3例，采用相同保护的倒数参数化Full-J恢复2例。全部968返回候选通过独立同模型求解的数值一致性验收。该组合使用标准CSI/SOM与变量投影结构；前一批V6的互补失败、额外QR成本、运行越界和未实现扩展均保留。结果支持这批上的有限实用增量，不证明普遍支配、速度优势、全根认证或新理论首创。</p>
+</blockquote>
+<p>本审查不要求新增物理实验、重跑或扩大文献检索；现有证据足以完成这个有明确限制的交付。</p>
+<h2 id="section-7">8. latent与characteristic subspace推导专项复核</h2>
+<p>审阅theory/LATENT_AND_CHARACTERISTIC_SUBSPACES.md，意见为<code>DERIVATION_PASS_WITH_CONDITIONS / IMPLEMENTATION_NOT_RUN</code>，无新增实验或检索。</p>
+<ul>
+<li><strong>L1通过。</strong> m_i=z时材料增量hI在h≠0时秩N；det(I−zG)在一般满秩G下次数N。仿射decoder的diag(Bh)秩是Bh的非零分量数，故latent维数小不等于材料更新低秩。这里说的是材料对角增量；实际状态矩阵增量还乘G，不需要宣称任意奇异G也产生满秩更新。</li>
+<li><strong>L2通过。</strong> 固定K/q/L/Z、实latent、可微decoder及内层恒定满秩条件下，包络定理与链式法则给出实decoder的J_D^Tg；复材料decoder的−2Re Σ conj(E_ri)V_ri ∂D_i/∂z_a也正确。∂D不另取共轭，因为它是实latent方向导数。像素材料合法性需附条件D(Z_admissible)包含于允许材料集合；仅属于任意decoder的像本身不保证box、被动性或其它物理限制。</li>
+<li><strong>L3通过。</strong> 相同W0、嵌套行空间与自由Ck下，截断的可行辅助集合嵌套，故ψ_k≥ψ_(k+1)≥ψ。真根可能不在截断仿射空间，不能由ψ_k&gt;0否定原材料存在；ψ_k=0加原resolvent可逆仍可验出物理解。多个投影的复合一般不是交集的正交投影，文中拒绝混同正确。</li>
+<li><strong>L4边界正确。</strong> 固定网格的材料形状编码可保留固定Green；如果latent移动网格/边界/采集或改变背景算子，必须补上变化算子的导数。外层latent维数并不缩小全物理support内层QR的尺寸。</li>
+</ul>
+<p>这些是可行的标准数学接口，不是已验证的Full66算法、特征子空间压缩收益或新商环定理。保留现有实验停止边界。</p>
+<h2 id="section-8">9. 主交付文件出版前文字复核</h2>
+<p>审阅RESEARCH_REPORT_ZH.md、MATHEMATICAL_THEORY.md、ALGORITHM.md、PAPER_CANDIDATE.md与已补合法decoder像条件的latent说明。结论：<code>PUBLICATION_SCIENCE_PASS_WITH_LIMITS</code>；没有发现会推翻主要数值结论或理论边界的阻断错误。该状态允许发布诚实有限研究记录，不代表独立论文新颖性获批。</p>
+<p>确认项：V7的3/4对2/4对应先定1e-6数据门，严格1e-10内部停止目标为2/4对2/4；各例RMS、V6平均指标、完整/QR成本与保存摘要一致；总wall未下降明确写出；Q的538新候选/462远候选叙事没有偷换为GT恢复；V6暴露后开发V7的顺序明确；标准CSI/SOM、变量投影和Gram度量先例保留；Full66/latent尚未实现和论文HOLD明确。汇总物理RHS1,120,095与成本账本相符，没有将all_solver与其分项重复相加。</p>
+<p>已向主线程提出三个不涉及实验的文档清理项：Q4/Q6命名应为4/6材料的Q6/Q20；QR伪代码中的乘对角矩阵应用明确矩阵乘号或列缩放，并在求C后明确重建W；候选去重应说明是各阶段内去重后合并，跨阶段未再次去重。在线图像列与oracle列的措辞建议进一步分清。这些是接口/措辞精确性修正，不改变冻结源码、结果或科学判定；由主线程在其所有文件中落实。</p>
+<p>出版文字修正回读：ALGORITHM.md已采用4/6材料的Q6/Q20命名、明确矩阵乘法及W重建，并说明阶段内去重/跨阶段合并；报告已将在线重建列与oracle图区分。decoder合法像条件已明确。没有修改冻结求解源码、预测或运行任何物理实验。上述清理项关闭，最终出版科学状态保持<code>PASS_WITH_LIMITS</code>，独立论文原创性仍<code>HOLD</code>。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r3/audit/FINAL_SCIENTIFIC_REVIEW.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r3">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>
