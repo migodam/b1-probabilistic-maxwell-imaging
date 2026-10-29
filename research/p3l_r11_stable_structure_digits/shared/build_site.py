@@ -9,7 +9,7 @@ class Reader(base.Reader):
   return m[0].lower() if m else super().slug(t)
  def shell(self,title,body,page,subtitle='严格支撑 · 固定总场 · 条件耗散界 · 数字1–9真实逆成像'):
   links=[(P/'index.html','R11报告'),(P/'DIGITS_VISUAL_REVIEW_ZH.html','逐数字视觉审查'),(P/'GO_NO_GO.html','科学裁决'),(P/'RESEARCH_REPORT_ZH.md','原始Markdown'),(AT/'index.html','158条公式')]
-  nav='<nav>'+''.join('<a href="'+os.path.relpath(a,page.parent)+'">'+t+'</a>' for a,t in links)+'</nav>'
+  nav='<nav>'+''.join('<a href="'+os.path.relpath(a,page.parent)+'">'+t+'</a>' for a,t in links)+'<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr11-stable-digits-20261030">完整证据下载</a></nav>'
   warn='<div class="notice"><strong>R11资源协议 FAIL_CAP_EXCEEDED：</strong>全阶LU 28,727 / 12,000。数值与图像证据保留；预算未改写，新增物理已停止。</div>'
   return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+html.escape(title)+'</title><style>'+base.old.STYLE+' .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}.formula-list{columns:2}.formula-list a{display:block;break-inside:avoid;padding:5px}.formula-list a[hidden]{display:none}#formula-filter{width:100%;padding:12px;font-size:17px}@media(max-width:800px){.formula-list{columns:1}}</style>'+base.MATH+'</head><body><header>'+nav+'<h1>'+html.escape(title)+'</h1><p>'+html.escape(subtitle)+'</p></header><main>'+warn+body+'</main><footer style="padding:30px;max-width:1100px;margin:auto">N/P材料模型、物理核与整成像收益分别评价。标准恒等式、数值条件界与实测结果分开。未认证Full66 posterior。</footer></body></html>'
 

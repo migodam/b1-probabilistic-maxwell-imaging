@@ -2,6 +2,12 @@
 
 默认复现只读取已经封存的数组，不支付新的Maxwell RHS。整轮全阶LU预算已失守并STOP，不应在同一账本里重跑物理来补救结果。
 
+## 视觉资格补充的还原
+
+先解压初版完整tar.zst到新的隔离目录，再把R11_report_qualification_update.zip应用到这份隔离副本的报告与分析脚本。它不含任何替换GT或预测。不要覆盖原冻结历史工作树。P3数值fit门仍PASS，但视觉表示FAIL_THIS_FIT；初版数据执行身份和补充报告身份分别固定。
+
+历史R10路径核还需原[p3lr10-bilateral-20261030 Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr10-bilateral-20261030)的shape-update附录输入；本包已包含本轮所有计算输出和数字分析的全部必要输入，不重复整个历史训练数据。
+
 ## 环境
 
 实际执行Apple Silicon CPU、float64/complex128、单BLAS线程。现有 `Gaussian/.venv_nn/bin/python`，保留该venv入口，不将符号链接解析为缺包的basePython。依赖为numpy/scipy/Pillow/matplotlib；评分采用明确的7×7 uniform-window SSIM实现，不依赖未安装的skimage。没有CUDA或外部付费计算。
