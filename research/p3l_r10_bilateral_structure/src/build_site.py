@@ -34,7 +34,7 @@ def build():
  log=AT/'CHANGELOG.md';s=log.read_text()
  if 'F-BI-001' not in s:log.write_text(s+'\n2026-10-30 R10：追加F-BI-001—018，双边Gram、形状幅度有理传递、随机目标条件协方差、损耗稳定性与residual任务界。原122条编号与历史实验保留；总计140条。明确共同不变空间与对角化条件，数值费用不作为新恒等式证明。\n')
  rd=Reader(P)
- docs=list(P.glob('*.md'))+list((P/'GPT_PRO_HANDOFF').glob('*.md'))+list(AT.glob('[0-9][0-9]_*.md'))+[combined]
+ docs=list((P/'followup_shape_reuse').glob('*.md'))+list(P.glob('*.md'))+list((P/'GPT_PRO_HANDOFF').glob('*.md'))+list(AT.glob('[0-9][0-9]_*.md'))+[combined]
  rd.render(docs)
  shutil.copy2(P/'RESEARCH_REPORT_ZH.html',P/'index.html');shutil.copy2(P/'RESEARCH_REPORT_ZH.html',P/'report.html')
  entries=''.join('<a data-text="'+html.escape((x['id']+' '+x['title']).lower(),quote=True)+'" href="'+x['chapter'].replace('.md','.html')+'#'+x['anchor']+'"><b>'+x['id']+'</b> '+html.escape(x['title'])+'</a>' for x in registry['formulas'])

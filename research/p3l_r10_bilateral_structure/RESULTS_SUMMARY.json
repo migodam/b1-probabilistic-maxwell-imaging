@@ -10,7 +10,8 @@
     "EXACT_MATERIAL_FIBER": "NOT_ESTABLISHED",
     "FULL_IMAGING_SYSTEM_ACCELERATION": "NOT_ESTABLISHED",
     "STRONG_IEEE_TAP_CONTRIBUTION": "HOLD",
-    "NEXT_PRIORITY": "shape-update response reuse with residual-controlled refresh; bounded paired path experiment"
+    "NEXT_PRIORITY": "fixed-total-field/current TSOM with shared material constraint versus ordinary Full-J; derivation only, NOT_RUN",
+    "SHAPE_UPDATE_FIXED_V64_REUSE": "NO_GO_FOR_TESTED_POLICY"
   },
   "cost": {
     "status": "PASS",
@@ -52,25 +53,47 @@
         "RHS256": 6688,
         "lower_order_RHS": 6688,
         "LU256": 0
+      },
+      {
+        "branch": "followup_shape_reuse",
+        "RHS256": 3136,
+        "lower_order_RHS": 3008,
+        "LU256": 392
       }
     ],
-    "actual_RHS256": 306096,
+    "actual_RHS256": 309232,
     "lower_order_RHS_by_dimension": {
       "32": 1920,
-      "64": 11168,
+      "64": 14176,
       "96": 1920,
       "128": 1920
     },
-    "lower_order_total": 16928,
-    "conservative_combined_RHS": 323024,
-    "actual_LU256": 9273,
+    "lower_order_total": 19936,
+    "conservative_combined_RHS": 329168,
+    "actual_LU256": 9665,
     "new_RHS576": 0,
     "new_LU576": 0,
     "historical_shared_setup_RHS576": 264,
     "historical_shared_setup_LU576": 1,
-    "controlled_physics_branch_wall_seconds_sum": 303.5137290006969,
+    "controlled_physics_branch_wall_seconds_sum": 305.3475175846834,
     "cumulative_fresh_JOB_END_not_summed": true,
-    "actual_new_physical_calls_stayed_in_frozen_caps": true
+    "actual_new_physical_calls_stayed_in_frozen_caps": true,
+    "extension_identity": "audit/SHAPE_REUSE_EXTENSION_AUTHORIZATION.json",
+    "initial_release_totals_preserved": "audit/INITIAL_FROZEN_COST_SUMMARY.json"
   },
-  "reference": "EXPERIMENT_RESULTS.json"
+  "reference": "EXPERIMENT_RESULTS.json",
+  "within_budget_followup": {
+    "scope": "DEV_ONLY; no new truth score",
+    "parents": 8,
+    "updated_shapes": 24,
+    "nodes": 192,
+    "reuse_gate_pass": 0,
+    "reuse_actual_error_above_001": 192,
+    "reuse_vs_direct_cost_ratio": 2.249003500647855,
+    "rebuild_gate_pass": 184,
+    "rebuild_unavailable_policy_fallback": 8,
+    "rebuild_vs_direct_cost_ratio": 1.5314049665996432,
+    "QA": "PASS_SCOPED",
+    "source": "followup_shape_reuse/SUMMARY.json"
+  }
 }
