@@ -1,3 +1,11 @@
+<!-- W_GQ_R3_PUBLICATION -->
+## Research W-GQ-R3-JI：未知墙与未知目标联合成像
+
+未知六宏格墙＋连续椭圆目标联合全波成像已运行。三parent首噪声Full-GN位置RMSE 0.03234λ₀；一例通过位置/形状/实ε三门。Adaptive未胜过普通Full-GN；数字8的孔洞未恢复。全部失败、41组公式和完整复现包公开。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_gq_r3_joint/) · [中文原文](research/research_w_gq_r3_joint/REPORT_ZH.md) · [公式集](research/research_w_gq_r3_joint/FORMULA_COMPENDIUM_ZH.md) · [完整代码和数据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gq-r3-ji-20261030)
+<!-- /W_GQ_R3_PUBLICATION -->
+
 <!-- Z_ALG_R3_CURRENT -->
 ## Research Z-ALG-R3：代数候选与真正的盲成像
 

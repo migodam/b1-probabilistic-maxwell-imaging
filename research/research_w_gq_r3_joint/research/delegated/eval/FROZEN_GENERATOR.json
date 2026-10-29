@@ -1,0 +1,28 @@
+{
+  "status": "FROZEN_BEFORE_SCIENCE",
+  "root_authorization": "2026-10-29 root message; CONTRACT.json",
+  "seeds": {
+    "dev": 33102901,
+    "blind_normal": 33102911,
+    "blind_cavity": 33102912,
+    "blind_strong": 33102913
+  },
+  "noise_seed_rule": "33103001 + 10*parent_index + repeat; parent order dev,normal,cavity,strong",
+  "sampler_order": [
+    "eps6 U[2,4.5]",
+    "loss6 U[.02,.12]",
+    "px U[-.8,.8]",
+    "py U[1.8,2.4]",
+    "rx U[.085,.155]",
+    "ry U[.085,.155]",
+    "contrast U[2,5],strong U[6.5,8]",
+    "target_loss U[.005,.20]",
+    "angle U[-pi/2,pi/2]",
+    "cavity index randint6 only cavity"
+  ],
+  "conditioning": "dev and normal ry=rx angle0; cavity and strong independent rx,ry,angle; cavity sampled cell overwritten eps1 loss0",
+  "microtexture": false,
+  "truth_mesh": "dev refinement1; three blind refinement2",
+  "online_mesh": "refinement1; targetstep .10 h .17",
+  "class_scope": "unknown all six wall cells; limited public support rectangle and continuous ellipse; no arbitrary support claim"
+}

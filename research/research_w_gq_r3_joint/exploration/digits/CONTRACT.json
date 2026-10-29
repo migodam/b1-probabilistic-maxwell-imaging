@@ -1,0 +1,83 @@
+{
+  "status": "FROZEN_BEFORE_NEW_PHYSICS",
+  "study": "DIGIT8_NONPARAMETRIC_MATERIAL_EXPLORATION",
+  "primary_R3_gates_changed": false,
+  "wall": "same public3x2 full rectangle;6eps[1,6]+6loss[0,0.25] unknown",
+  "target_grid": {
+    "shape_yx": [
+      7,
+      7
+    ],
+    "x_edges": [
+      -0.7,
+      -0.5,
+      -0.3,
+      -0.1,
+      0.1,
+      0.3,
+      0.5,
+      0.7
+    ],
+    "y_edges": [
+      1.4,
+      1.6,
+      1.8,
+      2,
+      2.2,
+      2.4,
+      2.6,
+      2.8
+    ],
+    "cell_width_lambda0": 0.2,
+    "unknown_real_parameters": 98,
+    "contrast_box": [
+      0,
+      8
+    ],
+    "loss_box": [
+      0,
+      0.25
+    ],
+    "support_known_online": false
+  },
+  "truth": "fixed digit8,5columns7rows centered in7x7; two enclosed3x2cell holes; target contrast and loss independently drawn per stroke cell; offstroke exactambient; new unknown wall draw",
+  "physical_scales": {
+    "stroke_width_lambda0": 0.2,
+    "glyph_total_width_lambda0": 1.0,
+    "glyph_total_height_lambda0": 1.4,
+    "hole_width_lambda0": 0.6,
+    "hole_height_lambda0": 0.4,
+    "online_material_cell_lambda0": 0.2,
+    "comparison_with_ellipse_scale": "Different larger stress, not equal-size extension or confirmed blind success"
+  },
+  "physics": "same2D scalarTM P3 FEM,fullmaterialdependentincidentload;freq 0.85/1/1.15,4TX16RX,sigma 0.01 each real/imag; same discrete truth/inverse, no independentfinePASS",
+  "online": "110 realfree variables:wall12,targetcontrast49,targetloss49;uniform targetcontrast 0.1/loss.03;2publichomogeneouswallstarts3/.06 and3.8/.08; no template/classifier/ellipse, onlyy/config input",
+  "objective": "full exact data objective plus unchanged wall Gaussian prior; independent uniform target boxes, no digit/template or target support prior",
+  "optimizer": {
+    "method": "scaled L-BFGS-B, exactweighted4sourceadjoint per frequency",
+    "starts": 2,
+    "maxiter_per_start": 40,
+    "maxcalls_per_start": 65,
+    "all_phase_maxcalls": 140,
+    "maxls": 8,
+    "gtol": 0.0001,
+    "ftol": 1e-09
+  },
+  "resources": {
+    "full_fe_cap": 450,
+    "complex_RHS_cap": 3600,
+    "includes": "generation, rejected trials, failed reservations, one mixed public wall/target directional audit",
+    "rss_bytes": 4294967296,
+    "BLAS_threads": 1,
+    "heavy_concurrency": 1,
+    "first_heavy_before_utc": "2026-10-29T18:15:21Z",
+    "stop_utc": "2026-10-29T18:30:00Z"
+  },
+  "seeds": {
+    "material": 33106008,
+    "noise": 33106108,
+    "public_gradient_direction": 33105008
+  },
+  "isolation": "generator,online,scorer separate Python processes/files; private truth and glyphmodule denied to online readguard; online outputs sealed before scoring",
+  "result_status": "EXPLORATION_NOT_PRIMARY_BLIND_CONFIRMATION; generated1..9glyphs are not reconstructed1..9digits"
+}
