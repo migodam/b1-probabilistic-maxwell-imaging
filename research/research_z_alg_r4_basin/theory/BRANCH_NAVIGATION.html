@@ -1,0 +1,118 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Maxwell有限步反馈、盆地可达性、真实负面盲测、公式、代码和成本。"><title>R4：固定材料形状的有理扫描与多低谷校正 | Z-ALG-R4-BASIN</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1440px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · 576 UNKNOWN MATERIALS · 3 FRESH TARGETS · 6 METHODS · NONLINEAR TM VIE</small><a href="../index.html"><strong>Z-ALG-R4-BASIN / 24×24 Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">24×24全未知材料 · 3新目标×6方法 · GT改善NO · 论文HOLD · 原始失败和费用保留</div><h1>R4：固定材料形状的有理扫描与多低谷校正</h1><details class="toc"><summary>本文目录 · 7节</summary><ol><li><a href="#section-0">1. 建议保留的机制</a></li><li><a href="#section-1">2. 全部 576 个独立实材料的精确条件族</a></li><li><a href="#section-2">3. 一次分解复用怎样计费</a></li><li><a href="#section-3">4. 幅度残差、形状残差与 weak/strong 正确</a></li><li><a href="#section-4">5. 一个严格区别于 argmin 线搜索的反例</a></li><li><a href="#section-5">6. FP-T 横向收缩实际能证明什么</a></li><li><a href="#section-6">7. 建议的公共接口与有限预算</a></li></ol></details>
+<p>状态：<code>THEORY_ONLY / IMPLEMENTATION_NOT_VERIFIED / SCIENTIFIC_BENEFIT_HOLD</code>。本文件只读了 R2、R3、R9、R10 和实际 FP-T 资产；没有访问 GT，没有运行公式数值检查、物理求解或新颖性检索。最终原创性和证据裁决属于主线程。</p>
+<h2 id="section-0">1. 建议保留的机制</h2>
+<p>从当前失败点得到一个不使用真值的材料方向，在整个合法实区间上查询精确有理响应；将<strong>每个被扫描检出的、材料上分离的低谷分别交给完整正确器</strong>，包括原始数据损失高于当前点的低谷。最后才按原始全部观测损失排序，同时保留 incumbent。</p>
+<p>这比“沿线只取一个全局最小点，再正确”有严格的操作差别。区别来自候选的保留和校正顺序，不来自重新命名 resolvent。沿任意方向做精确有理查询、Schur 复用、全局线搜索分别都是标准工具。R10 B8/B9 已直接覆盖固定形状与幅度复用，R3 也明确提出允许较高原始损失的新根先正确再比较。因此本轮最多是一个待证实的有限预算算法组合，不能据公式宣布新理论。</p>
+<p>建议主线先实现“幅度多低谷 + 全变量正确”；额外弱谱、短 Krylov、约束正确器均不是使这条机制成立的必要条件。没有实际跨盆地收益时，主张保持 <code>HOLD</code>。</p>
+<h2 id="section-1">2. 全部 576 个独立实材料的精确条件族</h2>
+<p>固定有限离散 scalar-TM VIE，记</p>
+<p><span class="math">\[
+D_m=\operatorname{diag}(m),\quad M_m=I-D_mG,\quad
+j_m=M_m^{-1}D_mE^{inc},\quad Y(m)=Sj_m.
+\]</span></p>
+<p>所有状态要求原状态矩阵可逆。固定一个合法公开背景向量 <span class="math">\(b\)</span>，例如本轮约定的 <span class="math">\(b_i=1\)</span>。设</p>
+<p><span class="math">\[
+H=M_b^{-1},\quad j_b=HD_bE^{inc},\quad q=E^{inc}+Gj_b,
+\quad K=GH,\quad L=SH,\quad Y_b=Sj_b.
+\]</span></p>
+<p>任意当前非 GT 材料形状 <span class="math">\(a\in\mathbb R^{576}\)</span> 定义</p>
+<p><span class="math">\[
+m(\alpha)=b+\alpha a,\quad T_a=D_aK,\quad B_a=D_aq.
+\]</span></p>
+<p>从两状态方程相减，令 <span class="math">\(j_\alpha-j_b=Hz\)</span>，得到</p>
+<p><span class="math">\[
+z=\alpha D_a(q+Kz),\qquad
+\boxed{Y(\alpha)=Y_b+\alpha L(I-\alpha T_a)^{-1}B_a.}\tag{R4-1}
+\]</span></p>
+<p>行列式引理给出</p>
+<p><span class="math">\[
+\det M_{b+\alpha a}=\det M_b\det(I-\alpha T_a).
+\]</span></p>
+<p>所以背景可逆时，内部小式与原 576 阶系统的奇异性等价。式中没有除以 <span class="math">\(a_i\)</span>，零分量合法。若取 <span class="math">\(a=m_{current}-b\)</span>，当前点是 <span class="math">\(\alpha=1\)</span>；它只是当前材料的幅度切片，并没有获得真实几何形状。</p>
+<p>全部 <span class="math">\(a_i\ne0\)</span> 时，对角材料更新一般是全秩；若 G 满秩，<span class="math">\(D_aG\)</span> 的秩恰为 576。这里没有 576 到低阶的自动压缩。对任意 GN 方向 h 也可把当前点作为参考，令 <span class="math">\(m(t)=m_0+th\)</span>，重复同一推导；改变参考点须实际支付新的参考分解和 setup。固定公共 b 可以共享 H、K、L、q，但不同 a 仍需不同 <span class="math">\(T_a\)</span> 的谱分解。</p>
+<h3>合法幅度区间</h3>
+<p>对逐格材料盒 <span class="math">\(\ell_i\le m_i\le u_i\)</span>，区间是所有逐格区间的交：当 <span class="math">\(a_i&gt;0\)</span> 时为 <span class="math">\([ (\ell_i-b_i)/a_i,(u_i-b_i)/a_i]\)</span>，当 <span class="math">\(a_i&lt;0\)</span> 时交换两端；<span class="math">\(a_i=0\)</span> 时要求 <span class="math">\(b_i\)</span> 本身合法。当前材料合法则 <span class="math">\(\alpha=1\)</span> 必须被保留。不得逐点评估后 clip 材料，因为 clip 后已不是这条解析射线。</p>
+<p>从区间中排除原状态矩阵奇异点。传递响应的极点可能因端口消去而表面可移，但原物理状态奇异仍不合格。仅看特征值离实轴的距离不能控制非正规 resolvent。若协议另设稳定性硬门，其可行边界也须进入候选清单；只过滤原驻点不再构成受限全局最小化。</p>
+<h2 id="section-2">3. 一次分解复用怎样计费</h2>
+<p>若 <span class="math">\(T_a=V\Lambda V^{-1}\)</span> 可对角化，预计算 <span class="math">\(U=LV\)</span>、<span class="math">\(C=V^{-1}B_a\)</span>，有</p>
+<p><span class="math">\[
+Y(\alpha)=Y_b+\sum_{k=1}^{576}
+\frac{\alpha}{1-\alpha\lambda_k}\,U_{:,k}C_{k,:}.\tag{R4-2}
+\]</span></p>
+<p>这可令每个幅度端口查询只需 residue 收缩；本征向量病态或 Jordan 块会破坏这个数值实现。稳健默认采用复 Schur：<span class="math">\(T_a=QTQ^*\)</span>，缓存 <span class="math">\(LQ,Q^*B_a\)</span>，每节点解上三角系统 <span class="math">\((I-\alpha T)X=Q^*B_a\)</span>。Schur 不要求正规性或完整本征基。</p>
+<p>冷公共 setup 为一次 576 阶 LU，形成 H 需 576 个矩阵 RHS，背景状态需 s 个源 RHS；可用已存在同质缓存或等价构造，但必须如实登记。每个新形状另有一次 576 阶 Schur/本征分解及矩阵形成、坐标变换。每节点 Schur 为 s 个 576 阶三角 RHS 和端口收缩；导数另需一组三角 RHS。它们不能因“不新做 LU”而记为零成本。最终每个保留候选至少一次原完整 forward，正确器的 LU、s 源 RHS、r 端口 RHS、失败回溯全部计费。</p>
+<p>同一形状只查一两个幅度时，直接 LU 可能更便宜；576 阶谱 setup 是否摊销只由实际端到端计时决定。短 Krylov 是另外的近似方案，必须带输出误差/真实缺陷或最终完整回退，不能继承精确扫描资格。R10 的 256 格复杂幅度计时不能直接搬作本轮 576 格实材料收益。</p>
+<h3>幅度导数与“精确扫描”的边界</h3>
+<p>令 <span class="math">\(R_\alpha=(I-\alpha T_a)^{-1}\)</span>，则</p>
+<p><span class="math">\[
+Y'(\alpha)=LR_\alpha^2 B_a,\qquad
+Y''(\alpha)=2LT_aR_\alpha^3B_a.\tag{R4-3}
+\]</span></p>
+<p>固定原白化算子 <span class="math">\(\mathcal W\)</span>，<span class="math">\(r=\mathcal W(Y-Y_{obs})\)</span>，<span class="math">\(\phi=\tfrac12\|r\|^2\)</span>，有 <span class="math">\(\phi'=r^T\mathcal W(Y')\)</span>。这是完整非线性幅度导数，不是 Born 的线性幅度拟合。</p>
+<p><strong>精确有理评估不等于找全低谷。</strong> 对一般 N 阶方向，公分母次数至多 N，损失为实多项式比 P/Q，分子分母次数至多 2N；驻点分子 <span class="math">\(P'Q-PQ'\)</span> 次数至多 <span class="math">\(4N-2\)</span>，N=576 时上界 2302。R2 F12 的二次驻点公式只属于单坐标 rank-one 切片。不能推广为任意全秩 h 上仍解一个二次式。</p>
+<p>数值节点扫描加导数括区只支持“全部检出的低谷”；窄低谷、偶重驻点和极点附近分支可能遗漏。未经可靠实根隔离/区间覆盖，不能称所有驻点、全局线最优或全部 basin 枚举。实现应输出节点数、未解析区间和截断原因，不编造完备性。</p>
+<h2 id="section-3">4. 幅度残差、形状残差与 weak/strong 正确</h2>
+<p>在当前幅度点令完整实白化材料 Jacobian 为 J，幅度切向 <span class="math">\(g=Ja\)</span>。定义</p>
+<p><span class="math">\[
+r_{amp}=gg^\dagger r,\qquad r_{shape}=(I-gg^\dagger)r.\tag{R4-4}
+\]</span></p>
+<p><span class="math">\(g=0\)</span> 时取投影为零。内点幅度驻点满足 <span class="math">\(g^Tr=0\)</span>，因此剩余残差在一阶上无法由该幅度方向降低。这不证明残差来自“真实形状错误”；噪声、其它材料方向、模型误差都可能进入这个分量。在区间端点，只能用单侧最优条件，不能要求 <span class="math">\(g^Tr=0\)</span>。</p>
+<p>若规范化 <span class="math">\(\|a\|=1\)</span>，形状切向可取 <span class="math">\(P_a=I-aa^T\)</span>，材料微分为 <span class="math">\(\delta m=a\delta\alpha+\alpha P_a\delta s\)</span>。在线性化中精确消去无约束幅度步后，形状问题为</p>
+<p><span class="math">\[
+\min_{\delta s}\|(I-gg^\dagger)
+\{r+\alpha JP_a\delta s\}\|^2.\tag{R4-5}
+\]</span></p>
+<p>这只是标准 Schur/QR profile；幅度边界、正则器和 trust 区间需要同步进入原问题。对本轮不归一化的 <span class="math">\(a=m_{current}-b\)</span>，可只把 R4-4 当诊断，避免增加冗余坐标实现。</p>
+<p>更一般地，固定弱位移 w、以强方向矩阵 <span class="math">\(Q_s\)</span> 正确，令 <span class="math">\(J_s=JQ_s\)</span>、<span class="math">\(J_w=JQ_w\)</span>。无正则线性正确后的残差是</p>
+<p><span class="math">\[
+(I-J_sJ_s^\dagger)(r+J_ww).
+\]</span></p>
+<p>这是条件可达性指标，没有全局相容性保证。固定弱绝对坐标的正确器必须从实际预测点出发满足 <span class="math">\(C(m-m_{pred})=0\)</span>；它可保护材料差异，也可能排除好根。全变量正确器的可行域更大，却可能把多个低谷拉回同一 basin。两者都不由“弱”字获得跨 basin 定理；本轮优先以全变量正确作为简单主机制，限制正确只作明确标识的备选。</p>
+<p>若原目标含先验/TV，必须使用共同的原目标及其正确线性项。不能把 R9 的 Gaussian66 先验、复幅度、ROI=256、噪声常数搬到 576 个独立实材料模型。</p>
+<h2 id="section-4">5. 一个严格区别于 argmin 线搜索的反例</h2>
+<p>这是解析的光滑最小二乘反例，<strong>不是实际 Hankel Maxwell 构造，也不是本轮性能证据</strong>。取</p>
+<p><span class="math">\[
+c(x)=\tfrac32+\tfrac34x-\tfrac14x^3,\quad
+f(x,y)=\begin{bmatrix}x^2-1\\(x+1)y-c(x)\\(x-1)y\end{bmatrix},
+\quad \Phi=\|f\|^2,
+\]</span></p>
+<p>其中 <span class="math">\(x\in[-6/5,6/5]\)</span>、<span class="math">\(y\in[-2,2]\)</span>。初始点 <span class="math">\((-1,0)\)</span> 满足 <span class="math">\(\Phi=1\)</span>、梯度为零，且</p>
+<p><span class="math">\[
+\nabla^2\Phi(-1,0)=\begin{pmatrix}11&amp;-2\\-2&amp;8\end{pmatrix}\succ0.
+\]</span></p>
+<p>它是真实正残差严格局部极小。沿 <span class="math">\(y=0\)</span>，</p>
+<p><span class="math">\[
+\Phi(x,0)=(x^2-1)^2+c(x)^2\ge1,
+\]</span></p>
+<p>该区间上 <span class="math">\(c(x)\ge1\)</span>，唯一全局线最小点为 <span class="math">\(x=-1\)</span>。所以“全球线 argmin 后正确”仍停在失败点。另一个严格局部线低谷为 <span class="math">\((1,0)\)</span>，损失为 4，且线二阶导为 2。此处</p>
+<p><span class="math">\[
+f=(0,-2,0)^T,\qquad
+J_f=\begin{pmatrix}2&amp;0\\0&amp;2\\0&amp;0\end{pmatrix},
+\]</span></p>
+<p>完整 GN 一步为 <span class="math">\((0,1)\)</span>，到达 <span class="math">\((1,1)\)</span> 的零残差根。因此保留较高线低谷再正确，严格优于只正确原目标线 argmin 的规则。</p>
+<p>这个反例只证明新操作与 ordinary global line search 不等价。它不保证任意射线击中好 basin，更不说明幅度射线在实际 Maxwell 数据上会产生第二低谷。若每个合法幅度族都单峰，或所有检出低谷经正确都回到 incumbent，新增机制没有收益；若方向全部为零/只剩很短合法区间，也不能靠更密扫描弥补方向缺失。</p>
+<h2 id="section-5">6. FP-T 横向收缩实际能证明什么</h2>
+<p>已定向读取 R12 的 <code>TRANSVERSE_CONTINUATION.md</code> 与 <code>FIXED_POINT_SPECTRUM_AUDIT.md</code>；FP-T 本地资产可访问。实际正确器冻结弱绝对坐标、刷新当前 J，另有 box 和下降回溯，不能用另一个简化映射的谱代替它的运行证据。</p>
+<p>对纯数据阻尼映射</p>
+<p><span class="math">\[
+T(m)=m-(J^TJ+\mu I)^{-1}J^Tr(m),\quad\mu&gt;0,
+\]</span></p>
+<p>在精确零残差根上才有</p>
+<p><span class="math">\[
+DT=\mu(J^TJ+\mu I)^{-1}.
+\]</span></p>
+<p>正奇异值方向收缩率为 <span class="math">\(\mu/(\sigma_i^2+\mu)&lt;1\)</span>；精确核方向导数为 1。由此只能得到根处的局部横向线性行为。若在一个邻域有恒定正则秩、合适的根流形、统一右逆界和连续导数，才可加强为到<strong>该局部根集合</strong>的距离收缩。无阻尼广义 Newton、正则零集和一致 Lipschitz/右逆界时，可得局部二阶法向误差；这些都是标准正则性结论。</p>
+<p>若 <span class="math">\(J^Tr=0\)</span> 但 <span class="math">\(r\ne0\)</span>，则</p>
+<p><span class="math">\[
+DT=I-(J^TJ+\mu I)^{-1}(J^TJ+S_r),\quad
+S_r=\sum_k r_k\nabla^2r_k.
+\]</span></p>
+<p>残差 Hessian 不能删除；非驻点还要保留逆矩阵导数项。正残差局部极小也可能吸引迭代，不能把收缩解释成存在精确数据根。</p>
+<p>冻结约束 <span class="math">\(CT(m)=Cm\)</span> 直接给 <span class="math">\(C DT=C\)</span>，产生算法人为的单位左模态。应在自由域 <span class="math">\(\ker C\)</span> 上判断横向行为，不能把这些模态数当作 Maxwell 纤维维数。加入先验梯度后，根和导数又是另一映射；阻尼 <span class="math">\(\mu I\)</span> 本身不等于 MAP 先验。</p>
+<p><strong>不随横向收缩而成立的结论：</strong> 存在从 incumbent 到远点的连续物理纤维；材料沿纤维实际移动；跨越吸引域；到 GT 的距离下降；全材料唯一性；完整后验或覆盖。若真实 J 满列秩，响应根局部可孤立，接近 1 的谱仍只是慢方向。若 p 个实观测少于 576，即使满行秩，也只在正则局部支持维数 <span class="math">\(576-p\)</span> 的零集，不能升级为全局纤维。盒边界和噪声球需另行分析。</p>
+<h2 id="section-6">7. 建议的公共接口与有限预算</h2>
+<p>输入只含：公共 <span class="math">\(G,S,E^{inc},Y_{obs}\)</span>、实材料 incumbent、公开背景 b、逐格 bounds、原 packing/白化与正则目标、已付费可复用状态、随机 seed、全局 wall/LU/RHS/分解/候选上限。默认形状 <span class="math">\(a=m_{current}-b\)</span>；可追加公共粗形状或已经付费的 GN/材料弱方向，但每条均登记来源、非零 rank 和合法区间。</p>
+<p>建议首版最多 2 条射线，每条 96 个预定粗节点，局部 bracket refine 上限 12 次，最多 4 个彼此分离的检出低谷；incumbent 另保留。节点数是设计建议，尚未获得执行授权，也不构成全低谷证书。首先保留每个分离低谷一个槽，不能因为 pre-correction 原损失高就提前丢弃；超过槽数使用冻结的区间/材料分散规则并记录 <code>TRUNCATED_VALLEYS</code>。每个低谷分到相同的受限 full-J corrector 预算，失败照付费；总预算先到即停止。保留最终独立 forward 的费用槽。</p>
+<p>输出每个候选的原材料向量、射线/幅度、检出区间与是否端点、correct 前后原损失、幅度/形状残差诊断、correct 状态与停止原因、原物理残差/合法性、全部 LU/RHS/Schur/节点/墙钟费用。按原全部观测损失输出 top-K 及材料去重记录，不读取 GT。候选个数、不同幅度、不同终点均不自动等于不同 basin；须以公开无真值规则记录 correct 后的材料聚类与 incumbent 距离。</p>
+<p>必要有意义对照为同一公共后端、同总预算的：（1）只取全局线最低点再 correct；（2）保留多低谷再 correct；（3）普通 full-J 多起点。可由这些对照区分谱查询摊销、候选保留和随机重启本身的贡献。结果未出以前三项均为 <code>NOT_RUN</code>。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r4_basin/theory/BRANCH_NAVIGATION.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r4_basin">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

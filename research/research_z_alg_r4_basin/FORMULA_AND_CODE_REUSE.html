@@ -1,0 +1,186 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Maxwell有限步反馈、盆地可达性、真实负面盲测、公式、代码和成本。"><title>R4 公式与代码复用审计 | Z-ALG-R4-BASIN</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1440px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · 576 UNKNOWN MATERIALS · 3 FRESH TARGETS · 6 METHODS · NONLINEAR TM VIE</small><a href="index.html"><strong>Z-ALG-R4-BASIN / 24×24 Maxwell</strong></a><nav><a href="index.html">研究报告</a><a href="FORMULA_COMPENDIUM.html">关键公式</a><a href="MATHEMATICAL_THEORY.html">数学证明</a><a href="ALGORITHM.html">算法</a><a href="REPRODUCE.html">代码与复现</a><a href="COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">24×24全未知材料 · 3新目标×6方法 · GT改善NO · 论文HOLD · 原始失败和费用保留</div><h1>R4 公式与代码复用审计</h1><details class="toc"><summary>本文目录 · 5节</summary><ol><li><a href="#section-0">定向来源</a></li><li><a href="#section-1">公式与代码逐项裁决</a></li><li><a href="#section-2">与普通线搜索、CSI 以及 R10 的差别</a></li><li><a href="#section-3">实现交接：最小函数合同</a></li><li><a href="#section-4">最终执行补记（主代理）</a></li></ol></details>
+<p>状态：<code>READ_ONLY_SOURCE_REVIEW / NO_NUMERICAL_RUN / NO_GT_ACCESS</code>。本文件不证明实现、计算收益、成像成功或原创性。只拥有本表与 <code>theory/BRANCH_NAVIGATION.md</code>；未修改历史项目。</p>
+<h2 id="section-0">定向来源</h2>
+<ul>
+<li>R2：本 repository 内 <code>research/research_z_alg_r2/FORMULA_COMPENDIUM.md</code> 的 F06、F09、F11、F12。</li>
+<li>R3：<code>research/research_z_alg_r3/MATHEMATICAL_THEORY.md</code>、<code>FORMULA_REUSE_MAP.md</code>，以及 <code>src/physics.py</code>、<code>src/model.py</code>、<code>src/solver.py</code>、<code>src/portfolio.py</code>。</li>
+<li>R9：本地 <code>Gaussian/B1/b1-p3l-r9-stabilized-subspace/research/p3l_r9_stabilized_subspace/</code> 的 <code>PHYSICAL_VS_MATERIAL_SUBSPACE.md</code>、<code>src/stable_roi_operator.py</code>，以及公式集 03、06 章。随后按主线程指定路径补读 <code>Gaussian/B1/b1-p3l-r11-stable-digits/research/p3l_r9_stabilized_subspace/formula_collection/06_DERIVED_OPTIMIZATIONS.md</code> 的前置共同后端、端口成本和 varpro 段；不假定两份 checkout 的字节等同性。</li>
+<li>R10：本地 <code>Gaussian/B1/b1-p3l-r10-bilateral-structure/research/p3l_r10_bilateral_structure/</code> 的 <code>BILATERAL_OPERATOR_THEORY.md</code>、<code>src/transfer_campaign.py</code>、<code>src/reduced_response.py</code>。</li>
+<li>FP-T：初始定向文件名搜索没有命中，随后主线程提供实际路径，已读取 <code>Gaussian/B1/b1-p3l-r12-bilateral-fixedpoint/research/p3l_r12_bilateral_fixedpoint/TRANSVERSE_CONTINUATION.md</code> 与 <code>FIXED_POINT_SPECTRUM_AUDIT.md</code>，并定位 <code>agent_b/engine.py</code> 的接口。最终状态为 <code>ACCESSIBLE_READ</code>，不能继续记不可访问。</li>
+</ul>
+<h2 id="section-1">公式与代码逐项裁决</h2>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>可合法复用的内容</th>
+<th>R4 实际意义与限制</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R2 F06</td>
+<td>固定参考后的 <span class="math">\(Y=Y_0+L(I-\Delta K)^{-1}\Delta q\)</span></td>
+<td>U=I、<span class="math">\(\Delta=\alpha D_a\)</span> 得全 576 材料幅度族；全部活跃时仍是 576 阶，不是低秩</td>
+<td><code>ADOPT_IN_THEORY</code></td>
+</tr>
+<tr>
+<td>R2 F09</td>
+<td><span class="math">\(Wq=T, W=(L+WK)\Delta\)</span>，测量先消元和共同实材料条件</td>
+<td>可解释 R3 GlobalDual，但其辅助维度不为 576 材料自动降维；不是幅度射线公式的必要组件</td>
+<td><code>REFERENCE_ONLY</code></td>
+</tr>
+<tr>
+<td>R2 F11</td>
+<td>补集固定时精确 Schur 复用</td>
+<td>若真的做条件小块可用；本轮全部材料幅度 ray 不虚构已知补集或 576→256 ROI 收益</td>
+<td><code>NOT_REQUIRED_FOR_MAIN_ARM</code></td>
+</tr>
+<tr>
+<td>R2 F12</td>
+<td>单坐标 rank-one 响应 Möbius、损失驻点二次式</td>
+<td>可作强坐标对照；不能把二次式套到一般全秩 h。后者驻点多项式上界为 <span class="math">\(4N-2\)</span></td>
+<td><code>VALID_STRONG_CONTROL</code></td>
+</tr>
+<tr>
+<td>R3 <code>physics.Model</code></td>
+<td>同一离散 G/S/Einc，原状态方程、实材料和 packing</td>
+<td>公共物理模型应共同使用；避免另建模型、换源接收顺序或偷偷换噪声</td>
+<td><code>REUSE_BACKEND_IF_COMPATIBLE</code></td>
+</tr>
+<tr>
+<td>R3 <code>PublicModel.forward/jacobian</code></td>
+<td>同一 LU 上 s 个源 RHS、min(N,r) 个 Jacobian RHS，逐状态计费</td>
+<td>N576、r通常小于N时 Full-J 为 s+r RHS，不是 N×s；耗时、完整分解和收缩也计</td>
+<td><code>REUSE_ACCOUNTING_AND_DERIVATIVE</code></td>
+</tr>
+<tr>
+<td>R3 <code>ReducedKernel</code></td>
+<td>独立材料选择列、参考 LU、固定核与切片限制</td>
+<td>可作为全参考 setup 的参照；不把稠密 ray h 作为单个坐标 selector 绕过 rank 检查</td>
+<td><code>ADAPT_FORMULA_NOT_FAKE_RANK</code></td>
+</tr>
+<tr>
+<td>R3 <code>Run.coordinate</code></td>
+<td>二次驻点、端点及 incumbent 的有理坐标评分</td>
+<td>已实现普通 exact coordinate control；当前只 correct 评分最好的 archive 点，不是多低谷逐个 correct 的实现</td>
+<td><code>EXISTING_CONTROL</code></td>
+</tr>
+<tr>
+<td>R3 <code>Run.globaldual</code></td>
+<td>接收对偶硬数据约束、共同材料 variable projection、端点 full forward 与 full-J polish</td>
+<td>每次内层重新 QR；其目标是材料相关度量，零点等价不表示局部极小等价，近极点可虚降</td>
+<td><code>CSI_VARPRO_EXISTING_CONTROL</code></td>
+</tr>
+<tr>
+<td>R3 Guarded portfolio</td>
+<td>保留公共普通求解器候选，最终按原全部观测残差排序</td>
+<td>只能保证不劣于已保留的候选；不能保证好于相同总预算普通法或材料 GT 更准</td>
+<td><code>REUSE_INCUMBENT_RULE</code></td>
+</tr>
+<tr>
+<td>R3 theory §2</td>
+<td>较高原始损失的新根先全变量正确再比较</td>
+<td>本轮多低谷操作已有明确项目内思想前身；不能将操作本身包装成首次提出</td>
+<td><code>DIRECT_CONCEPTUAL_PRECEDENT</code></td>
+</tr>
+<tr>
+<td>R9 PHYSICAL / stable ROI</td>
+<td>真实材料兼容、宿主精确消元、s+r 端口 Jacobian</td>
+<td>R9 原先固定宿主和 ROI=256；本轮全576未知不能复制其降维收益</td>
+<td><code>BOUNDARY_AND_BACKEND_REFERENCE</code></td>
+</tr>
+<tr>
+<td>R9 F-OPT-006/007/008</td>
+<td>完整稳定 QR 基、仿射弱坐标约束、强坐标 profile</td>
+<td>全基换坐标仍是同一个 GN；冻结弱坐标改变可行域；profile 不是积分</td>
+<td><code>STANDARD_CORRECTOR_TOOLS</code></td>
+</tr>
+<tr>
+<td>R10 B2/B3/B7</td>
+<td>端点相依精确双边差、真实材料 Jacobian 与双边 Gram</td>
+<td>可解释强/弱方向，但固定 Born Gram 不能代替原非线性资格</td>
+<td><code>OPTIONAL_DIRECTION_DIAGNOSTIC</code></td>
+</tr>
+<tr>
+<td>R10 B8/B9</td>
+<td>固定形状的幅度有理族、Schur 复用、一二阶幅度导数</td>
+<td>R4 实幅度 b+αa 是直接同结构应用；任意非 GT shape 仍须重做其分解</td>
+<td><code>DIRECT_FORMULA_PRECEDENT</code></td>
+</tr>
+<tr>
+<td>R10 <code>transfer_campaign.Shape</code></td>
+<td>构造 B/L/R、复 Schur、缓存 LQ/QR、三角求解幅度响应及导数</td>
+<td>可参考其核心数值结构；必须去掉 Gaussian66 decoder、固定256、复幅度 prior、历史σ/数据文件等专属假设</td>
+<td><code>PORT_NUMERICAL_PATTERN_ONLY</code></td>
+</tr>
+<tr>
+<td>R10 <code>reduced_response.py</code></td>
+<td>短基/低阶响应与原方程缺陷、输出误差、完整回退</td>
+<td>若主线只需精确全阶扫描可先不引入；不能把过去64阶/256格资格迁移到576实材料</td>
+<td><code>OPTIONAL_APPROXIMATION_NOT_QUALIFIED</code></td>
+</tr>
+<tr>
+<td>FP-T audit</td>
+<td>零残差根处的阻尼导数、非零残差 Hessian 项、算法单位模态</td>
+<td>只能支持正则局部横向行为；不推出跨 basin、GT、全局纤维或 posterior</td>
+<td><code>ADOPT_LIMITING_THEOREM</code></td>
+</tr>
+<tr>
+<td>FP-T <code>transverse_correct</code></td>
+<td>当前精确 J、固定弱绝对坐标、边界与回溯、付费失败</td>
+<td>若需要保留远分支可做备选；本轮先用全变量 correct 避免新增约束可行性问题</td>
+<td><code>OPTIONAL_STANDARD_CORRECTOR</code></td>
+</tr>
+</tbody></table>
+<h2 id="section-2">与普通线搜索、CSI 以及 R10 的差别</h2>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>搜索对象 / 在线目标</th>
+<th>与 R4 多低谷版本的关系</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回溯线搜索</td>
+<td>沿下降方向不断缩步，只接受局部下降</td>
+<td>不会主动越过原目标上坡区；R4 扫整个合法区间且保留远低谷</td>
+</tr>
+<tr>
+<td>普通 global line minimization</td>
+<td>在同一 ray 只选择原目标全局 argmin</td>
+<td>使用同一个精确有理 evaluator 时，数学查询完全相同；R4 的增量是多个低谷分别 correct 后才排序</td>
+</tr>
+<tr>
+<td>R10 固定形状幅度 profile</td>
+<td>相同类型的精确幅度 resolvent；历史主要为固定形状重复响应/条件任务</td>
+<td>R4 公式直接继承；候选保留、不同低谷校正和全576实材料预算需要新实现/证据</td>
+</tr>
+<tr>
+<td>CSI / R3 GlobalDual</td>
+<td>辅助电流/接收传递与材料共同兼容；varpro 改变非零残差度量</td>
+<td>R4 始终查询原有理响应的原数据损失，沿有限材料 ray 组织候选；它没有提出新的 CSI 目标或新的状态方程</td>
+</tr>
+<tr>
+<td>basin hopping / 多起点局部校正</td>
+<td>产生远种子、逐个局部优化、按原目标选</td>
+<td>R4 属于这个标准机制家族；它的可检验特征是用固定形状的谱复用产生多个低谷种子，而不是随机扰动种子</td>
+</tr>
+</tbody></table>
+<h2 id="section-3">实现交接：最小函数合同</h2>
+<p>建议独立函数 <code>propose_amplitude_valleys(public, m_current, b, bounds, budget, config)</code>：</p>
+<ol>
+<li>只读取公共 G/S/Einc/Yobs、材料向量、bounds 和原观测 metric；形成 <span class="math">\(a=m_{current}-b\)</span>。拒绝零方向、空区间、非有限输入并计状态。</li>
+<li>共享背景 setup；每个 a 形成全阶 <span class="math">\(T_a,B_a\)</span>，默认 complex Schur，缓存 LQ/QR。setup 全部进同一 ledger。</li>
+<li>在固定合法区间内作冻结有限节点查询；细化检出的低谷。返回 incumbent、端点和所有未被候选上限截断的分离低谷，不按原始损失提前筛掉较高低谷。</li>
+<li>对每个低谷在同等冻结子预算内调用共同完整正确器。原始高损失只是诊断；box、数值失败与实际总预算仍是停止条件。</li>
+<li>逐个保留原全部观测评分；全部正确后再排序、材料去重。保存 <code>PRE_CORRECTION</code>、<code>POST_CORRECTION</code>、失败和截断记录。</li>
+</ol>
+<p>建议 ledger 字段至少包含 <code>full_LU_576</code>、<code>full_RHS_576</code>、<code>Schur_576</code>、<code>triangular_RHS_576</code>、<code>matrix_builds</code>、<code>ray_evaluations</code>、<code>derivative_evaluations</code>、<code>corrector_trials</code>、<code>wall_seconds</code>、<code>failed_paid</code>。RHS 与分解分别报告，不能把 LU、Schur、QR 折成一个含糊的 RHS 数字。</p>
+<p>有限节点扫描的状态名应为 <code>DETECTED_VALLEYS</code>；只有可靠根隔离覆盖才可声明 <code>ALL_STATIONARY_POINTS</code>。最终材料候选可标 <code>PHYSICS_VALIDATED</code>，仍不能自动标 <code>GT_RECOVERED</code>、<code>DIFFERENT_BASIN</code>、<code>POSTERIOR_SAMPLE</code> 或 <code>NOVEL_METHOD</code>。</p>
+<p>最有判别力的结果是：在同预算下，多低谷版本产生一个原始损失较高、correct 后优于只取线 argmin 的合法端点；若实际 Maxwell 未出现此现象，解析反例仅保留为算法区别解释，收益结论 <code>HOLD</code>。</p>
+<h2 id="section-4">最终执行补记（主代理）</h2>
+<p>V3实际复用了冻结R3-DIGITS的Model、packing和Regularizer，新的forward/Jacobian没有第二实现。Full-J、data-adjoint与Gram调用都共享其成本计数。V3所有L-BFGS用(m−0.5)/19.5，保持物理可行集和原正则；其尺度处理是标准仿射链式法则。主代理另实际定向读取A18 Route A当前<code>Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/src/gsda/fwi.py</code>（stage_scale、coord_g和L-BFGS段），以及Route B R11的<code>shared/invert_digits.py</code>（trust cap与alpha回溯段）。只移植尺度模式，不移植已知ROI、复损耗、多频数据、GT支撑或旧成功率。A17X的receiver/source端口与材料合法性通过R9和R3物理实现、已冻结跨session审计作来源参照，没有声称完整移植其反馈算法。</p>
+<p>V1/V2 source snapshot、最终V3 snapshot和全部开发失败都保留。最终独立fresh没有GT提升，因此所有ADOPT_IN_THEORY行只表示数学/实现采用，不表示论文收益已经成立。FP-T/R12本地资产已访问，不能记作不可访问。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r4_basin/FORMULA_AND_CODE_REUSE.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r4_basin">完整代码和证据</a> · <a href="RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

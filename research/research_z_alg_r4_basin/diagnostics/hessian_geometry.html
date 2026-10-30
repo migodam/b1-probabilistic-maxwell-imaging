@@ -1,0 +1,153 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Maxwell有限步反馈、盆地可达性、真实负面盲测、公式、代码和成本。"><title>Exact Hessian and box KKT mechanism experiment | Z-ALG-R4-BASIN</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1440px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · 576 UNKNOWN MATERIALS · 3 FRESH TARGETS · 6 METHODS · NONLINEAR TM VIE</small><a href="../index.html"><strong>Z-ALG-R4-BASIN / 24×24 Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">24×24全未知材料 · 3新目标×6方法 · GT改善NO · 论文HOLD · 原始失败和费用保留</div><h1>Exact Hessian and box KKT mechanism experiment</h1><details class="toc"><summary>本文目录 · 5节</summary><ol><li><a href="#section-0">V1_holdout7_data_lbfgs</a></li><li><a href="#section-1">old_holdout9_FullJ</a></li><li><a href="#section-2">old_holdout8_FullJ</a></li><li><a href="#section-3">Interpretation boundary</a></li><li><a href="#section-4">Authorized dense fixed-face representation followup</a></li></ol></details>
+<p>Status: offline public-Y-only diagnostic. No GT is opened by this program. Exact data Hessian includes the residual-Hessian term; the regularizer Hessian differentiates smoothed TV exactly. The eigenproblem is restricted to coordinates more than 1e-6 from both box bounds. No exact-rank, second-order global optimality, or formula accuracy claim is made.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Free/lower/upper</th>
+<th align="right">Projected gradient infinity norm</th>
+<th>Smallest algebraic eigenvalues</th>
+<th>Eigensolver status</th>
+<th align="right">Best ray objective decrease</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V1_holdout7_data_lbfgs</td>
+<td>31/537/8</td>
+<td align="right">9.537e-09</td>
+<td></td>
+<td>MAX_250_MATVEC_PAID</td>
+<td align="right">0</td>
+</tr>
+</tbody></table>
+<h2 id="section-0">V1_holdout7_data_lbfgs</h2>
+<p>Original objective=0.0532222738, relative residual=0.326231075. KKT lower/upper violations at gradient threshold1e-8: 0/0. The reported KKT residual is a raw metric rather than a newly imposed acceptance gate.</p>
+<table>
+<thead>
+<tr>
+<th>Eigenpair</th>
+<th align="right">Exact curvature</th>
+<th align="right">GN data + exact regularizer</th>
+<th align="right">Residual-Hessian contribution</th>
+</tr>
+</thead>
+</table>
+<p>Paid cost: 1 LU, 6024 complex RHS; 250 HVP. Wall=1.3750s; CPU=1.3159s. Eigensolver matvec cap=250, tol=1e-3. Failed/partial work remains paid.
+| old_holdout9_FullJ | 200/366/10 | 7.808e-05 |  | MAX_250_MATVEC_PAID | 0 |</p>
+<h2 id="section-1">old_holdout9_FullJ</h2>
+<p>Original objective=0.0894633054, relative residual=0.42297396. KKT lower/upper violations at gradient threshold1e-8: 0/0. The reported KKT residual is a raw metric rather than a newly imposed acceptance gate.</p>
+<table>
+<thead>
+<tr>
+<th>Eigenpair</th>
+<th align="right">Exact curvature</th>
+<th align="right">GN data + exact regularizer</th>
+<th align="right">Residual-Hessian contribution</th>
+</tr>
+</thead>
+</table>
+<p>Paid cost: 1 LU, 6024 complex RHS; 250 HVP. Wall=1.0339s; CPU=0.9756s. Eigensolver matvec cap=250, tol=1e-3. Failed/partial work remains paid.
+| old_holdout8_FullJ | 43/533/0 | 0.0002001 | -5.6588e-06, -2.4991e-07, 1.2941e-07 | CONVERGED_TOL_1E_MINUS3 | 0.00028002 |</p>
+<h2 id="section-2">old_holdout8_FullJ</h2>
+<p>Original objective=0.405040531, relative residual=0.900042514. KKT lower/upper violations at gradient threshold1e-8: 0/0. The reported KKT residual is a raw metric rather than a newly imposed acceptance gate.</p>
+<table>
+<thead>
+<tr>
+<th>Eigenpair</th>
+<th align="right">Exact curvature</th>
+<th align="right">GN data + exact regularizer</th>
+<th align="right">Residual-Hessian contribution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td align="right">-5.65881e-06</td>
+<td align="right">8.643652e-05</td>
+<td align="right">-9.209533e-05</td>
+</tr>
+<tr>
+<td>1</td>
+<td align="right">-2.499134e-07</td>
+<td align="right">1.210991e-06</td>
+<td align="right">-1.460904e-06</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="right">1.29408e-07</td>
+<td align="right">3.766548e-07</td>
+<td align="right">-2.472468e-07</td>
+</tr>
+</tbody></table>
+<p>A negative free-coordinate eigenvalue is a feasible local negative-curvature direction, up to the eigensolver tolerance. A strict saddle interpretation additionally requires sufficient first-order stationarity; the KKT metrics are retained so that this is not assumed. Finite rays evaluate the actual original regularized objective and use the scalar box-feasible interval, never coordinate clipping.</p>
+<table>
+<thead>
+<tr>
+<th>requested signed RMS</th>
+<th align="right">actual signed alpha</th>
+<th align="right">actual objective decrease</th>
+<th align="right">relative residual</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-0.10</td>
+<td align="right">-0.1</td>
+<td align="right">-0.0004617285</td>
+<td align="right">0.9005554</td>
+</tr>
+<tr>
+<td>-0.50</td>
+<td align="right">-0.33225</td>
+<td align="right">-0.00143741</td>
+<td align="right">0.9016381</td>
+</tr>
+<tr>
+<td>-1.00</td>
+<td align="right">-0.33225</td>
+<td align="right">-0.00143741</td>
+<td align="right">0.9016381</td>
+</tr>
+<tr>
+<td>-2.00</td>
+<td align="right">-0.33225</td>
+<td align="right">-0.00143741</td>
+<td align="right">0.9016381</td>
+</tr>
+<tr>
+<td>+0.10</td>
+<td align="right">+0.057502</td>
+<td align="right">+0.0002800224</td>
+<td align="right">0.8997313</td>
+</tr>
+<tr>
+<td>+0.50</td>
+<td align="right">+0.057502</td>
+<td align="right">+0.0002800224</td>
+<td align="right">0.8997313</td>
+</tr>
+<tr>
+<td>+1.00</td>
+<td align="right">+0.057502</td>
+<td align="right">+0.0002800224</td>
+<td align="right">0.8997313</td>
+</tr>
+<tr>
+<td>+2.00</td>
+<td align="right">+0.057502</td>
+<td align="right">+0.0002800224</td>
+<td align="right">0.8997313</td>
+</tr>
+</tbody></table>
+<p>Paid cost: 9 LU, 3564 complex RHS; 142 HVP. Wall=0.7323s; CPU=0.7168s. Eigensolver matvec cap=250, tol=1e-3. Failed/partial work remains paid.</p>
+<h2 id="section-3">Interpretation boundary</h2>
+<ul>
+<li>V1 holdout7 and old holdout9: <code>INCONCLUSIVE_MAX_250_MATVEC</code>. The capped eigensolver returned no converged eigenpair; no nonnegative or positive curvature conclusion is drawn.</li>
+<li>Old holdout8: negative free-coordinate curvature is observed while projected gradient remains 2.00e-4. It is not a stationary-saddle certificate. The feasible positive direction ends at RMS .05750, and its finite objective improvement has a substantial first-order contribution. Nonlocal escape is not established.</li>
+<li>The eight requested signed-RMS probes collapse to three unique feasible alpha values. All eight actual forward/LU costs remain paid in the ledger; repeated boundary-limited values are not independent evidence.</li>
+<li>No GT was opened and no post-hoc GT scoring was performed.</li>
+</ul>
+<h2 id="section-4">Authorized dense fixed-face representation followup</h2>
+<p>V1_holdout7_data_lbfgs: explicit 31×31 fixed-face Hessian from coordinate HVP, followed by one symmetric dense eigh. Smallest three eigenvalues: 1.760459765e-08, 2.411887526e-08, 3.546555008e-08.</p>
+<p>Added paid work: 31 HVP, 1 base LU, 768 complex RHS; wall 0.52570s, CPU 0.47376s. The previous process had exited; this includes its necessary new base forward/adjoint, with LU reused by every HVP.</p>
+<p>The original 250-matvec ARPACK failure remains in the ledger. This is one representation change, not a tolerance sweep, derivative accuracy comparison, or formula test. A nonnegative fixed-free-face Hessian does not certify full box-constrained local or global optimality. No further ray or GT test is performed.</p>
+<p>old_holdout9_FullJ: NOT_RUN, free dimension 200 exceeds80. No added physical work.</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r4_basin/diagnostics/hessian_geometry.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r4_basin">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

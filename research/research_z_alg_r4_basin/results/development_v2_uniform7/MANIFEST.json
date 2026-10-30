@@ -1,0 +1,269 @@
+{
+  "schema": "r4-run-manifest-v1",
+  "run_name": "development_v2_uniform7",
+  "config": {
+    "wall_seconds": 60.0,
+    "max_lu": 2500,
+    "stages": [
+      8,
+      12,
+      24
+    ],
+    "lower": 0.5,
+    "upper": 20.0,
+    "initial_material": 1.0,
+    "smooth_weight": 0.0001,
+    "tv_weight": 0.0001,
+    "tv_epsilon": 0.01,
+    "max_rhs": 60000
+  },
+  "solver_code": "research/research_z_alg_r4_basin/src/basin_solver.py",
+  "config_source": "research/research_z_alg_r4_basin/configs/DEVELOPMENT_CONTRACT.json",
+  "solver_source_snapshot": "results/V2_SOURCE_SNAPSHOT",
+  "jobs": [
+    {
+      "label": "holdout7",
+      "case_id": "obs_c3604cf3555d",
+      "method": "uniform_bridge",
+      "public": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_z_alg_r3_digits/public_data/holdout/obs_c3604cf3555d.npz"
+    },
+    {
+      "label": "holdout7",
+      "case_id": "obs_c3604cf3555d",
+      "method": "uniform_best_only",
+      "public": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_z_alg_r3_digits/public_data/holdout/obs_c3604cf3555d.npz"
+    },
+    {
+      "label": "holdout7",
+      "case_id": "obs_c3604cf3555d",
+      "method": "uniform_multistart",
+      "public": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_z_alg_r3_digits/public_data/holdout/obs_c3604cf3555d.npz"
+    }
+  ],
+  "workers": 2,
+  "blas_threads": 1,
+  "truth_access": "NONE_PUBLIC_INPUT_ONLY",
+  "started_utc": "2026-10-30T03:03:44.901604+00:00",
+  "rows": [
+    {
+      "label": "holdout7",
+      "case_id": "obs_c3604cf3555d",
+      "method": "uniform_best_only",
+      "status": "COMPLETED_NUMERICAL",
+      "wall_seconds": 28.014821167103946,
+      "cpu_seconds": 27.57919,
+      "relative_residual": 0.3262310694229262,
+      "objective": 0.05322227368925641,
+      "candidate_count": 1,
+      "trajectory_count": 2268,
+      "costcounts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 2268,
+        "actual_complex_RHS": 54996,
+        "LU": 2268,
+        "source_RHS": 27216,
+        "full_factorization_dimension": 1306368,
+        "DATA_ADJOINT": 2266,
+        "adjoint_RHS": 27192,
+        "data_adjoint_gradients": 2266,
+        "RAY_DENSE_KERNEL": 1,
+        "ray_kernel_RHS": 576,
+        "ray_illumination_RHS": 12,
+        "dense_ray_kernel_builds": 1,
+        "ray_kernel_dimension": 576,
+        "RAY_COMPLEX_SCHUR": 1,
+        "dense_complex_schur": 1,
+        "schur_dimension": 576,
+        "RAY_TRANSFER_EVALUATION": 168,
+        "ray_transfer_evaluations": 168,
+        "triangular_system_dimension": 96768,
+        "triangular_small_transfer_RHS": 2016
+      },
+      "accounting": {
+        "full_factorizations": 2268,
+        "full_complex_rhs": 54996,
+        "source_rhs": 27216,
+        "adjoint_rhs": 27192,
+        "fullj_receiver_transpose_rhs": 0,
+        "ray_kernel_rhs": 576,
+        "ray_illumination_rhs": 12,
+        "dense_complex_schur": 1,
+        "counts": {
+          "cached_operator_imports": 1,
+          "FULL_FORWARD": 2268,
+          "actual_complex_RHS": 54996,
+          "LU": 2268,
+          "source_RHS": 27216,
+          "full_factorization_dimension": 1306368,
+          "DATA_ADJOINT": 2266,
+          "adjoint_RHS": 27192,
+          "data_adjoint_gradients": 2266,
+          "RAY_DENSE_KERNEL": 1,
+          "ray_kernel_RHS": 576,
+          "ray_illumination_RHS": 12,
+          "dense_ray_kernel_builds": 1,
+          "ray_kernel_dimension": 576,
+          "RAY_COMPLEX_SCHUR": 1,
+          "dense_complex_schur": 1,
+          "schur_dimension": 576,
+          "RAY_TRANSFER_EVALUATION": 168,
+          "ray_transfer_evaluations": 168,
+          "triangular_system_dimension": 96768,
+          "triangular_small_transfer_RHS": 2016
+        },
+        "wall_by_operation": {
+          "FULL_FORWARD": 24.13008536514826,
+          "DATA_ADJOINT": 1.8292098259553313,
+          "RAY_DENSE_KERNEL": 0.017835832899436355,
+          "RAY_COMPLEX_SCHUR": 0.5035081249661744,
+          "RAY_TRANSFER_EVALUATION": 0.274182460969314
+        },
+        "cpu_by_operation": {
+          "FULL_FORWARD": 23.746307999999928,
+          "DATA_ADJOINT": 1.8096940000000568,
+          "RAY_DENSE_KERNEL": 0.017694999999999794,
+          "RAY_COMPLEX_SCHUR": 0.4989359999999987,
+          "RAY_TRANSFER_EVALUATION": 0.27159400000001277
+        }
+      },
+      "output": "results/development_v2_uniform7/holdout7_uniform_best_only.json"
+    },
+    {
+      "label": "holdout7",
+      "case_id": "obs_c3604cf3555d",
+      "method": "uniform_bridge",
+      "status": "BUDGET_STOP",
+      "wall_seconds": 30.984764999942854,
+      "cpu_seconds": 30.55429,
+      "relative_residual": 0.03065588261090381,
+      "objective": 0.0004969807591119793,
+      "candidate_count": 5,
+      "trajectory_count": 2482,
+      "costcounts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 2482,
+        "actual_complex_RHS": 60000,
+        "LU": 2482,
+        "source_RHS": 29784,
+        "full_factorization_dimension": 1429632,
+        "DATA_ADJOINT": 2469,
+        "adjoint_RHS": 29628,
+        "data_adjoint_gradients": 2469,
+        "RAY_DENSE_KERNEL": 1,
+        "ray_kernel_RHS": 576,
+        "ray_illumination_RHS": 12,
+        "dense_ray_kernel_builds": 1,
+        "ray_kernel_dimension": 576,
+        "RAY_COMPLEX_SCHUR": 1,
+        "dense_complex_schur": 1,
+        "schur_dimension": 576,
+        "RAY_TRANSFER_EVALUATION": 168,
+        "ray_transfer_evaluations": 168,
+        "triangular_system_dimension": 96768,
+        "triangular_small_transfer_RHS": 2016
+      },
+      "accounting": {
+        "full_factorizations": 2482,
+        "full_complex_rhs": 60000,
+        "source_rhs": 29784,
+        "adjoint_rhs": 29628,
+        "fullj_receiver_transpose_rhs": 0,
+        "ray_kernel_rhs": 576,
+        "ray_illumination_rhs": 12,
+        "dense_complex_schur": 1,
+        "counts": {
+          "cached_operator_imports": 1,
+          "FULL_FORWARD": 2482,
+          "actual_complex_RHS": 60000,
+          "LU": 2482,
+          "source_RHS": 29784,
+          "full_factorization_dimension": 1429632,
+          "DATA_ADJOINT": 2469,
+          "adjoint_RHS": 29628,
+          "data_adjoint_gradients": 2469,
+          "RAY_DENSE_KERNEL": 1,
+          "ray_kernel_RHS": 576,
+          "ray_illumination_RHS": 12,
+          "dense_ray_kernel_builds": 1,
+          "ray_kernel_dimension": 576,
+          "RAY_COMPLEX_SCHUR": 1,
+          "dense_complex_schur": 1,
+          "schur_dimension": 576,
+          "RAY_TRANSFER_EVALUATION": 168,
+          "ray_transfer_evaluations": 168,
+          "triangular_system_dimension": 96768,
+          "triangular_small_transfer_RHS": 2016
+        },
+        "wall_by_operation": {
+          "FULL_FORWARD": 26.78419887716882,
+          "DATA_ADJOINT": 2.0555648014415056,
+          "RAY_DENSE_KERNEL": 0.02709954185411334,
+          "RAY_COMPLEX_SCHUR": 0.42953241686336696,
+          "RAY_TRANSFER_EVALUATION": 0.2995843351818621
+        },
+        "cpu_by_operation": {
+          "FULL_FORWARD": 26.446127000000068,
+          "DATA_ADJOINT": 1.996915999999951,
+          "RAY_DENSE_KERNEL": 0.026900000000001256,
+          "RAY_COMPLEX_SCHUR": 0.4260760000000001,
+          "RAY_TRANSFER_EVALUATION": 0.295846999999986
+        }
+      },
+      "output": "results/development_v2_uniform7/holdout7_uniform_bridge.json"
+    },
+    {
+      "label": "holdout7",
+      "case_id": "obs_c3604cf3555d",
+      "method": "uniform_multistart",
+      "status": "BUDGET_STOP",
+      "wall_seconds": 17.967156040947884,
+      "cpu_seconds": 17.240449000000005,
+      "relative_residual": 0.32623107483688507,
+      "objective": 0.053222273789606186,
+      "candidate_count": 1,
+      "trajectory_count": 2500,
+      "costcounts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 2500,
+        "actual_complex_RHS": 59988,
+        "LU": 2500,
+        "source_RHS": 30000,
+        "full_factorization_dimension": 1440000,
+        "DATA_ADJOINT": 2499,
+        "adjoint_RHS": 29988,
+        "data_adjoint_gradients": 2499
+      },
+      "accounting": {
+        "full_factorizations": 2500,
+        "full_complex_rhs": 59988,
+        "source_rhs": 30000,
+        "adjoint_rhs": 29988,
+        "fullj_receiver_transpose_rhs": 0,
+        "ray_kernel_rhs": 0,
+        "ray_illumination_rhs": 0,
+        "dense_complex_schur": 0,
+        "counts": {
+          "cached_operator_imports": 1,
+          "FULL_FORWARD": 2500,
+          "actual_complex_RHS": 59988,
+          "LU": 2500,
+          "source_RHS": 30000,
+          "full_factorization_dimension": 1440000,
+          "DATA_ADJOINT": 2499,
+          "adjoint_RHS": 29988,
+          "data_adjoint_gradients": 2499
+        },
+        "wall_by_operation": {
+          "FULL_FORWARD": 15.860356904566288,
+          "DATA_ADJOINT": 1.2269603877793998
+        },
+        "cpu_by_operation": {
+          "FULL_FORWARD": 15.224954000000125,
+          "DATA_ADJOINT": 1.200468000000022
+        }
+      },
+      "output": "results/development_v2_uniform7/holdout7_uniform_multistart.json"
+    }
+  ],
+  "completed_utc": "2026-10-30T03:04:41.114275+00:00"
+}

@@ -1,0 +1,273 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Maxwell有限步反馈、盆地可达性、真实负面盲测、公式、代码和成本。"><title>有限步 resolvent 几何：可逆、下降、二阶有理更新与可达性反例 | Z-ALG-R4-BASIN</title><style>:root{color-scheme:light;--ink:#18272b;--muted:#526267;--accent:#17685e;--line:#dce6e3}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f7f9f8;color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif}header{background:#153f3a;color:#fff;padding:24px max(24px,calc((100vw - 1120px)/2))}header a{color:#fff;text-decoration:none}header small{display:block;color:#bed8d2;font-size:13px;letter-spacing:.07em}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;margin-top:14px}main{max-width:1440px;margin:28px auto;padding:38px 44px;background:#fff;border:1px solid var(--line);border-radius:12px}h1{font-size:33px;line-height:1.4;margin-top:0;letter-spacing:-.02em}h2{font-size:25px;border-top:1px solid var(--line);padding-top:25px;margin-top:46px}h3{font-size:20px;margin-top:28px}h4{font-size:18px}p{margin:1em 0}a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#0a433a}strong{font-weight:650}pre{background:#eff4f2;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto;line-height:1.55;font-size:14px}code{font:0.89em/1.6 ui-monospace,SFMono-Regular,monospace;background:#f0f4f3;padding:2px 4px;border-radius:3px}pre code{padding:0;background:none}table{border-collapse:collapse;display:block;max-width:100%;overflow:auto;font-size:14px;line-height:1.6;margin:24px 0}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:12px 14px}th{background:#edf4f1;font-weight:650}tr:nth-child(even){background:#fafcfb}figure{margin:30px -20px;background:#fff}figure img{width:100%;height:auto;display:block}figcaption{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}blockquote{border-left:4px solid #8fb8ad;padding:2px 18px;margin:24px 0;color:#425852;background:#f3f7f5}.toc{border:1px solid var(--line);border-radius:8px;background:#f6f9f7;padding:16px 22px;margin:28px 0}.toc summary{font-weight:650;cursor:pointer}.toc ol{margin-bottom:0;padding-left:25px}.toc li{font-size:14px;margin:5px 0}mjx-container[display=true]{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:10px 0}footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding-top:18px}.status{font-size:13px;color:#5f4e1e;background:#faf6e7;border:1px solid #e8dfbf;border-radius:6px;padding:10px 15px;margin-bottom:28px}@media(max-width:760px){body{font-size:16px}main{padding:24px 18px;margin:12px;border-radius:8px}h1{font-size:26px}h2{font-size:22px}header{padding:18px 24px}figure{margin:20px -8px}th,td{padding:9px 10px}}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:false},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:true}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><small>RESEARCH ARCHIVE · 2026-10-30 · 576 UNKNOWN MATERIALS · 3 FRESH TARGETS · 6 METHODS · NONLINEAR TM VIE</small><a href="../index.html"><strong>Z-ALG-R4-BASIN / 24×24 Maxwell</strong></a><nav><a href="../index.html">研究报告</a><a href="../FORMULA_COMPENDIUM.html">关键公式</a><a href="../MATHEMATICAL_THEORY.html">数学证明</a><a href="../ALGORITHM.html">算法</a><a href="../REPRODUCE.html">代码与复现</a><a href="../COST_LEDGER.html">成本与失败</a></nav></header><main><div class="status">24×24全未知材料 · 3新目标×6方法 · GT改善NO · 论文HOLD · 原始失败和费用保留</div><h1>有限步 resolvent 几何：可逆、下降、二阶有理更新与可达性反例</h1><details class="toc"><summary>本文目录 · 9节</summary><ol><li><a href="#section-0">结论先行</a></li><li><a href="#section-1">1. 与现有实现一致的记号</a></li><li><a href="#section-2">2. 精确有限步恒等式：条件与证明</a></li><li><a href="#section-3">3. 沿射线的精确有理响应</a></li><li><a href="#section-4">4. 从误差上界到原始目标的严格下降</a></li><li><a href="#section-5">5. 一步二阶/Padé 到底能做什么</a></li><li><a href="#section-6">6. 可执行建议及接口</a></li><li><a href="#section-7">7. 严格反例：全局可辨识仍不能连续下降到真值</a></li><li><a href="#section-8">8. 对 R4 科学主张的直接后果</a></li></ol></details>
+<p>状态：独立理论推导，待主代理复核；未运行数值实验，不增加精度验算或防御性编程。范围是固定有限维 scalar-TM VIE 的实材料反演。本文不把有限离散结论升级为连续 Maxwell、指定几何的普遍性质或全局收敛。</p>
+<h2 id="section-0">结论先行</h2>
+<ol>
+<li>所要求的两个有限步公式都成立，且非交换乘积的顺序不可改变。它们是标准 resolvent 恒等式，不是新的 Maxwell 定理。</li>
+<li>沿任意材料方向，完整多次散射响应是精确矩阵有理函数。二阶 Taylor 可以计算；一个标量分母的 <code>[1/1]</code> Padé 一般不能同时匹配全部源接收的二阶系数。保留块 Krylov 子空间可得到共同分母的二阶有理模型，并有显式模型残差。</li>
+<li><code>||t K||&lt;1</code> 给出严格可逆和误差界，但只是局部充分条件；不能把谱半径、少量随机探针或 LU 条件数估计当成这个界的证书。逃逸假吸引域时可能恰须越过此充分条件覆盖的区域。</li>
+<li>可执行建议是：对 GN 方向及一个独立的盒内方向建立二阶共同 resolvent 模型，直接搜索远端候选，再用原始完整物理目标接受。若只沿 GN 方向缩步，算法机制仍然是 GN 线搜索；若引入独立方向并允许越过射线上先升后降的区段，才具有不同的有限步搜索机制。尚无成功率或成本优势证据。</li>
+<li>单材料、复阻尼、全局单射的 VIE 已存在严格的盒约束非零局部极小点。因此局部可辨识、物理系统可逆乃至全局唯一，都不能推出连续下降可达。本文给出完全解析反例。</li>
+</ol>
+<h2 id="section-1">1. 与现有实现一致的记号</h2>
+<p>直接核对的来源：</p>
+<ul>
+<li><code>../../research_z_alg_r3_digits/MATHEMATICAL_SCALING.md</code>：统一变量、D6–D7、原始数据评分及共同正则项。</li>
+<li><code>../../research_z_alg_r3_digits/src/physics.py::Model.forward</code>：<code>M=I-m[:,None]*G</code>，<code>J=M^{-1}DE0</code>，<code>Q=E0+GJ</code>，<code>F=SJ</code>。</li>
+<li><code>../../research_z_alg_r2/FORMULA_COMPENDIUM.md</code>：F03、F06、F12；小活跃块 Woodbury 与单坐标有理最小化已存在，不能在 R4 重新宣称原创。</li>
+</ul>
+<p>令</p>
+<p><span class="math">\[
+D=\operatorname{diag}(m),\quad M=I-DG,\quad A=M^{-1},
+\quad J=ADE_0,\quad Q=E_0+GJ,\quad F=SJ.
+\]</span></p>
+<p>源为列，<span class="math">\(G\in\mathbb C^{N\times N}\)</span>、<span class="math">\(Q\in\mathbb C^{N\times s}\)</span>、<span class="math">\(S\in\mathbb C^{r\times N}\)</span>，材料 <span class="math">\(m\in\mathbb R^N\)</span>。用 <span class="math">\(J\)</span> 表示电流，用 <span class="math">\(\mathcal J\)</span> 表示材料 Jacobian。所有 Frobenius 内积为 <span class="math">\(\langle X,Y\rangle=\operatorname{tr}(X^*Y)\)</span>。以下范数若无标记，矩阵算子使用 2 范数，状态和数据使用 Frobenius 范数。</p>
+<h2 id="section-2">2. 精确有限步恒等式：条件与证明</h2>
+<p>给实材料增量 <span class="math">\(h\)</span>，令 <span class="math">\(D_h=\operatorname{diag}(h)\)</span>、<span class="math">\(M_h=M-D_hG\)</span>。假设当前与端点的 <span class="math">\(M,M_h\)</span> 均可逆。两状态相减：</p>
+<p><span class="math">\[
+M_h(J_h-J)=D_h(E_0+GJ)=D_hQ.
+\]</span></p>
+<p>因此</p>
+<p><span class="math">\[
+\boxed{F(m+h)-F(m)=S M_h^{-1}D_hQ.}\tag{R1}
+\]</span></p>
+<p>在当前点的精确线性项是</p>
+<p><span class="math">\[
+\mathcal J(m)h=S A D_hQ.
+\]</span></p>
+<p>由 <span class="math">\(M_h^{-1}-A=M_h^{-1}D_hGA\)</span>，得到</p>
+<p><span class="math">\[
+\boxed{F(m+h)-F(m)-\mathcal J(m)h
+=S M_h^{-1}D_hG A D_hQ.}\tag{R2}
+\]</span></p>
+<p>这里没有 Born 假设。右端仍使用完整多次散射的总场与 resolvent。不能把 <span class="math">\(D_hG\)</span> 换成 <span class="math">\(GD_h\)</span>，也不能把 <span class="math">\(A D_h\)</span> 换成 <span class="math">\(D_hA\)</span>。实方向的二阶导数为</p>
+<p><span class="math">\[
+F''(m)[p,p]=2S A D_pG A D_pQ.
+\]</span></p>
+<p>更一般地，</p>
+<p><span class="math">\[
+F''(m)[p_i,p_j]
+=S A(D_{p_i}GA D_{p_j}+D_{p_j}GA D_{p_i})Q.\tag{R3}
+\]</span></p>
+<p>归类：R1–R3 是隐式微分与标准 resolvent 恒等式的直接应用。</p>
+<h2 id="section-3">3. 沿射线的精确有理响应</h2>
+<p>固定实方向 <span class="math">\(p\)</span>，设</p>
+<p><span class="math">\[
+K=A D_pG,\qquad V=A D_pQ,\qquad M(t)=M-tD_pG=M(I-tK).
+\]</span></p>
+<p>在端点可逆时，</p>
+<p><span class="math">\[
+\boxed{F(m+tp)=F(m)+tS(I-tK)^{-1}V.}\tag{R4}
+\]</span></p>
+<p>它对任意合法的实 <span class="math">\(t\)</span> 成立，并不要求 Taylor/Neumann 级数收敛。完整系统的奇异点由 <span class="math">\(\det(I-tK)=0\)</span> 决定。有限非零实 <span class="math">\(t\)</span> 为系统奇异点，当且仅当 <span class="math">\(1/t\)</span> 是 <span class="math">\(K\)</span> 的实特征值；观测响应可能因未激发/未观测模态而发生极点消去，不能反向从光滑观测认定系统可逆。接近复极点仍可能极度病态；没有实极点并不代表稳定。</p>
+<p>令 <span class="math">\(a=SV\)</span>、<span class="math">\(b=SKV\)</span>，则</p>
+<p><span class="math">\[
+\Delta F(t)=t a+t^2b+t^3S(I-tK)^{-1}K^2V.\tag{R5}
+\]</span></p>
+<p>二阶项只需当前保留 LU 的两批源 RHS：先解 <span class="math">\(MV=D_pQ\)</span>，再解 <span class="math">\(MW=D_pGV\)</span>，有 <span class="math">\(W=KV\)</span>、<span class="math">\(b=SW\)</span>。这没有新的完整 LU，但 RHS、乘法与墙钟仍须计费。</p>
+<h3>3.1 严格可逆与误差条件</h3>
+<p>若 <span class="math">\(q=|t|\|K\|&lt;1\)</span>，则整段 <span class="math">\([0,t]\)</span> 可逆，且</p>
+<p><span class="math">\[
+\|(I-tK)^{-1}\|\le(1-q)^{-1},\quad
+\|M(t)^{-1}\|\le\|A\|/(1-q).
+\]</span></p>
+<p>由 R4–R5 得到两个严格上界：</p>
+<p><span class="math">\[
+\|\Delta F(t)-ta\|_F
+\le\frac{|t|^2\|S\|}{1-q}\|KV\|_F=:\varepsilon_1(t),\tag{R6}
+\]</span></p>
+<p><span class="math">\[
+\|\Delta F(t)-ta-t^2b\|_F
+\le\frac{|t|^3\|S\|}{1-q}\|K^2V\|_F=:\varepsilon_2(t).\tag{R7}
+\]</span></p>
+<p>也可用 <span class="math">\(\|K^2V\|_F\le\|K\|\|KV\|_F\)</span> 避免额外一批 RHS，但界更松。</p>
+<p>对于任意增量 <span class="math">\(h\)</span>，令 <span class="math">\(q_h=\|A D_hG\|&lt;1\)</span>，则</p>
+<p><span class="math">\[
+\|\mathrm{Remainder}(h)\|_F
+\le \frac{\|S\|}{1-q_h}\|A D_hG A D_hQ\|_F.
+\]</span></p>
+<p>若已有 <span class="math">\(\|A\|\le C_A\)</span> 的严格上界，可用更易书写但更保守的
+<span class="math">\(q_h\le C_A\|h\|_\infty\|G\|\)</span>。这不意味着 <span class="math">\(C_A\)</span> 可以廉价取得。</p>
+<h3>3.2 必须区分的三种信息</h3>
+<table>
+<thead>
+<tr>
+<th>信息</th>
+<th>能严格推出什么</th>
+<th>实现和解释边界</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>已知的诱导范数上界 <span class="math">\(q&lt;1\)</span></td>
+<td>整段可逆，R6–R7 成立</td>
+<td>稠密 <span class="math">\(K\)</span> 的实际范数或 <span class="math">\(A\)</span> 的严格上界并非免费；不能为证明成本优势而忽略其成本</td>
+</tr>
+<tr>
+<td><span class="math">\(|t|\rho(K)&lt;1\)</span></td>
+<td>可逆、Neumann 级数收敛</td>
+<td>不能推出 <span class="math">\(1/(1-|t|\rho(K))\)</span> 的 2 范数界；非正规性可放大 resolvent</td>
+</tr>
+<tr>
+<td>LU 条件数估计、少量 Krylov/随机探针、<span class="math">\(\|b\|/\|a\|\)</span>、模型/实际下降比</td>
+<td>廉价经验风险指标</td>
+<td>一般不是上界，不可标为严格证书；输出投影 <span class="math">\(S\)</span> 会隐藏强内部传播</td>
+</tr>
+</tbody></table>
+<p>另一严格条件是 <span class="math">\(\lambda_{\min}((M+M^*)/2)=\mu&gt;0\)</span> 且 <span class="math">\(|t|\|D_pG\|&lt;\mu\)</span>。此时端点的最小奇异值至少为 <span class="math">\(\mu-|t|\|D_pG\|\)</span>。该强迫性条件可能对当前高对比度 VIE 完全不适用；它不是必须增加的新门槛。</p>
+<h3>3.3 精确椭球充分证书：准备成本必须显式支付</h3>
+<p>也可从另一侧分解</p>
+<p><span class="math">\[
+M_h=(I-L_h)M,\qquad L_h=D_hGA.
+\]</span></p>
+<p>令 <span class="math">\(w_i=\|(GA)_{i,:}\|_2^2\)</span>，则</p>
+<p><span class="math">\[
+\boxed{\beta_F(h)^2=\|D_hGA\|_F^2
+=\sum_i w_i h_i^2.}\tag{R6a}
+\]</span></p>
+<p>这是 Frobenius 范数的<strong>精确值</strong>；<span class="math">\(\|L_h\|_2\le\beta_F(h)&lt;1\)</span> 才是保守的可逆充分条件。在椭球内部，整段可逆，且</p>
+<p><span class="math">\[
+\|M_h^{-1}\|_2\le\frac{\|A\|_2}{1-\beta_F(h)},
+\quad
+\|\Delta F-\mathcal J h\|_F
+\le\frac{\|SA\|_2}{1-\beta_F(h)}
+\|D_hGA D_hQ\|_F.\tag{R6b}
+\]</span></p>
+<p>还可把最后一项上界成
+<span class="math">\(\|SA\|_2\beta_F(h)\|D_hQ\|_F/(1-\beta_F(h))\)</span>。证明使用 <span class="math">\(M_h^{-1}=A(I-L_h)^{-1}\)</span> 与 Neumann 界。该椭球不是全部可逆材料域。</p>
+<p>得到所有精确权重通常需要当前 LU 上的 <span class="math">\(N\)</span> 个 RHS 来形成 <span class="math">\(GA\)</span>（例如解 <span class="math">\(M^T(GA)^T=G^T\)</span>）。当前状态改变后这些权重也改变。随机/少量行估计不是此证书；不能把一个 <span class="math">\(N\)</span> RHS 的准备工作隐藏在“小 Gram 免费复用”中。此项由主代理提示后独立核对，未增加实验。</p>
+<h2 id="section-4">4. 从误差上界到原始目标的严格下降</h2>
+<p>取原始数据目标</p>
+<p><span class="math">\[
+\Phi(m)=\frac{\|F(m)-Y\|_F^2}{2B}+\mathcal R(m),\qquad B&gt;0
+\]</span></p>
+<p>其中 R3-DIGITS 用固定 <span class="math">\(B=\|Y\|_F^2\)</span>。设 <span class="math">\(R=F(m)-Y\)</span>，候选模型给出 <span class="math">\(\widehat{\Delta F}\)</span>，并有严格误差界
+<span class="math">\(\|\Delta F-\widehat{\Delta F}\|_F\le\varepsilon\)</span>。那么</p>
+<p><span class="math">\[
+\boxed{\frac{(\|R+\widehat{\Delta F}\|_F+\varepsilon)^2}{2B}
++\mathcal R(m+h)&lt;\Phi(m)}\tag{R8}
+\]</span></p>
+<p>是原始完整目标严格下降的充分条件。证明只是三角不等式，不需把 Gram 目标当作原始数据损失。</p>
+<p>对线性模型，也可展开为</p>
+<p><span class="math">\[
+\Delta\Phi\le
+\frac{t\operatorname{Re}\langle R,a\rangle+t^2\|a\|_F^2/2
++\|R+ta\|_F\varepsilon_1+\varepsilon_1^2/2}{B}
++\mathcal R(m+tp)-\mathcal R(m).\tag{R9}
+\]</span></p>
+<p>若方向的完整目标导数严格为负，且方向在材料盒内可行，则由解析性，足够小的正步长必下降。这只证明局部存在下降步；不证明能越过非零极小点。GlobalDual 的下降方向一般不是 <span class="math">\(\Phi\)</span> 的下降方向，不能省略这一差别。</p>
+<h2 id="section-5">5. 一步二阶/Padé 到底能做什么</h2>
+<h3>5.1 标量共同分母的限制</h3>
+<p>常见候选</p>
+<p><span class="math">\[
+\widehat{\Delta F}(t)=\frac{ta}{1-\beta t}
+\]</span></p>
+<p>对全部源接收同时匹配到二阶的充要条件是 <span class="math">\(b=\beta a\)</span>（当 <span class="math">\(a=0\)</span> 时也必须 <span class="math">\(b=0\)</span>）。普通多源 Maxwell 响应没有这个共线性保证。取最小二乘 <span class="math">\(\beta=\langle a,b\rangle/\|a\|_F^2\)</span> 只是在拟合，剩下的 <span class="math">\(b-\beta a\)</span> 仍是二阶误差。</p>
+<p>逐观测设 <span class="math">\(\beta_{rs}=b_{rs}/a_{rs}\)</span> 会产生各不相同的分母，失去原 resolvent 的共同极点结构；某个分量的一阶响应为零时也可能无法构造。它可作经验外推，不能当成精确 Maxwell Padé 或严格有限步公式。</p>
+<p>一个足够强的精确条件是内部不变子空间 <span class="math">\(KV=\beta V\)</span>。此时 R4 就等于上述标量有理式，对所有非极点 <span class="math">\(t\)</span> 精确。只有输出层的 <span class="math">\(SKV=\beta SV\)</span> 不足以推出全阶相同。</p>
+<h3>5.2 保留共同 resolvent 的块二阶模型</h3>
+<p>取正交基 <span class="math">\(U\)</span> 包含 <span class="math">\(\operatorname{range}[V,KV]\)</span>，记 <span class="math">\(\Pi=UU^*\)</span>、<span class="math">\(H=U^*KU\)</span>、<span class="math">\(C=U^*V\)</span>。定义</p>
+<p><span class="math">\[
+\widehat{\Delta J}(t)=tU(I-tH)^{-1}C,\qquad
+\widehat{\Delta F}(t)=S\widehat{\Delta J}(t).\tag{R10}
+\]</span></p>
+<p>它共享一个低阶矩阵分母，严格匹配 <span class="math">\(ta+t^2b\)</span>。这来自 <span class="math">\(V,KV\in\operatorname{range}U\)</span>，并非假设 <span class="math">\(D_p\)</span> 与 <span class="math">\(G\)</span> 对易。设</p>
+<p><span class="math">\[
+\eta(t)=tV-(I-tK)\widehat{\Delta J}(t)
+=t^2(I-\Pi)KU(I-tH)^{-1}C.\tag{R11}
+\]</span></p>
+<p>只要两个逆存在，就有精确误差恒等式</p>
+<p><span class="math">\[
+\Delta F-\widehat{\Delta F}=S(I-tK)^{-1}\eta(t).\tag{R12}
+\]</span></p>
+<p>且 <span class="math">\(\eta(t)=O(t^3)\)</span>。在 <span class="math">\(q&lt;1\)</span> 条件下，</p>
+<p><span class="math">\[
+\|\Delta F-\widehat{\Delta F}\|_F
+\le\|S\|\|\eta(t)\|_F/(1-q),\tag{R13}
+\]</span></p>
+<p>可直接代入 R8。若 <span class="math">\(KU\subseteq\operatorname{range}U\)</span>，则 <span class="math">\(\eta\equiv0\)</span>，R10 是精确有理闭包，并且不需要 <span class="math">\(q&lt;1\)</span>。一般投影的极点也可能是伪极点；小模型可逆不能单独证明完整系统可逆。</p>
+<p>成本：<span class="math">\(\dim U\le2s\)</span>。先得到 <span class="math">\(V,KV,K^2V\)</span> 共至多 <span class="math">\(3s\)</span> 个当前 LU RHS，就能构造 <span class="math">\(KU\)</span>、<span class="math">\(H\)</span> 与 R11 所需的全部量；<span class="math">\(U\)</span> 是 <span class="math">\([V,KV]\)</span> 的基，故 <span class="math">\(KU\)</span> 是 <span class="math">\([KV,K^2V]\)</span> 的同一基变换。这里是全源块，未偷删照明。每个射线候选只解至多 <span class="math">\(2s\)</span> 阶小系统，外加数据映射和正则项计算。当前 <span class="math">\(s=12\)</span> 时是最多 36 RHS；若方向本身需要 Full-J 或伴随，其费用另计，不能宣称必然低于 48 接收 RHS 的 Full-J。</p>
+<p>归类：块 Krylov/投影有理近似是标准工具；R10–R13 与材料盒远端搜索的组合是本轮算法提案，尚无新颖性或实验优势结论。</p>
+<h2 id="section-6">6. 可执行建议及接口</h2>
+<h3>建议：共同 resolvent 的有限步候选，而不把它称为全局算法</h3>
+<p>输入接口：当前 <code>state[&#39;m&#39;], state[&#39;Q&#39;], state[&#39;y&#39;]</code>、匹配的保留 LU、<code>G,S</code>、目标 <code>Y</code>、原材料盒、原共同正则项；另给方向列表及候选预算。</p>
+<p>输出接口：候选材料、完整物理评分、每次原 LU RHS 数、小系统求解数、模型预测与实际下降。理论条件若未计算严格范数，就记录为 <code>NOT_CERTIFIED</code>，不要用经验量替填。</p>
+<p>建议的最小算法如下：</p>
+<ol>
+<li>候选方向至少包含一个独立于 GN 的方向，例如 <span class="math">\(p_{in}=m_{mid}-m\)</span>，其中 <span class="math">\(m_{mid}\)</span> 是材料盒中点。它由公共盒与当前点确定，不使用真值。如果只用 GN 方向，算法只改变步长选择。</li>
+<li>每个方向按 R10 建至多 <span class="math">\(2s\)</span> 阶的有理响应；在整条合法材料射线上搜索 <span class="math">\(t\)</span>，比较端点、有限候选驻点及当前点，不要求沿途损失单调。标量数据分量较多时，小模型目标不是低次单一多项式；采用声明的有限一维搜索预算，不宣称全局极小枚举。</li>
+<li>有 R13 严格界时，用 R8 筛选。没有严格放大界或候选越过 <span class="math">\(q&lt;1\)</span> 区域时，它只是远端提案，必须由一次完整 <code>Model.forward(candidate)</code> 与原始 <span class="math">\(\Phi\)</span> 判断是否接受。这里的完整求解是新候选验收，不是重复精度验证。</li>
+<li>当前 LU 不能在一次完整新 forward 之后继续当作旧模型的因子使用；现有 <code>Model</code> 只有一个保留状态。因此同一基点的廉价候选应先完成并排序，再求解最优端点。若需要逐个回退，基点因子要显式保留，其所有求解计入已有账本。</li>
+<li>若始终只接受原始 <span class="math">\(\Phi\)</span> 的下降端点，则接受序列的目标单调；这不要求候选材料之间的连续插值路径下降。这正是它能与局部 GN 缩步产生不同可达性的地方。</li>
+</ol>
+<p>需要真正联合改变方向时，可取 <span class="math">\(h=Pz=\sum_{i=1}^d z_ip_i\)</span>，定义 <span class="math">\(K_i=AD_{p_i}G\)</span>、<span class="math">\(V_i=AD_{p_i}Q\)</span>。精确响应为</p>
+<p><span class="math">\[
+\Delta F(z)=S(I-\sum_i z_iK_i)^{-1}\sum_i z_iV_i.\tag{R14}
+\]</span></p>
+<p>若 <span class="math">\(U\)</span> 包含所有 <span class="math">\(V_i\)</span> 与 <span class="math">\(K_iV_j\)</span>，将 R10 的 <span class="math">\(tH,tC\)</span> 换成 <span class="math">\(\sum_i z_iU^*K_iU,\sum_i z_iU^*V_i\)</span>，便得到匹配全部二阶交叉项的低维有理子问题。其残差仍是 <span class="math">\(V(z)-(I-K(z))\widehat{\Delta J}(z)\)</span>，R12–R13 同样成立。对 <span class="math">\(d=2\)</span>，基维数上限是 <span class="math">\(6s\)</span>，构建可能明显贵于单射线；不在没有数据的情况下推荐无条件启用。</p>
+<h3>已有精确特例：小活跃材料块</h3>
+<p>若 <span class="math">\(h=U_I\delta\)</span> 只改 <span class="math">\(k\)</span> 个独立格点，令 <span class="math">\(\Delta=\operatorname{diag}(\delta)\)</span>、<span class="math">\(Z=AU_I\)</span>、<span class="math">\(C_I=U_I^TGZ\)</span>、<span class="math">\(Q_I=U_I^TQ\)</span>，则</p>
+<p><span class="math">\[
+\Delta F=SZ(I-\Delta C_I)^{-1}\Delta Q_I,
+\quad \det M_h=\det M\det(I-\Delta C_I).\tag{R15}
+\]</span></p>
+<p>此时小系统可逆与完整端点可逆严格等价，不受投影伪极点问题影响。它就是 R2 F06，单坐标的二次驻点公式是 R2 F12，R3 已有实现/对照；可复用但不能包装成 R4 新发现。粗尺度参数只有一维也不意味着 <span class="math">\(D_h\)</span> 低秩。</p>
+<h2 id="section-7">7. 严格反例：全局可辨识仍不能连续下降到真值</h2>
+<h3>7.1 单材料、无实极点、同一物理盒</h3>
+<p>设</p>
+<p><span class="math">\[
+N=s=r=1,\quad E_0=S=1,\quad g=\tfrac12+\tfrac i8,
+\quad m\in[\tfrac12,20],\quad m_*=1,
+\quad F(m)=\frac{m}{1-gm},\quad Y=F(1).
+\]</span></p>
+<p>该模型完全服从 <code>J=m(E0+gJ)</code> 的有限 VIE 结构，<span class="math">\(G\)</span> 对称且 <span class="math">\(\operatorname{Im}G&gt;0\)</span>，带非零阻尼。本文只称它与被动复系数 VIE 代数相容，不声称 <span class="math">\(g\)</span> 已由当前指定圆盘几何生成。</p>
+<p><strong>物理可逆与可辨识。</strong> 对所有实 <span class="math">\(m\)</span>，<span class="math">\(1-gm\ne0\)</span>，且</p>
+<p><span class="math">\[
+F'(m)=\frac1{(1-gm)^2}\ne0,\qquad
+F(m)-F(a)=\frac{m-a}{(1-gm)(1-ga)}.
+\]</span></p>
+<p>因此实 Jacobian 列永不为零，且整个材料盒上全局单射；真值是唯一精确数据解。</p>
+<p><strong>原始损失。</strong> 先取 <span class="math">\(\mathcal R=0\)</span>、<span class="math">\(B=1\)</span>，令</p>
+<p><span class="math">\[
+q(m)=|1-gm|^2=1-m+\tfrac{17}{64}m^2,
+\quad c=|1-g|^2=\tfrac{17}{64}.
+\]</span></p>
+<p>由上式直接得到</p>
+<p><span class="math">\[
+\ell(m)=\tfrac12|F(m)-F(1)|^2
+=\frac{(m-1)^2}{2c q(m)},
+\]</span></p>
+<p><span class="math">\[
+\boxed{\ell'(m)=
+\frac{(m-1)(\tfrac12-\tfrac{15}{64}m)}{c q(m)^2}.}\tag{R16}
+\]</span></p>
+<p>于是 <span class="math">\(m=1\)</span> 是唯一零点，<span class="math">\(m_b=32/15\)</span> 是严格局部极大点，而在 <span class="math">\((32/15,20]\)</span> 上 <span class="math">\(\ell'&lt;0\)</span>。材料盒上界 <span class="math">\(m=20\)</span> 是严格的约束局部极小点，且 <span class="math">\(\ell(20)&gt;0\)</span>。它满足盒约束 KKT；任何足够小的合法移动都增大数据误差。</p>
+<p><strong>不可达的准确含义。</strong> 从 <span class="math">\(m=20\)</span> 到 <span class="math">\(m=1\)</span> 的任意连续实材料路径必经 <span class="math">\(32/15\)</span>，而 <span class="math">\(\ell(32/15)&gt;\ell(20)\)</span>。所以不存在从该起点出发、损失连续不增的合法路径。这个结论针对连续下降路径，不否定有限跳跃或全局枚举。</p>
+<p><strong>GN 缩步为何失效。</strong> 单材料 GN 方向为</p>
+<p><span class="math">\[
+p_{GN}=-\frac{\operatorname{Re}(\overline{F'}(F-Y))}{|F'|^2}
+=-\frac{\ell'}{|F'|^2}&gt;0\quad(m=20).
+\]</span></p>
+<p>它在上界指向盒外，投影后为零；任何缩步不能产生盒内下降。相反，取公共向内方向 <span class="math">\(p=-1\)</span>，精确有理射线全区间包含 <span class="math">\(t=19\)</span>，直接达到真值。射线开始阶段上升，但远端目标为零。<code>GN方向＋更精确步长</code> 不具备这个机制；<code>独立向内方向＋远端有理候选</code> 具备。</p>
+<p>单材料时 R10 的子空间已经是整个状态空间，因此有理模型精确；这给出算法机制可行的解析例子，仍不是 576 材料成像的实验结果。</p>
+<h3>7.2 可选的内点假极小点：额外约束的范围须明确</h3>
+<p>若希望排除“只有盒边界”解释，可考虑一个共同实参数 <span class="math">\(t\)</span> 控制两个解耦单元，</p>
+<p><span class="math">\[
+D=tI_2,\quad G=\operatorname{diag}(1+i\epsilon,2+i\epsilon),
+\quad E_0=(1,1)^T,\quad S=I_2,\quad Y=0.
+\]</span></p>
+<p>在 <span class="math">\(\epsilon=0\)</span> 时，</p>
+<p><span class="math">\[
+\ell(t)=\tfrac12\left[\frac{t^2}{(1-t)^2}+\frac{t^2}{(1-2t)^2}\right],
+\quad
+\ell'(t)=t\left[(1-t)^{-3}+(1-2t)^{-3}\right].
+\]</span></p>
+<p><span class="math">\(t_0=2/3\)</span> 满足 <span class="math">\(\ell'(t_0)=0\)</span>、<span class="math">\(\ell''(t_0)=486&gt;0\)</span>，而真解是 <span class="math">\(t=0\)</span>，前向导数在 <span class="math">\(t_0\)</span> 非零。由隐函数定理，该严格正残差内点极小点在足够小 <span class="math">\(\epsilon&gt;0\)</span> 下延续，此时所有实 <span class="math">\(t\)</span> 的系统均可逆。这与多频率共享单材料或硬性 tied-material 参数化相容。<strong>它不是两个独立自由材料的反例，不能拿它声称全材料空间的内点假极小点已被证明。</strong></p>
+<h2 id="section-8">8. 对 R4 科学主张的直接后果</h2>
+<ul>
+<li>“局部 Jacobian 满秩”只给局部可辨识；不自动给出大收敛域、单一吸引域、下降路径或噪声稳定性。R16 甚至表明全局单射也不足够。</li>
+<li>若诊断显示 GN/GlobalDual 在某点梯度小，必须区分非零残差极小点、盒约束 KKT、模型尺度和方向被投影截断；精确代数并不会自动消除这些现象。</li>
+<li>R6–R9 是足够条件，不是必须条件。把它们当硬步长上限后，再宣称能穿越所有假吸引域，在逻辑上不成立。</li>
+<li>一个有理模型必须同时报告“共同多输出结构是否保留”“是否精确闭包”“严格误差界还是经验代理”。只拟合一条损失曲线不能推出材料响应的同阶准确。</li>
+<li>最可检验的新组合是共同 resolvent 的远端候选与原物理端点评分。它需要与相同方向的普通远端线搜索、既有 R2/R3 精确有理坐标/小块基线比较，才能区分模型复用、方向新增和搜索预算增加的作用。</li>
+</ul>
+<p>归因小结：R1–R9、Woodbury、Krylov/Padé、盒 KKT 和隐函数延续均为标准数学；本文新交付的是这些条件在当前材料反演接口中的明确拼接、对“标量 Padé 二阶匹配”的限制，以及 R16 的解析可达性反例。是否构成研究新颖性由主代理结合文献最终判断。</p>
+<footer><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_z_alg_r4_basin/theory/RESOLVENT_GEOMETRY.md">原始 Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r4_basin">完整代码和证据</a> · <a href="../RESULTS_SUMMARY.json">机器结果</a><p>数学条件、数值验收、盲测隔离和原创性裁决分别记录。网页渲染不构成额外科学验收。</p></footer></main></body></html>

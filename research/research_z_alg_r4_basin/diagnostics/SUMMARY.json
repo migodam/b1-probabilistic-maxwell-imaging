@@ -1,0 +1,89 @@
+{
+  "status": "COMPLETED_OFFLINE_DIAGNOSTIC",
+  "scope": "4 exposed-truth cases, 6 GT-path nodes per case, 12 frozen actual endpoints; no optimization or derivative accuracy reruns",
+  "cases": [
+    "DEV7",
+    "holdout7",
+    "holdout9",
+    "holdout8"
+  ],
+  "decisive_findings": [
+    "DEV7 Full-J residual=0.000267 versus holdout7=0.334945 despite shared operators and same digit label.",
+    "holdout7 GT-line residual rises 0.857860 -> 0.967577 at t=.4; physical gradient/GT cosine=-.290631 at t=.2.",
+    "Failed frozen Full-J endpoints have physical descent/GT cosine=-.346,-.251,-.499 for holdout7/9/8, while local RMS=.1 physical-gradient probes decrease loss with actual/prediction ratio near1.",
+    "GT-line fixed finite steps flip predicted-decrease sign at holdout7 t0,t.4 and holdout8 t.2; actual decrease is positive when linear model predicts negative.",
+    "Source Gram conditions do not collapse: 556..1720 along all paths; top32 J energy .974..995, without an exact-rank claim.",
+    "holdout8 GT inverse-resolvent norm estimate44.18 and step remainder relative.630 exceed DEV7 GT9.84 and.113; small failed-endpoint estimates prevent universal threshold claim.",
+    "GlobalDual small-residual holdout9 endpoint coexists with Full-J failure; all methods retain high residual for holdout7/8."
+  ],
+  "caveats": [
+    "Nonzero original-Y residual never called another solution.",
+    "GT paths are offline prescribed paths, not historical optimizer trajectories.",
+    "Only recorded scalar actual traces available; no historical full-state Jacobian trajectories invented.",
+    "DEV7/holdout7 differ in shape and contrast together; not isolated contrast causality.",
+    "Numerical top32 subspace rotation, not exact-rank or global identifiability certificate."
+  ],
+  "costs": {
+    "counts": {
+      "cached_operator_imports": 1,
+      "FULL_FORWARD": 108,
+      "actual_complex_RHS": 3456,
+      "LU": 108,
+      "source_RHS": 1296,
+      "full_factorization_dimension": 62208,
+      "FULL_ANALYTIC_J": 36,
+      "receiver_transpose_RHS": 1728,
+      "FullJ": 36,
+      "material_J_builds": 36,
+      "DIAGNOSTIC_FULL_REAL_J_SVD": 36,
+      "diagnostic_SVD": 36,
+      "DIAGNOSTIC_SOURCE_GRAM_SPECTRUM": 36,
+      "diagnostic_Gram_spectra": 36,
+      "SMALL_GRAM": 36,
+      "Gram": 36,
+      "Gram_dimension": 432,
+      "Gram_factorizations": 36,
+      "Gram_RHS": 1728,
+      "SMALL_GRAM_ADJOINT": 36,
+      "adjoint_RHS": 432,
+      "smallgram_gradients": 36,
+      "DIAGNOSTIC_ZGECON": 36,
+      "resolvent_condition_estimators": 36,
+      "DIAGNOSTIC_TOP32_ROTATION": 32,
+      "diagnostic_subspace_rotations": 32
+    },
+    "operation_wall_seconds": {
+      "FULL_FORWARD": 0.5941975868772715,
+      "FULL_ANALYTIC_J": 0.08689795504324138,
+      "DIAGNOSTIC_FULL_REAL_J_SVD": 1.4172506674658507,
+      "DIAGNOSTIC_SOURCE_GRAM_SPECTRUM": 0.007112751714885235,
+      "SMALL_GRAM": 0.005949330283328891,
+      "SMALL_GRAM_ADJOINT": 0.025657248217612505,
+      "DIAGNOSTIC_ZGECON": 0.030909915920346975,
+      "DIAGNOSTIC_TOP32_ROTATION": 0.003234541742131114
+    },
+    "operation_cpu_seconds": {
+      "FULL_FORWARD": 0.5834609999999997,
+      "FULL_ANALYTIC_J": 0.08451199999999989,
+      "DIAGNOSTIC_FULL_REAL_J_SVD": 1.3949559999999996,
+      "DIAGNOSTIC_SOURCE_GRAM_SPECTRUM": 0.004235999999999213,
+      "SMALL_GRAM": 0.004670999999999703,
+      "SMALL_GRAM_ADJOINT": 0.025549999999999823,
+      "DIAGNOSTIC_ZGECON": 0.030188999999999966,
+      "DIAGNOSTIC_TOP32_ROTATION": 0.003235999999999739
+    },
+    "wall_seconds": 2.6203059998806566,
+    "cpu_seconds": 2.514617,
+    "threadpools": [],
+    "resolvent_internal_RHS": "OPAQUE_LAPACK_ESTIMATOR_WORK_NOT_EXPOSED_NOT_ZERO",
+    "scope": "New offline diagnostic cost only; frozen historical solver cost is separately retained in endpoint rows"
+  },
+  "outputs": [
+    "BASIN_GEOMETRY.md",
+    "diagnostics/mechanism_all.json",
+    "diagnostics/mechanism_table.csv",
+    "diagnostics/frozen_actual_traces.json",
+    "figures/basin_geometry_dev_vs_holdout.png",
+    "src/diagnostics.py"
+  ]
+}

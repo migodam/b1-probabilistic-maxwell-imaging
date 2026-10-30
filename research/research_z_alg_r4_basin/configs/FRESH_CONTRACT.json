@@ -1,0 +1,89 @@
+{
+  "study": "R4-BASIN",
+  "status": "FROZEN_BEFORE_FRESH_GENERATION",
+  "declared_utc": "2026-10-30T02:49:13.720482+00:00",
+  "physics": "fixed R3-DIGITS 576 all-unknown scalar-TM, 12 sources x48 complex receivers, k=2pi, bounds .5..20",
+  "historical_cases": [
+    "dev_2a5c221387b1",
+    "obs_c3604cf3555d",
+    "obs_42c48e795766",
+    "obs_a63df7f20566"
+  ],
+  "history_scope": "exposed-truth DEVELOPMENT, online solver only sees Y and public operators",
+  "primary_methods": [
+    "trf",
+    "data_lbfgs",
+    "globaldual",
+    "basin_bridge",
+    "ray_best_only"
+  ],
+  "candidate_selection": "minimum normalized full data loss + common smooth/TV regularizer; no GT ranking",
+  "regularizer": {
+    "smooth": 0.0001,
+    "tv": 0.0001,
+    "epsilon": 0.01
+  },
+  "initial_material": 1.0,
+  "wall_seconds_per_method": 60.0,
+  "max_lu_per_method": 2500,
+  "material_stages": [
+    8,
+    12,
+    24
+  ],
+  "blas_threads": 1,
+  "fresh_holdout_planned": {
+    "count": 3,
+    "labels_generator_only": [
+      2,
+      7,
+      8
+    ],
+    "foreground": [
+      13,
+      18
+    ],
+    "background": [
+      1,
+      1.4
+    ],
+    "font_pool_generator_only": [
+      "Arial Bold.ttf",
+      "Georgia Bold.ttf"
+    ],
+    "random_deformation": "existing independent R3 rasterizer; entropy never given to inverse solver",
+    "generation_rule": "only after final solver settings freeze; anonymous case IDs; predictions closed before scoring"
+  },
+  "success_gates_predeclared": {
+    "relative_data_residual_max": 0.001,
+    "material_RMSE_max": 1.5,
+    "mask_IoU_min": 0.7
+  },
+  "scope": "development numbers may drive one algorithm revision before fresh freeze; historical scores never become fresh",
+  "frozen_utc": "2026-10-30T03:11:58.017936+00:00",
+  "methods": [
+    "trf",
+    "data_lbfgs",
+    "globaldual",
+    "uniform_bridge",
+    "uniform_best_only",
+    "uniform_multistart"
+  ],
+  "solver_schema": "r4-basin-solver-v3",
+  "max_lu": 2500,
+  "max_complex_rhs": 60000,
+  "uniform_max_valleys": 4,
+  "valley_selection": "equal indices in amplitude order, including endpoints; raw-score best-only is separate ablation",
+  "ordinary_seed_materials": [
+    4.0,
+    8.0,
+    12.0,
+    16.0
+  ],
+  "common_uniform_seed1": "paid anchor, not duplicated",
+  "scaled_lbfgs": "z=(m-.5)/19.5; chain gradient times19.5; identical exact physical material and regularizer",
+  "fresh_truth_rule": "generator isolated process; no scorer reads truth until all eighteen predictions closed",
+  "development_adaptation": "V1 shape ray failed; V2 low data residual worsened GT and exposed per-seed budget defect; V3 frozen before generation",
+  "generator_font_amendment_utc": "2026-10-30T03:12:26.784706+00:00",
+  "generator_font_amendment_reason": "Requested Helvetica Bold.ttf absent; initial generator failed before any GT observation was produced. Inverse code and all method choices unchanged."
+}

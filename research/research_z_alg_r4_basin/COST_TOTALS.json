@@ -1,0 +1,76 @@
+{
+  "totals": {
+    "full_LU": 54027,
+    "exposed_complex_LU_RHS": 1377960,
+    "dense_Schur_576": 16,
+    "transfer_triangular_RHS_576": 23328,
+    "FullJ": 1547,
+    "Gram": 3770,
+    "HVP": 673,
+    "real_J_SVD": 36,
+    "solver_wall_seconds": 729.4711859503295,
+    "solver_cpu_seconds": 710.000626,
+    "known_all_wall_seconds_sum": 736.7572796981582,
+    "known_all_cpu_seconds_sum": 716.352138,
+    "solver_outputs": 47,
+    "ledger_rows": 62
+  },
+  "fresh_method_totals": {
+    "data_lbfgs": {
+      "LU": 614,
+      "complex_LU_RHS": 14736,
+      "triangular_transfer_RHS": 0,
+      "Schur": 0,
+      "wall_seconds": 7.44665129086934,
+      "cpu_seconds": 7.154748000000001
+    },
+    "globaldual": {
+      "LU": 1880,
+      "complex_LU_RHS": 45120,
+      "triangular_transfer_RHS": 0,
+      "Schur": 0,
+      "wall_seconds": 20.828737957868725,
+      "cpu_seconds": 20.334489999999995
+    },
+    "uniform_bridge": {
+      "LU": 7096,
+      "complex_LU_RHS": 171876,
+      "triangular_transfer_RHS": 5328,
+      "Schur": 3,
+      "wall_seconds": 80.95332341711037,
+      "cpu_seconds": 76.839891
+    },
+    "trf": {
+      "LU": 505,
+      "complex_LU_RHS": 30156,
+      "triangular_transfer_RHS": 0,
+      "Schur": 0,
+      "wall_seconds": 55.097531790845096,
+      "cpu_seconds": 54.25784399999999
+    },
+    "uniform_best_only": {
+      "LU": 1664,
+      "complex_LU_RHS": 41664,
+      "triangular_transfer_RHS": 5328,
+      "Schur": 3,
+      "wall_seconds": 20.049564498942345,
+      "cpu_seconds": 19.689178000000005
+    },
+    "uniform_multistart": {
+      "LU": 7500,
+      "complex_LU_RHS": 179580,
+      "triangular_transfer_RHS": 0,
+      "Schur": 0,
+      "wall_seconds": 87.69836699892767,
+      "cpu_seconds": 83.093852
+    }
+  },
+  "limitations": [
+    "Numerical solver timers include physical and optimizer work, not per-job JSON/NPZ serialization or process startup.",
+    "Triangular transfer RHS are full dimension576 and are charged separately, not called free reduced solves.",
+    "The max_rhs budget bounds exposed physical-LU/kernel RHS; separate transfer triangular RHS are limited by wall, not that counter.",
+    "LAPACK estimator and SciPy internal factorization work are opaque but their inclusive wall/CPU is captured.",
+    "Old R3 costs are provenance references, not charged again as newly run R4 work.",
+    "Concurrent worker times must not be summed as sprint elapsed time."
+  ]
+}
