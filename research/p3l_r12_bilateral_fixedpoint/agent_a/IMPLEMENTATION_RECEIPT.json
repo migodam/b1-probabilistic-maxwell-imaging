@@ -1,0 +1,48 @@
+{
+  "status": "API_READY_DECOMPOSITION_ONLY",
+  "physical_RHS": 0,
+  "physical_LU": 0,
+  "Maxwell_solver_called": false,
+  "GT_arrays_read": false,
+  "online_observation_arrays_read": false,
+  "coordinates": "real original Gaussianized66; material RMS denominator576",
+  "canonical_gauge_cutoff": "relative material realification singular value1e-10",
+  "weak_operator": "Pure-data kinds preserved; main Addendum2 selects explicit prior-aware variants",
+  "extraction": "SVD of explicit factor after material canonicalization",
+  "API": {
+    "proposal_basis": "(Jwhite,Dmaterial,kind='full',rank=16,L=None,R=None,...)->W",
+    "proposal_frame": "same arguments->dict(W,Z,Cw,info)",
+    "material_canonical_basis": "(Dmaterial,...)->T, optionally info",
+    "coordinate_preserving_complement": "(W,Dmaterial,...)->(Z,Cw)",
+    "pair_modes": "(L,R,n_pairs=None)->(K,info)",
+    "bilateral_gram": "(L,R)->Gpixel",
+    "pullback_gram": "(Gpixel,Dmaterial,sigma)->real H"
+  },
+  "weak_frame": "W.T Gmaterial W=I; not generally latent-Euclidean orthogonal",
+  "coordinate_preserving_complement": "Z.T Z=I and Cw Z=0, Cw=W.T Ganchor; anchor frame fixed within corrector",
+  "kinds": [
+    "full",
+    "fullGram",
+    "receiver",
+    "source",
+    "pair",
+    "host",
+    "full_latent",
+    "full_prior",
+    "fullGram_prior",
+    "pair_prior",
+    "receiver_prior",
+    "source_prior",
+    "host_prior"
+  ],
+  "pair_default": "top32 singular-strength products; weak rank16",
+  "runtime": "Gaussian/.venv_nn/bin/python; Apple Silicon CPU single BLAS thread",
+  "execution_issues_preserved": [
+    "Default python had no numpy; used existing Gaussian/.venv_nn runtime without installation",
+    "Initial cached audit duplicate dictionary key kind caused abort, zero physical work; corrected",
+    "Normal-equation extraction lost weak accuracy; replaced by explicit factor SVD before final cached audit",
+    "ScholarQA first search returned3 HTTP429 operation errors; partial successful paper metadata retained"
+  ],
+  "prior_aware": "Explicit suffix adds original Gaussianized curvatureI using augmented factor[dataT;T]; no extra observational information",
+  "decoder_only_feasibility": "8 exposed contexts;272 signed rays perkind atlatent4; puredata12 reachRMS.02, everytestedprioraware272 reach.02; notwholeballinfeasibilityproof"
+}

@@ -1,0 +1,126 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>12 · 双边材料模态、原先验几何与固定点谱</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+
+        .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+        .formula-list{columns:2}.formula-list a{display:block;break-inside:avoid;padding:6px}
+        .formula-list a[hidden]{display:none}#formula-filter{width:100%;padding:12px;font-size:17px}
+        @media(max-width:800px){.formula-list{columns:1}}
+        </style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="index.html">公式目录</a><a href="12_BILATERAL_MATERIAL_MODES_AND_FIXED_POINTS.html">R12新增九条</a><a href="FORMULA_ATLAS.html">完整公式总集</a><a href="FORMULA_ATLAS.md">原始Markdown</a><a href="../p3l_r12_bilateral_fixedpoint/index.html">R12研究报告</a></nav><h1>12 · 双边材料模态、原先验几何与固定点谱</h1><p>物理 → 原先验与材料几何 → 完整导数 → 有限证据</p></header><main><details><summary>章节目录</summary><div class="toc"><a href="#f-bf-001">F-BF-001 · 当前总场与接收传播共同决定精确材料导数</a><a href="#f-bf-002">F-BF-002 · 对角材料的端口对算子、共轭 Hadamard Gram 与截断边界</a><a href="#f-bf-003">F-BF-003 · 原 Gaussianized66 的复材料导数与实白化拉回</a><a href="#f-bf-004">F-BF-004 · 材料有效局部商与原先验增广因子</a><a href="#f-bf-005">F-BF-005 · 同一个 Jacobian 的嵌套 SVD 不增加筛选信息</a><a href="#f-bf-006">F-BF-006 · 阻尼数据映射在非根处的完整导数</a><a href="#f-bf-007">F-BF-007 · 数据阻尼、Gaussianized MAP 与 RML 的三个不同目标</a><a href="#f-bf-008">F-BF-008 · 固定弱坐标的横向正确器与人为单位模态</a><a href="#f-bf-009">F-BF-009 · 有限 secant、投影变化和覆盖只提供经验诊断</a><a href="#既有-r12-结果对本章的约束">既有 R12 结果对本章的约束</a><a href="#已知结构待比较先例与仍未建立的贡献">已知结构、待比较先例与仍未建立的贡献</a></div></details><article><h1 id="12-双边材料模态原先验几何与固定点谱">12 · 双边材料模态、原先验几何与固定点谱</h1>
+<p>R12-BF，2026-10-30。一个材料格点怎样影响观测，要同时问两件事：源能否照亮它，以及它激起的电流能否传到接收端。两端共同决定数据灵敏度；材料 decoder 和原先验再决定这种改变能否以合理代价实际实现。把同一个 Jacobian 反复分解不会增加第三种物理信息。</p>
+<p>本章接续 F-OP-010、F-MAT 系列及 F-BI-001—024，补齐 R12 实际使用的原 Gaussianized66 拉回、材料局部商、固定弱坐标和完整固定点导数。以下九条是<strong>标准微分与线性代数在冻结离散模型上的具体推导</strong>，不主张新定理。公式成立、代码实现、有限实验支持和方法新颖性是四个独立层次。本次维护新增 Maxwell RHS=0、LU=0；没有为恒等式安排数值重放。</p>
+<p>统一尺寸：ROI 材料格点 $q=256$，接收端 $n_r=32$，源 $n_s=8$，原先验实坐标 $p=66$；完整材料网格 $N=576$。固定 $C\in\mathbb C^{q\times q}$、$O\in\mathbb C^{n_r\times q}$、$E_R\in\mathbb C^{q\times n_s}$、宿主响应 $F_h$ 与噪声 $\sigma=0.00119211798514519$。$d\in\mathbb C^q$ 是相对宿主的复材料，$D=\operatorname{diag}(d)$；$D_x=\partial d/\partial x\in\mathbb C^{q\times p}$ 是 decoder 导数，二者不混用。$^*$ 为共轭转置，$^T$ 为实转置或注明的普通转置。所有优化坐标均为实数。</p>
+<h2 id="f-bf-001">F-BF-001 · 当前总场与接收传播共同决定精确材料导数</h2>
+<p>电流和数据满足</p>
+<p>$$h=D(E_R+Ch),\qquad F=F_h+Oh.$$</p>
+<p>令 $M=I-DC$、$N_c=I-CD$，假设当前状态可逆；由 $\det(I-AB)=\det(I-BA)$，两种可逆性等价。定义</p>
+<p>$$R_D=E_R+Ch=N_c^{-1}E_R\in\mathbb C^{q\times n_s},\qquad L_D=OM^{-1}\in\mathbb C^{n_r\times q}.$$</p>
+<p>对电流方程求微分，注意材料与场都改变：</p>
+<p>$$dh=(dD)(E_R+Ch)+DC\,dh,$$ $$\boxed{dF=L_D(dD)R_D.}$$</p>
+<p>因此同一格点 $i$ 的材料改变由接收列 $L_{D,:,i}$ 与照明行 $R_{D,i,:}$ 相乘传到全部端口。无需 $C,D$ 对易，也无需 $D$ 可逆。这里 $dD$ 表示材料矩阵的微分；若使用占比 $a_i$ 且 $d_i=\delta a_i$，其列导数必须再乘 $\delta$。已含该因子的占比 Jacobian 不能再次乘它。</p>
+<p><strong>假设与资格：</strong> 冻结有限维状态方程、同一材料下全部源共享 $D$、当前 resolvent 可逆；这是精确一阶导数，不是有限步等响应曲线定理。宿主 Born 仅取 $D=0$ 时的 $L_0=O,R_0=E_R$，一般不等于当前导数。</p>
+<p><strong>计算含义：</strong> 完整当前 $L_D,R_D$ 必须由已付费状态取得；拿到缓存后进行 Gram、SVD 或坐标变换不新增 Maxwell RHS，取得当前场本身仍有真实费用。来源：<a href="../p3l_r12_bilateral_fixedpoint/BILATERAL_MODE_DERIVATION.md">R12 双边推导第1节</a>、<a href="../p3l_r12_bilateral_fixedpoint/shared/physics.py">物理适配器</a>；与 F-SS-002/003 的活动支撑导数一致。</p>
+<h2 id="f-bf-002">F-BF-002 · 对角材料的端口对算子、共轭 Hadamard Gram 与截断边界</h2>
+<p>按逐源、每源逐接收端排列复数据。材料 Jacobian $J_m\in\mathbb C^{(n_rn_s)\times q}$ 的第 $i$ 列为</p>
+<p>$$j_i=R_{D,i,:}^{T}\otimes L_{D,:,i},\qquad J_m=R_D^T\odot L_D,$$</p>
+<p>其中 $\odot$ 指逐列 Kronecker 积。逐项求内积得到</p>
+<p>$$\boxed{G_m=J_m^*J_m=(L_D^*L_D)\circ\overline{R_DR_D^*}.}$$</p>
+<p>证明是 $\langle j_i,j_j\rangle=(\sum_r\overline L_{ri}L_{rj})(\sum_s\overline R_{is}R_{js})$；第二因子必须为 $\overline{RR^*}=\overline R R^T$。两个因子均为 Hermitian 半正定，Schur 乘积也半正定。</p>
+<p>进一步取薄 SVD，秩分别为 $r_L,r_R$：</p>
+<p>$$L=U_L\Sigma_LV_L^*,\qquad R=U_R\Sigma_RV_R^*,$$ $$\boxed{K_{(a,b),i}=\sigma_{L,a}\sigma_{R,b}\overline{(V_L)_{ia}}(U_R)_{ib}.}$$</p>
+<p>因为</p>
+<p>$$L\operatorname{diag}(v)R=U_L[\Sigma_LV_L^*\operatorname{diag}(v)U_R\Sigma_R]V_R^*,$$</p>
+<p>左右薄酉因子保持 Frobenius 范数，故 $\|Kv\|_2=\|J_mv\|_2$ 对任意复材料微分 $v$ 成立，完整 $K^*K=G_m$。这是对<strong>独立接收与照明物理端口</strong>的分解；最多 $r_Lr_R\le256$ 个复端口对，并非两个材料弱子空间的集合交集。</p>
+<p><strong>假设与资格：</strong> 使用同一当前 $L,R$ 和全部端口对时为精确表示恒等式。保留最大 $\sigma_{L,a}\sigma_{R,b}$ 的 top32 对是明确的截断启发式；这些乘积并未考虑对角材料限制及 $D_x$，不保证在原 66 维先验上实现最优秩32近似。单边 $L^*L$ 或 $\overline{RR^*}$ 均丢掉另一端信息。</p>
+<p><strong>计算含义：</strong> 完整 pair 与 Full-J 不是两种独立数据来源。top32 复行实化后秩至多64，可在66维材料像上制造截断零方向；source-only 至多16个实行，纯数据 weak16 的选择可能高度非唯一。来源：<a href="../p3l_r12_bilateral_fixedpoint/BILATERAL_MODE_DERIVATION.md">双边推导第2—3节</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_a/modes.py">modes.py 的 bilateral_gram / pair_modes</a>。新增的是本模型的显式对应，不是 Khatri–Rao、Schur 乘积或 SVD 原理。</p>
+<h2 id="f-bf-003">F-BF-003 · 原 Gaussianized66 的复材料导数与实白化拉回</h2>
+<p>原先验坐标为 $x=(z,\xi)\in\mathbb R^{64}\times\mathbb R^2$，$u_j=\Phi_N(\xi_j)$；$\Phi_N,\varphi_N$ 分别为标准正态 CDF、PDF。设冻结 quintic saturation 为 $S$，$s=(\mu+A_{ROI}z)/\tau$，则</p>
+<p>$$a=S(s),\qquad \delta=0.8+\Phi_N(\xi_1)+i[0.03+0.15\Phi_N(\xi_2)],\qquad d=\delta a.$$</p>
+<p>链式法则给出 $D_x\in\mathbb C^{256\times66}$：</p>
+<p>$$D_{x,:,1:64}=\delta\operatorname{diag}(S&#x27;(s)/\tau)A_{ROI},$$ $$D_{x,:,65}=a\varphi_N(\xi_1),\qquad D_{x,:,66}=i\,0.15a\varphi_N(\xi_2).$$</p>
+<p>令 $\operatorname{pack}$ 按每源32实部、32虚部排列，$W_{real}Z=(\sqrt2/\sigma)\operatorname{pack}Z$；对 Jacobian 逐列应用该实线性映射。对任意实方向 $v$，</p>
+<p>$$\|J_wv\|^2={2\over\sigma^2}\|J_mD_xv\|^2, \qquad J_w=W_{real}(J_mD_x)\in\mathbb R^{512\times66},$$ $$\boxed{H_{data}=J_w^TJ_w={2\over\sigma^2}\operatorname{Re}(D_x^*G_mD_x).}$$</p>
+<p>证明用 $v$ 为实数及 $\|\operatorname{pack}Z\|^2=\|Z\|_F^2$，再由实二次型唯一确定对称矩阵。不能直接把复矩阵 $D_x^*G_mD_x$ 当实参数 Hessian，也不能漏掉两个 CDF 导数。$H_{data}$ 是 Gauss–Newton 数据曲率；非零残差下它不等于精确目标 Hessian。</p>
+<p><strong>假设与资格：</strong> 冻结原 decoder、固定噪声白化及实参数约定下的精确一阶拉回。平台内 $S&#x27;$ 可为零，因此局部材料秩不一定等于66。native 自由占比258模型与此先验支持不同。</p>
+<p><strong>计算含义：</strong> 完整当前 pair、完整当前 Gram 和真实 Full-J 拉回给出同一局部数据几何；不能把不同的归一化或重复 $\delta$ 因子写成方法收益。来源：<a href="../p3l_r12_bilateral_fixedpoint/BILATERAL_MODE_DERIVATION.md">双边推导第4节</a>、<a href="../p3l_r12_bilateral_fixedpoint/shared/physics.py">physics.py 的 Problem.decode / white_jac</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_a/modes.py">modes.py 的 pullback_gram</a>。</p>
+<h2 id="f-bf-004">F-BF-004 · 材料有效局部商与原先验增广因子</h2>
+<p>ROI 外材料不变，但材料 RMS 仍按完整576格计算。定义实化材料微分</p>
+<p>$$B={1\over24}\begin{bmatrix}\operatorname{Re}D_x\\\operatorname{Im}D_x\end{bmatrix}\in\mathbb R^{512\times66},\qquad G_x=B^TB={1\over576}\operatorname{Re}(D_x^*D_x).$$</p>
+<p>取 $B=U\Sigma V^T$，保留明确阈值以上的奇异值，令 $r$ 为保留数：</p>
+<p>$$T=V_+\Sigma_+^{-1}\in\mathbb R^{66\times r},\quad Q=BT=U_+,\quad T^TG_xT=I_r.$$</p>
+<p>这是把单位坐标变化变为单位材料 RMS 微分的局部 lift。精确零奇异值对应局部 decoder 不改变材料的方向；数值阈值以下则只称不可分辨方向。R12 阈值为相对 $10^{-10}$ 与浮点尺寸阈值的较大者，不能由此证明全局 gauge 或全局商流形。</p>
+<p>对于原 Gaussianized66 先验，局部目标的 GN 曲率为 $H_{data}+I$，故直接构造</p>
+<p>$$\boxed{A_{aug}=\begin{bmatrix}J_wT\\T\end{bmatrix},\quad A_{aug}^TA_{aug}=T^T(H_{data}+I)T.}$$</p>
+<p>在该显式实因子的右奇异向量中选最弱 $k$ 列 $V_{weak}$，令 $W=TV_{weak}$，则 $W^TG_xW=I_k$。纯数据版本仅分解 $J_wT$；不同消融以自己声明的数据因子替换上块，统一保留原先验下块 $T$。</p>
+<p><strong>假设与资格：</strong> 当地材料导数及固定原 Gaussian 参考测度下的标准白化/增广最小二乘。加入 $I$ 是保留原先验曲率，没有新增观测。该标准分解不能证明 weak16 的有限材料步可达，也不能证明 $0.02W$ 位于可信线性区；$\|W\|$ 可能很大。</p>
+<p><strong>计算含义：</strong> 直接 SVD 显式因子，避免先形成正规矩阵再经病态 $T$ 拉回时弱谱精度恶化。原欧氏阻尼 $\mu I$ 在材料坐标上成为 $\mu T^TT$，不能把 $J_wT$ 的奇异值直接代入带 $\mu I_r$ 的固定点公式。来源：<a href="../p3l_r12_bilateral_fixedpoint/BILATERAL_MODE_DERIVATION.md">双边推导第5、7节</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_a/modes.py">modes.py 的 material_canonical_basis / proposal_basis</a>。</p>
+<h2 id="f-bf-005">F-BF-005 · 同一个 Jacobian 的嵌套 SVD 不增加筛选信息</h2>
+<p>设实白化 Jacobian $J=U\Sigma V^T$，$V_I$ 是它自身一个奇异索引集 $I$ 的右奇异向量，则</p>
+<p>$$JV_I=U_I\Sigma_I.$$</p>
+<p>所以再对 $JV_I$ 做 SVD，其右奇异向量只是坐标轴；相同奇异值的块内可任选正交基，映回仍为原子空间。若另取它自身左奇异向量 $U_K$，</p>
+<p>$$U_K^TJV_I=\Sigma_{K,I},\qquad P_LJP_R=U_K\Sigma_{K,I}V_I^T.$$</p>
+<p>这是原对角奇异结构的子块。对严格不重叠的索引集，子空间正交；有交叠时交集也由原索引确定。重复分解、强弱空间求交或等值块重命名不会产生新的物理信息。</p>
+<p><strong>假设与资格：</strong> 两次使用同一状态、同一度量、同一 $J$ 的奇异向量。若第二次加入独立材料度量、原先验、不同状态的 Jacobian 或独立接收/照明算子，问题已经改变；这种变化须明确写出。本条不否定 F-BF-002 的双物理端口分解。</p>
+<p><strong>计算含义：</strong> 不为该纯冗余构造分配 Maxwell 预算，也不把它列为发现新材料方向的独立方法。来源：<a href="../p3l_r12_bilateral_fixedpoint/NESTED_SVD_REDUNDANCY_AUDIT.md">R12 嵌套 SVD 解析说明</a>。这是既有 SVD 的直接推论，本轮新增的是对特定提案的排除条件。</p>
+<h2 id="f-bf-006">F-BF-006 · 阻尼数据映射在非根处的完整导数</h2>
+<p>令 $r:\mathbb R^p\to\mathbb R^{512}$ 为冻结白化残差，$r$ 二次连续可微，$J=Dr$，$\mu&gt;0$ 为固定标量。用户给定的数据映射是</p>
+<p>$$A(x)=J(x)^TJ(x)+\mu I,\quad g(x)=J(x)^Tr(x),\qquad \mathcal T_\mu(x)=x-A(x)^{-1}g(x).$$</p>
+<p>对方向 $h$，记 $\dot J=DJ[h]$。由 $D(A^{-1})[h]=-A^{-1}(DA[h])A^{-1}$ 及</p>
+<p>$$DA[h]=\dot J^TJ+J^T\dot J,\qquad Dg[h]=J^TJh+\dot J^Tr,$$</p>
+<p>得到</p>
+<p>$$\boxed{D\mathcal T_\mu[h]=h-A^{-1}(J^TJh+\dot J^Tr)+A^{-1}(\dot J^TJ+J^T\dot J)A^{-1}J^Tr.}$$</p>
+<p>在响应根 $r(x_*)=0$，两项残差贡献同时消失，因而</p>
+<p>$$D\mathcal T_\mu(x_*)=\mu(J^TJ+\mu I)^{-1},\qquad \lambda_i={\mu\over\sigma_i(J)^2+\mu}.$$</p>
+<p>这只适用于与阻尼相同的欧氏参数度量。近单位特征值可以来自小的正奇异值，也可由增大 $\mu$ 人为造成；精确单位特征值只指一阶数据零方向。若 $J^Tr=0$ 但 $r\ne0$，最后一项消失，仍有</p>
+<p>$$D\mathcal T_\mu=I-A^{-1}(J^TJ+S_r),\qquad S_r=\sum_a r_a\nabla^2r_a.$$</p>
+<p>因此正残差驻点不能当作精确响应根。若阻尼本身随 $x$ 改变，还须在 $DA$ 中加入其导数；本式未作该假设。</p>
+<p><strong>假设与资格：</strong> 有限离散、固定阻尼、指定坐标下的精确微分。局部一阶盲方向不保证能积成有限精确根曲线；需另有正则秩/隐函数条件。满列秩根局部孤立，但不排除相隔较远的第二个根。</p>
+<p><strong>计算含义：</strong> 计算非根处固定点谱必须提供完整 $D\mathcal T$，不能仅由 $J$ 猜测。按 F-BF-004 选定的局部 lift 可报告 $Q^TB(D\mathcal T)T$ 的压缩谱；在没有零方向不变性等条件时，它只是所选材料表示的压缩，不能冒称全局商映射导数。来源：<a href="../p3l_r12_bilateral_fixedpoint/FIXED_POINT_SPECTRUM_AUDIT.md">固定点谱说明第1、3—4节</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_b/engine.py">engine.py 的 effective_spectrum</a>。已有两格控制分别保留近单位但孤立根与非零残差曲率证据，本次不重复运行。</p>
+<h2 id="f-bf-007">F-BF-007 · 数据阻尼、Gaussianized MAP 与 RML 的三个不同目标</h2>
+<p>F-BF-006 的 $\mu I$ 只在步矩阵中出现，梯度仍是 $J^Tr$。即使 $\mu=1$，缺少 $+x$ 梯度便不能把它称为标准 Gaussian MAP。</p>
+<p>原 Gaussianized66 MAP 目标为</p>
+<p>$$\mathcal L_{MAP}(x)=\tfrac12\|r(x)\|^2+\tfrac12\|x\|^2,\qquad \nabla\mathcal L_{MAP}=J^Tr+x.$$</p>
+<p>固定随机目标 $\eta\in\mathbb R^{512},\xi\in\mathbb R^p$ 的 RML 目标及其 GN 映射为</p>
+<p>$$\mathcal L_{\eta,\xi}(x)=\tfrac12\|r(x)-\eta\|^2+\tfrac12\|x-\xi\|^2,$$ $$\mathcal T_{RML}(x)=x-(J^TJ+I)^{-1}\{J^T(r-\eta)+(x-\xi)\}.$$</p>
+<p>令 $A=J^TJ+I$、$g_{RML}=\nabla\mathcal L_{\eta,\xi}$，直接微分得</p>
+<p>$$D\mathcal T_{RML}[h]=h-A^{-1}\nabla^2\mathcal L_{\eta,\xi}\,h+A^{-1}DA[h]A^{-1}g_{RML}.$$</p>
+<p>在该目标驻点，$\nabla^2\mathcal L=A+S_{r-\eta}$，所以</p>
+<p>$$\boxed{D\mathcal T_{RML}=-A^{-1}S_{r-\eta}.}$$</p>
+<p>这与数据根处的 $\mu A^{-1}$ 不是同一谱公式。原 native $(z,u)$ 参考测度中的 Uniform2 经 $u=\Phi_N(\xi)$ 后变成 Gaussian2；概率先验可由此正确推送，但相对于不同坐标 Lebesgue 测度的 MAP 点一般不保持不变。不得把两个点目标静默混用。</p>
+<p><strong>假设与资格：</strong> 原 Gaussianized 坐标、固定随机目标、未加主动约束的光滑映射。RML 是随机优化候选机制；对非线性正演，有限 RML 端点不会自动成为精确后验样本。主动约束和回溯引擎还会改变实际迭代映射。</p>
+<p><strong>计算含义：</strong> 主臂应分别声明提案几何、校正目标与候选资格门。先验增广可用于选择方向，但不能据此把数据阻尼映射称为 MAP，或把合格有限云称为后验体积。来源：<a href="../p3l_r12_bilateral_fixedpoint/FIXED_POINT_SPECTRUM_AUDIT.md">固定点谱说明第2节</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_b/engine.py">engine.py 的 _objective / transverse_correct</a>、<a href="../p3l_r12_bilateral_fixedpoint/shared/run_development.py">开发运行脚本</a>。</p>
+<h2 id="f-bf-008">F-BF-008 · 固定弱坐标的横向正确器与人为单位模态</h2>
+<p>锚点 $x_0$ 处固定 $G_0$ 和材料正交弱基 $W_0$，定义</p>
+<p>$$C_w=W_0^TG_0\in\mathbb R^{k\times p},\quad C_wW_0=I_k,\qquad c(x)=C_w(x-x_0).$$</p>
+<p>预测点 $x_{pred}=x_0+W_0t$ 满足 $c(x_{pred})=t$。若以 $Z$ 张成 $\ker C_w$，则任意有限校正 $x=x_{pred}+Z\alpha$ 都严格保持相同仿射坐标：</p>
+<p>$$\boxed{C_w(x-x_0)=t.}$$</p>
+<p>这是有限坐标恒等式，不只是每一步的一阶近似。若正确器还限制在当前有效材料切空间 $\operatorname{range}T(x)$，使用</p>
+<p>$$Z(x)=T(x)\operatorname{null}(C_wT(x)),$$</p>
+<p>同样有 $C_wZ(x)=0$；即使切空间变化，原 $C_w$ 必须在该次正确器中保持不变。仅使用 $\operatorname{null}C_w$ 则还包括局部 decoder 零方向。原生占比边界须把向外活动坐标作为额外约束或合法线段处理，事后裁剪一般会破坏固定坐标。</p>
+<p>若把此规则延拓为全空间映射并满足 $C_w\mathcal T(x)=C_wx$，求导即得</p>
+<p>$$C_wD\mathcal T=C_w.$$</p>
+<p>这些是算法主动保持的单位<strong>左</strong>模态。判断横向收缩应在其实际自由域 $\ker C_w$ 及合法切空间中进行，不能把人为冻结的 $k$ 个坐标算作 Maxwell 连续根流形维数。</p>
+<p><strong>假设与资格：</strong> 固定锚点仿射泛函、校正步精确落在其核内。$c(x)$ 只是一组声明的有限 latent 坐标，不保证等于非线性材料投影，不保证目标半径可达，也不保证正确器能找到噪声合格点。</p>
+<p><strong>计算含义：</strong> H1 固定 frame、H2 分层刷新和 HA 自适应刷新改变的是锚点/提案策略；每次校正仍须保持自己声明的固定 $C_w$。边界处没有可行预测或横向步时应报告未到达机制试验。来源：<a href="../p3l_r12_bilateral_fixedpoint/BILATERAL_MODE_DERIVATION.md">双边推导第5节</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_a/modes.py">modes.py 的 coordinate_preserving_complement</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_b/engine.py">engine.py 的 weak_frame / transverse_correct</a>。</p>
+<h2 id="f-bf-009">F-BF-009 · 有限 secant、投影变化和覆盖只提供经验诊断</h2>
+<p>对两个已实际求值的点 $x_a,x_b$，令 $\Delta x=x_b-x_a$、$\Delta r=r(x_b)-r(x_a)$。冻结起点 Jacobian 的 secant 缺陷是</p>
+<p>$$e_{a\to b}=\Delta r-J_a\Delta x,\qquad \delta_{a\to b}={\|e_{a\to b}\|\over\max(\|\Delta r\|,1)}.$$</p>
+<p>若整条线段位于光滑合法域，微积分基本定理给</p>
+<p>$$e_{a\to b}=\int_0^1[J(x_a+t\Delta x)-J_a]\Delta x\,dt.$$</p>
+<p>只有额外获得全线段 Jacobian 的 Lipschitz 常数 $L_J$，才能推出 $\|e\|\le\tfrac12L_J\|\Delta x\|^2$。有限端点比较本身不提供这样的常数。终点刷新 $J_b$ 的缺陷 $\Delta r-J_b\Delta x$ 可衡量这个 secant 的经验改善，不能证明全邻域的二阶控制或刷新必有材料收益。</p>
+<p>把不同点的材料弱空间放入同一完整材料实空间，令 $Q_a,Q_b$ 的列正交；则</p>
+<p>$$\rho_{a,b}={\|(I-Q_aQ_a^T)Q_b\|_F\over\sqrt{k}}$$</p>
+<p>衡量新 $k$ 维空间在旧空间之外的比例。它是子空间变化，不是新增观测量；data-only weak8 的诊断也不是 prior-aware weak16 的提案轨迹。</p>
+<p>有限合格云 $\mathcal C_{p,h}$ 的冻结经验覆盖为</p>
+<p>$$\widehat{coverage}_h(\epsilon)={1\over n_{DEV}}\sum_p\mathbf1\!\left\{\min_{m\in\mathcal C_{p,h}}{\|m-m_p^{GT}\|\over24}\le\epsilon\right\}.$$</p>
+<p>空云按失败计；最近 GT 成员是离线容量诊断，不能用来选择在线输出。此处的 $\epsilon$、噪声门、去重尺度和先封存预测后读 GT 的顺序须由既有协议给定，不能看到结果后移动。</p>
+<p><strong>假设与资格：</strong> secant 和投影差来自有限已存节点；只有在连续线段已满足光滑假设时，积分恒等式才适用。经验覆盖只针对声明的暴露 DEV 对象，不能升级为总体高概率保证、连续根族或后验覆盖。均匀或 $\exp(-\Phi)$ 有限云行动仍须注明有限云语义。</p>
+<p><strong>计算含义：</strong> 现有 R12 诊断保存128条 secant、96个材料投影对，且采样包含被拒 trial 与分支切换，不能称为连续接受路径。H2/HA 刷新次数更多但是否改善行动，必须看已有真实有限材料结果与总成本；局部方向转动本身不能代替收益。来源：<a href="../p3l_r12_bilateral_fixedpoint/agent_c/p1_diagnostics/ONLINE_DIAGNOSTIC_RECEIPT.json">在线诊断已有收据</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_c/p1_diagnostics/FINITE_SECANTS.json">FINITE_SECANTS.json</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_c/p1_score/SUMMARY.json">冻结评分汇总</a>。本次没有重算这些诊断。</p>
+<h3 id="既有-r12-结果对本章的约束">既有 R12 结果对本章的约束</h3>
+<p>截至本章维护时，P1 的4个暴露 DEV 对象、8个臂在冻结 $\epsilon=0.075$ 下均为覆盖0/4。普通 H0 RML 的平均离线最近材料 MSE 为0.0119253，H1/H2/HA 完整16维分别为0.0130177、0.0133596、0.0131985；该基线的云容量指标更好。所有32组的在线选择仍为原锚点，平均所选 MSE 同为0.0148154。这里支持“现有开发结果没有显示分层/自适应刷新带来在线行动改善”，不支持“所有双边方法都不可能有效”。数字来自已有<a href="../p3l_r12_bilateral_fixedpoint/agent_c/p1_score/SUMMARY.json">评分汇总</a>与<a href="../p3l_r12_bilateral_fixedpoint/agent_c/P1_ADVERSARIAL_QA.json">候选门收据</a>，本次没有重新评分。</p>
+<p>原生 N1 的既有45组运行停留在初始化边界，未到达非锚点非线性机制比较；刷新是同一锚点的代数 frame 重算。其状态保留为 <code>INITIALIZATION_BOUNDARY_FAILURE_NOT_PHYSICAL_TEST</code>，不能作为新原生材料方法的正面或负面性能结论。后续 N2 的实现、封存和真值顺序由主线程及对应工作目录独立管理，本章不提前赋予结果。来源：<a href="../p3l_r12_bilateral_fixedpoint/agent_c/N1_BOUNDARY_AUDIT.json">N1 已有边界收据</a>。</p>
+<h3 id="已知结构待比较先例与仍未建立的贡献">已知结构、待比较先例与仍未建立的贡献</h3>
+<p>F-BF-001—009 使用 resolvent 微分、Khatri–Rao/Hadamard 结构、SVD、最小二乘增广、链式法则、隐式约束和有限经验评分等既有工具。本章贡献是把这些工具在同一个原先验/白化/材料 RMS 合同中写清，并排除不成立的谱与新颖性推论；它不声称创造了这些数学工具。</p>
+<p>已有 ScholarQA 记录核实的最近主题先例为 Zhong、Chen 的 <a href="https://doi.org/10.1088/0266-5611/25/8/085003">Twofold subspace-based optimization method for solving inverse scattering problems (2009)</a>、<a href="https://doi.org/10.1109/TAP.2010.2103027">FFT Twofold Subspace-Based Optimization (2011)</a>，以及 Xu 等的 <a href="https://doi.org/10.1109/TGRS.2014.2329032">Multiplicative-Regularized FFT Twofold Subspace-Based Optimization (2015)</a>。这里只复用已完成的 <strong>Tier C 出版身份</strong> 核实；没有可用逐段全文证据证明它们与本轮具体算法相同或不同。429 和未覆盖的 distorted-Born、张量分解、广义奇异值与先验感知流形优化文献缺口均保留，不能宣称“首次”。来源：<a href="../p3l_r12_bilateral_fixedpoint/agent_a/CLOSEST_PRIOR_WORK_METADATA.md">既有最近工作身份说明</a>、<a href="../p3l_r12_bilateral_fixedpoint/agent_a/SCHOLARQA_VERIFIED.json">已有五条身份核实记录</a>。</p>
+<p>状态：上述公式为 <code>DERIVED_FINITE_MODEL</code>；实现仅在所引源码的声明范围内；P1 改善结论为 <code>NOT_DEMONSTRATED_ON_EXPOSED_DEV</code>；原 P1 连续根流形、完整材料后验与总体覆盖为 <code>NOT_ESTABLISHED</code>；方法新颖性为 <code>UNRESOLVED_WITH_METADATA_ONLY_PRECEDENTS</code>。最终科学判断由主线程作出。</p></article></main><footer style="padding:30px;max-width:1100px;margin:auto">稳定编号；数学推导、实现、有限实验与新颖性分开。原先验、完整材料RMS及历史失败记录按各章来源保留。</footer></body></html>

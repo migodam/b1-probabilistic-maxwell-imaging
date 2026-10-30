@@ -1,0 +1,65 @@
+{
+  "status": "DELIVERED",
+  "physical_RHS": 98,
+  "physical_LU": 31,
+  "all_physical_prepaid": true,
+  "failed_physical_operations": 0,
+  "physics_complete": true,
+  "no_more_physical_calls": true,
+  "engine": "agent_b/engine.py",
+  "theory_documents": [
+    "FIXED_POINT_SPECTRUM_AUDIT.md",
+    "TRANSVERSE_CONTINUATION.md"
+  ],
+  "physical_controls": [
+    "agent_b/two_cell/RESULTS.json",
+    "agent_b/two_cell_nonroot/RESULTS.json",
+    "agent_b/two_cell_continuous/RESULTS.json"
+  ],
+  "algebraic_checks": {
+    "status": "PASS",
+    "Maxwell_RHS": 0,
+    "curved_fiber": {
+      "available": 2,
+      "max_fixed_coordinate_defect": 0.0,
+      "max_endpoint_residual": 4.440892098500626e-16,
+      "exact_decoder_gauge_motion": 0.0,
+      "decoded_gauge_dimension": 1
+    },
+    "positive_residual": {
+      "analytic_DT": -1.0,
+      "finite_difference_DT": -0.9999999999940005,
+      "omitting_residual_term_DT": 1.0
+    },
+    "native_regularizer_hook": {
+      "known_minimizer": [
+        0.5,
+        2.0,
+        3.0
+      ],
+      "returned": [
+        0.49999999999998873,
+        1.99999999999998,
+        2.9999999999999325
+      ],
+      "minimizer_error": 7.129380377809777e-14,
+      "original_gaussian_prior_ignored": true,
+      "material_gauge_move_allowed": true
+    },
+    "semantics": "explicit nonlinear toy only; no physical Maxwell claim"
+  },
+  "scope_limits": [
+    "continuous control is NOT P1",
+    "no Full66 continuous manifold or posterior claim",
+    "finite precision analytic bounds are not outward-rounded interval arithmetic"
+  ],
+  "Codex_final_review_required": true,
+  "software_recoveries": [
+    {
+      "action": "zero-RHS analytic readback",
+      "failure": "system python3 has no NumPy",
+      "resolution": "reran with existing Gaussian .venv_nn",
+      "new_Maxwell_RHS": 0
+    }
+  ]
+}

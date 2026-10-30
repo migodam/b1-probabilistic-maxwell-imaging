@@ -1,0 +1,75 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>普通预测—横向正确的有限探索</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+ .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}img{max-width:100%;height:auto}table{display:block;overflow-x:auto}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="index.html">R12完整报告</a><a href="DIGITS_VISUAL_REVIEW_ZH.html">数字视觉结果</a><a href="GO_NO_GO.html">科研裁决</a><a href="RESEARCH_REPORT_ZH.md">原始Markdown</a><a href="../maxwell_formula_atlas/index.html">167条公式</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr12-bilateral-fixedpoint-20261030">完整证据Release</a></nav><h1>普通预测—横向正确的有限探索</h1><p>精确双边模式 · 普通一阶延拓 · 实际材料覆盖 · 数字拓扑</p></header><main><div class="notice"><strong>开发结论：分层扩大 NO-GO。</strong>四个暴露P1难例主覆盖0/4；数字8未恢复双孔。163,994 RHS / 6,974 LU，在本轮上限内。没有独立新parent或Full66 posterior声明。</div><details><summary>章节目录</summary><div class="toc"><a href="#1-唯一共同正确器">1. 唯一共同正确器</a><a href="#原生-n2-的边界算法版本">原生 N2 的边界算法版本</a><a href="#2-四个方法的差别">2. 四个方法的差别</a><a href="#3-弱帧定义及前置负证据">3. 弱帧定义及前置负证据</a><a href="#4-ha-的实际条件与记录">4. HA 的实际条件与记录</a><a href="#5-输出和解释边界">5. 输出和解释边界</a><a href="#6-已完成实现验证">6. 已完成实现验证</a></div></details><article><h1 id="普通预测横向正确的有限探索">普通预测—横向正确的有限探索</h1>
+<p>这里实现的是一个普通的一阶、可计费的探索机制。先沿弱方向制造一个材料不同的预测点，再用当前精确 Maxwell Jacobian 修正横向方向。它生成有限的候选材料云；优化步数、预算和候选资格都明确保留，不把候选云改称为后验。</p>
+<p>实现：<code>agent_b/engine.py</code>。主线程负责物理排程、公共 RML 入口、协议冻结、预测封存和最终统计；本模块不含 Maxwell 求解器，不读取真值，不自行扩展预算。</p>
+<h2 id="1-唯一共同正确器">1. 唯一共同正确器</h2>
+<p>给定探索帧 \(W\)，在选定帧的参考点有材料度量 \(G=M^TM\)、\(W^TG W=I\)。冻结弱坐标泛函</p>
+<div class="math" aria-label="数学公式">\[
+C=W^TG.
+\]</div>
+<p>预测点 \(x_p\) 通过同一组预先给定随机系数生成。先令方向 \(v=Wa\)，再用解码器算术寻找 \(\|m(x+hv)-m(x)\|/24\) 为指定半径的第一可用括区。此阶段没有 Maxwell 调用；始终保留从公共锚点算起的 latent 半径 4 和原先验合法性。</p>
+<p>在一次正确器的全部迭代中，约束为</p>
+<div class="math" aria-label="数学公式">\[
+\boxed{C(x-x_p)=0.}
+\]</div>
+<p>每次实际 Gauss–Newton 步刷新当前精确 \(J(x)\) 和当前材料导数。由当前解码器商空间提升 \(P(x)\) 及</p>
+<div class="math" aria-label="数学公式">\[
+Z=P\,\operatorname{null}(CP)
+\]</div>
+<p>求解普通一阶正则化子问题</p>
+<div class="math" aria-label="数学公式">\[
+\min_z\ \tfrac12\|r+JZz\|^2+
+\tfrac12\|x-\xi+Zz\|^2.
+\]</div>
+<p>RML 的数据随机目标额外把 \(r\) 改为 \(r-\eta\)。有限 Cholesky 阻尼只保证子问题的数值可解；计数和耗时单独记录，不当作 Maxwell RHS。</p>
+<p>原生数字分支若状态提供 <code>reg_value/reg_gradient/reg_hessian</code>，则统一改用冻结的原 R11 TV-Huber/L1/ridge/属性正则器：目标为 \(.5\|r-\eta\|^2+R(x)\)，梯度为 \(J^T(r-\eta)+\nabla R\)，PSD 近似 Hessian 为 \(J^TJ+H_R\)。所有原生方法使用同一正则项；不能套用 P1 的 \(.5\|x\|^2\)。其 H0 只随机数据目标，不随机一个不存在的完整 Gaussian occupancy prior。</p>
+<p>执行 P1 的默认 <code>full_coordinate_corrector=False</code> 保留上述商空间正确器。后续原生版本 N1 在第一笔原生物理调用之前显式设置 <code>full_coordinate_corrector=True</code>：H0 的 \(Z=I\)，弱臂的 \(Z=\operatorname{null}(C)\)，允许正则器在材料解码器零方向上移动；原生 box 活动约束也进入同一个零空间。探索帧和材料谱仍然剔除解码器规范。该版本变化不回填为 P1 已执行代码。P1 已执行点的材料导数满66列秩时，两种自由域本来相同。</p>
+<h3 id="原生-n2-的边界算法版本">原生 N2 的边界算法版本</h3>
+<p>主线程报告：N1 的45个运行均已保留，弱预测点被原生 box 合法性拦下，H0 也在活动约束或回溯阶段停止；这些运行只有每臂8 RHS 的锚点引用，且在任何原生真值评分之前结束。这是<strong>边界算法实现未走出候选点</strong>的证据，不能据此宣称 Maxwell 弱方向方法失败或材料空间缺少多样性。</p>
+<p>N2 在任何真值评分之前另行声明，只修改有边界的标准预测/正确机制。<code>native_box_retraction=False</code>、<code>active_set_iterations=4</code> 仍是 P1/N1 默认值；N2 显式启用前者并将活动迭代上限至少设为参数维数加一。</p>
+<p>N2 预测轨迹为</p>
+<div class="math" aria-label="数学公式">\[
+x_p(t)=P_{\rm box}(x+t v),
+\]</div>
+<p>其中 occupancy 投影到 \([0,1]\)，属性参数沿其原坐标变化。材料半径通过这条<strong>实际投影轨迹</strong>的解码值求取，返回的也是实际投影点。输出记录 <code>retraction_norm</code> 和 <code>leaves_linear_weakspan</code>；发生投影后不再声称预测点仍在原线性弱射线或弱子空间中。此时应称为有界回缩弱方向提案，不能把它包装成严格线性弱方向延拓。</p>
+<p>正确器随后仍保持实际预测点的固定弱坐标：\(C(x-x_p)=0\)。不再把未投影的 \(x+tv\) 当作约束原点。</p>
+<p>N2 的活动集只加入尚未约束、且向外分量超过 \(10^{-10}\) 的 occupancy 坐标。已约束坐标的舍入残差不重复触发循环；没有新增活动坐标时采用当前解。每次加入仍与同一个 \(C\) 联合求零空间。</p>
+<p>对内部 occupancy 坐标可能越界的步，先计算最大可行比例</p>
+<div class="math" aria-label="数学公式">\[
+\alpha_{\rm box}=\min\left(1,
+ \min_{s_i&gt;0}\frac{1-x_i}{s_i},
+ \min_{s_i&lt;0}\frac{-x_i}{s_i}\right),
+\]</div>
+<p>再以该可行步进入原有四次实际下降回溯。忽略已受约束的 \(10^{-10}\) 以内分量，并记录比例；不把四次回溯消耗在一个本可直接缩到边界内的步上。目标、原生正则器、物理模型、候选资格和预算保持主线程冻结版本所规定的同一形式。</p>
+<p>以上均为普通有界 Gauss–Newton/投影回缩机制，不是新的 Maxwell 原理。N1 原始结果不覆盖、不回填。N2 的材料结论必须来自随后实际逆问题运行；本代理没有再启动物理或新增边界比对测试。</p>
+<p>步长同时满足声明的 latent trust 与材料 trust。最多四次实际响应回溯，只接受实际目标下降且仍满足固定弱坐标的点。解码器算术先检查合法性和实际材料步长，再进入物理预算。Native box 的向外活动坐标进入同一零空间约束；不通过截断物理参数破坏 \(C\)。</p>
+<p><strong>不做径向回拉。</strong> 对一个横向步再做非线性径向缩放，会改变冻结的弱坐标，进而破坏这个因果比较。候选最终半径作为结果记录；有限预测半径不是最终正确端点的等半径证明。</p>
+<h2 id="2-四个方法的差别">2. 四个方法的差别</h2>
+<div class="table-wrap"><table><tr><th>方法</th><th>探索帧</th><th>正确器</th></tr><tr><td>H0 / Full-J RML</td><td>完整数据与先验随机目标 \((\eta,\xi)\)</td><td>同一完整坐标普通 GN；没有冻结弱坐标</td></tr><tr><td>H1</td><td>每个公共入口的初始弱帧保持不变</td><td>当前 J 的同一横向 GN</td></tr><tr><td>H2</td><td>初始帧与 H1 相同，在规定层只更新一次</td><td>当前 J 的同一横向 GN</td></tr><tr><td>HA</td><td>由已付费缓存反馈条件触发，最多两次更新</td><td>当前 J 的同一横向 GN</td></tr></table></div>
+<p>因此 H1 与 H2 的差别仅在探索帧刷新，不能把 H1 误写为固定 Jacobian 正确器。一次正确器内部始终冻结其 \(C\)；刷新只发生在预测步骤之间。</p>
+<p>最终主线程协议为两个公共入口：原锚点，以及公共 RML 入口中按无真值规则选出的材料不同合格点。每入口三层、每层两个尝试，总计每臂 12 次；半径依次为 .02、.05、.10。公共入口生成成本先从每臂 5400 RHS 总额扣除，两个分支共享该臂剩余额度，不能各自获得完整预算。</p>
+<p>单分支 <code>run_arm</code> 是便利入口；多个分支也可由主线程共用一个 <code>PaidEvaluator</code>，直接调用 <code>predictor</code>、<code>transverse_correct</code> 和 <code>weak_frame</code>。所有物理调用仍经根跨进程原子预付，不由本引擎“估算后补账”。本地另设相同的 RHS/LU 上限并保留最后一次 F 槽；失败尝试不退费。</p>
+<h2 id="3-弱帧定义及前置负证据">3. 弱帧定义及前置负证据</h2>
+<p>纯数据材料有效弱帧会放大近乎材料零的 latent 方向。在已读取的缓存几何上，若干列的 latent 范数达到 \(10^4\)–\(10^5\)，不能直接把其线性 .02 材料单位步当作合法有限预测。</p>
+<p>代理 A 的只读解码器审计表明，所测试纯数据 signed rays 中只有 12/272 能在 latent trust4 内达到 .02 材料半径；这并不证明整个弱子空间都不可用，因为某些更有效的混合方向可以走得更远。不能把有限射线失败升级为整类方法不可能。</p>
+<p>主线程在候选物理运行之前冻结了显式先验感知加项。<code>full_prior</code> 等帧使用 \([JP;P]\) 的 SVD，等价于原 Gaussianized66 先验下的材料 Rayleigh 度量 \(P^T(J^TJ+I)P\)。该项是原先验，不是新增观测信息。纯数据模式和它的失败证据继续保留。</p>
+<p>Receiver/pair/host 模式必须由当前或指定参考场的真实矩阵构造；普通 Native、Reciprocal、GlobalDual 是具体参数化和求解机制，不能仅靠名称替换而宣称同一个比较。</p>
+<h2 id="4-ha-的实际条件与记录">4. HA 的实际条件与记录</h2>
+<p>当前实现只使用已经付费的当前 J 和现成响应：弱子空间投影漂移、响应 secant 缺陷、上一层正确失败比例。阈值依次为 .25、.25、.5；达到任一条件才刷新，最多两次。Secant 缺陷为</p>
+<div class="math" aria-label="数学公式">\[
+\eta_{\rm sec}=\frac{\|r(x+s)-r(x)-J(x)s\|}
+ {\max(\|r(x+s)-r(x)\|,1)}.
+\]</div>
+<p>这些条件只说明当前线性化/探索帧可能过时，不构成材料覆盖下界。没有为触发检测新增 Maxwell 查询。</p>
+<p>若连续两层没有新增与已有合格云相距至少 .002 RMS 的材料，则自适应停止。层内逐个更新比较集合，避免重复候选被多次计为新增。硬深度、候选数或预算先到便停止；未执行项明确记录。更丰富的任务范围策略若未进入冻结代码，不得在最终报告中冒称已经执行。</p>
+<h2 id="5-输出和解释边界">5. 输出和解释边界</h2>
+<p><code>CLOUD.npz</code> 保存所有可用端点的完整材料、参数、原始 Phi、资格、层号、先验成本和无真值在线选择索引。无可用端点、回溯停止、预算停止、投影破坏弱坐标等状态保留在 <code>TRACE.jsonl</code> 和 <code>SUMMARY.json</code>。<code>initial_weak_frame</code> 的列数是实际运行的 rank；它不冒充独立的 R9 weak8 参考。</p>
+<p>主资格是原观测 noise ball 与合法性，材料 distinct 用于云增长/覆盖统计；DeltaPhi 与先验增量作为继承诊断另记。无真值选择、文件保存、物理正确性与真值评分是不同步骤；只有主线程封存全部预测后，离线评分器才可以访问受控真值。</p>
+<p>预算受限的正确器返回当前最好的合法实际下降端点，不宣称收敛。离散节点上的材料多样性、竞争响应和扩展范围，均不是连续 Maxwell 纤维、完整材料支持或总体后验覆盖的证明。</p>
+<h2 id="6-已完成实现验证">6. 已完成实现验证</h2>
+<p>显式非 Maxwell 圆曲线带一个解码器零参数：两个端点最大残差 \(4.44\times10^{-16}\)，固定坐标误差和零参数漂移均为 0。它针对约束实现，耗费 0 Maxwell RHS。</p>
+<p>原生正则器接口另以已知最优解 \((.5,2,3)\) 的非高斯二次目标检查；在故意提供不相容的 Gaussian prior center/weight 时，仍由所给 <code>reg_*</code> 恢复该最优解，误差 \(7.13\times10^{-14}\)，且允许第三个材料零参数按正则器移动。它同样只验证接口，耗费 0 Maxwell RHS。</p>
+<p>三个真实两格 TM-VIE 控制和固定点导数差分结果详见 <code>FIXED_POINT_SPECTRUM_AUDIT.md</code>，包含独立三实维控制中的显式被动连续曲线。其物理成本共 98 RHS、31 LU。主 576 格候选结果由主线程运行后填写，本文不预报成功。</p></article></main><footer>完整非线性Maxwell；原P1与N原生材料合同分开。候选频率不是posterior mass。</footer></body></html>

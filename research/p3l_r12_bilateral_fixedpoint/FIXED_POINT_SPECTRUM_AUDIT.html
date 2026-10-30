@@ -1,0 +1,117 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>固定点谱审计：单位模态究竟表示什么</title><style>
+:root{--ink:#173346;--muted:#536a78;--blue:#075e7c;--line:#d8e3e9;--bg:#f2f6f9;--paper:#fff;--warn:#a77b25}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:3px}a:hover{color:#003e58}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:10px;background:white;padding:8px;z-index:10}
+header{background:#102f43;color:#f6fbff;padding:35px max(20px,calc((100vw - 1140px)/2))}header h1{font-size:clamp(27px,4vw,42px);line-height:1.4;margin:18px 0}header p{color:#cfdee8;max-width:1000px}nav{display:flex;gap:10px;flex-wrap:wrap}header nav a{color:white;border:1px solid #668393;border-radius:6px;padding:3px 11px;text-decoration:none}main{max-width:1200px;margin:25px auto;padding:0 24px 55px}.panel,article,figure{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:clamp(18px,3vw,35px);margin:22px 0;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:white;border:1px solid var(--line);border-radius:9px;padding:20px}.card h3{margin:0 0 10px}.card .value{font-size:27px;line-height:1.45;font-weight:700}.muted,figcaption,.source{font-size:14px;color:var(--muted)}.notice{border-left:4px solid var(--warn);background:#fff8e9;padding:15px 20px}.tag{font-size:13px;background:#e9f1f6;border-radius:5px;padding:3px 7px;display:inline-block}h1,h2,h3,h4{line-height:1.5}h2{font-size:25px;margin-top:34px}h3{font-size:20px}article h2{border-top:1px solid var(--line);padding-top:22px}p{margin:14px 0}li{margin:5px 0}.table-wrap{overflow-x:auto;max-width:100%;margin:18px 0}table{border-collapse:collapse;min-width:100%;font-size:15px}th,td{border:1px solid var(--line);padding:10px 13px;text-align:left;vertical-align:top}th{background:#edf3f7}code{background:#edf2f5;border-radius:3px;padding:2px 4px;font-size:.88em}pre{overflow-x:auto;background:#edf2f5;padding:16px;line-height:1.65;font-size:13px}pre code{padding:0}blockquote{border-left:3px solid #93adbc;margin:18px 0;padding:4px 20px;color:var(--muted)}img{display:block;max-width:100%;height:auto;margin:0 auto}figure{padding:20px}figcaption{margin-top:12px}.toc{columns:2;column-gap:28px}.toc a{display:block;margin:6px 0;break-inside:avoid}.toc .sub{padding-left:14px}.downloads{display:flex;gap:12px;flex-wrap:wrap}.downloads a{display:inline-block}details{border:1px solid var(--line);border-radius:7px;padding:12px 16px;background:white}summary{cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:14px}.unavailable{color:var(--muted);text-decoration:underline dotted}.math{white-space:pre-wrap;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #9ecce0;outline-offset:3px}@media(max-width:800px){body{font-size:16px}.grid{grid-template-columns:1fr}.toc{columns:1}main{padding:0 12px 35px}header{padding:25px 18px}th,td{padding:8px 10px}h2{font-size:22px}}@media print{body{background:white;color:black;font-size:11pt}header{background:white;color:black;padding:0}header p{color:black}header nav,.skip{display:none}main{max-width:none;padding:0}.panel,article,figure,.card{border-color:#bbb;break-inside:avoid-page}a{color:black}img{max-height:none}.grid{display:block}}
+ .math,mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}img{max-width:100%;height:auto}table{display:block;overflow-x:auto}</style><script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head><body><header><nav><a href="index.html">R12完整报告</a><a href="DIGITS_VISUAL_REVIEW_ZH.html">数字视觉结果</a><a href="GO_NO_GO.html">科研裁决</a><a href="RESEARCH_REPORT_ZH.md">原始Markdown</a><a href="../maxwell_formula_atlas/index.html">167条公式</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/p3lr12-bilateral-fixedpoint-20261030">完整证据Release</a></nav><h1>固定点谱审计：单位模态究竟表示什么</h1><p>精确双边模式 · 普通一阶延拓 · 实际材料覆盖 · 数字拓扑</p></header><main><div class="notice"><strong>开发结论：分层扩大 NO-GO。</strong>四个暴露P1难例主覆盖0/4；数字8未恢复双孔。163,994 RHS / 6,974 LU，在本轮上限内。没有独立新parent或Full66 posterior声明。</div><details><summary>章节目录</summary><div class="toc"><a href="#1-用户给定映射的精确导数">1. 用户给定映射的精确导数</a><a href="#2-阻尼先验和实际正确器是三个需要写清的对象">2. 阻尼、先验和实际正确器是三个需要写清的对象</a><a href="#3-材料度量和解码器商空间">3. 材料度量和解码器商空间</a><a href="#4-必须分别登记的四类模态">4. 必须分别登记的四类模态</a><a href="#5-已执行控制">5. 已执行控制</a><a href="#6-独立低维连续控制实际-maxwell但明确不属于原-p1">6. 独立低维连续控制：实际 Maxwell，但明确不属于原 P1</a></div></details><article><h1 id="固定点谱审计单位模态究竟表示什么">固定点谱审计：单位模态究竟表示什么</h1>
+<p>先看物理上能观察的变化，再讨论迭代的特征值。一个迭代在某些方向几乎不动，可能是数据很弱、步长被阻尼、参数解码器没有改变材料，或者算法主动冻结了坐标。这些现象都不能单独证明存在连续的、严格等响应材料族。</p>
+<p>本文件给出有限离散模型的局部结论；核心解释及最终科学裁决由主线程审阅。源码和数值证据位于 <code>agent_b/engine.py</code>、<code>agent_b/two_cell/</code>、<code>agent_b/two_cell_nonroot/</code>、<code>agent_b/two_cell_continuous/</code>。三个实际 Maxwell 控制合计 <strong>98 RHS、31 次物理 LU</strong>，均已在根原子预算中预付；代数曲线检查为 0 Maxwell RHS。</p>
+<h2 id="1-用户给定映射的精确导数">1. 用户给定映射的精确导数</h2>
+<p>令实参数为 \(x\)，原始复响应按冻结顺序实化并白化后的残差为 \(r(x)\)，\(J=Dr\)。给定</p>
+<div class="math" aria-label="数学公式">\[
+A(x)=J(x)^T J(x)+\mu I,\quad g(x)=J(x)^T r(x),\qquad
+T(x)=x-A(x)^{-1}g(x),\quad \mu&gt;0.
+\]</div>
+<p>对任意实方向 \(h\)，写 \(\dot J=DJ(x)[h]\)，则</p>
+<div class="math" aria-label="数学公式">\[
+DA[h]=\dot J^T J+J^T\dot J,
+\]</div>
+<div class="math" aria-label="数学公式">\[
+\boxed{
+DT[h]=h-A^{-1}\{J^T Jh+\dot J^Tr\}
+       +A^{-1}DA[h]A^{-1}J^Tr.}
+\]</div>
+<p>最后一项来自逆矩阵的导数。只把 \(DT\) 写成 \(I-A^{-1}J^TJ\)，通常会漏掉两项。</p>
+<p>在精确响应根 \(r(x_*)=0\) 上，两项同时消失。因此</p>
+<div class="math" aria-label="数学公式">\[
+DT(x_*)=I-(J^TJ+\mu I)^{-1}J^TJ
+       =\mu(J^TJ+\mu I)^{-1}.
+\]</div>
+<p>在与 \(\mu I\) 相同的欧氏参数度量中，奇异值 \(\sigma_i(J)\) 对应</p>
+<div class="math" aria-label="数学公式">\[
+\lambda_i=\frac{\mu}{\sigma_i^2+\mu}.
+\]</div>
+<p>因此 \(\sigma_i&gt;0\) 时有 \(\lambda_i&lt;1\)，即使它非常接近 1。精确的单位特征值对应一阶数据零方向；还必须区分材料变化是否为零。改变 \(\mu\) 本身便能把这些特征值推近 1，故不能靠调阻尼获得“纤维维数”。本研究使用声明的 \(\mu=1\) 参考尺度，没有为单位模态调参。</p>
+<p>如果仅有 \(J^Tr=0\) 而 \(r\ne0\)，最后一项消失，但</p>
+<div class="math" aria-label="数学公式">\[
+DT=I-A^{-1}(J^TJ+S_r),\quad
+S_rh=(DJ[h])^Tr=\sum_a r_a\nabla^2r_a\,h
+\]</div>
+<p>仍包含残差 Hessian。它可能改变收缩率，甚至造成不稳定。此处是正残差驻点，不能称为严格等响应根。</p>
+<h2 id="2-阻尼先验和实际正确器是三个需要写清的对象">2. 阻尼、先验和实际正确器是三个需要写清的对象</h2>
+<p>上式的 \(\mu I\) 是用户给定映射中的阻尼。\(\mu=1\) 在数值尺度上与标准高斯先验 Hessian 相同，但该映射没有 \(+x\) 梯度项，因而不能直接称为 MAP。</p>
+<p>实际普通 RML/Gauss–Newton 正确器使用</p>
+<div class="math" aria-label="数学公式">\[
+L_{\eta,\xi}(x)=\tfrac12\|r(x)-\eta\|^2+
+               \tfrac12\|x-\xi\|^2,
+\]</div>
+<div class="math" aria-label="数学公式">\[
+T_{\rm RML}(x)=x-(J^TJ+I)^{-1}
+\{J^T(r-\eta)+(x-\xi)\}.
+\]</div>
+<p>令 \(g_{\rm RML}=\nabla L\)、\(A=J^TJ+I\)，则</p>
+<div class="math" aria-label="数学公式">\[
+DT_{\rm RML}[h]=h-A^{-1}\nabla^2L\,h+
+ A^{-1}DA[h]A^{-1}g_{\rm RML}.
+\]</div>
+<p>在驻点，\(DT_{\rm RML}=-A^{-1}S_{r-\eta}\)。这是有限优化候选机制，不能由此推出后验样本或后验体积。</p>
+<h2 id="3-材料度量和解码器商空间">3. 材料度量和解码器商空间</h2>
+<p>原 P1 世界是 Gaussianized66，实际复材料在完整 576 格上计量：</p>
+<div class="math" aria-label="数学公式">\[
+d_{\rm mat}(m_1,m_2)=\|m_1-m_2\|_2/24.
+\]</div>
+<p>即使物理后端只保留 ROI256 的材料导数，也沿用分母 576。对 \(D= D_xm\) 实化得到</p>
+<div class="math" aria-label="数学公式">\[
+M=\frac1{24}\begin{bmatrix}\Re D\\\Im D\end{bmatrix},
+\quad M=U\Sigma V^T,\quad Q=U_{\rm keep},\quad
+P=V_{\rm keep}\Sigma_{\rm keep}^{-1}.
+\]</div>
+<p>保留阈值为奇异值相对 \(10^{-10}\) 与浮点尺寸误差阈值的较大者。于是 \(MP=Q\)、\(P^TM^TMP=I\)。去掉的方向是局部解码器零方向或数值不可分辨方向；不据此宣称全局参数化规范等价。</p>
+<p>材料有效敏感度是 \(K=JP\)。材料有效的先验感知弱方向来自显式增广因子</p>
+<div class="math" aria-label="数学公式">\[
+\begin{bmatrix}JP\\P\end{bmatrix}
+\]</div>
+<p>的 SVD，而不是先形成病态正规矩阵再寻找最小特征值。后者的消去误差可能制造虚假的弱方向。</p>
+<p><strong>不能把 \(K\) 的普通奇异值直接代入上节带 \(\mu I\) 的公式。</strong> 在材料正交坐标中，原欧氏先验/阻尼为 \(\mu P^TP\)，不是 \(\mu I\)。若需要有效固定点导数，代码显式压缩已给定的 \(DT\)：\(DT_{\rm mat}=Q^T M(DT)P\)，不由 \(J\) 猜测非零残差项。</p>
+<h2 id="4-必须分别登记的四类模态">4. 必须分别登记的四类模态</h2>
+<div class="table-wrap"><table><tr><th>现象</th><th>可支持的判断</th><th>不可升级的判断</th></tr><tr><td>\(Mh=0\)</td><td>局部解码器材料零方向，先从有效谱剔除</td><td>不等于物理多解</td></tr><tr><td>\(Mh\ne0\)、\(Jh=0\)</td><td>有效材料一阶盲方向</td><td>不等于存在精确连续根曲线</td></tr><tr><td>\(|Jh|\) 很小、\(\lambda\approx1\)</td><td>对当前噪声/度量较弱或阻尼迭代较慢</td><td>不等于精确单位特征值或纤维维数</td></tr><tr><td>正确器人为保持 \(Cx\)</td><td>对应算法全空间中的结构性单位左模态</td><td>不等于 Maxwell 数据零方向</td></tr></table></div>
+<p>如果全空间更新满足 \(CT(x)=Cx\)，则 \(C DT=C\)。这直接产生单位左模态；实际横向正确器的自由域是 \(\ker C\)，应在该域判断收缩，不能把人为冻结的坐标计入物理根维数。</p>
+<p>满列秩的实 \(J\) 在响应根附近支持局部孤立性。若要宣称维数 \(d-r\) 的连续根流形，需要邻域中适当的正则秩条件和精确零响应约束。有限小步、近单位谱或若干竞争端点均不能替代这些条件。</p>
+<h2 id="5-已执行控制">5. 已执行控制</h2>
+<p>对称两格 TM-VIE 采用继承 Z-ALG Hankel Green 核，两个实材料参数 \((.65,1.1)\) 与 \((1.1,.65)\) 是不同材料；白化响应距离为 \(9.625\times10^{-16}\)。两处实白化 Jacobian 都满列秩，奇异值为 \([4.642826,0.0585363]\)。因此这些根在该两参数模型中局部孤立。</p>
+<p>\(\mu=1\) 时，固定点特征值为 \([0.0443344,0.9965852]\)：存在非常接近 1 的模态，同时没有精确单位模态。解析导数与中心差分误差为 \(1.773\times10^{-11}\)。<strong>这个实际离散 Maxwell 控制直接否定“接近 1 即连续根族”的推论。</strong> 它没有证明所有根已找到，也没有排除其他材料/观测配置的连续纤维。</p>
+<p>第二个非对称两格控制构造 \(\|r\|=1\)、\(\|J^Tr\|=6.426\times10^{-16}\) 的正残差驻点。保留全部项的 \(DT\) 与差分误差为 \(1.709\times10^{-11}\)；遗漏 \((DJ[h])^Tr\) 的误差为 <strong>0.0301208</strong>。它验证非零残差项确实可测，而非仅符号上的修饰。</p>
+<p>第一对称控制中的正残差附加试验，其残差曲率几乎为零；这一负控制保留在原文件中，不能冒称为显著残差曲率证据。显著证据来自单独的非对称控制。</p>
+<p>零 RHS 的显式非 Maxwell 圆曲线例子保留两个端点，最大残差 \(4.44\times10^{-16}\)，固定弱坐标缺陷和解码器规范方向漂移均为 0。它只验证引擎的约束实现，不能被计为 Maxwell 实验。</p>
+<h2 id="6-独立低维连续控制实际-maxwell但明确不属于原-p1">6. 独立低维连续控制：实际 Maxwell，但明确不属于原 P1</h2>
+<p>为避免只有孤立根反例，另设两格、一个复端口、三个实材料自由度的明确控制。\(m_1=.65+t+.08i\)，而 \(m_2\) 的实部和虚部都可调；这不是原 Gaussianized66/P1 support。</p>
+<p>对两个 pulse cell，令 \(G=(g_{ij})\)、入射场 \(e\)、接收向量 \(s\)，响应可精确写成</p>
+<div class="math" aria-label="数学公式">\[
+F=\frac{a m_1+b m_2+c m_1m_2}
+ {1-g_{11}m_1-g_{22}m_2+\det(G)m_1m_2},
+\]</div>
+<p>其中 \(a=s_1e_1\)、\(b=s_2e_2\)，</p>
+<div class="math" aria-label="数学公式">\[
+c=-s_1g_{22}e_1+s_1g_{12}e_2+s_2g_{21}e_1-s_2g_{11}e_2.
+\]</div>
+<p>固定基点响应 \(y\)，直接解出</p>
+<div class="math" aria-label="数学公式">\[
+\boxed{m_2(t)=\frac{n_0+n_1t}{d_0+d_1t}.}
+\]</div>
+<p>系数均由基点和同一实际 Green 矩阵确定，未拟合路径或借助真值。令 \(c_*=n_1-m_2(0)d_1\)，则对 \(|t|\le\tau\)，</p>
+<div class="math" aria-label="数学公式">\[
+|d_0+d_1t|\ge |d_0|-\tau|d_1|&gt;0,
+\quad |m_2(t)-m_2(0)|\le
+\frac{\tau|c_*|}{|d_0|-\tau|d_1|}.
+\]</div>
+<p>区间由预定的保守不等式规则在非基点物理解算前确定为 \([-0.04,0.04]\)。整个区间的分母模长下界为 <strong>0.00103916</strong>，第二格材料实部下界 <strong>1.06027</strong>，损耗下界 <strong>0.16027</strong>；第一格实部至少 .61，损耗恒为 .08。</p>
+<p>再以基点状态矩阵 \(A_0\) 得到</p>
+<div class="math" aria-label="数学公式">\[
+\|A_0^{-1}\operatorname{diag}(\delta m)G\|_2
+\le \frac{\|G\|_2}{\sigma_{\min}(A_0)}
+\max\{|t|,|m_2(t)-m_2(0)|\}
+\le .0038873&lt;1.
+\]</div>
+<p>Neumann 条件保证该区间的离散状态矩阵始终可逆。因此这是这个有限两格系数模型中的一个显式、被动合法的一实维固定响应曲线，而不只是九个节点的插值猜想。上述界用存储的浮点系数作解析不等式，<strong>没有向外取整的 interval arithmetic 认证</strong>；边界与零/一有很大裕量。</p>
+<p>另行支付的九个物理节点最大白化响应残差为 \(3.638\times10^{-16}\)，两端还由普通的“固定 \(t\)、修正第二格实部/损耗”的横向 Newton 正确器得到。基点实 Jacobian rank2，横向块可逆。该控制新增 <strong>23 RHS、16 LU</strong>。</p>
+<p>这个构造是普通欠定系统与隐函数/有理消元的可检查实例，不主张新原理。它既不支持原 P1 内存在同一条曲线，也不支持 Full66、连续 PDE、一般材料覆盖或后验结论。</p>
+<p>状态：上述控制 <code>PASS</code>；原 576 格 P1 连续根流形定理、完整材料后验、总体覆盖证明均 <code>NOT_ESTABLISHED</code>。</p></article></main><footer>完整非线性Maxwell；原P1与N原生材料合同分开。候选频率不是posterior mass。</footer></body></html>
