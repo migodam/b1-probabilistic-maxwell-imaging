@@ -1,0 +1,114 @@
+{
+  "study": "R4-DIVERSITY: contrast-stratified GlobalDual imaging",
+  "declared_utc": "2026-10-30T04:21:04.123049+00:00",
+  "dataset": {
+    "shapes": [
+      "digit1",
+      "digit2",
+      "digit3",
+      "digit4",
+      "digit5",
+      "digit6",
+      "digit7",
+      "digit8",
+      "digit9",
+      "ring",
+      "two_islands",
+      "curved_bar"
+    ],
+    "amplitude": [
+      0.4,
+      2.5,
+      12.0
+    ],
+    "background_range": [
+      0.08,
+      0.15
+    ],
+    "relative_noise": [
+      0.0,
+      0.001
+    ],
+    "shape_background_noise_direction_paired_across_contrast": true,
+    "observations": 72,
+    "gpu_shapes": [
+      "digit2",
+      "digit7",
+      "ring"
+    ],
+    "gpu_observations": 18,
+    "new_GT_generation": "after final code/contract freeze"
+  },
+  "physics": {
+    "model": "unchanged scalar-TM disk-pulse full nonlinear VIE",
+    "n": 576,
+    "shape": [
+      24,
+      24
+    ],
+    "k": 6.283185307179586,
+    "sources": 12,
+    "receivers": 48,
+    "Born_inversion": false
+  },
+  "methods": [
+    "native_trf",
+    "reciprocal_trf",
+    "data_lbfgs",
+    "globaldual"
+  ],
+  "solver": {
+    "wall_seconds": 45.0,
+    "max_lu": 2000,
+    "max_rhs": 60000,
+    "lower": 0.02,
+    "upper": 20.0,
+    "initial_material": 0.1,
+    "stages": [
+      8,
+      12,
+      24
+    ],
+    "stage_fractions": [
+      0.2,
+      0.25,
+      0.55
+    ],
+    "smooth_weight": 0.0001,
+    "tv_weight": 0.0001,
+    "tv_epsilon": 0.01,
+    "dual_fraction": 0.45
+  },
+  "hardware": {
+    "cpu": "i9-14900HX, four distinct P-core workers, one thread each",
+    "cuda": "RTX4060 Laptop complex128, two workers, separate two P-core host threads",
+    "compare_algorithms_within_backend": true,
+    "gpu_scipy_optimizer": "CPU host; dense physical calculations on CUDA"
+  },
+  "metrics": {
+    "primary": "posthoc material RMSE/amplitude, paired by shape",
+    "secondary": [
+      "RMSE",
+      "MAE",
+      "reconstruction-only Otsu IoU",
+      "offline known-amplitude midpoint IoU",
+      "full relative residual",
+      "wall",
+      "LU",
+      "source/adjoint/FullJ/Gram RHS"
+    ],
+    "online_top1": "minimum full normalized data loss plus common generic regularizer",
+    "oracle_bestK": "offline only; finite optimizer candidates, not independent branches",
+    "joint_success": {
+      "NRMSE_max": 0.15,
+      "Otsu_IoU_min": 0.7,
+      "relative_data_residual_clean_max": 0.001,
+      "relative_data_residual_noisy_max": 0.003
+    },
+    "practical_pair_tie": "abs(delta NRMSE) <= max(.02,.10*min(NRMSE_left,NRMSE_right)); continuous deltas also retained",
+    "advantage_claim": "no guaranteed superiority; accuracy and cost assessed separately, compare to matched data-LBFGS and mature TRF"
+  },
+  "no_new_precision_checks": true,
+  "no_model_or_source_hashes": true,
+  "no_CUDA_install": true
+}
