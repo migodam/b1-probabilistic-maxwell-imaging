@@ -31,3 +31,20 @@ operator or introducing a new execution backend.
   interface restrictions. Use an appropriate adapter rather than changing the
   physical problem. This guidance does not authorize new dependencies, driver
   changes, taking another session's GPU, or starting a permanent service.
+
+
+## Reuse fixed-feedback derivatives with their scientific scope
+
+For experimental real-material scalar-TM feedback metrics, see
+`research/research_fbg_r2_adaptive_feedback/MATHEMATICAL_THEORY.md` (F02/F03/F09/F12)
+and `src/feedback_fit.py` in that study. `feedback_value_gradient` reuses the original
+Maxwell LU, uses one analytic adjoint and a small source Gram, and applies diagonal
+or 4x4 spatial blocks without constructing another dense feedback matrix.
+
+Keep B fixed during each inner solve; a continuously varying B(m) needs its missing
+derivative. Source-normalized current fitting and whole-box pole restrictions are
+provided, but current-energy attenuation is not a basin or GT certificate. This is
+an optional research objective, not a new default physics backend or a vector-DDA
+adapter. The study found fixed scalar feedback stronger than its automatic fit;
+reuse code and exact assumptions, not a universal superiority claim. Continue using
+the resident CUDA queue/operator catalog above; do not rerun formula error-floor tests.

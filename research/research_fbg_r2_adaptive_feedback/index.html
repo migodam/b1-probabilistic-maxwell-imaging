@@ -1,0 +1,27 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>FBG-R2 · Maxwell Feedback Geometry</title>
+<style>
+:root{color-scheme:light}body{margin:0;background:#f3f5f6;color:#17222d;font:17px/1.8 system-ui,-apple-system,"PingFang SC",sans-serif}
+header,main,footer{max-width:1250px;margin:auto;padding:24px 34px}header{background:#113348;color:#f4fcff;max-width:none}
+header .inner{max-width:1250px;margin:auto}h1{line-height:1.35;font-size:31px}h2{margin-top:2em;border-bottom:1px solid #d4dfe6;padding-bottom:.3em}h3{margin-top:1.7em}a{color:#006d8e}header a{color:#d7f4ff}nav{display:flex;gap:10px;flex-wrap:wrap}nav a{padding:4px 10px;border:1px solid #638799;border-radius:5px;text-decoration:none}main{background:white;min-height:70vh}img{max-width:100%;height:auto;border:1px solid #dde4e8}table{border-collapse:collapse;width:100%;display:block;overflow:auto;font-size:15px}td,th{border:1px solid #d6e0e4;padding:7px 11px;white-space:nowrap}th{background:#eff6f8}pre{padding:16px;background:#eef3f5;overflow:auto;font-size:14px}code{font-size:.9em}blockquote{border-left:4px solid #5091a6;margin-left:0;padding-left:20px;color:#405662}.math{overflow:auto;padding:9px 0}footer{font-size:14px;color:#5d6d77}.links{display:flex;gap:18px;flex-wrap:wrap}.loading{color:#637e8a}@media(max-width:600px){header,main,footer{padding:18px}h1{font-size:25px}body{font-size:16px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script>window.MathJax={tex:{displayMath:[["$$","$$"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head><body><header><div class="inner"><div>Research FBG-R2 · 576-cell nonlinear scalar-TM VIE</div>
+<h1>反馈残差几何与高对比度材料成像</h1><nav><a href="?doc=RESEARCH_REPORT_ZH.md">研究报告</a><a href="?doc=MATHEMATICAL_THEORY.md">数学推导</a><a href="?doc=ADAPTIVE_BF_DESIGN.md">反馈设计</a><a href="?doc=ILLUMINATION_GEOMETRY.md">照明几何</a><a href="?doc=ALGORITHM.md">算法</a><a href="?doc=REPRODUCE.md">复现</a><a href="?doc=audit/FINAL_SCIENTIFIC_REVIEW.md">独立复核</a><a href="?doc=PAPER_CANDIDATE.md">论文判断</a><a href="?doc=CODEX_TO_PRO_HANDOFF.md">下一步</a></nav></div></header>
+<main><div class="links"><a id="source" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_fbg_r2_adaptive_feedback/">完整代码与数据</a><a id="raw">Raw Markdown</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_fbg_r2_adaptive_feedback/audit/COST_LEDGER.csv">费用账本</a></div>
+<article id="report"><p class="loading">正在读取已归档研究报告…</p></article></main>
+<footer>原始物理评分、在线 top1 与离线 best@K 分开；开发对象不冒充新鲜盲测。完整失败和适用边界随报告保留。</footer>
+<script>
+const doc=new URLSearchParams(location.search).get('doc')||'RESEARCH_REPORT_ZH.md';
+document.getElementById('raw').href='https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_fbg_r2_adaptive_feedback/'+doc;
+const escapeHtml=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+fetch(doc).then(r=>r.text()).then(text=>{
+ const maths=[];
+ text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const key='FBGMATHBLOCK'+maths.length+'TOKEN';maths.push('<div class="math">$$'+escapeHtml(m)+'$$</div>');return '\n\n'+key+'\n\n';});
+ let html=marked.parse(text);maths.forEach((m,i)=>html=html.replace('FBGMATHBLOCK'+i+'TOKEN',m));
+ document.getElementById('report').innerHTML=html;
+ MathJax.startup.promise.then(()=>MathJax.typesetPromise([document.getElementById('report')]));
+});
+</script></body></html>
