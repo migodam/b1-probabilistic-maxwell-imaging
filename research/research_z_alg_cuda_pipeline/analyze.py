@@ -23,6 +23,13 @@ def main():
         summary = json.loads((folder / "runner_summary.json").read_text())
         total = Counter()
         receipts = []
+        setup = summary["shared_setup_counts"]
+        ledger.append({"run": folder.name, "lanes": summary["lanes"], "task_id": "SHARED_SETUP_ONCE",
+                       "status": "OK", "method": "shared_setup", "wall_s": summary["shared_init_wall_s"],
+                       "optimizer_evaluations": 0, "LU": setup["LU"], "source_RHS": setup["source_RHS"],
+                       "adjoint_RHS": 0, "receiver_RHS": 0, "FullJ": 0, "Gram": 0, "host_returns": 0,
+                       "relative_residual": None, "state_relative_residual": None,
+                       "truth_access": "NONE_PUBLIC_DATA_RUNTIME_ONLY"})
         for path in sorted(folder.glob("public_*.json")):
             receipt = json.loads(path.read_text())
             z = receipt.get("result", {})
@@ -67,6 +74,7 @@ def main():
               "scientific_algorithm_claim": "NONE_NEW; physics/adjoints/GlobalDual/TRF/L-BFGS-B inherited",
               "synchronization_claim": "No explicit device-wide synchronization in the new hot path; necessary per-result lane events remain",
               "timing_scope": "Executor run wall includes shared GPU setup, observations, all tasks and writer; Python/torch import and SSH transport are outside this clock"}
+    output["cost_ledger_scope"] = "48 end-to-end tasks plus four shared setups; independent kernel probes and their warmups are not included; raw measurements/counters retained in results/*.json; unlogged failure cost NOT_MEASURED"
     (ROOT / "RESULTS_SUMMARY.json").write_text(json.dumps(output, indent=2))
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
     fig, axs = plt.subplots(1, 3, figsize=(14, 4.4), layout="constrained")

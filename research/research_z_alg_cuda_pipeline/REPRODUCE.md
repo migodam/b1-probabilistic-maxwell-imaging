@@ -73,7 +73,7 @@ python research/research_z_alg_cuda_pipeline/analyze.py
 python research/research_z_alg_cuda_pipeline/build_site.py
 ```
 
-脚本生成 `RESULTS_SUMMARY.json`、`COST_LEDGER.csv` 和三张真实计时图。汇总使用实际回执，不重新运行物理、不读取 GT。并行 task 的 wall 不相加代替总 wall；共享 setup 每个 run 记一次。Python/Torch 导入与 SSH 网络传输不在 executor 计时窗内，不能把其 wall 声称为完整远程冷启动时间。
+脚本生成 `RESULTS_SUMMARY.json`、`COST_LEDGER.csv` 和三张真实计时图。CSV 覆盖 48 个端到端任务及四次共享 setup；独立 kernel/库选择实验和 warmup 不计入这份 CSV，它们的已记录计时/计数保存在 `results/` 原始 JSON，未记录的失败费用明确为 NOT_MEASURED。汇总使用实际回执，不重新运行物理、不读取 GT。并行 task 的 wall 不相加代替总 wall；共享 setup 每个 run 记一次。Python/Torch 导入与 SSH 网络传输不在 executor 计时窗内，不能把其 wall 声称为完整远程冷启动时间。
 
 ## 已记录失败和范围
 

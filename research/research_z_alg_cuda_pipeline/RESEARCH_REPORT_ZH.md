@@ -96,6 +96,7 @@ CPU 优化器消费结果前仍需要等自己的 event。这一依赖存在时�
 - 同样 batch=16，default 219.3 /s、forced cuSOLVER 133.4 /s；没有一律强制 cuSOLVER。
 - 代码保留 LU/Gram 状态并在 endpoint 计算物理 residual；没有把旧 kernel 每步的 eig/condition/residual/QR fallback 全搬进热路径。非奇异 resolvent 与有效 source Gram 是 fast path 的条件；病态情况下并非原冻结 solver 的逐位等价替换。
 - 所有 timing 都是有限机器、有限固定工作量上的单次记录；没有置信区间或跨硬件保证。executor wall 含 GPU shared setup、任务、写盘，Python/Torch 导入和 SSH 传输不在计时窗内。物理 Green 的历史构造成本没有新测。
+- `COST_LEDGER.csv` 单独覆盖 48 个完整任务及四次共享 setup，不是本轮所有选型探测的总计。独立 kernel/库/SVD 选型及 warmup 的已记录数据在原始 JSON；缺失的异常费用为 NOT_MEASURED，不补造精确总数。
 - 流水线不创造新材料候选机制、概率解集、后验样本或全局分支定理；没有用更快执行替代 GT recovery 的证据。
 
 ## 结论与推荐
