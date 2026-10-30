@@ -1,0 +1,26 @@
+{
+  "failures": [
+    {
+      "stage": "first_throughput_launch",
+      "status": "IMPORT_FAILED",
+      "error": "ModuleNotFoundError: No module named 'threadpoolctl'",
+      "cause": "benchmark alias import did not include the old R4 project's existing vendor path",
+      "fix": "add that existing vendor path; no installation",
+      "unrecovered_wall_and_costs": "NOT_MEASURED",
+      "new_material_experiment": false
+    },
+    {
+      "stage": "default_library_cuda_graph",
+      "status": "CAPTURE_FAILED",
+      "evidence": "results/throughput_v1.json",
+      "later_outcome": "forced cuSOLVER capture succeeds in results/backend_choice.json; not selected as default fastest workload"
+    },
+    {
+      "stage": "native_sol_wrapper_worker",
+      "status": "MODEL_CAPACITY_ERROR_AFTER_PARTIAL_FILES",
+      "outcome": "parent completed and adapted the partial wrapper; no new Astra or DeepSeek worker"
+    }
+  ],
+  "not_measured": ["SM occupancy", "GPU kernel overlap percentage", "complete Python/SSH cold-start wall", "GT recovery improvement"],
+  "not_installed": ["new CUDA toolkit or driver", "CuPy", "nsys", "GPU sharing daemon"]
+}
