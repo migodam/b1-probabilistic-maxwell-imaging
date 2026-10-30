@@ -1,0 +1,501 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Research W-GSDA-R4 已完成的全波实验、九数字实际失败、精确吸收核验与成本边界。"><title>R4网页端研究交接</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#192b37;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}main{max-width:1160px;margin:auto;padding:30px 24px 70px}nav{display:flex;gap:9px 21px;flex-wrap:wrap;margin-bottom:25px}a{color:#17668d;text-underline-offset:3px}h1{font-size:clamp(29px,4.5vw,43px);line-height:1.4;letter-spacing:-.025em}h2{font-size:26px;line-height:1.5;margin-top:1.8em}h3{line-height:1.5}.panel,article{background:white;border:1px solid #dce3e8;border-radius:14px;padding:28px;margin:23px 0}.lede{font-size:21px}.status{background:#fff1eb;border-left:4px solid #b55c43;padding:17px 21px;margin:24px 0;border-radius:4px}.note{background:#edf3f7;border-left:3px solid #7c9bad;padding:13px 19px}.muted,figcaption{font-size:14px;color:#526575}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:27px 0}.metric{padding:18px;background:#eaf1f5;border:1px solid #dce5eb;border-radius:12px}.metric strong{display:block;font-size:29px;line-height:1.4;color:#164d68}.metric span{font-size:14px}.table-scroll{overflow-x:auto;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow-x:auto}th,td{border:1px solid #d7e0e6;padding:9px 11px;vertical-align:top;text-align:left}th{background:#edf3f7}img{width:100%;height:auto;display:block;background:white}figure{margin:30px 0}figure>a{display:block}figure img{border:1px solid #dce3e8}figcaption{padding-top:10px}code,pre{background:#edf2f5;font-size:.88em}code{padding:2px 4px;border-radius:4px}pre{padding:16px;overflow-x:auto;border-radius:8px}pre code{padding:0}p,li{overflow-wrap:anywhere}blockquote{margin:20px 0;padding:2px 20px;border-left:3px solid #9fb4c1}footer{margin-top:38px;padding-top:20px;border-top:1px solid #d5dfe6;font-size:14px;color:#526575}.downloads{display:flex;gap:12px 20px;flex-wrap:wrap}.downloads a{display:inline-block;padding:9px 14px;background:#e6eff4;border:1px solid #cbdce6;border-radius:8px}@media(max-width:620px){main{padding:20px 13px 45px}.panel,article{padding:18px}nav{font-size:15px}h2{font-size:23px}.lede{font-size:19px}}</style></head><body><main><nav><a href="../../">B1首页</a><a href="index.html">R4概览</a><a href="report.html">完整报告</a><a href="gallery.html">实际图像</a><a href="methods.html">方法实现</a><a href="physics.html">物理与误差</a><a href="handoff.html">网页端交接</a><a href="evidence.html">下载与复现</a></nav><p class="muted">发布于2026-10-30（新加坡时间），经用户明确授权。科研已于2026-10-30 06:02封账；本次新增0 FE / 0 RHS。原报告中“未发布”保留为封账历史状态。<a href="publication/PUBLICATION_NOTE.md">发布记录</a></p><article><h1>Research W-GSDA-R4 网页端深度复盘交接</h1>
+<h2>本轮事实</h2>
+<p>九数字1–9均真实生成完整Maxwell测量并完成未知墙与自由材料图反演。B0/B4各9次，普通Full-GN补充9次；不是数字分类、固定标签或真墙Green。所有数字在线输入只有通用case测量与公共合同，输出封存后独立评分。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>实际数字数</th>
+<th>IoU均值</th>
+<th>复对比度相对L2均值</th>
+<th>质心RMSE / λ0</th>
+<th>训练白化RMS</th>
+<th>留出白化RMS</th>
+<th>完整成像门通过</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B0 Full-FWI+TV</td>
+<td>9</td>
+<td>0.2870</td>
+<td>0.9494</td>
+<td>0.1360</td>
+<td>0.9606</td>
+<td>0.5635</td>
+<td>0/9</td>
+</tr>
+<tr>
+<td>B0+Full-GN+TV</td>
+<td>9</td>
+<td>0.3000</td>
+<td>0.9396</td>
+<td>0.1413</td>
+<td>0.9554</td>
+<td>0.5632</td>
+<td>0/9</td>
+</tr>
+<tr>
+<td>B4 原生CSI+风险筛选</td>
+<td>9</td>
+<td>0.0000</td>
+<td>0.9574</td>
+<td>0.1335</td>
+<td>1.6568</td>
+<td>1.4104</td>
+<td>0/9</td>
+</tr>
+</tbody></table>
+<h2>A. 算法到底实现了什么</h2>
+<p>固定GS0确已实现：参考FEM空气L0、真实积分点j、GS接收伴随、matrix-free GD。材料/局部场/J仍变动。精确吸收用LA及bA，照明、背景数据和接收返回路径完整。GD模态+精确小Schur实际用于SPD预条件，未删除外部电流；另有48模态截断失败实验。B2/B3的REOPEN为预定控制，B4主九数字未吸收/未重开/未支付目标风险J，不能写自动安全吸收已成功。CSI、Schur、SVD、TV、Full-GN属于标准方法。</p>
+<h2>B. 正面证据</h2>
+<p>同离散完整吸收和可逆恢复在三个实际场景/三频通过。Born强反馈差异显著。完整批处理、独立输入/真值评分、逐case材料图/预测/成本可复现。B0/Full-GN部分笔画与质心信息可见；这些局部现象保留，未被低IoU一句话抹去。但没有完整数字通过材料/形状门。</p>
+<h2>C. 负面证据与边界</h2>
+<p>B4速度较快但图像几乎为弱云团，未得到同质量成本优势。current surrogate拟合与Full-FEM材料预测不一致。48模态截断场失真，弱耦合不能随意删。B0原终点0/9达到一阶门，GN后仅c005达标，其余有明确迭代上限；不可用来宣布FWI已全局失败。粗细网格0.1门仅2/5真值通过，c012约.216；没有连续PDE认证。</p>
+<h2>D. 九数字完整结果</h2>
+<h3>B0 Full-FWI+TV</h3>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>状态</th>
+<th>IoU</th>
+<th>复材料相对L2</th>
+<th>质心误差</th>
+<th>孔洞 真/重建</th>
+<th>训练RMS</th>
+<th>留出RMS</th>
+<th>FE / RHS</th>
+<th>CPU秒</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>实际完成；未认证收敛</td>
+<td>0.176</td>
+<td>0.951</td>
+<td>0.122</td>
+<td>0/0</td>
+<td>0.982</td>
+<td>0.502</td>
+<td>696 / 5568</td>
+<td>257.07</td>
+</tr>
+<tr>
+<td>2</td>
+<td>实际完成；未认证收敛</td>
+<td>0.167</td>
+<td>1.007</td>
+<td>0.088</td>
+<td>0/0</td>
+<td>1.060</td>
+<td>0.760</td>
+<td>684 / 5472</td>
+<td>471.73</td>
+</tr>
+<tr>
+<td>3</td>
+<td>实际完成；未认证收敛</td>
+<td>0.450</td>
+<td>0.730</td>
+<td>0.126</td>
+<td>0/0</td>
+<td>0.891</td>
+<td>0.296</td>
+<td>704 / 5632</td>
+<td>235.22</td>
+</tr>
+<tr>
+<td>4</td>
+<td>实际完成；未认证收敛</td>
+<td>0.250</td>
+<td>1.289</td>
+<td>0.097</td>
+<td>1/0</td>
+<td>0.901</td>
+<td>0.666</td>
+<td>698 / 5584</td>
+<td>484.44</td>
+</tr>
+<tr>
+<td>5</td>
+<td>实际完成；未认证收敛</td>
+<td>0.381</td>
+<td>0.714</td>
+<td>0.236</td>
+<td>0/0</td>
+<td>0.936</td>
+<td>0.517</td>
+<td>704 / 5632</td>
+<td>334.70</td>
+</tr>
+<tr>
+<td>6</td>
+<td>实际完成；未认证收敛</td>
+<td>0.391</td>
+<td>0.858</td>
+<td>0.098</td>
+<td>1/0</td>
+<td>0.908</td>
+<td>0.616</td>
+<td>705 / 5640</td>
+<td>234.33</td>
+</tr>
+<tr>
+<td>7</td>
+<td>实际完成；未认证收敛</td>
+<td>0.222</td>
+<td>1.230</td>
+<td>0.160</td>
+<td>0/0</td>
+<td>0.976</td>
+<td>0.515</td>
+<td>699 / 5592</td>
+<td>247.86</td>
+</tr>
+<tr>
+<td>8</td>
+<td>实际完成；未认证收敛</td>
+<td>0.500</td>
+<td>0.756</td>
+<td>0.106</td>
+<td>2/1</td>
+<td>0.954</td>
+<td>0.557</td>
+<td>705 / 5640</td>
+<td>287.22</td>
+</tr>
+<tr>
+<td>9</td>
+<td>实际完成；未认证收敛</td>
+<td>0.045</td>
+<td>1.010</td>
+<td>0.129</td>
+<td>1/0</td>
+<td>1.038</td>
+<td>0.642</td>
+<td>581 / 4648</td>
+<td>379.61</td>
+</tr>
+</tbody></table>
+<h3>B0+Full-GN+TV</h3>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>状态</th>
+<th>IoU</th>
+<th>复材料相对L2</th>
+<th>质心误差</th>
+<th>孔洞 真/重建</th>
+<th>训练RMS</th>
+<th>留出RMS</th>
+<th>FE / RHS</th>
+<th>CPU秒</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>实际完成；未认证收敛</td>
+<td>0.176</td>
+<td>0.951</td>
+<td>0.122</td>
+<td>0/0</td>
+<td>0.982</td>
+<td>0.501</td>
+<td>828 / 6912</td>
+<td>303.32</td>
+</tr>
+<tr>
+<td>2</td>
+<td>实际完成；未认证收敛</td>
+<td>0.167</td>
+<td>1.006</td>
+<td>0.088</td>
+<td>0/0</td>
+<td>1.060</td>
+<td>0.760</td>
+<td>807 / 6972</td>
+<td>516.02</td>
+</tr>
+<tr>
+<td>3</td>
+<td>实际完成；未认证收敛</td>
+<td>0.450</td>
+<td>0.756</td>
+<td>0.134</td>
+<td>0/0</td>
+<td>0.891</td>
+<td>0.360</td>
+<td>836 / 7168</td>
+<td>282.59</td>
+</tr>
+<tr>
+<td>4</td>
+<td>实际完成；未认证收敛</td>
+<td>0.250</td>
+<td>1.287</td>
+<td>0.097</td>
+<td>1/0</td>
+<td>0.900</td>
+<td>0.670</td>
+<td>842 / 7168</td>
+<td>536.10</td>
+</tr>
+<tr>
+<td>5</td>
+<td>实际完成；未认证收敛</td>
+<td>0.545</td>
+<td>0.659</td>
+<td>0.217</td>
+<td>0/0</td>
+<td>0.929</td>
+<td>0.459</td>
+<td>833 / 7156</td>
+<td>380.88</td>
+</tr>
+<tr>
+<td>6</td>
+<td>实际完成；未认证收敛</td>
+<td>0.333</td>
+<td>0.883</td>
+<td>0.109</td>
+<td>1/0</td>
+<td>0.902</td>
+<td>0.653</td>
+<td>837 / 7176</td>
+<td>281.17</td>
+</tr>
+<tr>
+<td>7</td>
+<td>实际完成；未认证收敛</td>
+<td>0.222</td>
+<td>1.200</td>
+<td>0.159</td>
+<td>0/0</td>
+<td>0.970</td>
+<td>0.523</td>
+<td>828 / 7116</td>
+<td>293.81</td>
+</tr>
+<tr>
+<td>8</td>
+<td>实际完成；未认证收敛</td>
+<td>0.469</td>
+<td>0.762</td>
+<td>0.116</td>
+<td>2/2</td>
+<td>0.948</td>
+<td>0.609</td>
+<td>843 / 7200</td>
+<td>335.86</td>
+</tr>
+<tr>
+<td>9</td>
+<td>实际完成；未认证收敛</td>
+<td>0.087</td>
+<td>0.952</td>
+<td>0.178</td>
+<td>1/0</td>
+<td>1.019</td>
+<td>0.534</td>
+<td>728 / 6244</td>
+<td>432.65</td>
+</tr>
+</tbody></table>
+<h3>B4 原生CSI+风险筛选</h3>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>状态</th>
+<th>IoU</th>
+<th>复材料相对L2</th>
+<th>质心误差</th>
+<th>孔洞 真/重建</th>
+<th>训练RMS</th>
+<th>留出RMS</th>
+<th>FE / RHS</th>
+<th>CPU秒</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.937</td>
+<td>0.180</td>
+<td>0/0</td>
+<td>1.557</td>
+<td>1.316</td>
+<td>42 / 3216</td>
+<td>38.58</td>
+</tr>
+<tr>
+<td>2</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.984</td>
+<td>0.139</td>
+<td>0/0</td>
+<td>1.656</td>
+<td>1.433</td>
+<td>42 / 3216</td>
+<td>39.47</td>
+</tr>
+<tr>
+<td>3</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.903</td>
+<td>0.053</td>
+<td>0/0</td>
+<td>1.502</td>
+<td>1.159</td>
+<td>42 / 3216</td>
+<td>38.44</td>
+</tr>
+<tr>
+<td>4</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.943</td>
+<td>0.076</td>
+<td>1/0</td>
+<td>1.603</td>
+<td>1.421</td>
+<td>42 / 3216</td>
+<td>38.88</td>
+</tr>
+<tr>
+<td>5</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.980</td>
+<td>0.056</td>
+<td>0/0</td>
+<td>1.740</td>
+<td>1.519</td>
+<td>42 / 3216</td>
+<td>39.62</td>
+</tr>
+<tr>
+<td>6</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.967</td>
+<td>0.146</td>
+<td>1/0</td>
+<td>1.551</td>
+<td>1.218</td>
+<td>42 / 3216</td>
+<td>45.64</td>
+</tr>
+<tr>
+<td>7</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.969</td>
+<td>0.272</td>
+<td>0/0</td>
+<td>1.966</td>
+<td>1.919</td>
+<td>42 / 3216</td>
+<td>40.07</td>
+</tr>
+<tr>
+<td>8</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.980</td>
+<td>0.010</td>
+<td>2/0</td>
+<td>1.895</td>
+<td>1.623</td>
+<td>42 / 3216</td>
+<td>38.74</td>
+</tr>
+<tr>
+<td>9</td>
+<td>实际完成；未认证收敛</td>
+<td>0.000</td>
+<td>0.955</td>
+<td>0.041</td>
+<td>1/0</td>
+<td>1.442</td>
+<td>1.086</td>
+<td>42 / 3216</td>
+<td>39.34</td>
+</tr>
+</tbody></table>
+<p>每行FE/RHS为该方法部署账；B0+GN为累计账。B4逐case是warm，公共setup3FE/636RHS另列BATCH_RECEIPT，总九例381FE/29,580RHS。统一阈值chi&gt;=1和共同色轴，孔洞采用背景4连通，前景同时报4/8连通。实际视觉检查见evaluation/VISUAL_REVIEW.json。</p>
+<h2>E. 可直接检查的原始证据</h2>
+<ul>
+<li>主要参数/先验：EXPERIMENT_CONTRACT.json、configs/main.json、configs/current_main.json、METHOD_FREEZE.json、CSI_METHOD_FREEZE.json、GN_RUN_FREEZE.json。</li>
+<li>独立测量：inputs/online/cNNN/observation.npz，只有y[frequency,source,receiver]；私有真值/heldout在inputs/private/cNNN/truth.npz。</li>
+<li>结果：results/B0_FULL_FWI、results/B4_GSDA、results/FULL_GN_TV_SUPPLEMENT、results/CONTROL_*；各endpoint.npz保存z/预测/材料；target_material.npy/wall_material.npy为可直接读图的数组；ONLINE_SEALED.json记录选支身份；CSI另有best_currents.npz、trace与动作。</li>
+<li>物理：results/absorption_controls（全/吸收/重开/目标Born arrays）；results/spectral/GD_MODES.npz和各case.npz；results/independent_validation/*npz与SUMMARY.json。</li>
+<li>指标：DIGITS_1_TO_9_METRICS.csv、DIGITS_1_TO_9_METRICS_SUMMARY.csv、METHOD_ABLATIONS.csv、BASELINE_COMPARISON.csv、evaluation/SCORES_ALL.json。</li>
+<li>费用：PHYSICS_LEDGER.jsonl、PHYSICS_COST.json、receipts/、各BATCH_RECEIPT.json。预约失败也计数；kernel不重复加入wrapper。六次控制启动曾误用解析后的系统Python而缺numpy，0PDE的失败原日志保留，随后只修正解释器路径。</li>
+<li>图：DIGITS_1_TO_9_CONTRAST.png、DIGITS_1_TO_9_LOSS.png、figures/quality_cost/；图全部来自真实数组。</li>
+<li>实现：src/gsda/、tools/、vendor/。部署命令在RUN_ALGORITHM.md；旧研究截止后拒绝物理求解，新部署需显式独立预算。重放已有结果只需score_all.py。</li>
+</ul>
+<p>详细实验解释见REPORT_ZH.md；范围裁决见GO_NO_GO.json。需要新的理论解释的问题单列QUESTIONS_FOR_WEB_CHAT.md。<strong>本轮到此停止，没有自动进入下一科研方向、commit、push或网页发布。</strong></p>
+<h2>独立保留的同数据TV消融</h2>
+<table>
+<thead>
+<tr>
+<th>数字</th>
+<th>TV权重</th>
+<th>IoU</th>
+<th>复材料相对L2</th>
+<th>质心误差</th>
+<th>训练RMS</th>
+<th>留出RMS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8</td>
+<td>0.0</td>
+<td>0.3429</td>
+<td>0.9428</td>
+<td>0.0747</td>
+<td>0.9581</td>
+<td>0.6111</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0.2</td>
+<td>0.5000</td>
+<td>0.7558</td>
+<td>0.1056</td>
+<td>0.9545</td>
+<td>0.5573</td>
+</tr>
+</tbody></table>
+<p>TV0与TV.2使用同一R4数据、两个公共起点、所有其它先验与完整调用上限。不同TV目标的原始Φ不可直接当成质量胜负；比较共同数据误差、实际图像及材料指标。该消融在数据已暴露后按预声明执行，不能升级为新盲测；不能据跨轮R3/R4差异直接归因。</p>
+<h2>已完成的关键成对归因</h2>
+<p>三个父场景中，B4与普通B5的最终参数z及复预测data逐元素完全相同，不仅是目标函数偶然相同；B4为经验诊断每例额外使用144个RHS、合计432个，FE未减少。自动风险控制在这些场景没有产生目标或材料增量。证据：results/CONTROL_PAIRED_SUMMARY.json。</p>
+<p>B2相对只重置的B1_RESET，三个全波目标分别降低36.020、29.083、15.373，但额外支付36FE/504RHS；这不是材料图更准确的充分证据。相同模态预条件下，B3相对B5的全波目标变化为+71.297、−21.386、+66.511，额外支付36FE/1080RHS；吸收并不稳定改善优化，更没有显示省物理计算。B2/B3合计真实12次吸收与12次预定REOPEN，自动触发次数为0。</p>
+<p>全局完整弱块消元未实现：已实现的是投影核心内精确Schur和全电流空间预条件；48模态截断另有实际失败证据。不能把这写成“弱传播自由度已被安全删除”。</p>
+<h2>质心指标的公开ROI负控制</h2>
+<p>不查询任何物理、仅在公开目标ROI放均匀正材料，其质心恒为ROI中心。封存后用真实质心评分，九数字质心RMSE为0.094806λ0；B0为0.135994λ0。该零PDE描述性启发式没有字形、真墙或目标信息，却因本目标族大多位于ROI中部而取得较小质心误差。因此小质心误差本身不能证明数据驱动成像，尤其不能把B4弱云团的居中质心当作目标恢复。这里只评几何中心，不冒充proper prior的独立积分/Bayes action，也未伪造prior-only的PDE或预测分数。数据在evaluation/PRIOR_ONLY_CENTROID.json。</p>
+<p>计时口径补充：已有wrapper CPU从BudgetBook/批分区开始，早于此的Python启动导入未覆盖；没有回填估计。完整说明见 <a href="COST_ACCOUNTING_SCOPE.md">COST_ACCOUNTING_SCOPE.md</a>，不据此声称严格端到端加速。</p>
+<p>B4选支补充：九例各实际执行120次交替迭代，但c008（数字3）最终由完整全波目标选择了第0次公开均匀起点；其余八例选择了第30–60次检查点。九份保存材料彼此不同，未复用一张图。不能把“都运行了”写成“每例都优于初始化”。</p>
+<p>原始Jacobian补充：每个 results/FULL_GN_TV_SUPPLEMENT/cNNN/ 下的 FULL_J_FIRST.npz 与 FULL_J_LAST.npz 保存完整复J、实白化J、参数名/尺度/box、相应材料z、数据、梯度及GN+真实先验曲率；可供网页端后续分析，不需要重新支付PDE。它们仅对应各测量选中候选的局部信息，不能当真值Jacobian或全域posterior。</p>
+<p>实际接收器/发射器和PML的已固定历史默认值在RESOLVED_PUBLIC_PHYSICS.json，系事后解析补全出处，并未改变原合同。NPY跨入口格式见DATA_FORMATS.json；推荐用endpoint.npz的分开命名材料数组，避免把epsilon与contrast混读。</p>
+<p>统计单位补充：生成了13个不同物理世界，其中c000为单独开发、其余12个为9数字与3控制；每个只有一份噪声。49个非开发封存终点是同一批12个物理世界的不同方法/补充运行，不是49个独立parent。没有把方法、起点或噪声次数伪装成独立样本，也未据此提供泛化成功率/置信区间。仪器和收发位置已知，本轮没有拟合自由频率gain或注册nuisance。</p>
+<p>交付包：delivery/RESEARCH_W_GSDA_R4_20261030.zip保留全部本轮源码、原始数组、传播缓存、图表与账本；delivery/RESEARCH_W_GSDA_R4_WEB_CHAT.zip保留全部选中材料/预测/Jacobian/物理核验数组，但省去可在完整包取得的大型传播缓存，具体遗漏清单在WEB_CHAT_SCOPE.json。精简包不是所有缓存的完整副本；网页端理论复盘可先读WEB_CHAT_HANDOFF.md与QUESTIONS_FOR_WEB_CHAT.md。</p>
+
+</article><article><h1>实验暴露的具体问题（本轮不继续理论研究）</h1>
+<ol>
+<li>固定GS电流数据项已较小，但对应共享材料Full-FEM目标大得多：状态残差的尺度、材料闭式更新与全波反馈哪一项最阻碍本构一致性？如何保证改进的是物理材料而非不可行电流？</li>
+<li>B0与Full-GN的低训练残差仍伴随错误笔画；同prior下真值目标函数和局部解目标函数的差异说明什么？如何区分正则偏差、局部极值与实际有限分辨率？</li>
+<li>48个GD模态已无法还原场，哪些目标相关方向是普通内部SVD未保留的？只用作SPD预条件为何仍未改善材料一致性？</li>
+<li>精确吸收物理上正确，但优化中重置、暂停材料与改变电流条件数的贡献怎样严格分开？B1_RESET/B2/B3/B5实际成对结果应怎样解释？</li>
+<li>主九数字风险规则始终KEEP_ACTIVE；是材料确实不够确定、代理过保守，还是筛选成本/尺度本身不合适？何种判据可在不偷读真值时允许有用吸收？</li>
+<li>若定时REOPEN恢复物理目标下降但不能恢复孔洞，说明可逆性只是必要条件，还是当前材料空间/信息合同缺少什么？</li>
+<li>为何部分笔画和质心可恢复而复材料/损耗与闭环孔洞不可恢复？7×7可表达的真值仍失败，哪种分辨率或正则变化值得作为独立新协议检验？</li>
+<li>普通Schur/CSI/Full-GN的哪些能力已经解释全部现象，尚有哪些目标风险调度的独立可证伪增量没有得到证据？</li>
+</ol>
+
+</article><footer>静态二维 scalar-TM；未知墙限3×2材料格，目标为7×7自由复材料格。有限pilot，无连续PDE或概率安全证书。<br><a href="GO_NO_GO.json">分项裁决</a> · <a href="PHYSICS_COST.json">费用汇总</a> · <a href="FAILURE_LEDGER.jsonl">失败</a> · <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_w_gsda_r4/REPORT_ZH.md">匿名原始Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gsda-r4-20261030">完整证据Release</a></footer></main></body></html>

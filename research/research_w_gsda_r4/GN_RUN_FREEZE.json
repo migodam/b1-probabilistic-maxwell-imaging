@@ -1,0 +1,68 @@
+{
+  "status": "FROZEN_BEFORE_ANY_GN_SUPPLEMENT_PHYSICS",
+  "time_utc": "2026-10-29T21:14:13.446141+00:00",
+  "cohort": "DATA_EXPOSED_MEASUREMENT_ONLY_REFINEMENT",
+  "gn_options": {
+    "max_outer": 20,
+    "initial_damping": 0.01,
+    "trial_alphas": [
+      1.0,
+      0.5,
+      0.25
+    ],
+    "kkt_tolerance": 0.0001,
+    "quadratic_maxiter": 2000,
+    "quadratic_gtol": 1e-09,
+    "stagnation_outer": 5
+  },
+  "same_options_for_all_cases": [
+    "c001",
+    "c002",
+    "c003",
+    "c004",
+    "c005",
+    "c006",
+    "c007",
+    "c008",
+    "c009"
+  ],
+  "prior_source": "configs/main.json:fwi_options, TV .2 unchanged",
+  "initialization": "ONLY the already sealed B0 minimum full measured objective endpoint; no ground truth or score reads",
+  "cost_scope": "B0 plus Full-GN cumulative; no cold-start or independent blind claim",
+  "parameter_coordinates": "all110 independent box-bounded physical material coordinates, optimized in public scaled coordinates",
+  "rank_cut": false,
+  "full_jacobian_shape_complex": [
+    192,
+    110
+  ],
+  "full_jacobian_shape_real_whitened": [
+    384,
+    110
+  ],
+  "row_order": "frequency, source, receiver; real stack Re(all complex rows), then Im(all rows), divided by sigma .01",
+  "column_order": [
+    "wall epsilon6",
+    "wall loss6",
+    "target contrast49",
+    "target loss49"
+  ],
+  "cell_order": "row-major ascending physical y, then x",
+  "shared_adjoint": "4 primal and16 receiver-adjoint RHS per frequency share the same LU; no per-parameter PDE solves",
+  "trial_acceptance": "full original P3 cached-combined FEM objective with identical TV/spatial prior; strict decrease at alpha1,.5,.25",
+  "numerical_damping": "initial .01; accepted ratio>.75 halves damping, ratio<.25 doubles; all rejected multiplies by10; not part of prior",
+  "unchanged_J_reuse": true,
+  "maximum_optimization_outer_iterations": 20,
+  "endpoint_diagnostic": "At most one extra endpoint full-J checkpoint after the last accepted step; no optimization step follows",
+  "maximum_full_J_states_including_final_diagnostic": 21,
+  "per_case_additional_physics_upper_bound": {
+    "full_fe": 243,
+    "rhs": 1980
+  },
+  "stationarity": "scaled projected-gradient infinity tolerance1e-4 is local only; other stops explicitly NONCONVERGED; no global-optimum claim",
+  "raw_exports": [
+    "FULL_J_FIRST.npz",
+    "FULL_J_LAST.npz"
+  ],
+  "original_B0_modified": false,
+  "new_physics_started": false
+}

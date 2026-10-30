@@ -1,0 +1,28 @@
+{
+  "status": "STATIC_ENTRYPOINT_REVIEW_COMPLETE_NO_NEW_DEPLOYMENT_PHYSICS",
+  "entrypoints": [
+    "tools/deploy.py",
+    "tools/run_fwi.py",
+    "tools/run_digits.py",
+    "tools/refine_gn.py"
+  ],
+  "deploy_B0_route": "FEMModel -> gsda.fwi.invert -> gsda.artifacts.save_outputs",
+  "public_inputs": "measurement NPZ contains only complex y; config and frozen options; no truth or digit ID parameter",
+  "budget_isolation": "deploy.py requires explicit --deployment-budget-seconds and creates output/accounting/RUN_CLOCK.json; original campaign clock is not reset",
+  "original_main_FWI_evidence": "nine actual B0 endpoints and required arrays/traces/runtime receipts verified in results/B0_FULL_FWI/B0_COST_AND_NONCONVERGENCE.json",
+  "GN_evidence": "nine actual exposed warm-start GN endpoints, first/last raw Jacobians and required outputs verified in results/FULL_GN_TV_SUPPLEMENT/GN_COST_AND_STOPS.json",
+  "fresh_deployment_physics": "NOT_RUN",
+  "fresh_environment_installation": "NOT_RUN",
+  "array_formats": {
+    "canonical_endpoint_npz": "target_contrast and target_loss separate; wall_eps and wall_loss separate; target x/y edges retained",
+    "research_FWI_complete_outputs_target_npy": "(ny,nx,2): real epsilon=1+contrast, loss coefficient ell",
+    "research_FWI_complete_outputs_wall_npy": "(ny,nx,2): real wall epsilon, loss coefficient ell",
+    "deploy_artifacts_save_outputs_target_npy": "(ny,nx) complex contrast + i*ell, documented by RUN_ALGORITHM.md deployment section",
+    "deploy_artifacts_save_outputs_wall_npy": "(ny,nx) complex wall epsilon + i*ell",
+    "frequency_convention": "permittivity imaginary component is ell/f; ell-array is coefficient, not arbitrary-frequency imaginary epsilon"
+  },
+  "new_physics_full_fe": 0,
+  "new_physics_rhs": 0,
+  "original_B0_or_GN_sources_results_modified": false,
+  "necessary_deployment_source_bug_identified": false
+}

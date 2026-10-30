@@ -1,0 +1,26 @@
+{
+  "canonical_endpoint": {
+    "z": "wall epsilon6, wall ell6, target contrast49, target ell49; row-major y,x within each block",
+    "target_contrast": "(ny,nx), real epsilon_inf minus1",
+    "target_loss": "(ny,nx), ell coefficient, imaginary epsilon=ell/f",
+    "wall_eps": "(2,3), real epsilon_inf",
+    "wall_loss": "(2,3), ell coefficient",
+    "data": "complex (frequency,source,receiver)",
+    "target_x_edges": "length nx+1",
+    "target_y_edges": "length ny+1"
+  },
+  "online_measurement": {
+    "y": "Only key; complex3x4x16; frequency .85,1,1.15; TX0..3; RX0..15",
+    "noise": "Independent real and imaginary sigma .01",
+    "real_stack": "Re(flatten frequency/source/receiver), Im(all); divide .01; no sqrt channel count"
+  },
+  "alias_B0_GN": {
+    "target_material_npy": "(ny,nx,2): [1+target_contrast,ell]",
+    "wall_material_npy": "(2,3,2): [epsilon_inf,ell]"
+  },
+  "alias_CSI_and_deploy": {
+    "target_material_npy": "(ny,nx) complex: contrast+i ell (at f=1)",
+    "wall_material_npy": "(2,3) complex: epsilon_inf+i ell (at f=1)"
+  },
+  "status": "Actual schemas preserved; canonical endpoint named arrays recommended"
+}

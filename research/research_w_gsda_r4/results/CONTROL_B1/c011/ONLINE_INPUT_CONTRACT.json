@@ -1,0 +1,192 @@
+{
+  "method": "CSI_FIXED_REFERENCE",
+  "baseline_class": "B1_NATIVE_CSI",
+  "truth_access": false,
+  "digit_id_access": false,
+  "shape_dictionary": false,
+  "options": {
+    "iterations": 60,
+    "starts": 2,
+    "checkpoint_every": 10,
+    "state_weight": 10000.0,
+    "material_maxiter": 25,
+    "absorption_at": 10,
+    "reopen_at": 30,
+    "absorption_fraction": 0.5,
+    "absorption_validation_rtol": 1e-08,
+    "risk_stability_window": 2,
+    "risk_max_material_step": 0.05,
+    "risk_max_conditional_sd": 0.25,
+    "risk_max_projected_gradient": 0.1,
+    "risk_max_data_impact": 1.0,
+    "risk_reopen_projected_gradient": 0.1,
+    "risk_reopen_objective_growth": 1.0,
+    "current_initialization": "observable_residual",
+    "fixedtik_relative": 0.0001,
+    "spectral_preconditioner": false,
+    "spectral_rank": 32,
+    "strong_rank": 8,
+    "spectral_condition_limit": 10000000000.0,
+    "target_risk_screen": true,
+    "risk_target_scaled_RMS": 0.1,
+    "physical_reset_at": 0
+  },
+  "prior": {
+    "calls_per_stage": [
+      18,
+      25,
+      110
+    ],
+    "iterations_per_stage": [
+      12,
+      18,
+      90
+    ],
+    "maxls": 8,
+    "ftol": 1e-09,
+    "gtol": 0.0001,
+    "tv_weight": 0.2,
+    "tv_smoothing": 0.03,
+    "target_chi_scale": 2.0,
+    "target_loss_scale": 0.1,
+    "target_l2_weight": 0.01,
+    "wall_eps_center": 3.0,
+    "wall_eps_sigma": 1.5,
+    "wall_loss_center": 0.06,
+    "wall_loss_sigma": 0.15,
+    "wall_spatial_weight": 0.05,
+    "frequency_continuation": true,
+    "starts": 2,
+    "spatial_shapes": null
+  },
+  "config": {
+    "model": "R4_FREE_MATERIAL_P3_WEIGHTED_ADJOINT_V2_CACHED",
+    "backend_source": "R4_VENDOR",
+    "assembly_strategy": "cached_combined",
+    "wall_x": [
+      -1.5,
+      -0.5,
+      0.5,
+      1.5
+    ],
+    "wall_y": [
+      0.5,
+      0.875,
+      1.25
+    ],
+    "target_x_edges": [
+      -0.7,
+      -0.5,
+      -0.3,
+      -0.09999999999999998,
+      0.09999999999999998,
+      0.29999999999999993,
+      0.5,
+      0.7
+    ],
+    "target_y_edges": [
+      1.4,
+      1.5999999999999999,
+      1.7999999999999998,
+      2.0,
+      2.1999999999999997,
+      2.4,
+      2.5999999999999996,
+      2.8
+    ],
+    "frequencies": [
+      0.85,
+      1.0,
+      1.15
+    ],
+    "sigma_real_imag": 0.01,
+    "h": 0.17,
+    "targetstep": 0.1,
+    "wall_refine": 1,
+    "max_factor_bytes": 1500000000,
+    "heldout_frequencies": [
+      0.925
+    ],
+    "sigma": 0.01,
+    "material_box": {
+      "wall_epsilon": [
+        1,
+        6
+      ],
+      "wall_loss": [
+        0,
+        0.25
+      ],
+      "target_contrast": [
+        0,
+        8
+      ],
+      "target_loss": [
+        0,
+        0.25
+      ]
+    },
+    "source_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "train_rx_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "noise_order": "frequency,source,receiver, independent real/imag sigma .01; no sqrt channel normalization",
+    "primary_contract": "A2 all4TX16RX3freq fit; independently generated f=.925 heldout never used online",
+    "target_degree": 8,
+    "shape": [
+      7,
+      7
+    ],
+    "version": "R4_FREE_MATERIAL_7X7_V1",
+    "case_id": "c011",
+    "schema": "R4_PUBLIC_INPUT_V1",
+    "target_shape": [
+      7,
+      7
+    ],
+    "parameter_order": [
+      "wall_epsilon6",
+      "wall_loss6",
+      "target_contrast49",
+      "target_loss49"
+    ],
+    "support_threshold": 1.0,
+    "target_all_cells_free": true
+  },
+  "reference_current": "j(q,s)=chi(q)*(einc+GD0 j)",
+  "reference": "fixed air/PML original GS0 retained",
+  "state_metric": "fixed state_weight * quadrature L2",
+  "data_metric": "independent real/imag sigma .01",
+  "free_material_parameters": 110,
+  "checkpoint_policy": "evaluate/select material only; currents retained except explicit pre-absorb reset or named B1 physical-reset control; exact-z one-point physical cache available to every CSI method",
+  "physical_reset_control": false,
+  "physical_reset_at": null,
+  "attribution_limit": "absorption gains require paired B1 physical-reset control; pre-absorb reset can itself change optimization",
+  "optional_target_risk_numerical_failure": "KEEP_ACTIVE and continue exact CSI; preserve paid costs and failure; budget/resource/system/program exceptions still stop",
+  "current_initialization_scope": "standard fixed-GS observable residual seed, or physical-current ablation; no material-direction or full TSOM claim",
+  "spectral_scope": null,
+  "public_reference_reuse": true,
+  "public_reference_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/CONTROL_B1/public_reference",
+  "data_dependent_carry_between_cases": false,
+  "absorption_policy": null
+}

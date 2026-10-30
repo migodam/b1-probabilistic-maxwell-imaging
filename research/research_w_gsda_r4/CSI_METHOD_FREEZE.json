@@ -1,0 +1,74 @@
+{
+  "time_unix": 1793307121.0436668,
+  "status": "EXPLICIT_DEFAULTS_FROZEN_BEFORE_ANY_NATIVE_CSI_INVERSE",
+  "options": {
+    "fwi_options": {
+      "calls_per_stage": [
+        18,
+        25,
+        110
+      ],
+      "iterations_per_stage": [
+        12,
+        18,
+        90
+      ],
+      "maxls": 8,
+      "ftol": 1e-09,
+      "gtol": 0.0001,
+      "tv_weight": 0.2,
+      "tv_smoothing": 0.03,
+      "target_chi_scale": 2.0,
+      "target_loss_scale": 0.1,
+      "target_l2_weight": 0.01,
+      "wall_eps_center": 3.0,
+      "wall_eps_sigma": 1.5,
+      "wall_loss_center": 0.06,
+      "wall_loss_sigma": 0.15,
+      "wall_spatial_weight": 0.05,
+      "frequency_continuation": true,
+      "starts": 2,
+      "spatial_shapes": null
+    },
+    "csi_options": {
+      "iterations": 60,
+      "starts": 2,
+      "checkpoint_every": 10,
+      "state_weight": 10000.0,
+      "material_maxiter": 25,
+      "absorption_at": 10,
+      "reopen_at": 30,
+      "absorption_fraction": 0.5,
+      "absorption_validation_rtol": 1e-08,
+      "risk_stability_window": 2,
+      "risk_max_material_step": 0.05,
+      "risk_max_conditional_sd": 0.25,
+      "risk_max_projected_gradient": 0.1,
+      "risk_max_data_impact": 1.0,
+      "risk_reopen_projected_gradient": 0.1,
+      "risk_reopen_objective_growth": 1.0,
+      "current_initialization": "observable_residual",
+      "fixedtik_relative": 0.0001,
+      "spectral_preconditioner": false,
+      "spectral_rank": 32,
+      "strong_rank": 8,
+      "spectral_condition_limit": 10000000000.0,
+      "target_risk_screen": true,
+      "risk_target_scaled_RMS": 0.1,
+      "physical_reset_at": 0
+    }
+  },
+  "changes_from_initial": "expanded unchanged default options; exact LU/public reference caching and numerical fallbacks added before native inverse",
+  "prior_same_as_B0": true,
+  "main_step": "full-current native CSI, exact physical material checkpoint selection",
+  "method_map": {
+    "B1": "native fixedGS CSI",
+    "B1_RESET": "B1 + physical field/current reset at10",
+    "B2": "B1 + estimated wall absorption10 / REOPEN30",
+    "B3": "B2 + standard full-current modal Schur preconditioner",
+    "B4": "same modal preconditioner + empirical screened absorption/reopen",
+    "B5": "same modal preconditioner without absorption"
+  },
+  "no_posterior_or_target_safety_certificate": true,
+  "nonew_hyperparameter_tuning_from_digit_results": true
+}

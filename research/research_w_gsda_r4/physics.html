@@ -1,0 +1,56 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Research W-GSDA-R4 已完成的全波实验、九数字实际失败、精确吸收核验与成本边界。"><title>R4物理验证与数值误差</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#192b37;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}main{max-width:1160px;margin:auto;padding:30px 24px 70px}nav{display:flex;gap:9px 21px;flex-wrap:wrap;margin-bottom:25px}a{color:#17668d;text-underline-offset:3px}h1{font-size:clamp(29px,4.5vw,43px);line-height:1.4;letter-spacing:-.025em}h2{font-size:26px;line-height:1.5;margin-top:1.8em}h3{line-height:1.5}.panel,article{background:white;border:1px solid #dce3e8;border-radius:14px;padding:28px;margin:23px 0}.lede{font-size:21px}.status{background:#fff1eb;border-left:4px solid #b55c43;padding:17px 21px;margin:24px 0;border-radius:4px}.note{background:#edf3f7;border-left:3px solid #7c9bad;padding:13px 19px}.muted,figcaption{font-size:14px;color:#526575}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:27px 0}.metric{padding:18px;background:#eaf1f5;border:1px solid #dce5eb;border-radius:12px}.metric strong{display:block;font-size:29px;line-height:1.4;color:#164d68}.metric span{font-size:14px}.table-scroll{overflow-x:auto;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow-x:auto}th,td{border:1px solid #d7e0e6;padding:9px 11px;vertical-align:top;text-align:left}th{background:#edf3f7}img{width:100%;height:auto;display:block;background:white}figure{margin:30px 0}figure>a{display:block}figure img{border:1px solid #dce3e8}figcaption{padding-top:10px}code,pre{background:#edf2f5;font-size:.88em}code{padding:2px 4px;border-radius:4px}pre{padding:16px;overflow-x:auto;border-radius:8px}pre code{padding:0}p,li{overflow-wrap:anywhere}blockquote{margin:20px 0;padding:2px 20px;border-left:3px solid #9fb4c1}footer{margin-top:38px;padding-top:20px;border-top:1px solid #d5dfe6;font-size:14px;color:#526575}.downloads{display:flex;gap:12px 20px;flex-wrap:wrap}.downloads a{display:inline-block;padding:9px 14px;background:#e6eff4;border:1px solid #cbdce6;border-radius:8px}@media(max-width:620px){main{padding:20px 13px 45px}.panel,article{padding:18px}nav{font-size:15px}h2{font-size:23px}.lede{font-size:19px}}</style></head><body><main><nav><a href="../../">B1首页</a><a href="index.html">R4概览</a><a href="report.html">完整报告</a><a href="gallery.html">实际图像</a><a href="methods.html">方法实现</a><a href="physics.html">物理与误差</a><a href="handoff.html">网页端交接</a><a href="evidence.html">下载与复现</a></nav><p class="muted">发布于2026-10-30（新加坡时间），经用户明确授权。科研已于2026-10-30 06:02封账；本次新增0 FE / 0 RHS。原报告中“未发布”保留为封账历史状态。<a href="publication/PUBLICATION_NOTE.md">发布记录</a></p><article><h1>物理正确性与数值限制</h1>
+<p>本轮主物理为已有 P3 scalar-TM FEM、非磁介质、exp(−iωt)，共享色散 epsilon=epsilon_inf+i ell/f。没有用 Born 作为主真值或反演前向。</p>
+<h2>实际核验</h2>
+<ol>
+<li>同离散 j=chi(e_inc+GD0 j)、y=direct+GS0 j 与完整 FEM 使用同一真实积分点和权重。散射场右端 b_W+b_X 保留。完整材料微分包含 db+dV u_sc；B0每源一个加权伴随，Full-GN每频共享16接收伴随。</li>
+<li>一次必要的 weighted-adjoint 审核已完成；不把小代数误差当成本轮主科研结果。原生电流审计首次因配置元数据解析失败，费用和日志保留，修复解析器后通过。</li>
+<li>c010/c011/c012、三频的部分墙吸收、全墙吸收及重新开放实际计算完成。所有背景响应、有效照明、接收返回路径与剩余多次散射均保留。数组在 results/absorption_controls/。</li>
+<li>强目标 Born 诱导响应相对误差约 c010=1.811、c011=3.494、c012=6.325。完整反馈不可省略。Born只是独立诊断。</li>
+<li>48个GD模态的投影系统内部精确Schur仍不能恢复完整场：三个场景完整测量白化差约20，场相对误差约0.89–0.93。再丢弱块交叉反馈通常更坏。实际B3/B4只用模态作全空间SPD预条件，不删除其余电流。</li>
+</ol>
+<h2>独立进一步网格</h2>
+<p>原网格h=.17,targetstep=.1,wall_refine=1；进一步网格h=.12,targetstep=.05,wall_refine=2。连续材料盒保持相同，比较完整192复观测的原始白化范数，不除通道数平方根。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>真实世界粗细网格白化差</th>
+<th>原0.1门</th>
+<th>估计终点网格差</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>c000</td>
+<td>0.091383</td>
+<td>PASS</td>
+<td>—</td>
+</tr>
+<tr>
+<td>c006</td>
+<td>0.105503</td>
+<td>FAIL</td>
+<td>0.107714</td>
+</tr>
+<tr>
+<td>c010</td>
+<td>0.105205</td>
+<td>FAIL</td>
+<td>—</td>
+</tr>
+<tr>
+<td>c011</td>
+<td>0.077458</td>
+<td>PASS</td>
+<td>—</td>
+</tr>
+<tr>
+<td>c012</td>
+<td>0.215559</td>
+<td>FAIL</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>仅2/5真实场景达到旧0.1容差；数字8及其估计终点略超门，高对比c012达0.216。不得将本轮全部新世界写成已通过旧0.1资格，更不能称连续PDE认证。逆问题的同离散结论与这项误差限制分别保存。</p>
+<p>所有响应RMS只作每实坐标描述，原始距离另存。噪声每实虚坐标sigma=.01，不曾增大噪声以挽救图像。没有后验覆盖证书、严格inf-sup全域下界或连续Maxwell误差上界。</p>
+
+</article><figure><a href="figures/physics/GD_MODES_AND_FEEDBACK.png"><img loading="lazy" src="figures/physics/GD_MODES_AND_FEEDBACK.png" alt="实际GD模态、交叉反馈消去误差和完整场误差；没有把小矩阵恒等误差当成物理成功。"></a><figcaption>实际GD模态、交叉反馈消去误差和完整场误差；没有把小矩阵恒等误差当成物理成功。 点击查看原始分辨率。</figcaption></figure><figure><a href="figures/physics/INDEPENDENT_MESH_CHECK.png"><img loading="lazy" src="figures/physics/INDEPENDENT_MESH_CHECK.png" alt="全部预声明粗细网格结果；0.1门以上失败保留。"></a><figcaption>全部预声明粗细网格结果；0.1门以上失败保留。 点击查看原始分辨率。</figcaption></figure><figure><a href="figures/physics/ABSORPTION_REOPEN_BORN.png"><img loading="lazy" src="figures/physics/ABSORPTION_REOPEN_BORN.png" alt="精确吸收/重开与完整目标Born诊断；物理一致性不替代成像质量。"></a><figcaption>精确吸收/重开与完整目标Born诊断；物理一致性不替代成像质量。 点击查看原始分辨率。</figcaption></figure><footer>静态二维 scalar-TM；未知墙限3×2材料格，目标为7×7自由复材料格。有限pilot，无连续PDE或概率安全证书。<br><a href="GO_NO_GO.json">分项裁决</a> · <a href="PHYSICS_COST.json">费用汇总</a> · <a href="FAILURE_LEDGER.jsonl">失败</a> · <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_w_gsda_r4/REPORT_ZH.md">匿名原始Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gsda-r4-20261030">完整证据Release</a></footer></main></body></html>

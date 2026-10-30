@@ -1,0 +1,57 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Research W-GSDA-R4 已完成的全波实验、九数字实际失败、精确吸收核验与成本边界。"><title>R4算法实现与范围</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#192b37;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}main{max-width:1160px;margin:auto;padding:30px 24px 70px}nav{display:flex;gap:9px 21px;flex-wrap:wrap;margin-bottom:25px}a{color:#17668d;text-underline-offset:3px}h1{font-size:clamp(29px,4.5vw,43px);line-height:1.4;letter-spacing:-.025em}h2{font-size:26px;line-height:1.5;margin-top:1.8em}h3{line-height:1.5}.panel,article{background:white;border:1px solid #dce3e8;border-radius:14px;padding:28px;margin:23px 0}.lede{font-size:21px}.status{background:#fff1eb;border-left:4px solid #b55c43;padding:17px 21px;margin:24px 0;border-radius:4px}.note{background:#edf3f7;border-left:3px solid #7c9bad;padding:13px 19px}.muted,figcaption{font-size:14px;color:#526575}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:27px 0}.metric{padding:18px;background:#eaf1f5;border:1px solid #dce5eb;border-radius:12px}.metric strong{display:block;font-size:29px;line-height:1.4;color:#164d68}.metric span{font-size:14px}.table-scroll{overflow-x:auto;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow-x:auto}th,td{border:1px solid #d7e0e6;padding:9px 11px;vertical-align:top;text-align:left}th{background:#edf3f7}img{width:100%;height:auto;display:block;background:white}figure{margin:30px 0}figure>a{display:block}figure img{border:1px solid #dce3e8}figcaption{padding-top:10px}code,pre{background:#edf2f5;font-size:.88em}code{padding:2px 4px;border-radius:4px}pre{padding:16px;overflow-x:auto;border-radius:8px}pre code{padding:0}p,li{overflow-wrap:anywhere}blockquote{margin:20px 0;padding:2px 20px;border-left:3px solid #9fb4c1}footer{margin-top:38px;padding-top:20px;border-top:1px solid #d5dfe6;font-size:14px;color:#526575}.downloads{display:flex;gap:12px 20px;flex-wrap:wrap}.downloads a{display:inline-block;padding:9px 14px;background:#e6eff4;border:1px solid #cbdce6;border-radius:8px}@media(max-width:620px){main{padding:20px 13px 45px}.panel,article{padding:18px}nav{font-size:15px}h2{font-size:23px}.lede{font-size:19px}}</style></head><body><main><nav><a href="../../">B1首页</a><a href="index.html">R4概览</a><a href="report.html">完整报告</a><a href="gallery.html">实际图像</a><a href="methods.html">方法实现</a><a href="physics.html">物理与误差</a><a href="handoff.html">网页端交接</a><a href="evidence.html">下载与复现</a></nav><p class="muted">发布于2026-10-30（新加坡时间），经用户明确授权。科研已于2026-10-30 06:02封账；本次新增0 FE / 0 RHS。原报告中“未发布”保留为封账历史状态。<a href="publication/PUBLICATION_NOTE.md">发布记录</a></p><article><h1>实现范围与必要公式</h1>
+<p>本轮使用静态二维 scalar-TM，exp(-iωt)，epsilon(f)=epsilon_infinity+i loss/f。源为iH0^(1)(kr)/4，FEM仅离散散射场。物理目标是全波测量与真实材料图，不将小残差当作材料成像质量。</p>
+<h2>全波主基线 B0</h2>
+<p>在公共3×2墙格和7×7目标格上，110个实材料参数均未知。每个频率装配：
+L(chi) = L0 - k² Pᵀ W diag(chi) P,
+b(chi) = k² Pᵀ W diag(chi) e_inc,
+L u_sc = b, d = d_inc + R u_sc。
+因此db不能丢失。P为真实P3插值，W为实际材料积分权重。所有源与频率共享epsilon_infinity/loss。</p>
+<p>数据目标为0.5 sum|d-y|²/sigma²。对每个源一个加权伴随lambda=L^(-H) R^H(d-y)/sigma²，材料实梯度为Re sum_s k² W conj(P lambda_s) (e_inc_s+P u_s)。loss方向乘i/f后取实部。主基线加入相同尺度TV、材料box和墙properGaussian正则，采用逐频continuation和两个公开均匀起点。最终仅按完整三频测量目标+相同先验选支。</p>
+<h2>原生固定GS电流表示 B1</h2>
+<p>j(q,s)=chi(q)[e_inc(q,s)+GD0 j(q,s)]，
+GD0 j = P L0^(-1) k² Pᵀ W j，
+GS0 j = R L0^(-1) k² Pᵀ W j。
+y_sc=GS0 j。L0只依赖公开参考介质/网格/PML/频率，迭代中固定；材料Jacobian不固定。有限元积分点上的j为物理contrast current，不是R3低秩forcing chart。</p>
+<h2>精确吸收 B2</h2>
+<p>材料A用LA=L0-VA及bA求背景。uA=LA^(-1)bA，e_eff=e_inc+P uA。剩余电流jR的场为uA+LA^(-1) k² P_Rᵀ W_R jR。原始观测同时保留背景响应、有效照明、目标返回墙再到接收器的路径；也可重构jA与jR后由原始GS0测量。</p>
+<h2>内部谱 B3 与可逆动作 B4</h2>
+<p>内部GD的数值模态用实际物理Green actions构建。投影后的M=I-chi GD分成强H/弱L块；精确Schur保留M_HL M_LL^(-1) M_LH。投影内恒等不代表完整空间准确，必须另与完整FEM比较。降低rank不自动代表省FE/RHS/CPU。</p>
+<p>吸收仅暂停对应材料更新；保留材料状态与恢复路径。出现墙梯度/全波目标冲突时REOPEN。局部不确定性和风险只作为经验筛选，未建立完整posterior或严格安全证书。</p>
+<h2>B3实际做的是全电流空间的模态Schur预条件</h2>
+<p>把电流改写为w=√Wj后，内部算子C=√W GD W^(-1/2)。从这个真实Green action的右奇异向量取得公开Q（32列）。每次材料变化都重新计算Mq=I−Q<em>diag(chi)CQ；强8/弱24的Schur补偿只用于求Mq的逆Z。预条件器为D=I+Q(ZZ</em>−I)Q*。Q外的全部电流方向仍然保留；没有删去完整空间的弱电流，也没有把材料锁成弱坐标。若弱块或核心不稳定，记录并退回普通方向。</p>
+<p>实际方向是物理加权梯度的负SPD作用，吸收区域用两侧相同活动投影处理；在当前固定材料下，用完整GS/GD计算精确二次线步。这个Schur预条件与普通同空间方法相同，B5使用完全同样权限。B3的可检验增量来自是否能减少达到同一目标质量的实际工作，而不是Schur恒等式本身。</p>
+<h2>经验目标风险筛选的身份</h2>
+<p>B4先看材料变化、条件状态LS曲率、完整数据目标梯度和冻结场的GS影响。仅有候选时，额外付费构造完整材料Jacobian，消去剩余墙nuisance，并估计δx≈−Sx^(-1)BᵀQ_R A_A δw_A。这里的材料标准差只来自条件曲率代理；活动box、全非线性及真实posterior并未认证。所有记录保留LOCAL_UNCONSTRAINED_GAUSSIAN_TANGENT_WITH_CONDITIONAL_SD_PROXY，禁止由此声称目标全局安全。</p>
+<h2>公共参考复用</h2>
+<p>九个parent共享公开网格、源/接收器和频率。因此空气参考L0、P/W、GS0、GD模态可精确复用，材料、当前总场、电流、分支选择和测量仍逐case重新初始化。batch将一次冷setup和每case的warm开销分开；普通B5可用相同缓存。独立部署仍从空缓存构造，历史bank不提供免费物理信息。</p>
+
+</article><section class="panel"><h2>从测量到材料图</h2><h1>从实际复测量到未知墙、未知目标材料图</h1>
+<p>依赖为 <code>requirements.txt</code> 中实际环境版本。主实现为二维 scalar-TM P3 FEM，Apple Silicon CPU，单线程。<code>vendor/</code> 包含本算法需要的12个历史 Maxwell 后端源码模块；不需要旧 bank、R3结果、真墙或数字模板。全新依赖安装是否测试以最终 <code>REPRODUCE.md</code> 为准。</p>
+<h2>独立新部署：一条命令</h2>
+<p>在本目录执行：</p>
+<pre><code class="language-bash">python tools/deploy.py \
+  --measurement inputs/online/c001/observation.npz \
+  --config inputs/online/c001/config.json \
+  --options configs/main.json \
+  --method B0 \
+  --deployment-budget-seconds 900 \
+  --output my_new_reconstruction
+</code></pre>
+<p><code>B0</code> 为完整 Maxwell 联合 FWI+TV；<code>B1</code> 为原生固定GS的 contrast-source CSI；<code>B2</code> 增加精确吸收及定时重新开放；<code>B3</code> 在B2上增加内部模态 Schur 预条件；<code>B4</code> 采用内部模态 Schur 预条件和经验吸收/重新开放。<code>--deployment-budget-seconds</code> 明确创建与已结束研究独立的新本地计算额度，不修改原 <code>RUN_CLOCK.json</code>。输出目录必须为空。</p>
+<p>输入 NPZ <strong>仅含复数组 y</strong>，排序 <code>[frequency,source,receiver]</code>，主实验为3×4×16。每个实虚坐标标准差0.01。在线程序读取公共墙ROI、目标ROI和材料box；不读取 private truth、字形、真实墙/目标参数或评分目录。</p>
+<p>输出包括 <code>target_material.npy</code>（f0时chi+i loss）、<code>wall_material.npy</code>（epsilon+i loss）、<code>predicted_measurement.npz</code>、二维材料图、<code>reconstruction.json</code>、<code>optimization_trace.csv</code>、<code>runtime_cost.json</code>、各起点与各阶段停止记录。物理重建图显示7×7材料格，不把插值当新增分辨率。</p>
+<p>注意：上面的新部署输出是复数二维Npy；原研究B0/Full-GN的 <code>complete_outputs</code> 别名则为 <code>(ny,nx,2)</code> 的 <code>[epsilon_inf,ell]</code>。不要混读；跨方法统一读取 <code>endpoint.npz</code> 的 <code>target_contrast</code>、<code>target_loss</code>、<code>wall_eps</code>、<code>wall_loss</code>。所有ell均为色散系数，任意频率虚介电率是ell/f。细节见 <code>DATA_FORMATS.json</code>。</p>
+<h2>原研究批量入口</h2>
+<pre><code class="language-bash">python tools/run_digits.py \
+ --online-root inputs/online \
+ --cases c001 c002 c003 c004 c005 c006 c007 c008 c009 \
+ --options configs/main.json \
+ --output results/B0_FULL_FWI
+</code></pre>
+<p>这组通用编号对应九份独立测量。在线调用不含数字ID；ID与真值的对应关系只在独立生成/评分文件中。该入口遵守原研究时钟，截止后拒绝新增物理调用；复现新的实际求解应使用上面的显式新部署入口。</p>
+<h2>独立评分</h2>
+<pre><code class="language-bash">python tools/score_all.py --results results
+</code></pre>
+<p>评分只接受带 <code>ONLINE_SEALED.json</code> 的最终材料输出，读取真值的时间在封存之后。所有数字使用相同阈值chi&gt;=1；同时报告连续材料误差、质心、背景伪材料、4/8连通性及4连通背景孔洞。主范数不除通道数平方根，描述性RMS另列。留出频率0.925的预测由独立物理调用产生并单独计费。</p>
+
+</section><footer>静态二维 scalar-TM；未知墙限3×2材料格，目标为7×7自由复材料格。有限pilot，无连续PDE或概率安全证书。<br><a href="GO_NO_GO.json">分项裁决</a> · <a href="PHYSICS_COST.json">费用汇总</a> · <a href="FAILURE_LEDGER.jsonl">失败</a> · <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_w_gsda_r4/REPORT_ZH.md">匿名原始Markdown</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gsda-r4-20261030">完整证据Release</a></footer></main></body></html>

@@ -1,0 +1,152 @@
+{
+  "clock": {
+    "start_utc": "2026-10-29T19:23:31+00:00",
+    "deadline_utc": "2026-10-29T22:23:31+00:00",
+    "no_new_heavy_after_utc": "2026-10-29T22:03:31+00:00",
+    "single_job_rss_bytes": 4294967296,
+    "model": "gpt-6.1-sol",
+    "sol_only": true,
+    "heavy_jobs_max": 1,
+    "physics_backend": "reused R2/R3 P3 scalar-TM FEM",
+    "publication": false
+  },
+  "physics": {
+    "version": "R4_FREE_MATERIAL_7X7_V1",
+    "frequencies": [
+      0.85,
+      1.0,
+      1.15
+    ],
+    "sigma": 0.01,
+    "wall_x": [
+      -1.5,
+      -0.5,
+      0.5,
+      1.5
+    ],
+    "wall_y": [
+      0.5,
+      0.875,
+      1.25
+    ],
+    "target_x_edges": [
+      -0.7,
+      -0.49999999999999994,
+      -0.29999999999999993,
+      -0.09999999999999987,
+      0.10000000000000009,
+      0.30000000000000004,
+      0.5000000000000002,
+      0.7000000000000002
+    ],
+    "target_y_edges": [
+      1.4,
+      1.5999999999999999,
+      1.7999999999999998,
+      2.0,
+      2.2,
+      2.4,
+      2.6,
+      2.8
+    ],
+    "h": 0.17,
+    "targetstep": 0.1,
+    "wall_refine": 1,
+    "target_degree": 8,
+    "phase": "R4",
+    "shape": [
+      7,
+      7
+    ],
+    "source_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "train_rx_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "primary_contract": "A2 all4TX16RX3freq fit; independently generated f=.925 heldout never used online",
+    "material_box": {
+      "wall_epsilon": [
+        1,
+        6
+      ],
+      "wall_loss": [
+        0,
+        0.25
+      ],
+      "target_contrast": [
+        0,
+        8
+      ],
+      "target_loss": [
+        0,
+        0.25
+      ]
+    },
+    "noise_order": "frequency,source,receiver, independent real/imag sigma .01; no sqrt channel normalization",
+    "target_grid_is_physical_resolution": true,
+    "heldout_frequencies": [
+      0.925
+    ]
+  },
+  "reference_current": "j=chi*(e_inc+GD0 j), y_sc=GS0 j; distinct from R3 forcing chart",
+  "primary_scoring_threshold": 1.0,
+  "scoring_after_online_seal": true,
+  "prior": "same digit-independent TV and legal passive box; dev freeze before digit scoring",
+  "claims": "exploratory local 2D scalar TM; no new PDE continuum certificate",
+  "outputs": [
+    "9 actual FULL_FWI_TV inversions primary",
+    "native fixed-reference GS CSI actual inversion",
+    "exact material assimilation comparison",
+    "GD spectral projected weak-Schur diagnostic",
+    "actual REOPEN pilot",
+    "uniform topology and complex-material scoring",
+    "heldout .925 predictions"
+  ],
+  "fine_grid_check_predeclared": {
+    "case_ids": [
+      "c000",
+      "c006",
+      "c010",
+      "c011",
+      "c012"
+    ],
+    "h": 0.12,
+    "targetstep": 0.05,
+    "wall_refine": 2,
+    "scope": "new pixel-world resolution check; does not inherit old continuous-PDE certificate"
+  },
+  "method_freeze": "after two independent non-digit dev weights .2/1.0; no digit scoring before freeze",
+  "images": "nearest display at physical7x7 grid; no interpolated resolution claims",
+  "scoring_gates": {
+    "support_IoU": 0.7,
+    "complex_contrast_relative_L2": 0.2,
+    "centroid_error_lambda0": 0.1,
+    "convergence_reported_separately": true,
+    "status": "user engineering targets interpreted jointly; not proof/generalization"
+  },
+  "predeclared_additional_ablation": {
+    "case": "c006",
+    "comparison": "B0 same complete spatial/frequency continuation and starts with tv_weight0 vs frozen .2; remainingpriorssame",
+    "reason": "separate spatialprior increment from oldR3 changed wall/noise/data",
+    "no_digit_truth_for_selection": true
+  }
+}

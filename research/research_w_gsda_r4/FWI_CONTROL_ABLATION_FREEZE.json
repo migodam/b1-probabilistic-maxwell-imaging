@@ -1,0 +1,241 @@
+{
+  "status": "PREPARED_FROZEN_NO_PHYSICS_STARTED",
+  "time_utc": "2026-10-29T21:28:19.438489+00:00",
+  "parent_grant_required": true,
+  "job_order": [
+    "c010 paired control",
+    "c011 paired control",
+    "c012 paired control",
+    "c006 target-TV0 ablation"
+  ],
+  "main_options": {
+    "calls_per_stage": [
+      18,
+      25,
+      110
+    ],
+    "iterations_per_stage": [
+      12,
+      18,
+      90
+    ],
+    "maxls": 8,
+    "ftol": 1e-09,
+    "gtol": 0.0001,
+    "tv_weight": 0.2,
+    "tv_smoothing": 0.03,
+    "target_chi_scale": 2.0,
+    "target_loss_scale": 0.1,
+    "target_l2_weight": 0.01,
+    "wall_eps_center": 3.0,
+    "wall_eps_sigma": 1.5,
+    "wall_loss_center": 0.06,
+    "wall_loss_sigma": 0.15,
+    "wall_spatial_weight": 0.05,
+    "frequency_continuation": true,
+    "starts": 2,
+    "spatial_shapes": null
+  },
+  "ablation_options": {
+    "calls_per_stage": [
+      18,
+      25,
+      110
+    ],
+    "iterations_per_stage": [
+      12,
+      18,
+      90
+    ],
+    "maxls": 8,
+    "ftol": 1e-09,
+    "gtol": 0.0001,
+    "tv_weight": 0.0,
+    "tv_smoothing": 0.03,
+    "target_chi_scale": 2.0,
+    "target_loss_scale": 0.1,
+    "target_l2_weight": 0.01,
+    "wall_eps_center": 3.0,
+    "wall_eps_sigma": 1.5,
+    "wall_loss_center": 0.06,
+    "wall_loss_sigma": 0.15,
+    "wall_spatial_weight": 0.05,
+    "frequency_continuation": true,
+    "starts": 2,
+    "spatial_shapes": null
+  },
+  "only_ablation_setting_difference": {
+    "tv_weight": [
+      0.2,
+      0.0
+    ]
+  },
+  "ablation_comparison": "TV0 and TV.2 optimize different full Phi objectives: compare common data residual/material scores with prior terms explicit; do not infer a win from raw Phi alone",
+  "same_A2": "4TX16RX3frequencies; sigma .01 each real/imag; same P3 model/grid and legal independent material bounds",
+  "source_B0_results_options_unchanged": true,
+  "no_automatic_GN_or_heldout_or_other_physics": true,
+  "clock": "Original R4 RUN_CLOCK; each new process must start before 22:03:31UTC; all reservations stop at22:23:31UTC",
+  "required_outputs": [
+    "endpoint.npz",
+    "endpoint_last.npz",
+    "target_material.npy",
+    "wall_material.npy",
+    "predicted_measurement.npz",
+    "optimization_trace.csv",
+    "runtime_cost.json",
+    "ONLINE_SEALED.json",
+    "RECEIPT.json",
+    "FILE_ACCESS_SUMMARY.json"
+  ],
+  "plot_owner": "post-seal independent scorer or save_outputs; no truth inside inversion",
+  "jobs": [
+    {
+      "case": "c010",
+      "campaign": "B0_PAIRED_CONTROLS",
+      "argv": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/tools/run_fwi.py",
+        "--config",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c010/config.json",
+        "--measurement",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c010/observation.npz",
+        "--output",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_PAIRED_CONTROLS/c010",
+        "--options",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/configs/main.json",
+        "--job",
+        "B0_PAIRED_CONTROLS_c010"
+      ],
+      "output": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_PAIRED_CONTROLS/c010",
+      "options": "configs/main.json",
+      "postseal_metadata": {
+        "cohort": "FROZEN_METHOD_PAIRED_CONTROL_EXTENSION",
+        "independent_blind_claim": false,
+        "initialization": "same two public uniform starts as original frozen B0; no warm-start reuse",
+        "prior_tv_weight": 0.2,
+        "truth_access": false,
+        "parameters_selected_using_truth": false,
+        "scope_freeze": "FWI_CONTROL_ABLATION_FREEZE.json"
+      },
+      "expected_inputs": [
+        "public config.json",
+        "observation.npz with y only"
+      ]
+    },
+    {
+      "case": "c011",
+      "campaign": "B0_PAIRED_CONTROLS",
+      "argv": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/tools/run_fwi.py",
+        "--config",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c011/config.json",
+        "--measurement",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c011/observation.npz",
+        "--output",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_PAIRED_CONTROLS/c011",
+        "--options",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/configs/main.json",
+        "--job",
+        "B0_PAIRED_CONTROLS_c011"
+      ],
+      "output": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_PAIRED_CONTROLS/c011",
+      "options": "configs/main.json",
+      "postseal_metadata": {
+        "cohort": "FROZEN_METHOD_PAIRED_CONTROL_EXTENSION",
+        "independent_blind_claim": false,
+        "initialization": "same two public uniform starts as original frozen B0; no warm-start reuse",
+        "prior_tv_weight": 0.2,
+        "truth_access": false,
+        "parameters_selected_using_truth": false,
+        "scope_freeze": "FWI_CONTROL_ABLATION_FREEZE.json"
+      },
+      "expected_inputs": [
+        "public config.json",
+        "observation.npz with y only"
+      ]
+    },
+    {
+      "case": "c012",
+      "campaign": "B0_PAIRED_CONTROLS",
+      "argv": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/tools/run_fwi.py",
+        "--config",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c012/config.json",
+        "--measurement",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c012/observation.npz",
+        "--output",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_PAIRED_CONTROLS/c012",
+        "--options",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/configs/main.json",
+        "--job",
+        "B0_PAIRED_CONTROLS_c012"
+      ],
+      "output": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_PAIRED_CONTROLS/c012",
+      "options": "configs/main.json",
+      "postseal_metadata": {
+        "cohort": "FROZEN_METHOD_PAIRED_CONTROL_EXTENSION",
+        "independent_blind_claim": false,
+        "initialization": "same two public uniform starts as original frozen B0; no warm-start reuse",
+        "prior_tv_weight": 0.2,
+        "truth_access": false,
+        "parameters_selected_using_truth": false,
+        "scope_freeze": "FWI_CONTROL_ABLATION_FREEZE.json"
+      },
+      "expected_inputs": [
+        "public config.json",
+        "observation.npz with y only"
+      ]
+    },
+    {
+      "case": "c006",
+      "campaign": "B0_TV0_ABLATION",
+      "argv": [
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/tools/run_fwi.py",
+        "--config",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c006/config.json",
+        "--measurement",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/inputs/online/c006/observation.npz",
+        "--output",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_TV0_ABLATION/c006",
+        "--options",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/configs/fwi_tv0_c006.json",
+        "--job",
+        "B0_TV0_ABLATION_c006"
+      ],
+      "output": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/results/B0_TV0_ABLATION/c006",
+      "options": "configs/fwi_tv0_c006.json",
+      "postseal_metadata": {
+        "cohort": "DATA_EXPOSED_TV0_ABLATION",
+        "independent_blind_claim": false,
+        "initialization": "same two public uniform starts as original frozen B0; no warm-start reuse",
+        "prior_tv_weight": 0.0,
+        "truth_access": false,
+        "parameters_selected_using_truth": false,
+        "scope_freeze": "FWI_CONTROL_ABLATION_FREEZE.json",
+        "method": "FULL_FWI_TV0_ABLATION"
+      },
+      "expected_inputs": [
+        "public config.json",
+        "observation.npz with y only"
+      ]
+    }
+  ],
+  "launcher_argv": [
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/A25/a25-adaptive-om-feedback/.venv_a25/bin/python",
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/tools/run_fwi_controls.py",
+    "--manifest",
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/Research_W/publish-w-p0/research/research_w_gsda_r4/FWI_CONTROL_ABLATION_FREEZE.json",
+    "--execute"
+  ],
+  "new_cpu_measurement": {
+    "per_job_file": "END_TO_END_CPU.json",
+    "aggregate_file": "FWI_CONTROL_ABLATION_END_TO_END_CPU.json",
+    "coverage": "whole child including Python bootstrap/imports, via RUSAGE_CHILDREN user+sys delta around subprocess.run plus external wall start/end",
+    "legacy_book_cpu_scope": "after imports at BudgetBook construction; old values preserved",
+    "additive_with_existing_solver_receipts": false,
+    "do_not_double_add": true
+  }
+}

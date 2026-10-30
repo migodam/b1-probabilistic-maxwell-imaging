@@ -1,3 +1,11 @@
+<!-- W_GSDA_R4_PUBLICATION -->
+## Research W-GSDA-R4：九数字全部运行，准确成像与算法增量未成立
+
+九数字全部实际全波反演；普通FWI、Full-GN与GSDA均0/9完整成像门。精确吸收核验通过，但风险版与普通同谱对照输出相同、额外432RHS，当前算法增量NO-GO。原始数组、失败、成本和两个复现包公开。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_w_gsda_r4/) · [原始报告](research/research_w_gsda_r4/REPORT_ZH.md) · [网页端交接](research/research_w_gsda_r4/WEB_CHAT_HANDOFF.md) · [完整数据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-w-gsda-r4-20261030)
+<!-- /W_GSDA_R4_PUBLICATION -->
+
 <!-- Z_ALG_R3_DIGITS -->
 ## Z-ALG-R3-DIGITS · 576 材料九数字盲成像与基线审计
 

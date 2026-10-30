@@ -1,0 +1,220 @@
+{
+  "case": "c010",
+  "fixture": "ellipse target, nonuniform passive wall",
+  "truth_access": true,
+  "online_reconstruction": false,
+  "status": "PASS",
+  "all_actual_arrays_finite": true,
+  "relative_checks": {
+    "full_FEM_assembled_vs_native_current": 3.292419990734224e-15,
+    "full_FEM_vs_original_GS0": 8.898822349115847e-15,
+    "full_FEM_vs_absorbed": 8.081163186192224e-15,
+    "full_FEM_vs_original_GS0_reconstruction": 1.1358029611008999e-14,
+    "full_FEM_vs_REOPEN": 1.1358029611008999e-14,
+    "offline_generation_clean_vs_FEM": 0.0
+  },
+  "tolerance": 1e-08,
+  "full_FEM_diagnostics": [
+    {
+      "frequency": 0.85,
+      "factor_bytes": 91096424,
+      "primal_backward": {
+        "absolute": 2.620569241494033e-14,
+        "backward": 1.6037520458378343e-18,
+        "rhs_relative": 3.671995326162723e-14,
+        "per_rhs_backward": [
+          1.5547899933806857e-18,
+          1.5147654351622408e-18,
+          1.6037520458378343e-18,
+          1.5745852619629895e-18
+        ],
+        "tolerance": 1e-10
+      }
+    },
+    {
+      "frequency": 1.0,
+      "factor_bytes": 91808184,
+      "primal_backward": {
+        "absolute": 2.8381053040121233e-14,
+        "backward": 1.8633203161148724e-18,
+        "rhs_relative": 3.116192667059531e-14,
+        "per_rhs_backward": [
+          1.800813451131422e-18,
+          1.7525076343664167e-18,
+          1.817022432718985e-18,
+          1.8633203161148724e-18
+        ],
+        "tolerance": 1e-10
+      }
+    },
+    {
+      "frequency": 1.15,
+      "factor_bytes": 91800684,
+      "primal_backward": {
+        "absolute": 2.5312326988695537e-14,
+        "backward": 2.101415339870313e-18,
+        "rhs_relative": 2.2534950616128824e-14,
+        "per_rhs_backward": [
+          1.8131511747011223e-18,
+          2.09203843669643e-18,
+          2.101415339870313e-18,
+          1.7933035900727007e-18
+        ],
+        "tolerance": 1e-10
+      }
+    }
+  ],
+  "assembled_FEM_diagnostics": [
+    {
+      "frequency": 0.85,
+      "ndofs": 24736,
+      "factor_bytes": 91096424,
+      "assembly_strategy": "cached_combined",
+      "primal_backward": {
+        "absolute": 2.675538488257533e-14,
+        "backward": 1.6696604406390247e-18,
+        "rhs_relative": 3.7490193612472455e-14,
+        "per_rhs_backward": [
+          1.6242359597779426e-18,
+          1.5106822098538395e-18,
+          1.6696604406390247e-18,
+          1.5799138712906974e-18
+        ],
+        "tolerance": 1e-10
+      },
+      "adjoint_backward": null,
+      "cpu_seconds": 0.30701800000000024,
+      "wall_seconds": 0.3102166252210736
+    },
+    {
+      "frequency": 1.0,
+      "ndofs": 24736,
+      "factor_bytes": 91808184,
+      "assembly_strategy": "cached_combined",
+      "primal_backward": {
+        "absolute": 2.86050339954801e-14,
+        "backward": 1.9579918010952736e-18,
+        "rhs_relative": 3.1407854053791274e-14,
+        "per_rhs_backward": [
+          1.80107065099164e-18,
+          1.7441733498997957e-18,
+          1.8253917096678843e-18,
+          1.9579918010952736e-18
+        ],
+        "tolerance": 1e-10
+      },
+      "adjoint_backward": null,
+      "cpu_seconds": 0.30571100000000007,
+      "wall_seconds": 0.3085929590743035
+    },
+    {
+      "frequency": 1.15,
+      "ndofs": 24736,
+      "factor_bytes": 91800684,
+      "assembly_strategy": "cached_combined",
+      "primal_backward": {
+        "absolute": 2.642891568318546e-14,
+        "backward": 2.1981993223690163e-18,
+        "rhs_relative": 2.3529022441295102e-14,
+        "per_rhs_backward": [
+          1.9233637394745703e-18,
+          2.1981993223690163e-18,
+          2.044697788925507e-18,
+          1.977995399724454e-18
+        ],
+        "tolerance": 1e-10
+      },
+      "adjoint_backward": null,
+      "cpu_seconds": 0.30191700000000044,
+      "wall_seconds": 0.3047812080476433
+    }
+  ],
+  "exact_absorption": {
+    "kind": "EXACT_ABSORB",
+    "selected_estimated_wall_cells": [
+      0,
+      1,
+      2
+    ],
+    "material_variables_removed": 6,
+    "selection": "fixed first half of public wall-cell indices; c011 includes its exactly air cell",
+    "original_GS0_retained": true,
+    "background_data_retained": true,
+    "effective_illumination_retained": true,
+    "checks": [
+      {
+        "frequency": 0.85,
+        "field_relative": 2.3807819526845836e-14,
+        "current_relative": 1.2169388389875193e-14,
+        "original_GS0_vs_absorbed_data_relative": 3.003930993965025e-14,
+        "removed_quadrature_points": 2192,
+        "factor_bytes": 91126324
+      },
+      {
+        "frequency": 1.0,
+        "field_relative": 3.0336284045678707e-14,
+        "current_relative": 1.2529175462607766e-14,
+        "original_GS0_vs_absorbed_data_relative": 2.2667094224439733e-14,
+        "removed_quadrature_points": 2192,
+        "factor_bytes": 91784684
+      },
+      {
+        "frequency": 1.15,
+        "field_relative": 2.8238275609450077e-14,
+        "current_relative": 1.4166032755457093e-14,
+        "original_GS0_vs_absorbed_data_relative": 3.363447979141275e-14,
+        "removed_quadrature_points": 2192,
+        "factor_bytes": 91751284
+      }
+    ],
+    "tolerance": 1e-08
+  },
+  "reopen": {
+    "kind": "REOPEN",
+    "all_material_parameters_active": true,
+    "material_variables_restored": 6,
+    "original_fixed_reference_restored": true,
+    "checks": [
+      {
+        "frequency": 0.85,
+        "data_relative": 3.003930993965025e-14,
+        "field_relative": 2.5592096840550813e-14
+      },
+      {
+        "frequency": 1.0,
+        "data_relative": 2.2667094224439733e-14,
+        "field_relative": 2.7004593312960488e-14
+      },
+      {
+        "frequency": 1.15,
+        "data_relative": 3.363447979141275e-14,
+        "field_relative": 2.6983466372021634e-14
+      }
+    ],
+    "tolerance": 1e-08
+  },
+  "allwall_Born_comparison": {
+    "whitened_L2_error": 23.998779982854316,
+    "whitened_RMS_independent_real_imag": 1.2246826126523316,
+    "relative_target_induced_error": 1.810724770803468,
+    "relative_error_denominator": "max(norm full target induced, 1e-14)",
+    "full_target_induced_norm": 0.13253687346534399,
+    "Born_target_induced_norm": 0.3027984371672007,
+    "approximation": "jBorn_target=chi_target*wall_only_total_field",
+    "remaining_wall_residual": false,
+    "inverse_uses_Born": false,
+    "interpretation": "measured physical failure boundary, not a pass/fail target-recovery gate"
+  },
+  "files": [
+    "full_state.npz",
+    "absorbed_state.npz",
+    "reopened_state.npz",
+    "allwall_born_comparison.npz",
+    "BORN_COMPARISON.json"
+  ],
+  "case_rhs": 168,
+  "case_full_fe": 15,
+  "case_process_cpu_seconds": 5.6667819999999995,
+  "case_wall_seconds": 5.772920791991055,
+  "shared_reference_setup_excluded_from_case_cost": true
+}
