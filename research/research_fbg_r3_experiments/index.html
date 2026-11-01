@@ -44,7 +44,7 @@ const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 fetch(doc).then(r=>r.text()).then(text=>{
  const maths=[];
  text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const k="FBGR3MATH"+maths.length+"TOKEN";maths.push('<div class="math">$$'+esc(m)+'$$</div>');return "\n\n"+k+"\n\n";});
- let html=marked.parse(text);maths.forEach((m,i)=>html=html.replace("FBGR3MATH"+i+"TOKEN",m));
+ let html=marked.parse(text);maths.forEach((m,i)=>html=html.replace("FBGR3MATH"+i+"TOKEN",()=>m));
  const article=document.getElementById("report");article.innerHTML=html;
  const docbase=new URL(doc,location.href);
  article.querySelectorAll("img[src],a[href]").forEach(el=>{
