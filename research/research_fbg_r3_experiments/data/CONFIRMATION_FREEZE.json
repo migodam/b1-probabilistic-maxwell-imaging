@@ -1,0 +1,101 @@
+{
+  "status": "METHODS_FROZEN_BEFORE_NEW_GENERATION",
+  "utc": "2026-11-01T06:00:04.534148+00:00",
+  "side": 6,
+  "sources": 6,
+  "receivers": 16,
+  "k": 6.283185307179586,
+  "material_box": [
+    0.02,
+    20
+  ],
+  "new_objects": 6,
+  "families": [
+    "ring",
+    "islands",
+    "curved"
+  ],
+  "amplitudes": [
+    10.0,
+    16.0
+  ],
+  "backgrounds": [
+    0.07,
+    0.16
+  ],
+  "layouts": [
+    "uniform",
+    "jittered"
+  ],
+  "observations": [
+    "clean",
+    "noisy_1e-3"
+  ],
+  "anonymous_solver_inputs": "G/E0/S/Y/grid_shape/public shared starts only",
+  "starts": [
+    0,
+    1,
+    4
+  ],
+  "wall_per_start": 4.0,
+  "max_lu": 120,
+  "max_rhs": 2400,
+  "methods": [
+    {
+      "method": "native",
+      "chart": "csi"
+    },
+    {
+      "method": "feedback",
+      "chart": "csi"
+    },
+    {
+      "method": "cie_dual",
+      "chart": "csi"
+    },
+    {
+      "method": "n1_fourier",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_task",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_soft",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_finite_krylov",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_finite_krylov",
+      "chart": "csi"
+    }
+  ],
+  "n1": {
+    "backbone": "observable",
+    "receiver_rtol": 0.001,
+    "joint_steps": 80,
+    "beta": 0.2,
+    "rho": 1.0,
+    "pool_groups": 8,
+    "core_fourier_atoms": 1,
+    "candidate_group_atoms": 1,
+    "eta_target": 0.5,
+    "seed_rms_max": 2.0,
+    "seed_current_over_E_cap": 3.0,
+    "seed_defect_over_E_cap": 3.0,
+    "seed_scale_trials": 8
+  },
+  "gates": {
+    "nrmse": 0.15,
+    "iou": 0.7,
+    "data_clean": 0.001,
+    "data_noisy": 0.003
+  },
+  "prior": "unchanged R4 smooth/TV 1e-4 each; no shape/template support",
+  "selection": "minimum original normalized full-data score plus shared prior; GT only after all predictions close",
+  "scope": "new small-grid confirmation, not E3 or 576 scaling; six varied material objects but only three shape families"
+}

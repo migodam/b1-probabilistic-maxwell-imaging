@@ -48,3 +48,24 @@ an optional research objective, not a new default physics backend or a vector-DD
 adapter. The study found fixed scalar feedback stronger than its automatic fit;
 reuse code and exact assumptions, not a universal superiority claim. Continue using
 the resident CUDA queue/operator catalog above; do not rerun formula error-floor tests.
+
+
+## Reuse the audited CIE/Fourier-TSOM baseline before claiming new basin gains
+
+`research/research_fbg_r3_experiments/src/cie_tsom_baseline.py` provides a
+2D real-material adaptation of the published CIE/TSOM algorithm: receiver SVD,
+DPCS/APCS, source-normalized alternating updates, shared-real modified-contrast
+readout, Fourier/beta schedules and a dual-beta option. The compatible CUDA port
+is `src/cie_tsom_cuda.py`; keep using the shared resident executor above. Read
+`CIE_TSOM_BASELINE_AUDIT.md` and `audit/E3_BASELINE_PORT.md` for source, stopping,
+wall-truncation and cost limits. Do not repeat error-floor tests or treat a short
+alternating prototype as the mature baseline. Explicit Fourier columns are not
+a demonstrated FFT-complexity implementation; do not transplant this scalar-TM
+adapter into vector-DDA without a separate derivation.
+
+The measured historical 576-material dual-beta CIE + original-data corrector
+recovered all nine digit shapes under that study contract. This is a strong
+baseline result, not proof of a new N1/A17 mechanism or a universal optimizer.
+For current-space comparisons match the affine DPCS offset, the free APCS rank,
+actual real source-current DOF, objective weights and physical corrector budget;
+similar total DOF alone does not establish the same admissible current family.

@@ -1,0 +1,175 @@
+Research FBG-R3-T — 下一轮 Codex Sol Max 执行任务书
+日期：2026-10-31
+性质：已完成理论研究后的实验任务；本任务书不表示这些成像实验已经运行。
+
+一、目标与禁止混淆的贡献
+
+主目标：检验“共享实材料的可实现性法向 + 任务相关辅助电流选择/替换”能否在相同实际预算下改进成熟 CIE-I / FFT-TSOM。
+独立次目标：检验真实空间 k=4/6 支持上的精确有限响应多根提案，能否比共享同一有限核的 block-TRF、普通全材料多起点得到更好的合法材料候选。
+先独立竞争这两条路线，暂不把反馈、A17、Q6/Q20、ALM、主动照明全部组合。
+
+本轮报告已经证明/核验：有限 CIE 理想读出偏置；一般电流二阶、物理切向直线四阶、精确物理路径零差；辅助电流 profile Hessian/gradient downdate 与材料步差；孤立精确根对正定度量 continuation 不动；两物理解间有限电流弦线障碍。它们均不是高维全局成功定理。
+不得把新增模式降低 profile Hessian 称作测量信息下降；可能只是在删除冻结电流造成的虚假刚度。
+不得把 A17 dressing 加入旧空间后得到的同一 span 作为新方向；必须通过等价性负控制。
+
+二、输入与版本
+
+主研究仓库：
+https://github.com/migodam/b1-probabilistic-maxwell-imaging
+理论审计固定 SHA：6659aa49dff2535996d40962791e9a5a6e974adc
+A17 仓库：
+https://github.com/migodam/a17-maxwell-certified-exchange
+理论审计固定 SHA：2ac81b989a2f13d62df9d5a7abd690a33c2189c7
+
+先读取仓库的 AGENTS / 实验合同，隔离工作目录，保留原结果。
+读取 research/research_fbg_r2_adaptive_feedback 的最终报告、理论、算法、handoff和最终审查；读取 A17 最终论文/附录、A17-X 正式报告；读取 research_z_alg_r2、r3_digits、r4_basin、r4_diversity、p3l_r10_bilateral_structure 的限制。
+附带复算包内脚本只依赖 Python、NumPy、Matplotlib；exact_two_cell.py 只用标准库。按 README 运行并保留 JSON。不可把小复矩阵核验称作真实 Maxwell 图像实验。
+
+三、共同物理与数据隔离合同
+
+1. 材料是完整实向量 m，X=diag(m)，L=I-XG，j=L^-1 X E，Q=E+Gj，F=Sj。
+2. 原物理目标 Phi=.5||noise_whiten(F-Y)||^2 + R(m)。所有方法使用相同观测、噪声白化、材料 box、公开先验与最终验收。
+3. 在线 selector 只读 G/E/S/Y、允许先验、当前模型与历史计算。真材料、NRMSE、GT-IoU、GT支持不能进入 proposal、选模、排序、停止、fallback、预算追加或调参。
+4. 真材料仅在在线候选和计费记录封存后，由独立评价程序读取。若需调参，使用单独公开校准实例；不得在待测对象上调阈值。
+5. 分清数据相容辅助 current、合法材料 seed、噪声相容物理解、非零残差驻点和真正不同的材料解。不能把全部端点当群轨道或后验样本。
+6. 新源/新频率是真实新增观测，独立实验合同；不得用线性混合/插值声称增加信息。
+
+四、先把成熟强基线实现正确
+
+A0：2016/2019 CIE-I + DPCS/APCS + FFT-TSOM。使用真实接收算子 SVD 的稳定部分固定 DPCS，APCS 为其正交补中的 Fourier 模式。M_F 是频率 mask 尺寸，不是模式数。
+联合目标必须保留各源数据误差与 CIE 状态误差的归一化；APCS 一轮 PR-CG与材料块交替，保留阶段接续及合理停止条件。
+实现单 beta 和原论文双 beta 强基线。双 beta 两块之间要先恢复同一物理 m，再各自计算 r_beta=beta*m/(1+beta*m)，不能原样携带 r。
+原文 schedules 仅作结构参考：2016 6→2→.5，2019 6→1，第三例6→1→.5及MF4→8→10；数值必须按当前G归一化在校准实例上冻结，不能直接移植。
+当前合同为实材料，应区分“直接实 r-LS”和“复 r-LS后取实”。本报告0/2/4主命题针对前者。合法box应在同一无极点分支实施。
+R2的100次辅助交替原型不是A0上限。
+
+其余必须保留：
+A1：R2固定beta=.2反馈Gram+原数据corrector，完全沿用已审计设置；
+GlobalDual单起点与等预算多起点；Full-J TRF/LM；
+联合CSI/无反馈lifting；
+普通Krylov、同池随机/能量选模；
+LUCIE两阶段与CC-CSI至少作为近邻机制对照，若未实现明确标未实现，不能声称广泛优越性。
+
+五、E0：数学与机制鉴别，先完成再进入小网格
+
+E0a 已提供检查的复跑：
+- 一般反馈gradient，实材料/复内积，固定B导数；
+- 原始Gram对非酉源混合不变；epsilon I ridge破坏协变，运输参考Gram/源协方差后恢复；
+- Kfield不等于projector leverage导数；
+- CIE有限读出恒等式；一般/物理切向/精确路径的2/4/0差；
+- profile H、g、步差与eta界；虚假刚度反例；
+- A17 raw/dressed模式增广同span的相同profile结果；
+- 正交残差坐标ridge的改基不变性，裸系数ridge的反例；
+- exact_two_cell有理数根、分母、box、物理无极点证明；
+- finite chord/profile角障碍以及重算原物理数据差异。
+
+数值阈值：普通小矩阵相对恒等式误差<=1e-9，有限差分<=1e-6；有理检查精确相等。病态样本应报告条件数，不靠放宽阈值强行通过。
+阶次要在消减误差发生前拟合；极小t改用缺陷平方，不从两个相近材料读出直接相减。
+
+E0b 同jet对照：
+固定CIE、exp、bounded exp、Kfield/A17受限生成元、普通非物理bias。
+在锚点匹配目标与梯度；另比较匹配二阶jet的exp/bounded。报告Hessian、所有可判定驻点、box KKT、有限步轨迹与原物理解集。
+非物理bias最小对照：f_bias=f_0-c d_0^T K(m-m0)，同锚点梯度。它只是局部对照，不称有物理依据。
+现有一单元反例已经证明exp可引入错误上界吸引而CIE/bounded无此问题；它没有证明bounded胜CIE。不要修改模型直到只展示新方法胜利。
+
+E0c 失效机制负控制：
+真实精确根处，无正则且无显式有限探索种子时，采用正阻尼或最小范数GN解，weighted residual和joint GN都应零步。未正则的奇异GN允许非零null-space解，应声明其解选择而非一律当代码错误。降低rho或改变beta不能凭空保证产生另一个根。若程序跳根，应先查数值误差、额外正则、解选择或隐藏随机注入。
+single-mode非零列缩放不应改变hard-release projector。若改变结果，检查未运输的系数ridge。
+
+六、E1：受控辅助电流释放的最小真实网格实验
+
+先使用仓库同一物理组装器重建4×4、6×6小网格。不得把24×24矩阵随意抽子矩阵冒充新网格。首轮采用6个真实源、16个接收（若原几何生成器支持），记录单位、波数、积分/自项与噪声。
+公开校准对象1个；测试对象建议3类空间结构（环、双岛、弯条）×2种对比度（8、20），各5个事前公开初始化。它们是机制试验，不是完整泛化证据。
+先clean，机制成立后加独立噪声；独立对象与噪声重复不得混作样本量。
+
+主算法变量：完整m与辅助current系数；保留FFT backbone。第一版建议在已付物理anchor使用j=j_phys(m*)+U*a，U含接收可见方向与Fourier-APCS。它不同于原生固定DPCS的TSOM，原生版本独立保留作强基线。若直接使用j=jD+UA*a，物理anchor未必属于该截断仿射空间，应付费加anchor modes或承认当前态非物理。单beta/无反馈状态权重分别作为消融，所有源共享m。
+联合目标：data + rho/2||P_beta(m)(j-X(E+Gj))||^2 + common R。
+P=I为CSI分支；P=beta/(1+beta*m)为CIE状态分支。当前e非零时，材料Jacobian必须包含DP[h]e。
+每次在同一正确冻结线性化中计算profile模型和候选增量D=Q_C^T B，v=Q_C^T b，eta=||D H^-1/2||^2。
+材料步差不能只按辅助残差下降或mode energy选择。对入围少数候选计算原物理J delta_p的有符号gain；全部源RHS收费。此处残差和J必须在同一原噪声模型下实化并白化，包括相关/异方差噪声。
+eta接近1不能一概丢弃，应检查旧截断是否造成虚假刚度；必要时用坐标不变的soft release/信赖域，或重线性化。
+soft release在正交化联合残差坐标z上惩罚gamma||z||^2/2。K_gamma=(1+gamma)^-1 QQ^T；Hnew=H-(1+gamma)^-1 D^TD，g同缩放，eta也按同因子下降。
+同rank替换必须从共同retained core分别计算，不把旧U上的增量直接当replacement。
+
+必须比较的消融（共享同一候选池与获模费用）：
+1. 成熟FFT-TSOM阶段扩张；
+2. 普通Krylov/原始候选按能量；
+3. 同池随机选择，固定随机种子；
+4. 只按联合局部目标下降选模；
+5. 只按A17物理材料步fidelity选模；
+6. 主候选：法向/材料步相关性+稳定处理+有限物理评价；
+7. 第6项去掉稳定处理；
+8. 合理尺寸下全current joint优化作为容量上限对照。
+
+首先冻结beta和模式数，仅比较selection；之后固定selector比较beta/rho continuation；最后才考虑联合日程。
+额外模式应来自真实空间字典、公共Fourier/Krylov或已付物理作用，不能用GT生成。
+可诊断实际新旧联合解电流动作V=delta_j_C-delta_j_old的normal量||Pi_Q^(perp,R) L V||，但不能仅按此量最大化。先在共用current度量中取相对旧空间的正交商代表并整块白化，完成纯改基CT+UK的审计。整组normal trace在全源独立复系数、等权度量下可能恒为1-1/(2p)，不能用于选模。物理task gain使用原物理先验的局部项，不把joint LM数值阻尼误当物理收益或信息。
+精确根附近需要显式有限normal seed才能探索。若启用，所有相关对照获得相同种子数、幅度/方向字典和总预算。
+
+接受策略：保存物理incumbent；辅助短轨迹可以暂时增大Phi。每段结束将候选材料交给同一个全材料corrector，最终只按原物理分数更新incumbent。禁止每一步都要求Phi下降后再宣称能离开严格局部极小。
+
+预算：在公开校准对象上测出成熟基线50次材料/电流交替的中位耗时T0，仅作为计时单位（不是50个beta阶段，也不是成熟基线停止上限）。事前冻结墙钟预算{T0,2T0,4T0}，至少再加入覆盖完整预注册beta/MF日程与合理停止的共同成本点。每法共享相应上限与候选配额，报告实际wall、n阶LU、完整复RHS、G/G*次数、FFT次数、小核LU和QR/SVD。首次准备、模式获取、失败与fallback均收费。不只比较迭代数。
+
+E1判断：
+- 如果只降低联合残差，回物理后材料和原数据不改善，不能升级为新反演法。
+- 如果随机/能量/Krylov在同span同成本等效，A17选择无独立增量。
+- 如果效果仅来自更多模式/种子，必须撤回几何归因。
+- 至少在两个事前定义的结构类上看到一致机制与实际预算收益，且没有明显系统性失败，才进入更大验证。这个门只允许扩大实验，不足以发表优越性结论。
+
+七、E2：小支持多分支提案
+
+先复现精确两单元已知两根，确认物理root归类/去重逻辑。不要把第二根直接用作未知端点搜索的初始化。
+在4×4/6×6物理网格上用真实空间支持A，k=4或6。
+同anchor已付LU下：V=L0^-1 U_A（k个完整RHS），C=U_A*GV，EA=U_A*Q0，O=SV；
+F(d)=F0+O(I-diag(d)C)^-1 diag(d)EA。
+每个proposal用全部原源EA与全部接收O评价；这不是Born。
+
+Q6/Q20：k=2s，选1个已有接收和s个已有源。p>=s且q满列秩，最高次块非退化，复lift满足共轭、恢复节点/极点合法，才有条件完整枚举。p<s记UNSUPPORTED；图册退化记UNRESOLVED；不得据此宣布无解。
+Q6/Q20的有限商及恢复式是旧Z-ALG成果，本次创新只能来自明确的proposal/全材料校正增量，不重报它们。
+
+支持规则：公共2×2、2×3/3×2块；梯度排序加固定循环探索配额。错误局部极小处梯度小也必须保留循环配额。支持/通道/种子上限事前冻结。
+通道选择：EA列主元QR挑原源，O行范数挑少数原接收。不得无限尝试直到找到好例子。
+每个合法d进入全部数据评价；先按原分数与归一化材料距离做固定配额选择，再对每个seed运行同预算完整n变量corrector。outside只在proposal中固定，corrector不能继续固定GT外部。
+anchor或support改变后核重建或使用严格正确的付费更新，不能跨形状直接复用R10旧核。
+
+强对照：
+1. 同支持、同精确有限核的block-TRF、多公开起点；
+2. 相同seed数与总预算的普通全材料多起点；
+3. 固定beta、多beta独立起点、成熟CIE continuation；
+4. 若比较多图册，给每法同样总探索机会；
+5. Q6/Q20与另一合适双线性/多项式局部求解器。
+
+输出：合法seed数、all-data-qualified根数、不同材料簇数、最终top1与离线best@K分开、corrector费用、图册失败与截断比例。只在已知可穷尽小核上声称完整；一旦候选截断就撤销完备性主张。
+E2失败条件：只提升选定通道拟合；完整数据/材料不改善；没有优于共享有限核的block-TRF；相同总预算多起点解释全部收益。
+
+八、E3：只有E1/E2显示独立机制后再运行576
+
+保留R2合同：24×24全波物理，576独立实材料，12源×48复接收，box[.02,20]，8→12→24仅材料尺度，最终原Maxwell验收。
+采用原12个新鲜高对比对象，另预留独立新对象/新字体；加入不同对比度、公开初始化、独立噪声。新增24源是独立观测合同，不能混入12源算法归因。
+成熟CIE/FFT-TSOM、固定beta=.2 Gram、GlobalDual多起点、Full-J均保留。公布success-versus-wall/RHS曲线以及实际工作量，不仅名义统一45秒。
+clean联合门沿R2：NRMSE<=.15、重建自身Otsu-IoU>=.7、完整相对data residual<=.001。前两者仅离线评估；noise门按预先声明的noise level/discrepancy另定，不能沿用clean门硬压噪声。
+原历史8/12继续标“R2已报告，非本次新运行”；新算法若未超越成熟强基线不得以弱化CIE作替代。
+
+九、结果文件与停止规则
+
+建议独立目录 research/research_fbg_r3_t_mechanism/，保存：
+RUN_CONTRACT.json、SOURCE_AND_IMPLEMENTATION_AUDIT.md、MATH_CHECKS.json、
+METHODS_AND_ABLATIONS.md、COST_LEDGER.csv、CANDIDATE_ARCHIVE.csv、
+EVENT_LOG.jsonl、E0_REPORT.md、E1_REPORT.md、E2_REPORT.md、
+最终 RESEARCH_REPORT_ZH.md 与 CODEX_TO_PRO_HANDOFF.md。
+
+成本账本至少含对象/初值/方法/seed/支持/模式数/阶段/实际wall/LU/复RHS/G/G*/FFT/小LU/QR/SVD/失败/fallback/corrector/原data/辅助缺陷/eta/gain预测/实际有限gain。
+精确物理root、noise-compatible、非零残差stationary、代数proposal、非法候选均有不同status。
+报告每个门是否通过、失败最先发生在哪一环、所有负结果与方法去留决定。
+
+如果E1/E2不通过，完成机制报告并停止576扩张；这不是留空，而是明确判定主结构是否值得继续。
+如果通过，进入E3并继续完成授权范围内的基准、成本审计和独立材料评估。
+禁止用反馈端点集合给概率/后验含义；没有相应采样或统计模型就只称候选集合。
+
+十、预期研究判断
+
+主论文先按Narrative B准备：共享材料可实现性法向、CIE有限读出和0/2/4阶次、任务相关current release/replace，以及成熟CIE同成本增量。
+Narrative C独立竞争：小支持精确多根proposal + 全材料corrector；若不优于同核block-TRF就保留作控制。
+Narrative A中任意exp/tanh/Kfield只作机制对照；若没有有限物理结构和独立收益，不作为主贡献。
+
+执行完成后的最终回答必须说清：新增收益来自模式选择、释放稳定性、更多搜索机会、额外观测，还是更大的实际费用；不能只给最好的图。

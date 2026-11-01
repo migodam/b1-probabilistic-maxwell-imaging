@@ -1,3 +1,11 @@
+<!-- FBG_R3_E_PUBLICATION -->
+## FBG-R3-E：成熟 CIE 恢复九数字，受控电流释放另作机制审计
+
+同一576材料高对比历史任务，双β CIE加原物理校正联合通过10/12，数字1–9全部通过；固定β为8/12。N1选模/软释放/有限seed及N2条件根分别保留同容量、同核、盲确认、成本与失败证据，不把成熟CIE成功归为新机制贡献。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_fbg_r3_experiments/) · [九数字原图](research/research_fbg_r3_experiments/figures/fullwave_digits_1to9.png) · [代码与复现](research/research_fbg_r3_experiments/REPRODUCE.md) · [科学审阅](research/research_fbg_r3_experiments/audit/SCIENTIFIC_REVIEW.md)
+<!-- /FBG_R3_E_PUBLICATION -->
+
 <!-- W_GSDA_R4_PUBLICATION -->
 ## Research W-GSDA-R4：九数字全部运行，准确成像与算法增量未成立
 

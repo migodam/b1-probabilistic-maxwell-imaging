@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FBG-R3-E · 辅助电流释放与高对比 Maxwell 成像</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#eff3f5;color:#182632;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}
+header{background:#122f43;color:#f1f8fb;padding:32px max(22px,calc((100vw - 1230px)/2))}header h1{font-size:32px;line-height:1.4;margin:.25em 0 .6em}
+header p{max-width:1050px;margin:.6em 0;color:#cfe1eb}nav{display:flex;gap:9px;flex-wrap:wrap}nav a{color:#edf8ff;border:1px solid #638498;padding:4px 10px;text-decoration:none;border-radius:5px}
+main,footer{max-width:1230px;margin:auto;padding:25px 32px}main{background:white;min-height:70vh}a{color:#006d8d}h2{margin-top:2em;border-bottom:1px solid #d5e0e5;padding-bottom:.3em}h3{margin-top:1.7em}
+img{max-width:100%;height:auto;border:1px solid #dce5ea}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}th,td{padding:8px 12px;border:1px solid #d5e0e6;white-space:nowrap}th{background:#eef5f8}pre{padding:18px;background:#edf3f6;overflow:auto;font-size:14px}code{font-size:.92em}blockquote{border-left:4px solid #5b94a9;color:#476171;margin-left:0;padding-left:18px}.math{overflow:auto;padding:12px 0}.resources{display:flex;gap:17px;flex-wrap:wrap;font-size:15px}footer{font-size:14px;color:#607382}@media(max-width:650px){header{padding:23px 18px}header h1{font-size:25px}main,footer{padding:20px 17px}body{font-size:16px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script>window.MathJax={tex:{displayMath:[["$$","$$"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js" id="MathJax-script"></script>
+</head><body>
+<header><div>Research FBG-R3-E · Full nonlinear scalar-TM VIE</div>
+<h1>受控辅助电流释放与高对比度 Maxwell 材料成像</h1>
+<p>成熟双 β CIE 在既有576材料任务中恢复数字1–9。新的材料步选模、有限电流探索及条件代数根，按独立机制、预算和原物理验收分别判断。</p>
+<nav>
+<a href="?doc=RESEARCH_REPORT_ZH.md">真实结果与主图</a>
+<a href="?doc=MATHEMATICAL_AUDIT.md">数学推导</a>
+<a href="?doc=N1_CONTROLLED_CURRENT_RELEASE.md">N1受控释放</a>
+<a href="?doc=N2_ALGEBRAIC_MULTIBRANCH.md">N2条件多根</a>
+<a href="?doc=CIE_TSOM_BASELINE_AUDIT.md">成熟CIE基线</a>
+<a href="?doc=ALGORITHM.md">算法</a>
+<a href="?doc=BLIND_PROTOCOL.md">盲测协议</a>
+<a href="?doc=REPRODUCE.md">复现</a>
+<a href="?doc=PAPER_CANDIDATE.md">论文判断</a>
+<a href="?doc=audit/SCIENTIFIC_REVIEW.md">独立审阅</a>
+<a href="?doc=CODEX_TO_PRO_HANDOFF.md">Pro交接</a>
+</nav></header>
+<main><div class="resources">
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_fbg_r3_experiments">代码与冻结数据</a>
+<a id="raw">Raw Markdown</a>
+<a href="results/RESULTS_SUMMARY.json">结构化结果</a>
+<a href="results/COST_LEDGER.csv">费用账本</a>
+<a href="figures/fullwave_digits_1to9.png">九数字原图</a>
+</div><article id="report">正在读取已归档报告…</article></main>
+<footer>保持原始物理评分、在线top1与离线best@K的区别。历史披露对象不称新鲜盲测；成熟CIE成果不归为新N1/N2贡献；全部失败与成本随报告公开。</footer>
+<script>
+const doc=new URLSearchParams(location.search).get("doc")||"RESEARCH_REPORT_ZH.md";
+const base="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_fbg_r3_experiments/";
+document.getElementById("raw").href=base+doc;
+const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+fetch(doc).then(r=>r.text()).then(text=>{
+ const maths=[];
+ text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const k="FBGR3MATH"+maths.length+"TOKEN";maths.push('<div class="math">$$'+esc(m)+'$$</div>');return "\n\n"+k+"\n\n";});
+ let html=marked.parse(text);maths.forEach((m,i)=>html=html.replace("FBGR3MATH"+i+"TOKEN",m));
+ const article=document.getElementById("report");article.innerHTML=html;
+ const docbase=new URL(doc,location.href);
+ article.querySelectorAll("img[src],a[href]").forEach(el=>{
+   const attr=el.tagName==="IMG"?"src":"href",v=el.getAttribute(attr);
+   if(!/^(https?:|#|mailto:)/.test(v)){
+     const target=new URL(v,docbase);
+     if(el.tagName==="A"&&target.pathname.endsWith(".md"))el.href=location.pathname+"?doc="+encodeURIComponent(target.pathname.split("/research_fbg_r3_experiments/")[1]||v);
+     else el.setAttribute(attr,target.href);
+   }
+ });
+ MathJax.startup.promise.then(()=>MathJax.typesetPromise([article]));
+});
+</script></body></html>
+

@@ -1,0 +1,209 @@
+{
+  "utc": "2026-11-01T06:00:24.871356+00:00",
+  "scope": "LIMITED_E3_MATURE_BASELINE_DIAGNOSTIC",
+  "tasks": 4,
+  "ok": 4,
+  "wall_seconds": 86.1159808000084,
+  "setup_wall_seconds": 1.532859000028111,
+  "shared_setup": [
+    {
+      "kind": "existing_shared_operators",
+      "operators_path": "D:\\AI\\FBG_R2_20261030\\stage4_public\\operators\\random12.npz",
+      "wall_seconds": 1.1197730000130832,
+      "counts": {
+        "LU": 2,
+        "source_RHS": 24,
+        "operator_uploads": 1
+      }
+    },
+    {
+      "kind": "shared_CIE_public_basis",
+      "operators_path": "D:\\AI\\FBG_R2_20261030\\stage4_public\\operators\\random12.npz",
+      "counts": {
+        "receiver_SVD": 1,
+        "shared_basis_H2D_bytes": 5515144,
+        "APCS_SVD": 3,
+        "Fourier_columns_generated": 580,
+        "IDFT_columns_explicit": 580,
+        "DPCS_projection_columns": 580,
+        "G_columns": 580,
+        "S_columns": 580,
+        "wall_seconds": 0.37114900001324713
+      }
+    }
+  ],
+  "resource_snapshot": [
+    {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=utilization.gpu,memory.used,memory.total",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "0 %, 0 MiB, 8188 MiB\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        "Get-CimInstance Win32_Process | Where-Object { $_.Name -match \"python\" } | Select-Object ProcessId,Name,CommandLine | ConvertTo-Json -Depth 3"
+      ],
+      "returncode": 0,
+      "stdout": "{\n    \"ProcessId\":  20240,\n    \"Name\":  \"python.exe\",\n    \"CommandLine\":  \"\\\"D:\\\\python\\\\python.exe\\\" -u D:/AI/FBG_R3E_20261101/experiments/e3_fullwave_imaging.py D:/AI/FBG_R3E_20261101/manifest_limited_digit2_attempt1.json --execute\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "manifest": {
+    "scope": "LIMITED_MATURE_BASELINE_DIAGNOSTIC",
+    "N1_E3_scientific_gate": "NOT_PASSED",
+    "pipeline_root": "D:/AI/ZALG_CUDA_PIPELINE_20261030",
+    "r2_root": "D:/AI/FBG_R2_20261030",
+    "operators_path": "D:/AI/FBG_R2_20261030/stage4_public/operators/random12.npz",
+    "vendor_path": "D:/AI/ZALG_R4_DIVERSITY_20261030/project/vendor",
+    "output_dir": "D:/AI/FBG_R3E_20261101/results/limited_digit2_attempt1",
+    "lanes": 2,
+    "device": 0,
+    "affinity_mask": 21845,
+    "resource_idle_confirmed": true,
+    "svd_backend": "hybrid",
+    "config": {
+      "wall_seconds": 45.0,
+      "max_lu": 2000,
+      "max_rhs": 60000,
+      "lower": 0.02,
+      "upper": 20.0,
+      "smooth_weight": 0.0001,
+      "tv_weight": 0.0001,
+      "tv_epsilon": 0.01,
+      "maxiter": 2000,
+      "maxfun": 4000
+    },
+    "tasks": [
+      {
+        "task_id": "obs_9cffd133ec9f435d__native_trf__s0",
+        "observation_id": "obs_9cffd133ec9f435d",
+        "method": "native_trf",
+        "initial_material": 0.1,
+        "public_path": "D:/AI/FBG_R2_20261030/stage4_public/obs_9cffd133ec9f435d.npz",
+        "config": {
+          "stages": [
+            8,
+            12,
+            24
+          ],
+          "stage_fractions": [
+            0.2,
+            0.25,
+            0.55
+          ]
+        }
+      },
+      {
+        "task_id": "obs_9cffd133ec9f435d__feedback_beta_0p2__s0",
+        "observation_id": "obs_9cffd133ec9f435d",
+        "method": "feedback_beta:0.2",
+        "initial_material": 0.1,
+        "public_path": "D:/AI/FBG_R2_20261030/stage4_public/obs_9cffd133ec9f435d.npz",
+        "config": {
+          "stages": [
+            8,
+            12,
+            24
+          ],
+          "stage_fractions": [
+            0.2,
+            0.25,
+            0.55
+          ]
+        }
+      },
+      {
+        "task_id": "obs_9cffd133ec9f435d__cie_single__s0",
+        "observation_id": "obs_9cffd133ec9f435d",
+        "method": "cie_single",
+        "initial_material": 0.1,
+        "public_path": "D:/AI/FBG_R2_20261030/stage4_public/obs_9cffd133ec9f435d.npz",
+        "config": {
+          "proposal_fraction": 0.55,
+          "corrector_method": "data_lbfgs",
+          "dpcs_rtol": 0.001,
+          "coefficient_tol": 1e-08,
+          "miniter": 50,
+          "material_inner_maxiter": 60,
+          "material_box": [
+            0.02,
+            20.0
+          ],
+          "stages": [
+            {
+              "mf": 3,
+              "beta": 1.0,
+              "maxiter": 500
+            },
+            {
+              "mf": 6,
+              "beta": 0.2,
+              "maxiter": 500
+            },
+            {
+              "mf": 10,
+              "beta": 0.2,
+              "maxiter": 500
+            }
+          ]
+        }
+      },
+      {
+        "task_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+        "observation_id": "obs_9cffd133ec9f435d",
+        "method": "cie_dual",
+        "initial_material": 0.1,
+        "public_path": "D:/AI/FBG_R2_20261030/stage4_public/obs_9cffd133ec9f435d.npz",
+        "config": {
+          "proposal_fraction": 0.55,
+          "corrector_method": "data_lbfgs",
+          "dpcs_rtol": 0.001,
+          "coefficient_tol": 1e-08,
+          "miniter": 50,
+          "material_inner_maxiter": 60,
+          "material_box": [
+            0.02,
+            20.0
+          ],
+          "stages": [
+            {
+              "mf": 3,
+              "beta": 1.0,
+              "maxiter": 500
+            },
+            {
+              "mf": 6,
+              "beta": 0.2,
+              "maxiter": 500
+            },
+            {
+              "mf": 10,
+              "beta": 0.2,
+              "maxiter": 500
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "shader_or_driver_changes": "NONE",
+  "shared_source_changes": "NONE",
+  "scientific_expansion_gate": "NOT_PASSED_BY_THIS_DIAGNOSTIC"
+}

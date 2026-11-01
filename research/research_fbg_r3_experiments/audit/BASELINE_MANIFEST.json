@@ -1,0 +1,102 @@
+{
+  "scope": "audited finite experiments; no universal method superiority or full-root certificate",
+  "repository_commit_before_new_study": "6659aa49dff2535996d40962791e9a5a6e974adc",
+  "original_physics": "research/research_z_alg_r4_diversity/src/physics.py; reassembled small grids and original576 task",
+  "common_material_box": [
+    0.02,
+    20
+  ],
+  "common_prior": "R4 smooth/TV1e-4 each; epsilon.01; difference_scale19.5",
+  "selection": "original normalized full Maxwell data + same material prior; no truth in ranking",
+  "e1_corrector": {
+    "implementation": "SciPy boundedTRF with analyticFullJ",
+    "max_nfev": 60,
+    "candidate_quota": 2,
+    "wall_share": 0.35
+  },
+  "e1_mature_cie": {
+    "implementation": "src/cie_tsom_baseline.py",
+    "receiver_svd_rtol": 0.001,
+    "stopping_coefficient_squared_rtol": 1e-08,
+    "miniter": 50,
+    "maxiter_per_stage": 700,
+    "side4_mf": [
+      1,
+      2
+    ],
+    "side6_mf": [
+      1,
+      2,
+      3
+    ],
+    "beta": [
+      1,
+      0.2,
+      0.2
+    ],
+    "dual_current_beta": "1 after firststage",
+    "note": "per-source PR-CG; common real-material regularization; explicitFourierproducts, no FFTcomplexity claim"
+  },
+  "native_affine": {
+    "freeze": "audit/NATIVE_TSOM_FREEZE.json",
+    "source": "audit/NATIVE_TSOM_SOURCE_FREEZE.zip",
+    "side": 6,
+    "fixed_DPCS": true,
+    "free_complex_spatial_APCS": 16,
+    "source_count": 6,
+    "actual_real_current_dof": 192,
+    "matched_cie": "singlefixedmf2,beta.2",
+    "reference": "fullmatureCIEmf1->2->3 remainsstrongseparatereference"
+  },
+  "e2": {
+    "freeze": "results/e2_mechanism_plan.json",
+    "supports": [
+      4,
+      6
+    ],
+    "common_exact_kernel": true,
+    "max_corrector_seeds": 3,
+    "matched_actual_seed_control": true
+  },
+  "e3": {
+    "classification": "DISCLOSED_HISTORICAL_MATURE_BASELINE_DIAGNOSTIC",
+    "physical_grid": [
+      24,
+      24
+    ],
+    "all_real_materials_unknown": 576,
+    "sources": 12,
+    "receivers": 48,
+    "k": 6.283185307179586,
+    "wall_per_task": 45,
+    "max_LU": 2000,
+    "max_complex_RHS": 60000,
+    "cie_current_time_share": 0.55,
+    "cie_mf": [
+      3,
+      6,
+      10
+    ],
+    "cie_beta_material": [
+      1,
+      0.2,
+      0.2
+    ],
+    "common_physical_corrector": "original data L-BFGS, not the small-grid TRF",
+    "CUDA_lanes": 2,
+    "current_schedule_often_truncated": true,
+    "native_or_feedback_early_stop_not_equal_consumed_cost": true,
+    "actual_receipts": [
+      "results/e3_limited_diagnostic_20261101",
+      "results/e3_mature_baseline_remaining_20261101"
+    ]
+  },
+  "prior_art": "CIE/TSOM2019principles adaptation to2Drealmaterial; nativeA17Galerkinexchange not implemented; ProR3Tderivations treatedasinput",
+  "gates": {
+    "nrmse": 0.15,
+    "iou": 0.7,
+    "clean_relative_data": 0.001,
+    "noisy_relative_data": 0.003
+  },
+  "cost_limits": "LU/RHS/corrector counts are reported but not FLOP-equivalent; sharedsetup, rejects, earlyfailures and missingmeasurements separately preserved"
+}

@@ -1,0 +1,108 @@
+{
+  "status": "METHODS_FROZEN_BEFORE_NEW_GENERATION",
+  "utc": "2026-11-01T06:45:53.258952+00:00",
+  "side": 6,
+  "sources": 6,
+  "receivers": 16,
+  "k": 6.283185307179586,
+  "material_box": [
+    0.02,
+    20
+  ],
+  "new_objects": 6,
+  "families": [
+    "ring",
+    "islands",
+    "curved"
+  ],
+  "amplitudes": [
+    10.0,
+    16.0
+  ],
+  "backgrounds": [
+    0.07,
+    0.16
+  ],
+  "layouts": [
+    "uniform",
+    "jittered"
+  ],
+  "observations": [
+    "clean",
+    "noisy_1e-3"
+  ],
+  "anonymous_solver_inputs": "G/E0/S/Y/grid_shape/public shared starts only",
+  "starts": [
+    0,
+    1,
+    4
+  ],
+  "wall_per_start": 4.0,
+  "max_lu": 120,
+  "max_rhs": 2400,
+  "methods": [
+    {
+      "method": "native",
+      "chart": "csi"
+    },
+    {
+      "method": "feedback",
+      "chart": "csi"
+    },
+    {
+      "method": "cie_dual",
+      "chart": "csi"
+    },
+    {
+      "method": "material_seeds",
+      "chart": "csi"
+    },
+    {
+      "method": "n1_fourier",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_task",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_finite",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_finite_fourier",
+      "chart": "cie"
+    },
+    {
+      "method": "n1_finite_random",
+      "chart": "cie"
+    }
+  ],
+  "n1": {
+    "affine_mode": "native_tsom",
+    "native_mf": 2,
+    "native_core_apcs": 15,
+    "real_current_DOF": 192,
+    "beta": 0.2,
+    "rho": 1.0,
+    "pool_groups": 8,
+    "joint_steps": 80,
+    "operation": "replace",
+    "source_normalized_joint": true,
+    "original_physical_score": true,
+    "local_gain_gate": false,
+    "seed_rms_max": 2.0,
+    "seed_current_over_E_cap": 3.0,
+    "seed_defect_over_E_cap": 3.0,
+    "seed_scale_trials": 8
+  },
+  "gates": {
+    "nrmse": 0.15,
+    "iou": 0.7,
+    "data_clean": 0.001,
+    "data_noisy": 0.003
+  },
+  "prior": "unchanged R4 smooth/TV 1e-4 each; no shape/template support",
+  "selection": "minimum original normalized full-data score plus shared prior; GT only after all predictions close",
+  "scope": "new native-affine confirmation after development generic finite gain; not A17 attribution or 576 scaling; six varied objects across three families"
+}

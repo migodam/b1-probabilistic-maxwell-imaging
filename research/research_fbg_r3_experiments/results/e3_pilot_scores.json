@@ -1,0 +1,772 @@
+{
+  "status": "POST_CLOSURE_SCORED",
+  "batch": "e3",
+  "tag": "e3_pilot",
+  "classification": "DISCLOSED_HISTORICAL_MATURE_BASELINE_DIAGNOSTIC",
+  "result_sources": [
+    {
+      "path": "research/research_fbg_r3_experiments/results/e3_limited_diagnostic_20261101/limited_digit2_attempt1/SUMMARY.json",
+      "status": "PREDICTIONS_CLOSED_COMPLETE_FINITE_QUEUE_PARENT_AUTHORIZED",
+      "batch_wall": null,
+      "workers": 1,
+      "setup_wall_seconds": 1.532859000028111,
+      "shared_setup": [
+        {
+          "kind": "existing_shared_operators",
+          "operators_path": "D:\\AI\\FBG_R2_20261030\\stage4_public\\operators\\random12.npz",
+          "wall_seconds": 1.1197730000130832,
+          "counts": {
+            "LU": 2,
+            "source_RHS": 24,
+            "operator_uploads": 1
+          }
+        },
+        {
+          "kind": "shared_CIE_public_basis",
+          "operators_path": "D:\\AI\\FBG_R2_20261030\\stage4_public\\operators\\random12.npz",
+          "counts": {
+            "receiver_SVD": 1,
+            "shared_basis_H2D_bytes": 5515144,
+            "APCS_SVD": 3,
+            "Fourier_columns_generated": 580,
+            "IDFT_columns_explicit": 580,
+            "DPCS_projection_columns": 580,
+            "G_columns": 580,
+            "S_columns": 580,
+            "wall_seconds": 0.37114900001324713
+          }
+        }
+      ]
+    }
+  ],
+  "private_truth_opened_after_parent_closure": true,
+  "private_truth_object_ids_loaded": [
+    "case_f2d3e1eca2be4e61"
+  ],
+  "offline_gt_gate_diagnostics": {
+    "case_f2d3e1eca2be4e61": {
+      "object_id": "case_f2d3e1eca2be4e61",
+      "side": 24,
+      "shape": "digit2",
+      "amplitude": 12.0,
+      "gt_self_otsu_iou": 1.0,
+      "gt_self_otsu_threshold": 5.8532255176303085,
+      "stored_support_rule": "high-resolution occupancy > .35"
+    }
+  },
+  "gt_diagnostic_scope": "Offline self-Otsu versus stored occupancy support only; no physical calls and no gate change.",
+  "gates": {
+    "amplitude_normalized_nrmse": 0.15,
+    "otsu_iou": 0.7,
+    "clean_relative_data": 0.001,
+    "noisy_relative_data": 0.003
+  },
+  "definitions": {
+    "nrmse": "sqrt(mean((m-m_gt)^2)) / declared per-object amplitude from sealed contract",
+    "support": "Stored high-resolution occupancy > .35; predicted foreground by 256-bin histogram Otsu",
+    "oracle": "Best image NRMSE / any joint pass among AVAILABLE sealed endpoints plus selected online incumbent; GT used only here. Joint-pass counts are known-pass lower bounds if physical residual coverage is incomplete.",
+    "visualization": "Lowest online physical score among shared starts; all material panels use [.02,20].",
+    "independence": "Material object IDs define contracts across amplitude/grid, not independent morphology draws. Primary descriptive resampling is by fixed shape family (three in E1); layouts and starts are repeated observations."
+  },
+  "summaries": [
+    {
+      "group": "cie_dual / wall_budget=45.0 / noise_label=clean",
+      "runs": 1,
+      "failures": 0,
+      "stopping_counts": {
+        "NOT_RECORDED": 1
+      },
+      "physical_budget_cap_stops": 0,
+      "maximum_scored_unit_LU": 1896,
+      "maximum_scored_unit_RHS": 45444,
+      "physical_caps_recorded_runs": 0,
+      "physical_cap_overshoots": 0,
+      "execution_failures": 0,
+      "data_passes": 1,
+      "image_passes": 1,
+      "joint_passes": 1,
+      "material_data_passes": 1,
+      "material_data_pass_but_iou_fail": 0,
+      "data_pass_image_fail": 0,
+      "median_nrmse": 0.06378427331175206,
+      "median_iou": 0.8936170212765957,
+      "oracle_image_passes": 1,
+      "oracle_joint_passes": 1,
+      "oracle_material_data_passes": 1,
+      "oracle_joint_coverage_runs": 1,
+      "oracle_joint_passes_status": "EXACT",
+      "oracle_median_best_nrmse": 0.06378427331175206,
+      "wall_seconds": 45.01382679998642,
+      "model_cost": {
+        "LU": 1896,
+        "source_RHS": 22752,
+        "forward": 1896,
+        "host_result_returns": 3182,
+        "adjoint_RHS": 22692,
+        "gradient": 1891,
+        "actual_complex_RHS": 45444
+      },
+      "actual_corrected_seed_counts": {
+        "1": 1
+      },
+      "object_cluster": {
+        "object_count": 1,
+        "clusters": [
+          {
+            "object_id": "case_f2d3e1eca2be4e61",
+            "run_count": 1,
+            "data_pass_fraction": 1.0,
+            "joint_pass_fraction": 1.0,
+            "median_nrmse": 0.06378427331175206,
+            "median_iou": 0.8936170212765957
+          }
+        ],
+        "equal_object_mean_joint_pass": 1.0,
+        "object_bootstrap_95_interval": [
+          1.0,
+          1.0
+        ],
+        "inference_scope": "Descriptive finite-object resampling; shared shapes/amplitudes/grids are not a population sample."
+      },
+      "geometry_family_cluster": {
+        "fixed_geometry_families": 1,
+        "material_contracts": 1,
+        "families": [
+          {
+            "shape": "digit2",
+            "material_contracts": 1,
+            "run_count": 1,
+            "joint_pass_fraction": 1.0,
+            "material_data_pass_fraction": 1.0
+          }
+        ],
+        "equal_geometry_mean_joint_pass": 1.0,
+        "geometry_bootstrap_95_interval": [
+          1.0,
+          1.0
+        ],
+        "inference_scope": "Primary descriptive resampling across fixed shape families; only three geometries in E1, very low confidence, not independent morphology draws."
+      }
+    },
+    {
+      "group": "cie_single / wall_budget=45.0 / noise_label=clean",
+      "runs": 1,
+      "failures": 0,
+      "stopping_counts": {
+        "NOT_RECORDED": 1
+      },
+      "physical_budget_cap_stops": 0,
+      "maximum_scored_unit_LU": 1548,
+      "maximum_scored_unit_RHS": 37104,
+      "physical_caps_recorded_runs": 0,
+      "physical_cap_overshoots": 0,
+      "execution_failures": 0,
+      "data_passes": 1,
+      "image_passes": 1,
+      "joint_passes": 1,
+      "material_data_passes": 1,
+      "material_data_pass_but_iou_fail": 0,
+      "data_pass_image_fail": 0,
+      "median_nrmse": 0.06436559688515815,
+      "median_iou": 0.8842105263157894,
+      "oracle_image_passes": 1,
+      "oracle_joint_passes": 1,
+      "oracle_material_data_passes": 1,
+      "oracle_joint_coverage_runs": 1,
+      "oracle_joint_passes_status": "EXACT",
+      "oracle_median_best_nrmse": 0.06436559688515815,
+      "wall_seconds": 45.00695619999897,
+      "model_cost": {
+        "LU": 1548,
+        "source_RHS": 18576,
+        "forward": 1548,
+        "host_result_returns": 2727,
+        "adjoint_RHS": 18528,
+        "gradient": 1544,
+        "actual_complex_RHS": 37104
+      },
+      "actual_corrected_seed_counts": {
+        "1": 1
+      },
+      "object_cluster": {
+        "object_count": 1,
+        "clusters": [
+          {
+            "object_id": "case_f2d3e1eca2be4e61",
+            "run_count": 1,
+            "data_pass_fraction": 1.0,
+            "joint_pass_fraction": 1.0,
+            "median_nrmse": 0.06436559688515815,
+            "median_iou": 0.8842105263157894
+          }
+        ],
+        "equal_object_mean_joint_pass": 1.0,
+        "object_bootstrap_95_interval": [
+          1.0,
+          1.0
+        ],
+        "inference_scope": "Descriptive finite-object resampling; shared shapes/amplitudes/grids are not a population sample."
+      },
+      "geometry_family_cluster": {
+        "fixed_geometry_families": 1,
+        "material_contracts": 1,
+        "families": [
+          {
+            "shape": "digit2",
+            "material_contracts": 1,
+            "run_count": 1,
+            "joint_pass_fraction": 1.0,
+            "material_data_pass_fraction": 1.0
+          }
+        ],
+        "equal_geometry_mean_joint_pass": 1.0,
+        "geometry_bootstrap_95_interval": [
+          1.0,
+          1.0
+        ],
+        "inference_scope": "Primary descriptive resampling across fixed shape families; only three geometries in E1, very low confidence, not independent morphology draws."
+      }
+    },
+    {
+      "group": "feedback_beta:0.2 / wall_budget=45.0 / noise_label=clean",
+      "runs": 1,
+      "failures": 0,
+      "stopping_counts": {
+        "NOT_RECORDED": 1
+      },
+      "physical_budget_cap_stops": 0,
+      "maximum_scored_unit_LU": 1999,
+      "maximum_scored_unit_RHS": 47940,
+      "physical_caps_recorded_runs": 0,
+      "physical_cap_overshoots": 0,
+      "execution_failures": 0,
+      "data_passes": 1,
+      "image_passes": 1,
+      "joint_passes": 1,
+      "material_data_passes": 1,
+      "material_data_pass_but_iou_fail": 0,
+      "data_pass_image_fail": 0,
+      "median_nrmse": 0.06028693908564376,
+      "median_iou": 0.9325842696629213,
+      "oracle_image_passes": 1,
+      "oracle_joint_passes": 1,
+      "oracle_material_data_passes": 1,
+      "oracle_joint_coverage_runs": 1,
+      "oracle_joint_passes_status": "EXACT",
+      "oracle_median_best_nrmse": 0.06028693908564376,
+      "wall_seconds": 39.27339630003553,
+      "model_cost": {
+        "LU": 1999,
+        "source_RHS": 23988,
+        "forward": 1999,
+        "host_result_returns": 2005,
+        "feedback_fits": 3,
+        "feedback_reference": 3,
+        "adjoint_RHS": 23952,
+        "gradient": 1996,
+        "Gram": 1232,
+        "feedback_evaluations": 1232,
+        "actual_complex_RHS": 47940
+      },
+      "actual_corrected_seed_counts": {
+        "0": 1
+      },
+      "object_cluster": {
+        "object_count": 1,
+        "clusters": [
+          {
+            "object_id": "case_f2d3e1eca2be4e61",
+            "run_count": 1,
+            "data_pass_fraction": 1.0,
+            "joint_pass_fraction": 1.0,
+            "median_nrmse": 0.06028693908564376,
+            "median_iou": 0.9325842696629213
+          }
+        ],
+        "equal_object_mean_joint_pass": 1.0,
+        "object_bootstrap_95_interval": [
+          1.0,
+          1.0
+        ],
+        "inference_scope": "Descriptive finite-object resampling; shared shapes/amplitudes/grids are not a population sample."
+      },
+      "geometry_family_cluster": {
+        "fixed_geometry_families": 1,
+        "material_contracts": 1,
+        "families": [
+          {
+            "shape": "digit2",
+            "material_contracts": 1,
+            "run_count": 1,
+            "joint_pass_fraction": 1.0,
+            "material_data_pass_fraction": 1.0
+          }
+        ],
+        "equal_geometry_mean_joint_pass": 1.0,
+        "geometry_bootstrap_95_interval": [
+          1.0,
+          1.0
+        ],
+        "inference_scope": "Primary descriptive resampling across fixed shape families; only three geometries in E1, very low confidence, not independent morphology draws."
+      }
+    },
+    {
+      "group": "native_trf / wall_budget=45.0 / noise_label=clean",
+      "runs": 1,
+      "failures": 0,
+      "stopping_counts": {
+        "NOT_RECORDED": 1
+      },
+      "physical_budget_cap_stops": 0,
+      "maximum_scored_unit_LU": 23,
+      "maximum_scored_unit_RHS": 1380,
+      "physical_caps_recorded_runs": 0,
+      "physical_cap_overshoots": 0,
+      "execution_failures": 0,
+      "data_passes": 0,
+      "image_passes": 0,
+      "joint_passes": 0,
+      "material_data_passes": 0,
+      "material_data_pass_but_iou_fail": 0,
+      "data_pass_image_fail": 0,
+      "median_nrmse": 0.37570311455501976,
+      "median_iou": 0.0,
+      "oracle_image_passes": 0,
+      "oracle_joint_passes": 0,
+      "oracle_material_data_passes": 0,
+      "oracle_joint_coverage_runs": 1,
+      "oracle_joint_passes_status": "EXACT",
+      "oracle_median_best_nrmse": 0.37570311455501976,
+      "wall_seconds": 9.882042399956845,
+      "model_cost": {
+        "LU": 23,
+        "source_RHS": 276,
+        "forward": 23,
+        "host_result_returns": 49,
+        "FullJ": 23,
+        "receiver_RHS": 1104,
+        "actual_complex_RHS": 1380
+      },
+      "actual_corrected_seed_counts": {
+        "0": 1
+      },
+      "object_cluster": {
+        "object_count": 1,
+        "clusters": [
+          {
+            "object_id": "case_f2d3e1eca2be4e61",
+            "run_count": 1,
+            "data_pass_fraction": 0.0,
+            "joint_pass_fraction": 0.0,
+            "median_nrmse": 0.37570311455501976,
+            "median_iou": 0.0
+          }
+        ],
+        "equal_object_mean_joint_pass": 0.0,
+        "object_bootstrap_95_interval": [
+          0.0,
+          0.0
+        ],
+        "inference_scope": "Descriptive finite-object resampling; shared shapes/amplitudes/grids are not a population sample."
+      },
+      "geometry_family_cluster": {
+        "fixed_geometry_families": 1,
+        "material_contracts": 1,
+        "families": [
+          {
+            "shape": "digit2",
+            "material_contracts": 1,
+            "run_count": 1,
+            "joint_pass_fraction": 0.0,
+            "material_data_pass_fraction": 0.0
+          }
+        ],
+        "equal_geometry_mean_joint_pass": 0.0,
+        "geometry_bootstrap_95_interval": [
+          0.0,
+          0.0
+        ],
+        "inference_scope": "Primary descriptive resampling across fixed shape families; only three geometries in E1, very low confidence, not independent morphology draws."
+      }
+    }
+  ],
+  "rows": [
+    {
+      "run_id": "obs_9cffd133ec9f435d__native_trf__s0",
+      "case_id": "obs_9cffd133ec9f435d",
+      "side": 24,
+      "layout": "random12",
+      "start": 0,
+      "method": "native_trf",
+      "noise_label": "clean",
+      "wall_budget": 45.0,
+      "selected_phase": null,
+      "physical_residual_source": "ALREADY_PAID_ORIGINAL_MAXWELL_RECEIPT_NO_NEW_SOLVE",
+      "execution_source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_fbg_r3_experiments/results/e3_limited_diagnostic_20261101/limited_digit2_attempt1",
+      "seed_count_scope": "One shared current incumbent correction for CIE; native/feedback main solves separate",
+      "object_id": "case_f2d3e1eca2be4e61",
+      "shape": "digit2",
+      "amplitude": 12.0,
+      "group": "native_trf / wall_budget=45.0 / noise_label=clean",
+      "comparison_group": "native_trf / wall_budget=45.0",
+      "run_status": "OK",
+      "score_status": "SCORED",
+      "relative_residual": 1.0090135957509874,
+      "online_physical_score": 0.5090542391260771,
+      "wall_seconds": 9.882042399956845,
+      "model_cost": {
+        "LU": 23,
+        "source_RHS": 276,
+        "forward": 23,
+        "host_result_returns": 49,
+        "FullJ": 23,
+        "receiver_RHS": 1104,
+        "actual_complex_RHS": 1380
+      },
+      "actual_corrected_seeds": 0,
+      "data_pass": false,
+      "image_pass": false,
+      "material_nrmse_pass": false,
+      "material_data_pass": false,
+      "joint_pass": false,
+      "physical_data_gate": 0.001,
+      "amplitude_normalized_nrmse": 0.37570311455501976,
+      "otsu_iou": 0.0,
+      "otsu_threshold": 0.02304576328708391,
+      "joint_failure_cause": "MATERIAL_OR_DATA_GATE",
+      "oracle_pool_size_including_online": 1,
+      "oracle_corrected_candidate_count": 0,
+      "oracle_best_image_nrmse": 0.37570311455501976,
+      "oracle_any_image_pass": false,
+      "oracle_any_joint_pass": false,
+      "oracle_any_material_data_pass": false,
+      "oracle_joint_coverage_complete": true
+    },
+    {
+      "run_id": "obs_9cffd133ec9f435d__feedback_beta_0p2__s0",
+      "case_id": "obs_9cffd133ec9f435d",
+      "side": 24,
+      "layout": "random12",
+      "start": 0,
+      "method": "feedback_beta:0.2",
+      "noise_label": "clean",
+      "wall_budget": 45.0,
+      "selected_phase": null,
+      "physical_residual_source": "ALREADY_PAID_ORIGINAL_MAXWELL_RECEIPT_NO_NEW_SOLVE",
+      "execution_source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_fbg_r3_experiments/results/e3_limited_diagnostic_20261101/limited_digit2_attempt1",
+      "seed_count_scope": "One shared current incumbent correction for CIE; native/feedback main solves separate",
+      "object_id": "case_f2d3e1eca2be4e61",
+      "shape": "digit2",
+      "amplitude": 12.0,
+      "group": "feedback_beta:0.2 / wall_budget=45.0 / noise_label=clean",
+      "comparison_group": "feedback_beta:0.2 / wall_budget=45.0",
+      "run_status": "OK",
+      "score_status": "SCORED",
+      "relative_residual": 0.0002569203211533691,
+      "online_physical_score": 5.495136705070432e-06,
+      "wall_seconds": 39.27339630003553,
+      "model_cost": {
+        "LU": 1999,
+        "source_RHS": 23988,
+        "forward": 1999,
+        "host_result_returns": 2005,
+        "feedback_fits": 3,
+        "feedback_reference": 3,
+        "adjoint_RHS": 23952,
+        "gradient": 1996,
+        "Gram": 1232,
+        "feedback_evaluations": 1232,
+        "actual_complex_RHS": 47940
+      },
+      "actual_corrected_seeds": 0,
+      "data_pass": true,
+      "image_pass": true,
+      "material_nrmse_pass": true,
+      "material_data_pass": true,
+      "joint_pass": true,
+      "physical_data_gate": 0.001,
+      "amplitude_normalized_nrmse": 0.06028693908564376,
+      "otsu_iou": 0.9325842696629213,
+      "otsu_threshold": 5.6446296891684336,
+      "joint_failure_cause": "PASS",
+      "oracle_pool_size_including_online": 1,
+      "oracle_corrected_candidate_count": 0,
+      "oracle_best_image_nrmse": 0.06028693908564376,
+      "oracle_any_image_pass": true,
+      "oracle_any_joint_pass": true,
+      "oracle_any_material_data_pass": true,
+      "oracle_joint_coverage_complete": true
+    },
+    {
+      "run_id": "obs_9cffd133ec9f435d__cie_single__s0",
+      "case_id": "obs_9cffd133ec9f435d",
+      "side": 24,
+      "layout": "random12",
+      "start": 0,
+      "method": "cie_single",
+      "noise_label": "clean",
+      "wall_budget": 45.0,
+      "selected_phase": "corrector",
+      "auxiliary_current_relative_residual": 0.01650149261742265,
+      "physical_residual_source": "ALREADY_PAID_ORIGINAL_MAXWELL_RECEIPT_NO_NEW_SOLVE",
+      "execution_source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_fbg_r3_experiments/results/e3_limited_diagnostic_20261101/limited_digit2_attempt1",
+      "seed_count_scope": "One shared current incumbent correction for CIE; native/feedback main solves separate",
+      "object_id": "case_f2d3e1eca2be4e61",
+      "shape": "digit2",
+      "amplitude": 12.0,
+      "group": "cie_single / wall_budget=45.0 / noise_label=clean",
+      "comparison_group": "cie_single / wall_budget=45.0",
+      "run_status": "OK",
+      "score_status": "SCORED",
+      "relative_residual": 0.00031071428113415303,
+      "online_physical_score": 5.399317602221937e-06,
+      "wall_seconds": 45.00695619999897,
+      "model_cost": {
+        "LU": 1548,
+        "source_RHS": 18576,
+        "forward": 1548,
+        "host_result_returns": 2727,
+        "adjoint_RHS": 18528,
+        "gradient": 1544,
+        "actual_complex_RHS": 37104
+      },
+      "actual_corrected_seeds": 1,
+      "data_pass": true,
+      "image_pass": true,
+      "material_nrmse_pass": true,
+      "material_data_pass": true,
+      "joint_pass": true,
+      "physical_data_gate": 0.001,
+      "amplitude_normalized_nrmse": 0.06436559688515815,
+      "otsu_iou": 0.8842105263157894,
+      "otsu_threshold": 5.342893031912488,
+      "joint_failure_cause": "PASS",
+      "oracle_pool_size_including_online": 5,
+      "oracle_corrected_candidate_count": 5,
+      "oracle_best_image_nrmse": 0.06436559688515815,
+      "oracle_any_image_pass": true,
+      "oracle_any_joint_pass": true,
+      "oracle_any_material_data_pass": true,
+      "oracle_joint_coverage_complete": true
+    },
+    {
+      "run_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+      "case_id": "obs_9cffd133ec9f435d",
+      "side": 24,
+      "layout": "random12",
+      "start": 0,
+      "method": "cie_dual",
+      "noise_label": "clean",
+      "wall_budget": 45.0,
+      "selected_phase": "corrector",
+      "auxiliary_current_relative_residual": 0.02530480134088977,
+      "physical_residual_source": "ALREADY_PAID_ORIGINAL_MAXWELL_RECEIPT_NO_NEW_SOLVE",
+      "execution_source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_fbg_r3_experiments/results/e3_limited_diagnostic_20261101/limited_digit2_attempt1",
+      "seed_count_scope": "One shared current incumbent correction for CIE; native/feedback main solves separate",
+      "object_id": "case_f2d3e1eca2be4e61",
+      "shape": "digit2",
+      "amplitude": 12.0,
+      "group": "cie_dual / wall_budget=45.0 / noise_label=clean",
+      "comparison_group": "cie_dual / wall_budget=45.0",
+      "run_status": "OK",
+      "score_status": "SCORED",
+      "relative_residual": 0.00029564479082947457,
+      "online_physical_score": 5.386313176713317e-06,
+      "wall_seconds": 45.01382679998642,
+      "model_cost": {
+        "LU": 1896,
+        "source_RHS": 22752,
+        "forward": 1896,
+        "host_result_returns": 3182,
+        "adjoint_RHS": 22692,
+        "gradient": 1891,
+        "actual_complex_RHS": 45444
+      },
+      "actual_corrected_seeds": 1,
+      "data_pass": true,
+      "image_pass": true,
+      "material_nrmse_pass": true,
+      "material_data_pass": true,
+      "joint_pass": true,
+      "physical_data_gate": 0.001,
+      "amplitude_normalized_nrmse": 0.06378427331175206,
+      "otsu_iou": 0.8936170212765957,
+      "otsu_threshold": 5.423291260707973,
+      "joint_failure_cause": "PASS",
+      "oracle_pool_size_including_online": 5,
+      "oracle_corrected_candidate_count": 5,
+      "oracle_best_image_nrmse": 0.06378427331175206,
+      "oracle_any_image_pass": true,
+      "oracle_any_joint_pass": true,
+      "oracle_any_material_data_pass": true,
+      "oracle_joint_coverage_complete": true
+    }
+  ],
+  "candidate_scores": [
+    {
+      "amplitude_normalized_nrmse": 0.3727813338777696,
+      "otsu_iou": 0.0,
+      "otsu_threshold": 0.1,
+      "material_nrmse_pass": false,
+      "image_pass": false,
+      "run_id": "obs_9cffd133ec9f435d__cie_single__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_single__s0_candidate0",
+      "relative_residual": 1.0440136218883762,
+      "data_pass": false,
+      "provenance": {
+        "stage": -1,
+        "reason": "initial_incumbent"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.2510481025992913,
+      "otsu_iou": 0.4336734693877551,
+      "otsu_threshold": 3.284846014377857,
+      "material_nrmse_pass": false,
+      "image_pass": false,
+      "run_id": "obs_9cffd133ec9f435d__cie_single__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_single__s0_candidate1",
+      "relative_residual": 0.8520611311897043,
+      "data_pass": false,
+      "provenance": {
+        "stage": 0,
+        "reason": "MAXITER"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.15740770954647734,
+      "otsu_iou": 0.6746031746031746,
+      "otsu_threshold": 4.241535253757242,
+      "material_nrmse_pass": false,
+      "image_pass": false,
+      "run_id": "obs_9cffd133ec9f435d__cie_single__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_single__s0_candidate2",
+      "relative_residual": 0.1664632170248568,
+      "data_pass": false,
+      "provenance": {
+        "stage": 1,
+        "reason": "COEFFICIENT_TOL"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.09567272387492397,
+      "otsu_iou": 0.8095238095238095,
+      "otsu_threshold": 4.824069396905253,
+      "material_nrmse_pass": true,
+      "image_pass": true,
+      "run_id": "obs_9cffd133ec9f435d__cie_single__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_single__s0_candidate3",
+      "relative_residual": 0.01650149261742265,
+      "data_pass": false,
+      "provenance": {
+        "stage": 2,
+        "reason": "COEFFICIENT_TOL"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.06436559688515815,
+      "otsu_iou": 0.8842105263157894,
+      "otsu_threshold": 5.342893031912488,
+      "material_nrmse_pass": true,
+      "image_pass": true,
+      "run_id": "obs_9cffd133ec9f435d__cie_single__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_single__s0_candidate4",
+      "relative_residual": 0.00031071428113415303,
+      "data_pass": true,
+      "provenance": {
+        "stage": 24,
+        "reason": null
+      },
+      "joint_pass": true
+    },
+    {
+      "amplitude_normalized_nrmse": 0.3727813338777696,
+      "otsu_iou": 0.0,
+      "otsu_threshold": 0.1,
+      "material_nrmse_pass": false,
+      "image_pass": false,
+      "run_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_dual__s0_candidate0",
+      "relative_residual": 1.0440136218883762,
+      "data_pass": false,
+      "provenance": {
+        "stage": -1,
+        "reason": "initial_incumbent"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.2510481025992913,
+      "otsu_iou": 0.4336734693877551,
+      "otsu_threshold": 3.284846014377857,
+      "material_nrmse_pass": false,
+      "image_pass": false,
+      "run_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_dual__s0_candidate1",
+      "relative_residual": 0.8520611311897043,
+      "data_pass": false,
+      "provenance": {
+        "stage": 0,
+        "reason": "MAXITER"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.15161852262217512,
+      "otsu_iou": 0.6390977443609023,
+      "otsu_threshold": 4.080713822509413,
+      "material_nrmse_pass": false,
+      "image_pass": false,
+      "run_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_dual__s0_candidate2",
+      "relative_residual": 0.1806239449837365,
+      "data_pass": false,
+      "provenance": {
+        "stage": 1,
+        "reason": "MAXITER"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.09758710829898302,
+      "otsu_iou": 0.8095238095238095,
+      "otsu_threshold": 4.854989376873353,
+      "material_nrmse_pass": true,
+      "image_pass": true,
+      "run_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_dual__s0_candidate3",
+      "relative_residual": 0.02530480134088977,
+      "data_pass": false,
+      "provenance": {
+        "stage": 2,
+        "reason": "COEFFICIENT_TOL"
+      },
+      "joint_pass": false
+    },
+    {
+      "amplitude_normalized_nrmse": 0.06378427331175206,
+      "otsu_iou": 0.8936170212765957,
+      "otsu_threshold": 5.423291260707973,
+      "material_nrmse_pass": true,
+      "image_pass": true,
+      "run_id": "obs_9cffd133ec9f435d__cie_dual__s0",
+      "candidate_key": "obs_9cffd133ec9f435d__cie_dual__s0_candidate4",
+      "relative_residual": 0.00029564479082947457,
+      "data_pass": true,
+      "provenance": {
+        "stage": 24,
+        "reason": null
+      },
+      "joint_pass": true
+    }
+  ],
+  "multistart_K_prefix_curves": [],
+  "multistart_scope": "Only actual frozen shared-start prefixes are eligible, with no extrapolation; best-Phi uses sealed online physical score, oracle uses GT only offline.",
+  "failed_or_joint_failed_runs": [
+    "obs_9cffd133ec9f435d__native_trf__s0"
+  ]
+}

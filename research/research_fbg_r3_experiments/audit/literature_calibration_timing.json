@@ -1,0 +1,623 @@
+{
+  "dataset": "data/dev_calibration.npz",
+  "arrays_opened": [
+    "G",
+    "E0",
+    "S",
+    "grid_shape",
+    "Y"
+  ],
+  "material_arrays_opened": false,
+  "purpose": "TIME ONLY, no parameter optimization",
+  "source_rank": 12,
+  "dpcs_rtol": 0.001,
+  "receiver_singular_values": [
+    0.7588973692932149,
+    0.7588971092190222,
+    0.7394362148109959,
+    0.6687343805485321,
+    0.5792657332831125,
+    0.38158476781188266,
+    0.3815811799440113,
+    0.19095253065226636,
+    0.10990167945540108,
+    0.04950197329888864,
+    0.04948087369469241,
+    0.02044500794120831,
+    6.995644735576149e-05,
+    1.8525420725155164e-05,
+    1.3031445804658893e-05,
+    6.2325297495458495e-06
+  ],
+  "timing_50": [
+    {
+      "wall": 0.21405433397740126,
+      "cost": {
+        "physical_validations": 2,
+        "receiver_SVD": 1,
+        "G_columns": 10,
+        "S_columns": 10,
+        "APCS_SVD": 1,
+        "Fourier_columns_generated": 4,
+        "IDFT_columns_explicit": 4,
+        "DPCS_projection_columns": 4,
+        "material_readouts": 50,
+        "material_inner_evaluations": 1664,
+        "PR_CG_steps": 50,
+        "reduced_operator_columns": 1800,
+        "wall_seconds": 0.21405433397740126,
+        "model": {
+          "full_factorization_dimension": 32,
+          "cached_operator_imports": 0,
+          "source_RHS": 12,
+          "LU": 2,
+          "FULL_FORWARD": 2,
+          "actual_complex_RHS": 12
+        }
+      },
+      "iterations": 50
+    },
+    {
+      "wall": 0.18424562504515052,
+      "cost": {
+        "physical_validations": 2,
+        "receiver_SVD": 1,
+        "G_columns": 10,
+        "S_columns": 10,
+        "APCS_SVD": 1,
+        "Fourier_columns_generated": 4,
+        "IDFT_columns_explicit": 4,
+        "DPCS_projection_columns": 4,
+        "material_readouts": 50,
+        "material_inner_evaluations": 1664,
+        "PR_CG_steps": 50,
+        "reduced_operator_columns": 1800,
+        "wall_seconds": 0.18424562504515052,
+        "model": {
+          "FULL_FORWARD": 2,
+          "actual_complex_RHS": 12,
+          "full_factorization_dimension": 32,
+          "cached_operator_imports": 0,
+          "source_RHS": 12,
+          "LU": 2
+        }
+      },
+      "iterations": 50
+    },
+    {
+      "wall": 0.18550312472507358,
+      "cost": {
+        "physical_validations": 2,
+        "receiver_SVD": 1,
+        "G_columns": 10,
+        "S_columns": 10,
+        "APCS_SVD": 1,
+        "Fourier_columns_generated": 4,
+        "IDFT_columns_explicit": 4,
+        "DPCS_projection_columns": 4,
+        "material_readouts": 50,
+        "material_inner_evaluations": 1664,
+        "PR_CG_steps": 50,
+        "reduced_operator_columns": 1800,
+        "wall_seconds": 0.18550312472507358,
+        "model": {
+          "FULL_FORWARD": 2,
+          "actual_complex_RHS": 12,
+          "full_factorization_dimension": 32,
+          "cached_operator_imports": 0,
+          "source_RHS": 12,
+          "LU": 2
+        }
+      },
+      "iterations": 50
+    }
+  ],
+  "T0": 0.18550312472507358,
+  "full_schedule": [
+    {
+      "name": "cie_single",
+      "stages": [
+        {
+          "mf": 1,
+          "beta": 1.0,
+          "maxiter": 300
+        },
+        {
+          "mf": 2,
+          "beta": 0.2,
+          "maxiter": 300
+        }
+      ],
+      "status": "SCHEDULE_COMPLETE",
+      "cost": {
+        "physical_validations": 3,
+        "receiver_SVD": 1,
+        "G_columns": 26,
+        "S_columns": 26,
+        "APCS_SVD": 2,
+        "Fourier_columns_generated": 20,
+        "IDFT_columns_explicit": 20,
+        "DPCS_projection_columns": 20,
+        "material_readouts": 22,
+        "material_inner_evaluations": 488,
+        "PR_CG_steps": 22,
+        "reduced_operator_columns": 792,
+        "wall_seconds": 0.0567524591460824,
+        "model": {
+          "FULL_FORWARD": 3,
+          "actual_complex_RHS": 18,
+          "full_factorization_dimension": 48,
+          "cached_operator_imports": 0,
+          "source_RHS": 18,
+          "LU": 3
+        }
+      },
+      "coefficient_tol": 0.001,
+      "miniter": 2,
+      "stage_ends": [
+        {
+          "stage": 0,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 1,
+          "fourier_columns": 4,
+          "apcs_rank": 4,
+          "beta_current": 1.0,
+          "beta_material": 1.0,
+          "wall": 0.04508720897138119
+        },
+        {
+          "stage": 1,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 2,
+          "fourier_columns": 16,
+          "apcs_rank": 4,
+          "beta_current": 0.2,
+          "beta_material": 0.2,
+          "wall": 0.05675033386796713
+        }
+      ],
+      "candidates": [
+        {
+          "stage": -1,
+          "reason": "initial_incumbent",
+          "physical_nll": 0.5022333809240712,
+          "objective": 0.5022333809240712,
+          "physical_relative_residual": 1.0022308924834349
+        },
+        {
+          "stage": 0,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.1505505280780223,
+          "objective": 0.15056328391291937,
+          "physical_relative_residual": 0.5487267591033306
+        },
+        {
+          "stage": 1,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.05333140221663894,
+          "objective": 0.05334497491516142,
+          "physical_relative_residual": 0.3265927195043972
+        }
+      ],
+      "iterations": 22
+    },
+    {
+      "name": "cie_dual",
+      "stages": [
+        {
+          "mf": 1,
+          "beta": 1.0,
+          "maxiter": 300
+        },
+        {
+          "mf": 2,
+          "beta": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 300
+        }
+      ],
+      "status": "SCHEDULE_COMPLETE",
+      "cost": {
+        "physical_validations": 3,
+        "receiver_SVD": 1,
+        "G_columns": 26,
+        "S_columns": 26,
+        "APCS_SVD": 2,
+        "Fourier_columns_generated": 20,
+        "IDFT_columns_explicit": 20,
+        "DPCS_projection_columns": 20,
+        "material_readouts": 23,
+        "material_inner_evaluations": 543,
+        "PR_CG_steps": 23,
+        "reduced_operator_columns": 828,
+        "wall_seconds": 0.06532216724008322,
+        "model": {
+          "FULL_FORWARD": 3,
+          "actual_complex_RHS": 18,
+          "full_factorization_dimension": 48,
+          "cached_operator_imports": 0,
+          "source_RHS": 18,
+          "LU": 3
+        }
+      },
+      "coefficient_tol": 0.001,
+      "miniter": 2,
+      "stage_ends": [
+        {
+          "stage": 0,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 1,
+          "fourier_columns": 4,
+          "apcs_rank": 4,
+          "beta_current": 1.0,
+          "beta_material": 1.0,
+          "wall": 0.048535958398133516
+        },
+        {
+          "stage": 1,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 2,
+          "fourier_columns": 16,
+          "apcs_rank": 4,
+          "beta_current": 1.0,
+          "beta_material": 0.2,
+          "wall": 0.06532012531533837
+        }
+      ],
+      "candidates": [
+        {
+          "stage": -1,
+          "reason": "initial_incumbent",
+          "physical_nll": 0.5022333809240712,
+          "objective": 0.5022333809240712,
+          "physical_relative_residual": 1.0022308924834349
+        },
+        {
+          "stage": 0,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.1505505280780223,
+          "objective": 0.15056328391291937,
+          "physical_relative_residual": 0.5487267591033306
+        },
+        {
+          "stage": 1,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.0030564415314179813,
+          "objective": 0.0030858738395849457,
+          "physical_relative_residual": 0.07818492861693974
+        }
+      ],
+      "iterations": 23
+    },
+    {
+      "name": "tsom",
+      "stages": [
+        {
+          "mf": 1,
+          "maxiter": 300
+        },
+        {
+          "mf": 2,
+          "maxiter": 300
+        }
+      ],
+      "status": "SCHEDULE_COMPLETE",
+      "cost": {
+        "physical_validations": 3,
+        "receiver_SVD": 1,
+        "G_columns": 26,
+        "S_columns": 26,
+        "APCS_SVD": 2,
+        "Fourier_columns_generated": 20,
+        "IDFT_columns_explicit": 20,
+        "DPCS_projection_columns": 20,
+        "material_readouts": 39,
+        "material_inner_evaluations": 232,
+        "PR_CG_steps": 39,
+        "reduced_operator_columns": 1404,
+        "wall_seconds": 0.03150179190561175,
+        "model": {
+          "FULL_FORWARD": 3,
+          "actual_complex_RHS": 18,
+          "full_factorization_dimension": 48,
+          "cached_operator_imports": 0,
+          "source_RHS": 18,
+          "LU": 3
+        }
+      },
+      "coefficient_tol": 0.001,
+      "miniter": 2,
+      "stage_ends": [
+        {
+          "stage": 0,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 1,
+          "fourier_columns": 4,
+          "apcs_rank": 4,
+          "beta_current": null,
+          "beta_material": null,
+          "wall": 0.029683792032301426
+        },
+        {
+          "stage": 1,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 2,
+          "fourier_columns": 16,
+          "apcs_rank": 4,
+          "beta_current": null,
+          "beta_material": null,
+          "wall": 0.03150020772591233
+        }
+      ],
+      "candidates": [
+        {
+          "stage": -1,
+          "reason": "initial_incumbent",
+          "physical_nll": 0.5022333809240712,
+          "objective": 0.5022333809240712,
+          "physical_relative_residual": 1.0022308924834349
+        },
+        {
+          "stage": 0,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.3654500291272481,
+          "objective": 0.36545207656198103,
+          "physical_relative_residual": 0.8549269315295291
+        },
+        {
+          "stage": 1,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.3654960454782282,
+          "objective": 0.3654980995706828,
+          "physical_relative_residual": 0.8549807547286995
+        }
+      ],
+      "iterations": 39
+    },
+    {
+      "name": "csi",
+      "stages": [
+        {
+          "mf": 1,
+          "maxiter": 600
+        }
+      ],
+      "status": "SCHEDULE_COMPLETE",
+      "cost": {
+        "physical_validations": 2,
+        "G_columns": 22,
+        "S_columns": 22,
+        "material_readouts": 13,
+        "material_inner_evaluations": 74,
+        "PR_CG_steps": 13,
+        "reduced_operator_columns": 468,
+        "wall_seconds": 0.01094483258202672,
+        "model": {
+          "FULL_FORWARD": 2,
+          "actual_complex_RHS": 12,
+          "full_factorization_dimension": 32,
+          "cached_operator_imports": 0,
+          "source_RHS": 12,
+          "LU": 2
+        }
+      },
+      "coefficient_tol": 0.001,
+      "miniter": 2,
+      "stage_ends": [
+        {
+          "stage": 0,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": null,
+          "fourier_columns": 16,
+          "apcs_rank": 16,
+          "beta_current": null,
+          "beta_material": null,
+          "wall": 0.010942666791379452
+        }
+      ],
+      "candidates": [
+        {
+          "stage": -1,
+          "reason": "initial_incumbent",
+          "physical_nll": 0.5022333809240712,
+          "objective": 0.5022333809240712,
+          "physical_relative_residual": 1.0022308924834349
+        },
+        {
+          "stage": 0,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.3541355874636531,
+          "objective": 0.35413727206989387,
+          "physical_relative_residual": 0.8415884831242086
+        }
+      ],
+      "iterations": 13
+    },
+    {
+      "name": "cie_single_strict",
+      "stages": [
+        {
+          "mf": 1,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 2,
+          "beta": 0.2,
+          "maxiter": 500
+        }
+      ],
+      "status": "SCHEDULE_COMPLETE",
+      "cost": {
+        "physical_validations": 3,
+        "receiver_SVD": 1,
+        "G_columns": 26,
+        "S_columns": 26,
+        "APCS_SVD": 2,
+        "Fourier_columns_generated": 20,
+        "IDFT_columns_explicit": 20,
+        "DPCS_projection_columns": 20,
+        "material_readouts": 305,
+        "material_inner_evaluations": 10755,
+        "PR_CG_steps": 305,
+        "reduced_operator_columns": 10980,
+        "wall_seconds": 1.1861614999361336,
+        "model": {
+          "FULL_FORWARD": 3,
+          "actual_complex_RHS": 18,
+          "full_factorization_dimension": 48,
+          "cached_operator_imports": 0,
+          "source_RHS": 18,
+          "LU": 3
+        }
+      },
+      "coefficient_tol": 1e-08,
+      "miniter": 50,
+      "stage_ends": [
+        {
+          "stage": 0,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 1,
+          "fourier_columns": 4,
+          "apcs_rank": 4,
+          "beta_current": 1.0,
+          "beta_material": 1.0,
+          "wall": 1.06382004218176
+        },
+        {
+          "stage": 1,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 2,
+          "fourier_columns": 16,
+          "apcs_rank": 4,
+          "beta_current": 0.2,
+          "beta_material": 0.2,
+          "wall": 1.186156999785453
+        }
+      ],
+      "candidates": [
+        {
+          "stage": -1,
+          "reason": "initial_incumbent",
+          "physical_nll": 0.5022333809240712,
+          "objective": 0.5022333809240712,
+          "physical_relative_residual": 1.0022308924834349
+        },
+        {
+          "stage": 0,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.0023721271165570595,
+          "objective": 0.0023909917693815262,
+          "physical_relative_residual": 0.06887854697301707
+        },
+        {
+          "stage": 1,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 9.132494901595257e-08,
+          "objective": 1.3814462094301539e-05,
+          "physical_relative_residual": 0.0004273755936315329
+        }
+      ],
+      "iterations": 305
+    },
+    {
+      "name": "cie_dual_strict",
+      "stages": [
+        {
+          "mf": 1,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 2,
+          "beta": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "status": "SCHEDULE_COMPLETE",
+      "cost": {
+        "physical_validations": 3,
+        "receiver_SVD": 1,
+        "G_columns": 26,
+        "S_columns": 26,
+        "APCS_SVD": 2,
+        "Fourier_columns_generated": 20,
+        "IDFT_columns_explicit": 20,
+        "DPCS_projection_columns": 20,
+        "material_readouts": 305,
+        "material_inner_evaluations": 10399,
+        "PR_CG_steps": 305,
+        "reduced_operator_columns": 10980,
+        "wall_seconds": 1.1586957918480039,
+        "model": {
+          "FULL_FORWARD": 3,
+          "actual_complex_RHS": 18,
+          "full_factorization_dimension": 48,
+          "cached_operator_imports": 0,
+          "source_RHS": 18,
+          "LU": 3
+        }
+      },
+      "coefficient_tol": 1e-08,
+      "miniter": 50,
+      "stage_ends": [
+        {
+          "stage": 0,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 1,
+          "fourier_columns": 4,
+          "apcs_rank": 4,
+          "beta_current": 1.0,
+          "beta_material": 1.0,
+          "wall": 1.0724759590812027
+        },
+        {
+          "stage": 1,
+          "event": "stage_end",
+          "status": "COEFFICIENT_TOL",
+          "mf": 2,
+          "fourier_columns": 16,
+          "apcs_rank": 4,
+          "beta_current": 1.0,
+          "beta_material": 0.2,
+          "wall": 1.1586930840276182
+        }
+      ],
+      "candidates": [
+        {
+          "stage": -1,
+          "reason": "initial_incumbent",
+          "physical_nll": 0.5022333809240712,
+          "objective": 0.5022333809240712,
+          "physical_relative_residual": 1.0022308924834349
+        },
+        {
+          "stage": 0,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 0.0023721271165570595,
+          "objective": 0.0023909917693815262,
+          "physical_relative_residual": 0.06887854697301707
+        },
+        {
+          "stage": 1,
+          "reason": "COEFFICIENT_TOL",
+          "physical_nll": 3.541870722988039e-08,
+          "objective": 1.3757016753684607e-05,
+          "physical_relative_residual": 0.0002661529907022666
+        }
+      ],
+      "iterations": 305
+    }
+  ]
+}

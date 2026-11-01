@@ -1,0 +1,130 @@
+{
+  "scope": "Exact rational audit of the existing two-cell algebraic VIE; not an imaging benchmark or a claimed Hankel acquisition grid.",
+  "arithmetic": "Python standard-library Fraction; all pass/fail assertions are exact.",
+  "model": {
+    "G": [
+      [
+        {
+          "real": "-3/50",
+          "imag": "1/50"
+        },
+        {
+          "real": "13/200",
+          "imag": "7/1000"
+        }
+      ],
+      [
+        {
+          "real": "13/200",
+          "imag": "7/1000"
+        },
+        {
+          "real": "-3/20",
+          "imag": "1/50"
+        }
+      ]
+    ],
+    "E": [
+      "1",
+      "7/10"
+    ],
+    "S": [
+      "1",
+      "13/10"
+    ],
+    "box": [
+      "1/50",
+      "20"
+    ],
+    "data_definition": "y := F(2,7), F(m)=S (I-diag(m)G)^(-1) diag(m) E",
+    "y_exact": {
+      "real": "1826362941900/315300667481",
+      "imag": "157970241200/315300667481"
+    },
+    "y_approx": [
+      5.792448701397236,
+      0.5010146107905695
+    ]
+  },
+  "elimination": {
+    "coefficients_descending_primitive_integer": [
+      764347498747,
+      -4999308072894,
+      6941226150800
+    ],
+    "exact_factorization": "(m1-2)*(764347498747*m1-3470613075400)",
+    "discriminant_exact": "3771045821298133485344836",
+    "sqrt_discriminant_exact": "1941918077906",
+    "discriminant_strictly_positive": true,
+    "derivation": "Im[(y-A*m1)*conj(B+C*m1)]=0; then m2=(y-A*m1)/(B+C*m1).",
+    "local_isolation": "Both roots are simple and both recovery denominators are nonzero; the original real response equations are locally equivalent to the eliminated quadratic plus recovery."
+  },
+  "roots": [
+    {
+      "material_exact": [
+        "2",
+        "7"
+      ],
+      "material_approx": [
+        2.0,
+        7.0
+      ],
+      "quadratic_derivative_exact": "-1941918077906",
+      "checks": {
+        "polynomial_exactly_zero": true,
+        "simple_polynomial_root": true,
+        "recovered_material_exactly_real": true,
+        "strictly_inside_positive_box": true,
+        "recovery_denominator_nonzero": true,
+        "physical_determinant_nonzero": true,
+        "physical_response_exactly_equals_y": true,
+        "bilinear_equation_exactly_zero": true
+      }
+    },
+    {
+      "material_exact": [
+        "3470613075400/764347498747",
+        "394249570000/195029801279"
+      ],
+      "material_approx": [
+        4.5406220090853955,
+        2.021483729227648
+      ],
+      "quadratic_derivative_exact": "1941918077906",
+      "checks": {
+        "polynomial_exactly_zero": true,
+        "simple_polynomial_root": true,
+        "recovered_material_exactly_real": true,
+        "strictly_inside_positive_box": true,
+        "recovery_denominator_nonzero": true,
+        "physical_determinant_nonzero": true,
+        "physical_response_exactly_equals_y": true,
+        "bilinear_equation_exactly_zero": true
+      }
+    }
+  ],
+  "no_physical_poles_certificate": {
+    "hermitian_part_exact": [
+      [
+        "-3/50",
+        "13/200"
+      ],
+      [
+        "13/200",
+        "-3/20"
+      ]
+    ],
+    "hermitian_part_determinant_exact": "191/40000",
+    "hermitian_part_negative_definite": true,
+    "domain": "Every strictly positive diagonal real X, including [1/50,20]^2.",
+    "identity": "I-XG = sqrt(X) [I-sqrt(X) G sqrt(X)] inv(sqrt(X))",
+    "proof": "H<0 implies Hermitian(I-sqrt(X)Gsqrt(X))=I-sqrt(X)Hsqrt(X)>I; hence that matrix and I-XG are invertible.",
+    "singular_value_caveat": "Similarity is nonunitary: sigma_min(I-XG)>=1 does not follow. A valid coarse bound is sqrt(min(m)/max(m))."
+  },
+  "all_exact_checks_passed": true,
+  "limitations": [
+    "The two endpoints are known; no unknown endpoint generation or global optimizer success is established.",
+    "The example has one existing source and one receiver; it is not a Q6/Q20 run.",
+    "No floating-point Jacobian rank or grid scan is used to prove isolation or absence of positive-material poles."
+  ]
+}
