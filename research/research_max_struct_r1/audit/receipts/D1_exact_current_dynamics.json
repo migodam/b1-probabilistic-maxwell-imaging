@@ -1,0 +1,174 @@
+{
+  "run_id": "D1_exact_current_dynamics",
+  "case_id": "D1_exact_current_dynamics",
+  "branch": "D1",
+  "seed": 1951,
+  "data_id": "frozen_dev_calibration_4x4_operators_plus_disclosed_chosen_root",
+  "material_class": "16 shared independent real scalar contrasts in [.02,20]",
+  "physical_convention": "2D scalar-TM disk-pulse VIE; k=2pi; complex128",
+  "mesh": {
+    "shape": [
+      4,
+      4
+    ],
+    "N": 16
+  },
+  "sources": {
+    "incident_operator": "G/E0/S/grid_shape from frozen dev_calibration.npz",
+    "columns": 6
+  },
+  "receivers": {
+    "receiver_operator": "S",
+    "count": 16
+  },
+  "frequencies": [
+    1.0
+  ],
+  "noise_model": {
+    "type": "clean chosen development root; no random noise observation"
+  },
+  "whitening": "fixed native source weights; D3 includes full unitary-transported source metrics",
+  "prior": "D1 primary none; targeted common-prior control separate; D3 none",
+  "initialization": "disclosed nonconstant physical root for D1; disclosed uniform m=.1 and public backprojection J for D3",
+  "state_representation": "fixed full auxiliary current C^(16x6), plus shared real material",
+  "state_dof": 192,
+  "material_dof": 16,
+  "baseline_id": "frozen R3 alternating structure; exact-current control and full-metric covariance diagnostic",
+  "stage": "OFFLINE_DIAGNOSTIC",
+  "termination_reason": "BOUNDED_DIAGNOSTIC_COMPLETE",
+  "online_selection_rule": "none; all predefined controls retained",
+  "cost": {
+    "wall_s": 0.036065416876226664,
+    "cpu_s": 0.029584,
+    "LU": 1,
+    "forward_RHS": 6,
+    "operation_counts": {
+      "root_JVP_Cholesky": 96,
+      "root_JVP_complex_RHS": 96,
+      "current_block_Cholesky": 450,
+      "current_block_complex_RHS": 450,
+      "current_exact_blocks": 75,
+      "material_readouts": 84,
+      "source_metric_products": 126,
+      "material_inner_evaluations": 24,
+      "material_inner_solves": 3,
+      "material_inner_iterations": 9,
+      "PR_steps": 9
+    },
+    "setup_included": false,
+    "FFT": 0,
+    "elliptic_solves": 0,
+    "GPU_s": 0,
+    "small_SVD": null,
+    "Green_actions": null,
+    "currency": null
+  },
+  "truth_access": "Chosen disclosed development root; no dataset truth opened",
+  "validation": {
+    "source": "research/delegated/audit/D1.json",
+    "scope": "Root derivative beta_material invariance does not imply off-root equivalence, prior root preservation, or PR dynamics equality"
+  },
+  "status": "COMPLETED",
+  "imaging_claim": false,
+  "raw_receipt": {
+    "run_id": "D1_exact_current_dynamics",
+    "status": "COMPLETED",
+    "classification": "OFFLINE_DIAGNOSTIC",
+    "code_hash": null,
+    "config_hash": null,
+    "hash_null_reason": "User forbids hash checks; source path provenance only",
+    "git_provenance": "Isolated max_struct_r1 worktree; frozen base and commit recorded by parent",
+    "code_path": "research/research_max_struct_r1/src/dynamics_audit.py",
+    "config": {
+      "beta_current": 1.0,
+      "beta_material": [
+        0.2,
+        1.0,
+        4.0
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "source_columns": 6
+    },
+    "wall_seconds": 0.036065416876226664,
+    "cpu_seconds": 0.029584,
+    "operation_counts": {
+      "root_JVP_Cholesky": 96,
+      "root_JVP_complex_RHS": 96,
+      "current_block_Cholesky": 450,
+      "current_block_complex_RHS": 450,
+      "current_exact_blocks": 75,
+      "material_readouts": 84,
+      "source_metric_products": 126,
+      "material_inner_evaluations": 24,
+      "material_inner_solves": 3,
+      "material_inner_iterations": 9,
+      "PR_steps": 9
+    },
+    "physical_LU": 1,
+    "physical_complex_RHS": 6,
+    "FFT": 0,
+    "FFT_zero_reason": "Explicit dense matrices; no FFT called",
+    "GPU_seconds": null,
+    "GPU_null_reason": "CPU-only diagnostic",
+    "truth_access": "Chosen disclosed development root; no dataset truth opened",
+    "prediction_sealed_at": null,
+    "prediction_sealed_null_reason": "Not a blind inversion or prediction task",
+    "online_selection": null,
+    "online_selection_null_reason": "No imaging candidate or online ranking",
+    "failed_attempts": [],
+    "final_physical_relative_residual": null,
+    "physical_residual_null_reason": "Iteration-map diagnostic, not a solved imaging/prediction task",
+    "gradient_and_field_product_counts": null,
+    "product_counts_null_reason": "Dense G/S/Gram/regularizer products paid in CPU/wall but not exhaustively counted",
+    "monetary_cost": null,
+    "monetary_cost_null_reason": "Local CPU diagnostic; no pricing or amortized infrastructure cost evaluated",
+    "linear_triangular_RHS": null,
+    "linear_triangular_RHS_null_reason": "Cholesky RHS counted; internal LAPACK triangular calls not separately instrumented",
+    "Green_actions": null,
+    "Green_actions_null_reason": "Explicit dense G products included in wall/CPU, not individually instrumented",
+    "small_SVD": null,
+    "elliptic_solves": 0,
+    "elliptic_zero_reason": "No elliptic subproblem or oracle in this diagnostic",
+    "small_SVD_null_reason": "Spectral norm and least-squares LAPACK internals not separately instrumented; line solves counted"
+  },
+  "source_references": [
+    "src/dynamics_audit.py",
+    "research/delegated/audit/D1.json",
+    "audit/D_INPUT_PROVENANCE.json"
+  ],
+  "git_sha": "7317601b43b914525c21f09e5a60020552ea677b",
+  "code_hash": null,
+  "config_hash": null,
+  "physical_residual": null,
+  "auxiliary_residual": null,
+  "constitutive_defect": null,
+  "constraint_violation": null,
+  "candidate_ids": null,
+  "git_provenance_note": "git_sha identifies the frozen input/base tree. Newly written study source is retained by referenced paths; this is not a claim that the new code was already committed at execution.",
+  "null_reasons": {
+    "code_hash": "User forbids hash checks; retained source paths and frozen Git base identify provenance",
+    "config_hash": "User forbids hash checks; configs/initial_plan.json and raw run configs retained",
+    "cost.small_SVD": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "cost.Green_actions": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "cost.currency": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.code_hash": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.config_hash": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.GPU_seconds": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.prediction_sealed_at": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.online_selection": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.final_physical_relative_residual": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.gradient_and_field_product_counts": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.monetary_cost": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.linear_triangular_RHS": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.Green_actions": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "raw_receipt.small_SVD": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "physical_residual": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "auxiliary_residual": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "constitutive_defect": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "constraint_violation": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented",
+    "candidate_ids": "Iteration-map diagnostic: no imaging residual/candidate score; omitted product/factorization subcounts not instrumented"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "status": "MEASURED_PROCESS_SUMS_WITH_EXPLICIT_GAPS",
+  "components": [
+    {
+      "name": "backend_qualification",
+      "source": "results/backend_qualification/QUALIFICATION.json",
+      "wall_s": 0.08458037488162518,
+      "cpu_s": 0.08274999999999999
+    },
+    {
+      "name": "F_all_tasks_and_IO",
+      "source": "results/families/SUMMARY.json",
+      "wall_s": 1.3021537088789046,
+      "cpu_s": 1.565374
+    },
+    {
+      "name": "D_all_tasks_and_setup",
+      "source": "research/delegated/audit/dynamics_cost.json",
+      "wall_s": 0.0497550000436604,
+      "cpu_s": 0.04155000000000003
+    },
+    {
+      "name": "BACKEND_PLOT",
+      "source": "figures/BACKEND_PLOT_RECEIPT.json",
+      "wall_s": 0.3820262080989778,
+      "cpu_s": 0.30370600000000003
+    },
+    {
+      "name": "F_PLOT",
+      "source": "figures/F_PLOT_RECEIPT.json",
+      "wall_s": 1.120420167222619,
+      "cpu_s": 1.106334
+    },
+    {
+      "name": "F_PLOT_prior_render_1",
+      "source": "figures/F_PLOT_RECEIPT.json#previous_plot_runs/0",
+      "wall_s": 1.1444650418125093,
+      "cpu_s": 1.1276320000000002
+    },
+    {
+      "name": "F_METADATA_REVIEW",
+      "source": "audit/F_METADATA_REVIEW.json",
+      "wall_s": 0.016020291950553656,
+      "cpu_s": 0.015890000000000015
+    }
+  ],
+  "scientific_numerical_process_sum": {
+    "wall_s": 1.4364890838041902,
+    "cpu_s": 1.6896740000000001
+  },
+  "all_measured_process_sum": {
+    "wall_s": 4.09942079288885,
+    "cpu_s": 4.2432360000000005
+  },
+  "physical_LU": 15,
+  "forward_complex_RHS": 72,
+  "additional_retained_LU_triangular_RHS": 208,
+  "current_block_Cholesky": 450,
+  "root_JVP_Cholesky": 96,
+  "current_and_root_JVP_complex_RHS": 546,
+  "small_SVD": null,
+  "small_SVD_reason": "Local-rank counters and metadata review are recorded, but spectral norms, legality checks and LAPACK subcalls are not exhaustively instrumented; cannot claim aggregate zero or exact total",
+  "Green_actions": null,
+  "Green_actions_reason": "Dense Green/receiver products included in timers, not comprehensively counted",
+  "FFT": 0,
+  "elliptic_solves": 0,
+  "GPU_s": 0,
+  "known_nested_timers_not_added": {
+    "F_per_case_wall_s": 1.2620737911202013,
+    "F_per_case_cpu_s": 1.5258690000000001,
+    "F_setup_wall_s": 0.11242562625557184,
+    "backend_solve_wall_s": 0.04595283418893814,
+    "backend_setup_wall_s": 0.016583126038312912,
+    "D_setup_wall_s": 0.0031025423668324947
+  },
+  "stage_partition": {
+    "setup": "Nested measured setup suboperations retained; not added to parent process timers",
+    "online": null,
+    "online_reason": "No online blind inversion executed",
+    "validation": null,
+    "validation_reason": "Physics/validation/root work included in outer numerical timers; exact phase split not instrumented",
+    "scoring": "F metadata review and plot process timers listed separately; other report/scoring overhead not independently measured"
+  },
+  "unmeasured": {
+    "startup_failures": [
+      {
+        "attempt": "initial_python",
+        "error": "SyntaxError: unclosed offroot.append parenthesis; corrected before any import or numerical work",
+        "wall_seconds": null,
+        "cpu_seconds": null,
+        "reason": "Startup process was not instrumented",
+        "physical_LU": 0,
+        "physical_complex_RHS": 0
+      },
+      {
+        "attempt": "system_python",
+        "error": "ModuleNotFoundError: numpy",
+        "wall_seconds": null,
+        "cpu_seconds": null,
+        "reason": "Startup process was not instrumented; no numerical work",
+        "physical_LU": 0,
+        "physical_complex_RHS": 0
+      },
+      {
+        "attempt": "existing_venv_first_import",
+        "error": "Missing frozen research_z_alg_r4_diversity package in isolated worktree",
+        "wall_seconds": null,
+        "cpu_seconds": null,
+        "reason": "Import failed before root preparation; no numerical work",
+        "physical_LU": 0,
+        "physical_complex_RHS": 0
+      }
+    ],
+    "tool_research_and_report_wall_s": null,
+    "reason": "Interpreter imports/startups, shell/tool orchestration, literature retrieval, read-only audit, source preparation and report composition not comprehensively timed",
+    "currency": null,
+    "currency_reason": "No billed-service pricing meter or amortized local-hardware price evaluated"
+  },
+  "counting_rule": "Each enclosing process timer added once. Per-case/solver/setup/current timers and standardized receipt copies are references, not additional runs. This is process-time sum, not task elapsed time."
+}

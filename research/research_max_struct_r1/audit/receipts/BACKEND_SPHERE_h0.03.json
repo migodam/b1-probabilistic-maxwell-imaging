@@ -1,0 +1,132 @@
+{
+  "run_id": "BACKEND_SPHERE_h0.03",
+  "case_id": "sphere_r.12_eps3_h0.03",
+  "branch": "BACKEND",
+  "data_id": "analytic_Mie_sphere_r.12_eps3_h0.03",
+  "material_class": "Fixed isotropic real epsilon=3; mu=1",
+  "physical_convention": "exp(-i omega t); lambda0=epsilon_b=mu_b=Z0=1",
+  "mesh": {
+    "N": 257,
+    "h": 0.03,
+    "cell_volume": 2.6999999999999996e-05,
+    "discretization": "CM/RR DDA staircase sphere",
+    "PML": "not applicable: outgoing free-space Green"
+  },
+  "sources": {
+    "directions": [
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "polarizations": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ]
+    ]
+  },
+  "receivers": {
+    "type": "far electric vector amplitudes; analytic Mie; separate large-radius near check",
+    "source": "experiments/qualify_backend.py"
+  },
+  "frequencies": [
+    1.0
+  ],
+  "noise_model": {
+    "type": "clean analytic reference"
+  },
+  "whitening": "none; relative physical error",
+  "prior": "none",
+  "initialization": "fixed known homogeneous sphere; no inverse fit",
+  "state_representation": "E,H,j,J,p,E_exc at occupied cell centers",
+  "state_dof": 3084,
+  "material_dof": 0,
+  "material_dof_reason": "Known fixed benchmark material; no inverse variables optimized",
+  "baseline_id": "independent analytic Mie sphere",
+  "stage": "validation",
+  "termination_reason": "PREDECLARED_TWO_GRID_SPHERE_CONTROL_COMPLETE",
+  "online_selection_rule": "none; both qualification states retained",
+  "physical_residual": 2.005173491502351e-15,
+  "constitutive_defect": 0.0,
+  "constraint_violation": 0,
+  "cost": {
+    "LU": 1,
+    "forward_RHS": 2,
+    "additional_triangular_RHS": 0,
+    "setup": {
+      "wall_s": 0.01241166703402996,
+      "cpu_s": 0.012280999999999986,
+      "N": 257,
+      "LU": 0,
+      "RHS": 0
+    },
+    "solve_wall_s": 0.036081625148653984,
+    "solve_cpu_s": 0.042188,
+    "whole_state_validation_wall_s": null,
+    "whole_state_validation_reason": "Per-state far/near/Mie/I/O overhead not separately timed; enclosing QUALIFICATION process total retains it",
+    "FFT": 0,
+    "elliptic_solves": 0,
+    "Green_actions": null,
+    "small_SVD": null,
+    "GPU_s": 0,
+    "currency": null
+  },
+  "truth_access": "Known analytic benchmark, no hidden target",
+  "validation": {
+    "qualification": "BOUNDED_DDA_QUALIFICATION_ONLY_NO_CONTINUUM_CERTIFICATE",
+    "metrics": {
+      "h": 0.03,
+      "N": 257,
+      "volume": 0.006938999999999999,
+      "analytic_volume": 0.007238229473870882,
+      "abs_mie_far_vector_relative_error": 0.036553716187460505,
+      "scattering_cross_section": 0.00637309050767257,
+      "mie_scattering_cross_section": 0.006779103486316226,
+      "scattering_cross_section_relative_error": 0.05989183960138711,
+      "near_at_1000lambda_vs_far_relative_difference": 0.000318079384508995,
+      "far_transverse_relative_error": 1.0632232028141233e-16,
+      "H_status": "analytic_curl_point_dipoles_with_symmetric_cell_zero_self",
+      "continuum_Hcurl_qualification": "NOT_RUN"
+    },
+    "Hcurl": "NOT_RUN"
+  },
+  "status": "COMPLETED",
+  "scientific_scope": "Bounded DDA qualification, no continuum or Hcurl certificate",
+  "source_references": [
+    "experiments/qualify_backend.py",
+    "src/vector_backend.py",
+    "results/backend_qualification/QUALIFICATION.json"
+  ],
+  "cost_accounting_annotation": "Setup and solver are disjoint suboperations, both nested in QUALIFICATION process total; do not add any nested time to that outer total",
+  "git_sha": "7317601b43b914525c21f09e5a60020552ea677b",
+  "code_hash": null,
+  "config_hash": null,
+  "seed": null,
+  "auxiliary_residual": null,
+  "candidate_ids": null,
+  "git_provenance_note": "git_sha identifies the frozen input/base tree. Newly written study source is retained by referenced paths; this is not a claim that the new code was already committed at execution.",
+  "null_reasons": {
+    "code_hash": "User forbids hash checks; retained source paths and frozen Git base identify provenance",
+    "config_hash": "User forbids hash checks; configs/initial_plan.json and raw run configs retained",
+    "cost.whole_state_validation_wall_s": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection",
+    "cost.Green_actions": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection",
+    "cost.small_SVD": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection",
+    "cost.currency": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection",
+    "seed": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection",
+    "auxiliary_residual": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection",
+    "candidate_ids": "Not separately instrumented or inapplicable to this fixed clean benchmark; no inverse candidate selection"
+  }
+}

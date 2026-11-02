@@ -1,3 +1,11 @@
+<!-- MAX_STRUCT_R1_PUBLICATION -->
+## MAX-STRUCT-R1：张量同场族与机制边界
+
+合法张量材料在有限照明下保持同场；新增接收与旧源混合不增加信息，独立新照明仅部分例子超过噪声尺度。M表示未完成资格、T非空证书未建立，未声称新成像优势。代码、原始数组、失败与成本全部保留。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r1/) · [Chat原始Markdown](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r1/RESEARCH_REPORT_ZH.md) · [代码/证据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_max_struct_r1) · [完整复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r1-20261102)
+<!-- /MAX_STRUCT_R1_PUBLICATION -->
+
 <!-- FBG_R3_E_PUBLICATION -->
 ## FBG-R3-E：成熟 CIE 恢复九数字，受控电流释放另作机制审计
 

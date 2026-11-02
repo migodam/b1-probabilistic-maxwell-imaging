@@ -1,0 +1,197 @@
+# Research MAX-STRUCT-R1 — Codex Sol Max 最小决定性实验交接
+
+## 0. 任务、交付与证据边界
+
+你是本轮实验负责人，使用 Codex Sol、Max 思考程度；可用三个 Sol 子任务分别处理兼容 Maxwell 实现、理论资格/查新、盲评分与成本审查。依赖顺序优先于并行度。任务是检验三个数学机制，允许得到否证、适用范围或不可辨识性定理；不要为了给出成功算法而扩大参数搜索。先完成最小决定性实验，再按证据决定是否进行成像。不要预先启动大规模扫参、NN训练或数百个数字图任务。
+
+本交接是执行计划，所列新目录、runner和数据合同需要你创建，不能声称已经存在。开始前只做必要环境盘点，找到真实可运行入口；不得编造历史代码路径、命令或结果。所有运行保存回执。最终交付中文报告、可复现代码、小模型证据、必要的2D/3D图、费用和失败记录。
+
+主仓库：https://github.com/migodam/b1-probabilistic-maxwell-imaging
+冻结SHA：7317601b43b914525c21f09e5a60020552ea677b
+A17：https://github.com/migodam/a17-maxwell-certified-exchange
+冻结SHA：2ac81b989a2f13d62df9d5a7abd690a33c2189c7
+
+读取冻结版本，使用隔离工作树/checkout保存本轮修改。不要改写历史报告、重设主分支、推送或发布。若用户另有已授权发布约定，遵循其明确范围。
+
+必须读取：Formula Atlas的01、02、03、05、06、09、10、11、12及FORMULA_REGISTRY.json、SOURCE_FORMULA_INDEX.csv；research/research_fbg_r3_experiments中的RESEARCH_REPORT_ZH.md、CIE_TSOM_BASELINE_AUDIT.md、MATHEMATICAL_AUDIT.md和实际CIE实现；research/research_z_alg_r4_basin/RESEARCH_REPORT_ZH.md。先用rg定位实际依赖，不要求重读整个仓库。
+
+继承事实：R2固定β=.2在其新鲜高对比集8/12；R3-E成熟双β CIE/ Fourier-TSOM加共同原物理corrector在历史12目标10/12，九数字全恢复，环与新弯条失败；这不是新盲测，也不是N1/A17收益。R3双β11/12受wall截断，不能把45秒当CIE上限。R4非局部候选更低residual仍可能更差材料。精确有限响应、低维条件根、改变优化盆地与真实材料恢复分别记账。
+
+另读research/research_z_alg_asymmetric_validation/RESEARCH_REPORT_ZH.md：Z-ALG-E1已在非对称六实材料、四实观测的真实有限Hankel–Green模型构造非置换二维局部材料图册。它是完整已用数据下的真实多解正例，证书针对冻结浮点系数；不能外推高维多源或连续PDE。current图册与直接材料IFT覆盖相同节点，未通过预注册总成本优势门。新张量同场族须与此显式区分，不得宣称本项目首次发现连续非置换材料解族。
+
+本轮不重新验证Atlas中已经证明的恒等式到机器精度。只检验新命题必要的接线、失效边界及物理效果。普通磁场形式、Hodge分解、Maxwell单调性、材料点态核、block优化及source encoding都有前人；科学增量需要单独说明。
+
+## 1. 总体分期与停止原则
+
+阶段A：冻结来源、物理约定、材料类别、测量算子、噪声和实现能力。确认现有仓库是否真有3D vector backend。只有二维scalar-TM时，不得改变量名冒充3D；选择一个可信小型矢量求解实现，并先用有解析/独立参考的简单目标核对。若合理时间内无法建立可信3D，则交付已完成的理论与小模型，明确3D NOT_RUN。
+
+阶段B：三条主线分别完成资格审查和最小决定性实验。某条资格失败不阻断其他两条。
+M线：固定μ的磁场/加权Hodge状态表示，优先普通磁场对照。
+T线：有限端口单调性排除，先解决可用k与误差δ。
+F线：有限照明下各向异性同场材料族，先解决合法本构与秩。
+
+阶段C：只有M线出现真实的表示/成本优势，或T线得到非空且有资格的排除规则，才接入成熟corrector做有限新鲜成像；F线主要输出可辨识性与分支区分，不在不可辨识任务上强迫输出唯一GT。
+
+阶段D：补充动力学和源基空实验；ROM只作后续条件分支。优先完成一两个最能区分机制的案例。每次扩大实验前写出“剩余不确定性是什么、这一新增实验能排除什么”；没有明确问题就停止扩展。
+
+不得因一条路线失败就不断更换β、网络、材料prior或基线停止规则直到得到正例。允许一次有物理理由的结构修正，保留原结果并重新冻结，不把开发数据当确认数据。
+
+## 2. 共同物理、数据与评价合同
+
+采用明确时间因子，例如exp(-iωt)，列出ε、μ、contrast、电流、源和接收定义及单位；复材料passivity按该约定检查。有限矩阵恒等式、离散PDE、连续Maxwell结论分开。源/接收位于未知材料域之外；若不是，显式保留材料相关源项或观测项。
+
+公开观测包只含：case_id、几何/网格、频率、合法源参数、接收/通道定义、背景、Y、噪声/校准模型、允许的材料集合与公开先验。GT放在独立生成/评分目录，反演过程不读取GT、mask、真实support、字体或shape标签。开发诊断可用公开GT，但结果必须标OFFLINE_DIAGNOSTIC，不能参与在线top1选择。
+
+最终候选以原始完整Maxwell观测和同一公开prior评价：Phi=0.5||W(F(m)-Y)||²+R(m)。W来自声明的噪声模型；每个算法相同。辅助目标另记，不等于Phi。多个数据合格候选若不能由同一数据区分，保留集合和先验语义，禁止GT选根。best@K只能封存后离线计算。
+
+统计簇是独立材料对象；同对象多个noise、source、初值不是独立材料。小阶段只报告逐例机制，不制造统计显著性。正式扩展须冻结算法后新生成少量几何/照明；九数字只作已有二维回归，不替代新机制检验。没有二维方法改动时不强制重跑全部数字。
+
+共同比较：成熟双β CIE/FFT-TSOM +共同原物理corrector；单β或普通GN可作机制控制，不能代替强基线。允许CIE合理mode增长及充分迭代，保留历史预算点，同时报告完整续跑成本。3D CIE必须支持该物理类别；各向异性/磁性若需兼容扩展，要说明新任务而非把原模型缺失计为算法失败。
+
+首批可执行默认例：采用λ0=1、真空归一化背景ε_b=μ_b=1。M线先用半径约0.12λ0、ε_r=3的球作正确性控制，再用ε_r=9的两球、两个预定gap作表示研究；窄gap必须被有效网格解析，尚不具备局部细化/FFT后端时不要直接选择需百万体素的gap。照明可用沿不同坐标方向传播、极化严格横向的少量平面波，禁止同一传播方向的非法纵向“极化”。receiver置于已知背景，近场与far-field输出分开。数值尺寸和源数可按环境能力缩小，但缩小后必须仍保留本轮待检验耦合，报告实际电尺寸。
+
+T线单独生成满足原文假设的far-field通道数据，不把M线的少量近场接收矩阵当其替代。F线先用公开开发锚点的正介电各向异性体，实对称和严格被动复对称各一个；它们用于资格/多解定理，不冒充未知测试目标已恢复。后续在线演示再从独立拟合锚点生成分支。
+
+误差预算要由物理要求确定：内部波长、最细gap/层厚、几何曲率、PML反射及线性求解误差均需检查。用一个必要的细化或独立参考解决剩余风险后即停止扩充网格测试。已有二维正演验证可复用，不重放所有历史tests。粗网格representation优势若在一个必要细化后消失，按离散artifact报告。
+
+新任务评分先冻结分母：标量材料用预先声明的contrast幅度归一化；张量用逐点Frobenius误差并分开实部/损耗、主值和合法性；支持IoU只在该任务确实有合法定义的support时使用。噪声discrepancy门从复噪声约定和有效数据维数得到，解释σ对应复幅度还是每个实/虚分量；不直接搬用旧clean 0.001门。除封存后的GT指标，还必须报告不依赖GT的全物理残差、约束缺陷和停止原因。
+
+所有候选使用同一在线规则。需要训练/开发数据确定mode数、正则或停止门时，把选择历史保存为DEV_CALIBRATION；确认集不得再次调整。NN默认不启用。若解析proposal失败，先检查机制与基线，而非立即用大网络掩盖失败；确需小网络时，增加同训练prior的普通网络、等候选数解析法和随机法控制，另计训练费用。
+
+## 3. M线：固定磁场空间是否真正更容易表示
+
+### 3.1 数学机制与实现资格
+
+固定且已知μ，令η=ε^{-1}。完整Maxwell给出：
+curl E=iωμH；curl H=J_ext-iωεE；
+E=(i/ω)η(curl H-J_ext)；
+curl(η curl H)-ω²μH=curl(ηJ_ext)；div(μH)=0。
+
+若J_ext支持与未知域分离、其邻域材料已知，右端固定；接收位置在已知背景且无源时，只有全域状态包含接收器或已完成固定外域DtN与boundary-to-receiver消元，电场观测才是H的固定线性算子。只保存ROI内任意H并沿用体积分外传时，对比极化P_c=(ε−ε_b)E=(i/ω)(I−ε_bη)curlH（物理对比电流为−iωP_c，相对contrast电流还需除ε_b），数据仍η/H双线性；不能省略这个边界合同。只有μ为常数scalar才可把约束写成div H=0。未知μ时固定空间优势失效。
+
+先用可信全矢量forward输出E/H/J做表示机制实验，不急于重写反演器。机制成立后，先实现标准磁场形式和固定加权无散基，作为最强简单对照。冻结H后的η更新被curl耦合，是共享多源的全局线性LS，不是逐cell除法；只有再保留辅助E才有局部小LS，那属于经典mixed CSI/WRI。研究问题是该状态族在控制curl、Maxwell残差与端口误差的范数下是否更低维；不是证明“换η后非线性消失”。η仍进入待求解状态算子，近共振也仍存在。
+
+可选电场Hodge lift：兼容离散中P横向、Q纵向，P+Q=I；在Q空间取Bε=QεQ，Lε=P-QBε^{-1}QεP，则QεLε=0。对实SPD aI≤ε≤bI，||Lε||≤sqrt(b/a)。Sε=PεP-PεQBε^{-1}QεP与磁场中的Pε^{-1}P互逆。这是已知shorted算子结构。真实edge/face空间保留mass matrix、加权adjoint和harmonic自由度，不把curl强行当同一个方阵。若源有纵向分量，使用正确affine lift，不能偷偷令Qf=0。
+
+开放边界/PML必须与同一离散复形兼容；不能用周期FFT场替代无界辐射。SPD界不自动覆盖复PML或ENZ/负介电。首批使用正介电、固定μ，避免同时引入新本构。
+
+### 3.2 最小表示实验
+
+选一个低对比球控制，以及两个同尺寸高对比物体的窄gap场景，先用两三个预定gap值。若确有作用再加薄壳/偏心空腔。变量只改变gap或壳厚之一，不同时改频率、对比度、loss和源。
+
+比较四种状态族：普通CIE Fourier current；固定无散磁场H；材料Hodge-lifted电场；把相同额外计算给普通CIE扩mode。固定基只能由背景/预先训练材料构造，正式test不可用GT重建基。另可计算GT下最佳投影作为oracle表示上界，明确它不是在线结果。
+
+记录：真实独立state DOF、材料DOF、source数量；H的H(curl)误差；弱Maxwell残差的对偶范数（H(curl)并不控制强二次curl的L²残差）；重建E/J误差；Gauss缺陷；完整Maxwell状态缺陷；白化端口误差；界面/细缝误差；预计算和在线成本。只看H的L² SVD尾不合格，因为curl误差可很大。不同变量量纲使用预先声明的物理归一化，不靠任意缩放制造优势。
+
+支持门：相同状态容量下，磁场/lift在curl与端口、状态缺陷上同时改善；计入投影、椭圆解和FFT费用后，优势仍不能由普通CIE多几个mode取得。然后才做同初始化、同材料prior、同corrector的有限成像。
+
+如果普通磁场已解释全部收益，删除在线Hodge额外步骤，仅把lift保留为理论解释。若只改善正演效率，就按表示/正演结果报告，不称扩大反演basin。若只改善H的L²而E/端口不改善，停止此机制的成像扩展。
+
+### 3.3 材料先验和最终验收
+
+改用η参数时，合法集合按ε反变换；同一先验必须写为R(η^{-1})，不能换成简单η平滑后把prior差异算作结构收益。对passive ε，Im_H η=-ε^{-*}(Im_H ε)ε^{-1}≤0，符号不能弄反。高ε导致小η并未消除条件数。
+
+新材料候选最终回到ε，由原始完整Maxwell forward评价。选择一个关键正例和一个控制做独立网格/独立实现检查；不要求所有中间候选都双solver重算，但不能只把同一LU重复调用叫独立验证。
+
+## 4. T线：有限端口单调性是否给出非空排除
+
+### 4.1 先找资格，后做图
+
+阅读Albicker–Griesmaier的Maxwell单调性原文（DOI10.3934/ipi.2022032）。逐项写清材料符号、无损/非磁条件、q=1-ε_r^{-1}等实际参数、支撑与外补集拓扑、源/接收完整性、探测算子以及可能的scattering修正。不要把scalar Helmholtz的谱计数结论直接当Maxwell定理。
+
+需要的条件形如：对所有合法且满足B⊂D的材料，正确构造的自伴测试算子A_B至多有k个负方向。某些约定下A_B可写为Re F-αT_B，但必须从所采用原文确认符号、α范围与修正；不能对任意矩形Y直接取Hermitian part。
+
+有限通道C:C^p→H给A_B,p=C* A_B C。若有统一误差||Ahat_B,p-A_B,p||≤δ，且k<p已独立合法确定，则按升序：
+lambda_(k+1)(Ahat_B,p)<-δ  ⇒  可以排除 B⊂D。
+
+这是单向排除；反向没触发只叫NOT_EXCLUDED。B不包含于D只说明B至少有部分在外，绝不说明B全部在外，不能据此把整个探测块硬置零。
+
+### 4.2 k和δ的不可回避要求
+
+连续理论“只有有限个负方向”在任何有限矩阵上都恒真。k未知时不允许叫证书；若已知上界k≥p，则证书VACUOUS，停止增加探测位置或调阈值。可以保留经验谱诊断，但明确EMPIRICAL_ONLY。
+
+k的规则必须在test前冻结，来源于已证明物理界或合法prior。已知介电包络/cavity本征值数可能是研究工具，但缺少从它到far-field例外空间的桥梁证明时，不能直接当k。不得从GT区域或验证集成功率倒推最有利k。
+
+δ包含噪声、求积、离散、校准及通道压缩误差。C非等距时需要||C||²因子；数据驱动选C若只有点态概率界需处理选择效应。仿真可使用预声明有界噪声，或有效概率至少1-α的operator-norm界；在线不得读取GT无噪Y来计算实际误差。网格收敛观测本身不是严格误差上界，未证部分应降级diagnostic。
+
+### 4.3 最小实验和适用性反例
+
+先用已知均匀背景、紧支撑、sign-definite正contrast、无损非磁目标，配对收发的有限far-field通道和正确球面切向极化/求积。用一个实心光滑目标和少量候选B：严格内含、跨界、外部。只改变通道数与噪声各少量预定等级，观察k、p及谱隙，不先画精美support图。
+
+另外两个必做资格反例：
+1. 闭合介质壳包围空腔可能违反外补集连通等假设；torus通孔与封闭腔不同。按原文判断能证的是D还是外包络，不能用不适用理论宣称重建内腔。
+2. 历史digits有非零host且全ROI材料未知；“数字笔画”未必是相对物理背景的contrast support。不能把GT字体mask当D。若吸收已知host，需该非均匀背景下的相应定理；简单相减Y或换Green不自动继承证明。
+
+只有k可用、δ合格、正确包含块无误拒且确有错误包含假设被稳健拒绝后，才将结果转为support候选/约束。使用这些额外信息的CIE与等数量随机/常规proposal比较，并保留相同corrector成本。若只能靠GT选阈值或k始终≥p，则结束certificate路线，报告理论缺口。
+
+## 5. F线：有限照明各向异性同场材料族
+
+### 5.1 正确构造
+
+固定μ、频率和有限照明。令一个合法锚点材料的总场矩阵U_i=[E_1,...,E_s]∈C^{3×s}。任意合法Δε_i满足Δε_i U_i=0时，原E/H及εE不变，因而是完整Maxwell的有限同场变化；前提是更新材料的forward唯一适定。它不是只在Jacobian上成立。
+
+复互易张量要求ε^T=ε，非ε*=ε。令r=rank_C U_i，W为ker(U_i*)的Hermitian正交基，则
+Δε_i=conj(W) K W*，K^T=K；维数为(3-r)(4-r)/2个复自由度。
+不要用U(U^TU)^{-1}，复向量可满足U^TU=0。使用3×s小SVD；把精确核和弱奇异值截断分开。
+
+实对称张量必须改用V_i=[Re U_i,Im U_i]和r_R=rank_R V_i，Δε_i=W_R K W_R^T，维数同式但为实自由度。一个一般复照明常给r_R=2而不是1；两个复照明常使r_R=3，实同场族消失。已知轴对角张量、块常张量、逐像素一般六参数张量分别测试；块常时必须叠加该块所有空间点的场，不能只看中心。
+
+### 5.2 合法性与连续验证
+
+复扰动从严格被动基准Im_H ε≥ηI、η>0出发，以||Δε||<η等充分margin保证passivity，并检查实部/box；无损边界不能凭小复扰动宣称合法。实PSD方向可保持原损耗不变，但仍受公开材料上界。场秩变化附近使用光滑bump或平滑frame，避免归一化除零。
+
+连续实张量单源可取n=Re E×Im E，Δε=α(x)nn^T；光滑紧支撑且α≥0时保持SPD，无需除以||n||。复杂张量两源可用E1×E2生成对称dyad，并按Hermitian范数控制合法半径。不要把自由g的单体素代数模型称为具体物理自项。
+
+锚点来自当前合法反演及其总场，不读test GT。若锚点未过数据discrepancy门，同场族也未过门，只能叫失败锚点的等响应族；不能包装成新合法观测解或成像提升。
+
+### 5.3 三个有区分力的观测实验
+
+从一个实际合法3D reciprocal tensor锚点构造有限分支，首先做小连续/精细离散一致性检查，确认材料显著改变而原照明下全E/H与数据差随插值/网格误差趋小。
+
+A臂：固定原照明增加receiver；同场族仍不可区分。若出现分离先检查插值/物理实现，不把数值误差当新信息。
+B臂：原源线性组合，保留正确噪声；同场族仍不可区分。
+C臂：真正独立的合法入射方向/极化，重新forward两候选，测白化完整端口差。n^T E_new≠0只破坏同场构造，不能保证有限接收分离超过noise。在线新源选择只能依据候选预测分歧；实际新观测由独立数据生成端产生，属于新增信息实验。
+
+“rank达到3”仅排除此类同场族，不证明远场反演全局唯一。多频必须冻结真实色散模型：共同实ε/已知σ可堆叠实虚场；未知ε和σ须共同解(Δε+iΔσ/ω)U=0，不能每频自由改tensor后宣称因果材料。
+
+成功是给出合法有限分支、同场证据及新illumination能/不能区分的条件，不是选择一个看起来最像GT的解。每体素小SVD约O(Ns)，无需NN；NN若预测完全不可见分量，应明确是训练prior选择。
+
+### 5.4 新的量化命题与有限噪声试验
+
+对复对称张量激发算子 A_U:V→VU、两侧Frobenius范数，若U的奇异值为σ1≥σ2≥σ3≥0，则六项激发谱为：σ1,σ2,σ3,sqrt((σ1²+σ2²)/2),sqrt((σ1²+σ3²)/2),sqrt((σ2²+σ3²)/2)。实对称类改用[Re U,Im U]的实奇异值；已知轴对角类改用三行场范数。此谱不含receiver，不能当完整Jacobian谱。
+
+最弱复对称dyad为conj(p3)p3*，不要误用一般为Hermitian的p3p3*。对X_t=X0+tV，完整有限差分是ΔF=t S(I−X_t G)^−1 VU0。若合法区间的白化接收resolvent诱导范数统一≤K，归一化||V||mat=1，则t_blind=min(t_legal,δ/[K||VU0||F])给pair-data距离≤δ的构造性半径。这是歧义的下界，不是恢复误差上界；仅某射线K已知时不可声称整个材料椭球成立。
+
+白化噪声半径ε下，两候选距离≤2ε只保证存在能同时解释二者的噪声球观测。对于实际y，anchor已有残差r0，充分资格要求tK||VU0||≤ε−r0；不合格anchor的同场族不会自动变成合格解。
+
+主动源选择用完整候选transfer差，而非只看local rank。真实外部发射在成像域的入射场矩阵B、功率metric R>0和候选transfer H_a=S(I−X_aG)^−1 X_a B给A_ab=W_r(H_a−H_b)。二元最佳发射为R^−1/2 A_ab* A_ab R^−1/2的主特征向量对应实际源系数；多候选可先在小源库最大化最难pair分离。新的实际观测应同时提供给成熟CIE。候选库可能遗漏GT，必须注明这只是候选内保证。
+
+## 6. 动力系统与source-basis补充
+
+D1：在小真实VIE上检验精确物理解、无prior、内点、固定可表示current空间的局部命题。δe=Bδγ-Cδm，C* C逐cell对角，Wβ C=CΔβ，使材料readout导数(C^T Wβ² C)^{-1}C^T Wβ² B与β_material无关。精确current块的材料sweep M=Hmm^{-1}Ham^T Haa^{-1}Ham在Hmm度量下谱[0,1]。此结论只适用实化坐标；source权重统一吸入，不省略非零residual项。
+
+先固定β_current，取两三个β_material，比较根处JVP与离根二阶差；再分别加入prior、活动box或单PR步，找出失效来源。R3已有readout缺陷公式和0/2/4阶，不重复记原创。此为公开GT局部诊断，不是在线成像。
+
+D2：只对一个成功例和一个真实失败例保存材料、current、PR旧梯度/方向、mask、β、活动约束、每块目标和阶段事件。固定singleβ真实辅助目标严格下降时排除非平凡迭代周期；dualβ无共同目标不能直接排除，也不能直接声称有chaos。先区分预算停机、fixed point、周期候选。短时放大不等于正渐近Lyapunov指数；物理resolvent非正规不等于算法DT非正规。没有周期证据就结束chaos扩展。
+
+D3：full unitary源混合的三臂空实验。保持p列，E'=EU、Y'=YU；以Ω表示source metric，与数据白化W区别，必须Ω'=U*ΩU协变，星号为共轭转置。比较原生列归一化重算、正确metric但sourcewise PR、正确metric且global/block current更新。完整metric可能使sources耦合，不能继续独立block却声称同目标。保持PR历史运输/重置规则相同并收费。先验证轨迹差，终点/basin改善另需有限新鲜对照。
+
+这是已有source encoding/RMIMO-CSI/virtual experiment方法的机制审计。保留p列unitary不减少RHS；p→k压缩随机编码会改变单次目标并引入cross-talk，两者不混合。直接先例：Guo2021 DOI10.1109/LAWP.2021.3079905；Bevacqua2021 DOI10.1109/TAP.2021.3083747；Krebs2009 DOI10.1190/1.3230502；Haber–Chung–Herrmann2012 DOI10.1137/11081126X。
+
+## 7. ROM后续分支，不抢占首轮预算
+
+已有Borcea–Liu–Zimmerling2024（DOI10.1016/j.jcp.2024.113272）电磁ROM，不是本轮发明。仅在有共置互易、lossless自伴波动算子及足够时序数据时，使用U_j=cos(jτsqrt A)B、D_j=B*cos(jτsqrt A)B，构造U_i*U_j=(D_(i+j)+D_|i-j|)/2。该式不直接适用于任意单频矩形Y、一般loss/PML或非共置端口。
+
+若M/T/F已完成且ROM资格存在，先一维层状/二维矢量最小例，比较同一宽带数据的成熟CIE与已知ROM目标。全Gram的维度是端口数×时间块数，稠密分解成本不可忽略。没有资格就交付NOT_RUN与缺口，不合成并不存在的宽带观测。
+
+## 8. 成本、独立验证和交付结构
+
+账本分setup、online、validation、scoring；记录forward/adjoint RHS、LU/稀疏分解、三角解、FFT、Green动作、椭圆解、current/state DOF、稠密小系统维度、显存/内存峰值、wall/CPU/GPU时间。拒绝候选、失败和超限也收费。共享预计算只记一次并给摊销规则；线程wall之和不叫并行历时。等mode、等实际算量和等名义时间是三种不同对照。
+
+建议新建research/research_max_struct_r1/，按仓库实际规范调整；至少交付：README、RESEARCH_REPORT_ZH、THEORY_STATUS、DATA_CONTRACT、BASELINE_AUDIT、REPRODUCE、COST_LEDGER、FAILURES、CODEX_TO_PRO_HANDOFF；src/、configs/、experiments/、data_public/、predictions/、sealed_truth/、results/、figures/、audit/。文件格式自行采用可审查的Markdown/JSON/CSV；不要虚构既有入口。报告逐条标PROVED_UNDER_ASSUMPTIONS、DERIVED、EMPIRICAL、CONJECTURE或NOT_RUN。
+
+每个运行JSON至少包含：run_id、case_id、branch、git_sha、code_hash、config_hash、seed、data_id、material_class、physical_convention、mesh、sources、receivers、frequencies、noise_model、whitening、prior、initialization、state_representation、state_dof、material_dof、baseline_id、stage、termination_reason、online_selection_rule、physical_residual、auxiliary_residual、constitutive_defect、constraint_violation、cost、candidate_ids、truth_access、validation。
+
+分支字段：M记录curl/Gauss/port误差与basis来源；T记录包含命题、k来源、p、δ分项、eigenvalue、certificate_status，允许VACUOUS/EMPIRICAL_ONLY/INAPPLICABLE；F记录real_or_complex_rank、阈值/谱隙、tensor合法margin、branch_distance、old_source_gap、new_source_gap。字段未知写null和原因，不填零。最终状态允许PASS、FAIL、INCONCLUSIVE、NOT_RUN，不把运行完成当科学通过。
+
+最终结论必须回答：哪个物理结构被实际利用；普通磁场/成熟CIE是否已解释全部收益；单调性证书是否真的非空；张量多解是信息限制还是算法失败；任何正面结果是否仅来自额外cost、prior或新观测。若没有新成像优势，仍完整交付已建立的理论边界与决定性反例，不追加大扫掩盖它。
