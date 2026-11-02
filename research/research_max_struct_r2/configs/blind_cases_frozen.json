@@ -1,0 +1,18 @@
+{
+  "status": "FROZEN_BEFORE_GENERATION",
+  "case_count": 3,
+  "families": ["fresh asymmetric annulus", "fresh interrupted curved bar", "fresh unequal two-island control"],
+  "generator_seed": "Independent secrets.randbits(128), retained only in sealed_truth mapping",
+  "opaque_ids": "uuid4 independent of shape/seed; public writing order sorted by opaque ID",
+  "operator_source": "research/research_z_alg_r3_digits/public_data/operators.npz",
+  "physics": "Existing nonlinear scalar-TM disk-pulse VIE, k=2pi, complex128,576 independent real material cells",
+  "shape": [24,24],
+  "acquisition": {"sources":12,"receivers":48,"layout":"unchanged frozen uniform12 operators"},
+  "material": {"host":0.1,"amplitude":12.0,"box":[0.02,20.0],"alpha":"8x8 area average per cell from a192x192 binary geometric raster; truth support alpha>=.5"},
+  "noise": {"type":"independent circular complex Gaussian entries","relative_complex_amplitude":0.001,"sigma":"1e-3*||Yclean||_F/sqrt(M)","real_imag_variance":"sigma^2/2","M":576,"whiten":"W=I/sigma","radius_confidence":0.99,"whitened_radius":"sqrt(chi2.ppf(.99,2*M)/2)","not_fixed_norm":true},
+  "objective": {"formula":"Phi=.5*||F(m)-Y||_F^2/||Y||_F^2+R_historical(m)","prior":"smooth1e-4 + smoothedTV1e-4, width19.5, epsilon.01","whitened_equivalent":"a*.5*||R/sigma||^2+R_historical where a=sigma^2/||Y||^2; alternatively divide entire objective by a and use prior R_historical/a","unit_weight_whitened_prior_multiplier":"||Y||^2/sigma^2"},
+  "metrics": {"nrmse":"RMSE/12","shape":"256-bin reconstruction-only Otsu IoU against private alpha>=.5 support","material_gate":0.15,"IoU_gate":0.7,"data_gate":"observed residual/sigma <=99% chi2 radius","historical_noisy_relative_residual_gate":0.003,"extra_descriptive":["fixed known amplitude midpoint IoU at m>6.1","foreground area error","support centroid distance in physical coordinates"]},
+  "truth_policy":"Generator only until every frozen method/case prediction disposition is sealed and parent explicitly authorizes score; no truth/alpha/mask/cleanY/parameters/label in public NPZ",
+  "publication_policy":"Private mapping/seeds/truth not included in solver payload; release only after scoring closure authorization",
+  "generation":"Write once; failure receipt preserved; never regenerate to improve result or GT self-IoU"
+}

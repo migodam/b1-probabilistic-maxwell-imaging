@@ -1,0 +1,157 @@
+{
+  "status": "SEALED_POST_HOC_PREDICTION",
+  "classification": "POST_HOC_DEVELOPMENT_AFTER_GT_RELEASE",
+  "case_id": "obs_b20d5a55677d4eca",
+  "started_utc": "2026-11-02T06:13:30.988432+00:00",
+  "truth_access": "NONE_BY_THIS_RUNNER",
+  "selection": "Parent selected previously failed case after GT release; not a new blind success test",
+  "frozen_change": "Native Fourier stages3,6,12 rather than3,6,10; no beta/iteration/prior/init/corrector change",
+  "code": "experiments/capacity_control.py",
+  "hash_checks": false,
+  "stages": [
+    {
+      "mf": 3,
+      "beta": 1.0,
+      "maxiter": 500
+    },
+    {
+      "mf": 6,
+      "beta_current": 1.0,
+      "beta_material": 0.2,
+      "maxiter": 500
+    },
+    {
+      "mf": 12,
+      "beta_current": 1.0,
+      "beta_material": 0.2,
+      "maxiter": 500
+    }
+  ],
+  "coefficient_tol": 0.0,
+  "miniter": 50,
+  "dpcs_rtol": 0.001,
+  "material_inner_maxiter": 60,
+  "initialization": "same uniform public host .1",
+  "corrector": {
+    "method": "original physical L-BFGS-B",
+    "maxiter": 1000,
+    "maxfun": 4000,
+    "wallcap": null
+  },
+  "objective": "same original normalized physical data + historical smooth/TV prior",
+  "threads": 1,
+  "device": "CPU",
+  "inverse_runs_authorized": 1,
+  "last_inverse_run": true,
+  "scope": "Tests available full APCS capacity under fixed measured DPCS; more matrix work is paid and not iteration-cost matched",
+  "finished_utc": "2026-11-02T06:13:41.725368+00:00",
+  "prediction": "predictions_capacity/obs_b20d5a55677d4eca_native_mf12.npz",
+  "physical_objective": 0.004797077103843659,
+  "physical_relative_residual": 0.09769295107534634,
+  "physical_whitened_residual": 2344.636763432675,
+  "noise_radius99": 25.16542219663291,
+  "physical_linear_residual": 2.3696034673791475e-15,
+  "projected_gradient_mapping_l2": 8.71773503262124e-07,
+  "projected_gradient_mapping_inf": 3.132655663762307e-07,
+  "active_lower_exact": 445,
+  "active_upper_exact": 69,
+  "corrector_stop": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+  "all_alternating_iterations": 1500,
+  "native_forwarding_readout_calls": 1500,
+  "stage_capacity": [
+    {
+      "stage": 0,
+      "mf": 3,
+      "Fourier_complex_coefficients": 432,
+      "Fourier_real_coefficients": 864,
+      "independent_APCS_spatial_complex_rank": 36,
+      "independent_free_current_real_dof": 864,
+      "fixed_DPCS_spatial_complex_rank": 17,
+      "fixed_DPCS_data_determined_real_coordinates": 408,
+      "total_DPCS_APCS_linear_real_dof": 1272,
+      "material_real_dof": 576
+    },
+    {
+      "stage": 1,
+      "mf": 6,
+      "Fourier_complex_coefficients": 1728,
+      "Fourier_real_coefficients": 3456,
+      "independent_APCS_spatial_complex_rank": 144,
+      "independent_free_current_real_dof": 3456,
+      "fixed_DPCS_spatial_complex_rank": 17,
+      "fixed_DPCS_data_determined_real_coordinates": 408,
+      "total_DPCS_APCS_linear_real_dof": 3864,
+      "material_real_dof": 576
+    },
+    {
+      "stage": 2,
+      "mf": 12,
+      "Fourier_complex_coefficients": 6912,
+      "Fourier_real_coefficients": 13824,
+      "independent_APCS_spatial_complex_rank": 559,
+      "independent_free_current_real_dof": 13416,
+      "fixed_DPCS_spatial_complex_rank": 17,
+      "fixed_DPCS_data_determined_real_coordinates": 408,
+      "total_DPCS_APCS_linear_real_dof": 13824,
+      "material_real_dof": 576
+    }
+  ],
+  "auxiliary_cost": {
+    "physical_validations": 4,
+    "receiver_SVD": 1,
+    "G_columns": 768,
+    "S_columns": 768,
+    "APCS_SVD": 3,
+    "Fourier_columns_generated": 756,
+    "IDFT_columns_explicit": 756,
+    "DPCS_projection_columns": 756,
+    "material_readouts": 1500,
+    "material_inner_evaluations": 7500,
+    "PR_CG_steps": 1500,
+    "reduced_operator_columns": 108000,
+    "wall_seconds": 5.151325708255172,
+    "model": {
+      "FULL_FORWARD": 3,
+      "cached_operator_imports": 0,
+      "full_factorization_dimension": 1728,
+      "source_RHS": 36,
+      "LU": 3,
+      "actual_complex_RHS": 36
+    }
+  },
+  "corrector_cost": {
+    "FULL_FORWARD": 943,
+    "actual_complex_RHS": 22632,
+    "LU": 943,
+    "source_RHS": 11316,
+    "full_factorization_dimension": 543168,
+    "DATA_ADJOINT": 943,
+    "adjoint_RHS": 11316
+  },
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "corrector_initial_original_objective": 0.17517465092848,
+  "limitations": "Full APCS still fixes DPCS coefficients from noisy receiver inversion; no GT recovery claim before separate scoring; more matrix work than mf10",
+  "wall_seconds": 10.729616582859308,
+  "cpu_seconds": 10.601113,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 951,
+    "actual_complex_RHS": 22740,
+    "LU": 951,
+    "source_RHS": 11412,
+    "full_factorization_dimension": 547776,
+    "DATA_ADJOINT": 944,
+    "adjoint_RHS": 11328
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 4.489057719241828,
+    "DATA_ADJOINT": 0.3746420065872371
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 4.433303000000003,
+    "DATA_ADJOINT": 0.37017299999999853
+  },
+  "FFT": 0,
+  "hashes_computed": 0,
+  "timer_scope": "public load+native preparation/1500steps+physical candidates+corrector+final gradient+serialization; receipt final write excluded"
+}

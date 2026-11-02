@@ -1,3 +1,11 @@
+<!-- MAX_STRUCT_R2_PUBLICATION -->
+## MAX-STRUCT-R2：结构审计、新盲测与新增照明
+
+三新对象四方法：成熟CIE/global均2/3，精确profile1/3，未建立超越成熟CIE的新成像机制。满容量事后控制仍失败；三维新增照明只支持公开一参数族中的相容估计。代码、原始结果、独立审查与全部费用保留。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r2/) · [给Chat的入口](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r2/CHAT_HANDOFF.md) · [完整代码/证据](https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_max_struct_r2)
+<!-- /MAX_STRUCT_R2_PUBLICATION -->
+
 <!-- MAX_STRUCT_R1_PUBLICATION -->
 ## MAX-STRUCT-R1：张量同场族与机制边界
 
