@@ -1,0 +1,174 @@
+{
+  "status": "IMPLEMENTED_AND_SINGLE_DISCLOSED_DEV_RUN_SEALED",
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN_BY_IMPLEMENTER; parent owns GT scoring and scientific judgment",
+  "mathematical_scope": "Whole-box sufficient invertibility bounds PASS at beta0.2 and1.0; exact physical zeros preserved. This does not certify basins or GT recovery.",
+  "implementation": "one self-normalized residual plus one cross-cell exchange inside each fixed disjoint four-cell block; exact fixed-J/Q material derivative; no small LU or block inverse",
+  "unchanged": [
+    "public observations and physical backend",
+    "scalar CIE material seed",
+    "source normalizations",
+    "global PR and Fourier/DPCS",
+    "3x500 stage schedule",
+    "material inner maxiter60",
+    "box [.02,20] and original regularizer",
+    "original-Phi selection with host incumbent",
+    "R4 scaled original-physics corrector maxiter1000"
+  ],
+  "gradient_check": {
+    "status": "PASS",
+    "truth_access": "NONE",
+    "directions": 1,
+    "physical_model_cost": {},
+    "finite_difference_points": 2,
+    "scope": "new onehop material derivative wiring only; fixed J/Q, no identity suite",
+    "value": 0.0022671116645663065,
+    "beta": 0.2,
+    "h": 1e-06,
+    "analytic_directional": 5.527207052074909e-05,
+    "finite_difference_directional": 5.527206947339436e-05,
+    "relative_error": 1.8949077143400813e-08,
+    "tolerance": 1e-06,
+    "wall_seconds": 0.003026416990906,
+    "cpu_seconds": 0.0027770000000000294,
+    "operation_counts": {
+      "block_Green_submatrices_extracted": 144,
+      "block_offdiagonal_nonzero_slots": 1728,
+      "self_Green_diagonal_entries_extracted": 576,
+      "onehop_parameter_builds": 3,
+      "scalar_complex_divisions": 44928,
+      "onehop_a_scalar_divisions": 1728,
+      "onehop_u_scalar_divisions": 20736,
+      "onehop_block_matrix_apply_calls": 6,
+      "onehop_block_matrix_apply_blocks": 864,
+      "onehop_block_matrix_complex_RHS": 10368,
+      "onehop_forward_block_RHS": 5184,
+      "onehop_adjoint_block_RHS": 5184,
+      "onehop_du_scalar_divisions": 20736,
+      "onehop_da_scalar_divisions": 1728,
+      "material_inner_evaluations": 3,
+      "material_prior_evaluations": 3,
+      "source_metric_products": 3
+    }
+  },
+  "whole_box_bound": [
+    {
+      "beta": 0.2,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.16809971545079827,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0036431800261698,
+      "max_ratio": 4.303397033771491,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j!=i_in_block abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    },
+    {
+      "beta": 1.0,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.03784328908973763,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0196431797115961,
+      "max_ratio": 0.9687981777970379,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j!=i_in_block abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    }
+  ],
+  "comparisons": [
+    {
+      "variant": "self_absorption",
+      "total_wall_seconds": 37.28598854178563,
+      "auxiliary_wall_seconds": 26.061450500041246,
+      "auxiliary_original_Phi": 0.010801894717538736,
+      "final_original_Phi": 0.0058325038971184726,
+      "final_relative_residual": 0.107820651644736,
+      "physical_LU": 1055,
+      "physical_complex_RHS": 25236,
+      "corrector_iterations": 1000
+    },
+    {
+      "variant": "block_absorption",
+      "total_wall_seconds": 59.423726708162576,
+      "auxiliary_wall_seconds": 43.24643704202026,
+      "auxiliary_original_Phi": 0.0007066885666717203,
+      "final_original_Phi": 6.506278834683092e-06,
+      "final_relative_residual": 0.0009670144344941587,
+      "physical_LU": 1033,
+      "physical_complex_RHS": 24708,
+      "corrector_iterations": 1000
+    },
+    {
+      "variant": "block_absorption_cached",
+      "total_wall_seconds": 46.37473979173228,
+      "auxiliary_wall_seconds": 35.42837016703561,
+      "auxiliary_original_Phi": 0.0007045806702886123,
+      "final_original_Phi": 6.494990250089302e-06,
+      "final_relative_residual": 0.0009695368272828883,
+      "physical_LU": 1026,
+      "physical_complex_RHS": 24540,
+      "corrector_iterations": 1000
+    },
+    {
+      "variant": "onehop_absorption",
+      "total_wall_seconds": 42.165716249961406,
+      "auxiliary_wall_seconds": 31.142765084281564,
+      "auxiliary_original_Phi": 0.0007039845410500794,
+      "final_original_Phi": 6.492062458554792e-06,
+      "final_relative_residual": 0.0009678872549083497,
+      "physical_LU": 1032,
+      "physical_complex_RHS": 24684,
+      "corrector_iterations": 1000
+    }
+  ],
+  "against_cached_block": {
+    "total_time_ratio": 1.0998209900389093,
+    "auxiliary_time_ratio": 1.1376115791631194,
+    "total_time_reduction_fraction": 0.09076112471301157,
+    "auxiliary_time_reduction_fraction": 0.12096534677007509,
+    "scope": "single CPU1 runs; implementation arithmetic/trajectory differs; same iteration budgets, not equal operation counts; no statistical timing or imaging superiority claim"
+  },
+  "limitations": [
+    "one disclosed curvedbar development case; no blind generalization",
+    "corrector reached1000 iterations; no convergence claim",
+    "no GT loaded or scientific success determined by this worker",
+    "no hyperparameter search, extra derivative directions, reruns, GPU, remote action, commit or push"
+  ],
+  "prelaunch_tool_failure": {
+    "action": "python -V path spelling/quoting check",
+    "status": "EXIT127_BEFORE_PYTHON_LAUNCH",
+    "scientific_execution": false,
+    "physics_cost": 0,
+    "scope": "one tool invocation used a literal backslash-x27 in executable path; correct absolute path used for sole scientific run"
+  },
+  "files": [
+    "FROZEN_CONFIG.json",
+    "executed_source_snapshot/onehop_absorption.py",
+    "executed_source_snapshot/cie_onehop.py",
+    "executed_source_snapshot/onehop_absorption.json",
+    "WHOLE_BOX_BOUND.json",
+    "GRADIENT_WIRING.json",
+    "RECEIPT.json",
+    "AUXILIARY_EXECUTION.json",
+    "AUXILIARY.json",
+    "CORRECTOR.json",
+    "stage_0.npz",
+    "stage_1.npz",
+    "stage_2.npz",
+    "SELECTED_BEFORE_CORRECTOR.npz",
+    "ALL_PHYSICAL_CANDIDATES.npz",
+    "prediction.npz"
+  ]
+}

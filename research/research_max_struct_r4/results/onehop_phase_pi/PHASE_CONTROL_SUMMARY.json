@@ -1,0 +1,139 @@
+{
+  "status": "SEALED_DEVELOPMENT_PREDICTION",
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN_BY_WORKER; parent owns scoring and final mechanism judgment",
+  "scope": "single fixed phase-pi mechanism control; no hyperparameter search, derivative rerun, identity rerun, additional case, algorithm revision, remote action, commit or push",
+  "implementation": {
+    "source": "experiments/onehop_phase_pi.py",
+    "configuration": "configs/onehop_phase_pi.json",
+    "base_source": "src/cie_onehop.py",
+    "method": "local subclass sets only the private copied auxiliary self.goff *= -1; existing module class reference is patched within this process",
+    "physical_model_G": "UNCHANGED",
+    "current_material_adjoint_consistency": "all inherited current/material forward/adjoint actions use the same off_action and same signed Goff"
+  },
+  "invariant_design": [
+    "abs(Goff)",
+    "fixed disjoint four-cell graph",
+    "diagonal self normalization and source metric",
+    "whole-box sufficient invertibility bound",
+    "per-evaluation current/material arithmetic"
+  ],
+  "cost_scope": "Actual total operation counts differ through optimization trajectory; phase setup adds one disclosed sign change of 2304 stored block entries for each instantiated block object. No small LU is charged. Inherited scalar-seed scalar arithmetic is outside new transform counters.",
+  "objective_identity": "At fixed u,L, ||(I+L)u||_Os^2 and ||(I-L)u||_Os^2 share ||u||_Os^2+||Lu||_Os^2 and differ only by the sign of 2 Re <u,Lu>_Os; no numerical identity test rerun",
+  "whole_box_bound": [
+    {
+      "beta": 0.2,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.16809971545079827,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0036431800261698,
+      "max_ratio": 4.303397033771491,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j!=i_in_block abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    },
+    {
+      "beta": 1.0,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.03784328908973763,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0196431797115961,
+      "max_ratio": 0.9687981777970379,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j!=i_in_block abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    }
+  ],
+  "gradient_check": {
+    "status": "NOT_RERUN",
+    "reason": "only fixed auxiliary Goff signs changed; same generic exact material derivative",
+    "original_check": "results/onehop_absorption/GRADIENT_WIRING.json",
+    "extra_directions": 0,
+    "physical_model_cost": {}
+  },
+  "comparison": [
+    {
+      "variant": "onehop physical phase (+)",
+      "auxiliary_original_Phi": 0.0007039845410500794,
+      "final_original_Phi": 6.492062458554792e-06,
+      "final_relative_residual": 0.0009678872549083497,
+      "wall_seconds": 42.165716249961406,
+      "cpu_seconds": 39.800771000000005,
+      "auxiliary_wall_seconds": 31.142765084281564,
+      "corrector_iterations": 1000,
+      "physical_model_cost": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 1032,
+        "actual_complex_RHS": 24684,
+        "LU": 1032,
+        "source_RHS": 12384,
+        "full_factorization_dimension": 594432,
+        "DATA_ADJOINT": 1025,
+        "adjoint_RHS": 12300
+      },
+      "material_inner_evaluations": 57669,
+      "scalar_complex_divisions": 1064386944,
+      "block_matrix_complex_RHS": 248840064
+    },
+    {
+      "variant": "onehop pi phase (-)",
+      "auxiliary_original_Phi": 0.03646777480851617,
+      "final_original_Phi": 0.0047970567288634506,
+      "final_relative_residual": 0.09769295341235647,
+      "wall_seconds": 74.45565224997699,
+      "cpu_seconds": 72.919217,
+      "auxiliary_wall_seconds": 56.02041320828721,
+      "corrector_iterations": 1000,
+      "physical_model_cost": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 1019,
+        "actual_complex_RHS": 24372,
+        "LU": 1019,
+        "source_RHS": 12228,
+        "full_factorization_dimension": 586944,
+        "DATA_ADJOINT": 1012,
+        "adjoint_RHS": 12144
+      },
+      "material_inner_evaluations": 83967,
+      "scalar_complex_divisions": 1458225792,
+      "block_matrix_complex_RHS": 339725952
+    }
+  ],
+  "physical_whitened_residual": 2344.63681952106,
+  "linear_relative_residual": 2.2978306221354516e-15,
+  "corrector_stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+  "corrector_evaluations": 1012,
+  "scientific_run_count": 1,
+  "failed_attempts": [],
+  "artifacts": [
+    "FROZEN_CONFIG.json",
+    "executed_source_snapshot/onehop_phase_pi.py",
+    "executed_source_snapshot/cie_onehop.py",
+    "executed_source_snapshot/onehop_phase_pi.json",
+    "STARTUP.json",
+    "WHOLE_BOX_BOUND.json",
+    "GRADIENT_WIRING.json",
+    "RECEIPT.json",
+    "AUXILIARY_EXECUTION.json",
+    "AUXILIARY.json",
+    "CORRECTOR.json",
+    "stage_0.npz",
+    "stage_1.npz",
+    "stage_2.npz",
+    "SELECTED_BEFORE_CORRECTOR.npz",
+    "ALL_PHYSICAL_CANDIDATES.npz",
+    "prediction.npz"
+  ]
+}

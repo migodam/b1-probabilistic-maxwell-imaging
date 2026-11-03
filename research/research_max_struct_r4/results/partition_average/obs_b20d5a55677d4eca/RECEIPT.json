@@ -1,0 +1,296 @@
+{
+  "status": "SEALED_DEVELOPMENT_PREDICTION",
+  "run_id": "partition_average",
+  "configuration": {
+    "status": "POST_CONFIRMATION_DEVELOPMENT_FROZEN_BEFORE_RUN",
+    "classification": "POST_CONFIRMATION_DEVELOPMENT",
+    "method": "four shifted 2x2 partition propagation average in mature global PR CIE",
+    "block_shape": [
+      2,
+      2
+    ],
+    "block_alignment": "disjoint row-major spatial blocks from upper-left array corner",
+    "block_Green": "nonwrapping 8-neighbor actual G: axis1/2,diagonal1/4; all other offdiagonal entries zero",
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+    "source_metric_policy": "fixed original paper source normalizations",
+    "material_seed": "mature shared-real scalar CIE readout; compare seed and previous by exact onehop loss+prior",
+    "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+    "corrector_maxiter": 1000,
+    "selection": "same original Phi including prior; retain host incumbent",
+    "gradient_check": "one sparse action material directional wiring at fixed J=.1E,Q=E; zero physics; only first assigned case",
+    "device": "CPU",
+    "threads": 1,
+    "truth_access": "NONE",
+    "parameter_tuning": false,
+    "originality_assertion": false,
+    "cache_material_value_gradient": true,
+    "material_value_gradient_cache": "two exact repeated material points within one fixed-J/Q readout only",
+    "control_purpose": "structural revision removes arbitrary partition origin after public confirmation failure; no new prior or observation, not a confirmation result",
+    "residual": "Rbar=(I+diag(a)Gbar_off)u; average propagations before loss, not average four objectives",
+    "gradient_check_h": 1e-06,
+    "gradient_check_relative_tolerance": 1e-06,
+    "operation_accounting": "actual scalar complex divisions and nonzero_neighbor_RHS for sparse CSR forward/adjoint; no block4 RHS counters or small LU",
+    "whole_box_bound": "analytic actual Gbar row sum times exact max_m m/abs(1+(beta-Gii)*m), compare actual original block bound; beta0.2/1",
+    "source_snapshot": "results/partition_average/<case>/executed_source_snapshot",
+    "gradient_check_case": "obs_b20d5a55677d4eca",
+    "cases": {
+      "obs_b20d5a55677d4eca": [
+        "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+      ],
+      "obs_42cb233e4f224bb3": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_42cb233e4f224bb3.npz"
+      ]
+    },
+    "scientific_cases": 2,
+    "parameter_search": false,
+    "weights": "fixed by 4 partition translations; axis1/2 and diagonal1/4, no tuning",
+    "forbidden_reads": [
+      "sealed truth",
+      "private mapping",
+      "CONFIRMATION_SCORES",
+      "confirmation predictions or scores"
+    ],
+    "case_id": "obs_b20d5a55677d4eca",
+    "public_files": [
+      "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+    ]
+  },
+  "classification": "POST_CONFIRMATION_DEVELOPMENT",
+  "truth_access": "NONE",
+  "source": "experiments/partition_average.py",
+  "original_source": "research/research_max_struct_r2/src/cie_global.py",
+  "failed_attempts": [],
+  "startup": {
+    "status": "IMPORTED",
+    "started_utc": "2026-11-03T05:26:41.986266+00:00",
+    "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+    "argv": [
+      "research/research_max_struct_r4/experiments/partition_average.py",
+      "--case",
+      "obs_b20d5a55677d4eca"
+    ],
+    "truth_access": "NONE",
+    "wall_seconds": 0.5787606248632073,
+    "cpu_seconds": 0.350502
+  },
+  "original_prior_hessian_constructed": false,
+  "prior_evaluation": "same model.reg.evaluate values and gradients; unused dense Hessian omitted",
+  "novelty": "no originality assertion; post-confirmation structural revision removing partition origin",
+  "neighbor_cost_semantics": "actual scalar divisions and nonzero_neighbor_RHS per sparse forward/adjoint action; zero small LU/inverse",
+  "threads": [],
+  "process_import_and_serialization_included": true,
+  "whole_box_bound": [
+    {
+      "beta": 0.2,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.16809971545079827,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0036431800261698,
+      "max_ratio": 4.303397033771491,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "original_disjoint_block_bound_inf": 0.16809971545079827,
+      "bound_difference_from_original": 0.0,
+      "max_axis_weighted_row_sum": 0.027136304510478354,
+      "max_diagonal_weighted_row_sum": 0.011925793207118465,
+      "neighbor_nonzeros": 4324,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j_in_8_neighbors partition_weight_ij*abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    },
+    {
+      "beta": 1.0,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.03784328908973763,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0196431797115961,
+      "max_ratio": 0.9687981777970379,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "original_disjoint_block_bound_inf": 0.03784328908973763,
+      "bound_difference_from_original": 0.0,
+      "max_axis_weighted_row_sum": 0.027136304510478354,
+      "max_diagonal_weighted_row_sum": 0.011925793207118465,
+      "neighbor_nonzeros": 4324,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j_in_8_neighbors partition_weight_ij*abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    }
+  ],
+  "bound_setup_operation_counts": {
+    "neighbor_Green_entries_stored": 4324,
+    "neighbor_adjoint_entries_stored": 4324,
+    "self_Green_diagonal_entries_extracted": 576
+  },
+  "gradient_check": {
+    "status": "PASS",
+    "truth_access": "NONE",
+    "directions": 1,
+    "physical_model_cost": {},
+    "finite_difference_points": 2,
+    "scope": "one new sparse-neighbor action directional wiring only; fixed J=.1E,Q=E, no formula identity suite",
+    "value": 0.0022659473612838617,
+    "beta": 0.2,
+    "h": 1e-06,
+    "analytic_directional": 5.523949032548474e-05,
+    "finite_difference_directional": 5.5239489414951604e-05,
+    "relative_error": 1.6483373247944926e-08,
+    "tolerance": 1e-06,
+    "wall_seconds": 0.003197125159204006,
+    "cpu_seconds": 0.0028779999999999917,
+    "operation_counts": {
+      "neighbor_Green_entries_stored": 4324,
+      "neighbor_adjoint_entries_stored": 4324,
+      "self_Green_diagonal_entries_extracted": 576,
+      "onehop_parameter_builds": 3,
+      "scalar_complex_divisions": 44928,
+      "onehop_a_scalar_divisions": 1728,
+      "onehop_u_scalar_divisions": 20736,
+      "sparse_neighbor_apply_calls": 6,
+      "nonzero_neighbor_RHS": 311328,
+      "forward_nonzero_neighbor_RHS": 155664,
+      "sparse_neighbor_RHS_columns": 72,
+      "adjoint_nonzero_neighbor_RHS": 155664,
+      "onehop_du_scalar_divisions": 20736,
+      "onehop_da_scalar_divisions": 1728,
+      "material_inner_evaluations": 3,
+      "material_prior_evaluations": 3,
+      "source_metric_products": 3
+    }
+  },
+  "selection": "original Phi with original prior; initial+auxiliary best+corrector",
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "auxiliary_selected_original_Phi": 0.017202069963640293,
+  "auxiliary_candidate_scores": [
+    {
+      "objective": 0.5235232721607634,
+      "relative_residual": 1.023252922947952
+    },
+    {
+      "objective": 0.26519816761560944,
+      "relative_residual": 0.7282772610706566
+    },
+    {
+      "objective": 0.034317738263141724,
+      "relative_residual": 0.26196011805218467
+    },
+    {
+      "objective": 0.017202069963640293,
+      "relative_residual": 0.18543961449283747
+    }
+  ],
+  "physical_objective": 0.005815434246926493,
+  "physical_relative_residual": 0.10766017067095068,
+  "physical_whitened_residual": 2583.8506395191553,
+  "linear_relative_residual": 2.4906248079805576e-15,
+  "material_min": 0.02,
+  "material_max": 20.0,
+  "corrector_stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+  "corrector_iterations": 1000,
+  "auxiliary_operation_counts": {
+    "neighbor_Green_entries_stored": 4324,
+    "neighbor_adjoint_entries_stored": 4324,
+    "self_Green_diagonal_entries_extracted": 576,
+    "source_metric_Cholesky": 2,
+    "physical_validations": 4,
+    "receiver_SVD": 1,
+    "G_columns": 592,
+    "S_columns": 592,
+    "APCS_SVD": 3,
+    "Fourier_columns_generated": 580,
+    "IDFT_columns_explicit": 580,
+    "DPCS_projection_columns": 580,
+    "onehop_parameter_builds": 65672,
+    "scalar_complex_divisions": 1116847872,
+    "onehop_a_scalar_divisions": 37827072,
+    "onehop_u_scalar_divisions": 620964864,
+    "sparse_neighbor_apply_calls": 126844,
+    "nonzero_neighbor_RHS": 7835641472,
+    "forward_nonzero_neighbor_RHS": 4661548736,
+    "sparse_neighbor_RHS_columns": 1812128,
+    "partition_average_current_operator_builds": 1500,
+    "current_objective_evaluations": 1500,
+    "source_metric_products": 80672,
+    "current_gradient_evaluations": 1500,
+    "material_readouts": 1500,
+    "material_value_gradient_requests": 64172,
+    "material_value_gradient_cache_misses": 61172,
+    "adjoint_nonzero_neighbor_RHS": 3174092736,
+    "onehop_du_scalar_divisions": 422820864,
+    "onehop_da_scalar_divisions": 35235072,
+    "material_inner_evaluations": 61172,
+    "material_prior_evaluations": 61172,
+    "material_value_gradient_cache_hits": 3000,
+    "material_inner_LBFGS_iterations": 56008,
+    "material_inner_LBFGS_evaluations": 59672,
+    "material_inner_fallbacks": 0,
+    "material_readout_source_whitening_products": 3000,
+    "PR_CG_steps": 1500,
+    "reduced_operator_columns": 108000,
+    "wall_seconds": 32.264976458158344
+  },
+  "prediction": "results/partition_average/obs_b20d5a55677d4eca/prediction.npz",
+  "final_parameter_selection": "NONE; fixed partition-average structural revision, one assigned disclosed development input, one run",
+  "wall_seconds": 42.490061457734555,
+  "cpu_seconds": 40.675342,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1043,
+    "actual_complex_RHS": 24948,
+    "LU": 1043,
+    "source_RHS": 12516,
+    "full_factorization_dimension": 600768,
+    "DATA_ADJOINT": 1036,
+    "adjoint_RHS": 12432
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 7.969043136574328,
+    "DATA_ADJOINT": 0.5861272532492876
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 7.783271999999993,
+    "DATA_ADJOINT": 0.5733279999998686
+  },
+  "finished_utc": "2026-11-03T05:27:24.474623+00:00",
+  "cost_scope": "startup/imports/public load/wiring check if explicitly enabled/full1500 updates/physical ranking/corrector/artifact writes; final receipt write excluded",
+  "historical_operator_assembly": "not rerun; public frozen operator load only"
+}

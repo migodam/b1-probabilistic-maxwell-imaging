@@ -1,0 +1,223 @@
+{
+  "status": "SEALED_DEVELOPMENT_PREDICTION",
+  "run_id": "block_absorption_2x2",
+  "configuration": {
+    "status": "DEV_FROZEN_BEFORE_RUN",
+    "case_id": "obs_b20d5a55677d4eca",
+    "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+    "method": "fixed block-loop absorption extension of mature global PR CIE",
+    "block_shape": [
+      2,
+      2
+    ],
+    "block_alignment": "disjoint row-major spatial blocks from upper-left array corner",
+    "block_Green": "actual Green submatrices including self; fixed throughout run",
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+    "source_metric_policy": "fixed original paper source normalizations",
+    "material_seed": "mature shared-real scalar CIE readout; compare seed and previous by exact block loss+prior",
+    "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+    "corrector_maxiter": 1000,
+    "selection": "same original Phi including prior; retain host incumbent",
+    "gradient_check": "one deterministic direction of exact block-material loss at beta0.2 on public 24x24 operators",
+    "gradient_check_h": 1e-06,
+    "gradient_check_relative_tolerance": 1e-06,
+    "device": "CPU",
+    "threads": 1,
+    "truth_access": "NONE",
+    "parameter_tuning": false,
+    "originality_assertion": false
+  },
+  "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+  "truth_access": "NONE",
+  "source": "experiments/block_absorption.py",
+  "original_source": "research/research_max_struct_r2/src/cie_global.py",
+  "failed_attempts": [],
+  "startup": {
+    "status": "IMPORTED",
+    "started_utc": "2026-11-03T04:39:22.269281+00:00",
+    "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+    "argv": [
+      "research/research_max_struct_r4/experiments/block_absorption.py"
+    ],
+    "truth_access": "NONE",
+    "wall_seconds": 0.5864813327789307,
+    "cpu_seconds": 0.395036
+  },
+  "original_prior_hessian_constructed": false,
+  "prior_evaluation": "same model.reg.evaluate values and gradients; unused dense Hessian omitted",
+  "novelty": "no originality assertion; block absorption and mature CIE are known",
+  "block_cost_semantics": "each NumPy batched solve refactors all144 4x4 systems; every factor, solve, RHS counted",
+  "threads": [],
+  "process_import_and_serialization_included": true,
+  "gradient_check": {
+    "status": "PASS",
+    "truth_access": "NONE",
+    "directions": 1,
+    "physical_model_cost": {},
+    "finite_difference_points": 2,
+    "scope": "new block-material derivative wiring only; no identity suite",
+    "value": 0.002391054089763657,
+    "beta": 0.2,
+    "h": 1e-06,
+    "analytic_directional": 5.595475704321586e-05,
+    "finite_difference_directional": 5.5954755585896354e-05,
+    "relative_error": 2.6044604339879913e-08,
+    "tolerance": 1e-06,
+    "wall_seconds": 0.007975250016897917,
+    "cpu_seconds": 0.00589099999999998,
+    "operation_counts": {
+      "block_Green_submatrices_extracted": 144,
+      "block_Green_entries_stored": 2304,
+      "G_columns": 12,
+      "block_matrix_4x4_builds": 432,
+      "small4x4_batch_solve_calls": 6,
+      "small4x4_factorizations": 864,
+      "small4x4_solves": 864,
+      "small4x4_complex_RHS": 10368,
+      "small4x4_forward_solves": 432,
+      "small4x4_adjoint_solves": 432,
+      "small4x4_matvec_RHS": 5184,
+      "material_inner_evaluations": 3,
+      "material_prior_evaluations": 3,
+      "source_metric_products": 3
+    }
+  },
+  "selection": "original Phi with original prior; initial+auxiliary best+corrector",
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "auxiliary_selected_original_Phi": 0.0007066885666717203,
+  "auxiliary_candidate_scores": [
+    {
+      "objective": 0.5235232721607634,
+      "relative_residual": 1.023252922947952
+    },
+    {
+      "objective": 0.2645905236382216,
+      "relative_residual": 0.7274424394341035
+    },
+    {
+      "objective": 0.03031261083757528,
+      "relative_residual": 0.2462060852118295
+    },
+    {
+      "objective": 0.0007066885666717203,
+      "relative_residual": 0.03743748326011436
+    }
+  ],
+  "physical_objective": 6.506278834683092e-06,
+  "physical_relative_residual": 0.0009670144344941587,
+  "physical_whitened_residual": 23.208405201480648,
+  "linear_relative_residual": 1.937912756993874e-15,
+  "material_min": 0.02,
+  "material_max": 12.57297653609942,
+  "corrector_stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+  "corrector_iterations": 1000,
+  "auxiliary_operation_counts": {
+    "block_Green_submatrices_extracted": 144,
+    "block_Green_entries_stored": 2304,
+    "source_metric_Cholesky": 2,
+    "physical_validations": 4,
+    "receiver_SVD": 1,
+    "G_columns": 592,
+    "S_columns": 592,
+    "APCS_SVD": 3,
+    "Fourier_columns_generated": 580,
+    "IDFT_columns_explicit": 580,
+    "DPCS_projection_columns": 580,
+    "block_matrix_4x4_builds": 9495360,
+    "small4x4_batch_solve_calls": 127380,
+    "small4x4_factorizations": 18342720,
+    "small4x4_solves": 18342720,
+    "small4x4_complex_RHS": 261872640,
+    "small4x4_forward_solves": 9495360,
+    "block_current_operator_builds": 1500,
+    "current_objective_evaluations": 1500,
+    "source_metric_products": 80940,
+    "current_gradient_evaluations": 1500,
+    "material_readouts": 1500,
+    "small4x4_adjoint_solves": 8847360,
+    "small4x4_matvec_RHS": 106168320,
+    "material_inner_evaluations": 61440,
+    "material_prior_evaluations": 61440,
+    "material_inner_LBFGS_iterations": 53467,
+    "material_inner_LBFGS_evaluations": 56940,
+    "material_inner_fallbacks": 0,
+    "material_readout_source_whitening_products": 3000,
+    "PR_CG_steps": 1500,
+    "reduced_operator_columns": 108000,
+    "wall_seconds": 43.24632320785895
+  },
+  "prediction": "results/block_absorption/prediction.npz",
+  "saved_R2_global": {
+    "path": "research/research_max_struct_r2/results/blind/obs_b20d5a55677d4eca/global/RECEIPT.json",
+    "auxiliary_original_Phi": 0.01126944242400162,
+    "final_original_Phi": 0.005833483847091274,
+    "final_relative_residual": 0.10783060692363204,
+    "physical_model_cost": {
+      "cached_operator_imports": 1,
+      "FULL_FORWARD": 689,
+      "actual_complex_RHS": 16452,
+      "LU": 689,
+      "source_RHS": 8268,
+      "full_factorization_dimension": 396864,
+      "DATA_ADJOINT": 682,
+      "adjoint_RHS": 8184
+    },
+    "wall_seconds": 9.22095058299601,
+    "cpu_seconds": 9.109286,
+    "comparability": "same auxiliary schedule/initialization/prior; historical unscaled corrector differs from this R4 scaled corrector; no equal-compute assertion"
+  },
+  "final_parameter_selection": "NONE; one configured block size/alignment, one case, one run",
+  "wall_seconds": 59.423726708162576,
+  "cpu_seconds": 56.562409,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1033,
+    "actual_complex_RHS": 24708,
+    "LU": 1033,
+    "source_RHS": 12396,
+    "full_factorization_dimension": 595008,
+    "DATA_ADJOINT": 1026,
+    "adjoint_RHS": 12312
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 13.07174207502976,
+    "DATA_ADJOINT": 0.9801021609455347
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 12.629306999999923,
+    "DATA_ADJOINT": 0.9415170000000543
+  },
+  "finished_utc": "2026-11-03T04:40:21.692934+00:00",
+  "cost_scope": "startup/imports/public load/one wiring check/full1500 updates/physical ranking/corrector/artifact writes; final receipt write excluded",
+  "historical_operator_assembly": "not rerun; public frozen operator load only"
+}

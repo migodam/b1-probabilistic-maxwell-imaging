@@ -1,0 +1,241 @@
+{
+  "status": "SEALED_DISCLOSED_DEVELOPMENT_PREDICTION",
+  "classification": "DISCLOSED_DEVELOPMENT_GRID_DIAGNOSTIC",
+  "method": "global",
+  "truth_access": "NONE_TO_INVERSION",
+  "configuration": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "corrector_maxiter": 1000,
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "sourcewise_cg": false
+  },
+  "failed_attempts": [],
+  "scientific_wallcap": null,
+  "operator_assembly": "Generator cost separately recorded, public G/E0/S loaded here",
+  "rhs_semantics": "physical source/adjoint RHS separate from onehop small-block matrix RHS/scalar divisions",
+  "setup": {
+    "wall_seconds": 0.008288540877401829,
+    "cpu_seconds": 0.008233000000000046,
+    "physical_cost": {
+      "cached_operator_imports": 1
+    }
+  },
+  "auxiliary": {
+    "status": "SCHEDULE_COMPLETE",
+    "wall_seconds": 15.090192707721144,
+    "cpu_seconds": 14.40733,
+    "operation_counts": {
+      "source_metric_Cholesky": 2,
+      "physical_validations": 4,
+      "receiver_SVD": 1,
+      "G_columns": 592,
+      "S_columns": 592,
+      "APCS_SVD": 3,
+      "Fourier_columns_generated": 580,
+      "IDFT_columns_explicit": 580,
+      "DPCS_projection_columns": 580,
+      "current_objective_evaluations": 1500,
+      "source_metric_products": 19500,
+      "current_gradient_evaluations": 1500,
+      "material_readouts": 1500,
+      "material_inner_evaluations": 7469,
+      "material_readout_source_whitening_products": 3000,
+      "PR_CG_steps": 1500,
+      "reduced_operator_columns": 108000,
+      "wall_seconds": 15.090061540715396,
+      "model": {
+        "full_factorization_dimension": 3072,
+        "cached_operator_imports": 0,
+        "FULL_FORWARD": 3,
+        "actual_complex_RHS": 36,
+        "source_RHS": 36,
+        "LU": 3
+      },
+      "cpu_seconds": 14.407302
+    },
+    "execution_receipt": {
+      "status": "COMPLETED",
+      "sourcewise_cg": false,
+      "current_solver": "pr",
+      "FFT": 0,
+      "physical_backend": "unchanged supplied MaxwellModel",
+      "prior": "unchanged supplied regularizer on physical real material",
+      "timer_scope": "solver preparation/current/readout/physical validation; excludes parent geometry/data and output serialization",
+      "wall_seconds": 15.090164333116263,
+      "cpu_seconds": 14.407302,
+      "operation_counts": {
+        "source_metric_Cholesky": 2,
+        "physical_validations": 4,
+        "receiver_SVD": 1,
+        "G_columns": 592,
+        "S_columns": 592,
+        "APCS_SVD": 3,
+        "Fourier_columns_generated": 580,
+        "IDFT_columns_explicit": 580,
+        "DPCS_projection_columns": 580,
+        "current_objective_evaluations": 1500,
+        "source_metric_products": 19500,
+        "current_gradient_evaluations": 1500,
+        "material_readouts": 1500,
+        "material_inner_evaluations": 7469,
+        "material_readout_source_whitening_products": 3000,
+        "PR_CG_steps": 1500,
+        "reduced_operator_columns": 108000,
+        "wall_seconds": 15.090061540715396
+      },
+      "physical_model_delta": {
+        "full_factorization_dimension": 3072,
+        "cached_operator_imports": 0,
+        "FULL_FORWARD": 3,
+        "actual_complex_RHS": 36,
+        "source_RHS": 36,
+        "LU": 3
+      },
+      "physical_LU": 3,
+      "physical_complex_RHS": 36
+    },
+    "physical_cost": {
+      "FULL_FORWARD": 3,
+      "actual_complex_RHS": 36,
+      "LU": 3,
+      "source_RHS": 36,
+      "full_factorization_dimension": 3072
+    },
+    "stage_history": [
+      {
+        "stage": 0,
+        "event": "stage_end",
+        "status": "MAXITER",
+        "mf": 3,
+        "fourier_columns": 36,
+        "apcs_rank": 36,
+        "beta_current": 1.0,
+        "beta_material": 1.0,
+        "wall": 3.2849747077561915
+      },
+      {
+        "stage": 1,
+        "event": "stage_end",
+        "status": "MAXITER",
+        "mf": 6,
+        "fourier_columns": 144,
+        "apcs_rank": 144,
+        "beta_current": 1.0,
+        "beta_material": 0.2,
+        "wall": 7.837975915987045
+      },
+      {
+        "stage": 2,
+        "event": "stage_end",
+        "status": "MAXITER",
+        "mf": 10,
+        "fourier_columns": 400,
+        "apcs_rank": 400,
+        "beta_current": 1.0,
+        "beta_material": 0.2,
+        "wall": 15.090043915901333
+      }
+    ]
+  },
+  "candidate_scores": [
+    {
+      "objective": 0.524042829559037,
+      "relative_residual": 1.0237605477444782
+    },
+    {
+      "objective": 0.2927636009982801,
+      "relative_residual": 0.7651932903110661
+    },
+    {
+      "objective": 0.03700280020790418,
+      "relative_residual": 0.2720296004324006
+    },
+    {
+      "objective": 0.001299208787535967,
+      "relative_residual": 0.0508930765075582
+    }
+  ],
+  "corrector": {
+    "stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+    "iterations": 1000,
+    "evaluations": 1020,
+    "cost": {
+      "FULL_FORWARD": 1019,
+      "actual_complex_RHS": 24468,
+      "LU": 1019,
+      "source_RHS": 12228,
+      "full_factorization_dimension": 1043456,
+      "DATA_ADJOINT": 1020,
+      "adjoint_RHS": 12240
+    },
+    "wall_seconds": 77.25183466635644,
+    "cpu_seconds": 75.54637,
+    "physical_cost": {
+      "FULL_FORWARD": 1019,
+      "actual_complex_RHS": 24468,
+      "LU": 1019,
+      "source_RHS": 12228,
+      "full_factorization_dimension": 1043456,
+      "DATA_ADJOINT": 1020,
+      "adjoint_RHS": 12240
+    }
+  },
+  "physical_objective": 4.882383441822608e-06,
+  "physical_relative_residual": 0.000970503353810108,
+  "physical_whitened_residual": 23.292216112184825,
+  "noise_radius99": 25.16542219663291,
+  "linear_relative_residual": 2.6116915570429977e-15,
+  "selection": "Original normalized Phi plus historical prior, host and true3stage endpoints then one common refine1000; retain incumbent",
+  "wall_seconds": 92.72542712511495,
+  "cpu_seconds": 90.334825,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1027,
+    "actual_complex_RHS": 24564,
+    "LU": 1027,
+    "source_RHS": 12324,
+    "full_factorization_dimension": 1051648,
+    "DATA_ADJOINT": 1020,
+    "adjoint_RHS": 12240
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 71.13894949527457,
+    "DATA_ADJOINT": 2.813760979566723
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 69.550724,
+    "DATA_ADJOINT": 2.7524539999999327
+  },
+  "cost_scope": "adapter setup/initial/auxiliary/ranking/corrector/final state; caller must charge public read/output; imports excluded and not claimed free",
+  "caller_wall_seconds": 92.77116754092276,
+  "caller_cpu_seconds": 90.37765900000001,
+  "caller_scope": "public load/solve/output serialization; imports and receipt own write excluded"
+}

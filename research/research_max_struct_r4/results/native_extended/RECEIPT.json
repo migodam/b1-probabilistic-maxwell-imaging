@@ -1,0 +1,237 @@
+{
+  "status": "SEALED_DEVELOPMENT_PREDICTION",
+  "configuration": {
+    "status": "DEV_FROZEN_BEFORE_RUN",
+    "case_id": "obs_b20d5a55677d4eca",
+    "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+    "method": "unchanged mature sourcewise native CIE with extra Fourier capacity and iterations",
+    "control_type": "one ordinary-more-mode-and-budget control; no parameter sweep",
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 12,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 6500
+      }
+    ],
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "sourcewise_cg": true,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+    "source_metric_policy": "fixed original paper source normalizations",
+    "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+    "corrector_maxiter": 1000,
+    "selection": "original Phi including historical prior; host and all four stage endpoints; one selected-seed common corrector",
+    "checkpoint_every": 500,
+    "checkpoint_policy": "save material/current/field and cost at every 500 updates; only true stage endpoints enter physical candidate selection",
+    "device": "CPU",
+    "threads": 1,
+    "truth_access": "NONE",
+    "parameter_tuning": false,
+    "originality_assertion": false,
+    "equal_compute_assertion": false
+  },
+  "truth_access": "NONE",
+  "startup": {
+    "status": "IMPORTED",
+    "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+    "argv": [
+      "research/research_max_struct_r4/experiments/native_extended.py"
+    ],
+    "started_utc": "2026-11-03T04:48:17.345748+00:00",
+    "truth_access": "NONE",
+    "wall_seconds": 0.6166292079724371,
+    "cpu_seconds": 0.42112
+  },
+  "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+  "failed_attempts": [],
+  "original_source": "research/research_fbg_r3_experiments/src/cie_tsom_baseline.py",
+  "prior_evaluation": "same reg.evaluate values/gradients; unused dense IRLS matrix omitted",
+  "numerical_source_modified": false,
+  "threads": [],
+  "derivative_check": "NOT_NEEDED: unchanged known algorithm, no new derivative",
+  "cost_scope": "startup/import/public load/full auxiliary/physical stage validations/common corrector/prediction/artifact writes; no operator assembly",
+  "equal_compute_assertion": false,
+  "auxiliary_cpu_seconds": 55.847282,
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "auxiliary_cost": {
+    "physical_validations": 5,
+    "receiver_SVD": 1,
+    "G_columns": 1168,
+    "S_columns": 1168,
+    "APCS_SVD": 4,
+    "Fourier_columns_generated": 1156,
+    "IDFT_columns_explicit": 1156,
+    "DPCS_projection_columns": 1156,
+    "material_readouts": 8000,
+    "material_inner_evaluations": 40000,
+    "PR_CG_steps": 8000,
+    "reduced_operator_columns": 576000,
+    "wall_seconds": 59.806890207808465,
+    "model": {
+      "source_RHS": 60,
+      "LU": 5,
+      "FULL_FORWARD": 5,
+      "cached_operator_imports": 0,
+      "actual_complex_RHS": 60,
+      "full_factorization_dimension": 2880
+    }
+  },
+  "auxiliary_selected_stage": 3,
+  "auxiliary_selected_original_Phi": 0.01770791786712384,
+  "auxiliary_candidate_scores": [
+    {
+      "stage": -1,
+      "reason": "initial_incumbent",
+      "physical_nll": 0.5235232721607638,
+      "objective": 0.5235232721607638,
+      "physical_relative_residual": 1.023252922947952
+    },
+    {
+      "stage": 0,
+      "reason": "MAXITER",
+      "physical_nll": 0.2677303101826511,
+      "objective": 0.26773453483617277,
+      "physical_relative_residual": 0.7317517477705826
+    },
+    {
+      "stage": 1,
+      "reason": "MAXITER",
+      "physical_nll": 0.17516716821144118,
+      "objective": 0.17517465092848003,
+      "physical_relative_residual": 0.5918904767124423
+    },
+    {
+      "stage": 2,
+      "reason": "MAXITER",
+      "physical_nll": 0.08641802240579788,
+      "objective": 0.08642756655055887,
+      "physical_relative_residual": 0.41573554672603563
+    },
+    {
+      "stage": 3,
+      "reason": "MAXITER",
+      "physical_nll": 0.01768642857797232,
+      "objective": 0.01770791786712384,
+      "physical_relative_residual": 0.18807673209609058
+    }
+  ],
+  "physical_objective": 0.004798223704529408,
+  "physical_relative_residual": 0.09770655893610716,
+  "physical_whitened_residual": 2344.9633529179987,
+  "noise_radius99": 25.16542219663291,
+  "physical_linear_residual": 2.4630783029474625e-15,
+  "projected_gradient_inf": 5.492388517325253e-07,
+  "material_min": 0.02,
+  "material_max": 20.0,
+  "corrector_stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+  "corrector_iterations": 1000,
+  "actual_auxiliary_iterations": 8000,
+  "stages": [
+    {
+      "stage": 0,
+      "iterations": 500,
+      "mf": 3,
+      "fourier_columns": 36,
+      "apcs_rank": 36,
+      "source_mode_iterations": 216000,
+      "material_inner_iterations": 500
+    },
+    {
+      "stage": 1,
+      "iterations": 500,
+      "mf": 6,
+      "fourier_columns": 144,
+      "apcs_rank": 144,
+      "source_mode_iterations": 864000,
+      "material_inner_iterations": 500
+    },
+    {
+      "stage": 2,
+      "iterations": 500,
+      "mf": 10,
+      "fourier_columns": 400,
+      "apcs_rank": 400,
+      "source_mode_iterations": 2400000,
+      "material_inner_iterations": 500
+    },
+    {
+      "stage": 3,
+      "iterations": 6500,
+      "mf": 12,
+      "fourier_columns": 576,
+      "apcs_rank": 559,
+      "source_mode_iterations": 44928000,
+      "material_inner_iterations": 6500
+    }
+  ],
+  "source_mode_iterations": 48408000,
+  "source_mode_iterations_definition": "sum over completed updates of ns times native Fourier coefficient columns; work proxy, not elapsed-time equivalence or FLOPs",
+  "dense_current_core_complex_multiply_add_estimate": 148709376000,
+  "dense_current_core_estimate_scope": "nine per-update coefficient matrix products including two current reconstructions and repeated receiver residual in history; excludes setup, elementwise work, material inner work, SVD, validation and corrector",
+  "prediction": "results/native_extended/prediction.npz",
+  "wall_seconds": 73.59418037487194,
+  "cpu_seconds": 68.743973,
+  "observed_readouts": 8000,
+  "observed_source_mode_iterations": 48408000,
+  "native_cost_last_observed": {
+    "physical_validations": 5,
+    "receiver_SVD": 1,
+    "G_columns": 1168,
+    "S_columns": 1168,
+    "APCS_SVD": 4,
+    "Fourier_columns_generated": 1156,
+    "IDFT_columns_explicit": 1156,
+    "DPCS_projection_columns": 1156,
+    "material_readouts": 8000,
+    "material_inner_evaluations": 40000,
+    "PR_CG_steps": 8000,
+    "reduced_operator_columns": 576000,
+    "wall_seconds": 59.806890207808465
+  },
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1015,
+    "actual_complex_RHS": 24324,
+    "LU": 1015,
+    "source_RHS": 12180,
+    "full_factorization_dimension": 584640,
+    "DATA_ADJOINT": 1012,
+    "adjoint_RHS": 12144
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 10.907183074392378,
+    "DATA_ADJOINT": 0.7557032951153815
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 10.358388000000023,
+    "DATA_ADJOINT": 0.7259589999998539
+  },
+  "finished_utc": "2026-11-03T04:49:30.940769+00:00"
+}

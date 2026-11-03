@@ -1,0 +1,57 @@
+{
+  "status": "DEV_FROZEN_BEFORE_RUN",
+  "case_id": "obs_b20d5a55677d4eca",
+  "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+  "method": "self-only absorption control of mature global PR CIE",
+  "block_shape": [
+    1,
+    1
+  ],
+  "block_alignment": "one independent scalar self term per cell",
+  "block_Green": "actual Green diagonal; no intercell Green coupling in Gin",
+  "stages": [
+    {
+      "mf": 3,
+      "beta": 1.0,
+      "maxiter": 500
+    },
+    {
+      "mf": 6,
+      "beta_material": 0.2,
+      "beta_current": 1.0,
+      "maxiter": 500
+    },
+    {
+      "mf": 10,
+      "beta_material": 0.2,
+      "beta_current": 1.0,
+      "maxiter": 500
+    }
+  ],
+  "host": 0.1,
+  "material_box": [
+    0.02,
+    20.0
+  ],
+  "dpcs_rtol": 0.001,
+  "coefficient_tol": 0.0,
+  "miniter": 50,
+  "material_inner_maxiter": 60,
+  "material_inner_ftol": 1e-12,
+  "material_inner_gtol": 1e-08,
+  "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+  "source_metric_policy": "fixed original paper source normalizations",
+  "material_seed": "unchanged mature shared-real scalar CIE seed, then same generic exact absorbed loss with maxiter60",
+  "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+  "corrector_maxiter": 1000,
+  "selection": "same original Phi including prior; retain host incumbent",
+  "gradient_check": "NOT_RERUN: same exact generic material gradient; only Gin mode and diagonal application change",
+  "device": "CPU",
+  "threads": 1,
+  "truth_access": "NONE",
+  "parameter_tuning": false,
+  "originality_assertion": false,
+  "gin_mode": "self",
+  "control_purpose": "isolate whether self term suffices versus intercell 2x2 block absorption",
+  "self_exact_rational_readout": "NOT_IMPLEMENTED; preserve identical readout to isolate Gin"
+}

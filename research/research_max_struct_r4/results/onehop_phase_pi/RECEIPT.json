@@ -1,0 +1,269 @@
+{
+  "status": "SEALED_DEVELOPMENT_PREDICTION",
+  "run_id": "onehop_phase_pi",
+  "configuration": {
+    "status": "DEV_FROZEN_BEFORE_RUN",
+    "case_id": "obs_b20d5a55677d4eca",
+    "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+    "method": "single pi-phase control of onehop auxiliary offdiagonal Green in mature global PR CIE",
+    "block_shape": [
+      2,
+      2
+    ],
+    "block_alignment": "disjoint row-major spatial blocks from upper-left array corner",
+    "block_Green": "negative of actual offdiagonal Green inside fixed disjoint four-cell blocks; unchanged actual self diagonal; physical model.G unchanged",
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+    "source_metric_policy": "fixed original paper source normalizations",
+    "material_seed": "mature shared-real scalar CIE readout; compare seed and previous by exact onehop loss+prior",
+    "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+    "corrector_maxiter": 1000,
+    "selection": "same original Phi including prior; retain host incumbent",
+    "gradient_check": "NOT_RERUN: only fixed auxiliary Goff sign data changed; generic exact material derivative unchanged",
+    "device": "CPU",
+    "threads": 1,
+    "truth_access": "NONE",
+    "parameter_tuning": false,
+    "originality_assertion": false,
+    "cache_material_value_gradient": true,
+    "material_value_gradient_cache": "two exact repeated material points within one fixed-J/Q readout only",
+    "control_purpose": "single mechanism control for physical offdiagonal phase versus magnitudes or generic coupling; no change to confirmed algorithm regardless of result",
+    "residual": "R_pi=(I-L)u, L=diag(a)Goff_original; implemented with auxiliary Goff=-Goff_original",
+    "operation_accounting": "count actual scalar complex divisions and forward/adjoint four-cell matrix RHS; no fictitious small LU",
+    "whole_box_bound": "analytic bound for beta0.2 and1 before optimizer, over [.02,20], no GT",
+    "source_snapshot": "results/onehop_phase_pi/executed_source_snapshot",
+    "phase_pi": 3.141592653589793,
+    "auxiliary_Goff_multiplier": -1,
+    "invariant_features": [
+      "abs(Goff)",
+      "fixed graph topology",
+      "diagonal self absorption and metric",
+      "analytic wholebox invertibility bound",
+      "arithmetic forms and counts per current/material evaluation"
+    ],
+    "operation_count_scope": "same arithmetic per evaluation, plus one disclosed setup sign change; optimizer trajectory and total evaluations may differ"
+  },
+  "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+  "truth_access": "NONE",
+  "source": "experiments/onehop_phase_pi.py",
+  "original_source": "research/research_max_struct_r2/src/cie_global.py",
+  "failed_attempts": [],
+  "startup": {
+    "status": "IMPORTED",
+    "started_utc": "2026-11-03T05:07:02.718783+00:00",
+    "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+    "argv": [
+      "research/research_max_struct_r4/experiments/onehop_phase_pi.py"
+    ],
+    "truth_access": "NONE",
+    "wall_seconds": 0.39795970916748047,
+    "cpu_seconds": 0.39057200000000003
+  },
+  "original_prior_hessian_constructed": false,
+  "prior_evaluation": "same model.reg.evaluate values and gradients; unused dense Hessian omitted",
+  "novelty": "no originality assertion; single auxiliary phase-sign mechanism control",
+  "phase_control": {
+    "auxiliary_Goff_multiplier": -1,
+    "physical_G_unchanged": true,
+    "residual": "R_pi=(I-L)u; L=diag(a)Goff_original",
+    "interpretation": "same abs(Goff), graph, diagonal metric, whole-box sufficient bound and arithmetic per evaluation; only the real cross term changes sign",
+    "cost_scope": "same operation forms per evaluation; optimizer trajectory and total evaluation counts may differ"
+  },
+  "block_cost_semantics": "actual scalar divisions and block forward/adjoint RHS; zero small LU/inverse",
+  "threads": [],
+  "process_import_and_serialization_included": true,
+  "whole_box_bound": [
+    {
+      "beta": 0.2,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.16809971545079827,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0036431800261698,
+      "max_ratio": 4.303397033771491,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j!=i_in_block abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    },
+    {
+      "beta": 1.0,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "bound_inf": 0.03784328908973763,
+      "sufficient_invertibility_condition": true,
+      "diagonal_denominator_min_abs": 1.0196431797115961,
+      "max_ratio": 0.9687981777970379,
+      "max_offdiagonal_row_sum": 0.03906209771759682,
+      "maximizing_row": 50,
+      "interior_critical_cells": 0,
+      "formula": "max_i(max_m_in_box m/abs(1+(beta-Gii)*m) * sum_j!=i_in_block abs(Gij))",
+      "candidate_rule": "box endpoints plus m=-1/Re(beta-Gii) when legal; analytic, no GT",
+      "scope": "Bound<1 suffices for invertibility of I+diag(a)Goff; bound>=1 would be inconclusive, not a failure proof"
+    }
+  ],
+  "bound_setup_operation_counts": {
+    "block_Green_submatrices_extracted": 144,
+    "block_offdiagonal_nonzero_slots": 1728,
+    "self_Green_diagonal_entries_extracted": 576,
+    "phase_pi_setup_complex_sign_changes": 2304
+  },
+  "gradient_check": {
+    "status": "NOT_RERUN",
+    "reason": "only fixed auxiliary Goff signs changed; same generic exact material derivative",
+    "original_check": "results/onehop_absorption/GRADIENT_WIRING.json",
+    "extra_directions": 0,
+    "physical_model_cost": {}
+  },
+  "selection": "original Phi with original prior; initial+auxiliary best+corrector",
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "auxiliary_selected_original_Phi": 0.03646777480851617,
+  "auxiliary_candidate_scores": [
+    {
+      "objective": 0.5235232721607634,
+      "relative_residual": 1.023252922947952
+    },
+    {
+      "objective": 0.27857106822322925,
+      "relative_residual": 0.7464135127732671
+    },
+    {
+      "objective": 0.0717041793196747,
+      "relative_residual": 0.37868051191565644
+    },
+    {
+      "objective": 0.03646777480851617,
+      "relative_residual": 0.27003239565027715
+    }
+  ],
+  "physical_objective": 0.0047970567288634506,
+  "physical_relative_residual": 0.09769295341235647,
+  "physical_whitened_residual": 2344.63681952106,
+  "linear_relative_residual": 2.2978306221354516e-15,
+  "material_min": 0.02,
+  "material_max": 20.0,
+  "corrector_stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+  "corrector_iterations": 1000,
+  "auxiliary_operation_counts": {
+    "block_Green_submatrices_extracted": 144,
+    "block_offdiagonal_nonzero_slots": 1728,
+    "self_Green_diagonal_entries_extracted": 576,
+    "phase_pi_setup_complex_sign_changes": 2304,
+    "source_metric_Cholesky": 2,
+    "physical_validations": 4,
+    "receiver_SVD": 1,
+    "G_columns": 592,
+    "S_columns": 592,
+    "APCS_SVD": 3,
+    "Fourier_columns_generated": 580,
+    "IDFT_columns_explicit": 580,
+    "DPCS_projection_columns": 580,
+    "onehop_parameter_builds": 88467,
+    "scalar_complex_divisions": 1458225792,
+    "onehop_a_scalar_divisions": 50956992,
+    "onehop_u_scalar_divisions": 778523904,
+    "onehop_block_matrix_apply_calls": 172434,
+    "onehop_block_matrix_apply_blocks": 24830496,
+    "onehop_block_matrix_complex_RHS": 339725952,
+    "onehop_forward_block_RHS": 194630976,
+    "onehop_current_operator_builds": 1500,
+    "current_objective_evaluations": 1500,
+    "source_metric_products": 103467,
+    "current_gradient_evaluations": 1500,
+    "material_readouts": 1500,
+    "material_value_gradient_requests": 86967,
+    "material_value_gradient_cache_misses": 83967,
+    "onehop_adjoint_block_RHS": 145094976,
+    "onehop_du_scalar_divisions": 580379904,
+    "onehop_da_scalar_divisions": 48364992,
+    "material_inner_evaluations": 83967,
+    "material_prior_evaluations": 83967,
+    "material_value_gradient_cache_hits": 3000,
+    "material_inner_LBFGS_iterations": 77901,
+    "material_inner_LBFGS_evaluations": 82467,
+    "material_inner_fallbacks": 0,
+    "material_readout_source_whitening_products": 3000,
+    "PR_CG_steps": 1500,
+    "reduced_operator_columns": 108000,
+    "wall_seconds": 56.020269125234336
+  },
+  "prediction": "results/onehop_phase_pi/prediction.npz",
+  "saved_R2_global": {
+    "path": "research/research_max_struct_r2/results/blind/obs_b20d5a55677d4eca/global/RECEIPT.json",
+    "auxiliary_original_Phi": 0.01126944242400162,
+    "final_original_Phi": 0.005833483847091274,
+    "final_relative_residual": 0.10783060692363204,
+    "physical_model_cost": {
+      "cached_operator_imports": 1,
+      "FULL_FORWARD": 689,
+      "actual_complex_RHS": 16452,
+      "LU": 689,
+      "source_RHS": 8268,
+      "full_factorization_dimension": 396864,
+      "DATA_ADJOINT": 682,
+      "adjoint_RHS": 8184
+    },
+    "wall_seconds": 9.22095058299601,
+    "cpu_seconds": 9.109286,
+    "comparability": "same auxiliary schedule/initialization/prior; historical unscaled corrector differs from this R4 scaled corrector; no equal-compute assertion"
+  },
+  "final_parameter_selection": "NONE; one fixed auxiliary pi-phase sign control, one disclosed development case, one run",
+  "wall_seconds": 74.45565224997699,
+  "cpu_seconds": 72.919217,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1019,
+    "actual_complex_RHS": 24372,
+    "LU": 1019,
+    "source_RHS": 12228,
+    "full_factorization_dimension": 586944,
+    "DATA_ADJOINT": 1012,
+    "adjoint_RHS": 12144
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 15.400060852058232,
+    "DATA_ADJOINT": 1.2063553221523762
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 15.17769599999983,
+    "DATA_ADJOINT": 1.1886609999999465
+  },
+  "finished_utc": "2026-11-03T05:08:17.171414+00:00",
+  "cost_scope": "startup/imports/public load/analytic bound/full1500 updates/physical ranking/corrector/artifact writes; no derivative test rerun; final receipt write excluded",
+  "historical_operator_assembly": "not rerun; public frozen operator load only"
+}

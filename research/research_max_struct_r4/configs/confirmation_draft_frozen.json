@@ -1,0 +1,218 @@
+{
+  "status": "DRAFT_FROZEN_BEFORE_GENERATION",
+  "algorithm_finalized": false,
+  "generation_authorized": false,
+  "execution_authorized": false,
+  "freeze_note": "Parent must finalize selected onehop source/protocol after development review, set algorithm_finalized=true and status=FROZEN_BEFORE_GENERATION before generating. Preserve this draft as an audit artifact.",
+  "case_count": 6,
+  "private_shape_families": [
+    "ring",
+    "ring",
+    "curved_bar",
+    "curved_bar",
+    "two_islands",
+    "two_islands"
+  ],
+  "generator": "reuse unchanged R3 shape_alpha; independent secrets.randbits(128) per object; independent CN noise and uuid4 opaque ID",
+  "operator_source": "research/research_z_alg_r3_digits/public_data/operators.npz",
+  "shape": [
+    24,
+    24
+  ],
+  "acquisition": {
+    "sources": 12,
+    "receivers": 48
+  },
+  "material": {
+    "host": 0.1,
+    "amplitude": 12.0,
+    "box": [
+      0.02,
+      20.0
+    ]
+  },
+  "noise": {
+    "relative_complex_amplitude": 0.001,
+    "real_imag_variance": "sigma^2/2",
+    "radius_confidence": 0.99,
+    "sigma": "1e-3*norm(Yclean)/sqrt(M)"
+  },
+  "prior": {
+    "smooth_weight": 0.0001,
+    "tv_weight": 0.0001,
+    "tv_epsilon": 0.01,
+    "prior_width": 19.5
+  },
+  "selection": "Original normalized physical Phi with unchanged prior; host plus true stage endpoints; one selected-seed R4 refine1000; retain host/seed/refined incumbent",
+  "methods": {
+    "block4_cached": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "corrector_maxiter": 1000,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false,
+      "gin_mode": "block4",
+      "block_solver": "cached_inverse",
+      "cache_material_value_gradient": true
+    },
+    "global": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "corrector_maxiter": 1000,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false
+    },
+    "native_extended": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "corrector_maxiter": 1000,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 12,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 6500
+        }
+      ],
+      "sourcewise_cg": true
+    },
+    "onehop": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "corrector_maxiter": 1000,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false,
+      "cache_material_value_gradient": true
+    }
+  },
+  "scientific_wallcap": null,
+  "emergency_process_timeout_s": 900,
+  "backend": "cpu",
+  "workers": 4,
+  "threads_per_worker": 1,
+  "remote_root": "D:/AI/MAX_STRUCT_R4_20261103",
+  "truth_policy": "No truth/alpha/mask/Yclean/noise realization/family/seed in inverse payload. Open private mapping only after all18 prediction dispositions sealed and parent authorizes scoring.",
+  "budget_policy": "onehop/global1500 auxiliary updates; native_extended8000; same corrector1000; no equal-compute claim",
+  "metrics": {
+    "nrmse": "RMSE/12",
+    "iou": "reconstruction-only Otsu256 IoU against private alpha>=.5",
+    "material_gate": 0.15,
+    "iou_gate": 0.7,
+    "data_gate": "residual/sigma <= chi2 99 percent radius"
+  },
+  "primary_methods": [
+    "onehop",
+    "global",
+    "native_extended"
+  ],
+  "compatibility_methods": [
+    "block4_cached"
+  ]
+}
