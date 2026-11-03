@@ -1,0 +1,79 @@
+{
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "freeze_utc": "2026-11-03T11:59:47.453581+00:00",
+  "case_id": "obs_b20d5a55677d4eca",
+  "public_data": "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz",
+  "classification": "DISCLOSED_DEVELOPMENT_CASE_NOT_BLIND",
+  "mechanism_question": "Separate necessity of onehop residual at current and material update positions for this disclosed instance; not beta tuning and no global causal conclusion.",
+  "common": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "sourcewise_cg": false,
+    "cache_material_value_gradient": true
+  },
+  "arms": {
+    "current_only": {
+      "current_transform": "onehop",
+      "material_transform": "scalar"
+    },
+    "material_only": {
+      "current_transform": "scalar",
+      "material_transform": "onehop"
+    }
+  },
+  "reuse_controls": {
+    "global_00": "R5 deterministic replay plus historical original-R4-common-corrector receipt as separately available",
+    "onehop_11": "R5 deterministic replay plus historical R4 onehop_absorption common-corrector"
+  },
+  "corrector_source": "research.research_max_struct_r4.experiments.cooperative_paths.refine",
+  "corrector_maxiter": 1000,
+  "corrector_objective": "original physical Phi times 1e6 inside unchanged optimizer; acceptance/selection on original Phi",
+  "checkpoint_iterations_per_stage": [
+    1,
+    2,
+    10,
+    50,
+    150,
+    300,
+    500
+  ],
+  "seed": null,
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "parameter_tuning": false,
+  "device": "CPU",
+  "threads_per_process": 1,
+  "max_processes": 2,
+  "scientific_wallcap": null,
+  "prior": "Unchanged model.reg value and gradient; no unused dense Hessian",
+  "selection": "Original Phi host + true stage endpoints; original R4 corrector1000 from minimum Phi endpoint; retain incumbent",
+  "cost_policy": "Record all actual costs; no equal-compute or improvement claim from additional operations"
+}

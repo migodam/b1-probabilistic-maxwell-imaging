@@ -1,0 +1,439 @@
+{
+  "status": "FROZEN_BEFORE_REPLAY",
+  "seed": null,
+  "checkpoints_per_stage": [
+    1,
+    2,
+    10,
+    50,
+    150,
+    300,
+    500
+  ],
+  "checkpoint_meaning": "m_before previous callback material (initial host); m_after after readout; J_after_current is auxiliary current, not physical forward current; Q=E+GJ calculated once only at checkpoint",
+  "truth_access": "NONE",
+  "corrector": "NOT_RUN",
+  "scientific_wallcap": null,
+  "threads_per_process": 1,
+  "max_processes": 2,
+  "runs": [
+    {
+      "run_id": "obs_b20d5a55677d4eca__global",
+      "case_id": "obs_b20d5a55677d4eca",
+      "method": "global",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false
+      },
+      "configuration_source": "research/research_max_struct_r2/experiments/run_blind.py:115-117 plus saved global RECEIPT stages/miniter/coefficient_tol; mature readout defaults ftol1e-12/gtol1e-8",
+      "public_files": [
+        "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+      ],
+      "reference": {
+        "kind": "stage_npz",
+        "directory": "research/research_max_struct_r2/results/blind/obs_b20d5a55677d4eca/global"
+      },
+      "implementation_differences": [
+        "Only unnecessary dense prior Hessian construction omitted: model.reg.evaluate(m)[:2] equals original prior value/gradient. Original model.regularizer returned unused Hessian.",
+        "Material inner ftol/gtol made explicit at historical defaults; no numerical tolerance change.",
+        "No parent pre-aux initial metric: unchanged run_cie itself performs initial validation, now charged as one physical LU."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_b20d5a55677d4eca__onehop",
+      "case_id": "obs_b20d5a55677d4eca",
+      "method": "onehop",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false,
+        "cache_material_value_gradient": true
+      },
+      "configuration_source": "research/research_max_struct_r4/results/onehop_absorption/FROZEN_CONFIG.json",
+      "public_files": [
+        "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+      ],
+      "reference": {
+        "kind": "stage_npz",
+        "directory": "research/research_max_struct_r4/results/onehop_absorption"
+      },
+      "implementation_differences": [
+        "No pre-aux bound/gradient wiring/initial metric/corrector/ranking; unchanged run_onehop_cie initial and stage physical validations retained."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_42cb233e4f224bb3__global",
+      "case_id": "obs_42cb233e4f224bb3",
+      "method": "global",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false
+      },
+      "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_42cb233e4f224bb3__global.json result.configuration",
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_42cb233e4f224bb3.npz"
+      ],
+      "reference": {
+        "kind": "candidate_m",
+        "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_42cb233e4f224bb3/global.npz"
+      },
+      "implementation_differences": [
+        "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+        "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_42cb233e4f224bb3__onehop",
+      "case_id": "obs_42cb233e4f224bb3",
+      "method": "onehop",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false,
+        "cache_material_value_gradient": true
+      },
+      "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_42cb233e4f224bb3__onehop.json result.configuration",
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_42cb233e4f224bb3.npz"
+      ],
+      "reference": {
+        "kind": "candidate_m",
+        "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_42cb233e4f224bb3/onehop.npz"
+      },
+      "implementation_differences": [
+        "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+        "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_63abafa750fc483c__global",
+      "case_id": "obs_63abafa750fc483c",
+      "method": "global",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false
+      },
+      "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_63abafa750fc483c__global.json result.configuration",
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_63abafa750fc483c.npz"
+      ],
+      "reference": {
+        "kind": "candidate_m",
+        "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_63abafa750fc483c/global.npz"
+      },
+      "implementation_differences": [
+        "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+        "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_63abafa750fc483c__onehop",
+      "case_id": "obs_63abafa750fc483c",
+      "method": "onehop",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false,
+        "cache_material_value_gradient": true
+      },
+      "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_63abafa750fc483c__onehop.json result.configuration",
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_63abafa750fc483c.npz"
+      ],
+      "reference": {
+        "kind": "candidate_m",
+        "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_63abafa750fc483c/onehop.npz"
+      },
+      "implementation_differences": [
+        "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+        "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_100bd65498644322__global",
+      "case_id": "obs_100bd65498644322",
+      "method": "global",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false
+      },
+      "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_100bd65498644322__global.json result.configuration",
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_100bd65498644322.npz"
+      ],
+      "reference": {
+        "kind": "candidate_m",
+        "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_100bd65498644322/global.npz"
+      },
+      "implementation_differences": [
+        "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+        "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+      ],
+      "seed": null
+    },
+    {
+      "run_id": "obs_100bd65498644322__onehop",
+      "case_id": "obs_100bd65498644322",
+      "method": "onehop",
+      "numerical": {
+        "host": 0.1,
+        "material_box": [
+          0.02,
+          20.0
+        ],
+        "dpcs_rtol": 0.001,
+        "coefficient_tol": 0.0,
+        "miniter": 50,
+        "material_inner_maxiter": 60,
+        "material_inner_ftol": 1e-12,
+        "material_inner_gtol": 1e-08,
+        "stages": [
+          {
+            "mf": 3,
+            "beta": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 6,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          },
+          {
+            "mf": 10,
+            "beta_material": 0.2,
+            "beta_current": 1.0,
+            "maxiter": 500
+          }
+        ],
+        "sourcewise_cg": false,
+        "cache_material_value_gradient": true
+      },
+      "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_100bd65498644322__onehop.json result.configuration",
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_100bd65498644322.npz"
+      ],
+      "reference": {
+        "kind": "candidate_m",
+        "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_100bd65498644322/onehop.npz"
+      },
+      "implementation_differences": [
+        "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+        "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+      ],
+      "seed": null
+    }
+  ]
+}

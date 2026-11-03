@@ -1,0 +1,199 @@
+{
+  "status": "COMPLETED_AUX_ONLY",
+  "run_id": "obs_63abafa750fc483c__global",
+  "configuration": {
+    "run_id": "obs_63abafa750fc483c__global",
+    "case_id": "obs_63abafa750fc483c",
+    "method": "global",
+    "numerical": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false
+    },
+    "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_63abafa750fc483c__global.json result.configuration",
+    "public_files": [
+      "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+      "research/research_max_struct_r4/data_public/confirmation/obs_63abafa750fc483c.npz"
+    ],
+    "reference": {
+      "kind": "candidate_m",
+      "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_63abafa750fc483c/global.npz"
+    },
+    "implementation_differences": [
+      "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+      "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+    ],
+    "seed": null
+  },
+  "started_utc": "2026-11-03T11:50:26.915039+00:00",
+  "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "seed": null,
+  "seed_reason": "Historical inverse solve is deterministic; no random draws; public observations reused unchanged.",
+  "truth_access": "NONE",
+  "corrector": "NOT_RUN",
+  "parameter_tuning": false,
+  "failed_attempts": [],
+  "threads": 1,
+  "device": "CPU",
+  "callbacks": {
+    "callback_calls": 1500,
+    "checkpoints": [
+      "checkpoint_s0_i001.npz",
+      "checkpoint_s0_i002.npz",
+      "checkpoint_s0_i010.npz",
+      "checkpoint_s0_i050.npz",
+      "checkpoint_s0_i150.npz",
+      "checkpoint_s0_i300.npz",
+      "checkpoint_s0_i500.npz",
+      "checkpoint_s1_i001.npz",
+      "checkpoint_s1_i002.npz",
+      "checkpoint_s1_i010.npz",
+      "checkpoint_s1_i050.npz",
+      "checkpoint_s1_i150.npz",
+      "checkpoint_s1_i300.npz",
+      "checkpoint_s1_i500.npz",
+      "checkpoint_s2_i001.npz",
+      "checkpoint_s2_i002.npz",
+      "checkpoint_s2_i010.npz",
+      "checkpoint_s2_i050.npz",
+      "checkpoint_s2_i150.npz",
+      "checkpoint_s2_i300.npz",
+      "checkpoint_s2_i500.npz"
+    ],
+    "callback_wall_seconds": 0.244512009434402,
+    "callback_cpu_seconds": 0.24244999999999806,
+    "callback_save_wall_seconds": 0.23524262383580208,
+    "extra_checkpoint_Green_columns": 252,
+    "extra_checkpoint_Green_calls": 21,
+    "extra_Green_wall_seconds": 0.005260249599814415,
+    "extra_Green_cpu_seconds": 0.005247000000000002,
+    "physical_LU": 0,
+    "physical_complex_RHS": 0,
+    "scope": "Callbacks only; solver-created callback array copies stay in auxiliary time. Q=E+GJ exactly once per frozen checkpoint; no other extra physics."
+  },
+  "threadpools": [],
+  "load_setup_wall_seconds": 0.007095749955624342,
+  "load_setup_cpu_seconds": 0.006838999999999984,
+  "auxiliary_wall_seconds": 4.707003249786794,
+  "auxiliary_cpu_seconds": 4.677604,
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "iterations": 1500,
+  "auxiliary_execution_receipt": {
+    "status": "COMPLETED",
+    "sourcewise_cg": false,
+    "current_solver": "pr",
+    "FFT": 0,
+    "physical_backend": "unchanged supplied MaxwellModel",
+    "prior": "unchanged supplied regularizer on physical real material",
+    "timer_scope": "solver preparation/current/readout/physical validation; excludes parent geometry/data and output serialization",
+    "wall_seconds": 4.706817665603012,
+    "cpu_seconds": 4.677417,
+    "operation_counts": {
+      "source_metric_Cholesky": 2,
+      "physical_validations": 4,
+      "receiver_SVD": 1,
+      "G_columns": 592,
+      "S_columns": 592,
+      "APCS_SVD": 3,
+      "Fourier_columns_generated": 580,
+      "IDFT_columns_explicit": 580,
+      "DPCS_projection_columns": 580,
+      "current_objective_evaluations": 1500,
+      "source_metric_products": 19500,
+      "current_gradient_evaluations": 1500,
+      "material_readouts": 1500,
+      "material_inner_evaluations": 7500,
+      "material_readout_source_whitening_products": 3000,
+      "PR_CG_steps": 1500,
+      "reduced_operator_columns": 108000,
+      "wall_seconds": 4.706770125310868
+    },
+    "physical_model_delta": {
+      "full_factorization_dimension": 2304,
+      "FULL_FORWARD": 4,
+      "actual_complex_RHS": 48,
+      "source_RHS": 48,
+      "cached_operator_imports": 0,
+      "LU": 4
+    },
+    "physical_LU": 4,
+    "physical_complex_RHS": 48
+  },
+  "original_physics_validations": [
+    {
+      "stage": -1,
+      "reason": "initial_incumbent",
+      "physical_nll": 0.5228498471069918,
+      "objective": 0.5228498471069918,
+      "physical_relative_residual": 1.0225945893725352
+    },
+    {
+      "stage": 0,
+      "reason": "MAXITER",
+      "physical_nll": 0.39521632073135626,
+      "objective": 0.3952211787566621,
+      "physical_relative_residual": 0.8890627882566634
+    },
+    {
+      "stage": 1,
+      "reason": "MAXITER",
+      "physical_nll": 0.07288082457758481,
+      "objective": 0.07288710776686007,
+      "physical_relative_residual": 0.38178743975564416
+    },
+    {
+      "stage": 2,
+      "reason": "MAXITER",
+      "physical_nll": 0.03772580123343738,
+      "objective": 0.03773587007520295,
+      "physical_relative_residual": 0.27468455083399707
+    }
+  ],
+  "reference_comparison": "REFERENCE_COMPARISON.json",
+  "finished_utc": "2026-11-03T11:50:31.852236+00:00",
+  "wall_seconds": 4.971818457823247,
+  "cpu_seconds": 4.934156,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 4,
+    "actual_complex_RHS": 48,
+    "LU": 4,
+    "source_RHS": 48,
+    "full_factorization_dimension": 2304
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 0.02162162633612752
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 0.021538000000000446
+  },
+  "cost_scope": "Process imports/load/setup/unchanged aux optimizer+its original initial and stage physical validations/callbacks/output serialization. Final receipt write excluded. No corrector, scoring, truth reads, random draws, or formula tests."
+}

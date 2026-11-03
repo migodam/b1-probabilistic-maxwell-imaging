@@ -1,0 +1,100 @@
+--- original_cie_onehop_wrapper_and_loop
++++ factorial_wrapper_and_loop
+@@ -1,22 +1,14 @@
+-def run_onehop_cie(model,Y,m0,config):
+-    """Localized extension of R2 run_cie; only global PR CIE is enabled.
+-
+-    Same stages/betas/box/prior/DPCS and Fourier masks as mature baseline.
+-    New config data_metric/state_metric accept full fixed Hermitian SPD source
+-    metrics; legacy diagonal data_weights/state_weights still accepted. All
+-    source metrics are held fixed. Scalar seed readout uses mature _readout
+-    after Cholesky source whitening, followed by the exact onehop-loss solve.
+-    Global PR uses Frobenius gradients/ratios;
+-    global stop is ||delta A||F^2/max(||A||F^2,tiny). Unit source rotations
+-    transport Omega to U* Omega U. Do not recompute per-column normalizers.
+-
+-    Only `sourcewise_cg=False`, `current_solver='pr'`, and `method='cie'` are
+-    enabled; dormant inherited branches remain solely for a localized diff.
+-    Optional receipt_path or cost_callback receives execution costs even on
+-    failure; original exception is re-raised with cie_execution_receipt attached.
+-    Parent owns strong-corrector budget and candidate handoff.
++def run_factorial_cie(model,Y,m0,config):
++    """Run one mixed current/material arm with the inherited R4 PR schedule.
++
++    current_transform and material_transform independently select scalar CIE
++    or onehop self+off residuals. Source metrics stay fixed. The scalar arm
++    calls the original R2 material readout and the onehop arm calls the
++    original R4 exact material readout; both retain their original allowances.
+     """
+     cfg=dict(config);counter=Counter();cfg['_counter']=counter
++    if (cfg.get('current_transform'),cfg.get('material_transform')) not in {('onehop','scalar'),('scalar','onehop')}:
++        raise ValueError('Only the two preregistered mixed-position factorial arms are enabled')
+     if cfg.get('method','cie') != 'cie' or cfg.get('sourcewise_cg',False) or cfg.get('current_solver','pr') != 'pr':
+         raise ValueError('This extension is restricted to mature global PR CIE')
+     wall=time.perf_counter();cpu=time.process_time()
+@@ -24,7 +16,8 @@
+     receipt=dict(status='RUNNING',sourcewise_cg=bool(cfg.get('sourcewise_cg',False)),
+                  current_solver=cfg.get('current_solver','pr'),FFT=0,
+                  physical_backend='unchanged supplied MaxwellModel',
+-                 residual='u+diag(a)Goff u; u=beta*(J-diag(m)Q)/d; d=1+(beta-Gii)m; a=m/d',
++                 residual='Separately frozen current/material position transforms',
++                 current_transform=cfg['current_transform'],material_transform=cfg['material_transform'],
+                  gin_mode='onehop_block4', small_solver='elementwise complex division only; no small LU/inverse',
+                  block_geometry='fixed disjoint 2x2 spatial-cell actual Green; zero diagonal in Goff',
+                  cache_material_value_gradient=bool(cfg.get('cache_material_value_gradient',False)),
+@@ -193,11 +186,17 @@
+             if beta_j is None:
+                 H = U-m[:, None]*GU
+                 T = JD-m[:, None]*(E+GJD)
+-            else:
++            elif config['current_transform'] == 'onehop':
+                 packed = np.concatenate((U-m[:,None]*GU, JD-m[:,None]*(E+GJD)),axis=1)
+                 transformed = blocks.apply(m,beta_j,packed)
+                 H, T = transformed[:,:U.shape[1]], transformed[:,U.shape[1]:]
+                 cost['onehop_current_operator_builds'] += 1
++            else:
++                # Original R2 scalar CIE current operator, unchanged algebra.
++                rj = beta_j*m/(1+beta_j*m)
++                H = beta_j*U-rj[:, None]*(GU+beta_j*U)
++                T = beta_j*JD-rj[:, None]*(E+GJD+beta_j*JD)
++                cost['scalar_current_operator_builds'] += 1
+             D, R = SJD-Y+SU@A, T+H@A
+             cost['current_objective_evaluations'] += 1
+             data_before = .5*_inner(D,D,Od,cost)
+@@ -246,22 +245,30 @@
+             data_after_current = .5*_inner(SJD-Y+SU@A,SJD-Y+SU@A,Od,cost)
+             state_after_current = .5*rho*_inner(T+H@A,T+H@A,Os,cost)
+             m_before_readout = m.copy()
+-            m, inner = onehop_material_readout(blocks,J,Q,m,beta_m,Os,Ls,rho,
+-                                               (lo,hi),reg,config,cost)
++            if config['material_transform'] == 'onehop':
++                m, inner = onehop_material_readout(blocks,J,Q,m,beta_m,Os,Ls,rho,
++                                                   (lo,hi),reg,config,cost)
++            else:
++                m, inner = _baseline_readout(J@Ls,Q@Ls,m,beta_m,np.ones(ns),rho,
++                                             (lo,hi),reg,has_reg,config,cost)
+             cost['material_readout_source_whitening_products'] += 2
+             cost['source_metric_products'] += 2
+             old_grad, old_direction = grad, direction
+             data_f = .5*_inner(SJD-Y+SU@A,SJD-Y+SU@A,Od,cost)
+-            def state_value(beta):
++            def state_value(beta, transform):
+                 e = J-m[:, None]*Q
+                 if beta is not None:
+-                    e = blocks.apply(m,beta,e)
++                    if transform == 'onehop':
++                        e = blocks.apply(m,beta,e)
++                    else:
++                        e = beta*e/(1+beta*m[:,None])
+                 return .5*rho*_inner(e,e,Os,cost)
+             history.append(dict(stage=stage_index, iteration=it+1, global_iteration=iterations+1,
+                                 beta_current=beta_j, beta_material=beta_m, receiver_rank=receiver_rank,
+                                 **basis_info, coefficient_relative_change_squared=delta,
+-                                data_term=data_f, state_term_current=state_value(beta_j),
+-                                state_term_material=state_value(beta_m), regularizer=float(reg(m)[0]),
++                                data_term=data_f, state_term_current=state_value(beta_j,config['current_transform']),
++                                state_term_material=state_value(beta_m,config['material_transform']), regularizer=float(reg(m)[0]),
++                                current_transform=config['current_transform'],material_transform=config['material_transform'],
+                                 wall=time.perf_counter()-started, sourcewise_cg=sourcewise,
+                                 current_solver=current_solver, PR_plus=np.asarray(pr).tolist(),
+                                 line_alpha=np.asarray(alpha).tolist(), direction_restarted=restarted,

@@ -1,0 +1,90 @@
+"""Export the own R5 report and evidence archive. No scientific execution."""
+from pathlib import Path
+from datetime import datetime, timezone
+import argparse
+import html
+import json
+import re
+import time
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+RAW = 'https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r5/'
+RELEASE = 'https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r5-20261103'
+
+
+def markdown_report(source):
+    # Retain the project's minimal renderer for prose; handle formula fences
+    # separately so line breaks and literal operators survive HTML export.
+    import sys
+    sys.path.insert(0, str(ROOT.parent/'research_max_struct_r1/experiments'))
+    from export_delivery import markdown_subset
+    pieces = re.split(r'^```[^\n]*\n(.*?)^```\s*$', source, flags=re.M | re.S)
+    body = '\n'.join('<pre><code>'+html.escape(part.rstrip())+'</code></pre>'
+                     if i % 2 else markdown_subset(part)
+                     for i, part in enumerate(pieces))
+    body = re.sub(r'<p>(<figure>.*?</figure>)</p>', r'\1', body)
+    return re.sub(r'href="([^":]+\.md)"', lambda m: 'href="'+RAW+m[1]+'"', body)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--archive-dir', type=Path, required=True)
+    args = parser.parse_args()
+    tick, cpu = time.perf_counter(), time.process_time()
+    body = markdown_report((ROOT/'RESEARCH_REPORT_ZH.md').read_text())
+    css = '''body{margin:0;background:#f3f5f7;color:#172230;font:17px/1.8 system-ui,-apple-system,sans-serif}main{max-width:1100px;margin:32px auto;background:white;padding:40px;border-radius:12px}h1{font-size:30px;line-height:1.4}h2{margin-top:40px;border-top:1px solid #dde3e8;padding-top:18px}a{color:#075b93}nav{font-size:15px;display:flex;gap:16px;flex-wrap:wrap}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #d9e1e8;padding:9px;text-align:left}th{background:#eaf1f6}.table-scroll{overflow:auto}img{max-width:100%;height:auto}figure{margin:24px 0}figcaption{font-size:14px;color:#516476}code{background:#eef2f4;font-size:14px;overflow-wrap:anywhere}pre{padding:18px;overflow:auto;background:#eef2f4;line-height:1.7}pre code{overflow-wrap:normal}footer{margin-top:35px;color:#516476;font-size:14px}@media(max-width:700px){main{margin:0;padding:20px}h1{font-size:25px}}'''
+    nav = ''.join('<a href="'+RAW+name+'">'+label+'</a>' for name, label in (
+        ('CHAT_HANDOFF.md', '给 Chat 的入口'), ('TRAJECTORY_ANALYSIS.md', '轨迹与反事实'),
+        ('THEORY_DERIVATIONS.md', '数学推导'), ('REPRODUCE.md', '复现'),
+        ('COST_LEDGER.md', '完整费用'), ('RESEARCH_REPORT_ZH.md', '原始报告')))
+    page = ('<!doctype html><html lang="zh-CN"><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<title>MAX-STRUCT-R5：残差传播的作用位置与路径边界</title><style>'+css+
+            '</style><main><nav>'+nav+'</nav>'+body+
+            '<footer><a href="'+RELEASE+'">下载代码与证据包</a> · '
+            '<a href="../../">研究主页</a></footer></main></html>')
+    (ROOT/'index.html').write_text(page)
+    missing = [u for u in re.findall(r'(?:src|href)="([^"#]+)"', page)
+               if '://' not in u and not (ROOT/u).exists()]
+    if missing:
+        raise ValueError(missing)
+    exclusions = ['literature/local_only: third-party full text', 'Python/OS caches',
+                  'duplicate transport ZIPs (retained in the Git repository)']
+    def included(p):
+        return (p.is_file() and '__pycache__' not in p.parts
+                and 'local_only' not in p.parts and p.suffix not in ('.pyc', '.zip')
+                and p.name != '.DS_Store')
+    receipt = dict(operation='Own report HTML and evidence ZIP',
+        timestamp_utc=datetime.now(timezone.utc).isoformat(), physical_LU=0,
+        physical_RHS=0, hashes='not computed', excluded=exclusions,
+        local_report_links_missing=[], complete=False,
+        reproducibility_scope='Use with existing repository dependencies; see REPRODUCE.md.')
+    receipt_path = ROOT/'audit/EXPORT_RECEIPT.json'
+    if receipt_path.exists():
+        history = ROOT/'audit/export_history'
+        history.mkdir(exist_ok=True)
+        (history/f'export_{len(list(history.glob("export_*.json")))+1:02d}.json').write_text(receipt_path.read_text())
+    receipt_path.write_text(json.dumps(receipt, indent=2))
+    files = sorted(p for p in ROOT.rglob('*') if included(p))
+    manifest_path = ROOT/'audit/DELIVERY_MANIFEST.json'
+    manifest_path.write_text(json.dumps(dict(excluded=exclusions,
+        files=[str(p.relative_to(ROOT)) for p in files if p != manifest_path],
+        contains_itself=True, hashes='not computed'), indent=2))
+    if manifest_path not in files:
+        files.append(manifest_path)
+    args.archive_dir.mkdir(parents=True, exist_ok=True)
+    archive = args.archive_dir/'MAX_STRUCT_R5_reproducibility.zip'
+    with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
+        for p in files:
+            z.write(p, 'research_max_struct_r5/'+str(p.relative_to(ROOT)))
+    receipt.update(complete=True, files=len(files), archive_bytes=archive.stat().st_size,
+        wall_seconds=time.perf_counter()-tick, cpu_seconds=time.process_time()-cpu,
+        archive=str(archive),
+        archive_receipt_note='ZIP holds pre-completion export receipt; external final receipt records packaging time.')
+    receipt_path.write_text(json.dumps(receipt, indent=2))
+    print(json.dumps(receipt))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,52 @@
+{
+  "run_id": "obs_b20d5a55677d4eca__global",
+  "case_id": "obs_b20d5a55677d4eca",
+  "method": "global",
+  "numerical": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "sourcewise_cg": false
+  },
+  "configuration_source": "research/research_max_struct_r2/experiments/run_blind.py:115-117 plus saved global RECEIPT stages/miniter/coefficient_tol; mature readout defaults ftol1e-12/gtol1e-8",
+  "public_files": [
+    "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+  ],
+  "reference": {
+    "kind": "stage_npz",
+    "directory": "research/research_max_struct_r2/results/blind/obs_b20d5a55677d4eca/global"
+  },
+  "implementation_differences": [
+    "Only unnecessary dense prior Hessian construction omitted: model.reg.evaluate(m)[:2] equals original prior value/gradient. Original model.regularizer returned unused Hessian.",
+    "Material inner ftol/gtol made explicit at historical defaults; no numerical tolerance change.",
+    "No parent pre-aux initial metric: unchanged run_cie itself performs initial validation, now charged as one physical LU."
+  ],
+  "seed": null
+}

@@ -1,0 +1,315 @@
+{
+  "status": "COMPLETED_DEVELOPMENT_FACTORIAL",
+  "arm": "material_only",
+  "case_id": "obs_42cb233e4f224bb3",
+  "configuration": {
+    "status": "FROZEN_BEFORE_EXTENSION",
+    "freeze_utc": "2026-11-03T12:04:28.046889+00:00",
+    "classification": "PREVIOUSLY_OBSERVED_PUBLIC_CASES_DEVELOPMENT_EXTENSION_NOT_BLIND",
+    "mechanism_question": "Does removing onehop current propagation preserve physical fitting on all three previously observed public cases? Retain all three results; final material-scoring interpretation belongs to parent.",
+    "common": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false,
+      "cache_material_value_gradient": true
+    },
+    "arms": {
+      "material_only": {
+        "current_transform": "scalar",
+        "material_transform": "onehop"
+      }
+    },
+    "reuse_controls": {
+      "global_00": "R5 deterministic replay plus historical original-R4-common-corrector receipt as separately available",
+      "onehop_11": "R5 deterministic replay plus historical R4 onehop_absorption common-corrector"
+    },
+    "corrector_source": "research.research_max_struct_r4.experiments.cooperative_paths.refine",
+    "corrector_maxiter": 1000,
+    "corrector_objective": "original physical Phi times 1e6 inside unchanged optimizer; acceptance/selection on original Phi",
+    "seed": null,
+    "truth_access": "NONE",
+    "scoring": "NOT_RUN",
+    "parameter_tuning": false,
+    "device": "CPU",
+    "threads_per_process": 1,
+    "max_processes": 2,
+    "scientific_wallcap": null,
+    "prior": "Unchanged model.reg value and gradient; no unused dense Hessian",
+    "selection": "Original Phi host + true stage endpoints; original R4 corrector1000 from minimum Phi endpoint; retain incumbent",
+    "cost_policy": "Record all actual costs; no equal-compute or improvement claim from additional operations",
+    "cases": {
+      "obs_42cb233e4f224bb3": {
+        "public_files": [
+          "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+          "research/research_max_struct_r4/data_public/confirmation/obs_42cb233e4f224bb3.npz"
+        ]
+      },
+      "obs_63abafa750fc483c": {
+        "public_files": [
+          "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+          "research/research_max_struct_r4/data_public/confirmation/obs_63abafa750fc483c.npz"
+        ]
+      },
+      "obs_100bd65498644322": {
+        "public_files": [
+          "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+          "research/research_max_struct_r4/data_public/confirmation/obs_100bd65498644322.npz"
+        ]
+      }
+    },
+    "output_subdir": "factorial_extension",
+    "observer_policy": "stage_only",
+    "expected_public": {
+      "host": 0.1,
+      "amplitude": 12.0,
+      "smooth_weight": 0.0001,
+      "tv_weight": 0.0001,
+      "tv_epsilon": 0.01,
+      "prior_width": 19.5,
+      "material_bounds": [
+        0.02,
+        20.0
+      ]
+    },
+    "adaptation_differences": [
+      "Public observation split into unchanged shared operators.npz and per-case Y/noise/prior NPZ; merged in memory only.",
+      "No iteration callback/checkpoint Green products; preserve all 3 stage snapshots, complete scalar history and final prediction.",
+      "Same fixed factorial material_only algorithm and all numerical/corrector settings as first disclosed-case run; no changes to beta, readout allowance, stops, initialization, box or prior."
+    ],
+    "original_first_freeze": "configs/factorial_frozen.json",
+    "original_first_source_snapshot": "audit/factorial_source_snapshot"
+  },
+  "configuration_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r5_worktree/research/research_max_struct_r5/configs/factorial_extension_frozen.json",
+  "public_files": [
+    "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+    "research/research_max_struct_r4/data_public/confirmation/obs_42cb233e4f224bb3.npz"
+  ],
+  "started_utc": "2026-11-03T12:04:45.891824+00:00",
+  "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "classification": "DISCLOSED_DEVELOPMENT_POSITION_ABLATION_NOT_BLIND",
+  "seed": null,
+  "seed_reason": "Deterministic inverse solve of unchanged public observation; no random draws.",
+  "failed_attempts": [],
+  "threads": [],
+  "adaptation_differences": [
+    "Public observation split into unchanged shared operators.npz and per-case Y/noise/prior NPZ; merged in memory only.",
+    "No iteration callback/checkpoint Green products; preserve all 3 stage snapshots, complete scalar history and final prediction.",
+    "Same fixed factorial material_only algorithm and all numerical/corrector settings as first disclosed-case run; no changes to beta, readout allowance, stops, initialization, box or prior."
+  ],
+  "setup_wall_seconds": 0.008988084271550179,
+  "setup_cpu_seconds": 0.0064549999999999885,
+  "auxiliary_wall_seconds": 28.470327582675964,
+  "auxiliary_cpu_seconds": 27.916291,
+  "auxiliary_physical_model_cost": {
+    "FULL_FORWARD": 4,
+    "actual_complex_RHS": 48,
+    "LU": 4,
+    "source_RHS": 48,
+    "full_factorization_dimension": 2304
+  },
+  "auxiliary_execution_receipt": {
+    "status": "COMPLETED",
+    "sourcewise_cg": false,
+    "current_solver": "pr",
+    "FFT": 0,
+    "physical_backend": "unchanged supplied MaxwellModel",
+    "residual": "Separately frozen current/material position transforms",
+    "current_transform": "scalar",
+    "material_transform": "onehop",
+    "gin_mode": "onehop_block4",
+    "small_solver": "elementwise complex division only; no small LU/inverse",
+    "block_geometry": "fixed disjoint 2x2 spatial-cell actual Green; zero diagonal in Goff",
+    "cache_material_value_gradient": true,
+    "prior": "unchanged supplied regularizer on physical real material",
+    "timer_scope": "solver preparation/current/readout/physical validation; excludes parent geometry/data and output serialization",
+    "wall_seconds": 28.470047540962696,
+    "cpu_seconds": 27.916010999999997,
+    "operation_counts": {
+      "block_Green_submatrices_extracted": 144,
+      "block_offdiagonal_nonzero_slots": 1728,
+      "self_Green_diagonal_entries_extracted": 576,
+      "source_metric_Cholesky": 2,
+      "physical_validations": 4,
+      "receiver_SVD": 1,
+      "G_columns": 592,
+      "S_columns": 592,
+      "APCS_SVD": 3,
+      "Fourier_columns_generated": 580,
+      "IDFT_columns_explicit": 580,
+      "DPCS_projection_columns": 580,
+      "scalar_current_operator_builds": 1500,
+      "current_objective_evaluations": 1500,
+      "source_metric_products": 99719,
+      "current_gradient_evaluations": 1500,
+      "material_readouts": 1500,
+      "material_value_gradient_requests": 83219,
+      "material_value_gradient_cache_misses": 80219,
+      "onehop_parameter_builds": 81719,
+      "scalar_complex_divisions": 1212591744,
+      "onehop_a_scalar_divisions": 47070144,
+      "onehop_u_scalar_divisions": 564841728,
+      "onehop_block_matrix_apply_calls": 161938,
+      "onehop_block_matrix_apply_blocks": 23319072,
+      "onehop_block_matrix_complex_RHS": 279828864,
+      "onehop_forward_block_RHS": 141210432,
+      "onehop_adjoint_block_RHS": 138618432,
+      "onehop_du_scalar_divisions": 554473728,
+      "onehop_da_scalar_divisions": 46206144,
+      "material_inner_evaluations": 80219,
+      "material_prior_evaluations": 80219,
+      "material_value_gradient_cache_hits": 3000,
+      "material_inner_LBFGS_iterations": 74978,
+      "material_inner_LBFGS_evaluations": 78719,
+      "material_inner_fallbacks": 0,
+      "material_readout_source_whitening_products": 3000,
+      "PR_CG_steps": 1500,
+      "reduced_operator_columns": 108000,
+      "wall_seconds": 28.46998070878908
+    },
+    "physical_model_delta": {
+      "actual_complex_RHS": 48,
+      "source_RHS": 48,
+      "full_factorization_dimension": 2304,
+      "FULL_FORWARD": 4,
+      "cached_operator_imports": 0,
+      "LU": 4
+    },
+    "physical_LU": 4,
+    "physical_complex_RHS": 48
+  },
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "auxiliary_candidate_scores": [
+    {
+      "stage": -1,
+      "reason": "initial_incumbent",
+      "physical_nll": 0.5329554597792298,
+      "objective": 0.5329554597792298,
+      "physical_relative_residual": 1.0324296196634708
+    },
+    {
+      "stage": 0,
+      "reason": "MAXITER",
+      "physical_nll": 0.4290589372029445,
+      "objective": 0.42906744771269933,
+      "physical_relative_residual": 0.9263465196166545
+    },
+    {
+      "stage": 1,
+      "reason": "MAXITER",
+      "physical_nll": 0.21461966575395655,
+      "objective": 0.21462729857867052,
+      "physical_relative_residual": 0.6551635914089802
+    },
+    {
+      "stage": 2,
+      "reason": "MAXITER",
+      "physical_nll": 0.22593346330434133,
+      "objective": 0.2259454568527851,
+      "physical_relative_residual": 0.6722104779075393
+    }
+  ],
+  "auxiliary_selected_stage": 1,
+  "auxiliary_selected_original_Phi": 0.21462729857867052,
+  "auxiliary_selected_relative_residual": 0.6551635914089802,
+  "corrector_wall_seconds": 7.6844920408912,
+  "corrector_cpu_seconds": 7.577870000000001,
+  "corrector_physical_model_cost": {
+    "FULL_FORWARD": 1033,
+    "actual_complex_RHS": 24792,
+    "LU": 1033,
+    "source_RHS": 12396,
+    "full_factorization_dimension": 595008,
+    "DATA_ADJOINT": 1033,
+    "adjoint_RHS": 12396
+  },
+  "corrector": {
+    "stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+    "iterations": 1000,
+    "evaluations": 1033,
+    "cost": {
+      "FULL_FORWARD": 1033,
+      "actual_complex_RHS": 24792,
+      "LU": 1033,
+      "source_RHS": 12396,
+      "full_factorization_dimension": 595008,
+      "DATA_ADJOINT": 1033,
+      "adjoint_RHS": 12396
+    },
+    "wall_seconds": 7.684477583039552
+  },
+  "finalization_wall_seconds": 0.006428333930671215,
+  "finalization_cpu_seconds": 0.006301999999998031,
+  "finalization_physical_model_cost": {},
+  "physical_objective": 0.0022090664073166153,
+  "physical_relative_residual": 0.06600422048380468,
+  "linear_relative_residual": 2.8797546323204713e-15,
+  "iterations": 1500,
+  "corrector_improved_original_Phi": true,
+  "selection": "minimum original Phi of host + three auxiliary endpoints + original R4 corrector trajectory incumbent",
+  "finished_utc": "2026-11-03T12:05:22.462494+00:00",
+  "wall_seconds": 36.60850258311257,
+  "cpu_seconds": 35.786668999999996,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1037,
+    "actual_complex_RHS": 24840,
+    "LU": 1037,
+    "source_RHS": 12444,
+    "full_factorization_dimension": 597312,
+    "DATA_ADJOINT": 1033,
+    "adjoint_RHS": 12396
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 6.321423410438001,
+    "DATA_ADJOINT": 0.5218575992621481
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 6.235353999999888,
+    "DATA_ADJOINT": 0.5143009999998398
+  },
+  "callbacks": {
+    "callback_calls": 0,
+    "checkpoints": [],
+    "callback_wall_seconds": 0.0225421660579741,
+    "callback_cpu_seconds": 0.022143000000001578,
+    "callback_save_wall_seconds": 0.0225401665084064,
+    "extra_checkpoint_Green_columns": 0,
+    "extra_checkpoint_Green_calls": 0,
+    "extra_Green_wall_seconds": 0.0,
+    "extra_Green_cpu_seconds": 0.0,
+    "physical_LU": 0,
+    "physical_complex_RHS": 0,
+    "scope": "Callbacks only; solver-created callback array copies stay in auxiliary time. Q=E+GJ exactly once per frozen checkpoint; no other extra physics."
+  },
+  "cost_scope": "Process imports/public load/setup/1500 auxiliary updates with original host+stage physics validation/observer checkpoints/original R4 corrector1000 allowance/final incumbent physics and serialization; final receipt write excluded. Nested phase and callback times must not be added twice."
+}

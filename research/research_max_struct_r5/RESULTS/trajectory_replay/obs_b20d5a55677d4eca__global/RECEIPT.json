@@ -1,0 +1,199 @@
+{
+  "status": "COMPLETED_AUX_ONLY",
+  "run_id": "obs_b20d5a55677d4eca__global",
+  "configuration": {
+    "run_id": "obs_b20d5a55677d4eca__global",
+    "case_id": "obs_b20d5a55677d4eca",
+    "method": "global",
+    "numerical": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false
+    },
+    "configuration_source": "research/research_max_struct_r2/experiments/run_blind.py:115-117 plus saved global RECEIPT stages/miniter/coefficient_tol; mature readout defaults ftol1e-12/gtol1e-8",
+    "public_files": [
+      "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+    ],
+    "reference": {
+      "kind": "stage_npz",
+      "directory": "research/research_max_struct_r2/results/blind/obs_b20d5a55677d4eca/global"
+    },
+    "implementation_differences": [
+      "Only unnecessary dense prior Hessian construction omitted: model.reg.evaluate(m)[:2] equals original prior value/gradient. Original model.regularizer returned unused Hessian.",
+      "Material inner ftol/gtol made explicit at historical defaults; no numerical tolerance change.",
+      "No parent pre-aux initial metric: unchanged run_cie itself performs initial validation, now charged as one physical LU."
+    ],
+    "seed": null
+  },
+  "started_utc": "2026-11-03T11:50:03.832213+00:00",
+  "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "seed": null,
+  "seed_reason": "Historical inverse solve is deterministic; no random draws; public observations reused unchanged.",
+  "truth_access": "NONE",
+  "corrector": "NOT_RUN",
+  "parameter_tuning": false,
+  "failed_attempts": [],
+  "threads": 1,
+  "device": "CPU",
+  "callbacks": {
+    "callback_calls": 1500,
+    "checkpoints": [
+      "checkpoint_s0_i001.npz",
+      "checkpoint_s0_i002.npz",
+      "checkpoint_s0_i010.npz",
+      "checkpoint_s0_i050.npz",
+      "checkpoint_s0_i150.npz",
+      "checkpoint_s0_i300.npz",
+      "checkpoint_s0_i500.npz",
+      "checkpoint_s1_i001.npz",
+      "checkpoint_s1_i002.npz",
+      "checkpoint_s1_i010.npz",
+      "checkpoint_s1_i050.npz",
+      "checkpoint_s1_i150.npz",
+      "checkpoint_s1_i300.npz",
+      "checkpoint_s1_i500.npz",
+      "checkpoint_s2_i001.npz",
+      "checkpoint_s2_i002.npz",
+      "checkpoint_s2_i010.npz",
+      "checkpoint_s2_i050.npz",
+      "checkpoint_s2_i150.npz",
+      "checkpoint_s2_i300.npz",
+      "checkpoint_s2_i500.npz"
+    ],
+    "callback_wall_seconds": 0.28930572094395757,
+    "callback_cpu_seconds": 0.28575400000000417,
+    "callback_save_wall_seconds": 0.2766335429623723,
+    "extra_checkpoint_Green_columns": 252,
+    "extra_checkpoint_Green_calls": 21,
+    "extra_Green_wall_seconds": 0.007394834887236357,
+    "extra_Green_cpu_seconds": 0.007300000000000306,
+    "physical_LU": 0,
+    "physical_complex_RHS": 0,
+    "scope": "Callbacks only; solver-created callback array copies stay in auxiliary time. Q=E+GJ exactly once per frozen checkpoint; no other extra physics."
+  },
+  "threadpools": [],
+  "load_setup_wall_seconds": 0.010771750006824732,
+  "load_setup_cpu_seconds": 0.008006999999999986,
+  "auxiliary_wall_seconds": 5.8557019997388124,
+  "auxiliary_cpu_seconds": 5.719865,
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "iterations": 1500,
+  "auxiliary_execution_receipt": {
+    "status": "COMPLETED",
+    "sourcewise_cg": false,
+    "current_solver": "pr",
+    "FFT": 0,
+    "physical_backend": "unchanged supplied MaxwellModel",
+    "prior": "unchanged supplied regularizer on physical real material",
+    "timer_scope": "solver preparation/current/readout/physical validation; excludes parent geometry/data and output serialization",
+    "wall_seconds": 5.8554763328284025,
+    "cpu_seconds": 5.71964,
+    "operation_counts": {
+      "source_metric_Cholesky": 2,
+      "physical_validations": 4,
+      "receiver_SVD": 1,
+      "G_columns": 592,
+      "S_columns": 592,
+      "APCS_SVD": 3,
+      "Fourier_columns_generated": 580,
+      "IDFT_columns_explicit": 580,
+      "DPCS_projection_columns": 580,
+      "current_objective_evaluations": 1500,
+      "source_metric_products": 19500,
+      "current_gradient_evaluations": 1500,
+      "material_readouts": 1500,
+      "material_inner_evaluations": 7500,
+      "material_readout_source_whitening_products": 3000,
+      "PR_CG_steps": 1500,
+      "reduced_operator_columns": 108000,
+      "wall_seconds": 5.8554215002804995
+    },
+    "physical_model_delta": {
+      "cached_operator_imports": 0,
+      "source_RHS": 48,
+      "full_factorization_dimension": 2304,
+      "FULL_FORWARD": 4,
+      "actual_complex_RHS": 48,
+      "LU": 4
+    },
+    "physical_LU": 4,
+    "physical_complex_RHS": 48
+  },
+  "original_physics_validations": [
+    {
+      "stage": -1,
+      "reason": "initial_incumbent",
+      "physical_nll": 0.5235232721607638,
+      "objective": 0.5235232721607638,
+      "physical_relative_residual": 1.023252922947952
+    },
+    {
+      "stage": 0,
+      "reason": "MAXITER",
+      "physical_nll": 0.27676996254569364,
+      "objective": 0.2767745966664839,
+      "physical_relative_residual": 0.7440026378255571
+    },
+    {
+      "stage": 1,
+      "reason": "MAXITER",
+      "physical_nll": 0.15300042338057834,
+      "objective": 0.15300752495451386,
+      "physical_relative_residual": 0.5531734328048994
+    },
+    {
+      "stage": 2,
+      "reason": "MAXITER",
+      "physical_nll": 0.011261042277576813,
+      "objective": 0.011269442424001625,
+      "physical_relative_residual": 0.15007359712872087
+    }
+  ],
+  "reference_comparison": "REFERENCE_COMPARISON.json",
+  "finished_utc": "2026-11-03T11:50:10.423387+00:00",
+  "wall_seconds": 6.628977832850069,
+  "cpu_seconds": 6.134906999999999,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 4,
+    "actual_complex_RHS": 48,
+    "LU": 4,
+    "source_RHS": 48,
+    "full_factorization_dimension": 2304
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 0.03524041781201959
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 0.030889000000000666
+  },
+  "cost_scope": "Process imports/load/setup/unchanged aux optimizer+its original initial and stage physical validations/callbacks/output serialization. Final receipt write excluded. No corrector, scoring, truth reads, random draws, or formula tests."
+}

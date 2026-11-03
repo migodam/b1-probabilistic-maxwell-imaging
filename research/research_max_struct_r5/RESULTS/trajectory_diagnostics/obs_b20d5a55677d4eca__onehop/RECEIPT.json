@@ -1,0 +1,124 @@
+{
+  "status": "COMPLETED",
+  "run_id": "obs_b20d5a55677d4eca__onehop",
+  "truth_access": "NONE",
+  "threads": 1,
+  "device": "CPU",
+  "started_utc": "2026-11-03T11:54:32.207674+00:00",
+  "failed_attempts": [],
+  "checkpoints": [
+    "checkpoint_s0_i001",
+    "checkpoint_s0_i002",
+    "checkpoint_s0_i010",
+    "checkpoint_s0_i050",
+    "checkpoint_s0_i150",
+    "checkpoint_s0_i300",
+    "checkpoint_s0_i500",
+    "checkpoint_s1_i001",
+    "checkpoint_s1_i002",
+    "checkpoint_s1_i010",
+    "checkpoint_s1_i050",
+    "checkpoint_s1_i150",
+    "checkpoint_s1_i300",
+    "checkpoint_s1_i500",
+    "checkpoint_s2_i001",
+    "checkpoint_s2_i002",
+    "checkpoint_s2_i010",
+    "checkpoint_s2_i050",
+    "checkpoint_s2_i150",
+    "checkpoint_s2_i300",
+    "checkpoint_s2_i500"
+  ],
+  "prior_attempts": [],
+  "configuration": {
+    "run_id": "obs_b20d5a55677d4eca__onehop",
+    "case_id": "obs_b20d5a55677d4eca",
+    "method": "onehop",
+    "numerical": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "stages": [
+        {
+          "mf": 3,
+          "beta": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false,
+      "cache_material_value_gradient": true
+    },
+    "configuration_source": "research/research_max_struct_r4/results/onehop_absorption/FROZEN_CONFIG.json",
+    "public_files": [
+      "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+    ],
+    "reference": {
+      "kind": "stage_npz",
+      "directory": "research/research_max_struct_r4/results/onehop_absorption"
+    },
+    "implementation_differences": [
+      "No pre-aux bound/gradient wiring/initial metric/corrector/ranking; unchanged run_onehop_cie initial and stage physical validations retained."
+    ],
+    "seed": null
+  },
+  "corrector": "NOT_RUN",
+  "parameter_tuning": false,
+  "seed": null,
+  "finished_utc": "2026-11-03T11:54:33.266467+00:00",
+  "wall_seconds": 1.0588083332404494,
+  "cpu_seconds": 1.026158,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 51,
+    "actual_complex_RHS": 1116,
+    "LU": 51,
+    "source_RHS": 612,
+    "full_factorization_dimension": 29376,
+    "DATA_ADJOINT": 21,
+    "adjoint_RHS": 288,
+    "FULL_ANALYTIC_J": 3,
+    "receiver_transpose_RHS": 144,
+    "FullJ": 3,
+    "material_J_builds": 3,
+    "HVP_WIRING_BASE_ADJOINT": 3,
+    "HVP_WIRING_TANGENT": 3,
+    "tangent_RHS": 36,
+    "incremental_adjoint_RHS": 36
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 0.24401512322947383,
+    "DATA_ADJOINT": 0.008660377003252506,
+    "FULL_ANALYTIC_J": 0.0060776653699576855,
+    "HVP_WIRING_BASE_ADJOINT": 0.0011411253362894058,
+    "HVP_WIRING_TANGENT": 0.004114498849958181
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 0.24076400000000087,
+    "DATA_ADJOINT": 0.008528999999999787,
+    "FULL_ANALYTIC_J": 0.006021000000000054,
+    "HVP_WIRING_BASE_ADJOINT": 0.0011419999999995323,
+    "HVP_WIRING_TANGENT": 0.004057000000000421
+  },
+  "money": null,
+  "cost_scope": "this process run setup/checkpoint diagnostics/endpoints/counterfactual forwards/output; per-checkpoint auxiliary/physics counts in JSON; existing checkpoint files reused if resumed and those historic costs remain in per-checkpoint JSON"
+}

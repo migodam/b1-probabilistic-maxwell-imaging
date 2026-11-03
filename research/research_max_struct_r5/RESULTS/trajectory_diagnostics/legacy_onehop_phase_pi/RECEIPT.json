@@ -1,0 +1,115 @@
+{
+  "status": "COMPLETED_FIXED_STATES",
+  "truth_access": "NONE",
+  "actual_step_available": false,
+  "source": "research/research_max_struct_r4/results/onehop_phase_pi",
+  "device": "CPU",
+  "threads": 1,
+  "stages": [
+    0,
+    1,
+    2
+  ],
+  "corrector": "NOT_RUN",
+  "parameter_tuning": false,
+  "failed_attempts": [],
+  "configuration": {
+    "status": "DEV_FROZEN_BEFORE_RUN",
+    "case_id": "obs_b20d5a55677d4eca",
+    "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+    "method": "single pi-phase control of onehop auxiliary offdiagonal Green in mature global PR CIE",
+    "block_shape": [
+      2,
+      2
+    ],
+    "block_alignment": "disjoint row-major spatial blocks from upper-left array corner",
+    "block_Green": "negative of actual offdiagonal Green inside fixed disjoint four-cell blocks; unchanged actual self diagonal; physical model.G unchanged",
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+    "source_metric_policy": "fixed original paper source normalizations",
+    "material_seed": "mature shared-real scalar CIE readout; compare seed and previous by exact onehop loss+prior",
+    "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+    "corrector_maxiter": 1000,
+    "selection": "same original Phi including prior; retain host incumbent",
+    "gradient_check": "NOT_RERUN: only fixed auxiliary Goff sign data changed; generic exact material derivative unchanged",
+    "device": "CPU",
+    "threads": 1,
+    "truth_access": "NONE",
+    "parameter_tuning": false,
+    "originality_assertion": false,
+    "cache_material_value_gradient": true,
+    "material_value_gradient_cache": "two exact repeated material points within one fixed-J/Q readout only",
+    "control_purpose": "single mechanism control for physical offdiagonal phase versus magnitudes or generic coupling; no change to confirmed algorithm regardless of result",
+    "residual": "R_pi=(I-L)u, L=diag(a)Goff_original; implemented with auxiliary Goff=-Goff_original",
+    "operation_accounting": "count actual scalar complex divisions and forward/adjoint four-cell matrix RHS; no fictitious small LU",
+    "whole_box_bound": "analytic bound for beta0.2 and1 before optimizer, over [.02,20], no GT",
+    "source_snapshot": "results/onehop_phase_pi/executed_source_snapshot",
+    "phase_pi": 3.141592653589793,
+    "auxiliary_Goff_multiplier": -1,
+    "invariant_features": [
+      "abs(Goff)",
+      "fixed graph topology",
+      "diagonal self absorption and metric",
+      "analytic wholebox invertibility bound",
+      "arithmetic forms and counts per current/material evaluation"
+    ],
+    "operation_count_scope": "same arithmetic per evaluation, plus one disclosed setup sign change; optimizer trajectory and total evaluations may differ"
+  },
+  "wall_seconds": 0.40118000004440546,
+  "cpu_seconds": 0.39198,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 15,
+    "actual_complex_RHS": 360,
+    "LU": 15,
+    "source_RHS": 180,
+    "full_factorization_dimension": 8640,
+    "DATA_ADJOINT": 3,
+    "adjoint_RHS": 36,
+    "FULL_ANALYTIC_J": 3,
+    "receiver_transpose_RHS": 144,
+    "FullJ": 3,
+    "material_J_builds": 3
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 0.07083341758698225,
+    "DATA_ADJOINT": 0.0011557512916624546,
+    "FULL_ANALYTIC_J": 0.006309125106781721
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 0.06994999999999996,
+    "DATA_ADJOINT": 0.0011379999999999724,
+    "FULL_ANALYTIC_J": 0.006272999999999973
+  },
+  "money": null,
+  "cost_scope": "6 historical fixed-state diagnostic reuse, not auxiliary replay; no actual historical step, no HVP along unavailable step; all new forward/adjoint/Jacobian/readout costs charged"
+}

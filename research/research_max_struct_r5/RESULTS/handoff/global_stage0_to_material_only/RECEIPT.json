@@ -1,0 +1,322 @@
+{
+  "status": "COMPLETED_DEVELOPMENT_STAGE_HANDOFF",
+  "handoff_id": "global_stage0_to_material_only",
+  "case_id": "obs_b20d5a55677d4eca",
+  "configuration": {
+    "status": "FROZEN_BEFORE_EXECUTION",
+    "freeze_utc": "2026-11-03T12:09:33.714259+00:00",
+    "case_id": "obs_b20d5a55677d4eca",
+    "public_data": "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz",
+    "classification": "DISCLOSED_DEVELOPMENT_NATURAL_STAGE_HANDOFF_NOT_BLIND",
+    "mechanism_question": "Separate early mf3 endpoint influence from mf6/mf10 material-readout influence on the previously observed positive physical-fit instance; parent owns interpretation.",
+    "common": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001,
+      "coefficient_tol": 0.0,
+      "miniter": 50,
+      "material_inner_maxiter": 60,
+      "material_inner_ftol": 1e-12,
+      "material_inner_gtol": 1e-08,
+      "stages": [
+        {
+          "mf": 6,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        },
+        {
+          "mf": 10,
+          "beta_material": 0.2,
+          "beta_current": 1.0,
+          "maxiter": 500
+        }
+      ],
+      "sourcewise_cg": false,
+      "cache_material_value_gradient": true
+    },
+    "handoffs": {
+      "global_stage0_to_material_only": {
+        "source_stage": "research/research_max_struct_r5/RESULTS/trajectory_replay/obs_b20d5a55677d4eca__global/stage_0.npz",
+        "source_candidates": "research/research_max_struct_r5/RESULTS/trajectory_replay/obs_b20d5a55677d4eca__global/AUXILIARY_CANDIDATES.npz",
+        "initial_mf": 3,
+        "target": {
+          "current_transform": "scalar",
+          "material_transform": "onehop"
+        }
+      },
+      "material_only_stage0_to_global": {
+        "source_stage": "research/research_max_struct_r5/RESULTS/factorial/obs_b20d5a55677d4eca__material_only/stage_0.npz",
+        "source_candidates": "research/research_max_struct_r5/RESULTS/factorial/obs_b20d5a55677d4eca__material_only/AUXILIARY_CANDIDATES.npz",
+        "initial_mf": 3,
+        "target": {
+          "current_transform": "scalar",
+          "material_transform": "scalar"
+        }
+      }
+    },
+    "expected_public": {
+      "host": 0.1,
+      "amplitude": 12.0,
+      "smooth_weight": 0.0001,
+      "tv_weight": 0.0001,
+      "tv_epsilon": 0.01,
+      "prior_width": 19.5,
+      "material_bounds": [
+        0.02,
+        20.0
+      ]
+    },
+    "adaptation_differences": [
+      "Resume exact saved m and native Fourier A at natural stage boundary; reconstruct auxiliary J from same DPCS/native APCS and record difference to saved input J.",
+      "Input A frequency-key mapping and original next-stage zero-padding retained; original PR history reset at each stage retained.",
+      "One initial-mf3 APCS construction is additional necessary handoff wiring; charged in auxiliary operations. No initial algorithm stage rerun.",
+      "Original shared host material/Phi is reused from already-paid source initial candidate; no GT or other historical endpoint is used for selection.",
+      "Local resumed stage0 corresponds to original mf6 stage1, local resumed stage1 corresponds to original mf10 stage2.",
+      "Only stage snapshots; no iteration observer or extra checkpoint Green."
+    ],
+    "corrector_source": "research.research_max_struct_r4.experiments.cooperative_paths.refine",
+    "corrector_maxiter": 1000,
+    "observer_policy": "stage_only",
+    "seed": null,
+    "truth_access": "NONE",
+    "scoring": "NOT_RUN",
+    "parameter_tuning": false,
+    "device": "CPU",
+    "threads_per_process": 1,
+    "max_processes": 2,
+    "scientific_wallcap": null,
+    "selection": "Minimum original Phi of reused host, input stage0 endpoint, two resumed endpoints, and original R4 corrector incumbent",
+    "stop_policy": "Inherited fixed 500 updates per remaining stage; material inner60 and original corrector1000 allowance unchanged"
+  },
+  "configuration_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r5_worktree/research/research_max_struct_r5/configs/handoff_frozen.json",
+  "public_files": [
+    "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz"
+  ],
+  "started_utc": "2026-11-03T12:10:05.931492+00:00",
+  "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "classification": "DISCLOSED_DEVELOPMENT_NATURAL_STAGE_HANDOFF_NOT_BLIND",
+  "seed": null,
+  "seed_reason": "Deterministic inverse solve of unchanged public observation; no random draws.",
+  "failed_attempts": [],
+  "threads": [],
+  "source_stage": "research/research_max_struct_r5/RESULTS/trajectory_replay/obs_b20d5a55677d4eca__global/stage_0.npz",
+  "host_Phi_reused_without_new_forward": {
+    "original_Phi": 0.5235232721607638,
+    "physical_relative_residual": 1.023252922947952,
+    "source": "research/research_max_struct_r5/RESULTS/trajectory_replay/obs_b20d5a55677d4eca__global/AUXILIARY_CANDIDATES.npz",
+    "row": 0
+  },
+  "adaptation_differences": [
+    "Resume exact saved m and native Fourier A at natural stage boundary; reconstruct auxiliary J from same DPCS/native APCS and record difference to saved input J.",
+    "Input A frequency-key mapping and original next-stage zero-padding retained; original PR history reset at each stage retained.",
+    "One initial-mf3 APCS construction is additional necessary handoff wiring; charged in auxiliary operations. No initial algorithm stage rerun.",
+    "Original shared host material/Phi is reused from already-paid source initial candidate; no GT or other historical endpoint is used for selection.",
+    "Local resumed stage0 corresponds to original mf6 stage1, local resumed stage1 corresponds to original mf10 stage2.",
+    "Only stage snapshots; no iteration observer or extra checkpoint Green."
+  ],
+  "setup_wall_seconds": 0.013109915889799595,
+  "setup_cpu_seconds": 0.008404000000000023,
+  "auxiliary_wall_seconds": 13.618125957902521,
+  "auxiliary_cpu_seconds": 13.428854999999999,
+  "auxiliary_physical_model_cost": {
+    "FULL_FORWARD": 3,
+    "actual_complex_RHS": 36,
+    "LU": 3,
+    "source_RHS": 36,
+    "full_factorization_dimension": 1728
+  },
+  "auxiliary_execution_receipt": {
+    "status": "COMPLETED",
+    "sourcewise_cg": false,
+    "current_solver": "pr",
+    "FFT": 0,
+    "physical_backend": "unchanged supplied MaxwellModel",
+    "residual": "Separately frozen current/material position transforms",
+    "current_transform": "scalar",
+    "material_transform": "onehop",
+    "gin_mode": "onehop_block4",
+    "small_solver": "elementwise complex division only; no small LU/inverse",
+    "block_geometry": "fixed disjoint 2x2 spatial-cell actual Green; zero diagonal in Goff",
+    "cache_material_value_gradient": true,
+    "prior": "unchanged supplied regularizer on physical real material",
+    "timer_scope": "solver preparation/current/readout/physical validation; excludes parent geometry/data and output serialization",
+    "wall_seconds": 13.617924915626645,
+    "cpu_seconds": 13.428652000000001,
+    "operation_counts": {
+      "block_Green_submatrices_extracted": 144,
+      "block_offdiagonal_nonzero_slots": 1728,
+      "self_Green_diagonal_entries_extracted": 576,
+      "source_metric_Cholesky": 2,
+      "physical_validations": 3,
+      "receiver_SVD": 1,
+      "APCS_SVD": 3,
+      "Fourier_columns_generated": 580,
+      "IDFT_columns_explicit": 580,
+      "DPCS_projection_columns": 580,
+      "handoff_current_reconstruction_columns": 36,
+      "G_columns": 556,
+      "S_columns": 556,
+      "scalar_current_operator_builds": 1000,
+      "current_objective_evaluations": 1000,
+      "source_metric_products": 48876,
+      "current_gradient_evaluations": 1000,
+      "material_readouts": 1000,
+      "material_value_gradient_requests": 37876,
+      "material_value_gradient_cache_misses": 35876,
+      "onehop_parameter_builds": 36876,
+      "scalar_complex_divisions": 544766976,
+      "onehop_a_scalar_divisions": 21240576,
+      "onehop_u_scalar_divisions": 254886912,
+      "onehop_block_matrix_apply_calls": 72752,
+      "onehop_block_matrix_apply_blocks": 10476288,
+      "onehop_block_matrix_complex_RHS": 125715456,
+      "onehop_forward_block_RHS": 63721728,
+      "onehop_adjoint_block_RHS": 61993728,
+      "onehop_du_scalar_divisions": 247974912,
+      "onehop_da_scalar_divisions": 20664576,
+      "material_inner_evaluations": 35876,
+      "material_prior_evaluations": 35876,
+      "material_value_gradient_cache_hits": 2000,
+      "material_inner_LBFGS_iterations": 32419,
+      "material_inner_LBFGS_evaluations": 34876,
+      "material_inner_fallbacks": 0,
+      "material_readout_source_whitening_products": 2000,
+      "PR_CG_steps": 1000,
+      "reduced_operator_columns": 72000,
+      "wall_seconds": 13.617864000145346
+    },
+    "physical_model_delta": {
+      "source_RHS": 36,
+      "full_factorization_dimension": 1728,
+      "actual_complex_RHS": 36,
+      "FULL_FORWARD": 3,
+      "cached_operator_imports": 0,
+      "LU": 3
+    },
+    "physical_LU": 3,
+    "physical_complex_RHS": 36
+  },
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "handoff_wiring": {
+    "initial_mf": 3,
+    "coefficient_shape": [
+      36,
+      12
+    ],
+    "reconstructed_J_difference_l2": 0.0,
+    "reconstructed_J_difference_max_abs": 0.0,
+    "reconstructed_J_relative_difference": 0.0,
+    "exact_array_equal": true,
+    "PR_history": "reset at next natural stage, unchanged original policy",
+    "Fourier_transport": "saved native coefficients mapped by frequency keys, then exact zero-padding in next original stage"
+  },
+  "auxiliary_candidate_scores": [
+    {
+      "stage": -2,
+      "reason": "reused_paid_original_host",
+      "objective": 0.5235232721607638,
+      "physical_relative_residual": 1.023252922947952
+    },
+    {
+      "stage": -1,
+      "reason": "initial_incumbent",
+      "physical_nll": 0.27676996254569364,
+      "objective": 0.2767745966664839,
+      "physical_relative_residual": 0.7440026378255571
+    },
+    {
+      "stage": 0,
+      "reason": "MAXITER",
+      "physical_nll": 0.03965746731156931,
+      "objective": 0.039664267513006383,
+      "physical_relative_residual": 0.281629072759079
+    },
+    {
+      "stage": 1,
+      "reason": "MAXITER",
+      "physical_nll": 0.014052573454073633,
+      "objective": 0.014060554986496962,
+      "physical_relative_residual": 0.16764589737940877
+    }
+  ],
+  "auxiliary_selected_stage": 1,
+  "auxiliary_selected_original_Phi": 0.014060554986496962,
+  "auxiliary_selected_relative_residual": 0.16764589737940877,
+  "corrector_wall_seconds": 5.955009624827653,
+  "corrector_cpu_seconds": 5.87405,
+  "corrector_physical_model_cost": {
+    "FULL_FORWARD": 1034,
+    "actual_complex_RHS": 24828,
+    "LU": 1034,
+    "source_RHS": 12408,
+    "full_factorization_dimension": 595584,
+    "DATA_ADJOINT": 1035,
+    "adjoint_RHS": 12420
+  },
+  "corrector": {
+    "stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+    "iterations": 1000,
+    "evaluations": 1035,
+    "cost": {
+      "FULL_FORWARD": 1034,
+      "actual_complex_RHS": 24828,
+      "LU": 1034,
+      "source_RHS": 12408,
+      "full_factorization_dimension": 595584,
+      "DATA_ADJOINT": 1035,
+      "adjoint_RHS": 12420
+    },
+    "wall_seconds": 5.955000875052065
+  },
+  "finalization_wall_seconds": 0.005535082891583443,
+  "finalization_cpu_seconds": 0.0054139999999982535,
+  "finalization_physical_model_cost": {},
+  "physical_objective": 0.0058152812316147225,
+  "physical_relative_residual": 0.10765890485966959,
+  "linear_relative_residual": 2.2149476259726863e-15,
+  "iterations": 1000,
+  "corrector_improved_original_Phi": true,
+  "selection": "minimum original Phi of reused paid host + resumed stage0 material + two remaining stage endpoints + original R4 corrector trajectory incumbent",
+  "finished_utc": "2026-11-03T12:10:25.962464+00:00",
+  "wall_seconds": 20.072086084168404,
+  "cpu_seconds": 19.616583000000002,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1037,
+    "actual_complex_RHS": 24864,
+    "LU": 1037,
+    "source_RHS": 12444,
+    "full_factorization_dimension": 597312,
+    "DATA_ADJOINT": 1035,
+    "adjoint_RHS": 12420
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 4.8545374143868685,
+    "DATA_ADJOINT": 0.4162559686228633
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 4.790776000000024,
+    "DATA_ADJOINT": 0.4098860000000073
+  },
+  "callbacks": {
+    "callback_calls": 0,
+    "checkpoints": [],
+    "callback_wall_seconds": 0.014031332917511463,
+    "callback_cpu_seconds": 0.01392199999999999,
+    "callback_save_wall_seconds": 0.014029624871909618,
+    "extra_checkpoint_Green_columns": 0,
+    "extra_checkpoint_Green_calls": 0,
+    "extra_Green_wall_seconds": 0.0,
+    "extra_Green_cpu_seconds": 0.0,
+    "physical_LU": 0,
+    "physical_complex_RHS": 0,
+    "scope": "Callbacks only; solver-created callback array copies stay in auxiliary time. Q=E+GJ exactly once per frozen checkpoint; no other extra physics."
+  },
+  "cost_scope": "Process imports/public+input-stage load/setup/1000 remaining auxiliary updates with original initial+stage physics validation/stage observer/handoff reconstruction/original R4 corrector1000 allowance/final incumbent physics and serialization; paid historical host Phi explicitly reused. Final receipt write excluded; nested times must not be added twice."
+}

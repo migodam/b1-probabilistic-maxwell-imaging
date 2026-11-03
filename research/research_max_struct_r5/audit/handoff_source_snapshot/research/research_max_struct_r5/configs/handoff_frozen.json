@@ -1,0 +1,90 @@
+{
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "freeze_utc": "2026-11-03T12:09:33.714259+00:00",
+  "case_id": "obs_b20d5a55677d4eca",
+  "public_data": "research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz",
+  "classification": "DISCLOSED_DEVELOPMENT_NATURAL_STAGE_HANDOFF_NOT_BLIND",
+  "mechanism_question": "Separate early mf3 endpoint influence from mf6/mf10 material-readout influence on the previously observed positive physical-fit instance; parent owns interpretation.",
+  "common": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "stages": [
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "sourcewise_cg": false,
+    "cache_material_value_gradient": true
+  },
+  "handoffs": {
+    "global_stage0_to_material_only": {
+      "source_stage": "research/research_max_struct_r5/RESULTS/trajectory_replay/obs_b20d5a55677d4eca__global/stage_0.npz",
+      "source_candidates": "research/research_max_struct_r5/RESULTS/trajectory_replay/obs_b20d5a55677d4eca__global/AUXILIARY_CANDIDATES.npz",
+      "initial_mf": 3,
+      "target": {
+        "current_transform": "scalar",
+        "material_transform": "onehop"
+      }
+    },
+    "material_only_stage0_to_global": {
+      "source_stage": "research/research_max_struct_r5/RESULTS/factorial/obs_b20d5a55677d4eca__material_only/stage_0.npz",
+      "source_candidates": "research/research_max_struct_r5/RESULTS/factorial/obs_b20d5a55677d4eca__material_only/AUXILIARY_CANDIDATES.npz",
+      "initial_mf": 3,
+      "target": {
+        "current_transform": "scalar",
+        "material_transform": "scalar"
+      }
+    }
+  },
+  "expected_public": {
+    "host": 0.1,
+    "amplitude": 12.0,
+    "smooth_weight": 0.0001,
+    "tv_weight": 0.0001,
+    "tv_epsilon": 0.01,
+    "prior_width": 19.5,
+    "material_bounds": [
+      0.02,
+      20.0
+    ]
+  },
+  "adaptation_differences": [
+    "Resume exact saved m and native Fourier A at natural stage boundary; reconstruct auxiliary J from same DPCS/native APCS and record difference to saved input J.",
+    "Input A frequency-key mapping and original next-stage zero-padding retained; original PR history reset at each stage retained.",
+    "One initial-mf3 APCS construction is additional necessary handoff wiring; charged in auxiliary operations. No initial algorithm stage rerun.",
+    "Original shared host material/Phi is reused from already-paid source initial candidate; no GT or other historical endpoint is used for selection.",
+    "Local resumed stage0 corresponds to original mf6 stage1, local resumed stage1 corresponds to original mf10 stage2.",
+    "Only stage snapshots; no iteration observer or extra checkpoint Green."
+  ],
+  "corrector_source": "research.research_max_struct_r4.experiments.cooperative_paths.refine",
+  "corrector_maxiter": 1000,
+  "observer_policy": "stage_only",
+  "seed": null,
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "parameter_tuning": false,
+  "device": "CPU",
+  "threads_per_process": 1,
+  "max_processes": 2,
+  "scientific_wallcap": null,
+  "selection": "Minimum original Phi of reused host, input stage0 endpoint, two resumed endpoints, and original R4 corrector incumbent",
+  "stop_policy": "Inherited fixed 500 updates per remaining stage; material inner60 and original corrector1000 allowance unchanged"
+}

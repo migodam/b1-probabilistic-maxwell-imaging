@@ -1,0 +1,52 @@
+{
+  "run_id": "obs_63abafa750fc483c__global",
+  "case_id": "obs_63abafa750fc483c",
+  "method": "global",
+  "numerical": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "sourcewise_cg": false
+  },
+  "configuration_source": "research/research_max_struct_r4/results/confirmation_remote/results/confirmation/obs_63abafa750fc483c__global.json result.configuration",
+  "public_files": [
+    "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+    "research/research_max_struct_r4/data_public/confirmation/obs_63abafa750fc483c.npz"
+  ],
+  "reference": {
+    "kind": "candidate_m",
+    "prediction": "research/research_max_struct_r4/results/confirmation_remote/predictions/obs_63abafa750fc483c/global.npz"
+  },
+  "implementation_differences": [
+    "Historical CPU Windows to current macOS CPU/LAPACK platform; actual endpoint differences recorded.",
+    "Historical pre-aux initial metric omitted; unchanged optimizer initial validation retained and charged. No auxiliary-stage J/A historical arrays were saved."
+  ],
+  "seed": null
+}

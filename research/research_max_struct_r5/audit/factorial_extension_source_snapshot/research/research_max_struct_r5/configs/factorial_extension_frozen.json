@@ -1,0 +1,105 @@
+{
+  "status": "FROZEN_BEFORE_EXTENSION",
+  "freeze_utc": "2026-11-03T12:04:28.046889+00:00",
+  "classification": "PREVIOUSLY_OBSERVED_PUBLIC_CASES_DEVELOPMENT_EXTENSION_NOT_BLIND",
+  "mechanism_question": "Does removing onehop current propagation preserve physical fitting on all three previously observed public cases? Retain all three results; final material-scoring interpretation belongs to parent.",
+  "common": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "sourcewise_cg": false,
+    "cache_material_value_gradient": true
+  },
+  "arms": {
+    "material_only": {
+      "current_transform": "scalar",
+      "material_transform": "onehop"
+    }
+  },
+  "reuse_controls": {
+    "global_00": "R5 deterministic replay plus historical original-R4-common-corrector receipt as separately available",
+    "onehop_11": "R5 deterministic replay plus historical R4 onehop_absorption common-corrector"
+  },
+  "corrector_source": "research.research_max_struct_r4.experiments.cooperative_paths.refine",
+  "corrector_maxiter": 1000,
+  "corrector_objective": "original physical Phi times 1e6 inside unchanged optimizer; acceptance/selection on original Phi",
+  "seed": null,
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "parameter_tuning": false,
+  "device": "CPU",
+  "threads_per_process": 1,
+  "max_processes": 2,
+  "scientific_wallcap": null,
+  "prior": "Unchanged model.reg value and gradient; no unused dense Hessian",
+  "selection": "Original Phi host + true stage endpoints; original R4 corrector1000 from minimum Phi endpoint; retain incumbent",
+  "cost_policy": "Record all actual costs; no equal-compute or improvement claim from additional operations",
+  "cases": {
+    "obs_42cb233e4f224bb3": {
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_42cb233e4f224bb3.npz"
+      ]
+    },
+    "obs_63abafa750fc483c": {
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_63abafa750fc483c.npz"
+      ]
+    },
+    "obs_100bd65498644322": {
+      "public_files": [
+        "research/research_max_struct_r4/data_public/confirmation/operators.npz",
+        "research/research_max_struct_r4/data_public/confirmation/obs_100bd65498644322.npz"
+      ]
+    }
+  },
+  "output_subdir": "factorial_extension",
+  "observer_policy": "stage_only",
+  "expected_public": {
+    "host": 0.1,
+    "amplitude": 12.0,
+    "smooth_weight": 0.0001,
+    "tv_weight": 0.0001,
+    "tv_epsilon": 0.01,
+    "prior_width": 19.5,
+    "material_bounds": [
+      0.02,
+      20.0
+    ]
+  },
+  "adaptation_differences": [
+    "Public observation split into unchanged shared operators.npz and per-case Y/noise/prior NPZ; merged in memory only.",
+    "No iteration callback/checkpoint Green products; preserve all 3 stage snapshots, complete scalar history and final prediction.",
+    "Same fixed factorial material_only algorithm and all numerical/corrector settings as first disclosed-case run; no changes to beta, readout allowance, stops, initialization, box or prior."
+  ],
+  "original_first_freeze": "configs/factorial_frozen.json",
+  "original_first_source_snapshot": "audit/factorial_source_snapshot"
+}

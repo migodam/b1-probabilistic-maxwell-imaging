@@ -1,0 +1,72 @@
+--- unchanged_cie_factorial
++++ cie_stage_handoff
+@@ -1,4 +1,4 @@
+-"""Frozen two-position factorial fork of R4 onehop CIE.
++"""Frozen natural-stage handoff fork of R5 factorial CIE.
+ 
+ PR updates, Fourier/DPCS transport, normalization, material budgets and
+ validation are copied unchanged from the recorded R4 implementation. Only
+@@ -17,7 +17,7 @@
+ from research.research_max_struct_r4.src.cie_onehop import (
+     OneHopAbsorption, onehop_material_readout)
+ 
+-def run_factorial_cie(model,Y,m0,config):
++def run_stage_handoff_cie(model,Y,m0,config):
+     """Run one mixed current/material arm with the inherited R4 PR schedule.
+ 
+     current_transform and material_transform independently select scalar CIE
+@@ -26,8 +26,8 @@
+     original R4 exact material readout; both retain their original allowances.
+     """
+     cfg=dict(config);counter=Counter();cfg['_counter']=counter
+-    if (cfg.get('current_transform'),cfg.get('material_transform')) not in {('onehop','scalar'),('scalar','onehop')}:
+-        raise ValueError('Only the two preregistered mixed-position factorial arms are enabled')
++    if (cfg.get('current_transform'),cfg.get('material_transform')) not in {('scalar','scalar'),('scalar','onehop')}:
++        raise ValueError('Only scalar-current stage handoff targets are enabled')
+     if cfg.get('method','cie') != 'cie' or cfg.get('sourcewise_cg',False) or cfg.get('current_solver','pr') != 'pr':
+         raise ValueError('This extension is restricted to mature global PR CIE')
+     wall=time.perf_counter();cpu=time.process_time()
+@@ -168,6 +168,34 @@
+         JD = Vd @ ((Us[:, :receiver_rank].conj().T @ Y)/sig[:receiver_rank, None])
+     J = JD.copy()
+     old_coefficients = {}
++    handoff_info = None
++    if 'initial_fourier_coefficients' in config:
++        if 'initial_mf' not in config or method != 'cie':
++            raise ValueError('Fourier resume requires initial_mf and CIE')
++        initial_U, initial_info = fourier_apcs(shape,config['initial_mf'],Vd,cost)
++        initial_A = np.asarray(config['initial_fourier_coefficients'],complex)
++        if initial_A.shape != (initial_U.shape[1],ns):
++            raise ValueError('Invalid saved Fourier coefficient shape')
++        if int(stages[0]['mf']) < int(config['initial_mf']):
++            raise ValueError('Resume requires nested Fourier masks')
++        old_coefficients = {frequency:a.copy() for frequency,a in zip(initial_info['frequencies'],initial_A)}
++        J = JD+initial_U@initial_A
++        input_J = np.asarray(config['initial_current'],complex)
++        if input_J.shape != J.shape:
++            raise ValueError('Invalid saved auxiliary current shape')
++        error=J-input_J
++        handoff_info=dict(initial_mf=int(config['initial_mf']),
++            coefficient_shape=list(initial_A.shape),
++            reconstructed_J_difference_l2=float(np.linalg.norm(error)),
++            reconstructed_J_difference_max_abs=float(np.max(abs(error))),
++            reconstructed_J_relative_difference=float(np.linalg.norm(error)/max(np.linalg.norm(input_J),1e-300)),
++            exact_array_equal=bool(np.array_equal(J,input_J)),
++            PR_history='reset at next natural stage, unchanged original policy',
++            Fourier_transport='saved native coefficients mapped by frequency keys, then exact zero-padding in next original stage')
++        cost['handoff_current_reconstruction_columns']+=initial_U.shape[1]
++        if config.get('handoff_callback'):
++            config['handoff_callback'](dict(J_reconstructed=J.copy(),J_input=input_J.copy(),
++                m_initial=m.copy(),initial_coefficients=initial_A.copy(),info=handoff_info))
+     GJD, SJD = G@JD, S@JD
+     cost['G_columns'] += ns
+     cost['S_columns'] += ns
+@@ -326,7 +354,7 @@
+     model_delta = {k: model_after.get(k, 0)-model_before.get(k, 0)
+                    for k in set(model_before)|set(model_after)
+                    if isinstance(model_after.get(k, 0), (int, float)) and isinstance(model_before.get(k, 0), (int, float))}
+-    return dict(m=best['m'].copy(), candidates=candidates, history=history,stage_states=stage_states,
++    return dict(m=best['m'].copy(), candidates=candidates, history=history,stage_states=stage_states,handoff_info=handoff_info,
+                 cost=dict(cost, model=model_delta), last_joint_m=m.copy(), status=status,
+                 method=method, receiver_rank=receiver_rank, source_metrics=metric_info,
+                 sourcewise_cg=sourcewise, current_solver=current_solver)

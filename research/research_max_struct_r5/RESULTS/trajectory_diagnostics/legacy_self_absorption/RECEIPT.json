@@ -1,0 +1,101 @@
+{
+  "status": "COMPLETED_FIXED_STATES",
+  "truth_access": "NONE",
+  "actual_step_available": false,
+  "source": "research/research_max_struct_r4/results/self_absorption",
+  "device": "CPU",
+  "threads": 1,
+  "stages": [
+    0,
+    1,
+    2
+  ],
+  "corrector": "NOT_RUN",
+  "parameter_tuning": false,
+  "failed_attempts": [],
+  "configuration": {
+    "status": "DEV_FROZEN_BEFORE_RUN",
+    "case_id": "obs_b20d5a55677d4eca",
+    "classification": "GT_DISCLOSED_DEVELOPMENT_CASE_NO_TRUTH_ACCESS_BY_RUNNER",
+    "method": "self-only absorption control of mature global PR CIE",
+    "block_shape": [
+      1,
+      1
+    ],
+    "block_alignment": "one independent scalar self term per cell",
+    "block_Green": "actual Green diagonal; no intercell Green coupling in Gin",
+    "stages": [
+      {
+        "mf": 3,
+        "beta": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      }
+    ],
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "prior": "unchanged original smooth1e-4/TV1e-4 on physical real material",
+    "source_metric_policy": "fixed original paper source normalizations",
+    "material_seed": "unchanged mature shared-real scalar CIE seed, then same generic exact absorbed loss with maxiter60",
+    "corrector": "R4 cooperative_paths.refine, original Phi scaled1e6, maxiter1000",
+    "corrector_maxiter": 1000,
+    "selection": "same original Phi including prior; retain host incumbent",
+    "gradient_check": "NOT_RERUN: same exact generic material gradient; only Gin mode and diagonal application change",
+    "device": "CPU",
+    "threads": 1,
+    "truth_access": "NONE",
+    "parameter_tuning": false,
+    "originality_assertion": false,
+    "gin_mode": "self",
+    "control_purpose": "isolate whether self term suffices versus intercell 2x2 block absorption",
+    "self_exact_rational_readout": "NOT_IMPLEMENTED; preserve identical readout to isolate Gin"
+  },
+  "wall_seconds": 0.3923799591138959,
+  "cpu_seconds": 0.38316200000000006,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 15,
+    "actual_complex_RHS": 360,
+    "LU": 15,
+    "source_RHS": 180,
+    "full_factorization_dimension": 8640,
+    "DATA_ADJOINT": 3,
+    "adjoint_RHS": 36,
+    "FULL_ANALYTIC_J": 3,
+    "receiver_transpose_RHS": 144,
+    "FullJ": 3,
+    "material_J_builds": 3
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 0.07995083322748542,
+    "DATA_ADJOINT": 0.0021364581771194935,
+    "FULL_ANALYTIC_J": 0.00634545786306262
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 0.078793,
+    "DATA_ADJOINT": 0.0019030000000000435,
+    "FULL_ANALYTIC_J": 0.006296000000000024
+  },
+  "money": null,
+  "cost_scope": "6 historical fixed-state diagnostic reuse, not auxiliary replay; no actual historical step, no HVP along unavailable step; all new forward/adjoint/Jacobian/readout costs charged"
+}
