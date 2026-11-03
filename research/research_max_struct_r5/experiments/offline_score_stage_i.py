@@ -73,6 +73,9 @@ def run():
         p=(R2/'sealed_truth'/(case+'.npz')) if case==DEV else R4/'sealed_truth/confirmation'/(case+'.npz')
         opened_utc=utc()
         with np.load(p,allow_pickle=False) as f:
+            if receipt.get('first_GT_read_utc') is None:
+                receipt['first_GT_read_utc']=opened_utc
+                RECEIPT.write_text(json.dumps(receipt,indent=2)+'\n')
             keys=list(f.files);t=f['m'].copy().ravel();mask=f['mask'].copy().ravel().astype(bool)
         truths[case]=(t,mask)
         receipt['truth_reads'].append(dict(path=str(p.resolve()),opened_utc=opened_utc,available_keys=keys,arrays_read=['m','mask'],m_shape=list(t.shape),mask_shape=list(mask.shape)))

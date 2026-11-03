@@ -10,6 +10,8 @@
 
 精确执行来源按批次归档：`audit/trajectory_replay_source_snapshot/`、`audit/factorial_source_snapshot/`、`audit/factorial_extension_source_snapshot/`、`audit/handoff_source_snapshot/`。源码与输入路径是复现依据，不需要hash验证。
 
+评分入口接线修复前的原执行版`offline_score_stage_i.py`事后保留在`audit/scoring_source_original/`，附保留回执；这是源码归档，没有重新运行或替换历史评分。入口修复与仅prepare的小fixture验证见`audit/REPRODUCTION_FIX.md`。
+
 ## 输出路径是固定的，先准备隔离副本
 
 replay仅有`--run-id`；handoff仅有`--handoff-id`；诊断只有互斥`--run-id`/`--all-ready`/`--legacy-stage-states`。它们没有`--output`参数，ROOT由脚本自身位置决定。不能把本例伪装成可传一个新output参数。
@@ -40,7 +42,7 @@ python research/research_max_struct_r5/experiments/analyze_trajectories.py --leg
 
 第一条处理168 checkpoint；第二条使用历史已付费状态做6个新增诊断。也可用`--run-id <完整run_id>`处理单条轨迹，不能与另外两选项同用。诊断会付新的forward/adjoint/Jacobian费用，不是零物理评分。原首次失败保留在冻结证据中；复现不应人为再次制造失败或把其费用从历史账本抹除。
 
-`ZERO_PHYSICS_CORRECTIONS_RECEIPT.json`描述历史后处理，当前并无单独通用CLI可承诺复现该整理步骤；冻结修订后的原始JSON/NPZ是其证据。勿把诊断runner重新执行称为零物理后处理。
+当前`src/trajectory_diagnostics.py`已经包含ordinary/self transport解析置零（原浮点差保留在raw_roundoff）以及prior曲率分离修正；用当前源码的新诊断会直接输出修订语义。`ZERO_PHYSICS_CORRECTIONS_RECEIPT.json`只描述历史保存数组的零物理后处理，并非新复现必须另跑的CLI。诊断runner本身仍有物理费用，不能称零物理后处理；若恢复旧批次源码快照，须同时保留其当时语义与历史修订记录。
 
 ## 2 factorial、3 extension、2 handoff
 
@@ -59,11 +61,12 @@ factorial的`--config`接受绝对路径，或解析为R5 configs目录内相对
 ## 封存后的零物理评分
 
 ```bash
+python research/research_max_struct_r5/experiments/prepare_stage_i_scoring.py
 python research/research_max_struct_r5/experiments/offline_score_stage_i.py
 python research/research_max_struct_r5/experiments/offline_score_factorial_extension.py
 ```
 
-无CLI参数；ROOT相对脚本，写固定RESULTS/audit文件，故同样只在新副本运行。它们会先建立/检查seal，再读已披露开发对象的m/mask，仅用于离线评分；不能将任何GT方向或指标回送在线选择。handoff专用评分入口现已提供，见下方补充。评分回执新增LU/RHS=0，与诊断runner有本质成本区别。
+先完成8 replay、174诊断和最初2 factorial，再执行prepare；prepare不读取GT，仅对本副本的完成输出、固定configs/protocol/theory与当前源码以bytes/mtime建立新的Stage I seal及初始评分receipt，`first_GT_read_utc=null`、`truth_reads=[]`。它拒绝任何已存在的seal/receipt，不能用于原交付目录；可用`--root /ABSOLUTE/ISOLATED/R5`指定另一隔离R5目录。scorer无CLI参数、ROOT相对脚本，在第一次真实GT文件打开时才填写首GT读取时间；随后检查seal并按原合同评分。extension scorer单独建立自己的seal。不能将GT方向或指标回送在线选择。handoff专用评分入口现已提供，见下方补充。prepare及评分新增LU/RHS=0，与诊断runner有本质成本区别。
 
 ## 回放可比性的限制
 
