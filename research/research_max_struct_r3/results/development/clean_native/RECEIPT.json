@@ -1,0 +1,157 @@
+{
+  "status": "SEALED_DEVELOPMENT_PREDICTION",
+  "classification": "OFFLINE_DIAGNOSTIC_POSTHOC_R2_DEVELOPMENT",
+  "case": "obs_b20d5a55677d4eca",
+  "arm": "clean_native",
+  "started_utc": "2026-11-03T02:54:45.448490+00:00",
+  "code": "experiments/development_controls.py",
+  "truth_policy": "No GT material or support used by online solver; clean arm reads only already-published Y_clean",
+  "stages": [
+    {
+      "mf": 3,
+      "beta": 1.0,
+      "maxiter": 500
+    },
+    {
+      "mf": 6,
+      "beta_current": 1.0,
+      "beta_material": 0.2,
+      "maxiter": 500
+    },
+    {
+      "mf": 10,
+      "beta_current": 1.0,
+      "beta_material": 0.2,
+      "maxiter": 500
+    }
+  ],
+  "source_metrics": "wd/ws frozen from original noisy publicY/E, even for clean target",
+  "coefficient_tol": 0.0,
+  "miniter": 50,
+  "material_inner_maxiter": 60,
+  "dpcs_rtol": 0.001,
+  "initialization": "uniform public host .1",
+  "prior": "same historical smooth1e-4/TV1e-4,width19.5,epsilon.01",
+  "material_box": [
+    0.02,
+    20.0
+  ],
+  "corrector": {
+    "method": "original physical L-BFGS-B",
+    "maxiter": 1000,
+    "maxfun": 4000
+  },
+  "online_selection": "original physical objective+same prior, always includes uniforminitial; never GT score",
+  "threads": 1,
+  "device": "CPU",
+  "hash_checks": false,
+  "inverse_runs": 1,
+  "data_change": "published stored clean measurement replaces noisy target; no regeneration",
+  "finished_utc": "2026-11-03T02:54:56.475105+00:00",
+  "prediction": "predictions/clean_native.npz",
+  "physical_objective": 0.005832651506699793,
+  "physical_relative_residual": 0.10782185436008057,
+  "residual_to_original_noisyY": 0.10781998714332282,
+  "physical_whitened_residual_original_sigma": 2587.724504641934,
+  "projected_gradient_inf": 1.262339992535999e-07,
+  "projected_gradient_l2": 3.377324030912457e-07,
+  "original_physical_linear_residual": 2.6536554373525136e-15,
+  "corrector_stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+  "alternating_iterations": 1500,
+  "readout_calls": 1500,
+  "stage_ends": [
+    {
+      "stage": 0,
+      "event": "stage_end",
+      "status": "MAXITER",
+      "mf": 3,
+      "fourier_columns": 36,
+      "apcs_rank": 36,
+      "beta_current": 1.0,
+      "beta_material": 1.0,
+      "wall": 1.255144165828824
+    },
+    {
+      "stage": 1,
+      "event": "stage_end",
+      "status": "MAXITER",
+      "mf": 6,
+      "fourier_columns": 144,
+      "apcs_rank": 144,
+      "beta_current": 1.0,
+      "beta_material": 0.2,
+      "wall": 2.7254615826532245
+    },
+    {
+      "stage": 2,
+      "event": "stage_end",
+      "status": "MAXITER",
+      "mf": 10,
+      "fourier_columns": 400,
+      "apcs_rank": 400,
+      "beta_current": 1.0,
+      "beta_material": 0.2,
+      "wall": 4.775803332682699
+    }
+  ],
+  "auxiliary_cost": {
+    "physical_validations": 4,
+    "receiver_SVD": 1,
+    "G_columns": 592,
+    "S_columns": 592,
+    "APCS_SVD": 3,
+    "Fourier_columns_generated": 580,
+    "IDFT_columns_explicit": 580,
+    "DPCS_projection_columns": 580,
+    "material_readouts": 1500,
+    "material_inner_evaluations": 7500,
+    "PR_CG_steps": 1500,
+    "reduced_operator_columns": 108000,
+    "wall_seconds": 4.775807125028223,
+    "model": {
+      "full_factorization_dimension": 1728,
+      "LU": 3,
+      "source_RHS": 36,
+      "cached_operator_imports": 0,
+      "FULL_FORWARD": 3,
+      "actual_complex_RHS": 36
+    }
+  },
+  "corrector_cost": {
+    "FULL_FORWARD": 1025,
+    "actual_complex_RHS": 24612,
+    "LU": 1025,
+    "source_RHS": 12300,
+    "full_factorization_dimension": 590400,
+    "DATA_ADJOINT": 1026,
+    "adjoint_RHS": 12312
+  },
+  "free_material_real_dof": 576,
+  "physical_state_complex_entries": 6912,
+  "fixed_DPCS_rank": 17,
+  "auxiliary_selected_physical_objective": 0.010863153864780465,
+  "scientific_scope": "mechanism development afterGT disclosure, not fresh confirmation or standalone basin proof",
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1033,
+    "actual_complex_RHS": 24720,
+    "LU": 1033,
+    "source_RHS": 12396,
+    "full_factorization_dimension": 595008,
+    "DATA_ADJOINT": 1027,
+    "adjoint_RHS": 12324
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 5.060810126829892,
+    "DATA_ADJOINT": 0.4125347938388586
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 4.906944999999981,
+    "DATA_ADJOINT": 0.40717400000000126
+  },
+  "wall_seconds": 11.026765499729663,
+  "cpu_seconds": 10.799432,
+  "FFT": 0,
+  "GPU": 0,
+  "timer_scope": "public/cleandata load,aux1500steps,physicalreranking,corrector,finalgradient,serialization; finalreceiptwrite excluded"
+}

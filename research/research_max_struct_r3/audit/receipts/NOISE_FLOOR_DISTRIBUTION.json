@@ -1,0 +1,65 @@
+{
+  "run_id": "NOISE_FLOOR_DISTRIBUTION",
+  "case_id": "obs_b20d5a55677d4eca",
+  "branch": "OFFLINE_DIAGNOSTIC_PUBLIC_GT",
+  "git_sha": "fcbf1c9419538c0b065dc1d8f37ae4e1f363bc0e",
+  "code_hash": null,
+  "config_hash": null,
+  "seed": null,
+  "data_id": "R2 obs_b20d5a55677d4eca",
+  "material_class": "real contrast; explicit passive-loss stages if stated in raw",
+  "physical_convention": "exp(-i omega t), lambda0=1, fixed mu=1",
+  "mesh": {
+    "cells": 576,
+    "kind": "circular-pulse scalar TM"
+  },
+  "sources": {
+    "count": 12
+  },
+  "receivers": {
+    "count": 48
+  },
+  "frequencies": {
+    "k": 6.283185307179586
+  },
+  "noise_model": "R2 circular CN; clean counterfactual explicit",
+  "whitening": "1/sigma for noisy discrepancy; normalized data for Phi",
+  "prior": "same historical R2 smooth/TV",
+  "initialization": null,
+  "state_representation": "full physical current/field; auxiliary stage details in raw",
+  "state_dof": null,
+  "material_dof": {
+    "ambient_real": 576,
+    "varied_scope": "refer to raw run; full576 in high-dimensional inversion"
+  },
+  "baseline_id": "mature R2 native CIE + original corrector",
+  "stage": "OFFLINE_DIAGNOSTIC_PUBLIC_GT",
+  "termination_reason": "COMPLETED",
+  "online_selection_rule": "same original physical Phi when inverse candidates exist",
+  "physical_residual": null,
+  "auxiliary_residual": null,
+  "constitutive_defect": null,
+  "constraint_violation": null,
+  "cost": {
+    "LU": 1,
+    "complex_RHS": 29,
+    "wall_seconds": 0.024685875046998262,
+    "cpu_seconds": 0.019226999999999994,
+    "details": "results/diagnostics/NOISE_FLOOR_DISTRIBUTION.json"
+  },
+  "candidate_ids": null,
+  "truth_access": "PUBLISHED_R2_ONLY",
+  "validation": {
+    "raw_receipt": "results/diagnostics/NOISE_FLOOR_DISTRIBUTION.json",
+    "scope": "finite disclosed development/mechanism, not fresh blind recovery",
+    "independent_review": "audit/FINAL_INDEPENDENT_REVIEW.md"
+  },
+  "physical_state_complex_entries": 6912,
+  "null_reasons": {
+    "code_hash/config_hash": "User requested no hash verification",
+    "seed": "Deterministic inherited data/anchor, no new random target",
+    "state_dof": "No aggregate independent auxiliary-state DOF; stage ranks in raw, physical entries separately defined",
+    "missing_metrics": "Not instrumented/applicable for this mechanism; raw source authoritative",
+    "receivers.count_if_null": "Existing wiring public operator file; no guessed value"
+  }
+}

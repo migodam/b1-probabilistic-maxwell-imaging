@@ -1,0 +1,54 @@
+{
+  "created_utc": "2026-11-03T02:58:51.761814+00:00",
+  "classification": "DEVELOPMENT_ON_PUBLISHED_R2",
+  "objective": "Distinguish state feasibility, residual metric and nonlinear material path; pivot on evidence",
+  "frozen_evidence": [
+    "MAX_STRUCT_R1",
+    "MAX_STRUCT_R2",
+    "FBG_R3_E",
+    "R4_BASIN",
+    "Z_ALG_E1",
+    "A17"
+  ],
+  "routes": [
+    {
+      "id": "DPCS",
+      "question": "Does noisy fixed visible current cause failed physical material?",
+      "experiments": [
+        "fixed-material feasibility floor",
+        "same-source-metric exact profile",
+        "ordinary strong-mode release",
+        "clean-data native counterfactual"
+      ]
+    },
+    {
+      "id": "PASSIVE_CONTINUATION",
+      "question": "Can a loss-homotopy leave the failed material region, and is it more useful than ordinary extra work?",
+      "gamma": [
+        4,
+        1,
+        0.25
+      ],
+      "per_gamma_iterations": 250,
+      "final_original_corrector_iterations": 1000,
+      "control": "1750 additional original-data iterations",
+      "warning": "Auxiliary physical media with unmodified observations; not exact data continuation or new information"
+    },
+    {
+      "id": "DATA_FIBER",
+      "question": "When can finite observed data determine artificial-medium continuation?",
+      "test": "existing nonpermutation Z-ALG material branch under added physical absorption"
+    },
+    {
+      "id": "SPATIAL_TRANSPORT",
+      "question": "Can legal spatial rearrangement repair shape errors that amplitude-only paths did not?",
+      "status": "derive before running"
+    }
+  ],
+  "final_selection": "Same original Maxwell data objective and same public material prior; no truth",
+  "fresh_confirmation": "Only after development analysis and algorithm freeze; separate fresh entropy and scoring process",
+  "hash_checks": false,
+  "stop_policy": "A failed claim changes route, not whole-study disposition",
+  "timestamp_scope": "planning record saved after initial route selection; individual execution receipts preserve actual start times",
+  "user_steering": "Formula structure first; no empty rewrites or blind complexity"
+}

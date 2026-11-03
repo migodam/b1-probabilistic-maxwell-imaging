@@ -1,3 +1,11 @@
+<!-- MAX_STRUCT_R3_PUBLICATION -->
+## MAX-STRUCT-R3：公式驱动的机制研究循环
+
+噪声硬锁代价、被动单元圆弧与更新秩层级；真实边界停滞和3D适用性控制。11个同一公开对象的开发控制未建立新增成像优势，全部失败、成本和后续方向保留。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r3/) · [给Chat的入口](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r3/CHAT_HANDOFF.md) · [数学推导](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r3/THEORY_DERIVATIONS.md)
+<!-- /MAX_STRUCT_R3_PUBLICATION -->
+
 <!-- MAX_STRUCT_R2_PUBLICATION -->
 ## MAX-STRUCT-R2：结构审计、新盲测与新增照明
 

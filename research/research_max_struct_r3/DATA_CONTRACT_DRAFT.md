@@ -1,0 +1,15 @@
+# R3 data/score contract template — NOT FROZEN
+
+No new confirmation data have been generated under this draft. Parent approval/freeze is required before generation. Published R2 truth is development data only; `clean_native` additionally uses published cleanY and is an information counterfactual.
+
+If R3 retains the exact R2 scalar24×24/12-source/48-receiver physical model, use576 shared independent real material cells, common [.02,20] box, host.1, amplitude12, unchanged outgoing disk-pulse Hankel–Green operators and historical smooth/TV prior. Keep the original normalized physical Phi; unit-weight whitened form requires prior multiplier||Y||²/sigma². No algorithm-specific support, shape labels or true fields may enter inversion.
+
+For inherited circular-complex Gaussian noise, sigma=1e-3||Yclean||/sqrt(M), Var(Re)=Var(Im)=sigma²/2, W=I/sigma. The marginal per-case99% radius is sqrt(chi2.ppf(.99,2M)/2), not a fixed Gaussian norm or simultaneous confidence guarantee. Reuse prior R2 scoring semantics only when noise/physics match. A clean target has no such CN discrepancy gate; record clean residual and explicitly mark any noise gate inapplicable rather than inventing a threshold.
+
+Proposed fresh3-object minimum: two independent draws from the same curved-bar geometric prior and one annulus control, all at identical amplitude/host/noise. No relabeling of R2 objects, no rejection using GT self-Otsu/score and no regeneration to improve results. Actual classes, numeric shape parameters, alpha, masks, cleanY and entropy remain in a private mapping; only opaque IDs/operators/coordinates/Y/calibration/known common priors are public. The generator must not be imported by an inverse runner.
+
+Before generation, freeze planned methods, starts, current spaces, source metrics, beta rules, budget caps, all stopping/selection rules and allowed correctors. Record failure/NOT_RUN dispositions for every planned method×case. Before scoring, independently write a complete prediction seal with time/path/size/mtime and no hashes, then receive explicit parent authorization to open fresh truth. GT ranking is oracle-only and never replaces sealed top1.
+
+Primary inherited scalar material metrics: RMSE/12; reconstruction-only256-bin Otsu IoU against private alpha>=.5. Joint requires material NRMSE<=.15, IoU>=.7, material legality and the matching original-data noise gate. Report data-only and material+data separately. Historical relative residual.003 is an explicitly secondary old-noise comparator. Fixed-midpoint IoU, area error and centroid distance remain descriptive; undefined values are null+reason. Three objects support no population significance or universal recovery claim.
+
+Costs split measured setup/online/validation/scoring where actually instrumented. Every physical LU/RHS, current factor/RHS, source Gram, Green action, rejection, candidate validation and output cost is retained. Never add a nested timer to its outer process total. Unknown counts/timing/fees are null+reason. Source paths and frozen Git provenance replace forbidden hash checks.
