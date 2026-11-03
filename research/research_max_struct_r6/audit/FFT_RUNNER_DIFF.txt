@@ -1,0 +1,69 @@
+--- primary run_case.py unchanged
++++ independent run_fft_case.py
+@@ -1,4 +1,8 @@
+-"""Execute exactly one public R6 case/arm task; no batch or GT access.
++"""Execute one independent R6 matrix-free FFT engineering case/arm task.
++
++Copied observation/output/corrector contract from primary run_case.py; only
++auxiliary dispatch/geometry and backend provenance change. No primary source
++is modified. This runner is separate from the frozen dense scientific queue.
+ 
+ CLI: --manifest FILE --task-id ID [--config FILE] [--output-dir DIR]
+ Alternative --public-list FILE accepts the same public task-list JSON schema.
+@@ -76,6 +80,10 @@
+     config_path=resolve(config_ref)
+     cfg=json.loads(config_path.read_text())
+     arm=task['arm'];case_id=task['case_id']
++    if cfg.get('auxiliary_backend')!='matrix_free_fft_tsom':
++        raise ValueError('Explicit independent FFT engineering config required')
++    if arm not in ('cie_dual','a_material'):
++        raise ValueError('FFT engineering comparison supports exactly cie_dual/a_material')
+     files=task.get('public_files')
+     if not files or not isinstance(files,list):raise ValueError('Task must declare public_files list')
+     out=resolve(args.output_dir or task.get('output_dir') or
+@@ -84,7 +92,7 @@
+     receipt=dict(status='RUNNING',task_id=args.task_id,case_id=case_id,arm=arm,
+         started_utc=datetime.now(timezone.utc).isoformat(),executable=sys.executable,
+         manifest_path=str(manifest_path),config_path=str(config_path),task=task,configuration=cfg,
+-        truth_access='NONE',scoring='NOT_RUN',seed=None,
++        truth_access='NONE',scoring='NOT_RUN',auxiliary_backend='matrix_free_fft_tsom',seed=None,
+         seed_reason='No random draws; deterministic solve of public observations',
+         failed_attempts=[],device='CPU',threads_per_process=1,
+         unknown_costs=None)
+@@ -97,7 +105,8 @@
+         from threadpoolctl import threadpool_limits,threadpool_info
+         from research.research_fbg_r3_experiments.src.physics import MaxwellModel
+         from research.research_max_struct_r6.src.benchmark_solver import (
+-            ARMS,SOURCE_PATHS,arm_config,run_auxiliary,PaidStateObserver,refine_observed,difference)
++            ARMS,SOURCE_PATHS,arm_config,PaidStateObserver,refine_observed,difference)
++        from research.research_max_struct_r6.src.cie_fft import run_cie_fft
+         if arm not in ARMS:raise ValueError('Unknown fixed R6 arm')
+         with threadpool_limits(limits=1):
+             receipt['threads']=threadpool_info()
+@@ -144,7 +153,14 @@
+             numerical.update(regularizer=lambda m:model.reg.evaluate(m)[:2],
+                 physical_sigma=float(np.linalg.norm(Y)),iteration_callback=iteration,stage_callback=stage,
+                 receipt_path=str(out/'AUXILIARY_EXECUTION.json'))
+-            auxiliary=run_auxiliary(observer,Y,m0,arm,numerical)
++            coordinates=public.get('coords',public.get('centers'))
++            if coordinates is None:raise ValueError('Actual public uniform-grid coordinates required for FFT Green')
++            numerical.update(arm=arm,fft_geometry=dict(coords=coordinates,
++                radius=public['radius'],k=public['k']))
++            auxiliary=run_cie_fft(observer,Y,m0,numerical)
++            auxiliary['execution_receipt']['source_entrypoint']='research/research_max_struct_r6/src/cie_fft.py::run_cie_fft'
++            receipt['auxiliary_source']='research/research_max_struct_r6/src/cie_fft.py::run_cie_fft'
++            receipt['primary_comparator_source']=SOURCE_PATHS[arm]
+             receipt.update(auxiliary_wall_seconds=time.perf_counter()-aux_wall,
+                 auxiliary_cpu_seconds=time.process_time()-aux_cpu,
+                 auxiliary_physical_model_cost=difference(dict(model.cost),before),
+@@ -195,6 +211,10 @@
+         if hasattr(exc,'cie_execution_receipt'):receipt['failed_auxiliary_execution']=exc.cie_execution_receipt
+         if iteration_observations:dump(out/'PARTIAL_ITERATION_COST.json',iteration_observations)
+     finally:
++        import resource
++        high_water=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
++        receipt['process_peak_rss_bytes']=int(high_water)*(1 if sys.platform=='darwin' else 1024)
++        receipt['peak_rss_scope']='Whole child process high-water resident memory including imports/public dense physical model/snapshots; not just FFT workspace'
+         receipt.update(finished_utc=datetime.now(timezone.utc).isoformat(),
+             wall_seconds=time.perf_counter()-wall,cpu_seconds=time.process_time()-cpu,
+             physical_model_cost=dict(model.cost) if model is not None else None,

@@ -1,0 +1,84 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MAX-STRUCT-R6：A路径扩大对照与FFT-TSOM接入</title><style>body{margin:0;background:#f3f5f7;color:#172230;font:17px/1.8 system-ui,-apple-system,sans-serif}main{max-width:1100px;margin:32px auto;background:white;padding:40px;border-radius:12px}h1{font-size:30px;line-height:1.4}h2{margin-top:40px;border-top:1px solid #dde3e8;padding-top:18px}a{color:#075b93}nav{font-size:15px;display:flex;gap:16px;flex-wrap:wrap}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #d9e1e8;padding:9px;text-align:left}th{background:#eaf1f6}.table-scroll{overflow:auto}img{max-width:100%;height:auto}figure{margin:24px 0}figcaption{font-size:14px;color:#516476}code{background:#eef2f4;font-size:14px;overflow-wrap:anywhere}pre{padding:18px;overflow:auto;background:#eef2f4;line-height:1.7}pre code{overflow-wrap:normal}footer{margin-top:35px;color:#516476;font-size:14px}@media(max-width:700px){main{margin:0;padding:20px}h1{font-size:25px}}</style><main><nav><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/CHAT_HANDOFF.md">给 Chat 的入口</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/BENCHMARK_PROTOCOL.md">数据与对照合同</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/THEORY_DERIVATIONS.md">数学推导</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/REPRODUCE.md">复现</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/COST_LEDGER.md">完整费用</a><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/RESEARCH_REPORT_ZH.md">原始报告</a></nav><h1>MAX-STRUCT-R6：A路径扩大对照与FFT-TSOM接入</h1>
+<h2>最终判断</h2>
+<p><strong>A-material 已成为可运行的 CIE/FFT-TSOM 材料更新插件，能补偿两个历史困难弯条上的失败；目前证据不足以把它作为稳定优于 Dual-CIE 的默认替代算法。</strong> 本轮实际完成21个材料×4方法＝84个主任务，另完成2个预指定材料×2方法＝4个真正FFT工程任务。数字1–9全部纳入；六个新对象由独立端生成，GT保持隔离时冻结求解日程，预测全部封存后才打开GT。实际生成回执早于最终config冻结约5分钟，不声称先冻结config再生成数据；失败与额外成本均保留。</p>
+<div class="table-scroll"><table>
+<tr><th>分层联合成功</th><th>CIE</th><th>Dual-CIE</th><th>Global-Dual</th><th>A-material</th></tr>
+<tr><td>公开历史数字1–9</td><td>8/9</td><td><strong>9/9</strong></td><td>8/9</td><td>8/9</td></tr>
+<tr><td>公开历史困难对象</td><td>1/6</td><td>1/6</td><td>1/6</td><td><strong>3/6</strong></td></tr>
+<tr><td>六个独立新对象</td><td>4/6</td><td>4/6</td><td>4/6</td><td>4/6</td></tr>
+</table></div>
+<p>联合标志沿用材料NRMSE≤.15、预测自身Otsu IoU≥.7及相应数据/合法性合同；历史clean门与新CN99噪声门分开，不混成同分布成功率。连续指标和所有对象见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/RESULTS/analysis/ALL_CASES.md">完整逐例表</a>。A在数字5的NRMSE=.1142、数据拟合合格，但IoU=.6667，不能把8/9误读为它完全没有成像出数字5；Dual-CIE同例IoU=.7091。普通CIE在数字7则是明显的材料和数据失败。</p>
+<p><strong>可以build upon FFT-TSOM，而且本轮已经实现并跑完。</strong> A的材料读出不依赖显式Fourier矩阵。真实FFT版本替换了U/G及伴随作用，保留非周期自由空间Green、自项、接收和完整Maxwell验收。两例A的总CPU下降约16%和23%，但仍比同FFT的Dual-CIE贵；长轨迹终点有浮点敏感性，不能说仅是完全相同算法轨迹的免费加速。</p>
+<h2>1. 实际改了什么，保留了什么</h2>
+<p>固定公式是</p>
+<pre><code>r = J − mQ,    Q = Einc + GJ,
+d = 1 + (β−Gii)m,   u = βr/d,
+RA = [I + diag(m/d)Goff]u.</code></pre>
+<p>Goff是实际Green在预定2×2 cell邻域内的非对角部分。A只用RA作材料块残差；current仍用普通global PR CIE，精确材料导数包括d随m变化的项。R5缓存仅减少重复求值。最终候选全都由完整物理F(m)和共同公开prior评分，不以辅助损失或GT选根。</p>
+<p>四臂同24×24网格、576独立实材料未知量、12源48收、box [.02,20]、host .1、原smooth/TV prior；mf3/6/10各500步，再自然续接mf12共1500步。共同原物理corrector最多3000接受迭代，原停止精度不改、没有45秒墙限。CIE为每阶段current/material同β；Dual-CIE为分块β，二者都保留成熟sourcewise PR；Global-Dual用来拆分global PR本身的影响。没有GT字体/support降维或训练。</p>
+<p>mf12仍受DPCS affine约束，并非无约束current；同迭代数也不等实际费用。原Phi=.5||F(m)−Y||²/||Y||²+R(m)沿用基线，不冒称σ白化后的Gaussian likelihood；σ用于独立discrepancy。详见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/THEORY_DERIVATIONS.md">数学推导</a>、<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/BASELINE_AUDIT.md">基线审查</a>及<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/BENCHMARK_PROTOCOL.md">冻结协议</a>。</p>
+<h2>2. 历史困难对象：正面结果确实扩大，但范围有限</h2>
+<p>以下NRMSE均用公开contrast幅度归一化，数字越小越好。</p>
+<div class="table-scroll"><table>
+<tr><th>对象</th><th>CIE</th><th>Dual-CIE</th><th>Global-Dual</th><th>A</th></tr>
+<tr><td>FBG曲条7b8d</td><td>.57618</td><td>.39313</td><td>.39313</td><td><strong>.04686</strong></td></tr>
+<tr><td>R4旧弯条b20d</td><td>.55310</td><td>.51072</td><td>.38955</td><td><strong>.04128</strong></td></tr>
+<tr><td>已公开失败弯条42cb</td><td>.75341</td><td>.73918</td><td>.75081</td><td>.70840</td></tr>
+<tr><td>已公开失败弯条63ab</td><td>.57463</td><td>.58186</td><td>.57730</td><td>.40475</td></tr>
+<tr><td>环e499</td><td>.42483</td><td>.42478</td><td>.42480</td><td>.42484</td></tr>
+<tr><td>双岛437d</td><td>.07595</td><td>.07649</td><td>.07639</td><td>.07641</td></tr>
+</table></div>
+<p>两个成功弯条上，A的原物理相对残差分别为.000154与.000966；Dual-CIE约.112与.101。它们不是仅辅助目标下降，也不是仅材料误差稍小。Global-Dual同样失败，因而global PR本身不能解释这两个正例。<strong>新增的经验认识是：材料块传播的补偿效果可以在第二个公开弯条复现。</strong> 这些都是历史开发对象，不能宣布两次独立盲测突破。</p>
+<p>42cb和63ab仍失败；63ab尤其说明指标不可混淆：A的NRMSE下降到.405，但物理残差.1114反而高于Dual-CIE的.0984。环的四种终点几乎一致。故不存在“弯条都受益”或“空腔都失败”的简单形状规则。</p>
+<figure><img alt="全部历史困难对象" src="RESULTS/scoring_primary/DEV6_DIFFICULT_all_objects.png"><figcaption>全部历史困难对象</figcaption></figure>
+<h2>3. 六个新对象：没有新增确认优势</h2>
+<div class="table-scroll"><table>
+<tr><th>新对象</th><th>CIE NRMSE</th><th>Dual-CIE</th><th>Global-Dual</th><th>A</th><th>四臂结果</th></tr>
+<tr><td>非等三岛</td><td>.09500</td><td>.09376</td><td>.09471</td><td>.09474</td><td>均合格</td></tr>
+<tr><td>双层空腔</td><td>.08110</td><td>.08272</td><td>.08258</td><td>.08282</td><td>均合格</td></tr>
+<tr><td>细弯条</td><td>.03627</td><td>.03475</td><td>.03437</td><td>.03532</td><td>均合格</td></tr>
+<tr><td>偏心薄环</td><td>.61473</td><td>.61841</td><td>.61436</td><td>.61507</td><td>均失败</td></tr>
+<tr><td>近邻双岛</td><td>.06773</td><td>.06583</td><td>.06434</td><td>.06438</td><td>均合格</td></tr>
+<tr><td>开缝壳</td><td>.61904</td><td>.63312</td><td>.63310</td><td>.62596</td><td>均失败</td></tr>
+</table></div>
+<p>新六例中，A对Dual-CIE的NRMSE有3低3高，对Global-Dual只有1低5高；多数差值很小，不能拿全21例13个较低制造统计显著性。新细弯条、双层腔和近邻耦合对象都成功，也反驳仅靠“有曲率/有孔/有强邻域耦合”就预测A优势的解释。</p>
+<figure><img alt="全部独立新对象" src="RESULTS/scoring_primary/NEW6_CONFIRMATION_all_objects.png"><figcaption>全部独立新对象</figcaption></figure>
+<p>六例为同离散合成数据，噪声为.1%复RMS，非独立网格或实测验证。现在GT随报告公开，后续使用只能标公开回归。新材料、噪声、先验和评分合同见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/DATA_CONTRACT.md">数据合同</a>。</p>
+<h2>4. 失败来自哪里：可行目标见证与停止状态</h2>
+<p>仅在封存后，用生成端已保存的合法真材料和Yclean计算原Phi，不新增正演、不改候选。偏心薄环的可行Phi为8.70e−6，四臂却停在约4.85e−3；开缝壳的可行Phi为8.55e−6，四臂约3.81e−3至4.07e−3。算法残差分别约为真材料噪声残差的102–103倍、91–94倍。这说明它们<strong>没有到达已存在的低目标可行区</strong>，不能把本次失败直接解释为数据不可辨识；这同样不证明反演唯一。</p>
+<p>两者还必须区分：薄环四臂都达到3000 corrector上限，最终投影梯度约2.8e−6至5.9e−6，预算/慢收敛影响仍未排除；开缝壳四臂按投影梯度条件结束，范数约9e−9，是更清楚的差局部驻点证据。全84任务共76个梯度停止、6个迭代上限、2个相对目标变化停止；另外两个上限是历史42cb的Dual/Global，梯度仍为3.84e−6/1.66e−7。不能把所有失败都写成已收敛，也不能把所有失败都归咎预算。</p>
+<p>在四个成功新对象上，重建Phi反而略低于真材料Phi：公开平滑prior与噪声使真材料不必是正则化目标极小点。更小Phi不自动意味着更准确GT。原始见证见<a href="RESULTS/scoring_primary/GT_FEASIBLE_WITNESS.json">离线可行目标诊断</a>。</p>
+<figure><img alt="固定六新对象的原Phi与物理LU" src="FIGURES/analysis/fixed_six_original_Phi_vs_LU.png"><figcaption>固定六新对象的原Phi与物理LU</figcaption></figure>
+<p>曲线只连接已付费的host/阶段真实物理验收及corrector点，辅助迭代间没有偷补forward或把代理目标当Phi。CPU曲线与原始CSV也随包保存。</p>
+<h2>5. 真正FFT接入：已运行，成本收益有界</h2>
+<p>已有NIE/CIE/FFT-TSOM先例不能记为本轮发明。新的工程入口用</p>
+<pre><code>UA = Qd IFFT(mask·A),
+U*z = mask* FFT(Qd z),
+GJ = crop[ padded free-space Toeplitz convolution(J) ].</code></pre>
+<p>材料读出保持原A公式，因此确实可以在FFT-TSOM上build upon。接收S和最终物理LU仍dense；没有把完整反演标成O(N log N)，也没有把二维FFT堆成三维。接线与浮点边界详见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/FFT_TSOM_INTEGRATION.md">FFT实现说明</a>。</p>
+<div class="table-scroll"><table>
+<tr><th>预指定对象/方法</th><th>显式Fourier CPU秒</th><th>FFT CPU秒</th><th>显式NRMSE→FFT NRMSE</th><th>完整联合结果</th></tr>
+<tr><td>数字1 Dual-CIE</td><td>36.51</td><td>34.14</td><td>.09656→.09592</td><td>均合格</td></tr>
+<tr><td>数字1 A</td><td>59.02</td><td>49.76</td><td>.09598→.09644</td><td>均合格</td></tr>
+<tr><td>旧b20d Dual-CIE</td><td>39.48</td><td>38.02</td><td>.51072→.38957</td><td>均失败</td></tr>
+<tr><td>旧b20d A</td><td>70.58</td><td>54.44</td><td>.04128→.04049</td><td>均合格</td></tr>
+</table></div>
+<p>A总CPU分别减少15.7%、22.9%，其辅助阶段分别41.76→35.51秒、53.53→43.97秒。两例FFT的物理LU反而增加，说明总时间节省来自辅助实现等实际差异，不能说所有计算项都减少。Dual-CIE在b20d上的Phi变高而NRMSE变低，再次显示残差与材料质量不同；浮点作用差异可能改变长轨迹，不能用这张图宣称FFT本身提高了信息量。</p>
+<p>在同FFT后端中，A仍比Dual-CIE多约46%和43%总CPU。这里只有两例工程比较，没有做大网格复杂度实测或六新对象FFT再确认。NIE原2016全文已取得，但独立成熟NIE重现未完成；故本轮诚实使用已审计的CIE/Dual-CIE主基线，详见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/NIE_BASELINE_AUDIT.md">NIE审计</a>。</p>
+<h2>6. 成本、九数字与完整负结果</h2>
+<div class="table-scroll"><table>
+<tr><th>主臂：21对象</th><th>总CPU秒</th><th>辅助CPU秒</th><th>corrector CPU秒</th></tr>
+<tr><td>CIE</td><td>897.22</td><td>394.98</td><td>492.12</td></tr>
+<tr><td>Dual-CIE</td><td>932.81</td><td>401.97</td><td>520.70</td></tr>
+<tr><td>Global-Dual</td><td>956.57</td><td>466.37</td><td>480.51</td></tr>
+<tr><td>A</td><td><strong>1504.32</strong></td><td><strong>1049.64</strong></td><td>444.91</td></tr>
+</table></div>
+<p>A物理corrector总费用稍低，但材料内循环开销使整组CPU约为Dual-CIE的1.61倍；没有同实际CPU预算的普遍优势主张。主84任务157418 LU、3773976 complex RHS；四FFT任务6607 LU、158376 RHS。主有限四worker队列两段实际运行历时合计1140.37秒，另有修复间隔41.26秒；FFT队列55.36秒，不能用任务wall之和代替这些并行历时。生成、接线、失败、评分、画图另列<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/COST_LEDGER.md">成本账本</a>。</p>
+<figure><img alt="全部方法的材料误差与实际CPU" src="FIGURES/analysis/primary_material_nrmse_vs_actual_cpu.png"><figcaption>全部方法的材料误差与实际CPU</figcaption></figure>
+<p>九数字全部图如下，保留CIE的数字7失败以及A/Global的数字5 IoU不足，不只展示成功样本。</p>
+<figure><img alt="数字1至9全部结果" src="RESULTS/scoring_primary/DEV9_DIGITS_all_objects.png"><figcaption>数字1至9全部结果</figcaption></figure>
+<h2>7. 科学判断与下一步</h2>
+<p><strong>有价值的经验结果</strong>：只改变材料块的局部离流形几何，在相同数据、prior和global current控制下，额外恢复两个历史弯条；因此A可以作为有成本的补偿候选。现有数据不支持把它直接设为通用默认，更不支持论文级“稳定击败成熟Dual-CIE”的标题。FFT组合已落地，有两例有限工程收益；这属于实现贡献，不能占用已有FFT-TSOM/NIE的原创性。</p>
+<p><strong>真正值得追的公式问题</strong>仍是材料可解释方向与非局部传播的关系：RA=P(m)r 的精确导数为P dr+(dP)r。R5已排除仅看交叉项符号或H/L²尾就预测成功的简单解释；R6进一步显示相近局部几何可落到同一错误全局结构。局部四cell传播能改搜索路径，却未必能改变跨空腔的全局场模式，这是下一项待验证假说，当前不是定理。</p>
+<p>下一轮宜选成功7b8d与失败开缝壳这一对已公开对象，在相同已存状态上比较“材料切向正交补的传播”与“跨腔Green作用”是否产生不同有效材料步，再预注册一项简单修改并用全新材料确认。薄环另作预算/曲率诊断，不能与已近驻点的开缝壳混为同类。先回答这个有区分力的问题，不默认扫β、加NN或再堆更多同类图。</p>
+<p>本轮未新增3D成像、Fresnel实测或独立NIE复现；不以空模板伪装完成。R4 B/C的既有否证与边界保留在<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/../research_max_struct_r4/ABC_VALIDATION_ZH.md">R4 A/B/C报告</a>，R6只扩展用户指定的A。完整复现见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/REPRODUCE.md">REPRODUCE</a>，独立审查见<a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r6/audit/INDEPENDENT_METHOD_REVIEW.md">audit</a>。</p><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r6-20261103">下载代码与证据包</a> · <a href="../../">研究主页</a></footer></main></html>

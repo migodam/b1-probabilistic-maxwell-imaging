@@ -1,0 +1,81 @@
+--- research/research_fbg_r3_experiments/src/cie_tsom_baseline.py::run_cie
++++ src/mature_cie_observed.py::run_cie
+@@ -17,6 +17,7 @@
+     """
+     config = dict(config)
+     started = time.perf_counter()
++    cpu_started = time.process_time()
+     cost = Counter()
+     model_before = deepcopy(dict(getattr(model, 'cost', {})))
+     G, E, S = [np.asarray(x, complex) for x in (model.G, model.E, model.S)]
+@@ -49,6 +50,7 @@
+         raise ValueError('Finite positive fixed source weights required')
+     whiten = config.get('physical_whiten', lambda a: a/float(config.get('physical_sigma', 1.)))
+     history, candidates = [], []
++    stage_states = []
+     def validate(z, stage, reason):
+         state = model.state(z)
+         pred = state.get('Y', state.get('y'))
+@@ -131,7 +133,9 @@
+                 T = beta_j*JD-rj[:, None]*(E+GJD+beta_j*JD)
+             D, R = SJD-Y+SU@A, T+H@A
+             grad = (SU.conj().T@D)*wd[None, :] + rho*(H.conj().T@R)*ws[None, :]
++            cost['current_gradient_evaluations'] += 1
+             if old_grad is None:
++                pr = 0.
+                 direction = -grad
+             else:
+                 axis = 0 if config.get('sourcewise_cg', True) else None
+@@ -140,6 +144,7 @@
+                 direction = -grad+old_direction*pr
+             axis = 0 if config.get('sourcewise_cg', True) else None
+             gd = np.sum(np.real(grad.conj()*direction), axis=axis)
++            restarted = bool(np.any(gd >= 0))
+             if axis == 0:
+                 bad = gd >= 0
+                 direction[:, bad] = -grad[:, bad]
+@@ -167,7 +172,16 @@
+                                 **basis_info, coefficient_relative_change_squared=delta,
+                                 data_term=data_f, state_term_current=state_value(beta_j),
+                                 state_term_material=state_value(beta_m), regularizer=float(reg(m)[0]),
+-                                wall=time.perf_counter()-started, **inner))
++                                wall=time.perf_counter()-started,
++                                cpu_seconds=time.process_time()-cpu_started,
++                                sourcewise_cg=bool(config.get('sourcewise_cg', True)),
++                                PR_plus=np.asarray(pr).tolist(),
++                                line_alpha=np.asarray(alpha).tolist(),
++                                direction_restarted=restarted, **inner))
++            if config.get('iteration_callback'):
++                config['iteration_callback'](dict(stage=stage_index, iteration=it+1,
++                    m=m.copy(), J=J.copy(), coefficients=A.copy(),
++                    operation_counts=dict(cost)))
+             iterations += 1
+             cost['PR_CG_steps'] += 1
+             cost['reduced_operator_columns'] += 6*ns
+@@ -177,6 +191,13 @@
+         if not np.all(np.isfinite(m)):
+             raise FloatingPointError('Nonfinite real material readout')
+         validate(m, stage_index, stage_stop)
++        stage_state = dict(stage=stage_index, m=m.copy(), J=J.copy(), Q=Q.copy(),
++                           coefficients=A.copy(), beta_current=beta_j,
++                           beta_material=beta_m, receiver_rank=receiver_rank,
++                           basis_info=dict(basis_info))
++        stage_states.append(stage_state)
++        if config.get('stage_callback'):
++            config['stage_callback'](stage_state)
+         if method != 'csi':
+             old_coefficients = {k: a.copy() for k, a in zip(frequencies, A)}
+         history.append(dict(stage=stage_index, event='stage_end', status=stage_stop, **basis_info,
+@@ -185,10 +206,11 @@
+             break
+     best = min(candidates, key=lambda c: c['objective'])
+     cost['wall_seconds'] = time.perf_counter()-started
++    cost['cpu_seconds'] = time.process_time()-cpu_started
+     model_after = dict(getattr(model, 'cost', {}))
+     model_delta = {k: model_after.get(k, 0)-model_before.get(k, 0)
+                    for k in set(model_before)|set(model_after)
+                    if isinstance(model_after.get(k, 0), (int, float)) and isinstance(model_before.get(k, 0), (int, float))}
+-    return dict(m=best['m'].copy(), candidates=candidates, history=history,
++    return dict(m=best['m'].copy(), candidates=candidates, history=history, stage_states=stage_states,
+                 cost=dict(cost, model=model_delta), last_joint_m=m.copy(), status=status,
+                 method=method, receiver_rank=receiver_rank)

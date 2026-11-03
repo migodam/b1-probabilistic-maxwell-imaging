@@ -1,0 +1,218 @@
+{
+  "status": "SEALED_PUBLIC_PREDICTION",
+  "task_id": "obs_59e18034495941f9__global_dual",
+  "case_id": "obs_59e18034495941f9",
+  "arm": "global_dual",
+  "started_utc": "2026-11-03T13:24:39.986235+00:00",
+  "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "manifest_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r6_worktree/research/research_max_struct_r6/configs/primary_manifest.json",
+  "config_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r6_worktree/research/research_max_struct_r6/configs/primary.json",
+  "task": {
+    "task_id": "obs_59e18034495941f9__global_dual",
+    "case_id": "obs_59e18034495941f9",
+    "cohort": "DEV_ALL_DISCLOSED",
+    "arm": "global_dual",
+    "public_files": [
+      "research/research_fbg_r2_adaptive_feedback/data_contract/stage4_public/operators/random12.npz",
+      "research/research_fbg_r2_adaptive_feedback/data_contract/stage4_public/obs_59e18034495941f9.npz"
+    ],
+    "output_dir": "research/research_max_struct_r6/RESULTS/primary/obs_59e18034495941f9__global_dual"
+  },
+  "configuration": {
+    "run_id": "primary_full_modes",
+    "freeze_utc": "2026-11-03T13:17:24.787862+00:00",
+    "status": "FROZEN_BEFORE_INVERSION_OR_NEW_GT_ACCESS",
+    "common": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001
+    },
+    "continuation_stages": [
+      {
+        "mf": 12,
+        "maxiter": 1500
+      }
+    ],
+    "corrector_maxiter": 3000,
+    "corrector_accepted_checkpoints": [
+      100,
+      500,
+      1000,
+      2000,
+      3000
+    ],
+    "scientific_wallcap": null,
+    "threads_per_process": 1,
+    "workers": 4,
+    "truth_access": "NONE"
+  },
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "seed": null,
+  "seed_reason": "No random draws; deterministic solve of public observations",
+  "failed_attempts": [],
+  "device": "CPU",
+  "threads_per_process": 1,
+  "unknown_costs": null,
+  "threads": [],
+  "setup_wall_seconds": 0.014808707870543003,
+  "setup_cpu_seconds": 0.014756999999999965,
+  "numerical_sources": {
+    "cie_single": "research/research_fbg_r3_experiments/src/cie_tsom_baseline.py::run_cie",
+    "cie_dual": "research/research_fbg_r3_experiments/src/cie_tsom_baseline.py::run_cie",
+    "global_dual": "research/research_max_struct_r2/src/cie_global.py::run_cie",
+    "a_material": "research/research_max_struct_r5/src/cie_factorial.py::run_factorial_cie",
+    "corrector": "research/research_max_struct_r4/experiments/cooperative_paths.py::refine"
+  },
+  "public_files": [
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r6_worktree/research/research_fbg_r2_adaptive_feedback/data_contract/stage4_public/operators/random12.npz",
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r6_worktree/research/research_fbg_r2_adaptive_feedback/data_contract/stage4_public/obs_59e18034495941f9.npz"
+  ],
+  "initialization": "m=shared .1 host; J=DPCS pseudoinverse current; APCS A=0 in original Fourier coordinates",
+  "auxiliary_wall_seconds": 22.662868875078857,
+  "auxiliary_cpu_seconds": 22.295635,
+  "auxiliary_physical_model_cost": {
+    "full_factorization_dimension": 2880,
+    "FULL_FORWARD": 5,
+    "source_RHS": 60,
+    "actual_complex_RHS": 60,
+    "LU": 5,
+    "cached_operator_imports": 0
+  },
+  "auxiliary_execution_receipt": {
+    "status": "COMPLETED",
+    "sourcewise_cg": false,
+    "current_solver": "pr",
+    "FFT": 0,
+    "physical_backend": "unchanged supplied MaxwellModel",
+    "prior": "unchanged supplied regularizer on physical real material",
+    "timer_scope": "solver preparation/current/readout/physical validation; excludes parent geometry/data and output serialization",
+    "wall_seconds": 22.66262983297929,
+    "cpu_seconds": 22.295401000000002,
+    "operation_counts": {
+      "source_metric_Cholesky": 2,
+      "physical_validations": 5,
+      "receiver_SVD": 1,
+      "G_columns": 1168,
+      "S_columns": 1168,
+      "APCS_SVD": 4,
+      "Fourier_columns_generated": 1156,
+      "IDFT_columns_explicit": 1156,
+      "DPCS_projection_columns": 1156,
+      "current_objective_evaluations": 3000,
+      "source_metric_products": 39000,
+      "current_gradient_evaluations": 3000,
+      "material_readouts": 3000,
+      "material_inner_evaluations": 15000,
+      "material_readout_source_whitening_products": 6000,
+      "PR_CG_steps": 3000,
+      "reduced_operator_columns": 216000,
+      "wall_seconds": 22.662562750279903
+    },
+    "physical_model_delta": {
+      "full_factorization_dimension": 2880,
+      "FULL_FORWARD": 5,
+      "source_RHS": 60,
+      "actual_complex_RHS": 60,
+      "LU": 5,
+      "cached_operator_imports": 0
+    },
+    "physical_LU": 5,
+    "physical_complex_RHS": 60,
+    "source_entrypoint": "research/research_max_struct_r2/src/cie_global.py::run_cie"
+  },
+  "auxiliary_status": "SCHEDULE_COMPLETE",
+  "auxiliary_candidate_scores": [
+    {
+      "stage": -1,
+      "reason": "initial_incumbent",
+      "physical_nll": 0.5615583798805087,
+      "objective": 0.5615583798805087,
+      "physical_relative_residual": 1.0597720319771688
+    },
+    {
+      "stage": 0,
+      "reason": "MAXITER",
+      "physical_nll": 0.32094222542295203,
+      "objective": 0.3209453467287652,
+      "physical_relative_residual": 0.8011769160715403
+    },
+    {
+      "stage": 1,
+      "reason": "MAXITER",
+      "physical_nll": 0.016014495495210942,
+      "objective": 0.016019320608384808,
+      "physical_relative_residual": 0.17896645213676754
+    },
+    {
+      "stage": 2,
+      "reason": "MAXITER",
+      "physical_nll": 6.850702074222506e-05,
+      "objective": 7.526446405405952e-05,
+      "physical_relative_residual": 0.011705299717839356
+    },
+    {
+      "stage": 3,
+      "reason": "MAXITER",
+      "physical_nll": 8.475124450469125e-06,
+      "objective": 1.544029517941451e-05,
+      "physical_relative_residual": 0.004117067998095035
+    }
+  ],
+  "auxiliary_selected_stage": 3,
+  "corrector": {
+    "stop": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+    "iterations": 1763,
+    "evaluations": 1837,
+    "success": true,
+    "cost": {
+      "actual_complex_RHS": 44076,
+      "DATA_ADJOINT": 1837,
+      "full_factorization_dimension": 1057536,
+      "FULL_FORWARD": 1836,
+      "source_RHS": 22032,
+      "LU": 1836,
+      "cached_operator_imports": 0,
+      "adjoint_RHS": 22044
+    },
+    "wall_seconds": 22.207862707786262,
+    "cpu_seconds": 21.970723,
+    "checkpoint_semantics": "Snapshots copy already paid state/value/gradient; no extra forward or adjoint",
+    "best_objective": 6.344010380781557e-06,
+    "source_entrypoint": "research/research_max_struct_r4/experiments/cooperative_paths.py::refine"
+  },
+  "physical_objective": 6.344010380781557e-06,
+  "physical_relative_residual": 0.0002790783753476376,
+  "linear_relative_residual": 2.0004478428648726e-15,
+  "auxiliary_iterations": 3000,
+  "corrector_improved_original_Phi": true,
+  "finalization_physical_model_cost": {},
+  "selection": "Minimum original Phi of host + all true stage endpoints + original R4 corrector trajectory incumbent",
+  "snapshot_policy": "Initial and stage physical states; stage joint m/J/Q/A; configured paid corrector points; final paid incumbent",
+  "continuation": "Explicit appended mf12 stages in same invocation; original Fourier transport, no J reset",
+  "finished_utc": "2026-11-03T13:25:25.334739+00:00",
+  "wall_seconds": 45.34778645820916,
+  "cpu_seconds": 44.737623,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1841,
+    "actual_complex_RHS": 44136,
+    "LU": 1841,
+    "source_RHS": 22092,
+    "full_factorization_dimension": 1060416,
+    "DATA_ADJOINT": 1837,
+    "adjoint_RHS": 22044
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 18.540615669917315,
+    "DATA_ADJOINT": 1.4217229261994362
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 18.354571000000035,
+    "DATA_ADJOINT": 1.407890999999946
+  },
+  "cost_scope": "Process imports/public load/setup, complete configured auxiliary schedule, original host/stage physical validation, original R4 corrector and observation/serialization. Nested costs overlap; do not add twice."
+}

@@ -1,0 +1,40 @@
+--- R4/cooperative_paths.py::refine
++++ R6/benchmark_solver.py::refine_observed
+@@ -1,12 +1,35 @@
+-def refine(model,Y,m,maximum=1000):
++def refine_observed(model, Y, m, maximum=1000, accepted_checkpoints=(100, 500, 1000)):
++    """Original R4 refine with a callback observing already paid evaluations.
++
++    Only additions to the original numerical body are this callback and timing/
++    state records. maxfun=4*maximum, scale=1e6, ftol=1e-12, gtol=.01,
++    maxls=30 and the real box are the original R4 settings.
++    """
+     before=Counter(model.cost);history=[];scale=1e6;start=time.perf_counter()
++    cpu=time.process_time();accepted=[];wanted=set(accepted_checkpoints)
++    model.phase = 'corrector'
+     best=[m.copy(),model.physical_score(m,Y)]
+     def objective(x):
+         value,g=model.data_value_gradient(x,Y)
+         history.append([float(value),float(la.norm(g,np.inf))])
+         if value<best[1]:best[:]=[x.copy(),float(value)]
+         return scale*value,scale*g
++    def callback(x):
++        row=model.last_evaluation
++        if row is None or not np.array_equal(x,row['m']):
++            raise RuntimeError('Accepted corrector point is absent from last paid evaluation')
++        iteration=len(accepted)+1
++        accepted.append(dict(iteration=iteration, evaluation=len(history), objective=row['objective'],
++            best_objective=float(best[1]), gradient_inf=float(la.norm(row['gradient'],np.inf)),
++            wall_seconds=time.perf_counter()-start,cpu_seconds=time.process_time()-cpu,
++            physical_model_cost=dict(model.cost)))
++        if iteration in wanted:model.save_snapshot(f'corrector_accepted_{iteration:04d}',row)
+     result=minimize(objective,m,method='L-BFGS-B',jac=True,bounds=[(.02,20.)]*model.n,
++        callback=callback,
+         options=dict(maxiter=maximum,maxfun=4*maximum,ftol=1e-12,gtol=.01,maxls=30))
+     return best[0],dict(stop=str(result.message),iterations=int(result.nit),evaluations=int(result.nfev),
+-        history=history,cost=dict(Counter(model.cost)-before),wall_seconds=time.perf_counter()-start)
++        success=bool(result.success),history=history,accepted_history=accepted,
++        evaluation_history=model.gradient_records,cost=difference(dict(model.cost),dict(before)),
++        wall_seconds=time.perf_counter()-start,cpu_seconds=time.process_time()-cpu,
++        checkpoint_semantics='Snapshots copy already paid state/value/gradient; no extra forward or adjoint',
++        best_objective=float(best[1]),source_entrypoint=SOURCE_PATHS['corrector'])
