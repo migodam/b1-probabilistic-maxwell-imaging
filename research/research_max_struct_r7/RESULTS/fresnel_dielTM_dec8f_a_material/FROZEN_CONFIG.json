@@ -1,0 +1,104 @@
+{
+  "case": "dielTM_dec8f",
+  "arm": "a_material",
+  "frequency_GHz": 2.0,
+  "side": 24,
+  "width_m": 0.16,
+  "training_sources_onebased": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "training_receivers_onebased": [
+    30,
+    31,
+    32,
+    33,
+    35,
+    36,
+    37,
+    38,
+    40,
+    41,
+    42,
+    43,
+    45,
+    46,
+    47,
+    48,
+    50,
+    51,
+    52,
+    53,
+    55,
+    56,
+    57,
+    58,
+    60,
+    61
+  ],
+  "config": {
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001,
+    "coefficient_tol": 0.0,
+    "miniter": 50,
+    "material_inner_maxiter": 60,
+    "material_inner_ftol": 1e-12,
+    "material_inner_gtol": 1e-08,
+    "method": "cie",
+    "current_solver": "pr",
+    "sourcewise_cg": false,
+    "stages": [
+      {
+        "mf": 3,
+        "beta_material": 1.0,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1.0,
+        "maxiter": 500
+      },
+      {
+        "mf": 12,
+        "maxiter": 1500,
+        "beta_material": 0.2,
+        "beta_current": 1.0
+      }
+    ],
+    "current_transform": "scalar",
+    "material_transform": "onehop",
+    "cache_material_value_gradient": true,
+    "physical_sigma": 2.5207373593851465
+  },
+  "corrector": {
+    "maxiter": 1000,
+    "maxfun": 4000,
+    "ftol": 1e-12,
+    "gtol": 0.01,
+    "maxls": 30,
+    "scale": 1000000.0
+  },
+  "initialization": 0.1,
+  "selection": "training original normalized physical data loss plus inherited prior only",
+  "heldout_selection": false,
+  "pixel_GT": "UNAVAILABLE",
+  "illumination": "target-absent on-axis cylindrical approximation"
+}
