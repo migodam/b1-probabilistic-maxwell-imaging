@@ -53,8 +53,14 @@ def seal_predictions(study, manifest_path, runs, *, splits=('val', 'test'), outp
             receipts.append(dict(run=run, obs_id=record['obs_id'],
                                  disposition='SEALED' if j and z else 'NOT_RUN', json=j, npz=z))
     output = Path(output) if output else study/'evaluation/PREDICTIONS_SEALED.json'
+    snapshot_path=output.with_name(output.stem+'_MANIFEST.json')
+    snapshot=dict(manifest,records=records)
+    if 'parents' in snapshot:
+        parents={r['parent_id']for r in records}
+        snapshot['parents']=[p for p in snapshot['parents']if p['parent_id']in parents]
+    write_json(snapshot_path,snapshot)
     value = dict(schema='gn-nn-r3-prediction-seal-v1', status='ALL_PLANNED_PREDICTIONS_SEALED',
-                 sealed_unix=time.time(), manifest=stamp(manifest_path), study=str(study),
+                 sealed_unix=time.time(), manifest=stamp(snapshot_path), source_manifest=stamp(manifest_path), study=str(study),
                  data_root=str(manifest_path.parent.parent), splits=list(splits), runs=list(runs),
                  max_observations=max_observations, observation_ids=[r['obs_id'] for r in records],
                  truth_read=False, integrity_method='size and mtime inventory; no hashes', receipts=receipts)
@@ -62,8 +68,22 @@ def seal_predictions(study, manifest_path, runs, *, splits=('val', 'test'), outp
     return output
 
 
-def validate_stamp(item):
-    if item is None or stamp(item['path']) != item:
+def remap_path(value, original_study, current_study):
+    path=Path(value)
+    if not path.is_absolute():
+        return Path(current_study)/path
+    try:
+        return Path(current_study)/path.relative_to(Path(original_study))
+    except ValueError:
+        return path
+
+
+def validate_stamp(item, *, resolver=None, replay_frozen=False):
+    if item is None:
+        raise ValueError('Missing sealed artifact inventory')
+    actual=stamp(resolver(item['path']) if resolver else item['path'])
+    valid=actual is not None and (actual['size']==item['size'] if replay_frozen else actual==item)
+    if not valid:
         raise ValueError('A sealed artifact changed or disappeared: '+str(item))
 
 
@@ -148,7 +168,7 @@ def current_mechanism_metrics(arrays, truth, v48):
 
 
 def oracle_null_current(public, anchor, truth):
-    """Offline representation ceiling; never an online root/candidate/selector."""
+    """Offline natural current oracle; optimal current L2, not optimal material readout."""
     from research.research_z_alg_r4_diversity.src.physics import Model
     tick = time.perf_counter()
     model = Model(public)
@@ -180,23 +200,28 @@ def oracle_null_current(public, anchor, truth):
                full_VIE_equation_defect=state['state_relative_residual'],
                projection_source=projection_source, clipped_cells=int(np.count_nonzero(raw_m!=m)),
                wall_seconds=time.perf_counter()-tick, costcounts=dict(model.counts),
-               scope='OFFLINE_GT_REPRESENTATION_CEILING_NOT_ONLINE_CANDIDATE', truth_access='GT_CURRENT_AND_MATERIAL')
+               scope='OFFLINE_GT_NATURAL_CURRENT_ORACLE_ACHIEVABLE_REFERENCE_NOT_MATERIAL_OPTIMUM', truth_access='GT_CURRENT_AND_MATERIAL')
     out['joint_success'] = bool(out['physical_data_feasible'] and out['NRMSE']<=.15 and out['IoU_Otsu']>=.7)
     return out, dict(m_oracle=m, m_oracle_unclipped=raw_m, j_oracle=j)
 
 
-def score_predictions(seal_path, *, output=None, include_oracle=False):
+def score_predictions(seal_path, *, output=None, include_oracle=False, study_override=None, replay_frozen=False):
     seal = read_json(seal_path)
     if seal.get('status') != 'ALL_PLANNED_PREDICTIONS_SEALED':
         raise ValueError('Prediction closure is required before GT scoring')
-    validate_stamp(seal['manifest'])
+    original_study=Path(seal['study'])
+    current_study=Path(study_override).resolve() if study_override else original_study
+    if current_study!=original_study and not replay_frozen:
+        raise ValueError('Relocated re-scoring requires explicit replay_frozen=True / --replay-frozen')
+    resolver=lambda p:remap_path(p,original_study,current_study) if replay_frozen else Path(p)
+    validate_stamp(seal['manifest'],resolver=resolver,replay_frozen=replay_frozen)
     # Validate the complete seal before the first truth open.
     for item in seal['receipts']:
         if item['disposition']=='SEALED':
-            validate_stamp(item['json']); validate_stamp(item['npz'])
-    manifest = read_json(seal['manifest']['path'])
+            validate_stamp(item['json'],resolver=resolver,replay_frozen=replay_frozen); validate_stamp(item['npz'],resolver=resolver,replay_frozen=replay_frozen)
+    manifest = read_json(resolver(seal['manifest']['path']))
     records = {r['obs_id']:r for r in manifest['records']}
-    data_root, study = Path(seal['data_root']), Path(seal['study'])
+    data_root, study = resolver(seal['data_root']), current_study
     rows, oracles = [], {}
     operators = None
     for item in seal['receipts']:
@@ -206,8 +231,8 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
             row.update(status='NOT_RUN', joint_success=False)
             rows.append(row)
             continue
-        receipt = read_json(item['json']['path'])
-        arrays = npz(item['npz']['path'])
+        receipt = read_json(resolver(item['json']['path']))
+        arrays = npz(resolver(item['npz']['path']))
         truth = npz(data_root/record['truth_path'])
         candidates = _candidate_metrics(arrays, receipt, truth)
         selected = receipt['top1']
@@ -216,6 +241,7 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
                    accounting_status=receipt['accounting_status'], wall_seconds=receipt['wall_seconds'],
                    cost_scope=receipt.get('cost_scope','INCREMENTAL_WARM_MODEL_POST_GN'),budget=receipt.get('budget',dict(wall_seconds=10.,max_LU=100,max_complex_RHS=6000)),
                    costcounts=receipt['costcounts'], auxiliary=receipt.get('auxiliary'),
+                   anchor_gradient_diagnostic=receipt.get('anchor_gradient_diagnostic',dict(status='NOT_RECORDED',reason='Historical receipt has no paid-J anchor diagnostic')),
                    candidates=candidates, correction_retention=_retention(candidates,arrays,truth),
                    anchor=material_metrics(arrays['anchor'],truth['m'],truth['amplitude'],truth['alpha']),
                    top1=None if selected is None else candidates[selected['index']],
@@ -232,6 +258,14 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
                 selected_material_NRMSE=None if row['top1']is None else row['top1']['NRMSE'],
                 constitutive_relative_defect=(receipt.get('auxiliary')or{}).get('constitutive_relative_defect'),
                 auxiliary_data_relative_residual=(receipt.get('auxiliary')or{}).get('auxiliary_data_relative_residual'))
+        materials=arrays['candidate_materials']
+        groups=[]
+        for index,m in enumerate(materials):
+            match=next((g for g in groups if np.sqrt(np.mean((m-materials[g[0]])**2))<=1e-8),None)
+            if match is None:groups.append([index])
+            else:match.append(index)
+        row.update(candidate_distinct_material_count=len(groups),candidate_distinct_material_RMS_tolerance=1e-8,
+                   candidate_duplicate_slot_groups=groups,candidate_distinctness_scope='RMS-near-equal saved materials, not certified distinct nonlinear roots')
         all_best = min(candidates,key=lambda c:c['NRMSE']) if candidates else None
         qualified = [c for c in candidates if c['physical_data_feasible']]
         qualified_best = min(qualified,key=lambda c:c['NRMSE']) if qualified else None
@@ -246,7 +280,7 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
             public={**operators,**npz(data_root/record['public_path'])}
             anchor=npz(study/'anchors'/f'{record["obs_id"]}.npz')
             metric, oracle_arrays=oracle_null_current(public,anchor,truth)
-            oracle_dir=study/'evaluation/offline_oracle';oracle_dir.mkdir(parents=True,exist_ok=True)
+            oracle_dir=study/('evaluation/offline_oracle_REPLAY'if replay_frozen else'evaluation/offline_oracle');oracle_dir.mkdir(parents=True,exist_ok=True)
             np.savez_compressed(oracle_dir/f'{record["obs_id"]}.npz',**oracle_arrays)
             oracles[record['obs_id']]=dict(record,**metric)
         rows.append(row)
@@ -270,12 +304,14 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
         out['NRMSE_improvement_vs_anchor_mean']=float(np.mean(improvements))if improvements else None
         summary.append(out)
     value=dict(schema='gn-nn-r3-scores-v1',seal_path=str(Path(seal_path).resolve()),
-               truth_access='OFFLINE_AFTER_COMPLETE_PREDICTION_CLOSURE',rows=rows,summary=summary,
+               truth_access='HISTORICAL_ALREADY_DISCLOSED_FROZEN_RESCORING'if replay_frozen else'OFFLINE_AFTER_COMPLETE_PREDICTION_CLOSURE',rows=rows,summary=summary,
+               replay_frozen=bool(replay_frozen),original_study=str(original_study),current_study=str(current_study),
+               replay_inventory_policy='existence and recorded file size only; unpacked mtimes are not blind-seal evidence'if replay_frozen else'original in-session size/mtime inventory checked',
                oracle_rows=list(oracles.values()),
                success_definition='NRMSE/amplitude <= .15 and IoU_Otsu >= .7 and clean data residual <= .001 / noisy <= .003; complete incremental cost receipt required',
                budget_overrun_policy='overruns and accounting status reported independently; n_accounted_within_budget is explicit',
                mask_definition='truth alpha >= .5', all_missing_preserved=True)
-    output=Path(output)if output else Path(seal_path).parent/'SCORES.json'
+    output=Path(output)if output else Path(seal_path).parent/('HISTORICAL_REPLAY_SCORES.json'if replay_frozen else'SCORES.json')
     write_json(output,value)
     return output
 

@@ -27,6 +27,7 @@ def upload(include_data=True):
     files+=list((REPO/'research/research_gn_search_space_r2/src').glob('*.py'))
     if include_data:
         files+=[STUDY/'data/operators.npz',STUDY/'data/manifests/online.json']
+        files+=list((STUDY/'data/manifests').glob('train_expansion_*.json'))
         files+=list((STUDY/'data/public').glob('*.npz'))
     with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=1) as z:
         for f in files:

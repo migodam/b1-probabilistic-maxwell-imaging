@@ -282,7 +282,7 @@ def summarize_anchor_receipts(data_root, anchor_root):
     data_root, anchor_root = Path(data_root), Path(anchor_root)
     online = json.loads((data_root/"manifests/online.json").read_text(encoding="utf-8"))
     by_obs = {r["obs_id"]: r for r in online["records"]}
-    groups, unknown, counted_files, base_ids, batches = {}, [], [], set(), []
+    groups, unknown, counted_files, base_ids, batches, repair_exceptions = {}, [], [], set(), [], []
     for path in sorted(anchor_root.rglob("*.json")):
         try:
             receipt = json.loads(path.read_text(encoding="utf-8"))
@@ -302,6 +302,9 @@ def summarize_anchor_receipts(data_root, anchor_root):
             unknown.append(dict(path=str(path), reason="No public manifest record for anchor"))
             continue
         kind = "weakreg1e-5" if receipt.get("weakreg", 0) else "base"
+        if receipt.get("repair_protocol_exception"):
+            repair_exceptions.append(dict(obs_id=obs_id, split=record["split"],
+                                          **receipt["repair_protocol_exception"]))
         if kind == "base": base_ids.add(obs_id)
         backend = receipt.get("backend", "cpu")  # This anchor schema uses the CPU R4 Model.
         public_source = str(receipt.get("public_path", "")).replace("\\", "/")
@@ -342,6 +345,8 @@ def summarize_anchor_receipts(data_root, anchor_root):
     return dict(schema="gn-nn-r3-anchor-cost-summary-v1", groups=rows,
                 pending_base_observations_by_split=dict(missing), counted_receipts=len(counted_files),
                 receipt_files=counted_files, unclassified_or_unreadable=unknown,
+                known_repair_protocol_exceptions=repair_exceptions,
+                unknown_prior_failed_anchor_counts=len(repair_exceptions),
                 shared_reference_setup=reference, batch_wall_records=batches,
                 wall_accounting="Per-task sums are work totals; overlapping batch wall records must not be summed into elapsed time",
                 platform_provenance="Explicit receipt platform or recorded public path: project D:/AI/GN_NN_R3_20261107 is XINAN; /Volumes or /Users is local Mac",

@@ -7,13 +7,21 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
-def make_plots(scores_path, *, study=None, output=None):
+def make_plots(scores_path, *, study=None, output=None, replay_frozen=False):
     scores_path=Path(scores_path)
     scores=json.loads(scores_path.read_text())
     study=Path(study)if study else scores_path.parents[1]
+    replay_frozen=bool(replay_frozen or scores.get('replay_frozen',False))
     output=Path(output)if output else scores_path.parent/'figures'
     output.mkdir(parents=True,exist_ok=True)
-    seal=json.loads(Path(scores['seal_path']).read_text())
+    from research.research_gn_nn_completion_r3.src.score import remap_path
+    original_study=Path(scores.get('original_study',str(Path(scores['seal_path']).parent.parent)))
+    seal_path=remap_path(scores['seal_path'],original_study,study)if replay_frozen else Path(scores['seal_path'])
+    seal=json.loads(seal_path.read_text())
+    if replay_frozen:
+        source_study=Path(seal['study'])
+        seal=dict(seal,manifest=dict(seal['manifest'],path=str(remap_path(seal['manifest']['path'],source_study,study))),
+                  data_root=str(remap_path(seal['data_root'],source_study,study)))
     data=Path(seal['data_root'])
     indexed={}
     for row in scores['rows']:
@@ -67,7 +75,7 @@ def make_plots(scores_path, *, study=None, output=None):
                         ax.set_ylabel('Raw full proposal'if line==0 else'Online selected after correction',fontsize=10)
             if image is not None:
                 fig.colorbar(image,ax=axes.ravel().tolist(),label='Physical material contrast (out-of-range colors saturated)',shrink=.82,extend='both')
-            fig.suptitle(f'{obs_id} | {source["split"]} | noise={source["noise"]} | {source.get("distribution","ID")}\nFixed amplitude-cohort scale [{vmin:.3g}, {vmax:.3g}]',fontsize=11)
+            fig.suptitle(('Historical already-disclosed replay | 'if replay_frozen else'')+f'{obs_id} | {source["split"]} | noise={source["noise"]} | {source.get("distribution","ID")}\nFixed amplitude-cohort scale [{vmin:.3g}, {vmax:.3g}]',fontsize=11)
             path=output/f'{obs_id}_page{page+1}.png'
             fig.savefig(path,dpi=150);plt.close(fig)
             index.append(dict(obs_id=obs_id,file=path.name,runs=[p[0]['run']for p in group],vmin=vmin,vmax=vmax,selection='all observations, all runs, manifest order',saturation=saturated))
@@ -102,8 +110,8 @@ def make_plots(scores_path, *, study=None, output=None):
     handles,labels=axes[0].get_legend_handles_labels()
     if handles:axes[0].legend(fontsize=7)
     fig.savefig(output/'all_auxiliary_vs_physical_defects.png',dpi=160);plt.close(fig)
-    (output/'FIGURE_INDEX.json').write_text(json.dumps(dict(scores=str(scores_path.resolve()),case_panels=index,no_cherrypicking=True,scale='fixed across every low-amplitude case [.02,.55], every stress case [.02,2.65]; saturation declared'),indent=2)+'\n')
-    _compact_manifest_gallery(scores,study,data,output)
+    (output/'FIGURE_INDEX.json').write_text(json.dumps(dict(scores=str(scores_path.resolve()),case_panels=index,no_cherrypicking=True,replay_frozen=replay_frozen,truth_status='already disclosed historical replay'if replay_frozen else'original sealed scoring',scale='fixed across every low-amplitude case [.02,.55], every stress case [.02,2.65]; saturation declared'),indent=2)+'\n')
+    _compact_manifest_gallery(scores,study,data,output,seal=seal,replay_frozen=replay_frozen)
     _current_mechanism_figure(scores,output)
     from html import escape
     gallery=['<!doctype html><meta charset="utf-8"><title>All case material gallery</title>', '<style>body{font:16px system-ui;margin:24px;background:#f5f6f8}img{width:100%;height:auto;background:white}section{margin-bottom:24px}h1{font-size:24px}</style>', '<h1>All case material gallery</h1><p>Manifest order, all cases and runs; fixed physical scales low [.02,.55], stress [.02,2.65]. Saturation is declared in each panel. No performance-based selection.</p>']
@@ -113,12 +121,11 @@ def make_plots(scores_path, *, study=None, output=None):
     return output
 
 
-def _compact_manifest_gallery(scores,study,data,output):
+def _compact_manifest_gallery(scores,study,data,output,*,seal,replay_frozen=False):
     """Choose first clean low case per digit/family in original manifest order."""
     by_obs={}
     for row in scores['rows']:
         by_obs.setdefault(row['obs_id'],[]).append(row)
-    seal=json.loads(Path(scores['seal_path']).read_text())
     manifest=json.loads(Path(seal['manifest']['path']).read_text())
     chosen={}
     order=[f'digit{d}'for d in range(1,10)]+['primitive_composites','islands','smooth']
@@ -167,9 +174,9 @@ def _compact_manifest_gallery(scores,study,data,output):
             if line==0:ax.set_title(title,fontsize=8)
             if col==0:ax.set_ylabel(key,fontsize=9)
     fig.colorbar(im,ax=axes.ravel().tolist(),label='Physical material contrast; fixed low cohort [.02,.55]',shrink=.5,extend='both')
-    fig.suptitle('Preselected first clean low case per digit/family, manifest order; online selected materials',fontsize=12)
+    fig.suptitle(('Historical already-disclosed replay | 'if replay_frozen else'')+'Preselected first clean low case per digit/family, manifest order; online selected materials',fontsize=12)
     fig.savefig(output/'preselected_digits1to9_and_nondigits.png',dpi=150);plt.close(fig)
-    (output/'PRESELECTED_MANIFEST.json').write_text(json.dumps(dict(rule='first clean low observation per digit1..9 and each nondigit family, in original manifest order, no metric-based selection',records=[dict(selection_key=k,**r)for k,r in selected],runs=run_columns,range=[.02,.55]),indent=2)+'\n')
+    (output/'PRESELECTED_MANIFEST.json').write_text(json.dumps(dict(rule='first clean low observation per digit1..9 and each nondigit family, in original manifest order, no metric-based selection',records=[dict(selection_key=k,**r)for k,r in selected],runs=run_columns,range=[.02,.55],replay_frozen=replay_frozen),indent=2)+'\n')
 
 
 def _current_mechanism_figure(scores,output):

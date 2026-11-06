@@ -16,11 +16,28 @@ from research.research_z_alg_r4_diversity.src.physics import Model
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--anchor', type=Path)
+    parser.add_argument('--operator-only', action='store_true')
     parser.add_argument('--output', type=Path, default=STUDY / 'audit/READOUT_GEOMETRY.json')
     args = parser.parse_args()
     started = time.perf_counter()
     with np.load(STUDY / 'data/operators.npz') as z:
         public = {k: z[k] for k in z.files}
+    if args.operator_only:
+        with threadpool_limits(limits=1):
+            v, G, E = public['V48'], public['G'], public['E0']
+            anti = G - G.conj().T
+            leak_E = E - v @ (v.conj().T @ E)
+            leak_anti = anti - v @ (v.conj().T @ anti)
+            result = dict(status='PUBLIC_OPERATOR_DIAGNOSTIC', truth_access='NONE',
+                          incident_projection_relative_Frobenius=float(np.linalg.norm(leak_E)/np.linalg.norm(E)),
+                          antihermitian_projection_relative_Frobenius=float(np.linalg.norm(leak_anti)/np.linalg.norm(anti)),
+                          antihermitian_projection_absolute_Frobenius=float(np.linalg.norm(leak_anti)),
+                          counts=dict(LU=0, actual_complex_RHS=0),
+                          scope='Finite-precision approximate radiative containment, not an exact finite-matrix rank certificate.',
+                          wall_seconds=time.perf_counter()-started)
+        args.output.write_text(json.dumps(result, indent=2)+'\n')
+        print(json.dumps(result, indent=2))
+        return
     rows = []
     with threadpool_limits(limits=1):
         model = Model(public)

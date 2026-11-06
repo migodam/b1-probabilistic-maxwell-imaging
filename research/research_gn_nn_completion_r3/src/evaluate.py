@@ -63,6 +63,31 @@ class CountedModel(Model):
             yield
 
 
+    def jacobian(self,state=None):
+        state=self.state if state is None else state
+        J=super().jacobian(state)
+        owner=self.owner
+        if owner.anchor_gradient_diagnostic['status']=='NOT_RECORDED' and np.array_equal(state['m'],owner.anchor):
+            with self.operation('PAID_ANCHOR_J_GRADIENT_DIAGNOSTIC',fixed_J_transpose_matvec=1):
+                gradient=J.T@self.pack(state['y']-owner.target)/owner.scale2
+                projected=owner.anchor-np.clip(owner.anchor-gradient,LOWER,UPPER)
+                lower=owner.anchor<=LOWER+1e-10
+                upper=owner.anchor>=UPPER-1e-10
+                owner.arrays['anchor_data_gradient']=gradient.copy()
+                owner.arrays['anchor_projected_gradient_mapping']=projected.copy()
+                owner.anchor_gradient_diagnostic=dict(status='RECORDED_FROM_ALREADY_PAID_ANALYTIC_J',
+                    gradient_inf=float(np.linalg.norm(gradient,np.inf)),
+                    projected_gradient_mapping_inf=float(np.linalg.norm(projected,np.inf)),
+                    projected_gradient_definition='m - clip(m - data_gradient, .02, 20), unit step',
+                    objective='0.5||F(m)-Y||^2/||Y||^2, data-only even for weakreg control',
+                    lower_bound_active_count=int(lower.sum()),upper_bound_active_count=int(upper.sum()),
+                    active_bound_count=int(np.count_nonzero(lower|upper)),bound_tolerance=1e-10,
+                    source_state_label=state.get('label'),seconds=owner.elapsed(),costcounts=dict(self.counts),
+                    additional_LU=0,additional_complex_RHS=0,
+                    scope='posthoc frozen-anchor diagnostic from paid continuation/proposal J, not original optimizer stopping receipt')
+        return J
+
+
 class Evaluation(Search):
     """Reuse R2's mature bounded analytic-TRF correction, with 10-second gates."""
     def __init__(self, public, anchor, *, noise, preparation_cost, regularization=0.):
@@ -92,6 +117,7 @@ class Evaluation(Search):
         self.old_reg = Regularizer((24, 24), smooth=1e-4, tv=1e-4)
         self.best, self.trace, self.attempts, self.arrays = None, [], [], {}
         self.candidates = []
+        self.anchor_gradient_diagnostic=dict(status='NOT_RECORDED',reason='No already-paid analytic J at this exact frozen anchor has been requested; no extra forward/J call is made')
 
     def elapsed(self):
         return time.perf_counter() - self.started + self.preparation['wall_seconds']
@@ -279,6 +305,7 @@ class Evaluation(Search):
                        budget=BUDGET, wall_overshoot_seconds=max(0.,wall-BUDGET['wall_seconds']),
                        costcounts=dict(self.model.counts), operation_seconds=dict(self.model.timings),
                        clipping=clipping, auxiliary=auxiliary, secondary_filter=filter_receipt,
+                       anchor_gradient_diagnostic=self.anchor_gradient_diagnostic,
                        candidates=self.candidates, attempts=self.attempts, trace=self.trace,
                        top1=selected, old_score_top1=old,
                        online_selection='physical-feasible material closest in L2 to full unclipped NN proposal; otherwise feasible anchor; otherwise FAIL',

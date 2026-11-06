@@ -37,6 +37,7 @@ def main():
     parser.add_argument("--reference", type=Path, default=STUDY/"cache/reference_jacobian.npz")
     parser.add_argument("--split", action="append", choices=["train", "val", "test", "dev"])
     parser.add_argument("--obs-id", action="append")
+    parser.add_argument("--id-file", type=Path, help="JSON list of public observation IDs for a finite disjoint batch")
     parser.add_argument("--noise", type=float, choices=[0., 1e-3], help="Optional paired-observation filter")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--workers", type=int, default=2)
@@ -55,6 +56,8 @@ def main():
         return
     if args.workers < 1 or args.workers > (4 if sys.platform == "win32" else 2):
         parser.error("At most 4 Windows or 2 local CPU workers")
+    if args.id_file:
+        args.obs_id = json.loads(args.id_file.read_text())
     if not args.split and not args.obs_id:
         parser.error("Select --split or --obs-id explicitly; default never launches the full dataset")
     tick = time.perf_counter()

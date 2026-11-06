@@ -186,6 +186,17 @@ class AnchorRun:
         except BudgetStop as exc:
             status, reason = "GLOBAL_BUDGET_STOP", str(exc)
             self.status, self.stop_reason = "BUDGET_STOP", reason
+        except np.linalg.LinAlgError as exc:
+            # Preserve the accepted physical endpoint for this observed SciPy
+            # gesdd failure. Do not switch LAPACK drivers, optimizers or limits.
+            if "svd did not converge" not in str(exc).lower():
+                raise
+            status, reason = "NUMERICAL_STOP", "TRF_SVD_NONCONVERGENCE"
+            self.status, self.stop_reason = status, reason
+            fit_info = dict(optimizer_success=False, message=str(exc),
+                            numerical_error_type=type(exc).__name__,
+                            numerical_error_operation="SciPy dense exact TRF SVD",
+                            fallback_or_restart_used=False)
         self.events.append(dict(stage=stage, parameter_dimension=stage*stage, status=status,
                                 stop_reason=reason, seconds=time.perf_counter()-started,
                                 start_counts=before, end_counts=dict(self.model.counts),

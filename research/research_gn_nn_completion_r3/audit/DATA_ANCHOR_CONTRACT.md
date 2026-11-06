@@ -132,3 +132,23 @@ feature counts, separate wall sums, incomplete base observations and shared
 reference setup. Per-task wall sums are computational work totals; overlapping
 batch wall records are retained without pretending their sum is elapsed time.
 This command performs no physics and opens no truth/NPZ payloads.
+
+## One numerical-stop training repair
+
+The original local 512-observation train batch had one uncaught SciPy TRF
+gesdd failure, `obs_8b81ff10f9d25c2c896b` (train_p0048, noise=.001). Its failed
+child wall was 30.371668541 s; LU/RHS were not saved and remain unknown, never
+zero. The raw failure is retained in `ANCHOR_FAILURE_INITIAL_<obs_id>.json`.
+After explicit parent authorization, a narrow `SVD did not converge` catch was
+added to retain the existing accepted physical state without changing the
+optimizer, LAPACK driver, tolerances, box or per-attempt budgets.
+
+Exactly one additional original-budget attempt ran. It hit the same SVD error
+and saved the last accepted full24 endpoint as NUMERICAL_STOP, not convergence:
+348 LU / 19,152 complex RHS, solve wall 13.438414417 s, child wall 13.743541125 s.
+The cumulative child execution wall is 44.115209666 s across two attempts; this
+is explicitly a repair protocol exception, not a single-budget end-to-end
+claim. Cumulative LU/RHS remain unknown because the first attempt's counts are
+unknown. `ANCHOR_REPAIR_<obs_id>.json` and the anchor receipt retain this link;
+the cost utility propagates the unknown prior costs separately from its known
+repair counts. No truth was opened or regenerated and no other anchors reran.

@@ -38,7 +38,9 @@ def evaluate(args):
         records=[r for r in records if r['obs_id']in requested]
     if args.partition_count<1 or args.partition_count>2 or not 0<=args.partition_index<args.partition_count:
         raise ValueError('Require one or two deterministic partitions and a valid partition index')
-    records=[r for i,r in enumerate(records)if i%args.partition_count==args.partition_index]
+    if args.partition_block_size<1:
+        raise ValueError('Positive deterministic partition block size required')
+    records=[r for i,r in enumerate(records)if (i//args.partition_block_size)%args.partition_count==args.partition_index]
     operators = read_npz(data/manifest.get('operators_path', 'operators.npz'))
     if args.secondary_mode=='fixed_background_softfilter_box_qp':
         reference=study/'cache/reference_jacobian.npz'
@@ -99,14 +101,14 @@ def evaluate(args):
                            run=run, prediction_path=str(prediction_path)if run not in args.controls else None,
                            anchor_path=str(study/'anchors'/f'{obs_id}.npz'),
                            outer_call_seconds=time.perf_counter()-tick,
-                           execution_partition=dict(index=args.partition_index,count=args.partition_count,BLAS_threads=1))
+                           execution_partition=dict(index=args.partition_index,count=args.partition_count,block_size=args.partition_block_size,rule='(selected_manifest_index // block_size) % partition_count',BLAS_threads=1))
             save_result(dest, obs_id, receipt, arrays)
             entries.append(dict(run=run,obs_id=obs_id,status=receipt['status'],selection_status=receipt['selection_status'],wall_seconds=receipt['wall_seconds']))
             print(json.dumps(entries[-1]),flush=True)
     partition_suffix=f'_P{args.partition_index}OF{args.partition_count}'if args.partition_count>1 else''
     path=study/'evaluation'/f'RUN_MANIFEST_{"_".join(args.splits)}{partition_suffix}_T{time.time_ns()}.json'
     write_json(path,dict(manifest_path=str(manifest_path),runs=args.runs,controls=args.controls,splits=args.splits,
-                         max_observations=args.max_observations,partition_index=args.partition_index,partition_count=args.partition_count,BLAS_threads=1,batch_start_unix=batch_start_unix,batch_end_unix=time.time(),batch_wall_seconds=time.perf_counter()-batch_started,batch_cpu_seconds=time.process_time()-batch_cpu_started,batch_cost_scope='full partition process including public input/output IO; excludes already invoiced NN inference and shared GN construction',entries=entries,truth_access='NONE'))
+                         max_observations=args.max_observations,partition_index=args.partition_index,partition_count=args.partition_count,partition_block_size=args.partition_block_size,partition_rule='(selected_manifest_index // block_size) % partition_count',BLAS_threads=1,batch_start_unix=batch_start_unix,batch_end_unix=time.time(),batch_wall_seconds=time.perf_counter()-batch_started,batch_cpu_seconds=time.process_time()-batch_cpu_started,batch_cost_scope='full partition process including public input/output IO; excludes already invoiced NN inference and shared GN construction',entries=entries,truth_access='NONE'))
     return path
 
 
@@ -123,10 +125,12 @@ def main():
     parser.add_argument('--obs-id',nargs='+')
     parser.add_argument('--partition-count',type=int,default=1,choices=[1,2])
     parser.add_argument('--partition-index',type=int,default=0,choices=[0,1])
+    parser.add_argument('--partition-block-size',type=int,default=8)
     parser.add_argument('--secondary-mode',choices=['full_softfilter_box_qp','fixed_background_softfilter_box_qp'])
     parser.add_argument('--seal')
     parser.add_argument('--output')
     parser.add_argument('--oracle',action='store_true')
+    parser.add_argument('--replay-frozen',action='store_true',help='Already-disclosed historical replay after relocation; do not assert original blind-seal mtimes')
     args=parser.parse_args()
     study=Path(args.study).resolve()
     if args.command=='evaluate':
@@ -138,10 +142,10 @@ def main():
         path=seal_predictions(study,manifest,args.runs+args.controls,splits=args.splits,output=args.output,max_observations=args.max_observations)
     elif args.command=='score':
         from research.research_gn_nn_completion_r3.src.score import score_predictions
-        path=score_predictions(args.seal or study/'evaluation/PREDICTIONS_SEALED.json',output=args.output,include_oracle=args.oracle)
+        path=score_predictions(args.seal or study/'evaluation/PREDICTIONS_SEALED.json',output=args.output,include_oracle=args.oracle,study_override=study,replay_frozen=args.replay_frozen)
     else:
         from research.research_gn_nn_completion_r3.src.plots import make_plots
-        path=make_plots(args.output or study/'evaluation/SCORES.json',study=study)
+        path=make_plots(args.output or study/'evaluation/SCORES.json',study=study,replay_frozen=args.replay_frozen)
     print(path)
 
 
