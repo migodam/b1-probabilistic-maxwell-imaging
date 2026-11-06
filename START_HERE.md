@@ -1,4 +1,13 @@
 <!-- GN_GREEN_ERROR_20261106 -->
+
+<!-- GN_GREEN_R2 -->
+## GN–Green R2：共享材料搜索空间与真实小型搜索
+
+509维复电流暗空间不等于材料latent；最弱64维仅覆盖约3%GT误差。52端点空间、96搜索任务全部完成；Green过滤未改善在线top1，严格停止零正则TRF四例有实质增量。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_gn_search_space_r2/) · [复现与下载](research/research_gn_search_space_r2/REPRODUCE.md) · [下一轮理论交接](research/research_gn_search_space_r2/CODEX_TO_PRO_HANDOFF.md)
+<!-- /GN_GREEN_R2 -->
+
 ## GN–GT误差谱：强弱、补空间与Two-fold
 
 144个冻结GN/TRF结果，低中高对比及clean/noisy全保留。低中对比材料误差约99.6–99.7%在接收补空间；高对比有33.8%进入接收强方向。Two-fold交集、串联、投影后空间及实际场误差能量分别计量。

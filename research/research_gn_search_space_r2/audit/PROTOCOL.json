@@ -1,0 +1,136 @@
+{
+  "study": "GN-Green R2",
+  "client_date": "2026-11-07",
+  "started_utc": "2026-11-06T20:09:03Z",
+  "execution_deadline_utc": "2026-11-06T21:39:03Z",
+  "scope": "OFFLINE_DIAGNOSTIC_DISCLOSED_HISTORICAL_GT; public-only proposals, post-seal scoring",
+  "source_commit": "32f7bfb308fd583da51bf3414a8aaad8d9da5ba5",
+  "physics": "unchanged R4-Diversity scalar-TM 576-cell disk-pulse full nonlinear VIE",
+  "box": [
+    0.02,
+    20.0
+  ],
+  "sources": 12,
+  "receivers": 48,
+  "green_strong_cutoff": 0.1,
+  "numeric_rank_rtol": 1e-12,
+  "dark_current": "ker([V_in,strong,V_ob,nonzero]^*)",
+  "material_leakage_energy_limits": [
+    0.01,
+    0.1
+  ],
+  "material_rms_scales": [
+    0.01,
+    0.03,
+    0.1
+  ],
+  "relative_data_change_tolerances": [
+    1e-05,
+    0.0001,
+    0.001
+  ],
+  "source_subsets": {
+    "1": [
+      0
+    ],
+    "3": [
+      0,
+      4,
+      8
+    ],
+    "6": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "12": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "coverage_ranks": [
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    576
+  ],
+  "e1": {
+    "low_endpoints": 48,
+    "native_clean_medium_high_controls": [
+      "digit7",
+      "ring"
+    ]
+  },
+  "e2": {
+    "native_low_clean": 12,
+    "regularization_multipliers": [
+      1,
+      0.1,
+      0
+    ],
+    "shared_smooth": 0.0001,
+    "shared_tv": 0.0001
+  },
+  "e3": {
+    "native_low_clean_noisy": 24,
+    "arms": [
+      "continue_trf",
+      "haar_unfiltered",
+      "green_pullback",
+      "soft_jacobian"
+    ],
+    "haar_bands": [
+      1,
+      2
+    ],
+    "signs": [
+      -1,
+      1
+    ],
+    "proposal_rms": [
+      0.03,
+      0.1
+    ],
+    "max_proposals": 8,
+    "seed_max_seconds": 3,
+    "seed_max_nfev": 8,
+    "ranking": "original .5||F-Y||²/||Y||² + common smooth+TV; include original anchor",
+    "epsilon_clean": 0.0001,
+    "epsilon_noisy": 0.001
+  },
+  "per_arm": {
+    "wall_seconds": 45,
+    "max_LU": 500,
+    "max_complex_RHS": 30000,
+    "setup_and_failure_charged": true
+  },
+  "workers": {
+    "cpu_numerical_workers_max": 2,
+    "blas_threads_each": 1
+  },
+  "notes": [
+    "No NN training",
+    "No original solver modification",
+    "No repeated Green SVD",
+    "E2 full-reg clean can be explicitly reused as E3 continue baseline",
+    "No full TSOM inverse chart-rank ablation",
+    "End-to-end cost includes setup, failure and corrector",
+    "At deadline missing work is NOT_RUN"
+  ]
+}
