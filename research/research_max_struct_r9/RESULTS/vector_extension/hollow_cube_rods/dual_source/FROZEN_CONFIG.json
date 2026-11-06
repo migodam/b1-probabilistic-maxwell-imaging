@@ -1,0 +1,161 @@
+{
+  "status": "FROZEN_BEFORE_PHASE2_GENERATION_AND_SOLVES",
+  "frozen_utc": "2026-11-06T03:09:57.666853+00:00",
+  "study": "R9_vector_extension_phase2",
+  "phaseI_modified": false,
+  "grid": {
+    "inverse_nside": 8,
+    "synthetic_nside": 10
+  },
+  "physics": {
+    "backend": "Inherited R1 TensorDDA CM+RR full electric dyadic; R8 vector conventions",
+    "lambda0": 1,
+    "k": "2*pi",
+    "mu_r": 1,
+    "time_convention": "exp(-i omega t)",
+    "precision": "complex128/float64",
+    "material": "one independent real isotropic chi per voxel;512unknowns",
+    "material_box": [
+      0,
+      8
+    ],
+    "initial_chi": 0.25
+  },
+  "acquisition": {
+    "dipoles": 60,
+    "receivers": 60,
+    "receiver_components": 3,
+    "circles": 3,
+    "dipoles_per_circle": 20,
+    "radius_equals_domain_width": true,
+    "original_3lambda_circle_centers": [
+      [
+        0.2,
+        0,
+        -0.1
+      ],
+      [
+        0.1,
+        0,
+        -0.15
+      ],
+      [
+        -0.05,
+        0.1,
+        0
+      ]
+    ],
+    "dipole_axes": [
+      2,
+      0,
+      1
+    ],
+    "center_scale": "domain_width/3; source/rx outside DoI"
+  },
+  "solver": {
+    "PR_total": 240,
+    "MF": [
+      1,
+      2
+    ],
+    "cycles_per_stage": [
+      120,
+      120
+    ],
+    "beta_material": [
+      6,
+      1
+    ],
+    "beta_current_single": [
+      6,
+      1
+    ],
+    "beta_current_dual": [
+      6,
+      3
+    ],
+    "material_inner_maxiter": 12,
+    "aplus_sweeps": 2,
+    "aplus_color_batches": 8,
+    "corrector_maxiter": 300,
+    "direct_maxiter": 300,
+    "checkpoint_accepted": 80,
+    "checkpoint_evaluations": 80,
+    "physical_ftol": 1e-13,
+    "physical_gtol": 1e-09,
+    "physical_maxls": 30,
+    "material_ftol": 1e-12,
+    "material_gtol": 1e-08,
+    "material_maxls": 25,
+    "prior_smooth": 0.0002,
+    "prior_l2": 1e-06,
+    "state_penalty_rho": 10,
+    "prior_scope": "N/edge-normalized discrete quadratic prior, no h^-2 scaling",
+    "physical_Phi": "mean_source(||Sj-Y||^2/||Y||^2)+sameprior; not pooled with scalar Phi",
+    "public_validation": "host and every joint material cycle; selected by paid original Phi",
+    "cache": "GB/SB/GJd/SJd; Q from same cached actions; exact-m state/LU/gradient cache; local sparse H eight-color neighborhoods",
+    "paper_delta": "sqrt(mean_source(||delta_gamma||^2/||gamma_old||^2)),diagnostic only; no early stopping",
+    "paper_Err": "NOT_CLAIMED; offline chi relative-L2 NRMSE separate"
+  },
+  "dpcs": {
+    "primary": "fixed_010",
+    "fixed_rtol": 0.1,
+    "qualified_legacy": "bounded radius(.1/.9)*||Y||F; no chi-square",
+    "qualified_iid": "sigma^2*chi2.ppf(.99,2*180*60)/2; noise-only, not discretization budget",
+    "supported": "singular>eps*max(S.shape)*singular0",
+    "raw_unwhitened": true,
+    "whiten_apcs": false
+  },
+  "arms": [
+    "cie_single",
+    "dual_source",
+    "global_dual",
+    "a_material",
+    "a_plus",
+    "direct",
+    "global_dual_qualified",
+    "a_plus_qualified"
+  ],
+  "cases": [
+    {
+      "case_id": "four_cubes_legacy",
+      "domain_width": 0.6,
+      "noise_model": "legacy_fixed_energy_bounded",
+      "new_warm_generation": false
+    },
+    {
+      "case_id": "hollow_cube_rods",
+      "domain_width": 0.6,
+      "noise_model": "iid_circular_complex",
+      "expected_relative_noise": 0.03
+    },
+    {
+      "case_id": "two_cubes_eps9",
+      "domain_width": 0.4,
+      "noise_model": "iid_circular_complex",
+      "expected_relative_noise": 0.03
+    }
+  ],
+  "validation": {
+    "kind": "independent analytic Mie",
+    "epsilon_r": 9,
+    "chi": 8,
+    "radius": 0.145,
+    "domain_width": 0.4,
+    "nside": [
+      8,
+      10
+    ],
+    "subcells_per_axis": 24,
+    "geometry": "polarizability-preserving MG fraction; no fit/rescale",
+    "failure_policy": "retaincost/errorandcontinueinversions; no automaticcontinuumPASS"
+  },
+  "execution": {
+    "max_numeric_processes": 2,
+    "BLAS_threads": 1,
+    "GT_policy": "generator only until all24 predictionssealed; solvers public-only; offline score last",
+    "no_new_backend": true,
+    "automatic_scientific_retry": false
+  },
+  "pre_run_contract_audit": "Before any numerical execution: noise seeds kept only in private generator contract; all solver/data/algorithm values unchanged."
+}

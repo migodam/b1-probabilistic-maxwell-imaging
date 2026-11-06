@@ -1,0 +1,82 @@
+{
+  "phase": "GPU_one_full_value_gradient",
+  "input_material": "Mac sealed epsilon3.5 single CIE CHECKPOINT_080; copied public prediction",
+  "input_observations": "unmodified original150\u00b2 R8 Y",
+  "GT_loaded": false,
+  "physical_grid": [
+    64,
+    64
+  ],
+  "physical_unknowns": 4096,
+  "sources": 20,
+  "receivers": 40,
+  "material_box": [
+    0,
+    20
+  ],
+  "material_min": 0.0,
+  "material_max": 3.303350100147593,
+  "host_logical_Pcore": [
+    12
+  ],
+  "dtype": "complex128/float64",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "python": "3.10.9 (tags/v3.10.9:1dd9be6, Dec  6 2022, 20:01:21) [MSC v.1934 64 bit (AMD64)]",
+  "science": "one fixed-point callback only; CPU16 unchanged; no material recovery assessment",
+  "CPU_setup": {
+    "wall_seconds": 0.06497909990139306,
+    "CPU_seconds": 0.0625
+  },
+  "CPU_callback": {
+    "wall_seconds": 1.3998360000550747,
+    "CPU_seconds": 1.375,
+    "cost": {
+      "Green_kernel_FFT_setup": 1,
+      "FULL_FORWARD": 1,
+      "Green_forward_calls": 1161,
+      "Green_FFT_2D_transforms": 2340,
+      "Green_IFFT_2D_transforms": 2340,
+      "GMRES_iterations": 2240,
+      "actual_complex_RHS": 40,
+      "maximum_GMRES_relative_residual": 9.069806070973552e-10,
+      "Green_adjoint_calls": 1160,
+      "DATA_ADJOINT": 1
+    },
+    "value": 0.00435296887814426,
+    "gradient_norm": 0.0002970969112695618
+  },
+  "CPU_diagnostics": {
+    "physical_relative_data_residual": 0.0933004375576734,
+    "state_relative_residual": 6.430216896297192e-10
+  },
+  "Torch_context_library_setup": {
+    "wall_seconds": 3.074286099988967,
+    "CPU_seconds": 1.359375,
+    "torch": "2.6.0+cu124",
+    "CUDA": "12.4",
+    "selected_linalg": "cusolver",
+    "device": "NVIDIA GeForce RTX 4060 Laptop GPU"
+  },
+  "GPU_dense_operator_assembly": {
+    "wall_seconds": 28.098804300068878,
+    "CPU_seconds": 27.90625,
+    "Green_bytes": 268435456,
+    "convention": "exact same equal-area disk formula including diagonal; not default576"
+  },
+  "GPU_resident_setup": {
+    "wall_seconds": 3.4602520000189543,
+    "CPU_seconds": 1.875,
+    "counts": {
+      "LU": 1,
+      "source_RHS": 20,
+      "operator_uploads": 1
+    },
+    "extra_setup": "unmodified SharedOperators constructs reference.1LU and unused fullB/DB; paid, not hidden"
+  },
+  "GPU_cold_setup_total": {
+    "wall_seconds": 34.642413900000975,
+    "CPU_seconds": 31.140625,
+    "note": "includes Torch/context, denseG assembly, upload, unused basis and referenceLU; components overlap this total"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "status": "FROZEN_FOR_GENERATION",
+  "seed": 2026110609,
+  "rng_scheme": "numpy SeedSequence(seed).spawn(6); one independent default_rng child per fixed case, shared for its geometry and noise",
+  "generation_grid": 24,
+  "inverse_grid": 24,
+  "sources": 12,
+  "receivers": 48,
+  "material_box": [
+    0.02,
+    20.0
+  ],
+  "material_background": 0.1,
+  "same_discretization": true,
+  "material_helper": "research.research_max_struct_r8.experiments.generate_warm_data::parameters/material",
+  "physical_helper": "research.research_fbg_r3_experiments.src.physics::MaxwellModel.state",
+  "operators": {
+    "full": "research/research_max_struct_r9/data_public/operators/warm_n24_s12_a1.0.npz",
+    "half": "research/research_max_struct_r9/data_public/operators/warm_n24_s12_a0.5.npz"
+  },
+  "cases": [
+    {
+      "case_id": "r9_confirmation_0000",
+      "family": "ellipse",
+      "amplitude": 2.5,
+      "relative_complex_RMS_noise": 0.001,
+      "aperture": "full"
+    },
+    {
+      "case_id": "r9_confirmation_0001",
+      "family": "disks",
+      "amplitude": 12.0,
+      "relative_complex_RMS_noise": 0.01,
+      "aperture": "half"
+    },
+    {
+      "case_id": "r9_confirmation_0002",
+      "family": "annulus",
+      "amplitude": 18.0,
+      "relative_complex_RMS_noise": 0.03,
+      "aperture": "full"
+    },
+    {
+      "case_id": "r9_confirmation_0003",
+      "family": "comb",
+      "amplitude": 12.0,
+      "relative_complex_RMS_noise": 0.03,
+      "aperture": "half"
+    },
+    {
+      "case_id": "r9_confirmation_0004",
+      "family": "star",
+      "amplitude": 18.0,
+      "relative_complex_RMS_noise": 0.01,
+      "aperture": "full"
+    },
+    {
+      "case_id": "r9_confirmation_0005",
+      "family": "perforated",
+      "amplitude": 12.0,
+      "relative_complex_RMS_noise": 0.03,
+      "aperture": "half"
+    }
+  ],
+  "selection_policy": "One realization per fixed case; no reroll, no GT-based filtering, no feature/NN generation",
+  "confirmation_scope": "Six diverse independent materials; small fixed confirmation for noise-rule/generalization, not a statistical population claim. Methods/config must be frozen by root after DEV and before generation/inversion.",
+  "freeze_utc": "2026-11-06T02:15:11.705932+00:00",
+  "method_freeze": "DPCS full-noise99% prefix unchanged fromDEV; A+ frozenR8; profile\u03bbratios .01,1,100 and100iterationsunchanged; no NN, no GTselection"
+}

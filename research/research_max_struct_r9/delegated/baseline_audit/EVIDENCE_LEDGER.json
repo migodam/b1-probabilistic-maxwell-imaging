@@ -1,0 +1,117 @@
+{
+  "status": "READ_ONLY_PUBLIC_DEVELOPMENT_AUDIT",
+  "scientific_verdict_owner": "root Codex",
+  "claims": [
+    {
+      "id": "A01",
+      "status": "CODE_AND_PAID_CONTROLS_CONFIRMED",
+      "claim": "A and A+ use the same onehop material residual, prior and original full-Maxwell corrector; A+ changes the fixed-current material inner solver, not the forward physics or current transform.",
+      "sources": [
+        "research/research_max_struct_r8/src/cie_fft.py:31-35,283-294",
+        "research/research_max_struct_r8/src/benchmark_solver.py:14-39",
+        "research/research_max_struct_r7/src/aplus_readout.py:52-91,109-182",
+        "research/research_max_struct_r4/src/cie_onehop.py:40-70,100-163"
+      ]
+    },
+    {
+      "id": "A02",
+      "status": "CONDITIONAL_POSITIVE_WITH_NEGATIVE_CONTROLS",
+      "claim": "The old b20d recovery can be reproduced by material-only onehop with ordinary global current; diagonal-only, phase-pi, current-only and stage handoffs do not reproduce it. Grid32 and shifted-partition controls limit the explanation.",
+      "sources": [
+        "research/research_max_struct_r4/RESEARCH_REPORT_ZH.md:43-80",
+        "research/research_max_struct_r5/RESEARCH_REPORT_ZH.md:15-38",
+        "R4_CONTROLS.csv"
+      ]
+    },
+    {
+      "id": "A03",
+      "status": "DESCRIPTIVE_NO_UNIVERSAL_ADVANTAGE",
+      "claim": "In R8 high-contrast uniform cases A+ has4/26 material successes versus A5, Global5, Dual3, single6. Sourcewise A+ has5. Different current modes confound globalAplus versus Dual.",
+      "sources": [
+        "R8_UNIFORM_STRATIFIED.csv",
+        "R8_MATCHED_PAIRS.csv",
+        "R8_PAIR_SUMMARY.csv"
+      ]
+    },
+    {
+      "id": "D01",
+      "status": "DEMONSTRATED_ALGORITHMIC_RESTRICTION_NOT_CODING_BUG",
+      "claim": "Hard DPCS retains noisy coefficients exactly. All four public R8 receiver matrices retain rank17 under rtol.001; retained condition393.9847. Expected CN-noise current RMS/observedJD is4.3-6.9%,43.7-60.0%,82.6-108.2% for noise.001/.01/.03. This is a conditional expectation, not actual truth error or proof that rank17 is wrong.",
+      "sources": [
+        "research/research_max_struct_r8/src/cie_fft.py:159-170",
+        "DPCS_PUBLIC_OPERATOR_SPECTRA.json",
+        "DPCS_CASE_NOISE_SEVERITY.csv"
+      ]
+    },
+    {
+      "id": "D02",
+      "status": "FIXED_ANCHOR_LOWER_BOUND_WITH_LIMITS",
+      "claim": "R3 publishedGT hardlock state floor.0289064, noise expectation.0226618, fixed-anchor99%bound.0424996; neither a final material-error floor nor proof of dominance. clean-native and strong-release controls still fail.",
+      "sources": [
+        "R3_HARDLOCK_EVIDENCE.json",
+        "R3_DEVELOPMENT_CONTROL_SCORES.csv",
+        "research/research_max_struct_r3/audit/FINAL_INDEPENDENT_REVIEW.md:29"
+      ]
+    },
+    {
+      "id": "S01",
+      "status": "DEMONSTRATED_INITIALIZATION_AND_SELECTION_LIMIT",
+      "claim": "Material-only NN initialization starts auxiliary current at noisyJD plus zero APCS; optional projected-current/anchor paths are separate algorithms. Lower pre-correctorPhi does not certify a better corrected material. R8case0027 is a paid counterexample.",
+      "sources": [
+        "research/research_max_struct_r8/src/cie_fft.py:170-213",
+        "research/research_max_struct_r8/experiments/run_case.py:179-207",
+        "R8_INITIALIZER_SELECTION_SURVIVAL.csv",
+        "R8_SELECTION_AND_CORRECTOR_630.csv"
+      ]
+    },
+    {
+      "id": "S02",
+      "status": "DEMONSTRATED_STOPPING_LIMIT_NOT_PROOF_OF_WRONG_DERIVATIVE",
+      "claim": "All reviewed R8 uniform auxiliary schedules have3000steps with stoppingdisabled. Correctors often hit3000cap; numerical success also occurs with wrong materials. They are adequately paid frozen baselines, not certified convergence ceilings.",
+      "sources": [
+        "research/research_max_struct_r8/configs/solver.json",
+        "research/research_max_struct_r6/src/benchmark_solver.py:43-79,164-194",
+        "SELECTION_HIGH_CONTRAST_SUMMARY.json"
+      ]
+    },
+    {
+      "id": "B01",
+      "status": "DEMONSTRATED_HISTORICAL_REPORTING_OMISSIONS",
+      "claim": "Older FBG E3 scorer genericNRMSE text8or18 conflicts with actual amplitude12, and aggregate cap/stop metadata omit rawreceipt budget stops. These are documented reporting omissions; do not attribute them to R8 numeric solver or invent a rerun.",
+      "sources": [
+        "research/research_fbg_r3_experiments/audit/E3_BASELINE_PORT.md:188-194",
+        "research/research_fbg_r3_experiments/CIE_TSOM_BASELINE_AUDIT.md:96-118"
+      ]
+    },
+    {
+      "id": "B02",
+      "status": "REJECTED_HYPOTHESIS",
+      "claim": "The initial state_dof placeholder looks hardcoded but is overwritten in finally by actualmodel.n*model.ns. All630 finalreceipts agree. Not a demonstrated source-count bug.",
+      "sources": [
+        "research/research_max_struct_r8/experiments/run_case.py:102,226",
+        "REJECTED_DOF_BUG_HYPOTHESIS.json"
+      ]
+    },
+    {
+      "id": "H01",
+      "status": "UNTESTED_HYPOTHESES_NOT_RESCUE_EXPLANATIONS",
+      "claim": "Noise-aware soft DPCS, improved branch selection or a representation change may help, but existing evidence does not prove any one will recover highcontrast materials. No new rank/beta/stop or GT-based online choice selected here.",
+      "sources": [
+        "R3_DEVELOPMENT_CONTROL_SCORES.csv",
+        "R8_INITIALIZER_SELECTION_SURVIVAL.csv",
+        "FIXED_MINIMAL_DEV_CASES.json"
+      ]
+    },
+    {
+      "id": "A04",
+      "status": "CONDITIONAL_R7_HIGH_CONTRAST_POSITIVE_NOT_POOLED",
+      "claim": "R7amplitude>=12:18objects,A/Aplus11successes,Dual/Global9,single10; AplusmeanNRMSE.28700vsGlobal.35865. Preservepositiveevidence,butdifferentnoise/acquisition/cohortfromR8high26.",
+      "sources": [
+        "R7_HIGH_CONTRAST_SUMMARY.csv",
+        "R7_ENDPOINTS_180.csv"
+      ]
+    }
+  ],
+  "core_solver_coding_bug_demonstrated_by_this_audit": false,
+  "limitations": "Targeted code/evidence review is not an exhaustive software proof. No solver/gradient rerun was authorized or performed. R8 test is now public DEVELOPMENT. Full scientific judgment remains with root."
+}

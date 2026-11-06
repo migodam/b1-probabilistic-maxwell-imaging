@@ -1,0 +1,88 @@
+{
+  "status": "FAILED",
+  "mode": "generate",
+  "arm": null,
+  "CPU_seconds": 475.440874,
+  "wall_seconds": 546.0931512499228,
+  "peak_RSS_bytes": 1450328064,
+  "counts": {
+    "Green_kernel_builds": 1,
+    "incident_dipole_fields": 60,
+    "receiver_vector_rows": 180,
+    "physical_evaluations": 1,
+    "Green_forward_RHS": 1653,
+    "Green_block_calls": 1653,
+    "scalar_FFT3_transforms": 9918,
+    "primal_RHS": 4,
+    "gmres_iterations": 1520
+  },
+  "setup": {
+    "CPU_seconds": 1.079815,
+    "wall_seconds": 1.351370417047292,
+    "full_cells": 216000,
+    "stored_current_cells": 19652,
+    "complex_current_components": 58956,
+    "known_support_restriction": true,
+    "block_rhs": 4,
+    "kernel_bytes": 248832000,
+    "incident_bytes": 56597760,
+    "receiver_bytes": 169793280,
+    "source_radius": 3.0,
+    "geometry_width": 3.0,
+    "self_real": -0.3333333333333333,
+    "self_imag": 0.0016449340668482266,
+    "physical_model": "R1CM+RRpointdipoleDDA; notauthorcellintegration"
+  },
+  "max_physical_linear_residual": 1.9947463622256915e-06,
+  "solve_records": [
+    {
+      "label": "fine60_generation",
+      "source": 0,
+      "adjoint": false,
+      "iterations": 373,
+      "info": 0,
+      "relative_residual": 1.961711401408976e-06,
+      "CPU_seconds": 100.706084,
+      "wall_seconds": 104.51127308374271
+    },
+    {
+      "label": "fine60_generation",
+      "source": 1,
+      "adjoint": false,
+      "iterations": 370,
+      "info": 0,
+      "relative_residual": 1.9947463622256915e-06,
+      "CPU_seconds": 109.283844,
+      "wall_seconds": 114.42813333310187
+    },
+    {
+      "label": "fine60_generation",
+      "source": 2,
+      "adjoint": false,
+      "iterations": 365,
+      "info": 0,
+      "relative_residual": 1.9486281858332504e-06,
+      "CPU_seconds": 107.72725899999998,
+      "wall_seconds": 112.90198950003833
+    },
+    {
+      "label": "fine60_generation",
+      "source": 3,
+      "adjoint": false,
+      "iterations": 412,
+      "info": 0,
+      "relative_residual": 4.900583987656864e-07,
+      "CPU_seconds": 124.07977100000005,
+      "wall_seconds": 129.56632879097015
+    }
+  ],
+  "failure": {
+    "type": "KeyboardInterrupt",
+    "message": "",
+    "traceback": "Traceback (most recent call last):\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r9_worktree/research/research_max_struct_r9/experiments/vector_original_extension.py\", line 44, in main\n    print(json.dumps(r),flush=True)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r9_worktree/research/research_max_struct_r9/src/vector_original_extension.py\", line 128, in physical\n    op=LinearOperator((self.M,self.M),matvec=action,dtype=complex)\n          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r9_worktree/research/research_max_struct_r9/src/vector_original_extension.py\", line 108, in solve\n    out[:,i:j]=value[self.green_rows]\n                       ^^^^^^^^^^^^^^\n    self.counts['Green_adjoint_RHS' if adjoint else 'Green_forward_RHS']+=b\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/sparse/linalg/_isolve/iterative.py\", line 762, in gmres\n    av = matvec(v[col, :])\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/sparse/linalg/_interface.py\", line 391, in matvec\n    return self._shared_matvec(x)\n           ~~~~~~~~~~~~~~~~~~~^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/sparse/linalg/_interface.py\", line 353, in _shared_matvec\n    y = self._rmatvec(x) if adjoint else self._matvec(x)\n                                         ~~~~~~~~~~~~^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/sparse/linalg/_interface.py\", line 891, in _matvec\n    return self.__matvec_impl(x)\n           ~~~~~~~~~~~~~~~~~~^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r9_worktree/research/research_max_struct_r9/src/vector_original_extension.py\", line 101, in action\n    for i in range(0,X.shape[1],self.block_rhs):\n    \n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r9_worktree/research/research_max_struct_r9/src/vector_original_extension.py\", line 88, in green\n    zero=np.all(dv==0,axis=-1);dv[zero]=[1,0,0]\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/fft/_backend.py\", line 29, in __ua_function__\n    return fn(*args, **kwargs)\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/fft/_basic_backend.py\", line 115, in fftn\n    return _execute_nD('fftn', _duccfft.fftn, x, s=s, axes=axes, norm=norm,\n                       overwrite_x=overwrite_x, workers=workers, plan=plan)\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/fft/_basic_backend.py\", line 57, in _execute_nD\n    return duccfft_func(x, s=s, axes=axes, norm=norm,\n                          overwrite_x=overwrite_x, workers=workers, plan=plan)\n  File \"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/fft/_duccfft/basic.py\", line 149, in c2cn\n    return pfft.c2c(tmp, axes, forward, norm, out, workers)\n           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyboardInterrupt\n"
+  },
+  "termination_class": "CONTROLLED_ENGINEERING_RESTART_AFTER_EXACT_CROP_TIMING",
+  "all_paid_work_retained": true,
+  "completed_solution_state": "Not externally checkpointed in initial implementation; completed solutions not reused",
+  "incomplete_RHS_accounting": "All process CPU/wall and actual Green calls retained. Initial implementation records GMRES iterations only for completed RHS, so interrupted-source callback count is unknown and not asserted."
+}

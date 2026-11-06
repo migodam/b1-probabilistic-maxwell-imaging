@@ -1,0 +1,172 @@
+{
+  "CPU_solve": {
+    "wall_seconds": 99.90543159993831,
+    "CPU_seconds": 99.3125,
+    "solve_records": [
+      {
+        "label": "benchmark_source59_CPU",
+        "source": 0,
+        "adjoint": false,
+        "iterations": 416,
+        "info": 0,
+        "relative_residual": 4.967892447668448e-07,
+        "CPU_seconds": 99.3125,
+        "wall_seconds": 99.90358029992785
+      }
+    ],
+    "counts": {
+      "Green_kernel_builds": 1,
+      "incident_dipole_fields": 60,
+      "receiver_vector_rows": 180,
+      "Green_forward_RHS": 425,
+      "Green_block_calls": 425,
+      "scalar_FFT3_transforms": 2550,
+      "primal_RHS": 1,
+      "gmres_iterations": 416
+    },
+    "setup": {
+      "CPU_seconds": 1.953125,
+      "wall_seconds": 1.96926339995116,
+      "full_cells": 216000,
+      "stored_current_cells": 19652,
+      "complex_current_components": 58956,
+      "known_support_restriction": true,
+      "block_rhs": 4,
+      "kernel_bytes": 98131968,
+      "incident_bytes": 56597760,
+      "receiver_bytes": 169793280,
+      "source_radius": 3.0,
+      "geometry_width": 3.0,
+      "self_real": -0.3333333333333333,
+      "self_imag": 0.0016449340668482266,
+      "convolution_shape": [
+        44,
+        44,
+        44
+      ],
+      "convolution_padding": [
+        88,
+        88,
+        88
+      ],
+      "generation_fft_crop": true,
+      "embedding_origin_indices": [
+        8,
+        8,
+        8
+      ],
+      "physical_model": "R1CM+RRpointdipoleDDA; notauthorcellintegration"
+    }
+  },
+  "CUDA_solve": {
+    "wall_seconds": 5.890484300092794,
+    "CPU_seconds": 5.078125,
+    "solve_records": [
+      {
+        "iterations": 368,
+        "cycles": 7,
+        "relative_residual": 1.865178184314687e-06,
+        "info": 0,
+        "projected_checks": 49,
+        "original_residual_checks": 7,
+        "label": "benchmark_source59_CUDA",
+        "source": 0,
+        "adjoint": false,
+        "CPU_seconds": 5.078125,
+        "wall_seconds": 5.877631100011058
+      }
+    ],
+    "counts": {
+      "Green_forward_RHS": 375,
+      "Green_block_calls": 375,
+      "scalar_FFT3_transforms": 2250,
+      "gmres_Arnoldi_steps": 368,
+      "small_QR_solves": 49,
+      "GMRES_scalar_convergence_checks": 49,
+      "GMRES_original_residual_checks": 7,
+      "primal_RHS": 1
+    },
+    "setup": {
+      "CPU_seconds": 1.953125,
+      "wall_seconds": 1.96926339995116,
+      "full_cells": 216000,
+      "stored_current_cells": 19652,
+      "complex_current_components": 58956,
+      "known_support_restriction": true,
+      "block_rhs": 4,
+      "kernel_bytes": 98131968,
+      "incident_bytes": 56597760,
+      "receiver_bytes": 169793280,
+      "source_radius": 3.0,
+      "geometry_width": 3.0,
+      "self_real": -0.3333333333333333,
+      "self_imag": 0.0016449340668482266,
+      "convolution_shape": [
+        44,
+        44,
+        44
+      ],
+      "convolution_padding": [
+        88,
+        88,
+        88
+      ],
+      "generation_fft_crop": true,
+      "embedding_origin_indices": [
+        8,
+        8,
+        8
+      ],
+      "physical_model": "R1CM+RRpointdipoleDDA; notauthorcellintegration",
+      "CUDA_upload_CPU_seconds": 0.0625,
+      "CUDA_upload_wall_seconds": 0.10016999999061227,
+      "backend": "Torchcomplex128residentcuFFT_CGS2_GMRES60",
+      "GMRES_check_interval": 8,
+      "GMRES_original_residual_tolerance": 2e-06,
+      "backend_change": "CGS2 instead of SciPy MGS; QR/check every8 steps and cycle end; up to7 extra Arnoldi steps",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "torch_version": "2.6.0+cu124"
+    },
+    "peak_GPU_allocated_bytes": 566393344,
+    "peak_GPU_reserved_bytes": 1084227584
+  },
+  "qualification": {
+    "original_CPU_matrix_residual_of_GPU_state": 1.8651781843060317e-06,
+    "relative_current_difference": 1.3644923642579187e-05,
+    "relative_prediction_difference": 6.591171332634284e-06,
+    "wall_speed_ratio": 16.96047837668704,
+    "scope": "Complete RHS numerical backend comparison: SciPyMGS vs residentCGS2/8stepcheck; not pureGPU-only claim"
+  },
+  "PASS": true,
+  "CPU_seconds": 106.921875,
+  "wall_seconds": 109.92426620004699,
+  "process_affinity": [
+    12,
+    14
+  ],
+  "peak_RSS_bytes": 1305260032,
+  "platform": "Windows-10-10.0.26200-SP0",
+  "numpy_version": "2.2.6",
+  "scipy_version": "1.15.3",
+  "torch_version": "2.6.0+cu124",
+  "CPU_counts": {
+    "Green_kernel_builds": 1,
+    "incident_dipole_fields": 60,
+    "receiver_vector_rows": 180,
+    "Green_forward_RHS": 426,
+    "Green_block_calls": 426,
+    "scalar_FFT3_transforms": 2556,
+    "primal_RHS": 1,
+    "gmres_iterations": 416
+  },
+  "CUDA_counts": {
+    "Green_forward_RHS": 375,
+    "Green_block_calls": 375,
+    "scalar_FFT3_transforms": 2250,
+    "gmres_Arnoldi_steps": 368,
+    "small_QR_solves": 49,
+    "GMRES_scalar_convergence_checks": 49,
+    "GMRES_original_residual_checks": 7,
+    "primal_RHS": 1
+  }
+}
