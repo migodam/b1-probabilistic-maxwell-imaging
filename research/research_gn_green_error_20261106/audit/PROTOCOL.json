@@ -1,0 +1,56 @@
+{
+  "client_date": "2026-11-06",
+  "classification": "OFFLINE_DIAGNOSTIC_DISCLOSED_GT",
+  "dataset": "Frozen R4-Diversity; unchanged between 7317601 and current origin main",
+  "cohort": {
+    "backend": "cpu",
+    "methods": [
+      "native_trf",
+      "reciprocal_trf"
+    ],
+    "shapes": 12,
+    "amplitudes": [
+      0.4,
+      2.5,
+      12
+    ],
+    "noise": [
+      "clean",
+      "noisy"
+    ],
+    "expected_endpoints": 144,
+    "all_results_kept": true
+  },
+  "operators": {
+    "G_in": "R4 public_data/operators.npz:G",
+    "G_ob": "same:S",
+    "domain": "same 576-cell complex current coordinates",
+    "no_additional_area_scaling": true
+  },
+  "quantities": [
+    "material (real error viewed in the original complex Green coordinate domain)",
+    "current (exact nonlinear induced-current error, all 12 sources)",
+    "material_real (right spectrum of [Re G; Im G], reality-preserving static coordinate control)"
+  ],
+  "primary_strong_relative_cutoff": 0.1,
+  "sensitivity_cutoffs": [
+    0.03,
+    0.3
+  ],
+  "numerical_null_relative_cutoff": 1e-12,
+  "numerical_intersection_sine_tolerance": 1e-09,
+  "projected_span_absolute_rank_tolerance": 1e-10,
+  "twofold_definitions": [
+    "exact/numerical intersections plus unassigned remainder",
+    "orthogonal projector chain, ob then in",
+    "orthogonal projector chain, in then ob",
+    "TSOM projected span range(P_ob,b V_in,a), orthonormalized; overlapping fractions"
+  ],
+  "energy": "discrete squared Euclidean/Frobenius norm; not electromagnetic stored energy",
+  "aggregation": "primary pooled error-energy fractions within each method/contrast/noise; per-case percentages and unweighted means also saved",
+  "physics": "reuse unchanged frozen R4 full nonlinear VIE for currents; no GN optimization reruns or Born approximation",
+  "representative_shape_for_maps": "digit7 clean at all three contrasts, predefined independently of projected-error statistics",
+  "selection": "all CPU GN-family endpoints; no GT tuning of thresholds or subspaces",
+  "primary_chain": "in_then_ob: P_ob,b P_in,a, matching the old projected-basis ordering",
+  "additional_direct_legacy_chart": "[V_ob,strong,orth((I-P_ob,strong)V_in,strong)], computed from saved arrays after primary tables; no new optimization or GT-based threshold changes"
+}
