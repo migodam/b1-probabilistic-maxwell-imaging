@@ -146,6 +146,10 @@ def main():
         unknown.append(dict(source=delivery,reason='Earlier uninstrumented editing CPU remains null; no invented charge or zero'))
     path='audit/PACKAGING_RECEIPT.json';d=producer(path,'publication_packaging')
     if d:add('publication_packaging','publication_archive',d.get('CPU_seconds'),path,path,'Recorded evidence archive process, separate from scientific inversions',d.get('status','RECORDED'),d.get('execution_platform'),'packaging_transport')
+    for path in ('audit/PUBLICATION_UPLOAD.json','audit/PUBLIC_ACCESS.json'):
+        if (ROOT/path).exists():
+            d=producer(path,'publication_delivery')
+            add('publication_delivery',path,d.get('CPU_seconds'),path,path,d.get('CPU_scope','Recorded final publication process, not scientific compute'),d.get('status'),d.get('execution_platform','Mac'),'packaging_transport')
     literature='audit/literature/cie2019_error_formula_check.json'
     if (ROOT/literature).exists():
         add('external_retrieval','cie2019_error_formula_check',None,literature,literature,'Root primary-formula tool check; CPU/tool billing unavailable, not zero',platform='UNKNOWN',activity='literature')
