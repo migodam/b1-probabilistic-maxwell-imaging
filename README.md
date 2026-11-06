@@ -1,3 +1,11 @@
+<!-- GN_GREEN_ERROR_20261106 -->
+## GN–GT误差谱：强弱、补空间与Two-fold
+
+144个冻结GN/TRF结果，低中高对比及clean/noisy全保留。低中对比材料误差约99.6–99.7%在接收补空间；高对比有33.8%进入接收强方向。Two-fold交集、串联、投影后空间及实际场误差能量分别计量。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_gn_green_error_20261106/) · [请求数值表](research/research_gn_green_error_20261106/results/REQUESTED_TABLES_ZH.md) · [复现](research/research_gn_green_error_20261106/REPRODUCE.md)
+<!-- /GN_GREEN_ERROR_20261106 -->
+
 <!-- MAX_STRUCT_R3_PUBLICATION -->
 ## MAX-STRUCT-R3：公式驱动的机制研究循环
 
