@@ -1,10 +1,10 @@
 # R10 已记录费用账本
 
-当前已知CPU下界：**42152.033940 秒**。这是成本记录汇总，不是科学结论，也不是包含全部未知开销的精确总额。
+当前已知CPU下界：**42169.780829 秒**。这是成本记录汇总，不是科学结论，也不是包含全部未知开销的精确总额。
 
 |分支|平台|类别|已知CPU秒|未知行|
 |---|---|---|---:|---:|
-|campaign_bookkeeping|Mac|metadata|0.363140 (1行)|0|
+|campaign_bookkeeping|Mac|metadata|0.419486 (1行)|0|
 |conditional_confirmation|Mac|control_or_metadata|0.005676 (2行)|0|
 |conditional_confirmation|Mac|generation|1.117061 (1行)|0|
 |conditional_confirmation|Mac|packaging_transport|1.769202 (7行)|0|
@@ -18,6 +18,7 @@
 |historical_DEV|UNKNOWN|DEV|120.474626 (8行)|11|
 |historical_DEV|UNKNOWN|energy_or_scoring|174.988561 (10行)|0|
 |postseal_analysis|UNKNOWN|offline_postprocessing|75.932700 (8行)|0|
+|publication_delivery|Mac|packaging_transport|17.690543 (2行)|0|
 |publication_packaging|UNKNOWN|packaging_transport|136.994389 (1行)|0|
 |right_exposed_diagnostic|Mac|packaging_transport|1.335368 (9行)|0|
 |right_exposed_diagnostic|XINAN|control_or_metadata|0.546875 (3行)|0|
