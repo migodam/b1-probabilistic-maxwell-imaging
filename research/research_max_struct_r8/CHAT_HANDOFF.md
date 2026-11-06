@@ -1,5 +1,7 @@
 # MAX-STRUCT-R8：给下一轮Chat的直接交接
 
+公开入口：[研究网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r8/) · [完整52包Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r8-20261106)。网页、图、raw报告、Release及匿名小包下载已经核验；全部52个资产的名称和字节数与本地归档一致。
+
 **先读结论：NN已实际训练并接入sourcewise/global A+，但本轮最强独立二维结果是NN＋直接原Maxwell优化。A+没有在原论文、实测或三维上证明稳定普遍优势。** 完整证据、负结果和英文初稿均已保存；42材料的876预测先封存再评分，不是876独立样本。
 
 ## 核心数字

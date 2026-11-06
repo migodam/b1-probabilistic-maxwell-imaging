@@ -54,6 +54,8 @@
 
 例如Mac ID部署CPU为NN直接32.03秒、均匀Dual62.12秒；家族外分别39.12/69.89秒。物理特征与推理都收费。主physics网络训练加训练/验证生成为402.558889 Mac累计CPU秒；Born-only和采集域修复训练另列全研究账本。相对均匀直接没有有限CPU摊销盈亏平衡点；相对较贵辅助法的条件性成本收益也不能免去训练、加载、候选验证或跨硬件价比。详见[成本对照](delegated/warm_direct_budget_analysis/REPORT.md)与[全账本](COST_LEDGER.md)。
 
+若明确改用**均匀Dual-CIE**作为成本参照，三组Mac平均每次节省约30.09/30.77/31.82 CPU秒。主网络及训练/验证生成402.56 CPU秒的条件性warm部署摊销为14/14/13次。它只按本次对象均值记CPU账，排除冷加载，不是经济盈亏或等质量保证；全研究中Born/domain训练仍全部收费。两机器之间没有指定CPU价格比，不给混合硬件经济摊销数。计算见[条件性摊销表](delegated/warm_direct_budget_analysis/CONDITIONAL_DEPLOYMENT_AMORTIZATION.json)。
+
 ## 与A+互补还是替代？
 
 历史7b8d和b20d上NN＋两A+仍能恢复，NN＋Dual不能，属于已公开对象的条件互补。新42对象则主要是NN直接更好，不能继续把“NN＋A+”当默认组合。两种情况都保留；不存在一个从历史两例外推的通用关系。

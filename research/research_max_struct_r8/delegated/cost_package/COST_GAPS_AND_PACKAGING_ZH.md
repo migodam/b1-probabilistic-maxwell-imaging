@@ -1,4 +1,4 @@
-# R8成本与发布机械检查（进行中）
+# R8成本与发布机械检查（最终已记录成本，保留缺口）
 
 本地最终主预测回执 750/750。仅扫描回执与文件元数据；未读GT，未评分，未运行反演。
 
@@ -31,9 +31,15 @@
 |online_inversion|warm_development|Mac|48|2984.810872|0|3692.829137|
 |online_inversion|warm_primary|Mac|405|24744.172129|0|31126.976429|
 |online_inversion|warm_primary|XINAN|345|53921.562500|0|55395.747132|
+|publication_preparation|anonymous_publication_previous_check|SOURCE_RECEIPT_SCOPE|1|0.144744|0|8.057443|
+|publication_preparation|anonymous_publication_verification|SOURCE_RECEIPT_SCOPE|1|0.016693|0|4.013028|
 |publication_preparation|fetch_control_transport|Mac|5|0.000000|5|155.183650|
 |publication_preparation|final_release_packaging|SOURCE_RECEIPT_SCOPE|1|106.938462|0|131.197553|
+|publication_preparation|github_asset_upload|SOURCE_RECEIPT_SCOPE|1|15.974058|0|140.168166|
+|publication_preparation|publication_ignore_compaction|SOURCE_RECEIPT_SCOPE|1|0.952206|0|0.997929|
+|publication_preparation|publication_ignore_review|SOURCE_RECEIPT_SCOPE|1|0.249919|0|2.607718|
 |publication_preparation|remote_incremental_pack|XINAN|5|263.515625|0|593.720487|
+|scoring|conditional_deployment_amortization|SOURCE_RECEIPT_SCOPE|1|0.000588|0|0.000897|
 |scoring|direct_physics_budget_extension|SOURCE_RECEIPT_SCOPE|1|1.555670|0|1.580075|
 |scoring|history_warm_scoring|SOURCE_RECEIPT_SCOPE|1|1.697163|0|2.501586|
 |scoring|neural_initializer_endpoint_visualization|SOURCE_RECEIPT_SCOPE|1|3.479344|0|3.638917|
@@ -118,16 +124,14 @@
 - audit/failed_threadpoolctl_XINAN_CONNECTED_RUN.json
 - audit/XINAN_DEPENDENCY_REPAIR.json
 
-## 发布提案
+## 实际归档快照
 
 |去向|文件数|字节|
 |---|---:|---:|
-|exclude|58|339991912|
-|git|28493|676616507|
-|hold_private_truth|47|362768|
-|release_evidence|18318|15661956729|
-|release_training|11|34104110|
+|exclude|59|340027068|
+|git|18187|87628690|
+|release|29823|16334522276|
 
-按R7约600MiB非压缩上限设计分包，具体成员见PUBLICATION_INVENTORY.json。尚未打包/上传，不改gitignore。sealed_truth先HOLD，第三方原测量、原Chat、本地全文下载、临时传输包、SSH身份和本地Python依赖全部排除。Git保留完整实际代码、配置、报告、最终数组、成本回执和失败证据；大history/budget/training数据独立release分包。
+最终PUBLICATION_INVENTORY来自实际ARCHIVE_INDEX快照，取代早期启发式27包提案。真实52包的成员、尺寸及核对见ARCHIVE_VERIFICATION与PACKAGING_EXECUTION_RECEIPT；上传和匿名访问见audit/PUBLICATION_RECEIPT。评分后合成truth已经进入独立release包。晚增Git文档/发布回执不改变原包。第三方原测量、原Chat、下载全文和本地依赖仍排除。
 
-封存后重跑同一命令刷新。输出始终保留IN_PROGRESS标签，完整性和最终科学判断由主线程确认；不凭文件存在自动宣布完成。
+最终成本状态保留全部未知费用，发布完成不等于科学算法成功。

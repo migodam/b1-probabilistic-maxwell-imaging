@@ -140,7 +140,7 @@ def build(root):
             data=json.loads(line);suffix='invocation/'+str(i+1)
             remote_wall=number(data.get('remote_pack_wall_seconds'));control=number(data.get('control_wall_seconds'))
             row=add(p,'publication_preparation','remote_incremental_pack',data,cpu=data.get('remote_pack_cpu_seconds'),wall=remote_wall,
-                suffix=suffix+'/remote_pack',note='One actual remote archive creation per fetch history entry. Repeated data still consumes paid compression work; final release packaging not run.')
+                suffix=suffix+'/remote_pack',note='One actual remote archive creation per fetch history entry. Repeated data still consumes paid compression work; final release packaging is a separate invocation.')
             row['hardware']='XINAN';row['operation_counts']={}
             remainder=control-remote_wall if control is not None and remote_wall is not None and control>=remote_wall else None
             controlrow=add(p,'publication_preparation','fetch_control_transport',{},cpu=None,wall=remainder,suffix=suffix+'/control_remainder',
@@ -202,7 +202,11 @@ def build(root):
         ('delegated/warm_analysis/CONFIRMATION_EXECUTION.json','warm_confirmation_tables_figures','scoring'),
         ('RESULTS/neural_survival_visualization/RECEIPT.json','neural_initializer_endpoint_visualization','scoring'),
         ('delegated/warm_direct_budget_analysis/COST.json','direct_physics_budget_extension','scoring'),
-        ('audit/DOCUMENT_LINK_REVIEW.json','final_document_link_QA','validation')]:
+        ('audit/DOCUMENT_LINK_REVIEW.json','final_document_link_QA','validation'),
+        ('audit/GIT_IGNORE_COMPACTION.json','publication_ignore_compaction','publication_preparation'),
+        ('audit/GIT_IGNORE_REVIEW.json','publication_ignore_review','publication_preparation'),
+        ('audit/PUBLICATION_RECEIPT.json','anonymous_publication_verification','publication_preparation'),
+        ('delegated/warm_direct_budget_analysis/CONDITIONAL_DEPLOYMENT_AMORTIZATION.json','conditional_deployment_amortization','scoring')]:
         p=root/rel
         if p.exists():add(p,category,family,note='Independent explicitly registered outer preprocessing/analysis/scoring invocation; nested records and reconstructed solver ledgers not added.')
         else:gaps.append(dict(source=rel,gap='Expected outer receipt not available yet; no cost imputed.'))
@@ -276,6 +280,17 @@ def build(root):
         add(packaging,'publication_preparation','final_release_packaging',note='Measured compact serialization+ZIP construction/member checking invocation, only after root executes. Timer excludes initial imports/gates/plan/preflight and post-receipt index refresh. Contains no new physics; member counters are not extra CPU.')
     else:
         contexts.append(dict(source='delegated/cost_package/PACKAGING_EXECUTION_RECEIPT.json',status='NOT_RUN',note='Actual release packaging not executed yet. Refresh final accountant after execution; do not invent packaging cost.'))
+    upload=root/'audit/PUBLICATION_UPLOAD_RECEIPT.json'
+    if upload.exists():
+        add(upload,'publication_preparation','github_asset_upload',note='One upload wrapper including its gh children; per-asset wall overlaps and is not added. Does not include git push, draft creation or later anonymous verification.')
+    upload_history=root/'audit/PUBLICATION_UPLOAD_HISTORY.jsonl'
+    if upload_history.exists():
+        for i,line in enumerate(upload_history.read_text().splitlines()):
+            if line.strip():add(upload_history,'publication_preparation','github_asset_upload_previous_attempt',json.loads(line),suffix='attempt/'+str(i+1),note='Previous actual upload invocation retained on resume, not a duplicate of the current receipt.')
+    verify_history=root/'audit/PUBLICATION_VERIFY_HISTORY.jsonl'
+    if verify_history.exists():
+        for i,line in enumerate(verify_history.read_text().splitlines()):
+            if line.strip():add(verify_history,'publication_preparation','anonymous_publication_previous_check',json.loads(line),suffix='check/'+str(i+1),note='Earlier actual anonymous verification while Pages deployment was pending; not a duplicate of the current receipt.')
     gaps.append(dict(source='delegated/warm_direct_budget_analysis/EXECUTION_NOTES.md',gap='First syntax/startup failure CPU NOT_METERED; no input data or physics accessed. Successful COST.json is separate; later read-only verification CPU not included/not metered.'))
     contexts.append(dict(source='audit/remote_imports/**',note='Late fetched remote audit copies are provenance mirrors, not new actual execution. Never recursively aggregate their duplicate receipts/FETCH histories.'))
     for pat in ['RESULTS/fresnel/*VALIDATION*.json','RESULTS/fresnel/*DIAGNOSTIC*.json','RESULTS/fresnel/*AUDIT*.json','RESULTS/fresnel/*TRANSFER*.json']:
@@ -376,26 +391,39 @@ def packaging_inventory(root):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--root',type=Path,default=ROOT);ap.add_argument('--output',type=Path);ap.add_argument('--finalized',action='store_true',help='Root confirms all authorized work complete; requires both public seal/scoring gates; scientific acceptance remains root-owned');a=ap.parse_args()
     root=a.root.resolve();out=a.output or root/'delegated/cost_package';out.mkdir(parents=True,exist_ok=True)
-    ledger=build(root);inv=packaging_inventory(root)
+    ledger=build(root)
     if a.finalized:
         import importlib.util
         spec=importlib.util.spec_from_file_location('r8_package_gate',root/'delegated/cost_package/package_release.py');gate=importlib.util.module_from_spec(spec);spec.loader.exec_module(gate);gate.scored_truth_gate(root)
         ledger['status']='FINAL_RECORDED_COSTS_WITH_EXPLICIT_GAPS';ledger['scientific_completion']='Root finalized authorized work; cost gaps retained, no exact full-cost or scientific-success claim.'
+    archive_index=root/'delegated/cost_package/ARCHIVE_INDEX.json'
+    if a.finalized and archive_index.exists():
+        actual=read(archive_index)
+        inv=dict(status='ACTUAL_PACKAGE_INDEX_SNAPSHOT',generated_utc=datetime.now(timezone.utc).isoformat(),
+                 source='ARCHIVE_INDEX.json; actual built archives supersede the earlier heuristic proposal',
+                 groups=actual['groups'],files=[dict(path=f['path'],bytes=f['bytes'],extension=Path(f['path']).suffix,
+                     category=f['category'],reason=f['reason']) for f in actual['files']],
+                 proposed_packages=actual.get('built_archives',actual['archives']),
+                 caveat='Git file counts are the packaging-time snapshot; late publication receipts/docs are additive Git changes. Archive members remain unchanged.')
+    else:inv=packaging_inventory(root)
     ledger_name='COST_LEDGER_FINAL.json' if a.finalized else 'COST_LEDGER_IN_PROGRESS.json'
     for name,value in [(ledger_name,ledger),('PUBLICATION_INVENTORY.json',inv)]:
         (out/name).write_text(json.dumps(value,indent=2,ensure_ascii=False)+'\n')
     with (out/'PUBLICATION_INVENTORY.tsv').open('w') as fh:
         writer=csv.DictWriter(fh,fieldnames=['path','bytes','extension','category','reason'],delimiter='\t');writer.writeheader();writer.writerows(inv['files'])
-    text=['# R8成本与发布机械检查（进行中）','',f"本地最终主预测回执 {ledger['primary_completed_receipts']}/{ledger['frozen_primary_expected']}。仅扫描回执与文件元数据；未读GT，未评分，未运行反演。",'',
+    text=['# R8成本与发布机械检查'+('（最终已记录成本，保留缺口）' if a.finalized else '（进行中）'),'',f"本地最终主预测回执 {ledger['primary_completed_receipts']}/{ledger['frozen_primary_expected']}。仅扫描回执与文件元数据；未读GT，未评分，未运行反演。",'',
           '任务wall求和是工作量，不能称项目历时。不同硬件、物理模型、矩阵维度分组，不给统一LU等价费用。已知CPU和包含单独标记的失败进程下界；缺口不当零。','',
           '|类别|分支|硬件|行数|已知CPU秒|未知CPU行|任务wall和秒|','|---|---|---|---:|---:|---:|---:|']
     for r in ledger['grouped_known_costs']:text.append(f"|{r['category']}|{r['family']}|{r['hardware']}|{r['rows']}|{r['known_cpu_seconds']:.6f}|{r['cpu_unknown_rows']}|{r['sum_task_wall_seconds']:.6f}|")
     text+=['','## 额外开发队列','']+[f"- {name}: {v['sealed_receipts']}/{v['expected']}外层回执；{v['scope']}" for name,v in ledger.get('additional_cohorts',{}).items()]
     text+=['','## 明确缺口','']+[f"- {r['source']}: {r['gap']}" for r in ledger['gaps']]
     text+=['','## 失败清单','']+[f"- {r['source']}" for r in ledger['failures']]
-    text+=['','## 发布提案','', '|去向|文件数|字节|','|---|---:|---:|']+[f"|{k}|{v['files']}|{v['bytes']}|" for k,v in sorted(inv['groups'].items())]
-    text+=['','按R7约600MiB非压缩上限设计分包，具体成员见PUBLICATION_INVENTORY.json。尚未打包/上传，不改gitignore。sealed_truth先HOLD，第三方原测量、原Chat、本地全文下载、临时传输包、SSH身份和本地Python依赖全部排除。Git保留完整实际代码、配置、报告、最终数组、成本回执和失败证据；大history/budget/training数据独立release分包。','',
-           '封存后重跑同一命令刷新。输出始终保留IN_PROGRESS标签，完整性和最终科学判断由主线程确认；不凭文件存在自动宣布完成。']
+    text+=['','## 实际归档快照' if a.finalized else '## 发布提案','', '|去向|文件数|字节|','|---|---:|---:|']+[f"|{k}|{v['files']}|{v['bytes']}|" for k,v in sorted(inv['groups'].items())]
+    if a.finalized:
+        text+=['','最终PUBLICATION_INVENTORY来自实际ARCHIVE_INDEX快照，取代早期启发式27包提案。真实52包的成员、尺寸及核对见ARCHIVE_VERIFICATION与PACKAGING_EXECUTION_RECEIPT；上传和匿名访问见audit/PUBLICATION_RECEIPT。评分后合成truth已经进入独立release包。晚增Git文档/发布回执不改变原包。第三方原测量、原Chat、下载全文和本地依赖仍排除。','',
+               '最终成本状态保留全部未知费用，发布完成不等于科学算法成功。']
+    else:
+        text+=['','这是早期启发式发布提案，尚未打包或上传。最终以package_release.py生成的ARCHIVE_INDEX和执行回执为准；sealed_truth在全部预测封存与评分前HOLD。']
     (out/'COST_GAPS_AND_PACKAGING_ZH.md').write_text('\n'.join(text)+'\n')
     print(json.dumps(dict(status=ledger['status'],primary_completed=ledger['primary_completed_receipts'],expected=ledger['frozen_primary_expected'],ledger_rows=len(ledger['rows']),packaging=inv['groups'],proposed_packages=len(inv['proposed_packages']))))
 

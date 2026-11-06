@@ -1,5 +1,7 @@
 # MAX-STRUCT-R8
 
+[在线研究网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r8/) · [52包完整数组Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r8-20261106) · [发布核验](audit/PUBLICATION_RECEIPT.json)
+
 本轮计算、封存和评分已完成：42个独立材料、750项主实验/初始化消融、126项固定偏置扩展；另完成原论文物理合同适配、25项真实Fresnel反演及52个小型矢量3D端点。端点数不是独立样本数。原尺度3D尝试为截断，3D神经网络与3D实测未运行。
 
 主要结果：轻量NN接原物理优化改善了独立二维材料误差；直接接sourcewise/global A+往往损失这个收益。固定电流偏置只部分修复，最低原物理目标的双支路选择也可能使材料更差。没有证明A+在经典、实测或3D上普遍胜出。

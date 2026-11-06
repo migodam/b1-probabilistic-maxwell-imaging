@@ -1,6 +1,6 @@
-# R8归档已完成，尚未上传
+# R8归档已完成并公开上传
 
-实际完成时间：2026-11-06T00:11:17.019786+00:00。52个ZIP、29,823个唯一原成员、1,126份独立compact已生成；压缩后共5,308,028,340 bytes，最大单包173,504,125 bytes。无SHA检查，无源文件删除或改写，无上传。
+实际打包完成时间：2026-11-06T00:11:17.019786+00:00。52个ZIP、29,823个唯一原成员、1,126份独立compact已生成；压缩后共5,308,028,340 bytes，最大单包173,504,125 bytes。无SHA检查，无源文件删除或改写。全部52包随后已上传至[公开Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r8-20261106)，匿名访问见[发布回执](../../audit/PUBLICATION_RECEIPT.json)。ARCHIVE_INDEX.json的PACKAGED_NOT_UPLOADED为打包完成时的原快照，不替代后续发布回执。
 
 实际依据：[打包执行回执](PACKAGING_EXECUTION_RECEIPT.json)、[52包成员与尺寸核对](ARCHIVE_VERIFICATION.json)、[全部归档绝对路径](ARCHIVE_PATHS.txt)。最终费用已把打包过程单独计一次，见根[COST_LEDGER.md](../../COST_LEDGER.md)。
 

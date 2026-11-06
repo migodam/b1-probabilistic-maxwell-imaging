@@ -1,6 +1,6 @@
-# R8最终构建与发布交接（已打包，尚未上传）
+# R8最终构建与发布交接（已公开）
 
-实际compact/ZIP已于2026-11-06T00:11:17.019786+00:00完成：52包压缩后共5,308,028,340 bytes，1,126份compact；逐包成员/尺寸核对通过。未上传。依据：[打包执行回执](PACKAGING_EXECUTION_RECEIPT.json)、[归档核对](ARCHIVE_VERIFICATION.json)、[全部路径](ARCHIVE_PATHS.txt)。主线程拥有科学审查、Git提交、Release上传与匿名链接核验。
+实际compact/ZIP已于2026-11-06T00:11:17.019786+00:00完成：52包压缩后共5,308,028,340 bytes，1,126份compact；逐包成员/尺寸核对通过。根线程随后已完成Git提交、全部52包上传及匿名网页/图/raw报告/Release/小ZIP核验，见[公开交付](../../PUBLICATION.md)。打包依据：[执行回执](PACKAGING_EXECUTION_RECEIPT.json)、[归档核对](ARCHIVE_VERIFICATION.json)、[全部路径](ARCHIVE_PATHS.txt)。
 
 以下命令与运行前提醒保留为历史/复现说明，已执行的实际状态以上述回执为准；不得把历史“尚未执行”提醒当当前状态。
 

@@ -165,4 +165,6 @@ Mie球参考中，极化率保持的部分单元修正把5³/6³/8³误差降到
 
 实测下一步应围绕合法air背景、照明/接收校准与离散误差，三维则围绕内波长/界面解析和模型误差下的材料选择。没有证据支持继续盲扫β、只加corrector或扩大网络深度。
 
-复现、全部数组、失败、费用和独立对象图分别见[REPRODUCE](REPRODUCE.md)、[RESULTS](RESULTS/)、[FAILURES](FAILURES.md)、[COST_LEDGER](COST_LEDGER.md)、[FIGURES](FIGURES/)。最终公开归档链接将在发布核验后加入交接文件。
+复现、全部数组、失败、费用和独立对象图分别见[REPRODUCE](REPRODUCE.md)、[RESULTS](RESULTS/)、[FAILURES](FAILURES.md)、[COST_LEDGER](COST_LEDGER.md)、[FIGURES](FIGURES/)。
+
+已发布并匿名核验：[研究网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r8/)、[原始Chat交接](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r8/CHAT_HANDOFF.md)、[52个完整数组归档包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r8-20261106)。归档共5,308,028,340字节；公开访问回执见[audit/PUBLICATION_RECEIPT.json](audit/PUBLICATION_RECEIPT.json)。
