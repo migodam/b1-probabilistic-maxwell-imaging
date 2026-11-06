@@ -15,19 +15,27 @@ import zipfile
 REPO=Path(__file__).resolve().parents[4]
 ROOT=REPO/'research/research_max_struct_r9'
 AUDIT=ROOT/'delegated/classic_extension'
+SOURCE_AUDIT=AUDIT
 
 
 def dump(path,obj):path.write_text(json.dumps(obj,indent=2,allow_nan=False))
 
 
 def main():
+    global AUDIT
     ap=argparse.ArgumentParser();ap.add_argument('action',choices=['prepare','run','status','fetch'])
     ap.add_argument('--host',required=True);ap.add_argument('--identity',required=True)
     ap.add_argument('--remote-root',default='D:/AI/MAX_STRUCT_R9_CLASSIC_20261106')
+    ap.add_argument('--local-output-root',type=Path,help='New local cohort destination; keeps historical RESULTS untouched')
     a=ap.parse_args();before=resource.getrusage(resource.RUSAGE_CHILDREN)
+    local_output=(a.local_output_root if a.local_output_root.is_absolute() else REPO/a.local_output_root) if a.local_output_root else None
+    if local_output is not None:
+        AUDIT=local_output/'transport';AUDIT.mkdir(parents=True,exist_ok=True)
     ssh=['ssh','-i',a.identity,'-o','BatchMode=yes','-o','ConnectTimeout=10',a.host,'D:/python/python.exe','-B','-']
     def remote(code):
-        p=subprocess.run(ssh,input=code,text=True,capture_output=True,timeout=900)
+        # Metadata/zip helpers also remain inside this worker's allocation.
+        prelude="import psutil\npsutil.Process().cpu_affinity([0,2,4,6])\n"
+        p=subprocess.run(ssh,input=prelude+code,text=True,capture_output=True,timeout=900)
         if p.returncode:raise RuntimeError(p.stderr+'\n'+p.stdout)
         return json.loads(p.stdout.lstrip('\ufeff'))
     def scp(source,target):
@@ -37,7 +45,7 @@ def main():
     result={}
     try:
         if a.action=='prepare':
-            seeds=[ROOT/'src/classic_extension.py',ROOT/'experiments/classic_extension.py',AUDIT/'remote_fifo.py']
+            seeds=[ROOT/'src/classic_extension.py',ROOT/'experiments/classic_extension.py',SOURCE_AUDIT/'remote_fifo.py']
             found=set();pending=list(seeds)
             while pending:
                 p=pending.pop()
@@ -50,7 +58,7 @@ def main():
                         if name.startswith('research.'):
                             target=REPO/Path(*name.split('.')).with_suffix('.py')
                             if target.exists():pending.append(target)
-            public=list((ROOT/'data_public/classic_extension').rglob('*'))
+            public=[p for p in (ROOT/'data_public/classic_extension').rglob('*') if not p.name.startswith('cuda_')]
             files=sorted(found|{p for p in public if p.is_file()}|
                 {ROOT/'configs/classic_extension_main.json',ROOT/'configs/classic_extension_paid_budgets.json'})
             archive=AUDIT/'classic_xinan_code_public_only.zip'
@@ -96,10 +104,21 @@ print(json.dumps(answer))
                 archive=AUDIT/'classic_public_predictions_xinan.zip'
                 scp(a.host+':'+a.remote_root+'/classic_public_predictions.zip',str(archive))
                 with zipfile.ZipFile(archive) as z:
+                    prefix=Path('research/research_max_struct_r9/RESULTS/classic_extension_xinan')
+                    target_root=local_output if local_output is not None else REPO/prefix
                     for name in z.namelist():
                         if not name.startswith('research/research_max_struct_r9/RESULTS/classic_extension_xinan/'):
                             raise ValueError('Unexpected remote archive member')
-                    z.extractall(REPO)
+                        target=target_root/Path(name).relative_to(prefix)
+                        if target.exists():raise FileExistsError('Refuse to overwrite existing prediction/artifact: '+str(target))
+                    for member in z.infolist():
+                        if member.is_dir():continue
+                        target=target_root/Path(member.filename).relative_to(prefix)
+                        target.parent.mkdir(parents=True,exist_ok=True)
+                        with z.open(member) as source,target.open('wb') as output:
+                            import shutil
+                            shutil.copyfileobj(source,output)
+                result['local_output_root']=str(target_root.relative_to(REPO)) if target_root.is_relative_to(REPO) else str(target_root)
         result.update(status='COMPLETED',action=a.action,remote_alias='authorized_XINAN',
             remote_root=a.remote_root,UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
             epoch_start=START,epoch_end=time.time(),wall_seconds=time.time()-START,

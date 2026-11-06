@@ -29,3 +29,8 @@ The sphere has external size parameter ka=.911062 and internal nka=2.733186. At 
 This establishes strong frequency sensitivity and an increasing magnetic-dipole response within the inspected interval. It does **not** show a peak in that interval, prove that the measured DDA error is solely a resonance shift, or authorize changing frequency/material/radius to improve agreement. No further sweep or fit is performed.
 
 The high-contrast two-cube inversion may therefore support only a finite-DDA algorithm comparison at its declared grid/model mismatch. It does not establish accurate continuous ε9 imaging. All original8/10 failure evidence remains under `RESULTS/vector_extension/validation`; the added result and full complex samples are under `validation_refinement16`.
+
+
+## 评分口径补注（说明性追加，原指标与评分不变）
+
+本文Mie far-vector relative error是预定φ=0散射平面、181个均匀θ采样上的三分量Frobenius相对范数：||F(φ=0,θ_l)−F_Mie(φ=0,θ_l)||F/||F_Mie(φ=0,θ_l)||F。它不是全角球面相对场范数；散射截面另外使用24点Gauss-cosθ×32个φ的球面积分。不能用较小截面误差替代角场误差，也不能把这一个平面的误差当作完整球面场误差。此补注不改变任何已存预测、原始指标或score。

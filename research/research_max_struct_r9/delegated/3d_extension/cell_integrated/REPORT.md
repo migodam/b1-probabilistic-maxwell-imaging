@@ -40,3 +40,8 @@ MG满足χeff=3fχ/[3+(1−f)χ]，静态局部极化率求和按构造保持；
 本次XINAN P-core[8]、一BLAS线程、connected SSH+kill-on-close JobObject，无GPU；恰好1新LU/1源RHS。Whole-process CPU=2.21875s，script wall=2.39151s，peak working set=798.33MB。
 LUT共12167唯一lags、388622dyadic quadrature节点；LUT CPU=0.12500s，含LUT的dense组装CPU=0.26562s（均嵌套在whole-process中，不重复相加）。
 新费用在本诊断receipt/COST.json单列，不回写旧29的消费账；小型传输/打包helper CPU未独立计量，未知不写为0。root拥有后续方向/物理资格判断；本worker没有自行扩展grid、check或inverse。
+
+
+## 评分口径补注（说明性追加，原指标与评分不变）
+
+本文Mie far-vector relative error是预定φ=0散射平面、181个均匀θ采样上的三分量Frobenius相对范数：||F(φ=0,θ_l)−F_Mie(φ=0,θ_l)||F/||F_Mie(φ=0,θ_l)||F。它不是全角球面相对场范数；散射截面另外使用24点Gauss-cosθ×32个φ的球面积分。不能用较小截面误差替代角场误差，也不能把这一个平面的误差当作完整球面场误差。此补注不改变任何已存预测、原始指标或score。

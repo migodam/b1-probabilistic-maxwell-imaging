@@ -25,6 +25,7 @@ CONFIG = ROOT/'configs/classic_extension_main.json'
 PYTHON = sys.executable
 ARMS = ['cie_single','cie_dual','global_dual','a_material','a_plus','physical_lbfgs',
         'paper_nie','paper_lsie']
+REPRODUCTION=False
 
 
 def dump(path, obj):
@@ -169,7 +170,7 @@ def queue(args):
 
 def seal(args):
     manifest = json.loads(CONFIG.read_text())
-    if OUT.name=='classic_extension_xinan':
+    if OUT.name=='classic_extension_xinan' and not REPRODUCTION:
         control=ROOT/'delegated/classic_extension/MAC_MIGRATION_CONTROL.json'
         record=json.loads(control.read_text())
         for child in record['active_children']:
@@ -250,8 +251,8 @@ def paid_prefix_selections(manifest):
 
 
 def score(args):
-    manifest, sealed = seal(args)  # No truth construction/import before this.
     if (OUT/'OFFLINE_SCORES.json').exists(): raise FileExistsError('Scoring output exists; retain it')
+    manifest, sealed = seal(args)  # No truth construction/import before this.
     prefix_rows=paid_prefix_selections(manifest)
     import numpy as np
     from research.research_max_struct_r8.src.paper_physics import acquisition, austria
@@ -263,10 +264,11 @@ def score(args):
     for case in manifest['cases']:
         truth = austria(acquisition(64,400e6,dense=False)['centers'],case['epsilon_r'])
         truths[case['case_id']] = truth
-        truth_file=ROOT/'sealed_truth/classic_extension'/(case['case_id']+'.npz')
+        truth_root=OUT/'offline_truth' if REPRODUCTION else ROOT/'sealed_truth/classic_extension'
+        truth_file=truth_root/(case['case_id']+'.npz')
         truth_file.parent.mkdir(parents=True,exist_ok=True)
         np.savez_compressed(truth_file,m=truth)
-    dump(ROOT/'sealed_truth/classic_extension/score_metadata.json',dict(
+    dump(truth_root/'score_metadata.json',dict(
         status='PUBLIC_PAPER_GEOMETRY_CONSTRUCTED_ONLY_AFTER_ALL16_TERMINAL',
         inverse_grid=[64,64], source='NIE2016 Austria geometry; R8 austria function',
         first_access_UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())))
@@ -316,10 +318,12 @@ def score(args):
                 np.load(OUT/row['task_id']/point['file'])[point['key']])
             scored[name]=dict(**material_scores(material,truth,case['epsilon_r']-1),
                 paper_epsilon_relative_RMS=float(np.sqrt(np.mean(abs((material-truth)/(1+truth))**2))))
-        prefix_scores.append(dict(**row,offline_metrics=scored,
-                                  GT_loaded_for_offline_scoring_after_public_selection=True))
+        offline_row=dict(row)
+        offline_row.update(offline_metrics=scored,GT_loaded=True,selection_GT_loaded=False,
+                           GT_loaded_for_offline_scoring_after_public_selection=True)
+        prefix_scores.append(offline_row)
     dump(OUT/'PAID_PREFIX_OFFLINE_SCORES.json',prefix_scores)
-    if OUT.name=='classic_extension_xinan':
+    if OUT.name=='classic_extension_xinan' and not REPRODUCTION:
         original=ROOT/'RESULTS/classic_extension'
         external={x['task_id']:x for x in json.loads((original/'queue/TASK_PROCESS_RECEIPTS.json').read_text())}
         diagnostics=[]
@@ -356,6 +360,7 @@ def score(args):
 
 
 def figures(args):
+    if (OUT/'PLOT_RECEIPT.json').exists():raise FileExistsError('Retain existing figures; use a new reproduction output root')
     import numpy as np
     import matplotlib
     matplotlib.use('Agg')
@@ -363,7 +368,7 @@ def figures(args):
     from research.research_max_struct_r8.src.paper_physics import acquisition, austria
     if not (OUT/'OFFLINE_SCORES.json').exists(): raise RuntimeError('Score after seal first')
     manifest = json.loads(CONFIG.read_text())
-    folder = ROOT/'FIGURES/classic_extension'
+    folder = OUT/'FIGURES' if REPRODUCTION else ROOT/'FIGURES/classic_extension'
     folder.mkdir(parents=True,exist_ok=True)
     for case in manifest['cases']:
         truth = austria(acquisition(64,400e6,dense=False)['centers'],case['epsilon_r'])
@@ -385,8 +390,12 @@ def figures(args):
                 ax.set_title(f'{name}\nmax εr={1+m.max():.3g}')
                 ax.set_xlabel('x (m)');ax.set_ylabel('y (m)')
             fig.colorbar(im,ax=list(axes.flat),label='εr')
-            fig.suptitle(f'{case["case_id"]}: {scale}; common scale 1–{1+top:.3g}\n'
-                'Public development; morphology scale saturates amplitudes above GT')
+            if scale=='full_range':
+                fig.suptitle(f'{case["case_id"]}: full material box, common εr scale 1–21\n'
+                    'Complete declared range; max labels show amplitudes')
+            else:
+                fig.suptitle(f'{case["case_id"]}: morphology, CLIPPED at truth amplitude (εr≤{1+top:.3g})\n'
+                    'Shape detail only; amplitudes shown by max labels and full-range companion')
             fig.savefig(folder/f'{case["case_id"]}_{scale}.png',dpi=150)
             plt.close(fig)
         fig,axes=plt.subplots(8,4,figsize=(12,24),constrained_layout=True)
@@ -431,7 +440,10 @@ def figures(args):
         im=ax.imshow(values,aspect='auto',cmap='viridis')
         for i in range(len(ARMS)):
             for j in range(2):
-                ax.text(j,i,f'{values[i,j]:.3g}',ha='center',va='center',color='white',fontsize=9)
+                finite=np.isfinite(values[i,j])
+                label_value=f'{values[i,j]:.3g}' if finite else 'FAILED'
+                text_color='black' if finite and values[i,j]>np.nanmedian(values) else 'white'
+                ax.text(j,i,label_value,ha='center',va='center',color=text_color,fontsize=9)
         ax.set_xticks([0,1],['εr=3.5','εr=4']);ax.set_yticks(range(len(ARMS)),ARMS)
         ax.set_title(label);fig.colorbar(im,ax=ax)
     fig.suptitle('Classic public development; common iteration ceilings, measured unequal CPU\n'
@@ -444,6 +456,9 @@ def figures(args):
 
 
 def ledger(args):
+    existing=OUT/'PHASE2_COST_LEDGER.json'
+    if existing.exists() and json.loads(existing.read_text()).get('finalized_for_parent_compiler'):
+        raise FileExistsError('Retain finalized ledger; use a new reproduction output root')
     manifest = json.loads(CONFIG.read_text())
     process_file = OUT/'queue/TASK_PROCESS_RECEIPTS.json'
     rows = json.loads(process_file.read_text()) if process_file.exists() else []
@@ -467,39 +482,81 @@ def ledger(args):
             if isinstance(value,(int,float)):
                 auxiliary_counts[key]=auxiliary_counts.get(key,0)+value
     overhead = []
-    for name in ['PREPARATION_RECEIPT.json','SCORING_RECEIPT.json','PLOT_RECEIPT.json']:
+    for name in ['PREPARATION_RECEIPT.json','SCORING_RECEIPT.json','PLOT_RECEIPT.json','REPORT_RECEIPT.json']:
         path=OUT/name
         if path.exists():overhead.append(dict(path=str(path),**json.loads(path.read_text())))
     archived=ROOT/'delegated/classic_extension/pre_run_absolute_path_manifest/PREPARATION_RECEIPT.json'
-    if archived.exists():
+    if archived.exists() and not REPRODUCTION:
         overhead.append(dict(path=str(archived),**json.loads(archived.read_text())))
     original_prep=ROOT/'RESULTS/classic_extension/PREPARATION_RECEIPT.json'
-    if OUT.name=='classic_extension_xinan' and original_prep.exists():
+    if OUT.name=='classic_extension_xinan' and original_prep.exists() and not REPRODUCTION:
         overhead.append(dict(path=str(original_prep),**json.loads(original_prep.read_text())))
     q=OUT/'queue/QUEUE_COMPLETE.json'
     queue_receipt=json.loads(q.read_text()) if q.exists() else None
-    actual=sum(r['child_process_CPU_seconds'] for r in rows)+sum(r['cpu_seconds'] for r in overhead)
-    if queue_receipt:actual+=queue_receipt['queue_process_CPU_seconds']
-    primary_CPU=actual
-    audit=ROOT/'delegated/classic_extension'
+    worker_cpu=sum(r['child_process_CPU_seconds'] for r in rows)
+    analysis_cpu=sum(r['cpu_seconds'] for r in overhead)
+    fifo_cpu=queue_receipt['queue_process_CPU_seconds'] if queue_receipt else 0.
+    audit=OUT/'transport' if REPRODUCTION else ROOT/'delegated/classic_extension'
     mac_file=audit/'MAC_PARTIAL_EXECUTION.json'
-    mac_partial=json.loads(mac_file.read_text()) if OUT.name=='classic_extension_xinan' and mac_file.exists() else None
-    if mac_partial:actual+=mac_partial['known_child_CPU_seconds_sum']
+    mac_partial=json.loads(mac_file.read_text()) if OUT.name=='classic_extension_xinan' and mac_file.exists() and not REPRODUCTION else None
     all_counts=dict(counts)
+    all_auxiliary_counts=dict(auxiliary_counts)
     if mac_partial:
         for key,value in mac_partial['physical_counts'].items():
             all_counts[key]=all_counts.get(key,0)+value
+        for item in mac_partial['rows']:
+            for key,value in item.get('auxiliary',{}).get('operation_counts',{}).items():
+                if any(t in key for t in ['peak','bytes','seconds']):continue
+                if isinstance(value,(int,float)):
+                    all_auxiliary_counts[key]=all_auxiliary_counts.get(key,0)+value
     transport=[]
-    if OUT.name=='classic_extension_xinan':
+    if OUT.name=='classic_extension_xinan' or REPRODUCTION:
         for path in sorted(audit.glob('REMOTE_*_RECEIPT.json')):
             data=json.loads(path.read_text());data=data if isinstance(data,list) else [data]
             for record in data:
                 transport.append(dict(source=str(path),**record))
-                actual+=record.get('local_controller_CPU_seconds',0)+record.get('local_transport_child_CPU_seconds',0)+record.get('remote_helper_CPU_seconds',0)
+    benchmark_file=ROOT/'RESULTS/classic_extension_cuda_callback/RECEIPT.json'
+    benchmark=json.loads(benchmark_file.read_text()) if benchmark_file.exists() and not REPRODUCTION else None
+    benchmark_cpu=benchmark['full_total_internal_process_CPU_seconds'] if benchmark else 0.
+    gpu_transport=audit/'CUDA_TRANSPORT_RECEIPT.json'
+    if gpu_transport.exists():
+        transport.append(dict(source=str(gpu_transport),**json.loads(gpu_transport.read_text())))
+    transport_local_cpu=sum(r.get('local_controller_CPU_seconds',0)+r.get('local_transport_child_CPU_seconds',0) for r in transport)
+    helper_remote_cpu=sum(r.get('remote_helper_CPU_seconds',0)+r.get('remote_fetch_helper_CPU_seconds',0) for r in transport)
     compiler_cpu=time.process_time()-PROCESS_CPU_STARTED
-    actual+=compiler_cpu
+    is_windows=OUT.name=='classic_extension_xinan' or REPRODUCTION
+    mac_inverse_cpu=(mac_partial['known_child_CPU_seconds_sum'] if mac_partial else 0.) if is_windows else worker_cpu
+    windows_inverse_cpu=worker_cpu if is_windows else 0.
+    mac_fifo_cpu=0. if is_windows else fifo_cpu
+    windows_fifo_cpu=fifo_cpu if is_windows else 0.
+    by_platform=dict(
+        Mac=dict(known_CPU_seconds=mac_inverse_cpu+mac_fifo_cpu+analysis_cpu+compiler_cpu+transport_local_cpu,
+            inverse_CPU_lower_bound_seconds=mac_inverse_cpu,FIFO_controller_CPU_seconds=mac_fifo_cpu,
+            analysis_preparation_plotting_CPU_seconds=analysis_cpu,compiler_CPU_seconds=compiler_cpu,
+            own_transport_controller_and_SSH_SCP_CPU_seconds=transport_local_cpu,
+            inverse_count=(mac_partial['completed']+mac_partial['failed'] if mac_partial else 0) if is_windows else len(rows),
+            qualification='new reproduction analysis/transport only; no historical Mac' if REPRODUCTION else '7inclusive wait4,2internal lowerbound; controller shutdown/tails unknown'),
+        Windows=dict(known_CPU_seconds=windows_inverse_cpu+windows_fifo_cpu+benchmark_cpu+helper_remote_cpu,
+            inverse_CPU_seconds=windows_inverse_cpu,FIFO_controller_CPU_seconds=windows_fifo_cpu,
+            single_callback_benchmark_whole_process_CPU_seconds=benchmark_cpu,
+            measured_transport_helper_CPU_seconds=helper_remote_cpu,inverse_count=len(rows) if is_windows else 0,
+            qualification='inverse workers exact GetProcessTimes; benchmark/FIFO/helper internal counters are lowerbounds'))
+    actual=sum(x['known_CPU_seconds'] for x in by_platform.values())
+    primary_CPU=worker_cpu+fifo_cpu+analysis_cpu+compiler_cpu
+    intervals=[]
+    if queue_receipt:
+        intervals.append(dict(platform='Windows' if is_windows else 'Mac',
+            epoch_start=queue_receipt['epoch_start'],epoch_end=queue_receipt['epoch_end'],
+            makespan_seconds=queue_receipt['makespan_seconds'],scope='own finite FIFO, not sum of task walls'))
+    if mac_partial:
+        mac_start=json.loads((ROOT/'RESULTS/classic_extension/queue/QUEUE_STARTED.json').read_text())
+        observed_seals=[p.stat().st_mtime for p in (ROOT/'RESULTS/classic_extension').glob('*/PREDICTION_SEAL.json')]
+        intervals.append(dict(platform='Mac',epoch_start=mac_start['epoch_seconds'],
+            last_observed_prediction_seal_epoch=max(observed_seals),
+            completion_upper_bound_UTC=mac_partial['UTC'],
+            scope='partial dispatcher; worker-exit tails not harvested, do not invent exact partial makespan'))
     dump(OUT/'PHASE2_COST_LEDGER.json',dict(status='KNOWN_ACTUAL_CPU_LOWER_BOUND_WITH_EXPLICIT_GAPS',
-        scope='classic2D Windows16 primary + Mac9 partial if present + transport/analysis; root-owned3D separate',
+        scope='new reproduction16 + own transport/analysis only; historical fees excluded' if REPRODUCTION else 'classic2D Windows16 + Mac9 + oneCUDA callback benchmark + transport/analysis; root-owned3D separate',
         expected_tasks=len(manifest['tasks']), measured_tasks=len(rows), tasks=costs,
         physical_counts=counts, auxiliary_operation_counts=auxiliary_counts,
         Green_transform_counts=dict(
@@ -508,32 +565,127 @@ def ledger(args):
             note='physical+auxiliary nonoverlapping Green calls; coefficient transforms separate in auxiliary counters'),
         overhead=overhead,queue=queue_receipt,
         actual_new_known_CPU_seconds=actual, monetary_cost=None,
+        by_platform=by_platform,
+        queue_intervals=intervals,cross_host_clock_offset='NOT_MEASURED; retain per-platform elapsed, do not sum task walls as totalelapsed',
         primary_cohort_plus_shared_analysis_known_CPU_seconds=primary_CPU,
         Mac_partial_separate=mac_partial,transport_and_remote_helpers=transport,
-        all_actual_physical_counts=all_counts,
+        all_inverse_physical_counts=all_counts,physical_dimension_semantics='4096 scalar unknowns; never mix with576 or3D vector dimensions',
+        all_inverse_auxiliary_operation_counts=all_auxiliary_counts,
+        counts_by_dimension=dict(scalar_4096=dict(inverse_physical=all_counts,
+            inverse_auxiliary=all_auxiliary_counts,
+            engineering_benchmark_CPU=benchmark['CPU_callback']['cost'] if benchmark else None,
+            engineering_benchmark_GPU_setup=benchmark['GPU_resident_setup']['counts'] if benchmark else None,
+            engineering_benchmark_GPU_callback=benchmark['GPU_callback']['counts'] if benchmark else None)),
+        CUDA_callback_benchmark_separate=benchmark,
+        GPU_callback_event_known_seconds=benchmark['GPU_callback']['CUDA_event_milliseconds']/1000 if benchmark else None,
+        GPU_total_event_seconds=None,GPU_setup_event_time='NOT_MEASURED; setup wall is recorded separately, not totalGPU compute time',
         actual_inversion_attempts=len(rows)+(mac_partial['completed']+mac_partial['failed'] if mac_partial else 0),
         actual_inversions_completed=sum(r['returncode']==0 for r in rows)+(mac_partial['completed'] if mac_partial else 0),
         phase1_113_inversions='FROZEN; not included or overwritten',
         historical_public_Y_generation='REUSED_R8; zero new generation, historical fee not recharged',
         note='Auxiliary counters and physical counters separate; component CPU subset timers not added twice',
         compiler_CPU_seconds=compiler_cpu,
-        unmeasured_costs=['interactive code authoring/inspection and py_compile CPU not instrumented; no physical solves',
+        unmeasured_costs=(['new reproduction helper/bootstrap/output tails not externally harvested'] if REPRODUCTION else ['interactive code authoring/inspection and py_compile CPU not instrumented; no physical solves',
             'Mac final2 worker startup/output tails and stopped dispatcher shutdown exactCPU unknown',
             'first remote mkdir/unpack/status helper CPU and shared SSH server overhead not instrumented',
-            'engineering syntax and optional psutil probe failures have0physics but unknown CPU'],
+            'engineering syntax and optional psutil probe failures have0physics but unknown CPU']),
         engineering_failures=(json.loads((audit/'MIGRATION_ENGINEERING_FAILURES.json').read_text())
                               if (audit/'MIGRATION_ENGINEERING_FAILURES.json').exists() else None)))
     print('PHASE2 actual known CPU',actual,'measured tasks',len(rows),flush=True)
 
 
+def report(args):
+    """Offline report from already-scored frozen endpoints, no new solves."""
+    if OUT.name!='classic_extension_xinan' and not REPRODUCTION:raise ValueError('Primary report uses whole Windows cohort')
+    if (OUT/'REPORT_RECEIPT.json').exists():raise FileExistsError('Retain existing report; use a new reproduction output root')
+    scores=json.loads((OUT/'OFFLINE_SCORES.json').read_text())
+    cost=json.loads((OUT/'PHASE2_COST_LEDGER.json').read_text())
+    text=('# Classic2D新复现cohort\n\n全部16项先terminal/封存后离线评分。科学合同与公开Y保持configs/classic_extension_main.json不变；这是公开Austria开发案例。只计算本次新cohort、传输和分析费用，不包含历史Mac或CUDA单点。\n\n' if REPRODUCTION else (ROOT/'CLASSIC_BENCHMARKS.md').read_text())
+    text=text.replace('**RUNNING，16个任务已冻结；尚未读取本轮评分GT**',
+        '**COMPLETED，16项Windows配方已全部terminal并先封存、后离线评分**')
+    text=text.split('## 当前结果')[0]
+    lines=['## Windows主cohort最终材料结果','',
+        '下表是两个公开条件；不是16个独立对象。`paper_*`是不加材料prior的独立参考，其余六臂同prior。', '',
+        '| εr | arm | amplitude NRMSE | contrast relativeL2 | paper ε RMS | Otsu IoU | half IoU | max εr | data residual |',
+        '|---|---|---:|---:|---:|---:|---:|---:|---:|']
+    for row in scores:
+        eps='3.5' if '3p5' in row['case_id'] else '4'
+        if row['status']!='COMPLETED':lines.append(f"| {eps} | {row['arm']} | FAILED | | | | | | |");continue
+        lines.append(f"| {eps} | {row['arm']} | {row['amplitude_normalized_nrmse']:.5f} | {row['relative_l2_material_error']:.5f} | {row['paper_epsilon_relative_RMS']:.5f} | {row['otsu_iou']:.5f} | {row['IoU_fixed_half_contrast']:.5f} | {1+row['material_max']:.4g} | {row['relative_data_residual']:.6f} |")
+    lines+=['','## 80步、最终端点与费用／停因','',
+        '80点来自同一次连续L-BFGS-B；CPU80为含输出尾部的保守上移，最终CPU为完整GetProcessTimes。`MAXITER`不是paperδ收敛；physical CAP也不称收敛。', '',
+        '| εr | arm | NRMSE80→final | CPU80 upper→final(s) | final Phi | aux stages | corrector nit/nfev; stop | LU | attempted complex RHS |',
+        '|---|---|---:|---:|---:|---|---|---:|---:|']
+    for row in scores:
+        if row['status']!='COMPLETED':continue
+        eps='3.5' if '3p5' in row['case_id'] else '4'
+        d=OUT/row['task_id'];receipt=json.loads((d/'RECEIPT.json').read_text())
+        n80=row['snapshots'].get('corrector80',{}).get('amplitude_normalized_nrmse')
+        c80=None
+        if (d/'CHECKPOINT_080.json').exists():
+            c80=json.loads((d/'CHECKPOINT_080.json').read_text())['process_cpu_seconds']+max(0,row['process_CPU_seconds']-receipt['process_cpu_seconds'])
+        a=f'{n80:.5f}' if n80 is not None else 'N/A early stop'
+        b=f'{c80:.2f}' if c80 is not None else 'N/A'
+        stages='/'.join(s['status'] for s in row['stages']) or 'N/A direct'
+        correct=row['corrector'];stop=correct['stop'].replace('|','/')
+        lines.append(f"| {eps} | {row['arm']} | {a}→{row['amplitude_normalized_nrmse']:.5f} | {b}→{row['process_CPU_seconds']:.2f} | {row['Phi']:.7g} | {stages} | {correct['iterations']}/{correct['evaluations']}; {stop} | {row['physical_cost'].get('LU',0)} | {row['physical_cost'].get('actual_complex_RHS',0)} |")
+    prefixes=json.loads((OUT/'PAID_PREFIX_OFFLINE_SCORES.json').read_text())
+    lines+=['','## 预定CPU前缀的保存点视图','',
+        '这是保守保存点视图，不是重跑的精确等CPU截断。min公开Phi选择先于GT，指标只离线评价所选已有材料；gap大时不能推断该预算时真正未保存的incumbent。', '',
+        '| εr | arm | budget(s) | public-Phi chosen | charged prefix(s) | latest-state gap(s) | amplitude NRMSE | Otsu IoU |',
+        '|---|---|---:|---|---:|---:|---:|---:|']
+    for row in prefixes:
+        if row['status']!='PAID_SAVED_STATE_ONLY':continue
+        metric=row['offline_metrics']['selected_public_Phi_incumbent']
+        eps='3.5' if '3p5' in row['case_id'] else '4'
+        lines.append(f"| {eps} | {row['arm']} | {row['CPU_budget_seconds']} | {row['selected_public_Phi_incumbent']['checkpoint']} | {row['actual_paid_prefix_CPU_seconds']:.2f} | {row['coverage_gap_seconds']:.2f} | {metric['amplitude_normalized_nrmse']:.5f} | {metric['otsu_iou']:.5f} |")
+    # Meter this ordinary report generation once before final serialization;
+    # its final write tail remains an explicit lower-bound gap.
+    report_cpu=time.process_time()-PROCESS_CPU_STARTED
+    report_receipt=dict(status='COMPLETED',cpu_seconds=report_cpu,
+        wall_seconds=time.perf_counter()-PROCESS_STARTED,physical_solves=0,
+        scope='report reading/formatting through this point; final output tail not harvested')
+    dump(OUT/'REPORT_RECEIPT.json',report_receipt)
+    cost['actual_new_known_CPU_seconds']+=report_cpu
+    cost['by_platform']['Mac']['known_CPU_seconds']+=report_cpu
+    cost['by_platform']['Mac']['analysis_preparation_plotting_CPU_seconds']+=report_cpu
+    cost['primary_cohort_plus_shared_analysis_known_CPU_seconds']+=report_cpu
+    cost['overhead'].append(dict(path=str(OUT/'REPORT_RECEIPT.json'),**report_receipt))
+    cost['unmeasured_costs'].append('final report/canonical output serialization tail unharvested')
+    cost['finalized_for_parent_compiler']=True
+    dump(OUT/'PHASE2_COST_LEDGER.json',cost)
+    lines+=['','## 成本范围与图','',
+        f"主cohort之外的Mac9诊断、单点CUDA测试、传输与分析全部保留。已知新CPU总下界 **{cost['actual_new_known_CPU_seconds']:.6f}秒**；Mac **{cost['by_platform']['Mac']['known_CPU_seconds']:.6f}秒**，Windows **{cost['by_platform']['Windows']['known_CPU_seconds']:.6f}秒**。组件不重复相加，未知启动／尾部／helper成本列null/下界，货币成本null。原113次phase1未纳入此增量账本。", '',
+        f"Windows FIFO实际makespan {cost['queue']['makespan_seconds']:.3f}秒；不把16个task wall相加称elapsed。跨机器时钟偏差未测，Mac部分运行的退出尾部未知，按原时间戳区分。", '',
+        '`RESULTS/classic_extension_xinan/PHASE2_COST_LEDGER.json` 是完整classic canonical，包含Mac、Windows、benchmark、transport和分析。根费用编译器应整体使用此账本，不再另加这些分项。', '',
+        '图像共用εr=1–21全范围；形态细节图另标饱和。所有stage、全幅材料与Phi-CPU曲线都在FIGURES/classic_extension；内部曲线CPU未加bootstrap/output尾部，预算表使用明确的保守上移。', '']
+    for case in ['austria_eps3p5_400MHz','austria_eps4_400MHz']:
+        lines += [f'![{case} full range](FIGURES/classic_extension/{case}_full_range.png)', '',
+                  f'![{case} Phi CPU](FIGURES/classic_extension/{case}_phi_cpu.png)', '']
+    lines+=['![paired cost material](FIGURES/classic_extension/paired_cost_material_matrix.png)','',
+        '本节只报告冻结合同与实际结果，不新增总体成功阈值，不把数据残差或IoU当成材料幅度／全局收敛证书。最终科学解释由根报告结合原论文条件、先验适配、离散偏差和CAP作出。','']
+    if REPRODUCTION:
+        lines=[line.replace('FIGURES/classic_extension/','FIGURES/') for line in lines]
+        lines=[line.replace('主cohort之外的Mac9诊断、单点CUDA测试、传输与分析全部保留。','本次新cohort只含新运行、传输与分析，历史费用不重复计入。').replace('包含Mac、Windows、benchmark、transport和分析','只包含本次cohort与其transport/分析') for line in lines]
+    target=OUT/'CLASSIC_BENCHMARKS.md' if REPRODUCTION else ROOT/'CLASSIC_BENCHMARKS.md'
+    target.write_text(text+'\n'.join(lines))
+
+
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('mode',choices=['freeze','solve','queue','seal','score','figures','ledger'])
+    parser.add_argument('mode',choices=['freeze','solve','queue','seal','score','figures','ledger','report'])
     parser.add_argument('--task-id')
     parser.add_argument('--lanes',type=int,default=2)
     parser.add_argument('--r8-repo',help='R8 repository root for initial public-data packaging only')
     parser.add_argument('--output-root',type=Path,help='Separate platform cohort output, relative to repository')
+    parser.add_argument('--reproduction',action='store_true',help='New16cohort only; no historicalMac guard, data or cost dependencies')
     args=parser.parse_args()
+    REPRODUCTION=args.reproduction
     if args.output_root is not None:
         OUT=args.output_root if args.output_root.is_absolute() else REPO/args.output_root
+    historical={ (ROOT/'RESULTS/classic_extension').resolve(),(ROOT/'RESULTS/classic_extension_xinan').resolve() }
+    if args.reproduction and (args.output_root is None or OUT.resolve() in historical):
+        parser.error('--reproduction requires a new --output-root outside historical RESULTS')
+    if args.mode in ['score','figures','ledger','report'] and OUT.resolve() not in historical and not args.reproduction:
+        parser.error('A new output root requires --reproduction; historical Mac guard/costs must not leak into new cohort')
     globals()[args.mode](args)

@@ -1,5 +1,7 @@
 # 原3λ四立方体：实际执行状态
 
+**后续更新：本页以下保留物理诊断前快照。随后预声明IGT source59的30/60差由CM.508374降至.359841，仍未达到10%噪声尺度；两RHS及费用保留、不扩大IGT生成/反演。父线程已批准并实际启动[CM九臂协议增补](CM_NINE_PROTOCOL_AMENDMENT_ZH.md)：cross-grid5臂+matched finite-grid4臂，统一packed16，九seal前不作材料GT评分。当前机读状态以`RESULTS/original_vector3d/STATUS.json`为准。**
+
 **60³原尺寸数据已完成并冻结；五臂完整比较尚未完成，也未取消。父线程明确要求先处理53.5%的跨网格物理误差，GPU已完全释放，packed16实现待命。没有进行GT材料评分。**
 
 数据保留原3λ范围、60源/180向量接收行、four-cubes χ=1/2/3/4、60³生成与30³全27000实材料未知量。生成端的严格零电流消元与44³包围盒卷积仅改变计算嵌入，h=.05、原绝对坐标、S/inc、自项和全部非零电流不变；一次独立完整/裁剪作用差为3.56e−16。反演端不使用已知支撑。物理始终为独立CM+RR点DDA，不能称为作者积分单元实现。
@@ -16,6 +18,6 @@
 
 准备好的五臂为sourceCIE/sourceDual/GlobalDual/AplusGlobal/LSIEsource，统一ρ=1、R=0、air0、box[0,4]、MF6→10、每阶段最多500、原文Eq16根号RMS<.001、无额外物理corrector。sourceCIE/LSIE的阶段内辅助目标单调性仅作现有轨迹接线诊断；Dual/A+不共享同一个阶段目标，不适用该要求。A+明确为R9向量变体，包含按完整固定J的A损失接受普通CIE种子提案，未冒称与R8冻结A+完全相同。
 
-当前状态与去重成本见`RESULTS/original_vector3d/STATUS.json`及`ACCOUNTING_BEFORE_PHYSICS_DIAG.json/.csv`。计时数值/工程CPU合计3549.628077秒，已知完整primal RHS245，其中60个为air零RHS；各进程wall不能相加当作总历时。旧共享预计算和GPU接线检查已包括在616CPU秒中，没有重复计费。所有物理失败/中断和已知计数缺口保留。
+当前状态与去重成本见`RESULTS/original_vector3d/STATUS.json`及`ACCOUNTING_BEFORE_PHYSICS_DIAG.json/.csv`。计时数值/工程CPU合计3549.628秒，已知完整primal RHS245，其中60个为air零RHS；各进程wall不能相加当作总历时。旧共享预计算和GPU接线检查已包括在616CPU秒中，没有重复计费。所有物理失败/中断和已知计数缺口保留。
 
 代码入口为`src/vector_original_extension.py`、`src/vector_original_cuda.py`与`experiments/vector_original_cuda.py`，配置`configs/original_vector3d.json`。远端独占任务目录为`D:/AI/MAX_STRUCT_R9_ORIGINAL3D_20261106`；新packed16代码包已上传但五臂没有重启。最终释放记录`GPU_RELEASE.json`实测compute-apps为空、GPU0%、显存0MiB。禁止在父线程物理诊断结论前自动重启。

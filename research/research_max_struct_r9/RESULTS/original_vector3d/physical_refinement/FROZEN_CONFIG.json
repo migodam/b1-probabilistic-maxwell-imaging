@@ -1,0 +1,69 @@
+{
+  "status": "FROZEN_BEFORE_PHYSICAL_REFINEMENT_AND_GT_SCORE",
+  "frozen_utc": "2026-11-06T05:59:29.254906+00:00",
+  "classification": "PUBLIC_DEVELOPMENT_EXPOSED_ORIGINAL9_ENDPOINTS_NOT_CONFIRMATION",
+  "data": "RESULTS/original_vector3d/cohorts/matched_grid/public/observations.npz",
+  "starts": [
+    {
+      "name": "air",
+      "material": "analytic_zero"
+    },
+    {
+      "name": "GlobalDual_stage2",
+      "material": "RESULTS/original_vector3d/cohorts/matched_grid/inversions/GlobalDual/stage2.npz",
+      "key": "material"
+    },
+    {
+      "name": "AplusGlobal_stage2",
+      "material": "RESULTS/original_vector3d/cohorts/matched_grid/inversions/AplusGlobal/stage2.npz",
+      "key": "material"
+    }
+  ],
+  "model": {
+    "side": 30,
+    "width": 3,
+    "material_box": [
+      0,
+      4
+    ],
+    "prior": 0,
+    "backend": "frozenOriginalVectorModel CM+RR +CudaOriginalModel complex128 packed16",
+    "GMRES_rtol": 2e-06,
+    "GMRES_restart": 60,
+    "GMRES_cycles": 20
+  },
+  "objective": "mean_source ||SJ-Y||^2/||Y||^2, nohalf/prior",
+  "gradient": "(2/60) Re sum_component,source conj(L^-* S*((SJ-Y)wd))*Q",
+  "optimizer": {
+    "method": "L-BFGS-B",
+    "maxiter": 8,
+    "maxfun": 24,
+    "maxls": 12,
+    "ftol": 1e-12,
+    "gtol": 1e-08,
+    "strict_request_cap": 24,
+    "selection": "minimumpublicPhiamongallpaidstatesincludingrejectedtrials; noGT"
+  },
+  "air_wiring": {
+    "h": 1e-05,
+    "second_h": 5e-06,
+    "second_only_if": "relativeerror>1e-3 andabsoluteerror>1e-8, toinspecttruncation",
+    "direction": "max(-g,0)/maxabs(g); ifzero,useallones",
+    "guard": "nonfinite orpersistentrelativeerror>1e-2 withabsoluteerror>1e-7 stopsforrootreview; no tolerancetuning"
+  },
+  "execution": {
+    "host": "XINAN",
+    "hostPcores": [
+      12,
+      14
+    ],
+    "GPU_single_resident_process": true,
+    "BLASthreads": 1,
+    "new_gradient_evaluations_max": 72,
+    "GMRES_nonzero_source_RHS_max": 8640,
+    "FD_primal_RHS_max": 120
+  },
+  "cache": "exactmaterialbytekey; forwardJretaineduntilgradient; completedvalue/grad/predrecordsharedandchargedfirstowner",
+  "seal": "all3terminalpredictionsbeforeoneofflineGTassessment",
+  "old9physics_or_scores_modified": false
+}

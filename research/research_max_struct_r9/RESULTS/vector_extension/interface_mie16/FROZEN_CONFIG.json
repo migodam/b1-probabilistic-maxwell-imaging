@@ -1,0 +1,42 @@
+{
+  "status": "FROZEN_BEFORE_TWO_OFFLINE_FORWARD_DIAGNOSTICS",
+  "frozen_utc": "2026-11-06T04:54:19.302096+00:00",
+  "classification": "OFFLINE_DIAGNOSTIC_KNOWN_SPHERE_INTERFACE_NOT_INVERSE_RECOVERY",
+  "geometry_source": "RESULTS/vector_extension/validation_refinement16/grid16.npz",
+  "reference_source": "RESULTS/vector_extension/validation_refinement16/grid16.npz: Mie_far; scored only afterbothpredictionssealed",
+  "MG_IGT_reference": "RESULTS/vector_extension/cell_integrated_mie16/fields.npz",
+  "epsilon_material": 9,
+  "radius": 0.145,
+  "domain_width": 0.4,
+  "nside": 16,
+  "h": 0.025,
+  "k": 6.283185307179586,
+  "arms": [
+    "scalar_arithmetic",
+    "normal_tensor"
+  ],
+  "scalar_rule": "epsilon=1+8*f",
+  "tensor_rule": "epsilon_t=1+8*f;epsilon_n=1/(1-f+f/9);epsilon=epsilon_t*(I-nnT)+epsilon_n*nnT",
+  "normal": "knownsphere n=point/norm(point), onlycutcells; fullcells epsilon9exact",
+  "boundary_scope": "localplanar quasistatic interface effectiveepsilon adaptedto pulsecollocation; not fullWD or FDTD convergence theorem",
+  "IGT": {
+    "near_order": 8,
+    "far_order": 3,
+    "self_order": 16,
+    "near_Chebyshev_radius": 2,
+    "far_sinc": true
+  },
+  "incident": "same centerplane E=x,k=z",
+  "execution": {
+    "platform": "XINAN",
+    "Pcore": 8,
+    "BLAS_threads": 1,
+    "GPU": false,
+    "new_LU": 2,
+    "new_RHS": 2
+  },
+  "seal_policy": "bothpredictions before oneofflineMieassessment",
+  "inverse_GT_access": false,
+  "old29_or_original9_modified": false,
+  "new_inverse_runs": 0
+}

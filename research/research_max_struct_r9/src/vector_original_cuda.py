@@ -173,19 +173,32 @@ class CudaOriginalModel:
         return dict(prediction=prediction.cpu().numpy(),data_loss_mean=loss,relative_source_RMS=float(np.sqrt(loss)))
 
 
-class CudaReceiverSubspace:
-    def __init__(self,model,Y,rtol=.1):
+class CudaReceiverGeometry:
+    """Observation-independent SGram/EVD/Vr, shared once across both Y."""
+    def __init__(self,model,rtol=.1):
         wall,cput=time.perf_counter(),time.process_time();S=model.S
         ev,U=torch.linalg.eigh(S@S.conj().T);ev=torch.clamp(ev.flip((0,)),min=0);U=U.flip((1,))
         singular=torch.sqrt(ev);keep=singular>=rtol*singular[0];self.rank=int(keep.sum().item())
-        U=U[:,keep];sig=singular[keep];self.V=(S.conj().T@U)/sig[None,:]
-        self.Jd=self.V@((U.conj().T@Y)/sig[:,None])
-        self.Qd=model.inc+model.green(self.Jd);self.Dd=S@self.Jd-Y;torch.cuda.synchronize()
+        self.U=U[:,keep];self.sig=singular[keep];self.V=(S.conj().T@self.U)/self.sig[None,:]
+        torch.cuda.synchronize()
         self.info=dict(rank=self.rank,relative_cutoff=rtol,singular_values=singular.cpu().tolist(),
             right_vector_orthogonality=float(torch.linalg.vector_norm(self.V.conj().T@self.V-torch.eye(self.rank,device='cuda',dtype=torch.complex128)).item()),
             CPU_seconds=time.process_time()-cput,wall_seconds=time.perf_counter()-wall,
-            rule_scope='Explicit0.1noise-scale adaptation; not author exactrank',shared_across_five_arms=True)
+            rule_scope='Explicit0.1noise-scale adaptation; not author exactrank',observation_independent=True)
         model.counts.update(receiver_Gram_builds=1,receiver_small_eigendecompositions=1)
+
+
+class CudaReceiverSubspace:
+    def __init__(self,model,Y,rtol=.1,geometry=None):
+        geometry=geometry if geometry is not None else CudaReceiverGeometry(model,rtol)
+        wall,cput=time.perf_counter(),time.process_time();self.geometry=geometry;self.V=geometry.V;self.rank=geometry.rank
+        self.Jd=self.V@((geometry.U.conj().T@Y)/geometry.sig[:,None])
+        self.Qd=model.inc+model.green(self.Jd);self.Dd=model.S@self.Jd-Y
+        self.wd=1/torch.sum(abs(Y)**2,dim=0);self.ws=1/torch.sum(abs(model.inc)**2,dim=0)
+        torch.cuda.synchronize()
+        self.info=dict(geometry.info,Y_fit_CPU_seconds=time.process_time()-cput,Y_fit_wall_seconds=time.perf_counter()-wall,
+            shared_geometry=True,observation_dependent=True)
+        model.counts.update(observation_DPCS_fits=1,observation_DPCS_source_columns=Y.shape[1],observation_data_weight_builds=1)
     def project(self,X):return X-self.V@(self.V.conj().T@X)
 
 
@@ -283,7 +296,7 @@ class CudaLocalArcReadout:
 
 def cuda_auxiliary_solve(model,receiver,Y,arm,config,callback=None,endpoint=None):
     if arm not in ('sourceCIE','sourceDual','GlobalDual','AplusGlobal','LSIEsource'):raise ValueError(arm)
-    wd=1/torch.sum(abs(Y)**2,dim=0);ws=1/torch.sum(abs(model.inc)**2,dim=0)
+    wd=receiver.wd;ws=receiver.ws
     m=torch.zeros(model.N,device='cuda',dtype=torch.float64);J=receiver.Jd.clone();Q=receiver.Qd.clone();D=receiver.Dd.clone()
     arc=CudaLocalArcReadout(model) if arm=='AplusGlobal' else None
     history=[];stages=[];old_basis=None;gamma=None

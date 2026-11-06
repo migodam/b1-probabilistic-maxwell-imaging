@@ -89,3 +89,8 @@ Whole-worker CPU包含冷启动imports/setup/SVD/online/导出；表中与已付
 原24任务的自动score因root追加控制而由显式SCORE_HOLD_ROOT_AMENDMENT_29预GT阻止；该hold是流程控制记录，不是有效预测seal。之后由all29 manifest统一封存并独立评分。详见delegated/3d_extension及RESULTS/vector_extension；未修改历史R8、PhaseI、原24配置或预测。
 
 入口与数学范围：[README](delegated/3d_extension/README.md)。配置：[原24](configs/vector_extension_phase2.json)、[resolved hollow](configs/vector_extension_resolved_hollow.json)、[29项合并清单](configs/vector_extension_all29.json)。
+
+
+## 评分口径补注（说明性追加，原指标与评分不变）
+
+本文Mie far-vector relative error是预定φ=0散射平面、181个均匀θ采样上的三分量Frobenius相对范数：||F(φ=0,θ_l)−F_Mie(φ=0,θ_l)||F/||F_Mie(φ=0,θ_l)||F。它不是全角球面相对场范数；散射截面另外使用24点Gauss-cosθ×32个φ的球面积分。不能用较小截面误差替代角场误差，也不能把这一个平面的误差当作完整球面场误差。此补注不改变任何已存预测、原始指标或score。

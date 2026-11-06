@@ -33,7 +33,8 @@ class CellIntegratedOriginalModel(OriginalVectorModel):
             incident_convention='Point electric dipole field at cell center; no source averaging',
             IGT_kernel=self.integrator.receipt,IGT_external=external,
             local_A_block='Exact off-diagonal2x2x2 blocks from this same integrated integer-lag LUT',
-            original_inverse_DOFS_unchanged=81000 if side==30 else None)
+            future_inverse_material_unknowns_unchanged=27000 if side==30 else None,
+            full_vector_current_components=3*side**3)
 
     def configure_embedding(self,crop=False):
         if crop and not self.generation_only:raise ValueError('Known-support crop generation-only')

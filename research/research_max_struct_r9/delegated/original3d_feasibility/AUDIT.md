@@ -1,6 +1,6 @@
 # 原2019四立方体3λ：只读可行性与复用审计
 
-**实际后续状态已更新于[EXECUTION_STATUS_ZH.md](EXECUTION_STATUS_ZH.md)：原尺寸60³数据完成，发现30³/60³ DDA响应差53.5%；父线程要求先诊断物理，五臂暂缓但未取消，GPU已释放。以下保留最初实施前审计。**
+**实际后续状态已更新于[EXECUTION_STATUS_ZH.md](EXECUTION_STATUS_ZH.md)：原尺寸60³数据完成，发现30³/60³ DDA响应差53.5%；有限IGT source59诊断后未扩大IGT，父线程批准CM cross-grid5臂+matched finite-grid4臂，现已实际运行。以下保留最初实施前审计。**
 
 结论：**30³反演/60³生成在内存上有可信路径；现有R8接口不能直接运行成熟原尺度CIE。必须复用原dyadic FFT核，增加小RHS分块、流式外部算子和隐式原Fourier系数作用。不能把旧dense VectorPR3D简单改width=3。** 当前没有运行探针或反演，避免与其他四个数值进程竞争。父线程随后已授权R9原尺度扩展，以下为实施前证据及边界，不是已完成30³/60³的声明。
 

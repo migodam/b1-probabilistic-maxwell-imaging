@@ -57,3 +57,5 @@ These are method costs only; actual new continuation cost is already in the inve
 | r9_confirmation_0005__weak_profile_handoff | 13.879602 | 3.059822 | 16.939424 | 804 | 19284 | 106 |
 
 Full additive physical/auxiliary counters, FFT transforms, extra rank-selection SVD counts, timing subsets, unknown costs, source receipt paths and source helper are retained in audit/ALL_COSTS.json. Rebuild with experiments/compile_cost_ledger.py; rebuilding only re-reads metadata, appends its measured compiler invocation, and refreshes these derived reports. No raw receipt is changed.
+
+完整扩展、远端、三维和发布费用见[COST_LEDGER_EXTENSION.md](COST_LEDGER_EXTENSION.md)。本文件保留第一阶段冻结口径，不覆盖其原始结果。

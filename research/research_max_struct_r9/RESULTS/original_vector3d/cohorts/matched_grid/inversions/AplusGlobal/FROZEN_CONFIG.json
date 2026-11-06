@@ -1,0 +1,61 @@
+{
+  "status": "FROZEN_BEFORE_NEW_INVERSION",
+  "scope": "PUBLIC_DEVELOPMENT_original2019_geometry_independent_DDA_adaptation",
+  "width_lambda": 3.0,
+  "generation_side": 60,
+  "inverse_side": 30,
+  "sources": 60,
+  "receiver_vector_rows": 180,
+  "material_lower": 0.0,
+  "material_upper": 4.0,
+  "initial_contrast": 0.0,
+  "prior_coefficient": 0.0,
+  "state_relative_weight": 1.0,
+  "dpcs_relative_cutoff": 0.1,
+  "dpcs_rule_scope": "fixed noise-scale adaptation; original paper exact L unavailable",
+  "mf": [
+    6,
+    10
+  ],
+  "beta_material": [
+    6.0,
+    1.0
+  ],
+  "beta_current_dual": [
+    6.0,
+    3.0
+  ],
+  "max_iterations_per_stage": 500,
+  "coefficient_delta_RMS_tolerance": 0.001,
+  "stop_formula": "sqrt(mean_source norm(delta_gamma)^2/norm(old_gamma)^2)<0.001; undefined initial-zero denominator does not stop",
+  "basis": "native orthonormal IFFT, no SVD whitening, projected with I-VrVr*; matching frequency transport",
+  "noise_seed": 2026110619,
+  "noise_relative_expected_norm": 0.1,
+  "noise_implementation": "independent CN(0,sigma^2), sigma=0.1*norm(Yclean)/sqrt(Yclean.size); no sample-norm rescaling; differs from unspecified author implementation",
+  "block_rhs": 4,
+  "fft_workers": 1,
+  "CUDA_fft_layout": "packed",
+  "CUDA_block_rhs": 16,
+  "CUDA_engineering_selection": "One public-state full-step replay: strided4 vs packed16;2.915x wall gain, exactly matching outputs; old paid partial preserved; fresh uniform five-arm comparison before GT scoring",
+  "generation_crop_fft": true,
+  "gmres_rtol": 2e-06,
+  "gmres_restart": 60,
+  "gmres_cycles": 20,
+  "physical_validation": "air and both stage endpoints only; no additional physical corrector; no GT endpoint selection",
+  "arms": [
+    "sourceCIE",
+    "sourceDual",
+    "GlobalDual",
+    "AplusGlobal",
+    "LSIEsource"
+  ],
+  "forward_model": "R1 dyadic point DDA with CM+RR self, not author cell-integration implementation",
+  "fine_support_restriction": "data generation only, exact zero-current elimination for known chi=0; never inverse",
+  "cohort": "matched_grid",
+  "data_id": "CM30to30_3lambda_CNexpected10_sharedDirection2026110619",
+  "arm": "AplusGlobal",
+  "operator": "CM+RR full30^3",
+  "truth_access": false,
+  "primary_endpoint": "stage2",
+  "protocol": "CM_NINE_PROTOCOL_AMENDMENT_ZH.md"
+}

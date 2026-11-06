@@ -26,7 +26,7 @@ def main():
     files = sorted(p for p in ROOT.rglob("*") if p.is_file() and not excluded(p.relative_to(ROOT)))
     # The generated inventory and final packaging receipt are kept in Git and
     # attached separately, avoiding a self-referential archive inventory.
-    files = [p for p in files if p.name not in {"PUBLICATION_MANIFEST.json", "PACKAGING_RECEIPT.json"}]
+    files = [p for p in files if p.name not in {"PUBLICATION_MANIFEST.json", "PACKAGING_RECEIPT.json", ".gitignore"}]
     groups, group, size = [], [], 0
     for path in files:
         n = path.stat().st_size
@@ -60,7 +60,7 @@ def main():
     # Keep compact outcomes, public inputs, source, reports and figures in Git.
     # Complete states and long histories remain in the lossless release above.
     ignore = ["# Full scientific evidence is retained in the same repository's R9 release.",
-              "__pycache__/", "*.pyc", "/release_assets/", "/delegated/nonconvex_prior_art/primary_texts/"]
+              "__pycache__/", "*.pyc", "*.zip", "/release_assets/", "/delegated/nonconvex_prior_art/primary_texts/"]
     for path in files:
         rel = path.relative_to(ROOT)
         raw_array = path.suffix in {".npz", ".npy"} and (rel.parts[0] not in {"data_public", "sealed_truth", "FIGURES"} or "generation_checkpoints" in rel.parts)
