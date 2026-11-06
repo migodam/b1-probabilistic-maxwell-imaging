@@ -14,9 +14,10 @@
 | 历史离线评分与图 | 原六候选评分、材料/energy图、self-retention及onehop既有评分 | 4.339666 | 4.924779＋未记录部分 |
 | 24状态shifted谱诊断及图 | 诊断CPU已记录；图CPU/parse失败CPU未记录 | 0.271964＋未记录部分 | 0.711922＋未记录部分 |
 | self-retention导数wiring | 已有有限差分/伴随接线收据 | 0.015851 | 未记录 |
-| 文献检索 | 7份检索artifact，含ScholarQA 429失败 | 未记录 | 未记录 |
+| 新分母耗散资格诊断 | 公开小H谱边界0.009533＋此前探索0.007247 | 0.016780 | 0.012449＋此前探索未记录 |
+| 文献检索 | 9份检索artifact，含429、耗散primary sources和Twofold摘要followup | 未记录 | 未记录 |
 
-上述**已记录CPU和为671.461418秒**，已记录各进程wall和为**693.690217秒**。这两个数字都不是完整实际支出的声称：未记录值保持null，文献工具服务端/客户端CPU没有凭空补零。wall为若干调用窗口之和，可能有并发重叠，不是日历总历时。账本重编译本身的极小CPU/wall另存`BUILD_COSTS.jsonl`，未重复并入科学阶段数值。
+上述**已记录CPU和为671.478198秒**，已记录各进程wall和为**693.702666秒**。这两个数字都不是完整实际支出的声称：未记录值保持null，文献工具服务端/客户端CPU没有凭空补零。wall为若干调用窗口之和，可能有并发重叠，不是日历总历时。账本重编译本身的极小CPU/wall另存`BUILD_COSTS.jsonl`，未重复并入科学阶段数值。
 
 DEV inverse收据是既有runner的记录窗口；没有外部完整child GetProcessTimes测量，不能将其升级为覆盖全部启动/导入/退出开销的进程寿命。8候选与R9历史参考有同Mac主机记录，可作历史描述性cost对照，但并非同期同负载重跑；fresh同队列成本比较仍需后续独立终态收据。
 
@@ -39,6 +40,8 @@ DEV inverse收据是既有runner的记录窗口；没有外部完整child GetPro
 每个独立调用只将一个最外层**已记录**CPU/wall窗口计入和。各候选的setup、auxiliary、auxiliary execution、corrector、physical operation timing互相嵌套；全部保留为nested证据，不再加到候选总CPU上。固定状态basis setup和材料readout微秒计数同理。原energy聚合总账与其分收据没有各收费一次；重用R6/R9的旧inverse结果也不作为本轮新inverse支出收费。
 
 失败并未消失：固定状态失败尝试的20物理LU/288 RHS已计；错误inner60的两个onehop进程合计952 LU/22740 RHS、119.202706 CPU秒已计；energy的dtype/shape失败及中止尝试已计；谱诊断的parse错误保留日志，未执行任何LU但没有测得CPU，故CPU为null。ScholarQA验证的429失败保留检索artifact，检索CPU、wall和货币费均未知。
+
+新增耗散收据仅记录公开19/28维H的谱边界，无物理LU/RHS、无GT；main诊断和较早探索按root明确的两个窗口分别计CPU，没有将`initial_exploration_CPU_seconds`作为嵌套项再收费。两份新增文献artifact的CPU/wall显式null，维持未知；没有为此重取论文、重算谱或运行机器恒等式测试。理论新旧措辞协调清单另见`THEORY_SCOPE_RECONCILIATION.md`，本次未改核心证明。
 
 ## onehop控制的独立源码/记录核对
 

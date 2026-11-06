@@ -10,7 +10,7 @@
 
 生成种子2026110710，24个独立SeedSequence子流。噪声为iid圆复高斯，E|n|²=σ²，σ=.01||Yclean||F/√576；不重新归一化实际噪声。公开σ可以由校准声明提供，在线程序不读取Yclean。数据和反演采用同一有限离散，因此这是有限模型下的算法确认，不是跨网格或实测验证。
 
-每个对象七次反演：CIE-single、Dual-CIE、Global-Dual、A+global、A+sourcewise、Green19矩阵分母、Two-fold28矩阵分母，共168次。前五种沿用R8/R9的真实FFT-TSOM与成熟续跑；后两种只换global current路径中的材料读出。各方法使用同一数据、box、smooth+TV先验及原Maxwell corrector，细节见[方法表](METHODS_AND_ABLATIONS.md)。
+每个对象七次反演：CIE-single、Dual-CIE、Global-Dual、A+global、A+sourcewise、Green19矩阵分母、Two-fold30矩阵分母，共168次。前五种沿用R8/R9的真实FFT-TSOM与成熟续跑；后两种只换global current路径中的材料读出。fresh实际公开算子的接收强秩11、Green强秩19、Two-fold秩30；历史DEV的接收强9/Two-fold28不能套用。始终使用冻结阈值0.1，运行中未改rank。各方法使用同一数据、box、smooth+TV先验及原Maxwell corrector，细节见[方法表](METHODS_AND_ABLATIONS.md)。
 
 主Phi沿用成熟实现：||F(m)−Y||²/(2||Y||²)+R(m)。它是数据归一化目标，不将其数值称为σ白化χ²。iid噪声下，两者数据项只差已知全局因子，但改变该因子时必须同步变换先验权重；本轮各方法一律不改权重。DPCS选择单独使用公开噪声的99%全数据球。
 
@@ -26,10 +26,18 @@
 
 主材料误差包括χ相对L2、幅度归一化RMSE、原论文形式Err；IoU用双方有效cell χ>.5。区域误差按预声明effective-contrast区间，边界混合单元不冒充纯物相。无逐点连续材料恢复证书。
 
-当前CPU正演用5184阶保留LU一次求全部60源，伴随复用同一LU；辅助current用同物理FFT。只跨臂共享不可变G/E/S/FFT/SVD，不共享材料LU或PR历史。v04三臂同一Windows P核主机，其余同一Mac；跨主机不能比较绝对wall优势。4060正在服务其他用户任务，本轮没有抢占GPU，曾等待的失败/调度成本保留。
+三维实际继承的原物理选择目标为Phi3=mean_s[||F_s(m)−Y_s||²/||Y_s||²]，没有1/2，R=0；与二维Phi2的全Y归一化及TV/smooth合同不同。它使用真实完整Maxwell预测，三臂完全相同，但不是生成的iid标量σ噪声所对应的ML目标。真实σ白化残差与CN99资格另算，不能把这个源归一化目标伪称为噪声白化Phi，也不能跨2D/3D直接比较Phi数值。此为继承实现的明确合同限制，不回改已冻结运行。
+
+当前CPU正演用5184阶保留LU一次求全部60源，伴随复用同一LU；辅助current用同物理FFT。只跨臂共享不可变G/E/S/FFT/SVD，不共享材料LU或PR历史。最终primary的v04及v02/v09 matched/cross均用Mac retained-dense；v08全三臂用Windows4060 retained-dense CUDA。此前v04 Windows单线程dense与v08 CUDA FFT/GMRES的完整/部分慢运行被保留并收费，公开uniform点和首完整任务的成本测量触发工程迁移，未使用GT。迁移原样复用已生成的Y和σ，不造新噪声；每cohort三臂同后端。跨主机不能比较绝对wall优势，原等待外部任务费用也保留。
 
 三维为独立新有限DDA模型及跨网格检验，不称2019作者代码复现。R9已有原论文电尺寸、Mie偏差和粗细网格负证据继续有效，本轮缩小电尺寸没有抹掉它们。
 
 ## 旧对象及其他证据
 
 b20d与40ac两对象只用于公开开发与机制控制，不能混入24新材料成功率。R9全九数字、经典Austria、原电尺寸三维和Fresnel结果继续引用原证据；R10没有重跑它们，没有新增实测成功主张。历史69次运行449状态的能量分析是封存后离线诊断，不是新盲测。
+
+## 最后四对象条件确认（与主24分开）
+
+seed2026110711，在算法/触发/预算冻结后生成独立环、开缝壳、桥、包覆体，χ依家族12/18。共享主24的物理算子但不共享材料。CIE完整prefix后只用真实σ白化范数与CN99半径25.16542决定是否运行fallback；Dual/G19均冷启动一次，同原Phi选根，tie保留prefix。实际两触发、八科学inverse；启动路径拒绝一次0物理/0.125CPU单列。全八候选和选择封存后才统一读四GT。计费既给三个重叠部署视图，又给prefix只收一次的unique campaign，不能相加。统计单位四材料，不是八inverse或十二部署行。
+
+三维双体额外80步是已曝光预算诊断，三臂公平重置历史，从主80终点出发，不改原18的主评价。不是增加三个独立材料。契约与原始数据见configs/vector_continuation_v04.json及RESULTS/vector_continuation_v04。

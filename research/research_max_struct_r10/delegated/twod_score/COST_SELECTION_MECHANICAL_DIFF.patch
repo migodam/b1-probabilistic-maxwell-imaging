@@ -1,0 +1,102 @@
+--- research/research_max_struct_r10/delegated/twod_score/score_before_cost_review.snapshot.txt	2026-11-07 04:35:14
++++ research/research_max_struct_r10/experiments/score_twod_comparison.py	2026-11-07 04:35:58
+@@ -127,7 +127,10 @@
+ def base_row(entry,meta):
+     t=entry['task'];r=entry['receipt'] or {};j=entry['job'];c=r.get('physical_model_cost') or j.get('physical_model_cost') or {};ops=(r.get('auxiliary_execution_receipt') or {}).get('operation_counts') or {}
+     external=j.get('child_process_CPU_seconds');external_scope=j.get('CPU_scope','UNKNOWN')
+-    if external is not None and 'GetProcessTimes' not in external_scope:external=None
++    if external is not None and 'GetProcessTimes' not in external_scope:
++        if j['status']=='LAUNCH_FAILED' and external==0:
++            external_scope='NO_CHILD_CREATED; known zero child CPU; queue controller cost separate'
++        else:external=None
+     return dict(task_id=t['task_id'],case_id=t['case_id'],method=algorithm(t),canonical_arm=t['arm'],primary_comparison=algorithm(t) in PRIMARY,
+         regime=meta['regime'],family=meta.get('family'),high_chi=meta['high_chi'],status=r.get('status','NO_TASK_RECEIPT'),
+         queue_child_status=j['status'],queue_returncode=j.get('returncode'),queue_error=j.get('error'),queue_error_log_tail=j.get('error_log_tail'),prediction_sealed=entry['sealed'],
+@@ -135,38 +138,61 @@
+         external_full_child_CPU_seconds=external,external_CPU_scope=external_scope,queue_child_wall_seconds=j.get('wall_seconds'),
+         nested_R10_CPU_seconds=r.get('r10_total_cpu_seconds'),nested_R8_CPU_seconds=r.get('cpu_seconds'),
+         nested_auxiliary_CPU_seconds=r.get('auxiliary_cpu_seconds'),nested_corrector_CPU_seconds=r.get('corrector',{}).get('cpu_seconds'),
+-        physical_LU=c.get('LU'),physical_complex_RHS=c.get('actual_complex_RHS'),physical_source_RHS=c.get('source_RHS'),physical_adjoint_RHS=c.get('adjoint_RHS'),
++        physical_LU=c.get('LU'),physical_LU_dimension=576,physical_complex_RHS=c.get('actual_complex_RHS'),physical_source_RHS=c.get('source_RHS'),physical_adjoint_RHS=c.get('adjoint_RHS'),
+         denominator_small_LU=ops.get('denominator_small_LU'),denominator_small_LU_dimension_sum=ops.get('denominator_small_LU_dimension_sum'),
++        denominator_small_LU_dimension=(ops['denominator_small_LU_dimension_sum']/ops['denominator_small_LU']) if ops.get('denominator_small_LU') else None,
+         denominator_small_triangular_complex_RHS=ops.get('denominator_small_triangular_complex_RHS'),
+         corrector_stop=r.get('corrector',{}).get('stop'),corrector_success=r.get('corrector',{}).get('success'),
+         corrector_iterations=r.get('corrector',{}).get('iterations'),execution_platform=r.get('execution_platform'),
+         original_Phi=r.get('physical_objective'),relative_residual=r.get('physical_relative_residual'),truth_access='POST_ALL168_TERMINAL_ROOT_AUTHORIZED')
++
++def unavailable_budget_rows(row,reason,final_metrics=None):
++    """Retain all12 requested budget cells even when a run saved no budget file."""
++    rows=[]
++    for axis,targets in [('internal_paid_CPU',CPU_BUDGETS),('physical_LU',LU_BUDGETS),('external_full_child_CPU_conservative',CPU_BUDGETS)]:
++        for target in targets:
++            b=dict(task_id=row['task_id'],case_id=row['case_id'],regime=row['regime'],method=row['method'],endpoint_status=row['status'],
++                queue_child_status=row['queue_child_status'],budget_axis=axis,budget=target,status=reason,selection_kind=None,
++                amplitude_NRMSE=None,fixed_support_IoU=None,material_success=False,total_CPU_equal_time_claim=False)
++            cost=row['nested_R10_CPU_seconds'] if axis=='internal_paid_CPU' else row['physical_LU'] if axis=='physical_LU' else row['external_full_child_CPU_seconds']
++            if final_metrics is not None and cost is not None and cost<=target:
++                b.update(status='AVAILABLE',selection_kind='COMPLETED_PUBLIC_PHI_ENDPOINT',selected_index=None,selected_cost=cost,
++                    selected_cost_semantics='EXACT_COMPLETED_FULL_CHILD_CPU' if axis.startswith('external') else 'NESTED_COMPLETED_R10_CPU_NOT_FULL_CHILD' if axis.startswith('internal') else 'COMPLETED_ORIGINAL_PHYSICAL_LU_COUNT',
++                    original_Phi=row['original_Phi'],snapshot_file_gap=reason,**final_metrics)
++            rows.append(b)
++    return rows
+ 
+ def budget_scores(entry,row,truth,amp,high,final):
+     d=entry['directory'];r=entry['receipt'] or {};p=d/'R10_BUDGET_STATES.npz'
+     result=[];audit=dict(task_id=row['task_id'],file=str(p),status='NOT_AVAILABLE',external_clock_exact_prefix=False)
+-    if not p.exists():return result,audit
++    fallback_metrics=lambda:material_metrics(final,truth,amp,high) if final is not None else None
++    if not p.exists():return unavailable_budget_rows(row,'BUDGET_FILE_NOT_AVAILABLE',fallback_metrics()),audit
+     z=loadnpz(p);costs=z['costs'];mats=z['m'];cols=[str(x) for x in z['columns']]
+     if costs.ndim!=2 or costs.shape[1]!=4 or mats.shape!=(len(costs),576) or not len(costs):
+-        return result,dict(audit,status='INVALID_BUDGET_SCHEMA')
++        return unavailable_budget_rows(row,'INVALID_BUDGET_SCHEMA',fallback_metrics()),dict(audit,status='INVALID_BUDGET_SCHEMA')
+     if not np.isfinite(costs).all() or np.any(np.diff(costs[:,:3],axis=0)<-1e-8) or np.any(np.diff(costs[:,3])>1e-8):
+-        return result,dict(audit,status='INVALID_NONMONOTONE_PAID_INCUMBENT')
+-    if cols[0]!='CPU_seconds_including_R10_preparation':return result,dict(audit,status='UNSUPPORTED_CPU_CLOCK',columns=cols)
++        return unavailable_budget_rows(row,'INVALID_NONMONOTONE_PAID_INCUMBENT',fallback_metrics()),dict(audit,status='INVALID_NONMONOTONE_PAID_INCUMBENT')
++    if cols!=['CPU_seconds_including_R10_preparation','LU','complex_RHS','original_Phi']:
++        return unavailable_budget_rows(row,'UNSUPPORTED_BUDGET_CLOCK_OR_COUNTER_SCHEMA',fallback_metrics()),dict(audit,status='UNSUPPORTED_BUDGET_CLOCK_OR_COUNTER_SCHEMA',columns=cols)
+     ext=row['external_full_child_CPU_seconds'];internal=row['nested_R10_CPU_seconds'];last=float(costs[-1,0]);overhead=None
+     proof=bool(ext is not None and internal is not None and ext>=internal-1e-7 and internal>=last-1e-7 and ext>=last)
+     if proof:overhead=float(ext-last)
+     audit.update(status='AVAILABLE',columns=cols,last_internal_paid_CPU=last,last_paid_physical_LU=float(costs[-1,1]),external_full_child_CPU=ext,
+         nested_internal_total_CPU=internal,conservative_external_prefix_bound_proven=proof,unassigned_external_overhead_upper_bound=overhead,
++        observed_external_per_step_CPU_available=False,external_CPU_observation='Complete child lifetime endpoint only',
++        bound_assumptions='Same child process; Windows process_time and GetProcessTimes count cumulative user+kernel CPU; R10 budget adds a constant preparation prefix, so differences of internal snapshots preserve process CPU increments',
+         external_bound_semantics='t_internal+(external_total-internal_last); all unknown overhead placed before snapshot, not an observed exact prefix' if proof else 'NOT_PROVEN',
+         quantization='Saved material dtype retained; float32 oneULP bounds only where actual dtype=float32',selection='Latest recorded already-paid original-Phi incumbent satisfying cost bound; never GT or minimum error')
+     metcache={}
+     for axis,budgets,col in [('internal_paid_CPU',CPU_BUDGETS,0),('physical_LU',LU_BUDGETS,1),('external_full_child_CPU_conservative',CPU_BUDGETS,0)]:
+         for target in budgets:
+             b=dict(task_id=row['task_id'],case_id=row['case_id'],regime=row['regime'],method=row['method'],endpoint_status=row['status'],queue_child_status=row['queue_child_status'],budget_axis=axis,budget=target,
+-                status='NO_PAID_STATE_WITHIN_BUDGET',selection_kind=None,amplitude_NRMSE=None,fixed_support_IoU=None,material_success=False)
++                status='NO_PAID_STATE_WITHIN_BUDGET',selection_kind=None,amplitude_NRMSE=None,fixed_support_IoU=None,material_success=False,
++                total_CPU_equal_time_claim=False,snapshot_CPU_clock_scope=cols[0])
+             final_cost=internal if axis=='internal_paid_CPU' else row['physical_LU'] if axis=='physical_LU' else ext
+             if final is not None and final_cost is not None and final_cost<=target:
+                 b.update(status='AVAILABLE',selection_kind='COMPLETED_PUBLIC_PHI_ENDPOINT',selected_index=None,selected_cost=final_cost,
++                    selected_cost_semantics='EXACT_COMPLETED_FULL_CHILD_CPU' if axis.startswith('external') else 'NESTED_COMPLETED_R10_CPU_NOT_FULL_CHILD' if axis.startswith('internal') else 'COMPLETED_ORIGINAL_PHYSICAL_LU_COUNT',
+                     original_Phi=row['original_Phi'],**material_metrics(final,truth,amp,high))
+             else:
+                 if axis=='external_full_child_CPU_conservative' and not proof:
+@@ -177,6 +203,8 @@
+                     k=int(eligible[-1])
+                     if k not in metcache:metcache[k]=material_metrics(mats[k],truth,amp,high)
+                     b.update(status='AVAILABLE',selection_kind='LATEST_SAVED_PUBLIC_PHI_INCUMBENT',selected_index=k,selected_cost=float(clock[k]),
++                        selected_cost_semantics='CONSERVATIVE_EXTERNAL_CPU_UPPER_BOUND_NOT_OBSERVED_PREFIX' if axis.startswith('external') else 'OBSERVED_NESTED_INTERNAL_PAID_CPU_NOT_FULL_CHILD' if axis.startswith('internal') else 'OBSERVED_ORIGINAL_PHYSICAL_LU_COUNT',
++                        conservative_external_overhead_upper_bound=overhead if axis.startswith('external') else None,
+                         actual_internal_paid_CPU=float(costs[k,0]),actual_physical_LU=float(costs[k,1]),actual_physical_complex_RHS=float(costs[k,2]),original_Phi=float(costs[k,3]),**metcache[k])
+             result.append(b)
+     return result,audit
+@@ -297,7 +325,9 @@
+         else:row['failure_reason']=(entry['receipt'] or {}).get('error',entry['job'].get('error',entry['job'].get('error_log_tail','Explicit terminal missing/failed prediction')))
+         try:
+             b,a=budget_scores(entry,row,truths[case],amplitudes[case],meta['high_chi'],final);budget_rows.extend(b);budget_audit.append(a)
+-        except Exception as exc:budget_audit.append(dict(task_id=t['task_id'],status='BUDGET_SCORING_ERROR',error=repr(exc)))
++        except Exception as exc:
++            budget_audit.append(dict(task_id=t['task_id'],status='BUDGET_SCORING_ERROR',error=repr(exc)))
++            budget_rows.extend(unavailable_budget_rows(row,'BUDGET_SCORING_ERROR'))
+         rows.append(row)
+     pairs,summary,means=paired_and_aggregate(rows)
+     for name,data in [('SCORES_FINAL.csv',rows),('SCORES_STAGES.csv',stage_rows),('PAIRED_OBJECTS.csv',pairs),('PAIRED_BOOTSTRAP_SUMMARY.csv',summary),('REGIME_METHOD_SUMMARY.csv',means),('BUDGET_SCORES.csv',budget_rows)]:csvwrite(out/name,data)

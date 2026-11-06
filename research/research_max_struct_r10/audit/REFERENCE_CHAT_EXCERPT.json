@@ -1,0 +1,52 @@
+{
+  "thread": "Explore algebraic Maxwell solver",
+  "page": {
+    "order": "newest_first",
+    "limit": 2,
+    "nextCursor": "{\"requestedThreadId\":\"01a18851-dc9b-7a53-bf0e-7ef44f639189\",\"rolloutOrdinal\":9115,\"includeAnchor\":false,\"scope\":{\"kind\":\"turns\"}}",
+    "hasMore": true
+  },
+  "turn": {
+    "id": "01a1af56-b533-7ab3-bc71-b482d4afb132",
+    "startedAt": 1793943057,
+    "messages": [
+      {
+        "type": "userMessage",
+        "text": [
+          {
+            "type": "text",
+            "text": "给我做一轮实验，我关心的是GN方法获取到的结果，和GT的差，有百分之多少是在G算子的强方向，百分之多少在弱方向，百分之多少在G的补空间，然后比较的还有能量等等。然后不仅仅是G，还有Two fold的不同的G，在两个不同G上的分量大概都是多少，多少在G_in强 交 G_ob强，一强一弱，一弱一强，都弱上面的"
+          }
+        ]
+      },
+      {
+        "type": "agentMessage",
+        "text": "我先找出这里的 \\(G_{\\rm in}\\)、\\(G_{\\rm ob}\\) 和 Two-fold 算子定义，以及已保存的 GN 重建与 GT。然后做一次误差能量分解，统计各自的强、弱、补空间分量和 Two-fold 的四种强弱组合。"
+      },
+      {
+        "type": "agentMessage",
+        "text": "已找到完整的冻结结果：24×24、12种形状，覆盖低／中／高三档对比度及 clean/noisy，可分析 Native 和 Reciprocal 两组 GN/TRF 端点。\n\n旧公式库也明确了：Two-fold 的串联投影一般不等于子空间交集。我会分别给出真正交集的占比、旧 Two-fold 投影空间的占比，以及两种投影顺序下能加总到100%的能量表。"
+      },
+      {
+        "type": "agentMessage",
+        "text": "首批结果已经出来。以 Native GN/TRF 的 clean 端点为例，按平方误差能量汇总：\n\n- 低／中对比度：材料误差约 **99.61%／99.75%** 在 \\(G_{\\rm ob}\\) 的补空间。\n- 高对比度：补空间降到 **65.16%**，另有 **33.82%** 落在强方向。\n- 高对比度材料误差在 \\(G_{\\rm in}\\) 强方向中也有约 **51.93%**。\n\n这些是固定 Green 谱下的材料坐标分解，已经说明高对比失败不能一概解释成弱方向细节误差。我还会给出实际电流误差及传播后的场误差能量，说明两者的区别。"
+      },
+      {
+        "type": "agentMessage",
+        "text": "Two-fold 的结果差异很明显：高对比度材料误差中，按“先 \\(G_{\\rm in}\\)、后 \\(G_{\\rm ob}\\)”串联投影，强强约 **34.40%**、强弱 **1.60%**、弱强 **0.19%**、弱弱 **1.80%**，其余约 **62.02%** 涉及补空间。\n\n如果按真正交集计算，四格则不能覆盖全部误差，还有 **59.29%** 落在非共同分类的剩余空间。报告会把这两张表并列，避免把串联投影误写成交集。"
+      },
+      {
+        "type": "agentMessage",
+        "text": "能量这一层也很关键：高对比度时，实际电流误差只有 **1.70%** 落在 \\(G_{\\rm ob}\\) 强方向，却贡献了 **99.83%** 的接收场误差能量。\n\n旧 Two-fold 的实际“9维接收强空间＋19维第二fold”chart 也已单列：它覆盖高对比材料误差的约 **57.28%**，但低／中对比度剩余材料误差几乎都在这个chart外。完整表和图已整理好，正在发布。\n"
+      },
+      {
+        "type": "agentMessage",
+        "text": "报告和完整数据已发布到原 B1 仓库。页面保留了三种对比度、两类 GN/TRF、clean/noisy 的全部结果，以及逐案例百分比、阈值响应和两种 Two-fold 顺序。下面把最关键的表直接列出来。"
+      },
+      {
+        "type": "agentMessage",
+        "text": "做完了。**低、中对比度的剩余材料误差主要落在观测算子的补空间；高对比度失败时，强方向上也已有大量误差。**\n\n本轮分析了 **144 份冻结的 Native／Reciprocal GN-TRF 结果**，覆盖12种形状、三档对比度、clean/noisy，并重新计算完整非线性 Maxwell 电流。\n\n[已发布完整报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_gn_green_error_20261106/)\n\n下面百分比均为**误差平方范数的能量占比**。强方向定义为 \\(\\sigma_i/\\sigma_{\\max}\\ge0.1\\)，报告另保留阈值敏感性。\n\n**先看材料误差 \\(\\hat m-m_{\\rm GT}\\)**。以下为 Native、clean，每档12种形状按能量汇总：\n\n| 材料增量 | \\(G_{\\rm in}\\) 强 | \\(G_{\\rm in}\\) 弱 | \\(G_{\\rm ob}\\) 强 | \\(G_{\\rm ob}\\) 弱 | \\(G_{\\rm ob}\\) 补空间 |\n|---|---:|---:|---:|---:|---:|\n| 0.4 | 0.005% | 99.995% | 0.003% | 0.388% | 99.609% |\n| 2.5 | 0.153% | 99.847% | 0.099% | 0.153% | 99.748% |\n| 12 | 51.933% | 48.067% | 33.819% | 1.019% | 65.162% |\n\n\\(G_{\\rm in}\\) 数值满秩，因此其补空间为0。Reciprocal 的结论相近，高对比时 \\(G_{\\rm ob}\\) 补空间占65.395%。\n\n三档材料误差总能量分别为 **30.61、730.72、172124.01**，对应汇总 RMSE 为 **0.067、0.325、4.990**。\n\n**Two-fold 必须区分“依次投影”与真正的交集。** 高对比 Native 的依次投影  \n\\(P_{\\rm ob,b}P_{\\rm in,a}(\\hat m-m_{\\rm GT})\\) 得到：\n\n| 先 \\(G_{\\rm in}\\)，后 \\(G_{\\rm ob}\\) | ob强 | ob弱 | ob补空间 |\n|---|---:|---:|---:|\n| in强 | **34.396%** | **1.597%** | 15.940% |\n| in弱 | **0.189%** | **1.798%** | 46.080% |\n\n这些格子合计100%，但**不能直接叫交集**。两个投影一般不交换，反过来投影会改变分配。\n\n按真正的数值子空间交集计算，同一组高对比材料误差中：\n\n- 强∩强、强∩弱、弱∩强：均为0；\n- 弱∩弱：**0.307%**；\n- in弱∩ob补空间：**40.400%**；\n- 尚未被这些交集覆盖：**59.293%**。\n\n所以，四个强弱交集本身并不能完整划分误差。报告还计算了你此前使用的 TSOM 投影空间；这些空间可能重叠，比例不能强行归一化。\n\n**电流误差揭示了更直接的物理关系：**高对比时，只有 **1.703%** 的电流误差能量位于 \\(G_{\\rm ob}\\) 强方向，却产生了 **99.831%** 的接收场误差能量。很小的输入能量分量，也可能主导观测残差。\n\n![GN与GT误差能量分布](/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_gn_green_error_20261106/figures/single_green_error_energy.png)\n\n这里的材料投影是**静态 Green 坐标诊断**；电流投影才直接对应传播误差。它们不能替代材料 Jacobian 的可观测性分析，也不能单凭补空间占比证明材料非唯一。\n\n[逐案例数据](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_gn_green_error_20261106/results/requested_per_case_statistics.csv) · [完整复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/gn-green-error-geometry-20261106/full-reproduction.zip)\n\n"
+      }
+    ]
+  }
+}

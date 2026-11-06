@@ -1,0 +1,150 @@
+{
+  "status": "HISTORICAL_PROPOSAL_NOT_THE_ACTUAL_EXECUTED_COHORT",
+  "physics": {
+    "width": 0.6,
+    "inverse_side": 12,
+    "N_material": 1728,
+    "M_vector_current": 5184,
+    "lambda0": 1,
+    "k": "2pi",
+    "model": "Inherited R1/R8/R9 full vector dyadic CM+RR DDA density J=chi E; finite model only",
+    "material_box": [
+      0,
+      8
+    ],
+    "initial_chi": 0.25,
+    "prior": "R0",
+    "boundary_mixture": "Arithmetic cell-volume contrast; same geometric integration coarse/fine; no sphere-MG substitution"
+  },
+  "acquisition": {
+    "sources": 60,
+    "receiver_positions": 60,
+    "receiver_components": 3,
+    "circle_points_each": 20,
+    "circle_radius": 0.9,
+    "circle_centers": [
+      [
+        0.04,
+        0,
+        -0.02
+      ],
+      [
+        0.02,
+        0,
+        -0.03
+      ],
+      [
+        -0.01,
+        0.02,
+        0
+      ]
+    ],
+    "circle_normals_and_dipole_polarizations": [
+      "z",
+      "x",
+      "y"
+    ],
+    "all_cases_and_grids_identical_acquisition": true
+  },
+  "noise": {
+    "model": "iid circular complex",
+    "expected_relative_Frobenius": 0.03,
+    "public_sigma": "0.03*norm(Yclean,F)/sqrt(180*60)",
+    "convention": "Eabs(n)^2=sigma^2",
+    "no_realization_renormalization": true
+  },
+  "inverse": {
+    "primary_arms": [
+      "sourceCIE",
+      "GlobalDual",
+      "AplusGlobal"
+    ],
+    "DPCS_primary": "iid_CN_full_noise_ball99 minimum supported contiguous receiver-SVD prefix",
+    "DPCS_noise_diagnostic": "fixed relative singular threshold0.1 rank/energy only; no extra inversion",
+    "native_MF": [
+      2,
+      3,
+      4
+    ],
+    "cycles": [
+      500,
+      500,
+      500
+    ],
+    "beta_material": [
+      6,
+      3,
+      1
+    ],
+    "beta_current_sourceCIE": [
+      6,
+      3,
+      1
+    ],
+    "beta_current_dual": [
+      6,
+      4,
+      3
+    ],
+    "Aplus_current": "exactly ordinary GlobalDual current; A metric materialonly",
+    "Aplus_sweeps": 2,
+    "Aplus_box_everywhere": [
+      0,
+      8
+    ],
+    "corrector": {
+      "accepted_maxiter": 80,
+      "strict_maxfun": 200,
+      "maxls": 12,
+      "ftol": 1e-12,
+      "gtol": 1e-08,
+      "checkpoints_accepted": [
+        40,
+        80
+      ],
+      "common_original_Phi": true
+    },
+    "primary_endpoint": "minimum public Phi among paid common corrector states; stage1/2/3 raw joint and physical endpoints all retained",
+    "minimum_iterations_per_stage": 20,
+    "coefficient_delta_RMS_tolerance": 0.001,
+    "stop_formula": "sqrt(mean_source norm(delta_gamma)^2/norm(old_gamma)^2)<.001 after min20; nonzero/zero never stops; min20 is R10 safeguard not paper requirement",
+    "cross_arm_cache": "Only immutable background G/FFT/E/S/SVD and publicY-specific DPCS. Material-dependent LU/current/gradient and optimizer history independent perarm."
+  },
+  "representation": {
+    "receiver": "Exact economy receiver SVD; right singular vectors live in complex3N",
+    "Fourier": "Actual projected native IDFT components (I-VrVr*)UF; gamma norm not fieldenergy unless basis orthonormal",
+    "Gin": "Separate leading32 right singular modes of actual same G via bounded matrix-free G*G Lanczos; retained complement explicit, not full spectrum",
+    "material": "N real scalar coordinates never directly projected into3N modes; optional physical lifting delta_m times saved Q is explicitly state/source dependent"
+  },
+  "execution": {
+    "status": "CPU_FIRST_TWO_CASES_SIX_ARMS_RUNNING_ROOT_AUTHORIZED",
+    "GPU_processes": 0,
+    "host_affinity": [
+      12,
+      14
+    ],
+    "BLAS_threads": 1,
+    "remote": "D:/AI/MAX_STRUCT_R10_VECTOR_20261107",
+    "backend_candidates": [
+      "R9 paid_density_state retained dense CPU LU/all60source+adjoint; inherited dyadic FFT auxiliary; fine18 generation inherited CPU FFT/GMRES"
+    ],
+    "no_new_libraries": true,
+    "primary_inversions": 36,
+    "optional_sourceDual_inversions": 0,
+    "crossgrid_inversions": 6,
+    "prediction_seal_before_score": true,
+    "first_stage_cases": [
+      "v02",
+      "v09"
+    ],
+    "first_queue_inversions": 6,
+    "remaining_primary_inversions": "Root decides after first complete matched three-arm cost; no launch yet",
+    "memory_limit_bytes": 1500000000,
+    "frozen_design_utc": "2026-11-06T19:56:28.958968+00:00",
+    "actual_backend_selection_probe": "RESULTS/vector/cpu_backend_probe/RECEIPT.json",
+    "local_workers": 1,
+    "working_set_CPU_probe_peak_RSS_bytes": 1903378432,
+    "GPU_original_wait": "Stopped own pre-CUDA probe for explicit CPU handoff, no model/GT/solve generated"
+  },
+  "actual_contract": "vector_actual_contract.json"
+}

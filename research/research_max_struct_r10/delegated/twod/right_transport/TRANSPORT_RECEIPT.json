@@ -1,0 +1,58 @@
+{
+  "status": "PREPARED_REMOTE_NOT_INVERTED",
+  "remote_root": "D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107",
+  "commands": [
+    {
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -c \"from pathlib import Path; Path('D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107').mkdir(parents=True,exist_ok=False)\""
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.39028141601011157,
+      "log": "transport_00.log"
+    },
+    {
+      "command": [
+        "scp",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r10_worktree/research/research_max_struct_r10/delegated/twod/right_transport/inverse_only.tgz",
+        "jayzh@100.121.97.39:D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/inverse_only.tgz"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.7397885001264513,
+      "log": "transport_01.log"
+    },
+    {
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -c \"import tarfile; tarfile.open('D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/inverse_only.tgz').extractall('D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107')\""
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.6152834170497954,
+      "log": "transport_02.log"
+    },
+    {
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/research/research_max_struct_r10/experiments/twod_queue.py --receipt-dir D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/research/research_max_struct_r10/delegated/twod/queue_plan --vendor-path D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/vendor --manifest D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/research/research_max_struct_r10/configs/twod_right_diagnostic_tasks.json --config D:/AI/MAX_STRUCT_R10_RIGHT_DIAG_20261107/research/research_max_struct_r10/configs/twod_right_diagnostic_solver.json --cpus 0 2 4"
+      ],
+      "returncode": 0,
+      "wall_seconds": 1.5445094583556056,
+      "log": "transport_03.log"
+    }
+  ],
+  "local_controller_CPU_seconds": 0.008871999999999998,
+  "local_SSH_SCP_CPU_seconds": 0.10377999999999998,
+  "wall_seconds": 3.2900949167087674,
+  "GT_access": "NONE"
+}

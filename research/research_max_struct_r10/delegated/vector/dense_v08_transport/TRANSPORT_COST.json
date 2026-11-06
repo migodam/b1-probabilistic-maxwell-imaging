@@ -1,0 +1,59 @@
+{
+  "status": "COMPLETE",
+  "platform": "Mac",
+  "local_controller_CPU_seconds": 0.017637,
+  "local_transport_child_CPU_seconds": 0.063164,
+  "wall_seconds": 627.5427653328516,
+  "steps": [
+    {
+      "operation": "upload",
+      "exit": 0,
+      "wall_seconds": 0.5503985420800745,
+      "command": [
+        "scp",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r10_worktree/research/research_max_struct_r10/delegated/vector/dense_v08_transport/DENSE_SOURCE_UPDATE.zip",
+        "jayzh@100.121.97.39:D:/AI/MAX_STRUCT_R10_VECTOR_20261107/DENSE_SOURCE_UPDATE.zip"
+      ]
+    },
+    {
+      "operation": "extract",
+      "exit": 0,
+      "wall_seconds": 0.422134832944721,
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=3",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -c \"import zipfile,time,json;from pathlib import Path;c=time.process_time();t=time.perf_counter();r=Path('D:/AI/MAX_STRUCT_R10_VECTOR_20261107');zipfile.ZipFile(r/'DENSE_SOURCE_UPDATE.zip').extractall(r);(r/'DENSE_V08_EXTRACTION_COST.json').write_text(json.dumps(dict(platform='XINAN',CPU_seconds=time.process_time()-c,wall_seconds=time.perf_counter()-t,scope='Own CPU source update only')))\""
+      ]
+    },
+    {
+      "operation": "connected_dense_v08",
+      "exit": 0,
+      "wall_seconds": 626.5565968751907,
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=3",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -u D:/AI/MAX_STRUCT_R10_VECTOR_20261107/research/research_max_struct_r10/experiments/vector_windows_dense_primary_queue.py"
+      ]
+    }
+  ],
+  "scope": "Own local connected SSH/SCP only; remote CPU scientific processes/helper CPU excluded",
+  "GPU_use": false
+}

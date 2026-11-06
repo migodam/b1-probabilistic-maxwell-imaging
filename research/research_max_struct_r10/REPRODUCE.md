@@ -73,6 +73,28 @@ python research/research_max_struct_r10/experiments/vector_run.py invert \
 
 ## 成本及归档
 
-R10中顶层进程费用与内部FFT/材料/corrector计时是包含关系，不能相加两次。576物理LU、5184矢量LU、19/28分母小LU分列；不同source RHS数量也不能只按“一个forward”计价。多个并行进程wall相加不是历时。没有硬件费率/工具账单的金额记null。
+R10中顶层进程费用与内部FFT/材料/corrector计时是包含关系，不能相加两次。576物理LU、5184矢量LU、19/30确认分母（历史DEV另有28）小LU分列；不同source RHS数量也不能只按“一个forward”计价。多个并行进程wall相加不是历时。没有硬件费率/工具账单的金额记null。
 
 `experiments/package_evidence.py`在所有科学写入结束后无损归档，保留失败、部分状态、配置和原始指标；不发布第三方全文缓存或重复传输ZIP。清单只记路径/字节数，不做SHA验证。发布成本和最终文本以Git版本为准，避免为了自指的发布回执重新压缩全部科学数组。
+
+## 最终补充实验与评分入口
+
+最后的条件确认使用Windows实际入口：
+```powershell
+python research/research_max_struct_r10/experiments/twod_conditional_pipeline.py --execute --cpus 8 10
+```
+它是固定四材料实验runner，canonical输出目录必须尚不存在。复算请在隔离checkout中保留公开data/configs和已冻结FREEZE的副本，把旧完整RESULTS/delegated证据放在另一个只读checkout；不删除或覆盖本次归档。公开观测已提供，无须为重放重新生成GT。历史`--resume-startup-guard`仅为已记录的一次0物理路径故障，不是通用科学失败重试。
+
+GP结构修正入口沿用twod_run，使用`configs/twod_right_diagnostic_tasks.json`与`configs/twod_right_diagnostic_solver.json`；三个任务是已公开DEV，不能重命名为盲确认。最后条件的公开选择与全部未选候选见delegated/twod/conditional_confirmation，精确命令回执可直接读取。
+
+三维最终GPU后端实际为`--backend cuda-dense`，不是较慢的`cuda` FFT/GMRES。v08三臂queue为configs/vector_gpu_v08_queue.json。一次5184阶分解复用全部60源与60伴随；不需要安装新CUDA服务。续跑入口experiments/vector_continuation.py在隔离输出目录尚未存在时读取原m80和原公开Y，保留其固定三臂合同。
+
+独立评分脚本：
+- experiments/score_vector_comparison.py（主18）
+- experiments/score_vector_continuation.py（追加三臂）
+- experiments/score_conditional_confirmation.py（最后四对象，需授权说明与全部封存）
+- experiments/score_right_projection.py（三个曝光结构诊断）
+
+它们读取实际完成的预测，不是再次反演；冻结证据完整解压后可在独立output位置重算。精确CLI以对应脚本参数为准，缺少封存不得伪造它来绕过GT边界。
+
+最终页面与费用由`experiments/build_public_page.py`、`experiments/compile_campaign_costs.py`生成；只作汇总，0新FW。完整原始包解压到仓库根目录，依赖整个仓库。打包后的发布回执与最新费用只更新Git，避免自指重压全部科学证据。

@@ -1,0 +1,82 @@
+{
+  "status": "FROZEN_BEFORE_NEW_DATA_GENERATION_AND_GT_ACCESS",
+  "freeze_utc": "2026-11-06T21:46:06.631426+00:00",
+  "authority": "Root final fixed conditional confirmation; do not expand cases or parameters",
+  "seed": 2026110711,
+  "cases": [
+    {
+      "case_id": "r10_conditional_0000",
+      "family": "annulus",
+      "high_chi": 12.0
+    },
+    {
+      "case_id": "r10_conditional_0001",
+      "family": "slotted_shell",
+      "high_chi": 18.0
+    },
+    {
+      "case_id": "r10_conditional_0002",
+      "family": "bridge",
+      "high_chi": 18.0
+    },
+    {
+      "case_id": "r10_conditional_0003",
+      "family": "coated_inclusion",
+      "high_chi": 18.0
+    }
+  ],
+  "contrast_rule": "Preserve original family-to-high-chi mapping; no random redraw of12/18 and no GT-based choice",
+  "scope": "Four independent high-material objects, not a contrast-causal or broad-population experiment; family and contrast confounded",
+  "geometry": "Existing twod_materials.draw_material, independent SeedSequence child per case; high regime, background.1",
+  "acquisition": {
+    "grid": 24,
+    "real_material_DOF": 576,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "initial_material": 0.1,
+    "sources": 12,
+    "receivers": 48,
+    "aperture": "full",
+    "operator_reuse": "Existing G/E0/S, no rebuild",
+    "noise": "iid CN, E|n|^2=sigma^2, expected relative RMS.01, no realized-norm renormalization"
+  },
+  "algorithm": {
+    "prefix": "singleCIE, full inherited auxiliary3000 and physical corrector3000",
+    "fallback_G": "matrix_green19 Galerkin(PGP), rank from unchangedthreshold.1, inner8, globalordinary current, coldm0.1",
+    "fallback_control": "ordinary sourceDualCIE, coldm0.1, same full auxiliary/corrector/prior/noise99 DPCS",
+    "original_Phi": "||F(m)-Y||^2/(2||Y||^2)+R(m), identical inheritedR"
+  },
+  "trigger": {
+    "statistic": "||paid final retained physical Y_prediction - publicY||_F / public sigma",
+    "threshold": "public noise_radius=sqrt(chi2.ppf(.99,2*576)/2)",
+    "relation": "strict >",
+    "use": "Only this prefix trigger activates BOTH fallback attempts; no GT/material/auxiliary loss/rank-based trigger",
+    "invalid_prefix": "Record explicit INVALID_PREFIX, no computable strict trigger/no manufactured fallback; retain all costs"
+  },
+  "selection": {
+    "no_trigger": "Return the original CIE prediction unchanged for both conditional methods",
+    "trigger": "Run both cold fallback attempts once; each deployed method selects min originalPhi between sharedCIE and its own fallback, ties favorCIE; failed fallback leaves validCIE prefix",
+    "GT_selection": false
+  },
+  "accounting": {
+    "actual": "One shared CIE prefix percase charged once plus every actually triggered attempt, including failed/unselected attempts; generation once",
+    "deployment_views": "Each method contains prefix+its own fallback if executed; these overlap and are NOT summed as production bill"
+  },
+  "limits": {
+    "new_cases": 4,
+    "maximum_prefix_runs": 4,
+    "maximum_fallback_runs": 8,
+    "maximum_total_inverse_runs": 12,
+    "wallcap": null,
+    "additional_difficult_cases_if_no_trigger": false,
+    "parameter_sweep": false
+  },
+  "scoring": {
+    "gate": "All actual prefixes and triggered fallbacks terminal; both deployment selections sealed; then root separately authorizes offlineGT scoring",
+    "primary": "Same frozen amplitudeNRMSE/fixedchi>1IoU/legal contract; original amplitude=maxtruechi\u2212.1",
+    "new_cohort": "conditional_confirmation, separate from original24 and exposedright3"
+  },
+  "truth_access": "GENERATOR_ONLY during newdata construction; no inverse/trigger/selection GT reads"
+}
