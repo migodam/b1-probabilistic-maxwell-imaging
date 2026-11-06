@@ -1,12 +1,12 @@
 # R9 extension cost union
 
-Status: **FINAL_KNOWN_COST_LOWER_BOUND**. Generated 2026-11-06T06:50:14.841703+00:00. Read-only metadata snapshot; no GT/large-array access or new scientific solves. Existing COST_LEDGER.md and raw receipts remain unchanged.
+Status: **FINAL_KNOWN_COST_LOWER_BOUND**. Generated 2026-11-06T06:57:06.989862+00:00. Read-only metadata snapshot; no GT/large-array access or new scientific solves. Existing COST_LEDGER.md and raw receipts remain unchanged.
 
 CPU sums are retained consumption lower bounds by host platform. They are not cross-platform speedup estimates. Unknown CPU is null, never inferred as zero. Task-wall sums, overlapping queues, paused processes and GPU event times do not become a project makespan.
 
 |Platform|Known CPU lower bound (s)|Charge records|Unmetered charges|
 |---|---:|---:|---:|
-|Mac_AppleSilicon|16750.603381|46|3|
+|Mac_AppleSilicon|16755.944084|49|3|
 |XINAN_Windows_i9|37353.515625|17|0|
 |UNKNOWN_PLATFORM|null|1|1|
 
@@ -20,8 +20,8 @@ CPU sums are retained consumption lower bounds by host platform. They are not cr
 |original_electrical_size3D|producer_CM_union_plus_disjoint_IGT_processes|COMPLETE_RECORDED_WORK|6221.913316|
 |original_residual_transport|single_metadata_process|COMPLETE_RECORDED_WORK|0.008087|
 |original3D_physical_refinement|canonical_disjoint_process_rows|COMPLETE_RECORDED_WORK|1560.180511|
-|publication_metadata|unmetered|COMPLETE_RECORDED_WORK|34.977978|
-|extension_cost_compiler|own_invocation_history|COMPLETE_RECORDED_WORK|0.162764|
+|publication_metadata|unmetered|COMPLETE_RECORDED_WORK|40.289916|
+|extension_cost_compiler|own_invocation_history|COMPLETE_RECORDED_WORK|0.191529|
 
 ## Disjoint charge scopes
 
@@ -127,8 +127,9 @@ CPU sums are retained consumption lower bounds by host platform. They are not cr
 
 ### publication_metadata
 
-- `research/research_max_struct_r9/audit/INTERIM_PUBLICATION.json` — UNKNOWN_PLATFORM, CPU null (unmeasured); Interim commit/push/site/publication helper CPU unmetered; not zero.
+- `research/research_max_struct_r9/audit/INTERIM_PUBLICATION.json` — UNKNOWN_PLATFORM, CPU null (unmeasured); Interim/final commit, review, readback and site helpers unmetered; measured archive/upload excluded; not zero.
 - `research/research_max_struct_r9/audit/PACKAGING_RECEIPT.json` — Mac_AppleSilicon, CPU 34.977978s; Measured final lossless archive packaging process; no scientific solve; manifest/export tail not separately measured.
+- `research/research_max_struct_r9/audit/RELEASE_UPLOAD_RECEIPT.json` — Mac_AppleSilicon, CPU 5.311938s; Upload controller plus gh child; archive creation excluded.
 - **Gap/limit:** {"CPU_seconds": null, "reason": "Publication/web/network/LLM/energy/money not separately metered"}
 
 ### extension_cost_compiler
@@ -146,6 +147,8 @@ CPU sums are retained consumption lower bounds by host platform. They are not cr
 - `research/research_max_struct_r9/experiments/compile_extension_costs.py` — Mac_AppleSilicon, CPU 0.013149s; This metadata compiler pre-export CPU only; export/final-tail CPU not separately timed, no new solve.
 - `research/research_max_struct_r9/experiments/compile_extension_costs.py` — Mac_AppleSilicon, CPU 0.013256s; This metadata compiler pre-export CPU only; export/final-tail CPU not separately timed, no new solve.
 - `research/research_max_struct_r9/experiments/compile_extension_costs.py` — Mac_AppleSilicon, CPU 0.012999s; This metadata compiler pre-export CPU only; export/final-tail CPU not separately timed, no new solve.
+- `research/research_max_struct_r9/experiments/compile_extension_costs.py` — Mac_AppleSilicon, CPU 0.014084s; This metadata compiler pre-export CPU only; export/final-tail CPU not separately timed, no new solve.
+- `research/research_max_struct_r9/experiments/compile_extension_costs.py` — Mac_AppleSilicon, CPU 0.014681s; This metadata compiler pre-export CPU only; export/final-tail CPU not separately timed, no new solve.
 
 ## Counts and completion
 

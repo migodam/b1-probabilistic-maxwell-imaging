@@ -277,12 +277,16 @@ class Compiler:
         name='audit/INTERIM_PUBLICATION.json';d=self.read(name,'Publication provenance only, no CPU metering')
         c=self.component('publication_metadata','unmetered')
         if d is not None:
-            self.charge(c,'interim-publication',relative(ROOT/name),UNKNOWN,None,'Interim commit/push/site/publication helper CPU unmetered; not zero')
+            self.charge(c,'interim-publication',relative(ROOT/name),UNKNOWN,None,'Interim/final commit, review, readback and site helpers unmetered; measured archive/upload excluded; not zero')
             c['source_status']=d.get('status');c['gaps'].append(dict(CPU_seconds=None,reason='Publication/web/network/LLM/energy/money not separately metered'))
         packaging='audit/PACKAGING_RECEIPT.json';packed=self.read(packaging,'One final local archive packaging process; scientific writers already stopped')
         if packed is not None:
             self.charge(c,'final-evidence-packaging',relative(ROOT/packaging),MAC,packed.get('CPU_seconds'),
                 'Measured final lossless archive packaging process; no scientific solve; manifest/export tail not separately measured',packed.get('wall_seconds'))
+        upload_name='audit/RELEASE_UPLOAD_RECEIPT.json';uploaded=self.read(upload_name,'Measured release upload controller and gh child, excluding archive creation')
+        if uploaded is not None:
+            self.charge(c,'final-release-upload',relative(ROOT/upload_name),MAC,uploaded.get('CPU_seconds'),
+                uploaded.get('scope','Upload controller and child; no scientific solve'),uploaded.get('wall_seconds'))
         return c
 
 def aggregate(components):
