@@ -1,0 +1,7 @@
+# Manuscript edit notes
+
+- Repaired adjacent numerals/words, leading decimal typography, unit spacing, and minor English wording in PAPER_DRAFT.md. Kept confirmation marker block byte-for-byte unchanged; working-manuscript notice, equations, proof/counterexample content, numerical values, limitations, and novelty boundaries remain.
+- Expanded references 1–8 to author/title/journal/volume/issue/pages-or-article/year/DOI metadata. Existing CROSSREF_VERIFY.json supports references 3–5; SCHOLARQA_VERIFY.json, ADDITIONAL_CITATION_VERIFY.json, and CIE_NETWORK_FBE_VERIFY.json support bibliographic identities. Live Crossref records additionally supplied volume/issue/pages for 1, 2, 6, and 7; author-hosted Dubois PDF first page supplied reference 8. Live DOI page opening failed for 1 and 2; Crossref retrieval succeeded.
+- Retained full-text versus abstract-only evidence distinctions. Magdum issue year is 2024 with online 2023; Sanghvi issue year is 2020 with early-online 2019. Initials avoid unsupported name expansions.
+- Added parent-approved completed Fresnel two-frequency follow-up values and the explicitly limited prediction tradeoff; no GT/material-restoration or A+ advantage claim added.
+- No independent novelty review or scientific validation performed; parent owns final scientific review. No solvers, scoring, raw outputs, GT, or publication state changed. No bibliography fields remain missing for the eight cited entries.

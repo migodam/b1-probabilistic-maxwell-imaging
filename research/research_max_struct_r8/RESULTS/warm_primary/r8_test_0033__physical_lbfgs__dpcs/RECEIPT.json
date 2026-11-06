@@ -1,0 +1,214 @@
+{
+  "status": "SEALED_PUBLIC_PREDICTION",
+  "task_id": "r8_test_0033__physical_lbfgs__dpcs",
+  "case_id": "r8_test_0033",
+  "arm": "physical_lbfgs",
+  "started_utc": "2026-11-05T22:48:08.463261+00:00",
+  "executable": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python",
+  "manifest_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/configs/warm_reallocated_manifest.json",
+  "config_path": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/configs/solver.json",
+  "task": {
+    "task_id": "r8_test_0033__physical_lbfgs__dpcs",
+    "case_id": "r8_test_0033",
+    "cohort": "HELDOUT_FAMILY",
+    "arm": "physical_lbfgs",
+    "initialization": "dpcs",
+    "public_files": [
+      "research/research_max_struct_r8/data_public/operators/warm_n24_s6_a1.0.npz",
+      "research/research_max_struct_r8/data_public/warm_test/r8_test_0033.npz"
+    ],
+    "output_dir": "research/research_max_struct_r8/RESULTS/warm_primary/r8_test_0033__physical_lbfgs__dpcs",
+    "initialize_physical_current": false,
+    "initialization_file": "research/research_max_struct_r8/data_public/initializers/primary_physics/r8_test_0033__dpcs.npz"
+  },
+  "configuration": {
+    "run_id": "r8_frozen_shared_solver",
+    "freeze_utc": "2026-11-04T08:51:55.868142+00:00",
+    "status": "APLUS_FROZEN_BEFORE_NEW_OBJECT_INVERSION_AND_GT_SCORING",
+    "common": {
+      "host": 0.1,
+      "material_box": [
+        0.02,
+        20.0
+      ],
+      "dpcs_rtol": 0.001
+    },
+    "continuation_stages": [
+      {
+        "mf": 12,
+        "maxiter": 1500
+      }
+    ],
+    "corrector_maxiter": 3000,
+    "corrector_accepted_checkpoints": [
+      100,
+      500,
+      1000,
+      2000,
+      3000
+    ],
+    "scientific_wallcap": null,
+    "threads_per_process": 1,
+    "workers": 2,
+    "truth_access": "NONE",
+    "auxiliary_backend": "R7_matrix_free_fft_tsom",
+    "corrector_evaluation_checkpoints": [
+      100,
+      500,
+      1000,
+      2000,
+      3000
+    ],
+    "methods": [
+      "cie_single",
+      "cie_dual",
+      "global_dual",
+      "a_material",
+      "a_plus",
+      "physical_lbfgs",
+      "a_plus_sourcewise"
+    ],
+    "physical_direct_maxiter": 6000,
+    "aplus_options": {
+      "aplus_mode": "mobius",
+      "aplus_arc_candidates": true,
+      "aplus_inherited_gtol": true,
+      "aplus_sweeps": 2,
+      "aplus_step_tol": 1e-08
+    },
+    "development_selection": "Inherited R7 final A+; no R8 test access"
+  },
+  "truth_access": "NONE",
+  "scoring": "NOT_RUN",
+  "seed": null,
+  "seed_reason": "No random draws; deterministic solve of public observations",
+  "failed_attempts": [],
+  "device": "CPU",
+  "threads_per_process": 1,
+  "unknown_costs": {
+    "monetary_cost": null,
+    "energy": null
+  },
+  "run_id": "r8_frozen_shared_solver",
+  "git_base": "6eb37585",
+  "physical_convention": "exp(-i omega t), outgoing Hankel1, real contrast eps_r-1, mu=1; sources/receivers exterior",
+  "state_dof": 3456,
+  "material_dof": 576,
+  "baseline_id": "physical_lbfgs",
+  "stage": "FULL_INVERSION",
+  "online_selection_rule": "Minimum original Phi; no GT",
+  "threads": [],
+  "setup_wall_seconds": 0.02162908436730504,
+  "setup_cpu_seconds": 0.01617300000000005,
+  "numerical_sources": {
+    "cie_single": "research/research_fbg_r3_experiments/src/cie_tsom_baseline.py::run_cie",
+    "cie_dual": "research/research_fbg_r3_experiments/src/cie_tsom_baseline.py::run_cie",
+    "global_dual": "research/research_max_struct_r2/src/cie_global.py::run_cie",
+    "a_material": "research/research_max_struct_r5/src/cie_factorial.py::run_factorial_cie",
+    "corrector": "research/research_max_struct_r4/experiments/cooperative_paths.py::refine",
+    "a_plus": "R7 Mobius/MM or projected A readout; frozen config names method",
+    "physical_lbfgs": "Original Maxwell L-BFGS-B from same initial material",
+    "FFT": "R7 native Fourier action over R6 zero-padded disk Green"
+  },
+  "public_files": [
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/data_public/operators/warm_n24_s6_a1.0.npz",
+    "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/data_public/warm_test/r8_test_0033.npz"
+  ],
+  "initialization": {
+    "material": "dpcs",
+    "file": "research/research_max_struct_r8/data_public/initializers/primary_physics/r8_test_0033__dpcs.npz",
+    "physical_current_projected": false
+  },
+  "auxiliary_wall_seconds": 0.032563833985477686,
+  "auxiliary_cpu_seconds": 0.024612999999999996,
+  "auxiliary_physical_model_cost": {
+    "FULL_FORWARD": 1,
+    "source_RHS": 6,
+    "full_factorization_dimension": 576,
+    "cached_operator_imports": 0,
+    "LU": 1,
+    "actual_complex_RHS": 6
+  },
+  "auxiliary_execution_receipt": {
+    "status": "DIRECT_PHYSICS_NO_AUXILIARY",
+    "wall_seconds": 0.03246395895257592,
+    "cpu_seconds": 0.02451399999999998,
+    "physical_model_delta": {
+      "FULL_FORWARD": 1,
+      "source_RHS": 6,
+      "full_factorization_dimension": 576,
+      "cached_operator_imports": 0,
+      "LU": 1,
+      "actual_complex_RHS": 6
+    }
+  },
+  "auxiliary_status": "DIRECT_PHYSICS_NO_AUXILIARY",
+  "auxiliary_candidate_scores": [
+    {
+      "objective": 0.5302404692257799,
+      "stage": -1,
+      "reason": "common_initial_material"
+    }
+  ],
+  "auxiliary_selected_stage": -1,
+  "corrector": {
+    "stop": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT",
+    "iterations": 6000,
+    "evaluations": 6152,
+    "success": false,
+    "cost": {
+      "FULL_FORWARD": 6151,
+      "LU": 6151,
+      "actual_complex_RHS": 73818,
+      "source_RHS": 36906,
+      "full_factorization_dimension": 3542976,
+      "cached_operator_imports": 0,
+      "adjoint_RHS": 36912,
+      "DATA_ADJOINT": 6152
+    },
+    "wall_seconds": 138.55267354194075,
+    "cpu_seconds": 111.60929300000001,
+    "checkpoint_semantics": "Snapshots copy already paid state/value/gradient; no extra forward or adjoint",
+    "best_objective": 0.000175890159437511,
+    "source_entrypoint": "research/research_max_struct_r4/experiments/cooperative_paths.py::refine"
+  },
+  "physical_objective": 0.000175890159437511,
+  "physical_relative_residual": 0.01692014894833664,
+  "linear_relative_residual": 3.5138879119223424e-15,
+  "auxiliary_iterations": 0,
+  "corrector_improved_original_Phi": true,
+  "finalization_physical_model_cost": {},
+  "selection": "Minimum original Phi of host + all true stage endpoints + original R4 corrector trajectory incumbent",
+  "snapshot_policy": "Initial and stage physical states; stage joint m/J/Q/A; configured paid corrector points; final paid incumbent",
+  "continuation": "Explicit appended mf12 stages in same invocation; original Fourier transport, no J reset",
+  "process_peak_RSS_bytes": 153616384,
+  "RSS_platform_convention": "resource peak RSS converted to bytes",
+  "execution_platform": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "host": "migodamdeMac-mini.local",
+    "python": "3.13.13"
+  },
+  "finished_utc": "2026-11-05T22:50:27.789071+00:00",
+  "wall_seconds": 139.32680174987763,
+  "cpu_seconds": 112.213606,
+  "physical_model_cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 6152,
+    "actual_complex_RHS": 73824,
+    "LU": 6152,
+    "source_RHS": 36912,
+    "full_factorization_dimension": 3543552,
+    "DATA_ADJOINT": 6152,
+    "adjoint_RHS": 36912
+  },
+  "physical_operation_wall": {
+    "FULL_FORWARD": 117.92871515918523,
+    "DATA_ADJOINT": 9.230347861070186
+  },
+  "physical_operation_cpu": {
+    "FULL_FORWARD": 95.04409600000037,
+    "DATA_ADJOINT": 7.359365000000603
+  },
+  "cost_scope": "Process imports/public load/setup, complete configured auxiliary schedule, original host/stage physical validation, original R4 corrector and observation/serialization. Nested costs overlap; do not add twice."
+}

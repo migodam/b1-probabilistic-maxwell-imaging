@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/paper_compare64.py", line 51, in <module>
+    p=argparse.ArgumentParser();p.add_argument('--arm');a=p.parse_args();run(a.arm)
+                                                                         ~~~^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/paper_compare64.py", line 43, in run
+    opt=minimize(fg,m,jac=True,method='L-BFGS-B',bounds=[(0,20)]*model.n,options=dict(maxiter=80,maxfun=320,ftol=1e-12,gtol=.01,maxls=30));final=best[0];st=model.state(final)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_minimize.py", line 784, in minimize
+    res = _minimize_lbfgsb(fun, x0, args, jac, bounds,
+                           callback=callback, **options)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_lbfgsb_py.py", line 420, in _minimize_lbfgsb
+    f, g = func_and_grad(x)
+           ~~~~~~~~~~~~~^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_differentiable_functions.py", line 412, in fun_and_grad
+    self._update_fun()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_differentiable_functions.py", line 362, in _update_fun
+    fx = self._wrapped_fun(self.x)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/_lib/_util.py", line 544, in __call__
+    fx = self.f(np.copy(x), *self.args)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_optimize.py", line 80, in __call__
+    self._compute_if_needed(x, *args)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_optimize.py", line 74, in _compute_if_needed
+    fg = self.fun(x, *args)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/paper_compare64.py", line 38, in fg
+    v,g=model.data_value_gradient(z,Y)
+        ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/src/paper_physics.py", line 128, in data_value_gradient
+    st=self.state(m);r=st['Y']-Y;scale=np.vdot(Y,Y).real;a=self.solve(m,self.S.conj().T@r,adjoint=True)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/src/paper_physics.py", line 122, in state
+    self.cost['FULL_FORWARD']+=1;j=self.solve(m,m[:,None]*self.E);Q=self.E+self.green.apply(j)
+                                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/src/paper_physics.py", line 118, in solve
+    if info:raise RuntimeError('Matrix-free physical solve failed '+str(info))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Matrix-free physical solve failed 100

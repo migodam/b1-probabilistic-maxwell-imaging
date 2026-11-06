@@ -1,0 +1,26 @@
+{"target": "four_cubes", "method": "LSIE_sourcewise", "cpu_s": 6.137347, "residual": 0.1015142981815222}
+{"target": "four_cubes", "method": "CIE_sourcewise", "cpu_s": 5.936713999999999, "residual": 0.10151488248553896}
+{"target": "four_cubes", "method": "Dual_sourcewise", "cpu_s": 9.096255000000001, "residual": 0.10151323985722502}
+{"target": "four_cubes", "method": "CIE_global", "cpu_s": 10.788673000000003, "residual": 0.10151555718948156}
+{"target": "four_cubes", "method": "A_global", "cpu_s": 12.970948, "residual": 0.10151309945524017}
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/vector_pr_benchmark.py", line 27, in <module>
+    with threadpool_limits(limits=1):main()
+                                     ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/vector_pr_benchmark.py", line 17, in main
+    arrays,r=m.optimize_pr(Y,kind);np.savez_compressed(target/(kind+'_prediction.npz'),**arrays);dump(target/(kind+'_receipt.json'),r);print(json.dumps(dict(target=name,method=kind,cpu_s=r['cpu_s'],residual=r['physical_data_residual'])),flush=True)
+                                                                                                 ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/vector_pr_benchmark.py", line 10, in dump
+    def dump(p,x):p.write_text(json.dumps(x,indent=2,allow_nan=False))
+                               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.13/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 182, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bool is not JSON serializable

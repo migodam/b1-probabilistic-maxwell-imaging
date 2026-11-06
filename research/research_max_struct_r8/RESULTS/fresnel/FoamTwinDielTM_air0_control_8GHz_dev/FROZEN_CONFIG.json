@@ -1,0 +1,58 @@
+{
+  "mode": "air0_control_8",
+  "training_frequencies_GHz": [
+    8
+  ],
+  "validation_frequencies_GHz": [
+    6,
+    8
+  ],
+  "shared_real_material": true,
+  "side": 60,
+  "width_m": 0.2,
+  "box": [
+    0.0,
+    20.0
+  ],
+  "objective": "mean_f[0.5norm(F_f-Y_f)^2/norm(Y_f)^2]+originalprior; each normalized frequency equal weight; prior mathematically once",
+  "prior": "original Regularizer smooth1e-4 tv1e-4 epsilon.01, unchanged",
+  "anchor": "RESULTS/fresnel/FoamTwinDielTM_8GHz_n60_cie_dual_v3/derived.npz",
+  "anchor_selection": "8GHzDualv3bestpaidtrainingphysicalobjective, noGT",
+  "maximum_accepted_iterations": 300,
+  "maximum_function_evaluations": 1000,
+  "corrector": {
+    "method": "original L-BFGS-B",
+    "scale": 1000000.0,
+    "ftol": 1e-12,
+    "gtol": 0.01,
+    "maxls": 30
+  },
+  "mask": "Same source/receiver actualmask asfinal8GHzfivearm",
+  "training_channels_per_frequency": 2496,
+  "heldout_channels_per_frequency": 1842,
+  "heldout_selection": false,
+  "observation_status": "DEV_MODEL_DIAGNOSTIC_POST_MEASUREMENT; same8GHzdata; onlyfeasiblelowerbound0instead.02; notA+advantage",
+  "diagnostic_status": "DEV_MODEL_DIAGNOSTIC",
+  "old_control": "RESULTS/fresnel/FoamTwinDielTM_multifrequency_control_8/RECEIPT.json",
+  "only_optimizer_change": "Material lowerbound0instead.02",
+  "background_region": "max(abs(x),abs(y))>=.085m outerROIband, posthocdistributiononly, notpixelGT/supportconstraint",
+  "distribution_thresholds": {
+    "bound_atol": 1e-10,
+    "old_floor": 0.02,
+    "near_zero": 1e-08,
+    "quantiles": [
+      0,
+      0.05,
+      0.25,
+      0.5,
+      0.75,
+      0.95,
+      1
+    ]
+  },
+  "eight_GHz_heldout_status": "PREVIOUSLY_EXPOSED_FINAL8GHZRESULT",
+  "six_GHz_heldout_status": "PREVIOUSLY_EXPOSED_BY6PLUS8FOLLOWUP; no new test seal",
+  "frequency_sweep": false,
+  "illumination": "Independent target-absent source multipole calibration at each physicalfrequency",
+  "physics": "SeparatefullVIEperfrequency; sharematerialonly; noMobiustransplant"
+}

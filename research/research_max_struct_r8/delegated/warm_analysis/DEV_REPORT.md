@@ -1,0 +1,10 @@
+# Warm-start development figures
+
+Only the eight predefined public validation objects and existing training histories were read. These are exploratory development observations, not confirmation statistics. No test truth, new inverse solve, sealing, scoring, or new model training was performed.
+
+- `FIGURES/warm_dev_training.png`: full recorded epochs, training and validation MSE; dotted lines indicate validation-selected epochs.
+- `FIGURES/warm_dev_objects.png`: all eight objects, all six existing method/initialization combinations, material NRMSE and actual solver CPU. Budgets differ (direct physical permits 6000 steps, auxiliary corrector 3000), so the final-point panel is not an equal-budget claim.
+
+The NN direct physical branch retains useful development trajectories on objects 0002/0003/0005/0006 that the auxiliary pre-corrector selection can discard. Object 0004 remains a failure; 0007 is already well recovered from uniform. The future public-Phi-selected two-branch comparison must charge both complete solvers and one shared NN prefix. These development observations do not establish confirmation-set performance or novelty.
+
+Cost semantics: feature_cpu_seconds and inference_cpu_seconds retain the original actual Mac timing. deployment_prefix_cpu_seconds is the separate independently measured preprocessing/inference time on the solver machine. These quantities cannot be interchanged. TRAINING_COST_ACCOUNTING.json uses the outer 1536-train/192-validation generation receipts once (including their features/setup), plus all 120 original physics-network epochs. Born and domain-repair costs appear only in the broader scientific setup ledger. Confirmation amortization will use independent-object mean paired uniform-minus-NN deployment CPU savings, separately by cohort/hardware. Mac CPU bookkeeping can give K; XINAN requires K=(cMac*Ttrain)/(cXINAN*mean_saved_CPU), with no numeric economic break-even until the price ratio is supplied. A nonpositive mean saving gives no finite advantage.

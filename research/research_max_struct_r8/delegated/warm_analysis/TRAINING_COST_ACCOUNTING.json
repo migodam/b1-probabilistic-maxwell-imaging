@@ -1,0 +1,95 @@
+{
+  "original_physics_network": {
+    "hardware": "Mac",
+    "cpu_seconds": 402.55888899999997,
+    "wall_seconds": 298.83759820926934,
+    "components": [
+      {
+        "source": "audit/generation_train.json",
+        "scope": "train generation + features + setup + writing",
+        "cpu_seconds": 11.396809,
+        "wall_seconds": 11.866338500287384,
+        "objects": 1536,
+        "nested_costs_not_added_again": true
+      },
+      {
+        "source": "audit/generation_validation.json",
+        "scope": "validation generation + features + setup + writing",
+        "cpu_seconds": 3.4720779999999998,
+        "wall_seconds": 3.5229553752578795,
+        "objects": 192,
+        "nested_costs_not_added_again": true
+      },
+      {
+        "source": "RESULTS/training/physics/RECEIPT.json",
+        "scope": "physics network full 120 epochs including validation selection",
+        "cpu_seconds": 387.690002,
+        "wall_seconds": 283.4483043337241
+      }
+    ],
+    "excludes": "Born-network ablation, domain repair, test generation, test inference and inverse solves",
+    "deployment_semantics": "Original physics NN numerator only; no hypothetical retraining per object"
+  },
+  "research_all_generation_and_training": {
+    "cpu_seconds": 1464.877399,
+    "components": [
+      {
+        "source": "RESULTS/training/born/RECEIPT.json",
+        "cpu_seconds": 520.247012,
+        "wall_seconds": 532.6517574586906,
+        "status": "TRAINED_AND_VALIDATION_SELECTED"
+      },
+      {
+        "source": "RESULTS/training/domain_augmented/RECEIPT.json",
+        "cpu_seconds": 498.983838,
+        "wall_seconds": 615.2604418750852,
+        "status": "TRAINED_PHYSICS_DOMAIN_REPAIR"
+      },
+      {
+        "source": "RESULTS/training/physics/RECEIPT.json",
+        "cpu_seconds": 387.690002,
+        "wall_seconds": 283.4483043337241,
+        "status": "TRAINED_AND_VALIDATION_SELECTED"
+      },
+      {
+        "source": "audit/generation_domain_train.json",
+        "cpu_seconds": 27.254077000000002,
+        "wall_seconds": 40.33174466621131,
+        "status": "GENERATED_NON_AUSTRIA_SUPERVISED_DOMAIN_DATA"
+      },
+      {
+        "source": "audit/generation_domain_validation.json",
+        "cpu_seconds": 6.072503,
+        "wall_seconds": 8.986140583176166,
+        "status": "GENERATED_NON_AUSTRIA_SUPERVISED_DOMAIN_DATA"
+      },
+      {
+        "source": "audit/generation_test.json",
+        "cpu_seconds": 9.76108,
+        "wall_seconds": 11.516637625172734,
+        "status": "GENERATED"
+      },
+      {
+        "source": "audit/generation_train.json",
+        "cpu_seconds": 11.396809,
+        "wall_seconds": 11.866338500287384,
+        "status": "GENERATED"
+      },
+      {
+        "source": "audit/generation_validation.json",
+        "cpu_seconds": 3.4720779999999998,
+        "wall_seconds": 3.5229553752578795,
+        "status": "GENERATED"
+      }
+    ],
+    "scope": "All available generation and all network training receipts including Born/domain; setup subtotal, excludes inverse solves and unisolated orchestration",
+    "hardware": "Mac",
+    "not_a_deployment_amortization_numerator": true
+  },
+  "field_semantics": {
+    "feature_cpu_seconds": "Original actual Mac preprocessing time",
+    "inference_cpu_seconds": "Original actual Mac inference time",
+    "deployment_prefix_cpu_seconds": "Independent measured preprocessing + inference on the solver hardware",
+    "actual_workflow_cpu_seconds": "Original Mac preprocessing + actual solver CPU; mixed-machine work when solver is XINAN"
+  }
+}

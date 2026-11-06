@@ -1,0 +1,41 @@
+{"method": "LSIE_sourcewise", "cpu_s": 227.39117, "residual": 0.10108786724201461}
+Traceback (most recent call last):
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/vector_refinement.py", line 25, in <module>
+    with threadpool_limits(limits=1):main()
+                                     ~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/experiments/vector_refinement.py", line 19, in main
+    arrays,r=m.optimize(Y,kind) if kind=='direct_physical' else m.optimize_pr(Y,kind);np.savez_compressed(OUT/(kind+'_prediction.npz'),**arrays);dump(OUT/(kind+'_receipt.json'),r);print(json.dumps(dict(method=kind,cpu_s=r['cpu_s'],residual=r['physical_data_residual'])),flush=True)
+                                                                ~~~~~~~~~~~~~^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/src/vector_pr3d.py", line 64, in optimize_pr
+    raw=best.copy();pre=self.physical(raw,Y,False);res=minimize(lambda q:self.physical(q,Y),raw,jac=True,bounds=bounds,method='L-BFGS-B',callback=callback,options=dict(maxiter=corrector,ftol=1e-13,gtol=1e-9,maxls=30));callback(res.x);f,df,J,E=self.physical(best,Y,False);logs.append(dict(stage='common_long_corrector',nit=res.nit,nfev=res.nfev,message=str(res.message),success=bool(res.success)))
+                                                       ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_minimize.py", line 784, in minimize
+    res = _minimize_lbfgsb(fun, x0, args, jac, bounds,
+                           callback=callback, **options)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_lbfgsb_py.py", line 420, in _minimize_lbfgsb
+    f, g = func_and_grad(x)
+           ~~~~~~~~~~~~~^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_differentiable_functions.py", line 412, in fun_and_grad
+    self._update_fun()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_differentiable_functions.py", line 362, in _update_fun
+    fx = self._wrapped_fun(self.x)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/_lib/_util.py", line 544, in __call__
+    fx = self.f(np.copy(x), *self.args)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_optimize.py", line 80, in __call__
+    self._compute_if_needed(x, *args)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/optimize/_optimize.py", line 74, in _compute_if_needed
+    fg = self.fun(x, *args)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/src/vector_pr3d.py", line 64, in <lambda>
+    raw=best.copy();pre=self.physical(raw,Y,False);res=minimize(lambda q:self.physical(q,Y),raw,jac=True,bounds=bounds,method='L-BFGS-B',callback=callback,options=dict(maxiter=corrector,ftol=1e-13,gtol=1e-9,maxls=30));callback(res.x);f,df,J,E=self.physical(best,Y,False);logs.append(dict(stage='common_long_corrector',nit=res.nit,nfev=res.nfev,message=str(res.message),success=bool(res.success)))
+                                                                         ~~~~~~~~~~~~~^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/src/vector_cie3d.py", line 39, in physical
+    x=self.decode(z);d=np.repeat(x,3);K=np.eye(self.M)-d[:,None]*self.G;fac=la.lu_factor(K,check_finite=False);J=la.lu_solve(fac,d[:,None]*self.inc,check_finite=False)
+                                                                            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/_lib/_util.py", line 1138, in wrapper
+    return f(*arrays, *other_args, **kwargs)
+  File "/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/lib/python3.13/site-packages/scipy/linalg/_decomp_lu.py", line 120, in lu_factor
+    lu, piv, info = getrf(a1, overwrite_a=overwrite_a)
+                    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
