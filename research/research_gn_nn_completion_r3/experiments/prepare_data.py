@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--test", type=int, default=64)
     parser.add_argument("--dev", type=int, default=8)
     mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--expand-train", type=int, choices=[1024, 2048],
+    mode.add_argument("--expand-train", type=int, choices=[512, 1024, 2048],
                       help="Append training parents to an existing dataset; preserve all old files and entries")
     mode.add_argument("--summarize-anchors", type=Path,
                       help="Read-only receipt summary for an existing anchor directory; no generation")

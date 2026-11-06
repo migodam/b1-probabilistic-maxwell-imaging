@@ -41,11 +41,13 @@ def make_plots(scores_path, *, study=None, output=None):
                 else:
                     corrected=None
                 panels.append((row,raw,corrected))
-        # Every displayed estimate shares one material color scale per case,
-        # including failed/outlier proposals; no per-panel rescaling or cropping.
-        finite_arrays=[a for a in (truth,anchor)if a is not None]+[a for _,raw,corrected in panels for a in (raw,corrected)if a is not None]
-        vmin=min(.02,min(float(a.min())for a in finite_arrays))
-        vmax=max(float(a.max())for a in finite_arrays)
+        # Frozen physical scales shared by every case in each amplitude cohort.
+        vmin,vmax=.02,(2.65 if source.get('level')=='stress' else .55)
+        saturated=[]
+        for row,raw,corrected in panels:
+            for stage,array in [('raw',raw),('selected',corrected)]:
+                if array is not None:
+                    saturated.append(dict(run=row['run'],stage=stage,below=int(np.count_nonzero(array<vmin)),above=int(np.count_nonzero(array>vmax))))
         for page,start in enumerate(range(0,max(1,len(panels)),5)):
             group=panels[start:start+5]
             columns=2+len(group)
@@ -59,15 +61,16 @@ def make_plots(scores_path, *, study=None, output=None):
                     else:
                         ax.text(.5,.5,'NO FEASIBLE\nSELECTION'if line else'NOT RUN',ha='center',va='center',transform=ax.transAxes)
                     ax.set_xticks([]);ax.set_yticks([])
-                    ax.set_title(label,fontsize=9)
+                    sat=0 if array is None else int(np.count_nonzero((array<vmin)|(array>vmax)))
+                    ax.set_title(label+(f' | saturated {sat}'if sat else''),fontsize=9)
                     if col==0:
                         ax.set_ylabel('Raw full proposal'if line==0 else'Online selected after correction',fontsize=10)
             if image is not None:
-                fig.colorbar(image,ax=axes.ravel().tolist(),label='Physical material contrast',shrink=.82)
-            fig.suptitle(f'{obs_id} | {source["split"]} | noise={source["noise"]} | {source.get("distribution","ID")}\nUniform case scale [{vmin:.3g}, {vmax:.3g}]',fontsize=11)
+                fig.colorbar(image,ax=axes.ravel().tolist(),label='Physical material contrast (out-of-range colors saturated)',shrink=.82,extend='both')
+            fig.suptitle(f'{obs_id} | {source["split"]} | noise={source["noise"]} | {source.get("distribution","ID")}\nFixed amplitude-cohort scale [{vmin:.3g}, {vmax:.3g}]',fontsize=11)
             path=output/f'{obs_id}_page{page+1}.png'
             fig.savefig(path,dpi=150);plt.close(fig)
-            index.append(dict(obs_id=obs_id,file=path.name,runs=[p[0]['run']for p in group],vmin=vmin,vmax=vmax,selection='all observations, all runs, manifest order'))
+            index.append(dict(obs_id=obs_id,file=path.name,runs=[p[0]['run']for p in group],vmin=vmin,vmax=vmax,selection='all observations, all runs, manifest order',saturation=saturated))
     runs=list(dict.fromkeys(r['run']for r in scores['rows']))
     palette=plt.get_cmap('tab10')
     fig,axes=plt.subplots(1,3,figsize=(14,4),layout='constrained')
@@ -99,5 +102,92 @@ def make_plots(scores_path, *, study=None, output=None):
     handles,labels=axes[0].get_legend_handles_labels()
     if handles:axes[0].legend(fontsize=7)
     fig.savefig(output/'all_auxiliary_vs_physical_defects.png',dpi=160);plt.close(fig)
-    (output/'FIGURE_INDEX.json').write_text(json.dumps(dict(scores=str(scores_path.resolve()),case_panels=index,no_cherrypicking=True,scale='one physical material scale per observation across all arms and raw/corrected panels'),indent=2)+'\n')
+    (output/'FIGURE_INDEX.json').write_text(json.dumps(dict(scores=str(scores_path.resolve()),case_panels=index,no_cherrypicking=True,scale='fixed across every low-amplitude case [.02,.55], every stress case [.02,2.65]; saturation declared'),indent=2)+'\n')
+    _compact_manifest_gallery(scores,study,data,output)
+    _current_mechanism_figure(scores,output)
+    from html import escape
+    gallery=['<!doctype html><meta charset="utf-8"><title>All case material gallery</title>', '<style>body{font:16px system-ui;margin:24px;background:#f5f6f8}img{width:100%;height:auto;background:white}section{margin-bottom:24px}h1{font-size:24px}</style>', '<h1>All case material gallery</h1><p>Manifest order, all cases and runs; fixed physical scales low [.02,.55], stress [.02,2.65]. Saturation is declared in each panel. No performance-based selection.</p>']
+    for case in index:
+        gallery.append(f'<section><h2>{escape(case["obs_id"])}</h2><img loading="lazy" src="{escape(case["file"])}" alt="All arm raw and selected material maps"></section>')
+    (output/'GALLERY.html').write_text('\n'.join(gallery)+'\n')
     return output
+
+
+def _compact_manifest_gallery(scores,study,data,output):
+    """Choose first clean low case per digit/family in original manifest order."""
+    by_obs={}
+    for row in scores['rows']:
+        by_obs.setdefault(row['obs_id'],[]).append(row)
+    seal=json.loads(Path(scores['seal_path']).read_text())
+    manifest=json.loads(Path(seal['manifest']['path']).read_text())
+    chosen={}
+    order=[f'digit{d}'for d in range(1,10)]+['primitive_composites','islands','smooth']
+    for record in manifest['records']:
+        if record['obs_id']not in by_obs or record.get('level','low')!='low' or float(record['noise'])!=0:
+            continue
+        key=f'digit{record["digit"]}'if record.get('family')=='digits'else record.get('family')
+        if key in order and key not in chosen:
+            chosen[key]=record
+    selected=[(key,chosen[key])for key in order if key in chosen]
+    runs=[]
+    for row in scores['rows']:
+        run=row['run']
+        if run not in runs and any(a in run for a in ('v_image','v_physics','j_full','j_null')):
+            runs.append(run)
+    # First available run per declared arm, from the frozen seal's run order.
+    arms=('v_image','v_physics','j_full','j_null','j_null_current')
+    run_columns=[]
+    for arm in arms:
+        matches=[r for r in runs if (f'_{arm}_' in f'_{r}_' or r==arm)]
+        if arm=='j_null':matches=[r for r in matches if 'j_null_current'not in r]
+        if matches:run_columns.append(matches[0])
+    if not selected:return
+    fig,axes=plt.subplots(len(selected),2+len(run_columns),figsize=(2.0*(2+len(run_columns)),1.8*len(selected)),squeeze=False,layout='constrained')
+    for line,(key,record)in enumerate(selected):
+        obs=record['obs_id']
+        with np.load(data/record['truth_path'],allow_pickle=False)as z:truth=z['m'].reshape(24,24)
+        anchor_path=study/'anchors'/f'{obs}.npz'
+        anchor=None
+        if anchor_path.exists():
+            with np.load(anchor_path,allow_pickle=False)as z:anchor=z['m0'].reshape(24,24)
+        panels=[('GT',truth),('GN',anchor)]
+        for run in run_columns:
+            path=study/'evaluation'/run/f'{obs}.npz';array=None
+            if path.exists():
+                with np.load(path,allow_pickle=False)as z:
+                    if 'top1'in z:array=z['top1'].reshape(24,24)
+            panels.append((run,array))
+        for col,(title,array)in enumerate(panels):
+            ax=axes[line,col];ax.set_xticks([]);ax.set_yticks([])
+            if array is not None:
+                im=ax.imshow(array,cmap='viridis',vmin=.02,vmax=.55,interpolation='nearest')
+                sat=int(np.count_nonzero((array<.02)|(array>.55)))
+                if sat:ax.text(.02,.02,f'sat:{sat}',transform=ax.transAxes,fontsize=7,color='white',backgroundcolor='black')
+            else:ax.text(.5,.5,'NOT RUN / FAIL',transform=ax.transAxes,ha='center',va='center',fontsize=7)
+            if line==0:ax.set_title(title,fontsize=8)
+            if col==0:ax.set_ylabel(key,fontsize=9)
+    fig.colorbar(im,ax=axes.ravel().tolist(),label='Physical material contrast; fixed low cohort [.02,.55]',shrink=.5,extend='both')
+    fig.suptitle('Preselected first clean low case per digit/family, manifest order; online selected materials',fontsize=12)
+    fig.savefig(output/'preselected_digits1to9_and_nondigits.png',dpi=150);plt.close(fig)
+    (output/'PRESELECTED_MANIFEST.json').write_text(json.dumps(dict(rule='first clean low observation per digit1..9 and each nondigit family, in original manifest order, no metric-based selection',records=[dict(selection_key=k,**r)for k,r in selected],runs=run_columns,range=[.02,.55]),indent=2)+'\n')
+
+
+def _current_mechanism_figure(scores,output):
+    fig,axes=plt.subplots(1,3,figsize=(15,4),layout='constrained')
+    runs=list(dict.fromkeys(r['run']for r in scores['rows']if r.get('current_metrics')))
+    palette=plt.get_cmap('tab10')
+    for index,run in enumerate(runs):
+        rows=[r for r in scores['rows']if r['run']==run and r.get('current_metrics')]
+        color=palette(index%10)
+        x=[max(r['current_metrics']['auxiliary_current_relative_L2_error'],1e-16)for r in rows]
+        qualified=[r for r in rows if r['current_metrics'].get('constitutive_relative_defect')is not None]
+        axes[0].scatter([max(r['current_metrics']['auxiliary_current_relative_L2_error'],1e-16)for r in qualified],[max(r['current_metrics']['constitutive_relative_defect'],1e-16)for r in qualified],label=run,color=color,s=15,alpha=.6)
+        raw=[r for r in rows if r['current_metrics'].get('raw_full_material_NRMSE')is not None]
+        axes[1].scatter([max(r['current_metrics']['auxiliary_current_relative_L2_error'],1e-16)for r in raw],[max(r['current_metrics']['raw_full_material_NRMSE'],1e-16)for r in raw],color=color,s=15,alpha=.6)
+        selected=[r for r in rows if r['current_metrics'].get('selected_material_NRMSE')is not None]
+        axes[2].scatter([max(r['current_metrics']['projected_target_current_error_relative'],1e-16)for r in selected],[max(r['current_metrics']['selected_material_NRMSE'],1e-16)for r in selected],color=color,s=15,alpha=.6)
+    axes[0].set(xlabel='Auxiliary current relative L2 error vs GT',ylabel='Constitutive relative defect',xscale='log',yscale='log')
+    axes[1].set(xlabel='Auxiliary current relative L2 error vs GT',ylabel='Raw full material NRMSE / amplitude',xscale='log',yscale='log')
+    axes[2].set(xlabel='Increment error relative to P0(jGT−j0)',ylabel='Selected material NRMSE / amplitude',xscale='log',yscale='log')
+    if runs:axes[0].legend(fontsize=7)
+    fig.savefig(output/'current_error_vs_constitutive_and_material.png',dpi=160);plt.close(fig)

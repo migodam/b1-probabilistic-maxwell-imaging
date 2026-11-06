@@ -5,6 +5,7 @@ import argparse
 import json
 import random
 import time
+from collections import OrderedDict
 from pathlib import Path
 import numpy as np
 import torch
@@ -50,18 +51,45 @@ def resolve_path(root, value):
 
 
 class SupervisedAnchors(Dataset):
-    def __init__(self, records, data_root, anchor_root, stats, arm, dev_only=False):
+    def __init__(self, records, data_root, anchor_root, stats, arm, dev_only=False, cache_max_bytes=512*1024**2):
         self.records = list(records)
         self.data_root, self.anchor_root = Path(data_root), Path(anchor_root)
         self.stats, self.arm = stats, arm
         allowed = ("debugtrain", "debugval") if dev_only else ("train", "val", "validation")
         if any(str(r["split"]).lower() not in allowed for r in self.records):
             raise ValueError("Supervised loader refuses every split except TRAIN/VAL")
+        # CPU tensors only. The initial 640-observation cohort fits comfortably
+        # under the shared 512 MiB budget. Larger cohorts use a bounded LRU.
+        bytes_per_item = 27*NC*4 + 2*NC*4 + 2*NC*NS*8 + 4
+        self.max_cached_items = max(0, int(cache_max_bytes)//bytes_per_item)
+        self._cache = OrderedDict()
+        start = time.perf_counter()
+        eager = len(self.records) <= self.max_cached_items
+        if eager:
+            for index in range(len(self.records)):
+                self._cache[index] = self._read(index)
+        used = sum(v.numel()*v.element_size() for item in self._cache.values() for v in item.values())
+        self.cache_receipt = {"mode": "eager_cpu_all" if eager else "bounded_cpu_lru",
+                              "load_seconds": time.perf_counter()-start,
+                              "resident_bytes": used, "budget_bytes": int(cache_max_bytes),
+                              "cached_items": len(self._cache), "total_items": len(self.records),
+                              "max_cached_items": self.max_cached_items}
 
     def __len__(self):
         return len(self.records)
 
     def __getitem__(self, index):
+        if index in self._cache:
+            self._cache.move_to_end(index)
+            return self._cache[index]
+        item = self._read(index)
+        if self.max_cached_items:
+            if len(self._cache) >= self.max_cached_items:
+                self._cache.popitem(last=False)
+            self._cache[index] = item
+        return item
+
+    def _read(self, index):
         record = self.records[index]
         anchor = load_anchor(self.anchor_root/f"{record['obs_id']}.npz")
         # This is the sole GT read in the training stack, after the split guard.
@@ -152,7 +180,7 @@ def _run_epoch(model, operators, loader, stats, passes, device, optimizer=None):
 
 def train_model(data_root, manifest_path, operators_path, output_dir, arm,
                 seed=7, epochs=100, batch_size=64, patience=15, device="auto",
-                cascade_passes=1, anchor_root=None, num_workers=0, dev_only=False):
+                cascade_passes=1, anchor_root=None, num_workers=0, dev_only=False, cache_ram_mb=512):
     if arm not in ARMS:
         raise ValueError(arm)
     if epochs < 1 or epochs > 100 or batch_size < 1 or patience < 1:
@@ -190,10 +218,16 @@ def train_model(data_root, manifest_path, operators_path, output_dir, arm,
     _sync(target_device)
     operator_setup_seconds = time.perf_counter()-setup_start
     generator = torch.Generator().manual_seed(seed)
-    train_loader = DataLoader(SupervisedAnchors(train, data_root, anchor_root, stats, arm, dev_only),
+    total_items = len(train)+len(val)
+    cache_bytes = max(0, int(cache_ram_mb*1024**2))
+    train_dataset = SupervisedAnchors(train, data_root, anchor_root, stats, arm, dev_only,
+                                      cache_bytes*len(train)//total_items)
+    val_dataset = SupervisedAnchors(val, data_root, anchor_root, stats, arm, dev_only,
+                                    cache_bytes*len(val)//total_items)
+    train_loader = DataLoader(train_dataset,
                               batch_size=batch_size, shuffle=True, generator=generator,
                               num_workers=num_workers)
-    val_loader = DataLoader(SupervisedAnchors(val, data_root, anchor_root, stats, arm, dev_only),
+    val_loader = DataLoader(val_dataset,
                             batch_size=batch_size, shuffle=False, num_workers=num_workers)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
     config = {"arm": arm, "seed": seed, "max_epochs": epochs, "batch_size": batch_size,
@@ -204,6 +238,7 @@ def train_model(data_root, manifest_path, operators_path, output_dir, arm,
               "complex_dtype": "float32_real_pair" if target_device.type == "mps" else "complex64", "network_dtype": "float32",
               "selection_metric": "val_current_l1" if arm == "j_null_current" else "val_material_l1_plus_0.1_edge",
               "feature_stats_seconds": stats_seconds, "operator_setup_seconds": operator_setup_seconds,
+              "supervised_cpu_cache": {"train": train_dataset.cache_receipt, "val": val_dataset.cache_receipt},
               "V48_source": operators.v48_source, "truth_access": "DEV_ONLY_EXPLICITLY_AUTHORIZED" if dev_only else "TRAIN_VAL_ONLY",
               "dev_only": dev_only,
               "residual_head_initialization": "all_zero_weights_and_bias",

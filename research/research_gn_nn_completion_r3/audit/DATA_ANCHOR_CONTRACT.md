@@ -98,6 +98,7 @@ not GT material or scientific acceptance. No DEV GT scoring was performed.
 From the study directory, the later parent decision can invoke:
 
 ```sh
+python experiments/prepare_data.py --output data --expand-train 512
 python experiments/prepare_data.py --output data --expand-train 1024
 python experiments/prepare_data.py --output data --expand-train 2048
 ```

@@ -109,6 +109,44 @@ def _retention(candidates, arrays, truth):
     return rows
 
 
+def current_mechanism_metrics(arrays, truth, v48):
+    """Offline current-target errors using the public cached receiver rowspace."""
+    j=np.asarray(arrays['j_aux'])
+    j0=np.asarray(arrays['anchor_j0'])
+    target_j=np.asarray(truth['j'])
+    delta=np.asarray(arrays.get('delta_current',j-j0))
+    v=np.asarray(v48)
+    if v.shape!=(576,48):
+        raise ValueError('Cached V48 shape(576,48) required; no scorer SVD fallback')
+    def energy(x):return float(np.vdot(x,x).real)
+    gt_delta=target_j-j0
+    null_target=gt_delta-v@(v.conj().T@gt_delta)
+    error=j-target_j
+    total,visible=energy(error),energy(v.conj().T@error)
+    inc_total,inc_visible=energy(delta),energy(v.conj().T@delta)
+    projected_error=energy(delta-null_target)
+    target_energy=energy(null_target)
+    gt_energy=energy(target_j)
+    anchor_error=j0-target_j
+    anchor_total,anchor_visible=energy(anchor_error),energy(v.conj().T@anchor_error)
+    return dict(anchor_current_relative_L2_error=float(np.sqrt(anchor_total/max(gt_energy,1e-300))),
+                anchor_current_error_total_energy=anchor_total,anchor_current_error_visible_energy=anchor_visible,
+                anchor_current_error_null_energy=max(0.,anchor_total-anchor_visible),
+                auxiliary_current_relative_L2_error=float(np.sqrt(total/max(gt_energy,1e-300))),
+                projected_target_current_error_absolute=float(np.sqrt(projected_error)),
+                projected_target_current_error_relative=float(np.sqrt(projected_error/max(target_energy,1e-300))),
+                projected_target_error_normalized_by_GT_current=float(np.sqrt(projected_error/max(gt_energy,1e-300))),
+                projected_target_energy=target_energy,
+                current_error_total_energy=total,current_error_visible_energy=visible,
+                current_error_null_energy=max(0.,total-visible),current_error_visible_fraction=visible/max(total,1e-300),
+                current_increment_total_energy=inc_total,current_increment_visible_energy=inc_visible,
+                current_increment_null_energy=max(0.,inc_total-inc_visible),
+                current_increment_visible_fraction=inc_visible/max(inc_total,1e-300),
+                saved_increment_consistency_L2=float(np.linalg.norm(delta-(j-j0))),
+                target_definition='P0(jGT-j0), P0=I-V48V48*, all48 receiver directions retained',
+                scope='OFFLINE_GT_CURRENT_DIAGNOSTIC_ONLY_NO_NEW_PHYSICS_OR_SVD')
+
+
 def oracle_null_current(public, anchor, truth):
     """Offline representation ceiling; never an online root/candidate/selector."""
     from research.research_z_alg_r4_diversity.src.physics import Model
@@ -176,11 +214,24 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
         old = receipt.get('old_score_top1')
         row.update(status=receipt['status'], selection_status=receipt['selection_status'],
                    accounting_status=receipt['accounting_status'], wall_seconds=receipt['wall_seconds'],
+                   cost_scope=receipt.get('cost_scope','INCREMENTAL_WARM_MODEL_POST_GN'),budget=receipt.get('budget',dict(wall_seconds=10.,max_LU=100,max_complex_RHS=6000)),
                    costcounts=receipt['costcounts'], auxiliary=receipt.get('auxiliary'),
                    candidates=candidates, correction_retention=_retention(candidates,arrays,truth),
                    anchor=material_metrics(arrays['anchor'],truth['m'],truth['amplitude'],truth['alpha']),
                    top1=None if selected is None else candidates[selected['index']],
                    old_score_top1=None if old is None else candidates[old['index']])
+        if 'j_aux' in arrays and 'anchor_j0' in arrays:
+            if operators is None:
+                operators=npz(data_root/manifest.get('operators_path','operators.npz'))
+            if 'V48' not in operators:
+                raise ValueError('Current mechanism scoring requires existing public V48')
+            row['current_metrics']=current_mechanism_metrics(arrays,truth,operators['V48'])
+            raw_full=next((c for c in candidates if c['label']=='raw_1'),None)
+            row['current_metrics'].update(raw_full_material_NRMSE=None if raw_full is None else raw_full['NRMSE'],
+                raw_full_physical_data_relative_residual=None if raw_full is None else raw_full['relative_residual'],
+                selected_material_NRMSE=None if row['top1']is None else row['top1']['NRMSE'],
+                constitutive_relative_defect=(receipt.get('auxiliary')or{}).get('constitutive_relative_defect'),
+                auxiliary_data_relative_residual=(receipt.get('auxiliary')or{}).get('auxiliary_data_relative_residual'))
         all_best = min(candidates,key=lambda c:c['NRMSE']) if candidates else None
         qualified = [c for c in candidates if c['physical_data_feasible']]
         qualified_best = min(qualified,key=lambda c:c['NRMSE']) if qualified else None
@@ -188,7 +239,7 @@ def score_predictions(seal_path, *, output=None, include_oracle=False):
                    all_bestK_count=len(candidates), qualified_bestK_count=len(qualified),
                    bestK_scope='finite five-point candidate set, not all possible nonlinear roots')
         row['joint_success'] = bool(selected is not None and candidates[selected['index']]['joint_success'] and receipt['accounting_status']=='COMPLETE')
-        row['accounted_within_budget'] = bool(receipt['accounting_status']=='COMPLETE' and receipt['wall_seconds']<=10. and receipt['costcounts'].get('LU',0)<=100 and receipt['costcounts'].get('actual_complex_RHS',0)<=6000)
+        row['accounted_within_budget'] = bool(receipt['accounting_status']=='COMPLETE' and receipt['wall_seconds']<=row['budget']['wall_seconds'] and receipt['costcounts'].get('LU',0)<=row['budget']['max_LU'] and receipt['costcounts'].get('actual_complex_RHS',0)<=row['budget']['max_complex_RHS'])
         if include_oracle and record['obs_id'] not in oracles:
             if operators is None:
                 operators=npz(data_root/manifest.get('operators_path','operators.npz'))
@@ -252,16 +303,16 @@ def validation_gate(scores_path, *, output=None):
             means=[c['NRMSE']for _,c in pairs]
             paired_base=float(np.mean([r['anchor']['NRMSE']for r,_ in pairs]))if pairs else None
             mean=float(np.mean(means))if means else None
-            qualified=sum(c['physical_data_feasible']for _,c in pairs)/len(rows)
+            qualified=None if label=='raw_full' and not pairs else sum(c['physical_data_feasible']for _,c in pairs)/len(rows)
             absolute=None if mean is None else paired_base-mean
             relative=None if mean is None or paired_base<=0 else absolute/paired_base
             item[label]=dict(mean_NRMSE_amplitude=mean,paired_anchor_mean_NRMSE_amplitude=paired_base,
                              absolute_NRMSE_improvement=absolute,relative_mean_NRMSE_improvement=relative,
-                             physical_qualification_rate=qualified,qualification_drop_pp=100*(base_qualified-qualified),
+                             physical_qualification_rate=qualified,qualification_drop_pp=None if qualified is None else 100*(base_qualified-qualified),
                              n_joint_success=sum(c['joint_success']for _,c in pairs),
                              pass_relative5pct=None if relative is None else relative>=.05,
                              pass_absolute_point05=None if absolute is None else absolute>=.05,
-                             pass_qualification_drop5pp=base_qualified-qualified<=.05+1e-12)
+                             pass_qualification_drop5pp=None if qualified is None else base_qualified-qualified<=.05+1e-12)
         measured=[r for r in rows if 'wall_seconds'in r]
         walls=[r['wall_seconds']for r in measured]
         item['costs']=dict(wall_seconds_total=float(sum(walls)),wall_seconds_mean=float(np.mean(walls))if walls else None,
@@ -289,7 +340,7 @@ def validation_gate(scores_path, *, output=None):
     for row in summaries:
         raw,top,cost=row['raw_full'],row['top1'],row['costs']
         gain=top['relative_mean_NRMSE_improvement']
-        lines.append(f'| {row["run"]} | {row["n_selected"]}/{row["n_planned"]} | {f(row["anchor_mean_NRMSE_amplitude"])} | {f(raw["mean_NRMSE_amplitude"])} | {f(top["mean_NRMSE_amplitude"])} | {f(None if gain is None else 100*gain,2)}% | {100*raw["physical_qualification_rate"]:.1f}% | {100*top["physical_qualification_rate"]:.1f}% | {top["qualification_drop_pp"]:.1f}pp | {f(cost["wall_seconds_mean"],3)}/{f(cost["wall_seconds_max"],3)} | {cost["LU"]} / {cost["complex_RHS"]} |')
+        lines.append(f'| {row["run"]} | {row["n_selected"]}/{row["n_planned"]} | {f(row["anchor_mean_NRMSE_amplitude"])} | {f(raw["mean_NRMSE_amplitude"])} | {f(top["mean_NRMSE_amplitude"])} | {f(None if gain is None else 100*gain,2)}% | {f(None if raw["physical_qualification_rate"]is None else 100*raw["physical_qualification_rate"],1)}% | {100*top["physical_qualification_rate"]:.1f}% | {top["qualification_drop_pp"]:.1f}pp | {f(cost["wall_seconds_mean"],3)}/{f(cost["wall_seconds_max"],3)} | {cost["LU"]} / {cost["complex_RHS"]} |')
     lines+=['','Relative gate: corrected top1 must improve paired mean amplitude-normalized NRMSE by at least5%, with physical qualification dropping by at most5 percentage points. JSON also reports the absolute .05 criterion. Raw and corrected qualification rates use the same clean .001 / noisy .003 full-VIE gates.','',
             'This table is validation evidence for the parent scientific decision. It does not authorize dataset expansion. Missing predictions, failures, incomplete cost receipts, and budget overruns remain explicit in the source scores.']
     table.write_text('\n'.join(lines)+'\n')

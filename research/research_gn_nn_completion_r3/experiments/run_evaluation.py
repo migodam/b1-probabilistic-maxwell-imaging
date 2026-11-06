@@ -23,7 +23,8 @@ def read_npz(path):
 
 
 def evaluate(args):
-    from research.research_gn_nn_completion_r3.src.evaluate import evaluate_arm, evaluate_control, save_result
+    batch_started=time.perf_counter();batch_cpu_started=time.process_time();batch_start_unix=time.time()
+    from research.research_gn_nn_completion_r3.src.evaluate import evaluate_arm, evaluate_control, evaluate_full45_baseline, save_result
     from research.research_gn_nn_completion_r3.src.score import write_json
     study = Path(args.study).resolve()
     data = Path(args.data).resolve() if args.data else study/'data'
@@ -32,7 +33,22 @@ def evaluate(args):
     records = [r for r in manifest['records'] if r['split'] in args.splits]
     if args.max_observations is not None:
         records = records[:args.max_observations]
+    if args.obs_id:
+        requested=set(args.obs_id)
+        records=[r for r in records if r['obs_id']in requested]
+    if args.partition_count<1 or args.partition_count>2 or not 0<=args.partition_index<args.partition_count:
+        raise ValueError('Require one or two deterministic partitions and a valid partition index')
+    records=[r for i,r in enumerate(records)if i%args.partition_count==args.partition_index]
     operators = read_npz(data/manifest.get('operators_path', 'operators.npz'))
+    if args.secondary_mode=='fixed_background_softfilter_box_qp':
+        reference=study/'cache/reference_jacobian.npz'
+        if reference.exists() and reference.with_suffix('.json').exists():
+            cached=read_npz(reference)
+            if not np.all(np.asarray(cached['m_ref'])==.1):
+                raise ValueError('Fixed-background reference must be public material .1')
+            operators['J_ref']=cached['J_ref']
+            sidecar=reference.with_suffix('.json')
+            operators['reference_setup_receipt']=dict(path=str(reference),receipt=read(sidecar)if sidecar.exists()else None)
     entries = []
     for run in args.runs + args.controls:
         for record in records:
@@ -55,7 +71,13 @@ def evaluate(args):
             noise = 'clean' if float(record['noise']) == 0 else 'noisy'
             tick = time.perf_counter()
             try:
-                if run in args.controls:
+                if run == 'weakreg45_anchor':
+                    weak_path=study/'anchors'/f'{obs_id}_weakreg1e-5.npz'
+                    if not weak_path.exists() or not weak_path.with_suffix('.json').exists():
+                        entries.append(dict(run=run,obs_id=obs_id,status='NOT_RUN_MISSING_WEAKREG45_ANCHOR'))
+                        continue
+                    receipt,arrays=evaluate_full45_baseline(public,anchor,read_npz(weak_path),read(weak_path.with_suffix('.json')),noise=noise)
+                elif run in args.controls:
                     receipt, arrays = evaluate_control(public, anchor, control=run, noise=noise)
                 else:
                     prediction = read_npz(prediction_path)
@@ -76,13 +98,15 @@ def evaluate(args):
             receipt.update(obs_id=obs_id, parent_id=record['parent_id'], split=record['split'],
                            run=run, prediction_path=str(prediction_path)if run not in args.controls else None,
                            anchor_path=str(study/'anchors'/f'{obs_id}.npz'),
-                           outer_call_seconds=time.perf_counter()-tick)
+                           outer_call_seconds=time.perf_counter()-tick,
+                           execution_partition=dict(index=args.partition_index,count=args.partition_count,BLAS_threads=1))
             save_result(dest, obs_id, receipt, arrays)
             entries.append(dict(run=run,obs_id=obs_id,status=receipt['status'],selection_status=receipt['selection_status'],wall_seconds=receipt['wall_seconds']))
             print(json.dumps(entries[-1]),flush=True)
-    path=study/'evaluation'/f'RUN_MANIFEST_{"_".join(args.splits)}.json'
+    partition_suffix=f'_P{args.partition_index}OF{args.partition_count}'if args.partition_count>1 else''
+    path=study/'evaluation'/f'RUN_MANIFEST_{"_".join(args.splits)}{partition_suffix}_T{time.time_ns()}.json'
     write_json(path,dict(manifest_path=str(manifest_path),runs=args.runs,controls=args.controls,splits=args.splits,
-                         max_observations=args.max_observations,entries=entries,truth_access='NONE'))
+                         max_observations=args.max_observations,partition_index=args.partition_index,partition_count=args.partition_count,BLAS_threads=1,batch_start_unix=batch_start_unix,batch_end_unix=time.time(),batch_wall_seconds=time.perf_counter()-batch_started,batch_cpu_seconds=time.process_time()-batch_cpu_started,batch_cost_scope='full partition process including public input/output IO; excludes already invoiced NN inference and shared GN construction',entries=entries,truth_access='NONE'))
     return path
 
 
@@ -93,10 +117,13 @@ def main():
     parser.add_argument('--data')
     parser.add_argument('--manifest')
     parser.add_argument('--runs',nargs='*',default=[])
-    parser.add_argument('--controls',nargs='*',choices=['continue_trf','weakreg_trf'],default=[])
+    parser.add_argument('--controls',nargs='*',choices=['continue_trf','weakreg_trf','weakreg45_anchor'],default=[])
     parser.add_argument('--splits',nargs='+',default=['val','test'])
     parser.add_argument('--max-observations',type=int)
-    parser.add_argument('--secondary-mode',choices=['full_softfilter_box_qp'])
+    parser.add_argument('--obs-id',nargs='+')
+    parser.add_argument('--partition-count',type=int,default=1,choices=[1,2])
+    parser.add_argument('--partition-index',type=int,default=0,choices=[0,1])
+    parser.add_argument('--secondary-mode',choices=['full_softfilter_box_qp','fixed_background_softfilter_box_qp'])
     parser.add_argument('--seal')
     parser.add_argument('--output')
     parser.add_argument('--oracle',action='store_true')

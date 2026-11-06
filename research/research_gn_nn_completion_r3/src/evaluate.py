@@ -75,7 +75,8 @@ class Evaluation(Search):
         self.phase_end = np.inf
         self._gate_enabled = False
         self._gate_pending = False
-        self.model = CountedModel(normalize_public(public), self)
+        self.public=normalize_public(public)
+        self.model = CountedModel(self.public, self)
         self.model.counts['LU'] += self.preparation['LU']
         self.model.counts['actual_complex_RHS'] += self.preparation['actual_complex_RHS']
         self.model.guard = self.guard
@@ -84,6 +85,7 @@ class Evaluation(Search):
         if self.scale2 <= 0 or not np.isfinite(self.scale2):
             raise ValueError('Nonzero finite observed Y required')
         self.anchor = np.asarray(anchor['m0'] if isinstance(anchor, dict) else anchor, float).reshape(576)
+        self.anchor_current = np.asarray(anchor['j0'],complex).copy() if isinstance(anchor,dict) and 'j0' in anchor else None
         if not np.all(np.isfinite(self.anchor)):
             raise ValueError('Nonfinite anchor')
         self.reg = Regularizer((24, 24), smooth=regularization, tv=regularization)
@@ -118,10 +120,10 @@ class Evaluation(Search):
             self._first_feasible = dict(row)
         return state, row
 
-    def correct(self, m, label, seconds=3., max_nfev=8):
+    def correct(self, m, label, seconds=3., max_nfev=8, stop_at_data_gate=True):
         self._gate_pending = False
         self._first_feasible = None
-        self._gate_enabled = True
+        self._gate_enabled = bool(stop_at_data_gate)
         try:
             best = super().correct(m, label, seconds=seconds, max_nfev=max_nfev)
             return self._first_feasible if self._first_feasible is not None else best
@@ -159,14 +161,28 @@ class Evaluation(Search):
                 out['q_aux_field_relative_defect'] = float(np.linalg.norm(qa - q) / max(np.linalg.norm(q), 1e-300))
             return out
 
-    def softfilter_box_qp(self, p):
+    def softfilter_box_qp(self, p, reference='anchor'):
         """Full fixed-anchor J ridge box-QP; no weak subspace truncation."""
         self.guard()
         pnorm = float(np.linalg.norm(p))
         if pnorm <= 1e-30:
             return self.anchor.copy(), dict(lambda_value=None, status=0, message='Zero displacement: identity proposal, ridge ratio undefined and not evaluated', fixed_reference='GN anchor', no_weak_truncation=True)
-        state, _ = self.evaluate(np.clip(self.anchor, LOWER, UPPER), 'softfilter_reference')
-        J = self.model.jacobian(state) / np.sqrt(self.scale2)
+        reference_cost=None
+        if reference=='fixed_background' and 'J_ref' in self.public:
+            with self.model.operation('CACHED_REFERENCE_J_IMPORT',cached_reference_imports=1):
+                J=np.asarray(self.public['J_ref'],float)/np.sqrt(self.scale2)
+                if J.shape!=(1152,576):
+                    raise ValueError('Public J_ref shape(1152,576) required')
+            reference_cost=dict(charged_within_arm=False,shared_cold_setup_receipt=self.public.get('reference_setup_receipt'),
+                                reference_material=.1,scope='shared public setup separately invoiced, import/rescaling charged here')
+        else:
+            before=dict(self.model.counts);tick=time.perf_counter()
+            material=np.full(576,.1)if reference=='fixed_background'else np.clip(self.anchor,LOWER,UPPER)
+            state, _ = self.evaluate(material,'softfilter_reference')
+            J=self.model.jacobian(state)/np.sqrt(self.scale2)
+            reference_cost=dict(charged_within_arm=True,wall_seconds=time.perf_counter()-tick,
+                                costcounts={k:v-before.get(k,0)for k,v in self.model.counts.items()if v-before.get(k,0)},
+                                reference_material=.1 if reference=='fixed_background'else'GN_anchor')
         epsilon = 1e-4 if self.noise == 'clean' else 1e-3
         lam = (epsilon / pnorm) ** 2
         with self.model.operation('FULL_SOFTFILTER_BOX_QP', box_QP=1):
@@ -180,7 +196,7 @@ class Evaluation(Search):
                            options={'maxiter': 1000, 'ftol': 1e-15, 'gtol': 1e-12})
         return self.anchor + fit.x, dict(lambda_value=lam, epsilon=epsilon, status=int(fit.status),
                                        message=str(fit.message), iterations=int(fit.nit),
-                                       fixed_reference='full analytic J at GN anchor', no_weak_truncation=True)
+                                       fixed_reference='public m_ref=.1'if reference=='fixed_background'else'full analytic J at GN anchor', reference_setup_cost=reference_cost, no_weak_truncation=True)
 
     def run(self, prediction, *, arm, secondary_mode=None, control=None):
         status, reason, auxiliary, filter_receipt = 'COMPLETED', None, None, None
@@ -189,21 +205,34 @@ class Evaluation(Search):
             raise ValueError('Finite m_proposal shape (576,) required')
         self.arrays.update(anchor=self.anchor.copy(), m_proposal_unclipped=original.copy(),
                            m_proposal_clipped=np.clip(original, LOWER, UPPER))
+        if self.anchor_current is not None:
+            self.arrays['anchor_j0'] = self.anchor_current.copy()
+        for key in ('j_aux','q_aux','delta_current'):
+            if key in prediction:
+                value=np.asarray(prediction[key],complex)
+                if value.shape!=(576,12) or not np.all(np.isfinite(value)):
+                    raise ValueError(f'Finite {key} shape (576,12) required')
+                self.arrays[key]=value.copy()
+        if 'j_aux' in self.arrays and 'delta_current' not in self.arrays and self.anchor_current is not None:
+            self.arrays['delta_current']=self.arrays['j_aux']-self.anchor_current
         clipping = dict(bounds=[LOWER, UPPER], proposal_clipped_cells=int(np.count_nonzero(original != np.clip(original, LOWER, UPPER))),
                         proposal_clip_L2=float(np.linalg.norm(original-np.clip(original, LOWER, UPPER))),
                         anchor_clipped_cells=int(np.count_nonzero(self.anchor != np.clip(self.anchor, LOWER, UPPER))))
         try:
             anchor = np.clip(self.anchor, LOWER, UPPER)
             self.add_candidate(anchor, 'anchor', kind='anchor')
-            if control:
-                best = self.correct(anchor, control, seconds=10., max_nfev=1000)
+            if control == 'weakreg45_anchor':
+                self.add_candidate(self.arrays['m_proposal_clipped'], 'raw_1', kind='external_baseline')
+                auxiliary=self.auxiliary(prediction)
+            elif control:
+                best = self.correct(anchor, control, seconds=10., max_nfev=1000, stop_at_data_gate=False)
                 if best is not None:
                     self.add_candidate(best['m'], control, kind='corrected_control', row=best)
             else:
                 auxiliary = self.auxiliary(prediction)
                 proposal = original.copy()
-                if secondary_mode == 'full_softfilter_box_qp':
-                    proposal, filter_receipt = self.softfilter_box_qp(original-self.anchor)
+                if secondary_mode in ('full_softfilter_box_qp','fixed_background_softfilter_box_qp'):
+                    proposal, filter_receipt = self.softfilter_box_qp(original-self.anchor,reference='fixed_background'if secondary_mode=='fixed_background_softfilter_box_qp'else'anchor')
                     self.arrays['secondary_m_proposal'] = proposal
                 # Both raw seeds are verified before correction, so all-best-K
                 # has a complete fixed raw candidate set even if TRF stops.
@@ -228,7 +257,9 @@ class Evaluation(Search):
             status, reason = 'BUDGET_STOP', next(a['reason'] for a in reversed(failures) if a['status']=='BUDGET_STOP')
         feasible = [c for c in self.candidates if c['physical_data_feasible'] and c['kind'] != 'anchor']
         anchor_rows = [c for c in self.candidates if c['kind']=='anchor' and c['physical_data_feasible']]
-        if control:
+        if control == 'weakreg45_anchor':
+            selected=next((c for c in feasible if c['kind']=='external_baseline'),None)
+        elif control:
             eligible = feasible + anchor_rows
             selected = min(eligible, key=lambda c: c['objective']) if eligible else None
         else:
@@ -253,7 +284,7 @@ class Evaluation(Search):
                        online_selection='physical-feasible material closest in L2 to full unclipped NN proposal; otherwise feasible anchor; otherwise FAIL',
                        old_selection='minimum original 0.5 physical relative residual squared + smooth1e-4 + TV1e-4',
                        anchor_construction_accounting='separate common sunk cost; not charged twice to incremental 10s',
-                       control=control)
+                       control=control, control_stopping='strict_TRF_and_remaining_budget_no_physical_gate_stop' if control else None)
         return safe(receipt), self.arrays
 
 
@@ -270,6 +301,39 @@ def evaluate_control(public, anchor, *, control='continue_trf', noise='clean'):
                                preparation_cost=dict(wall_seconds=0., LU=0, actual_complex_RHS=0, complete=True),
                                regularization=1e-5 if control=='weakreg_trf' else 0.)
         return evaluator.run({}, arm=control, control=control)
+
+
+def evaluate_full45_baseline(public, common_anchor, weak_anchor, baseline_receipt, *, noise='clean'):
+    """Verify a separately budgeted full weakreg solve; never continue/rerank it."""
+    with threadpool_limits(limits=1):
+        evaluator=Evaluation(public,common_anchor,noise=noise,
+            preparation_cost=dict(wall_seconds=0.,LU=0,actual_complex_RHS=0,complete=True))
+        prediction=dict(m_proposal=weak_anchor['m0'],j_aux=weak_anchor['j0'],q_aux=weak_anchor['Q0'],
+                        delta_current=np.asarray(weak_anchor['j0'])-np.asarray(common_anchor['j0']))
+        receipt,arrays=evaluator.run(prediction,arm='weakreg45_anchor',control='weakreg45_anchor')
+    verification_wall=receipt['wall_seconds']
+    verification_counts=dict(receipt['costcounts'])
+    construction_wall=baseline_receipt.get('solve_wall_seconds')
+    feature_wall=float(baseline_receipt.get('feature_wall_seconds',0.))
+    construction_counts=baseline_receipt.get('counts')
+    complete=construction_wall is not None and isinstance(construction_counts,dict)
+    combined=dict(verification_counts)
+    for key,value in (construction_counts or {}).items():
+        if isinstance(value,(int,float)):
+            combined[key]=combined.get(key,0)+value
+    cfg=baseline_receipt.get('config',{})
+    receipt.update(cost_scope='SEPARATE_FULL45S_WEAKREG_ANCHOR_PLUS_PAID_VERIFICATION',
+                   control_stopping='actual45s_weakreg_anchor_endpoint_no_extra_continuation_or_fallback',
+                   baseline_construction_receipt=baseline_receipt,
+                   baseline_construction_wall_seconds=construction_wall,
+                   baseline_unused_feature_wall_seconds=feature_wall,
+                   verification_wall_seconds=verification_wall,verification_costcounts=verification_counts,
+                   wall_seconds=(float(construction_wall)if construction_wall is not None else 0.)+feature_wall+verification_wall,
+                   costcounts=combined,accounting_status='COMPLETE'if complete else'HOLD_INCOMPLETE_BASELINE_COSTS',
+                   budget=dict(wall_seconds=float(cfg.get('wall_seconds',45.)),max_LU=int(cfg.get('max_lu',500)),max_complex_RHS=int(cfg.get('max_rhs',30000))),
+                   online_selection='report weakreg45 endpoint if physically qualified, otherwise FAIL; common GN is comparison only')
+    receipt['wall_overshoot_seconds']=max(0.,receipt['wall_seconds']-receipt['budget']['wall_seconds'])
+    return safe(receipt),arrays
 
 
 def save_result(directory, obs_id, receipt, arrays):

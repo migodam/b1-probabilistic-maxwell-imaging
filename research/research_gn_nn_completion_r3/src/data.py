@@ -191,8 +191,8 @@ def expand_training_dataset(output, target_train):
     This entry point is implemented for a later parent decision. It does not
     choose a sample using truth, validation scores, or the current reconstruction.
     """
-    if target_train not in (1024, 2048):
-        raise ValueError("Predesignated training parent targets are 1024 and 2048")
+    if target_train not in (512, 1024, 2048):
+        raise ValueError("Predesignated training parent targets are 512, 1024 and 2048")
     output = Path(output)
     online_path, evaluator_path = output/"manifests/online.json", output/"manifests/evaluation.json"
     online = json.loads(online_path.read_text(encoding="utf-8"))
@@ -291,7 +291,8 @@ def summarize_anchor_receipts(data_root, anchor_root):
             continue
         if path.name.startswith("BATCH_"):
             batches.append(dict(path=str(path), status=receipt.get("status"),
-                                wall_seconds=receipt.get("wall_seconds"), launched=receipt.get("launched")))
+                                wall_seconds=receipt.get("wall_seconds"), launched=receipt.get("launched"),
+                                shared_reference_setup=receipt.get("shared_reference_setup")))
             continue
         if receipt.get("schema") != "gn-nn-r3-anchor-v1":
             continue
@@ -303,9 +304,19 @@ def summarize_anchor_receipts(data_root, anchor_root):
         kind = "weakreg1e-5" if receipt.get("weakreg", 0) else "base"
         if kind == "base": base_ids.add(obs_id)
         backend = receipt.get("backend", "cpu")  # This anchor schema uses the CPU R4 Model.
+        public_source = str(receipt.get("public_path", "")).replace("\\", "/")
+        platform = receipt.get("platform")
+        if platform is None:
+            if public_source.lower().startswith("d:/ai/gn_nn_r3_20261107/"):
+                platform = "Windows_XINAN_i9_14900HX"
+            elif public_source.startswith("/Volumes/") or public_source.startswith("/Users/"):
+                platform = "local_Mac_Apple_Silicon"
+            else:
+                platform = "UNRECORDED"
         status = receipt.get("stop_reason") or receipt.get("status", "UNKNOWN")
-        key = (record["split"], status, backend, kind)
+        key = (record["split"], status, backend, kind, platform)
         group = groups.setdefault(key, dict(split=key[0], status=key[1], backend=key[2], anchor_kind=key[3],
+                                           platform=key[4],
                                            anchors=0, counts=Counter(), feature_counts=Counter(), solve_wall_seconds_sum=0.,
                                            feature_wall_seconds_sum=0., input_io_seconds_sum=0.,
                                            process_task_wall_seconds_sum=0., all_full_24_stage=True))
@@ -333,4 +344,5 @@ def summarize_anchor_receipts(data_root, anchor_root):
                 receipt_files=counted_files, unclassified_or_unreadable=unknown,
                 shared_reference_setup=reference, batch_wall_records=batches,
                 wall_accounting="Per-task sums are work totals; overlapping batch wall records must not be summed into elapsed time",
+                platform_provenance="Explicit receipt platform or recorded public path: project D:/AI/GN_NN_R3_20261107 is XINAN; /Volumes or /Users is local Mac",
                 truth_access="NONE_JSON_PUBLIC_MANIFEST_AND_SCALAR_RECEIPTS_ONLY", physics_operations=0)
