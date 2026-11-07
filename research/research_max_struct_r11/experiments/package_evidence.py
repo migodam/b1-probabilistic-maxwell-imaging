@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def excluded(path):
     return (bool(set(path.parts) & {"__pycache__", "primary_texts", "release_assets", ".git"})
-            or path.suffix in {".pyc", ".zip"}
+            or path.suffix in {".pyc", ".zip", ".tgz", ".tar"}
+            or path.name.endswith(".tar.gz")
             or path.name.startswith("undermind_search_")
             or path.name in {"vector_fulltext_extraction.json", "verified_metadata.json"}
             or path.name in {"PUBLICATION_MANIFEST.json", "PACKAGING_RECEIPT.json", ".gitignore"})
@@ -65,7 +66,7 @@ def main():
                "monetary_cost_reason": "No hardware or tool billing rate supplied"}
     (audit / "PACKAGING_RECEIPT.json").write_text(json.dumps(receipt, indent=2)+"\n")
     ignore = ["# Complete scientific arrays/histories are retained in the same repository R11 release.",
-              "__pycache__/", "*.pyc", "*.zip", "/release_assets/", "/audit/literature/primary_texts/", "/audit/literature/undermind_search_*.json", "/audit/literature/vector_fulltext_extraction.json", "/audit/literature/verified_metadata.json"]
+              "__pycache__/", "*.pyc", "*.zip", "*.tgz", "*.tar", "*.tar.gz", "/release_assets/", "/audit/literature/primary_texts/", "/audit/literature/undermind_search_*.json", "/audit/literature/vector_fulltext_extraction.json", "/audit/literature/verified_metadata.json"]
     for path in files:
         rel = path.relative_to(ROOT)
         raw = path.suffix in {".npz", ".npy"} and rel.parts[0] not in {"data_public", "sealed_truth", "FIGURES"}
