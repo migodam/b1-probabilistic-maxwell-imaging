@@ -19,6 +19,10 @@ def table(p,rows):
   w=csv.DictWriter(f,fieldnames=keys);w.writeheader();w.writerows(rows)
 def sq(x):return float(np.vdot(x,x).real)
 def label(t):return t.get('method_label',t['arm'] if t['material_mode']=='ordinary' else t['material_mode'])
+def update_scope(method):
+ if method in ('sourceCIE','sourceDual','GlobalDual','globalDual'):
+  return 'ordinary CIE current; ordinary scalar CIE material readout'
+ return 'ordinary CIE current; '+method+' Green-denominator material readout only, not both blocks'
 def stopping(r):
  s=r['physical_corrector']['stop']
  if 'ITERATIONS REACHED LIMIT' in s:return 'ACCEPTED_ITERATION_CAP_NOT_CONVERGENCE'
@@ -120,6 +124,7 @@ def main():
  dump(out/'ALL_PUBLIC_SEALS_BEFORE_GT.json',dict(status='FULL_COHORT_SEAL_BARRIER_BEFORE_FIRST_GT_READ',authorization=args.authorization_note,tasks=seals,GT_access_so_far=False,new_forward_RHS=0))
  # First private array read strictly follows the full-cohort public seal barrier.
  truth={};materials={};rows=[];states=[];curves=[];failure=[];model_errors=[];prefix_scores=[]
+ affected_cases={t['public_id'].split('_')[0] for t in tasks if receipts[t['task_id']].get('infrastructure_attempt_metadata')}
  with np.load(ROOT/'delegated/vector/source_basis/BASIS.npz',allow_pickle=False) as z:U=z['right_vectors']
  with np.load(ROOT/'delegated/vector/PUBLIC_V04_FIXED_STATE.npz',allow_pickle=False) as z:ws=z['weights']
  for task in tasks:
@@ -145,10 +150,14 @@ def main():
    corrector_accepted=r['physical_corrector']['accepted'],corrector_requests=r['physical_corrector']['requests'],corrector_stop=r['physical_corrector']['stop'],PG_inf=r['PG_inf'],
    maximum_original_linear_residual=linear_max,physical_linear_qualified=bool(np.isfinite(linear_max) and linear_max<=2e-6),
    auxiliary_capped_stages=sum(s['stop']=='CAP' for s in r['stages']),
-   optimizer_class=stopping(r),linalg_library=r.get('torch_linalg_library','Inherited default, ordinary DEV6'),update_scope='ordinary CIE current; Green material-only')
+   optimizer_class=stopping(r),linalg_library=r.get('torch_linalg_library','Inherited default, ordinary DEV6'),update_scope=update_scope(method))
+  row.update(infrastructure_retry=bool(r.get('infrastructure_attempt_metadata')),infrastructure_affected_object=case in affected_cases,
+   nested_cost_scope='RETRY_ATTEMPT_ONLY_NOT_END_TO_END' if r.get('infrastructure_attempt_metadata') else 'NORMAL_FIRST_ATTEMPT_ARM',
+   end_to_end_equal_cost_qualified=not bool(r.get('infrastructure_attempt_metadata')))
   row.update(host_platform=r.get('host_platform','win32_DEV'),host_dispatch_role=r.get('host_dispatch_role') or 'WINDOWS_CUDA_DEV')
   rows.append(row);materials[group][method]=m.copy()
   classes=[row['optimizer_class']]
+  if r.get('infrastructure_attempt_metadata'):classes.append('INFRASTRUCTURE_QUERY_TIMEOUT_RETRY_PRIOR_PAID_COST_SEPARATE')
   if not row['material_legal']:classes.append('ILLEGAL_MATERIAL')
   if not row['physical_linear_qualified']:classes.append('PHYSICAL_LINEAR_SYSTEM_UNQUALIFIED')
   if not row['sigma_CN99_qualified']:classes.append('CROSSGRID_MISMATCH_OR_OPTIMIZATION_UNRESOLVED' if 'cross' in group else 'MATCHED_FINITE_MODEL_DATA_MISFIT_ABOVE_NOISE_BALL')
@@ -158,7 +167,8 @@ def main():
    cumulative_LU+=event.get('counts_delta',{}).get('physical_LU',0)
    curves.append(dict(task_id=ident,public_id=group,method=method,state_id=event['state_id'],physical_LU=cumulative_LU,
     CPU_seconds=event.get('completion_arm_CPU_seconds'),wall_seconds=event.get('completion_arm_wall_seconds'),Phi3=event['Phi'],
-    sigma_white_squared_norm=event.get('sigma_whitened_squared_norm'),legacy_intermediate_clock_unavailable='completion_arm_CPU_seconds' not in event))
+    sigma_white_squared_norm=event.get('sigma_whitened_squared_norm'),legacy_intermediate_clock_unavailable='completion_arm_CPU_seconds' not in event,
+    cost_scope=row['nested_cost_scope'],end_to_end_equal_cost_qualified=row['end_to_end_equal_cost_qualified']))
   for name in ['physical_initial','stage1_physical','stage2_physical','stage3_physical','physical_accepted80','physical_accepted160','physical_accepted240','physical_accepted320','prediction']:
    f=dest/(name+'.npz')
    if not f.exists():continue
@@ -167,7 +177,8 @@ def main():
   if (dest/'COST_PREFIX_SEAL.json').exists():
    with np.load(dest/'COST_PREFIX_MATERIALS.npz',allow_pickle=False) as z:pm=z['material']
    for item in read(dest/'COST_PREFIX_SEAL.json')['prefixes']:
-    score=dict(task_id=ident,public_id=group,method=method,**item)
+    score=dict(task_id=ident,public_id=group,method=method,**item,cost_scope=row['nested_cost_scope'],
+     end_to_end_equal_cost_qualified=row['end_to_end_equal_cost_qualified'],infrastructure_affected_object=case in affected_cases)
     if item['material_row'] is not None:score.update(material_metrics(pm[item['material_row']],gt['material']))
     prefix_scores.append(score)
  for row in rows:
@@ -184,6 +195,17 @@ def main():
   model_errors.append(dict(public_id=group,clean_grid12_grid18_relative=float(np.sqrt(sq(truth[case]['Y_clean']-fine)/sq(fine))),measurement_sigma_not_inflated=True,new_independent_materials=0))
  for name,data in [('MATERIAL_AND_PHYSICS',rows),('SAVED_STATE_MATERIAL_SCORES',states),('PAID_PHYSICAL_CURVES',curves),('COST_PREFIX_MATERIAL_SCORES',prefix_scores),('FAILURE_CLASSES',failure)]:table(out/(name+'.csv'),data)
  dump(out/'MATERIAL_AND_PHYSICS.json',rows);dump(out/'CROSSGRID_MODEL_ERROR.json',model_errors)
+ if affected_cases:
+  table(out/'MATCHED_SENSITIVITY_EXCLUDING_INFRASTRUCTURE_AFFECTED_OBJECT.csv',[z for z in rows if z['condition']=='matched12' and z['case_id'] not in affected_cases])
+  table(out/'END_TO_END_QUALIFIED_FIXED_COST_PREFIX_SCORES.csv',[z for z in prefix_scores if z['end_to_end_equal_cost_qualified']])
+  dump(out/'INFRASTRUCTURE_RETRY_SENSITIVITY_SCOPE.json',dict(affected_cases=sorted(affected_cases),all8matched_objects_retained_in_main_table=True,
+   sensitivity_excludes_whole_affected_object=True,prior315step_costs_must_be_added_from_original_failed_process_ledger=True,
+   failed_arm_retry_prefixes_are_attempt_only_not_end_to_end=True,no_GT_based_exclusion=True))
+ dump(out/'FIXED_PREFIX_SELECTOR_STATUS.json',dict(
+  status='NOT_REQUESTED_FOR_EXPOSED_DEV' if args.cohort=='dev' and not prefix_scores else 'REQUESTED_PUBLIC_FIXED_PREFIXES_SCORED',
+  fixed_prefix_material_rows=len(prefix_scores),paid_trajectory_rows=len(curves),
+  explanation='DEV did not request frozen fixedCPU/wall/LU prefix selectors; empty prefix table is not a result. Paid trajectories and80/160/240/320states are distinct.' if args.cohort=='dev' and not prefix_scores else
+   'Only already-sealed public minPhi cost-prefix choices are scored; no oracleGT iterate selection'))
  methods=list(dict.fromkeys(label(t) for t in tasks));figures(out/'figures',list(materials),materials,methods,rows,curves)
  dump(out/'SCORING_COST.json',dict(status='COMPLETE',cohort=args.cohort,CPU_seconds=time.process_time(),wall_seconds=time.perf_counter()-ENTRY,
   new_Maxwell_RHS=0,new_inverse_calls=0,GT_access='Old exposed R10 DEV only' if args.cohort=='dev' else 'Fresh root explicitly authorized after50seals',

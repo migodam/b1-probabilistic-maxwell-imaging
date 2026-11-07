@@ -1,0 +1,232 @@
+{
+  "status": "R11_ROOT_FROZEN_EXPOSED_DEVELOPMENT_NO_GT",
+  "physics": {
+    "width": 0.6,
+    "inverse_side": 12,
+    "N_material": 1728,
+    "M_vector_current": 5184,
+    "lambda0": 1,
+    "k": "2pi",
+    "model": "Inherited R1/R8/R9 full vector dyadic CM+RR DDA density J=chi E; finite model only",
+    "material_box": [
+      0,
+      8
+    ],
+    "initial_chi": 0.25,
+    "prior": "R0",
+    "boundary_mixture": "Arithmetic cell-volume contrast; same geometric integration coarse/fine; no sphere-MG substitution",
+    "time_factor": "exp(-i omega t)",
+    "current": "J=chi Q is normalized contrast-polarization/algorithm contrast-current, not raw physical electric current; j_phys=-i omega epsilon_b J; p=epsilon_b VJ, epsilon_b=1 here",
+    "self_density": "s=-1/3+i k^3 V/(6pi)",
+    "polarizability": "alpha=V chi/(1-s chi)=3Vchi/(chi+3-i k^3 Vchi/(2pi))",
+    "continuous_scope": "Finite dyadic CM+RR point DDA only; no continuous-Maxwell accuracy certificate, no original2019 3lambda reproduction",
+    "vector_components_per_illumination": 5184,
+    "full_current_complex_array_entries_all60": 311040,
+    "material_real_DOF_shared_all60": 1728
+  },
+  "acquisition": {
+    "sources": 60,
+    "receiver_positions": 60,
+    "receiver_components": 3,
+    "circle_points_each": 20,
+    "circle_radius": 0.9,
+    "circle_centers": [
+      [
+        0.04,
+        0,
+        -0.02
+      ],
+      [
+        0.02,
+        0,
+        -0.03
+      ],
+      [
+        -0.01,
+        0.02,
+        0
+      ]
+    ],
+    "circle_normals_and_dipole_polarizations": [
+      "z",
+      "x",
+      "y"
+    ],
+    "all_cases_and_grids_identical_acquisition": true
+  },
+  "noise": {
+    "model": "iid circular complex",
+    "expected_relative_Frobenius": 0.03,
+    "public_sigma": "0.03*norm(Yclean,F)/sqrt(180*60)",
+    "convention": "Eabs(n)^2=sigma^2",
+    "no_realization_renormalization": true
+  },
+  "inverse": {
+    "primary_arms": [
+      "sourceCIE",
+      "sourceDual",
+      "GlobalDual",
+      "full",
+      "lagged",
+      "contractedLagged"
+    ],
+    "DPCS_primary": "iid_CN_full_noise_ball99 minimum supported contiguous receiver-SVD prefix",
+    "DPCS_noise_diagnostic": "fixed relative singular threshold0.1 rank/energy only; no extra inversion",
+    "native_MF": [
+      2,
+      3,
+      4
+    ],
+    "cycles": [
+      500,
+      500,
+      500
+    ],
+    "beta_material": [
+      6,
+      3,
+      1
+    ],
+    "beta_current_sourceCIE": [
+      6,
+      3,
+      1
+    ],
+    "beta_current_dual": [
+      6,
+      4,
+      3
+    ],
+    "Aplus_current": "exactly ordinary GlobalDual current; A metric materialonly",
+    "Aplus_sweeps": 2,
+    "Aplus_box_everywhere": [
+      0,
+      8
+    ],
+    "corrector": {
+      "accepted_maxiter": 320,
+      "strict_maxfun": 800,
+      "maxls": 12,
+      "ftol": 1e-12,
+      "gtol": 1e-08,
+      "checkpoints_accepted": [
+        80,
+        160,
+        240,
+        320
+      ],
+      "common_original_Phi": true
+    },
+    "primary_endpoint": "minimum public Phi among paid common corrector states; stage1/2/3 raw joint and physical endpoints all retained",
+    "minimum_iterations_per_stage": 20,
+    "coefficient_delta_RMS_tolerance": 0.001,
+    "stop_formula": "sqrt(mean_source norm(delta_gamma)^2/norm(old_gamma)^2)<.001 after min20; nonzero/zero never stops; min20 is R10 safeguard not paper requirement",
+    "cross_arm_cache": "Only immutable background G/FFT/E/S/SVD and publicY-specific DPCS. Material-dependent LU/current/gradient and optimizer history independent perarm.",
+    "current_comparison_scope": "sourceCIE sourcewise/material beta; sourceDual sourcewise/dual beta; GlobalDual/full/lagged/contractedLagged global/dual beta",
+    "physical_objective_exact": "Phi3=mean_s(||S J_s-Y_s||_2^2/||Y_s||_2^2), no1/2, R0; inherited source normalization, distinct from global Frobenius normalization and iid-common-sigma whitened Gaussian ML"
+  },
+  "representation": {
+    "receiver": "Exact economy receiver SVD; right singular vectors live in complex3N",
+    "Fourier": "Actual projected native IDFT components (I-VrVr*)UF; gamma norm not fieldenergy unless basis orthonormal",
+    "Gin": "Separate leading32 right singular modes of actual same G via bounded matrix-free G*G Lanczos; retained complement explicit, not full spectrum",
+    "material": "N real scalar coordinates never directly projected into3N modes; optional physical lifting delta_m times saved Q is explicitly state/source dependent",
+    "nominal_Fourier_columns_per_illumination": {
+      "2": 192,
+      "3": 648,
+      "4": 1536
+    },
+    "nominal_complex_coefficients_stored_all60": {
+      "2": 11520,
+      "3": 38880,
+      "4": 92160
+    },
+    "actual_independent_APCS_DOF": "Numerical rank of actual (I-VrVr*)UF times60; see RESULTS/vector/representation_rank; full current storage311040 is NOT independent optimization DOF",
+    "numerical_projected_rank_background_certificate": {
+      "2": {
+        "rank": 192,
+        "minimum_projection_residual": 0.053731044195977476,
+        "cutoff": 1.1510792319313623e-12,
+        "scope": "Computed full supported receiver-row space; if no intersection, all retained prefixes also have full projected Fourier column rank at this numerical tolerance"
+      },
+      "3": {
+        "rank": 648,
+        "minimum_projection_residual": 0.023984945010501305,
+        "cutoff": 1.1510792319313623e-12,
+        "scope": "Computed full supported receiver-row space; if no intersection, all retained prefixes also have full projected Fourier column rank at this numerical tolerance"
+      },
+      "4": {
+        "rank": 1536,
+        "minimum_projection_residual": 0.010417985406938887,
+        "cutoff": 1.1510792319313623e-12,
+        "scope": "Computed full supported receiver-row space; if no intersection, all retained prefixes also have full projected Fourier column rank at this numerical tolerance"
+      }
+    }
+  },
+  "execution": {
+    "GPU_processes": 1,
+    "BLAS_threads": 1,
+    "memory_limit_bytes": 2000000000,
+    "actual_physical_APIs": {
+      "cpu": "R9 paid_density_state -> scipy.linalg.lu_factor; lu_solve samefactor trans2 adjoint",
+      "cuda": "sameG torch.linalg.lu_factor_ex(check_errors=False), lu_solve all60, adjoint=True sameLU"
+    },
+    "counter_aliases": {
+      "primal_RHS": "physical_source_RHS synonym, never sum",
+      "adjoint_RHS": "physical_adjoint_RHS synonym, never sum",
+      "physical_LU": "one material system factorization, not one per source",
+      "field_dimension_per_RHS": 5184,
+      "fine_generation_dimension_per_RHS": 17496
+    },
+    "status": "ROOT_AUTHORIZED_R11_DEV",
+    "host_affinity": [
+      12,
+      14
+    ],
+    "remote": "D:/AI/MAX_STRUCT_R10_VECTOR_20261107/research/research_max_struct_r11",
+    "cross_arm_cache": "Immutable background/receiver geometry only; LU/current/gradient/optimizer histories independent"
+  },
+  "contract_utc": "2026-11-06T20:35:59.411800+00:00",
+  "scoring_contract": "configs/vector_scoring_contract.json",
+  "material_design_amendment": "v04 low eps1.5\u21922 before any v04 generation/score for fixed support and clearer high/low task; v02/v09 unchanged",
+  "execution_backend": "cuda-dense",
+  "execution_backend_by_cohort": {
+    "v02_matched12": "Mac",
+    "v09_matched12": "Mac",
+    "v08_matched12": "XINAN_CUDA_retained_dense_FFT",
+    "v04_matched12": "Mac_cpu_dense_FFT",
+    "v02_cross18to12": "Mac",
+    "v09_cross18to12": "Mac"
+  },
+  "r11": {
+    "execution_authorized": true,
+    "authorization": "Root message: DEV v04/v09 five arms, sourceCIE/sourceDual/GlobalDual/full/lagged; first launch ordinary three arms percase",
+    "scope": "EXPOSED_DEVELOPMENT_NO_CONFIRMATION",
+    "basis_path": "research/research_max_struct_r11/delegated/vector/source_basis/BASIS.npz",
+    "projection": "galerkin",
+    "basis_rank": 120,
+    "basis_formula": "orth([Einc,G Einc]), relative thin-SVD threshold1e-10",
+    "basis_completeness": false,
+    "public_root": "research/research_max_struct_r11/delegated/vector/development_observations",
+    "truth_access": false,
+    "material_steps": 8,
+    "full_initial_alpha": "feasible direction GN curvature then actual-full Armijo<=8",
+    "lagged_alpha": "fixed-A R0 exact feasible projected-direction line search alpha[0,1]",
+    "frozen_utc": "2026-11-06T23:18:47.486671+00:00",
+    "additional_authorization": "Root message: contractedLagged is sixth exposed DEV arm, fixed T in z=m/(1+beta*m), same rank120/current/corrector, no MM claim",
+    "development_arms": [
+      "sourceCIE",
+      "sourceDual",
+      "GlobalDual",
+      "full",
+      "lagged",
+      "contractedLagged"
+    ],
+    "contracted_lagged_alpha": "fixed-T R0 exact feasible z-direction quadratic line alpha[0,1], old/ordinary seed under own q_T",
+    "public_linalg_comparison_states": "research/research_max_struct_r11/delegated/vector/PUBLIC_BACKEND_COMPARISON_STATES.npz",
+    "linalg_engineering_timing_amendment": {
+      "authorized_utc": "2026-11-07T00:08:05.745841+00:00",
+      "root_authorization": "Move exactly one3-state x2-library6LU public probe before future DEV6, then reuse selected qualified library for both future DEV6 and confirmation50; old ordinary6 remains default and cross-library CPU does not establish algorithm-only advantage",
+      "scientific_formulas_precision_budgets_unchanged": true
+    }
+  }
+}

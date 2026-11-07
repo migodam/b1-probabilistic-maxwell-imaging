@@ -1,0 +1,103 @@
+--- research/research_max_struct_r8/src/cie_fft.py
++++ research/research_max_struct_r11/src/cie_feedback_current.py
+@@ -1,4 +1,7 @@
+-"""R8 extension: optional legal initial-current projection; all R7 PR/readouts retained."""
++"""R11 isolated known-algorithm control: matrix feedback in both alternating blocks.
++Copied from R8; original PR, metrics, FFT/APCS, line minimization and schedules retained.
++Different inherited current/material betas do not define one common objective.
++"""
+ """Complete matrix-free CIE/Fourier-TSOM integration for frozen R6 arms.
+ 
+ The alternating algorithm is the R5 factorial/R2 global loop. The changed
+@@ -18,6 +21,21 @@
+ from research.research_max_struct_r6.src.fft_tsom_ops import NativeFourierAPCS, DiskPulseToeplitzGreen
+ 
+ 
++def feedback_current_maps(operator,U,green,m,beta,JD,E,GJD,cost):
++    """Fixed-material H, its matched adjoint and affine T; one retained small LU."""
++    operator.cost=cost
++    factor=operator.factor(m,beta)
++    cost['current_feedback_factorizations']+=1
++    def H_action(coefficients):
++        ua=U.apply(coefficients)
++        return beta*operator.solve(factor,ua-m[:,None]*green.apply(ua))
++    def H_adjoint(z):
++        v=operator.solve(factor,z,adjoint=True)
++        return beta*U.adjoint(v-green.adjoint(m[:,None]*v))
++    T=beta*operator.solve(factor,JD-m[:,None]*(E+GJD))
++    return H_action,H_adjoint,T
++
++
+ def run_cie_fft(model,Y,m0,config):
+     """Compatible API plus fft_geometry={coords,radius,k} and arm.
+ 
+@@ -29,13 +47,16 @@
+     """
+     cfg=dict(config); arm=cfg.get('arm','cie_dual')
+     if arm not in ('cie_single','cie_dual','global_dual','a_material','a_plus'): raise ValueError('Unsupported frozen FFT arm')
+-    cfg['current_transform']='scalar';cfg['material_transform']='onehop' if arm in ('a_material','a_plus') else 'scalar'
++    cfg['current_transform']='matrix_feedback_full';cfg['material_transform']='onehop' if arm in ('a_material','a_plus') else 'scalar'
+     cfg.setdefault('sourcewise_cg',arm.startswith('cie_'))
+     cfg['_counter']=Counter()
+     wall,cpu=time.perf_counter(),time.process_time();result=None
+     before=deepcopy(dict(getattr(model,'cost',{})))
+     receipt=dict(status='RUNNING',arm=arm,sourcewise_cg=bool(cfg['sourcewise_cg']),
+-        current_solver='pr',auxiliary_Green='zero-padded finite disk-pulse Toeplitz FFT',
++        current_solver='pr',current_transform='matrix_feedback_full',material_transform='matrix_feedback_full',
++        auxiliary_Green='unchanged zero-padded finite disk-pulse Toeplitz FFT',
++        auxiliary_residual_metric='beta A(m,beta)^-1; saved G19 PGP denominator in both blocks',
++        objective_scope='current beta_j and material beta_m inherited; no common objective claim',
+         Fourier='native coefficients and low-rank DPCS projection; no APCS SVD',
+         physical_backend='unchanged supplied MaxwellModel',
+         prior='unchanged supplied physical-material prior',
+@@ -224,17 +245,11 @@
+             if expired() or iterations >= int(config.get('max_iterations', 10**12)):
+                 status = stage_stop = 'WALL_BUDGET' if expired() else 'ITERATION_BUDGET'
+                 break
+-            # Fixed-m CIE residual transform; Fourier/Green are actions.
+-            p=beta_j/(1+beta_j*m)
+-            def H_action(a):
+-                ua=U.apply(a)
+-                return p[:,None]*(ua-m[:,None]*green.apply(ua))
+-            def H_adjoint(z):
+-                v=p.conj()[:,None]*z
+-                return U.adjoint(v-green.adjoint(m[:,None]*v))
+-            T=p[:,None]*(JD-m[:,None]*(E+GJD))
++            # Fixed-m full feedback metric; the inherited exact quadratic line is unchanged.
++            operator = config['matrix_denominator'];operator.cost=cost
++            H_action,H_adjoint,T = feedback_current_maps(operator,U,green,m,beta_j,JD,E,GJD,cost)
+             D,R=SJD-Y+SU_action(A),T+H_action(A)
+-            cost['scalar_current_operator_builds']+=1
++            cost['matrix_feedback_current_operator_builds']+=1
+             cost['current_objective_evaluations'] += 1
+             data_before = .5*_inner(D,D,Od,cost)
+             state_before = .5*rho*_inner(R,R,Os,cost)
+@@ -295,20 +310,22 @@
+                 cost['source_metric_products'] += 2
+             old_grad, old_direction = grad, direction
+             data_f = .5*_inner(Dafter,Dafter,Od,cost)
++            # Record the actual moving full losses, not inherited onehop/scalar diagnostics.
++            # Reuse a post-material small factor when current/material beta coincide.
++            history_factors={}
+             def state_value(beta, transform):
+                 e = J-m[:, None]*Q
+-                if beta is not None:
+-                    if transform == 'onehop':
+-                        e = blocks.apply(m,beta,e)
+-                    else:
+-                        e = beta*e/(1+beta*m[:,None])
++                if beta not in history_factors:
++                    history_factors[beta]=operator.factor(m,beta)
++                    cost['history_feedback_small_LU']+=1
++                e=beta*operator.solve(history_factors[beta],e)
+                 return .5*rho*_inner(e,e,Os,cost)
+             history.append(dict(stage=stage_index, iteration=it+1, global_iteration=iterations+1,
+                                 beta_current=beta_j, beta_material=beta_m, receiver_rank=receiver_rank,
+                                 **basis_info, coefficient_relative_change_squared=delta,
+                                 data_term=data_f, state_term_current=state_value(beta_j,config['current_transform']),
+                                 state_term_material=state_value(beta_m,config['material_transform']), regularizer=float(reg(m)[0]),
+-                                current_transform=config['current_transform'],material_transform=config['material_transform'],
++                                current_transform='matrix_feedback_full',material_transform='matrix_feedback_full',
+                                 wall=time.perf_counter()-started, sourcewise_cg=sourcewise,
+                                 current_solver=current_solver, PR_plus=np.asarray(pr).tolist(),
+                                 line_alpha=np.asarray(alpha).tolist(), direction_restarted=restarted,

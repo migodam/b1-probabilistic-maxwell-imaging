@@ -1,71 +1,62 @@
-# MAX-STRUCT R11 · 执行中的证据交接
+# MAX-STRUCT R11 · 最终交接
 
-**状态：IN_PROGRESS，按用户要求收尾。48对象288次、16对象80次、8对象配对网格64次均已完成封存评分；新三维50次继续到完整交付。** 此后不设计或启动新算法/实验。R10冻结证据保持；本页不是整轮最终结论。
+**本轮已完成并结束科学运行。** 72个新二维材料、432次比较，以及8个新三维设计、50次比较均已完整封存评分。不同cohort、同对象的跨网格条件不混成一组成功率。依用户要求，此后只交付分析与建议，不启动新算法、新对象、扫参或corrector扩展。R1–R10冻结证据不改写。
 
-## 新完成的跨网格正结果必须保留
+## 首先纠正一句容易误解的话
 
-原G19在matched24与cross48→24中均6/8通过冻结材料标准，CIE/Dual/Global均4/8；完整终点额外救回高对比环和开缝壳。这是明显的材料成像收益，不只是residual变小。另外两个多岛仍有主要形态，只是边界/低相细节未达IoU标准，不能与基线的环严重错解混称“完全失败”。
+**G19确实已经把所展示配对网格组的主要形态恢复出来了，环和开缝壳还有明显超越CIE/Dual的材料收益。** 未过严格IoU标准的多岛也不是“完全没成像”。论文不需要所有case全胜；需要把这些真实正例与48组、三维中的限制一起报告。
 
-与Dual共同CPU界限下两条件仍4对6，但增量对象有交换：matched为环+壳，cross为环+较早的混合多岛；cross壳在Dual较短B内未达到形状标准。完整G19费用比Dual多20.8%/34.7%。8材料×两grid仍是8独立材料，不与48或16组混成一次预注册统计。[完整报告、全部图与费用](CROSSGRID8_REPORT_ZH.md)。
+## Full G19究竟是什么
 
-**名称边界：Full G19是R10继承的实验材料读出，不是标准文献算法，也不是原A+的同义词。** G19指分母中的19维Green投影；Full指完整分母材料导数，完整物理正演仍用原G。三维对应fullGreen使用rank120 source空间，不能称19维。contractedT是另一个只冻结非局部反馈、保留普通CIE收缩的修正。
+它是R10继承的实验材料读出，不是标准文献名称，也不是原A/A+的同义词。固定辅助current时，`e=J−D_m(Einc+GJ)`；普通CIE使用`(I+βD_m)⁻¹e`，G19使用`(I+βD_m−D_mK19)⁻¹e`。19指分母中公开固定的19维Green投影；Full指保留完整材料导数，**不指K19等于完整G**。
 
-## 48对象扩大结果已经完成
+原FFT-TSOM/current容量、576个独立实材料未知量、完整G正演及公共原物理corrector保持。三维对应fullGreen用rank120源空间，不能称G19。主要比较仍是CIE/Dual-CIE，Global-Dual只是隔离global current与材料分母影响的必要消融。[公式解释与方法表](METHODS_AND_ABLATIONS.md)。
 
-CIE/Dual/Global/G19/freezeA/contractedT恢复21/22/23/23/16/23例，平均NRMSE分别.15908/.13827/.13822/.14675/.22593/.13505。Global、G19、contractedT成功集合逐对象完全相同。contractedT修复新桥(.36949→.08307)、梳状体(.48253→.22211)的额外损伤，但两者均未增加冻结成功数，也没有比Dual产生清楚的同成本收益。共同实际CPU前缀下Dual/G19成功22/21、Dual/contractedT22/20。不要只报终点23/48而省略费用。
+## 主要证据
 
-[48对象完整中文判断](CONFIRMATION48_REPORT_ZH.md)、[全部48对象图集](delegated/twod/independent48/plots/PLOT_REPORT.md)。有效科学child共49968.922CPU秒；旧控制中断的完整费用部分未知，保留全部48并另报47对象成本敏感性。CIE→G19/→Dual/→Global三种付费条件策略均23/48，没有分母专属组合收益。
+|独立cohort|CIE|Dual-CIE|Global控制|原Full Green|结论|
+|---|---:|---:|---:|---:|---|
+|二维16材料|4/16|5/16|6/16|7/16|新高对比环是分母专属增量|
+|二维48材料|21/48|22/48|23/48|23/48|后三者成功集合完全相同，未新增Global之外的成功|
+|二维8材料matched|4/8|4/8|4/8|6/8|高对比环、开缝壳额外恢复|
+|同8材料cross48→24|4/8|4/8|4/8|6/8|完整终点两项增量保留；不是新增8材料|
 
-## 另16对象：两块修正的推广反例
+表为原冻结材料精度标准，不能代替连续误差或图像阅读。配对8组的另两个多岛主要形态仍在。与Dual共同实际CPU界限下两grid仍4对6，但cross新增对象变为环与较早混合多岛；壳在Dual较短预算内没有完成同等形状恢复。完整G19 CPU比Dual多20.8%/34.7%。
 
-16新对象×5臂80次已全部GT前封存并评分。CIE/Dual/Global/原Green材料分母/BothBlocks的材料成功为**4/5/6/7/5**。原Green平均NRMSE .14485、实际CPU约CIE的1.269倍；BothBlocks平均.17357、CPU1.310倍。BothBlocks毁掉一个原Green恢复的新高对比环，因此不将旧桥开发正例升级为默认算法。
+48组原G19比Dual多约33.4%有效CPU。contractedT修复新桥/梳状体的额外伤害，桥NRMSE由.36949降至.08307，形态明显改善，即使IoU .6762略低于原.7标准；但总体成功集合仍与Global相同，共同CPU前缀Dual/contractedT为22/20。冻结整个A明显更差；BothBlocks在开发桥上有效，却毁掉16组中的新环，不能升为默认方案。
 
-[16对象完整判断、全部图和成本](CONFIRMATION16_REPORT_ZH.md)。同全波LU视图成功数不变。CIE+Dual、CIE+Both两付费组合均5/16，后者更贵。新补current-only旧三例全失败，支持两块交互的解释，不能支持普遍恢复优势。48主比较与三维合同保持，不因该负结果停机或调参。
+## 真三维已经完成
 
-## 已完成的主要发现
+12³、1728共享实材料未知量、每源5184复矢量current、60外部dipole照明；8设计×5法matched及2同对象×5法cross18→12，共50次。全部预测和400个公开成本前缀经root独立核对后才授权GT。
 
-1. 分母梯度中的强抵消主要含普通CIE已有的β收缩项。10个真实曝光检查点中，β项范数是Green新项的2.288–5.390倍，早期方向相反；不能把抵消全部归咎于Green。
-2. freezeA与保留CIE收缩的contractedT都保住了环，却没有救回开缝壳和桥。固定材料块凸不等于逆问题凸，二者也不是moving分母目标的MM。
-3. 新控制BothBlocks把Green分母真正接入current与material两块，保持原FFT/APCS、PR、β、初值、prior和corrector。历史桥的NRMSE由材料-only Green的.337降到.10088，同时环仍约.105；开缝壳仍约.515。桥已在辅助stage2/3改变路径，不是同起点corrector突然变强。
-4. CIE在桥上约.097，仍略优于BothBlocks；因此这是修复Green对桥的损害，不能写成桥上打败CIE。环的CIE约.423，Green各版本约.10，是保留的开发优势。
-5. 真实同状态current曲率只中等改善，reset方向cos却很低；单一条件数改善不能预测成功。标准resolvent结构给出强Green通道饱和的解释，但尚未建立充分的成功预测规则。
-6. 原物理端点线段和精确face Hessian将失败分开：环/CIE、壳/Green坏点接近box驻点，free Hessian正；桥仍有负曲率和错号乘子，不能统称已收敛。详见理论第14–16节。
-7. 真三维两个旧开发对象×6臂已完成：Green仅轻微改善v04幅度误差且IoU更差，v09全部有高核心衰减。所有臂320步cap，不称收敛或三维优势。见[三维已完成报告](VECTOR_DEV_REPORT_ZH.md)。
-8. 固定吸收型分母8次曝光DEV已完成，K19对K0各1/4恢复，分别仅壳/桥；原环收益丢失。利用耗散Green得current增益上界，仍不保证材料恢复；复CIE/复移位本身已有先例。不继续相位扫描，保留[推导与边界](ABSORPTIVE_DENOMINATOR_DERIVATION.md)及全部失败。
+8 matched平均χ相对L2：CIE .228436、Dual .226079、Global .231274、fullGreen-r120 .227803、contracted .227738。full在5/8对象的χ误差略低于Dual，但总体均值略高，主要形态与普通基线接近，没有复制二维环级别的跃升。2 cross平均分别.464833/.454391/.433562/.467138/.463195。
 
-![全部曝光正反对象](FIGURES/exposed_development/MATERIAL_COMPARISON_3x8.png)
+40个matched终点全部CN99兼容，10个cross均在球外。两例粗/细干净观测差17.68%/3.53%，是实质物理/离散风险；cross图仍有形态，不能说完全没恢复，也不能把共同材料误差全部归给算法。50臂全到320 accepted-step预算，不称充分收敛；没有事后设置三维成功门。
 
-## 已冻结并实际启动的扩大研究
+[三维最终科学判断](VECTOR_CONFIRMATION_REPORT_ZH.md)。完整图集与复现位于delegated/vector；粗网格有限dyadic模型不冒充连续Maxwell精度证书或2019论文原样复现。
 
-|组|独立材料|实际计划反演|硬件与范围|
-|---|---:|---:|---|
-|主二维确认（已完成评分）|48，8拓扑×high/mixed×χ8/12/18|288，6臂|i9 P核，CIE/Dual/Global/fullG19/freezeA/contractedT，480 whole-child CPU与成本曲线|
-|BothBlocks后续确认（已完成）|16，8拓扑×high/mixed|80，5臂|Mac两lane，CIE/Dual/Global/fullG19/BothBlocks；全臂同硬件，不合并Windows原CPU|
-|新三维确认|8个规定设计，4拓扑×high/mixed|40 matched +10 cross-grid|4060与Mac按对象分流，真3分量dyadic，12³全部1728材料未知量，sourceCIE/Dual/Global/fullGreen/contractedLagged|
-|配对网格补充（已完成评分）|8个新独立材料|64，matched24/cross48→24各四臂|CIE/Dual/Global/G19；两条件不是16材料，主288结束后接续同4P核|
+## 公式给出的认识与没有给出的保证
 
-二维两组都在各自新对象生成前冻结；16与48组均已在完整封存后评分。三维生成端已完成8 matched12及2个18→12观测，新确认正在执行；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
+`dw[h]=−A⁻¹D_h[Q+(βI−K)w]`说明分母同时改变残差metric和有效照明，可能旋转材料方向。10个真实开发状态中普通β收缩项大于新增Green项，不能把梯度抵消全部怪给Green。固定A材料块可以凸，却不构成移动目标的MM，更不等于逆问题凸化。
 
-主48在132次完成后发生控制程序故障，四个在途attempt中断、三次恢复准备失败；全部保留，最终288已完成。受影响case0022原中断CPU有未知项，完整费用不能由成功重试CPU代替。48主表与47敏感性均保留，详见[attempt清单](delegated/twod/independent48/CONTROL_ABORT_INVENTORY.json)。配对网格64现已零科学失败完成，576公共选择/128对比较先封存后授权评分；[PLAN_V2](delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md)说明共同projected target与噪声。离线诊断的一次过宽检索误显示该组私有生成metadata的inner字段一行，已披露；线上算法/选择均未使用，未改对象或重抽，不称全流程完美盲态。
+原物理线段及Hessian把错误环/壳的近约束局部极小，与尚有负曲率/错号乘子的桥区分开来。Green能改变进入哪个区域，但目前没有一个仅凭几何名称、Green能量百分比或分母增益界就能可靠预测收益的规则。
 
-三维分母采用公开固定`span(Einc,G Einc)`的rank120投影。top32最大奇异模式对晚期defect传播遗漏很大；source空间也不完整，不能宣称完整G或连续Maxwell精度。full/freezeA/contractedT已完成一次必要的真实3N共享材料导数接线核对，完整反演正在运行。保持FP64、真实LU/RHS与全部失败成本。
+最值得用户继续分析的是已有`Qeff=Q+(βI−K)w`、材料方向/box活动与辅助stage2/3的差异。保留G19条件收益，以Dual作强基线；不要默认继续增rank、引入Two-fold或扩大反馈阶数。本轮没有启动下一轮研究。
 
-## 补充预算与停止诊断
+## 成本与流程边界
 
-同对象Green实际CPU余量下，CIE/Dual的7个公开规则触发corrector重启已完成，新增62.86 CPU秒，成功仍4/5，未消除原Green的7/16增量。部分提前正常结束，不称实际等花费；L-BFGS历史重置也明确保留。首次CN99命中在65个命中状态全部使NRMSE更差；已保存轨迹没有先成功后丢失成功的例子，不能简单用提前停止解释本组失败。以上均为解盲后的诊断，不改主结果。
+全部失败和额外工作收费：主48有四个工程中断及三次零forward准备失败；原中断CPU部分未知，保留48主表与47成本敏感性。三维c17/Dual资源查询超时中断315步，额外320个5184阶LU计入，重试前缀只具attempt内资格，同时保留8主表与7对象敏感性。查询缓存是工程改动，不是科学算法速度。
 
-## 可直接阅读
+配对8组一次离线过宽检索误显示私有生成metadata的一行inner字段；未读GT数组或改变线上算法/选择，仍披露流程偏差，不声称全流程完美盲态。精确同算量、共同预算前缀、完整实际费用分别报告。不同平台/矩阵阶数不混算性能；货币费用没有费率，保持null。
 
-- [执行中的中文综合报告](RESEARCH_REPORT_ZH.md)
-- [全部已完成成本及未完成边界](COST_LEDGER.md)
-- [英文论文工作稿](PAPER_DRAFT.md)
+## 直接阅读
 
-- [公式、证明与边界](THEORY_DERIVATIONS.md)
-- [研究如何根据失败转向](RESEARCH_LOOP.md)
-- [文献与新颖性定位](PRIOR_ART_AND_NOVELTY.md)
-- [真实轨迹图](FIGURES/exposed_development/STAGE_CORRECTOR_TRAJECTORIES.png)
-- [主48对象冻结合同](delegated/twod/INDEPENDENT48_CONTRACT_PROPOSAL.md)（文字提案保留；实际冻结状态以configs中的正式JSON为准）
-- [BothBlocks16冻结合同](delegated/diagnostics/bothblocks_confirmation/FROZEN_CONTRACT.json)
-- [三维正式冻结合同](configs/vector_confirmation_contract.json)
+- [完整中文报告与建议](RESEARCH_REPORT_ZH.md)
+- [48对象完整比较](CONFIRMATION48_REPORT_ZH.md)
+- [16对象正例与反例](CONFIRMATION16_REPORT_ZH.md)
+- [配对网格报告及全图](CROSSGRID8_REPORT_ZH.md)
+- [三维最终报告](VECTOR_CONFIRMATION_REPORT_ZH.md)
+- [数学推导](THEORY_DERIVATIONS.md) · [文献与新颖性](PRIOR_ART_AND_NOVELTY.md)
+- [英文论文草稿](PAPER_DRAFT.md) · [成本账本](COST_LEDGER.md) · [复现](REPRODUCE.md)
 
-16、48及8个配对网格对象已给出上述判断；仅新三维仍待完整封存评分。本轮没有用开发正例替代扩大实验，也不会读取GT调整运行中的算法。最终报告保留全部失败、原物理残差、材料误差、允许CPU/实际费用/物理LU三种比较及其区别。用户已明确本轮完成分析与建议后结束，不自动续开算法迭代。
+论文最适合围绕“材料相关非局部残差metric的条件恢复收益与失败机制”，包含二维真实大幅正例及三维适用边界。证据不支持把它包装成通用凸化或所有维度更快的替代求解器；也不应因没有全胜而抹掉已经取得的成像增量。

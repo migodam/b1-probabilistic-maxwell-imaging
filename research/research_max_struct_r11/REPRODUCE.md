@@ -1,6 +1,6 @@
 # R11 reproduction and accounting entry points
 
-This file distinguishes reading completed evidence from executing an inverse or opening confirmation GT. The main48, independent16 and paired-grid64 cohorts are complete; only the frozen fresh-vector queue remains active at this revision. No command below was run to regenerate science while compiling this document. Existing output directories are immutable: a scientific repeat needs a separate manifest/output directory and the same frozen numerical contract. Do not restart a completed queue or duplicate an active one.
+This file distinguishes reading completed evidence from executing an inverse or opening confirmation GT. The main48, independent16, paired-grid64 and all50 fresh-vector inversions are complete, sealed and scored. No scientific queue remains active for this round. No command below was run to regenerate science while compiling this document. Existing output directories are immutable: a scientific repeat needs a separate manifest/output directory and the same frozen numerical contract. Do not restart a completed queue or duplicate an active one.
 
 ## Existing environment and repository root
 
@@ -26,6 +26,7 @@ These real scripts read local metadata/receipts. They do not retrieve missing re
 ```sh
 "$TASK_PY" research/research_max_struct_r11/experiments/twod_compile_costs.py
 "$TASK_PY" research/research_max_struct_r11/experiments/twod_independent_costs.py
+"$TASK_PY" research/research_max_struct_r11/experiments/vector_compile_costs.py
 "$TASK_PY" research/research_max_struct_r11/experiments/summarize_completed_costs.py
 ```
 
@@ -87,7 +88,7 @@ Real entry points and frozen contracts:
 - `experiments/vector_source_basis.py`, `vector_basis_audit.py`, `vector_derivative_check.py`, `vector_z_derivative_check.py`: saved/public-background preparation and diagnostics; receipts state which were zero physical solve.
 - `experiments/vector_generate_confirmation.py`: generation-only, hard-wired to `configs/vector_confirmation_contract.json` and `vector_confirmation_material_design.json`; existing private/public outputs refuse overwrite. Eight coarse5184 solves and two fine17496 iterative observation generations are distinct.
 - `experiments/vector_run.py`: portable flags `--config`, `--queue`, `--output`, `--max-tasks`, optional `--offset`; these paths are interpreted relative to the R11 study directory.
-- `experiments/vector_remaining_controller.py`: actual finite sequence of dev_denominator6 then confirmation50. It captures each scientific child's Windows GetProcessTimes into PHASE_COSTS; its own PROCESS_COST is only controller CPU. It is already active; do not start another copy.
+- `experiments/vector_remaining_controller.py`: actual finite sequence of dev_denominator6 then confirmation50. It captures each scientific child's Windows GetProcessTimes into PHASE_COSTS; its own PROCESS_COST is only controller CPU. This is the preserved original launch; all scientific processes have now exited. The completed host/attempt record below supersedes its original single-host request label.
 
 The controller's actual phase command shapes are:
 
@@ -114,7 +115,7 @@ Re-running a report is not required to inspect its saved JSON/CSV/PNG/PDF. Scien
 
 `experiments/diagnose_bothblocks16_first_hit.py --phase select` uses only stored public-Phi incumbents, public sigma/Y and the original prior; it seals the first-hit mapping/materials before `--phase score` reads authorized GT. Existing mappings refuse reselection. This is POSTHOC_OFFLINE_DIAGNOSTIC because confirmation GT was already historically exposed, not a new confirmation algorithm or change to the48 contract. CPU prefix timestamps are proxies, not measured rerun early-stop costs. All recorded outcomes and costs are under `delegated/diagnostics/bothblocks_confirmation/first_cn99_hit/`. No new forward, adjoint, threshold scan or optimization is performed.
 
-Vector early DEV-only postseal export/scoring is another producer: `delegated/vector/dev_early_postseal/PROCESS_COST.json` is its own controller; `REMOTE_PACK_COST.json` is a separate remote archive CPU; its external scorer step replaces nested `dev_postseal_scores/SCORING_COST.json` CPU. These costs remain running/null until actual receipts arrive, and cannot authorize fresh vector-confirmation GT access.
+Vector early DEV-only postseal export/scoring is another producer: `delegated/vector/dev_early_postseal/PROCESS_COST.json` is its own controller; `REMOTE_PACK_COST.json` is a separate remote archive CPU; its external scorer step replaces nested `dev_postseal_scores/SCORING_COST.json` CPU. Completed receipts now replace running placeholders; remaining unmeasured fields stay null. This old-DEV record did not authorize fresh vector-confirmation GT access.
 
 
 ## Post-hoc G19-reference CPU budget control
@@ -168,3 +169,9 @@ Local document-target existence is checked by `experiments/check_local_document_
 The final zero-FW saved-state material-column audit is `experiments/diagnose_material_column_energy.py`, frozen by `delegated/diagnostics/material_column_energy/FROZEN_DIAGNOSTIC.json`. It hydrates original production LowRankDenominator methods from saved U/B, uses exact saved state_weights, and compares all10 saved endpoints with the same-state ordinary denominator. Results, all3 ratio quantiles, raw NPZ arrays, bound-distance summaries and external CPU are in that directory. The5880 small-denominator RHS and10 rank19LU are auxiliary, not physical576LU; no GT or solver is called.
 
 Paired-grid8 supplementary control is documented in `delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md` and `TWOD_HANDOFF.md`. The original v1DRAFT remains unchanged. V2 generator `generate_paired_grid8.py --execute` was run once with the existing unresolved-symlink numerical Python:8fine2304LU+8coarse576LU, external CPU/RSS in `GENERATION_V2_EXTERNAL_COST.json`.64 public tasks and17NPZ inputs were uploaded separately; inversions started after original288 scientific terminals and public seals, with the original workers naturally exited. Root must separately authorize scoring after all64 public selections seal. Scorer uses fixed11.9NRMSE, exact fine-defined pure-phase/boundary masks, and cached cleanY model error with0newFW. Root has authorized conditional dispatch only after original288 scientific terminals, public seals, and natural exit of the original workers. Eight materials remain the independent unit across both paired conditions and four methods.
+
+## Completed vector execution and public archives
+
+All50 fresh tasks and400 public cost-prefix choices are complete. `audit/VECTOR50_ROOT_POSTSEAL_AUTHORIZATION.json` records independent root verification before fresh truth scoring. The complete Mac25/CUDA25 execution, failed315-step attempt, unchanged retry, controlled0-forward drain, cached resource queries, postseal scoring and final costs are documented in [vector completed reproduction](delegated/vector/COMPLETED_REPRODUCE.md). The eight matched objects and two repeated cross-grid observations stay separate. No scientific run is required just to inspect these saved outputs.
+
+The same repository R11 release retains large arrays, histories and raw logs omitted from ordinary Git. `audit/PUBLICATION_MANIFEST.json` lists archive names, paths and byte sizes; `audit/PACKAGING_RECEIPT.json` records lossless packaging cost. No SHA verification is performed. Download and extract all parts at the repository root to restore the original research paths; metadata and final reports in Git remain the current publication/cost record.
