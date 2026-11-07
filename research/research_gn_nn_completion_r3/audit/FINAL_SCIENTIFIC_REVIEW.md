@@ -37,7 +37,7 @@ All192primaryTEST anchors meet the physical gate. Consequently a100%feasible sel
 
 ## Fairness and remaining limitations
 
-The voxel and current heads differ in output DOF and fixed dense algebra; only J-full/J-null directly isolate projection. The same backbone/epochs does not imply equal FLOPs. Data costs, training costs, reference setup, warm inference and correction are separated. There is no cold end-to-end GPU speed claim. Failure counters and noninterruptible wall overruns remain; strict-budget success counts are reported in addition to completed endpoints.
+The voxel and current heads differ in output DOF and fixed dense algebra; only J-full/J-null directly isolate projection. The same backbone/epochs does not imply equal FLOPs. NN methods additionally learn from1024supervised mothers; classical TRF lacks that learned prior, so this is not an equal-prior optimizer comparison. Data costs, training costs, reference setup, warm inference and correction are separated. There is no cold end-to-end GPU speed claim. Failure counters and noninterruptible wall overruns remain; strict-budget success counts are reported in addition to completed endpoints.
 
 The weak-reg45 candidate archive includes common GN for offline comparison; its online selection does not use that candidate. Its offline best@K must not be interpreted as a free cold-start multistart result. Source and report explicitly disclose this distinction.
 

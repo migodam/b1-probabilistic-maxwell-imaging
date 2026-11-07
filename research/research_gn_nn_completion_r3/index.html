@@ -13,8 +13,11 @@ const doc=new URLSearchParams(location.search).get("doc")||"RESEARCH_REPORT_ZH.m
 document.getElementById("raw").href=root+doc;
 const esc=x=>x.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 fetch(doc).then(r=>r.text()).then(text=>{
- const maths=[];text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const k="GGERRORMATH"+maths.length+"TOKEN";maths.push('<div class="math">$$'+esc(m)+'$$</div>');return "\n\n"+k+"\n\n";});
- let html=marked.parse(text);maths.forEach((m,i)=>html=html.replace("GGERRORMATH"+i+"TOKEN",()=>m));
+ const codes=[];text=text.replace(/```[\s\S]*?```|`[^`\n]+`/g,c=>{const k="GNNCODE"+codes.length+"TOKEN";codes.push(c);return k;});
+ const maths=[];text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const k="GNNMATH"+maths.length+"TOKEN";maths.push('<div class="math">$$'+esc(m)+'$$</div>');return "\n\n"+k+"\n\n";});
+ text=text.replace(/(^|[^\\])\$([^\n$]+)\$/g,(_,prefix,m)=>{const k="GNNMATH"+maths.length+"TOKEN";maths.push('<span>$'+esc(m)+'$</span>');return prefix+k;});
+ codes.forEach((c,i)=>text=text.replace("GNNCODE"+i+"TOKEN",()=>c));
+ let html=marked.parse(text);maths.forEach((m,i)=>html=html.replace("GNNMATH"+i+"TOKEN",()=>m));
  const a=document.getElementById("report");a.innerHTML=html;
  const base=new URL(doc,location.href);
  a.querySelectorAll("img[src],a[href]").forEach(el=>{const attr=el.tagName==="IMG"?"src":"href",v=el.getAttribute(attr);if(!/^(https?:|#|mailto:)/.test(v)){const target=new URL(v,base);if(el.tagName==="A"&&target.pathname.endsWith(".md"))el.href=location.pathname+"?doc="+encodeURIComponent(target.pathname.split("/research_gn_nn_completion_r3/")[1]||v);else el.setAttribute(attr,target.href);}});
