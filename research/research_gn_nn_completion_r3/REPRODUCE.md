@@ -2,6 +2,8 @@
 
 Use an existing NumPy/SciPy/Pillow/Torch environment. Keep BLAS single-threaded. The frozen B1 physics sources are dependencies; FAEMIS linear-scattering measurements are not interchangeable with this dataset.
 
+Activate that environment first and set `export PYTHON=python3`. Original execution used `Gaussian/.venv_nn/bin/python`; required packages and minimum versions are in `requirements.txt`. Downloaded archives retain a common `research/` layout. Enter `research/research_gn_nn_completion_r3/` before running the commands below.
+
 From this study directory, in a fresh reproduction copy:
 
 ```sh

@@ -1,5 +1,7 @@
 # Final data and anchor contract
 
+**Expansion addendum (before TEST scoring):** the tables and848-observation count below describe the initial256-parent design. After the declared VAL gate,768new TRAIN parents were appended, preserving all existing arrays and splits. The delivered total is1024TRAIN parents/2048TRAIN observations, plus128VAL,192TEST and16DEV observations:2384observations overall. The additional768truth states cost768LU/9216source RHS; the independent TEST design did not change. See `GENERATION_EXPAND_TRAIN_0256_TO_1024_RECEIPT.json` and `EXPANSION_DECISION.json`.
+
 The final generation is `data/GENERATION_RECEIPT.json`. The first generation
 used every even test index for stress, which inadvertently selected only two
 families. Before inspecting any reconstruction truth, the design was changed to

@@ -31,7 +31,9 @@ def main():
             obs=r['obs_id']
             with np.load(data/r['truth_path'])as z:gt=z['m'].reshape(24,24)
             with np.load(study/'anchors'/f'{obs}.npz')as z:gn=z['m0'].reshape(24,24)
-            panels=[gt,gn];captions=['','']
+            base=rows.get((runs[2],obs),{})
+            anchor=next((c for c in base.get('candidates',[])if c['kind']=='anchor'),None)
+            panels=[gt,gn];captions=['',''if anchor is None else f"N {anchor['NRMSE']:.3f} | IoU {anchor['IoU_Otsu']:.2f}\nr {anchor['relative_residual']:.1e}"]
             for run in runs:
                 metric=rows.get((run,obs),{}).get('top1')
                 path=study/'evaluation'/run/f'{obs}.npz'
@@ -40,7 +42,7 @@ def main():
                     with np.load(path)as z:
                         if 'top1'in z:arr=z['top1'].reshape(24,24)
                 panels.append(arr)
-                captions.append('NOT RUN / FAIL'if not metric else f"N {metric['NRMSE']:.3f} | IoU {metric['IoU_Otsu']:.2f}")
+                captions.append('NOT RUN / FAIL'if not metric else f"N {metric['NRMSE']:.3f} | IoU {metric['IoU_Otsu']:.2f}\nr {metric['relative_residual']:.1e}")
             for j,(arr,caption)in enumerate(zip(panels,captions)):
                 ax=axes[i,j];ax.set_xticks([]);ax.set_yticks([])
                 if arr is not None:
@@ -82,5 +84,24 @@ def main():
     for ax in axes:ax.set_yscale('log');ax.set_ylabel('Material NRMSE / amplitude')
     axes[0].set_xlabel('Recorded anchor + post seconds (mixed hosts; training separate)');axes[1].set_xlabel('Anchor + post LU (weak-reg: own anchor)');axes[2].set(xlabel='Full VIE relative data residual',xscale='log')
     axes[0].legend(fontsize=6);fig.savefig(a.output/'cost_quality_physical.png',dpi=175);plt.close(fig)
+    fig,axes=plt.subplots(1,2,figsize=(13,4.6),layout='constrained')
+    colors=plt.get_cmap('tab10')
+    for i,arm in enumerate(ARMS):
+        for j,seed in enumerate((7,17,27)):
+            directory=study/'models/confirm1024'/f'{arm}_seed{seed}'
+            hist=json.loads((directory/'history.json').read_text())
+            summary=json.loads((directory/'summary.json').read_text())
+            epochs=np.array([h['epoch']for h in hist])
+            vals=[h['val']['material_amplitude_nrmse']for h in hist]
+            seconds=np.cumsum([h['seconds']for h in hist])
+            for ax,x in zip(axes,(32*epochs,seconds)):
+                ax.plot(x,vals,color=colors(i),ls=('-', '--', ':')[j],alpha=.8,
+                        label=LABELS[i]if j==0 else None)
+                b=summary['best_epoch']-1
+                ax.scatter([x[b]],[vals[b]],color=colors(i),s=16)
+    for ax in axes:ax.set(yscale='log',ylabel='VAL raw material NRMSE / amplitude');ax.legend(fontsize=7)
+    axes[0].set_xlabel('Optimizer updates (32 per epoch)');axes[1].set_xlabel('Cumulative measured epoch seconds; setup separate')
+    fig.suptitle('Frozen training budget: seeds7 /17 /27 solid / dashed / dotted; dots are selected checkpoints',fontsize=11)
+    fig.savefig(a.output/'training_curves.png',dpi=170);plt.close(fig)
 
 if __name__=='__main__':main()

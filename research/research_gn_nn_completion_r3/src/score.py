@@ -253,7 +253,10 @@ def score_predictions(seal_path, *, output=None, include_oracle=False, study_ove
                 raise ValueError('Current mechanism scoring requires existing public V48')
             row['current_metrics']=current_mechanism_metrics(arrays,truth,operators['V48'])
             raw_full=next((c for c in candidates if c['label']=='raw_1'),None)
+            original_readout=material_metrics(arrays['m_proposal_clipped'],truth['m'],truth['amplitude'],truth['alpha'])
             row['current_metrics'].update(raw_full_material_NRMSE=None if raw_full is None else raw_full['NRMSE'],
+                unfiltered_current_readout_NRMSE=original_readout['NRMSE'],
+                raw_full_stage='after_optional_material_softfilter'if receipt.get('secondary_filter')else'original_current_readout',
                 raw_full_physical_data_relative_residual=None if raw_full is None else raw_full['relative_residual'],
                 selected_material_NRMSE=None if row['top1']is None else row['top1']['NRMSE'],
                 constitutive_relative_defect=(receipt.get('auxiliary')or{}).get('constitutive_relative_defect'),

@@ -90,9 +90,9 @@ def make_plots(scores_path, *, study=None, output=None, replay_frozen=False):
         selected=[r for r in group if r.get('top1')]
         axes[2].scatter([r['top1']['relative_residual']for r in selected],[r['top1']['NRMSE']for r in selected],color=color,s=15,alpha=.65)
     axes[0].axvline(10,color='k',ls='--',lw=.8);axes[0].axhline(100,color='k',ls='--',lw=.8)
-    axes[0].set(xlabel='Incremental total wall seconds',ylabel='Charged LU count')
+    axes[0].set(xlabel='Recorded seconds (weakreg45 includes its own anchor)',ylabel='Charged LU count')
     axes[1].axvline(6000,color='k',ls='--',lw=.8);axes[1].axhline(10,color='k',ls='--',lw=.8)
-    axes[1].set(xlabel='Charged complex RHS',ylabel='Incremental total wall seconds')
+    axes[1].set(xlabel='Charged complex RHS',ylabel='Recorded method seconds; cost scopes differ')
     axes[2].axhline(.15,color='k',ls='--',lw=.8);axes[2].axvline(.001,color='gray',ls='--',lw=.8);axes[2].axvline(.003,color='k',ls=':',lw=.8)
     axes[2].set(xlabel='Full-VIE physical data relative residual',ylabel='Material NRMSE / GT amplitude',xscale='log')
     if runs:axes[0].legend(fontsize=7)

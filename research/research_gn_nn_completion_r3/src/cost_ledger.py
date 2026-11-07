@@ -26,7 +26,20 @@ def main():
         d=read(f)
         add('failed_anchor_initial_attempt',f,d,d.get('failed_wall_seconds'),scope='additional_failed_execution_operation_counts_unknown',status='FAILED_COUNTS_UNKNOWN')
     for f in sorted((s/'models').glob('**/summary.json')):
-        d=read(f);add('NN_training',f,d,d.get('training_seconds'),scope='actual_unique_training_MPS_LU_RHS_not_applicable')
+        d=read(f);add('NN_training_epochs',f,d,d.get('training_seconds'),scope='actual_unique_training_epochs_MPS_LU_RHS_not_applicable')
+        cfg=d.get('config',{})
+        prep=(d.get('feature_stats_seconds',0.)+d.get('operator_setup_seconds',0.)+
+              sum(x.get('load_seconds',0.)for x in cfg.get('supervised_cpu_cache',{}).values()))
+        add('NN_training_preparation',f,d,prep,scope='actual_stats_operator_and_supervised_cache_preparation')
+    f=s/'audit/CONFIRMATION_TRAINING_PROGRESS.json'
+    if f.exists():
+        for d in read(f):
+            add('NN_training_process_elapsed',f,d,d['training_wall_seconds'],
+                scope='aggregate_includes_training_and_preparation_do_not_double_count')
+            rows[-1]['id']+='Model:'+d['run']
+            add('NN_prediction_process_elapsed',f,d,d['prediction_wall_seconds'],
+                scope='aggregate_includes_setup_inference_and_IO_do_not_double_count')
+            rows[-1]['id']+='Model:'+d['run']
     for f in sorted((s/'predictions').glob('*/inference_setup.json')):
         d=read(f);reused=(f.parent/'REUSED_PROPOSALS.json').exists()or'_filter_'in f.parent.name
         add('NN_inference_cold_setup',f,d,d.get('checkpoint_and_operator_setup_seconds'),scope='reused_source_setup_no_new_execution_do_not_double_count'if reused else'shared_once_per_run_not_in_warm_arm_time')

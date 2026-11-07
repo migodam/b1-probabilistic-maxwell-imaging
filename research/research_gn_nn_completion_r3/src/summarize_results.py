@@ -18,12 +18,12 @@ def metric(row, candidate, field):
     return obj.get(field) if obj else None
 
 
-def summarize(scores, by_amplitude=False):
+def summarize(scores, by_amplitude=False, by_family=False):
     grouped = defaultdict(list)
-    names = ('run', 'level', 'distribution', 'noise') + (('amplitude',) if by_amplitude else ())
+    names = ('run', 'level', 'distribution', 'noise') + (('amplitude',) if by_amplitude else ()) + (('family',)if by_family else())
     for row in scores['rows']:
         key = (row['run'], row.get('level', 'low'), row.get('distribution', 'ID'), row['noise'])
-        grouped[key + ((row['amplitude'],) if by_amplitude else ())].append(row)
+        grouped[key + ((row['amplitude'],) if by_amplitude else ()) + ((row['family'],)if by_family else())].append(row)
     summaries = []
     for key, rows in grouped.items():
         result = dict(zip(names, key))
@@ -36,6 +36,8 @@ def summarize(scores, by_amplitude=False):
                       n_corrected_selected=sum(r['top1'].get('kind')=='corrected'for r in selected),
                       mean_selected_RMS_displacement=mean([r.get('selected_RMS_displacement_from_anchor')for r in selected]),
                       n_within_incremental_budget=sum(r.get('accounted_within_budget', False) for r in rows),
+                      n_joint_success_strictly_within_recorded_budget=sum(r.get('joint_success',False)and r.get('accounted_within_budget',False)for r in rows),
+                      max_recorded_wall_overshoot_seconds=max([max(0.,r.get('wall_seconds',0.)-r.get('budget',{}).get('wall_seconds',10.))for r in rows],default=0.),
                       n_not_run=sum(r.get('status') == 'NOT_RUN' for r in rows),
                       physical_qualification_rate=len(selected)/len(rows),
                       joint_success_rate=sum(r.get('joint_success', False) for r in rows)/len(rows),
@@ -143,6 +145,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     summaries = summarize(scores)
     amplitude_summary = summarize(scores, by_amplitude=True)
+    family_summary = summarize(scores, by_family=True)
     comparisons = paired_comparisons(scores)
     flat = []
     for row in scores['rows']:
@@ -160,9 +163,10 @@ def main():
     write_csv(args.output/'RESULTS_BY_CASE.csv', flat)
     write_csv(args.output/'COHORT_SUMMARY.csv', summaries)
     write_csv(args.output/'AMPLITUDE_SUMMARY.csv', amplitude_summary)
+    write_csv(args.output/'FAMILY_SUMMARY.csv', family_summary)
     write_csv(args.output/'PAIRED_PARENT_COMPARISONS.csv', comparisons)
     result = dict(source_scores=str(args.scores.resolve()),
-                  state='MEASURED_OFFLINE_AFTER_SEAL', cohort_summary=summaries, amplitude_summary=amplitude_summary,
+                  state='MEASURED_OFFLINE_AFTER_SEAL', cohort_summary=summaries, amplitude_summary=amplitude_summary, family_summary=family_summary,
                   paired_parent_comparisons=comparisons,
                   oracle_rows=scores.get('oracle_rows', []),
                   interpretation='Top1 is frozen online selection. Best@K and current oracle use GT offline. Available-top1 means must be read with selection and joint success rates.')
