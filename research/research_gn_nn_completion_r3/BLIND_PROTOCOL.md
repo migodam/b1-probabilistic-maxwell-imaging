@@ -39,3 +39,7 @@
 ## 尚未获得的结论
 
 本协议不保证 NN 有收益、接收零空间训练更好、确认集唯一恢复、或存在可学习的低维材料流形。完整接收零空间是辅助电流空间；经过共享实材料读出后必须重新验收非线性 Maxwell 数据。
+# Transport and archive access clarification
+
+The blind boundary is the numerical information flow into training selection, public inference and offline TEST scoring; it is not an operating-system access-control claim. Generation necessarily creates the test truth files. After the inputs and GN anchors were frozen, the release packager copied their raw file bytes into an archive while the last confirmation jobs were still running. It does not load NPZ arrays, compute GT metrics, rank candidates, or give truth to a solver. Numerical TEST inspection/scoring remains deferred until both the main and secondary prediction cohorts are sealed. Receipt wording such as “GT opened after sealing” refers to this numerical evaluation/disclosure boundary, not to absence of every backup or file-copy operation.
+

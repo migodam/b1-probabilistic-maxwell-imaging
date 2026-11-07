@@ -12,6 +12,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--part-bytes', type=int, default=1_300_000_000)
+    parser.add_argument('--groups', nargs='+', choices=['source-and-reports','data-and-anchors','trained-models','predictions-and-evaluation'],
+                        help='Package only closed groups, preserving other entries in the release inventory')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     files = [p for p in sorted(STUDY.rglob('*')) if p.is_file()
@@ -29,13 +31,19 @@ def main():
         group = 'source-and-reports'
         if rel and rel.parts[0] in ('data', 'anchors', 'cache'):
             group = 'data-and-anchors'
+            if rel.parts[:2]==('data','manifests'):
+                group='source-and-reports'
         elif rel and (rel.parts[0] == 'models' or p.suffix == '.pt'):
             group = 'trained-models'
         elif rel and rel.parts[0] in ('predictions', 'evaluation'):
             group = 'predictions-and-evaluation'
         groups[group].append(p)
-    inventory = []
+    selected=set(args.groups or groups)
+    previous=args.output/'RELEASE_MANIFEST.json'
+    inventory=([x for x in json.loads(previous.read_text())['artifacts']if x['group']not in selected]
+               if previous.exists()else[])
     for name, paths in groups.items():
+        if name not in selected:continue
         parts, chunk, size = [], [], 0
         for path in paths:
             n = path.stat().st_size
@@ -54,6 +62,7 @@ def main():
             inventory.append(dict(file=target.name, bytes=target.stat().st_size,
                                   files=len(part), group=name))
     manifest = dict(study=str(STUDY.relative_to(REPO)), artifacts=inventory,
+                    packaging_status='COMPLETE'if {x['group']for x in inventory}==set(groups)else'PARTIAL_CLOSED_GROUPS',
                     layout='Extract every part into the same directory, preserving research/ paths.',
                     scope='Saved material arrays, model weights, candidates, costs, code and direct frozen physics dependencies. No recomputation or hash checks.',
                     geometry='Use included data/operators.npz for re-generation; platform fonts may differ, so saved material arrays are authoritative.')

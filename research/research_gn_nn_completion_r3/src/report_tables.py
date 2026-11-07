@@ -32,7 +32,7 @@ def main():
             raw=[next((c for c in r.get('candidates',[])if c['label']=='raw_1'),{})for r in rr]
             value=lambda key:avg((r.get(key)or{}).get('NRMSE')for r in rr)
             lines.append(f"| {name} | {len(top)}/{len(rr)} | {sum(r.get('joint_success',False)for r in rr)}/{len(rr)} | {f(avg(c['NRMSE']for c in top))} | {f(avg(c['IoU_Otsu']for c in top),3)} | {f(avg(c.get('NRMSE')for c in raw))} | {f(value('qualified_bestK_OFFLINE'))} | {f(value('old_score_top1'))} | {f(avg(r.get('wall_seconds')for r in rr),3)} |")
-        lines+=['','独立弱正则TRF的秒数包含自己的45秒上限求解及验收，其余列为共享GN输入之后的增量费用，不能把两者混作同一冷启动延迟。','']
+        lines+=['','独立弱正则TRF的秒数包含自己的45秒上限求解及验收，其余列为共享GN输入之后的增量费用，不能把两者混作同一冷启动延迟。弱正则行的best@K包含用于比较的公共GN数组，仅为离线参考池，不代表该冷启动方法实际获得了一个免费GN候选；其在线top1只取自己的端点。','']
     lines+=['## 三种训练种子','','按每个种子完整报告；没有按TEST选择最优种子。每格为clean/noisy平均NRMSE，均为64个母体；联合成功另见结构化表。','','| 方法 | seed7 | seed17 | seed27 |','|---|---:|---:|---:|']
     for arm in ARMS:
         vals=[]

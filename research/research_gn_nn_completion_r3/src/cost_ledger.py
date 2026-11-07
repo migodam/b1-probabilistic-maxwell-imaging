@@ -25,8 +25,9 @@ def main():
     for f in sorted((s/'audit').glob('ANCHOR_FAILURE_INITIAL*.json')):
         d=read(f)
         add('failed_anchor_initial_attempt',f,d,d.get('failed_wall_seconds'),scope='additional_failed_execution_operation_counts_unknown',status='FAILED_COUNTS_UNKNOWN')
-    for f in sorted((s/'models').glob('**/summary.json')):
-        d=read(f);add('NN_training_epochs',f,d,d.get('training_seconds'),scope='actual_unique_training_epochs_MPS_LU_RHS_not_applicable')
+    training_files=sorted((s/'models').glob('**/summary.json'))+sorted((s/'audit/dev_models').glob('*/summary.json'))+sorted((s/'audit/dev_zerohead_models').glob('*/summary.json'))
+    for f in training_files:
+        d=read(f);add('NN_DEV_training_epochs'if 'audit' in f.relative_to(s).parts else'NN_training_epochs',f,d,d.get('training_seconds'),scope='actual_unique_training_epochs_MPS_LU_RHS_not_applicable')
         cfg=d.get('config',{})
         prep=(d.get('feature_stats_seconds',0.)+d.get('operator_setup_seconds',0.)+
               sum(x.get('load_seconds',0.)for x in cfg.get('supervised_cpu_cache',{}).values()))
@@ -54,6 +55,10 @@ def main():
     f=s/'cache/reference_jacobian.json'
     if f.exists():
         d=read(f);add('local_shared_reference',f,d,d.get('wall_seconds'),d.get('counts'))
+    for name in ['READOUT_GEOMETRY.json','READOUT_GEOMETRY_FIRST_TRAIN_PUBLIC.json','RADIATIVE_READOUT_CONDITION.json']:
+        f=s/'audit'/name
+        if f.exists():
+            d=read(f);add('public_readout_geometry_diagnostic',f,d,d.get('wall_seconds'),d.get('counts'),scope='offline_public_operator_analysis_not_online_cost')
     # Oracle costs are offline diagnostics, never an online inference advantage.
     seen_oracles=set()
     for f in [s/'evaluation/DEV_INTEGRATION_SCORES.json',
