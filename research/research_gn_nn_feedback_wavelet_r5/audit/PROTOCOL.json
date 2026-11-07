@@ -1,0 +1,85 @@
+{
+  "study": "GN-NN R5 coupled-loss closed-loop CNN and complete wavelet learning",
+  "created_utc": "2026-11-07T19:08:27.281897+00:00",
+  "source_base": "24ab7e85d750a477ab337e03cdb1a77d5c9ff2c3",
+  "scope": "DEVELOPMENT ONLY; existing R4 TRAIN128 subset / VAL78; old TEST excluded; new TEST NOT_RUN",
+  "selected_train": "same128 balanced TRAIN mothers declared in R4 optional-FT contract, all clean/noisy pairs",
+  "seed": 7,
+  "epochs_max": 20,
+  "patience": 8,
+  "batch": 8,
+  "AdamW_lr": 0.001,
+  "weight_decay": 0.0001,
+  "train_depths": [
+    2,
+    4,
+    6
+  ],
+  "VAL_depth": 4,
+  "loss": {
+    "material_MSE_scale": 0.4,
+    "prior_MSE_weight": 0.5,
+    "actual_Maxwell_field_hinge": 100,
+    "constitutive": 0.01,
+    "fixedpoint_tail": 0.01,
+    "clean_tolerance": 0.001,
+    "noisy_tolerance": 0.003
+  },
+  "arms": [
+    "pixel_closed_coupled",
+    "haar_closed_coupled",
+    "db2_closed_coupled",
+    "haar_closed_no_fullfield",
+    "haar_free_coupled"
+  ],
+  "param_counts": {
+    "pixel": {
+      "total": 23818,
+      "prior_network": 22649,
+      "metric_network": 1169
+    },
+    "haar": {
+      "total": 23910,
+      "prior_network": 19971,
+      "metric_network": 3939
+    },
+    "db2": {
+      "total": 23910,
+      "prior_network": 19971,
+      "metric_network": 3939
+    }
+  },
+  "priors": "CNN full576 conditional prior; trained from scratch with GN input",
+  "metric": "CNN P=W.T diag(1+.5tanh(raw)) W; gains .5..1.5; all coefficients",
+  "current_step": "fixed public-anchor spectral bound, percase actual Armijo initial+6halvings, rejected kept/charged; no inverse inside iterations",
+  "wavelets": {
+    "boundary": "periodic",
+    "levels": 2,
+    "sizes": [
+      24,
+      12,
+      6
+    ],
+    "bands": 7,
+    "coefficient_count": 576,
+    "discarded": 0
+  },
+  "compute": "MPS float32 CNN/G products; unchanged R4 complex128/float64 full-wave loss and exact real-material VJP on CPU BLAS1; no remote GPU allocation",
+  "model_config": "orchestrator unchanged; named DeepSeek profiles unavailable in local config; explicit native Sol workers for source extraction and known implementation",
+  "evaluation": "TRAIN for updates, VAL for checkpoint/DEVELOPMENT; no claim fresh independent TEST; prospective original-data qualification and material metrics separate",
+  "claims": "conditional fixed-energy descent and local derivative under assumptions; no global fixedpoint/GT guarantee; no novelty certification",
+  "actual_initial_request": {
+    "recorded_utc": "2026-11-07T19:09:49.205801+00:00",
+    "epochs": 12,
+    "patience": 6,
+    "arms": [
+      "pixel_closed_coupled",
+      "haar_closed_coupled",
+      "db2_closed_coupled",
+      "haar_closed_no_fullfield",
+      "haar_free_coupled"
+    ],
+    "cohort": "128 TRAIN mothers,78 VAL, no TEST",
+    "decision_basis": "prospective finite development run after actual TRAIN wiring; no VAL metrics observed for this new study"
+  }
+}
