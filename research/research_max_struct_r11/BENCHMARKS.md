@@ -1,12 +1,14 @@
 # R11 数据、物理与成本合同
 
-状态：实验正在执行。此文件记录已经冻结且实际启动的研究，不把计划任务数写成完成数。旧R10证据、代码和结果不修改。正式结果只以各组全体terminal封存后的评分为准。
+状态：所有冻结科学任务已完成、封存并评分。此文件保留原合同；不事后调整阈值或材料集合。旧R10证据、代码和结果不修改。
 
-## 三种证据分开
+## 证据分组
 
 1. 旧公开开发：R10主集中的环0001、开缝壳0004、桥0022及条件集中的环0000、包覆体0003。它们用于解释、反例与修正，不能进入新确认成功率。
 2. 新二维确认：48独立材料、6臂288次；另有在BothBlocks开发修正之后、生成之前另行冻结的16独立材料、5臂80次。两个组的种子、算法和硬件不同，分别报告，不将共享形状名称当同一对象，也不将所有结果任意拼成一个总体优势。
 3. 新三维：8个预定、不同几何设计，5臂40次matched；其中2个预先指定对象另有18³生成→12³反演的10次cross-grid。cross-grid不增加独立材料数。这是小型真矢量有限DDA及跨网格试验，不是连续PDE恢复证书。
+
+4. 新二维配对网格补充：8独立材料，每个都有matched24和cross48→24两种观测，四臂共64次；仍只有8个独立材料。算法在生成前固定，主48结果未揭示；该组不替代48或三维。
 
 没有新增真实测量数据或NN训练。R8/R9的Fresnel、Mie及大电尺寸失败仍有效；本轮不通过重跑旧材料、改变名称或缩小问题来抹掉它们。
 
@@ -22,6 +24,18 @@
 
 成熟容量为Fourier半宽3/6/10各500次，加12阶1500次，最多3000辅助迭代；共同原物理corrector最多3000 accepted iterations、12000函数调用，其他停止参数见正式solver JSON。CIE、Dual-CIE、Global-Dual沿用成熟实现；后者只是相同global PR材料消融，不冒称另一篇原始算法。
 
+## 二维配对网格补充
+
+四类为annulus/slotted_shell/bridge/multi_island，各high/mixed独立生成，共8个新几何；固定χ_high=12、χ_low=2.5及host.1。SeedSequence202611071118分别产生每个对象的geometry/noise子流，未按forward或恢复表现重抽。所有逆解仍为原24²、576实材料、相同CIE/Dual/Global/原G19、prior/box/初值及480CPU规则。
+
+fine48盘半径.009λ、coarse24盘半径.018λ，四fine盘总面积等于一coarse盘面积。共同评分target为fine材料的2×2均值，明确是polarization-volume的一阶材料投影，不是精确coarse散射真值。两条件分别用fine材料/fine算子和projected材料/coarse算子生成cleanY；同对象共享标准复噪声draw，但分别按自身cleanY的1%定义σ。两条件不算独立噪声样本。
+
+材料NRMSE分母在生成前固定为12−.1=11.9；IoU仍strict m>1，成功描述仍.15/.7及合法box。纯low/high/background仅指fine2×2块全同2.5/12/.1，其他cell另标partial-volume boundary，避免平均值恰落在某相就误标。全部64预测及公共选根封存后才能评分和读取private cleanY计算模型失配；不会在线扩大σ吸收失配。
+
+已实际生成8个2304阶fine LU及8个576阶coarse LU，各96 source RHS，0adjoint/0失败。对照合同在任何逆解前增补matched臂，v1草案及理由保留。生成外部CPU8.816213秒，峰值RSS736657408字节。它是两种有限disk-pulse模型间的匹配/失配对照，不是严格PDE网格收敛证书。64次反演在主288自然结束后执行，已全体终态、公共选择封存并于05:27:39Z获单独授权评分。详见[CROSSGRID8_REPORT_ZH](CROSSGRID8_REPORT_ZH.md)及delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md。主完整终点G19为6/8，其余三臂4/8；共同CPU前缀另列，不把两种grid算16材料，也不据GT选择更有利的前缀。
+
+流程偏差：一次与已完成48对象停止诊断有关的过宽rg文本检索，意外显示paired8私有generator_metadata中的inner字段一行；内部实际扫描私有文本范围未知，不能声称整个研究进程从未触及私有metadata。未加载GT材料数组、未改变正在运行的冻结算法/数据/选择、没有重抽对象；线上inverse输入仍仅公开观测包。完整命令、已知范围与未知项见delegated/diagnostics/private_metadata_search_incident/INCIDENT_AUDIT.md。该组按冻结独立测试报告，披露偏差，不包装成无任何过程偏差的全流程盲实验。
+
 ## 三维共同物理
 
 实际三分量dyadic CM+RR有限DDA；ROI边长.6λ，12³=1728个实各向同性contrast变量，current每源5184复分量；60个已知背景电偶极源、60接收位置的三分量，共180×60复观测。外部偶极位置与极化用公开数组，非二维TM堆叠。box[0,8]，m0=.25，R=0。全波用5184阶FP64复LU保留并同时求全部60 RHS，伴随复用LU；辅助current使用相同开放边界零填充FFT物理。
@@ -36,10 +50,16 @@
 
 二维每臂480 whole-child CPU秒允许上限；60/120/240/480快照只选已付费并按同一原Phi得到的最佳材料。一次原子操作超过上限的费用照计，结果不倒填到更早快照。自然停止不填充空转；允许上限、实际花费、相同物理LU是三种不同视图。
 
-48组在Windows i9 P核8/10各单BLAS线程运行；16组在Mac双lane各单BLAS线程运行。每组全部方法同硬件，禁止把两平台CPU直接拼接。三维在4060一条有限队列运行，保持FP64；公开材料上的6次default/cuSOLVER whole-eval工程探针只用于冻结同一后端，不据单LU时间宣称全任务提速，不改变任何科学预算。
+48组最初在Windows i9 P核8/10运行，资源释放后扩为0/2/8/10四lane，各单BLAS线程；新配对网格64任务在主组全部终态后接续同四P核。16组为Mac双lane。每个二维cohort全部方法同硬件，禁止把两平台CPU直接拼接。三维采用4060和现有Mac CPU后端按完整对象分流，保持FP64及每个对象全部五臂/两grid同host；尚未启动对象可依据已付计时作有记录的工程调度，不依据GT或方法胜负。公开材料上的6次default/cuSOLVER whole-eval工程探针不被用来宣称全任务提速。
+
+主48在132次完成后出现控制中断，case0022四个在途方法需工程重试。原成功结果不重跑，所有attempt分账；旧attempt最终CPU不能精确恢复时保持null/下界，不把成功retry的CPU冒充整部署成本。主48保留该对象，另报告不含这一受中断对象的成本敏感性；相关pair不声称精确端到端同CPU。控制修复不改变算法、材料、数据或每次科学运行480CPU规则。
 
 共享setup、生成、失败、传输、评分单列；LU同时标阶数。CPU包含导入/算法/序列化，外部进程时间作权威实际支出；嵌套FFT/LU timers不与CPU再次相加。并行lane CPU总和不是队列wall。性能曲线还保留原物理LU及complex RHS，辅助small LU/FFT另计，不能将相同LU叫全部成本相同。
 
 二维主材料指标为amplitude NRMSE=RMSE/(maxGT−.1)、固定阈值m>1的support IoU、各物相/背景连续误差及合法性；继承NRMSE≤.15、IoU≥.7只作成功描述，不决定研究是否停止。三维另报χ相对L2、幅度NRMSE、原论文形式Err，effective-cell IoU阈值.5。没有准确实测GT时不制造这些指标。
 
 新48/16/3D各自必须全体terminal及公开预测封存后才读相应GT。16组另在GT之前封存CIE+Dual、CIE+BothBlocks两种始终支付两个候选的minPhi部署视图；240+240只叫同允许CPU，不能冒称同实际支出。所有失败、缺失和预算截断保留。置信区间按独立材料配对，不将多源/噪声/同几何跨网格算独立样本；探索的多方法、多家族结果不作为未经校正的普遍显著性主张。
+
+## 三维最终完成记录
+
+50/50终态，400个公开前缀全部核实，07:53:45Z获root独立评分授权。8 matched的40个终点全部CN99内，2 cross的10个终点全部球外；未增加三维二元成功门。粗/细干净观测差17.68%/3.53%，不作为严格PDE误差上界。完整报告见[VECTOR_CONFIRMATION_REPORT_ZH](VECTOR_CONFIRMATION_REPORT_ZH.md)。两平台各25有效任务，原c17/Dual失败320LU单独保留计费，相关重试前缀不是端到端成本。

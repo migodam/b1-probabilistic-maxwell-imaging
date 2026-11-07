@@ -119,6 +119,10 @@ class VectorLowRankDenominator:
             trial_counts.append(trials)
         self.cost['matrix_material_readouts']+=1;self.cost['matrix_material_projected_steps']+=steps
         packed=torch.stack([old_v,seed_v,value,use_seed.to(x.dtype),torch.stack(lu_infos).abs().max().to(x.dtype)])
+        # Only U/B are shareable. The latest factor was needed for the eight
+        # GN directions above; do not retain obsolete material storage after
+        # returning to the caller or across algorithm arms.
+        self.latest_factor=None
         return x.clamp(0,upper),dict(mode=mode,projection=self.projection,rank=self.rank,steps=steps,
             packed_metrics=packed,device_step_trace=torch.stack(records),
             per_step_trials=trial_counts,source_metric='diagonal all-source supplied omega',prior='R0',

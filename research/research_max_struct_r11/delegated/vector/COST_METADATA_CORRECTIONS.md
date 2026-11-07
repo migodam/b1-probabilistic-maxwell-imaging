@@ -1,0 +1,8 @@
+# 成本元数据勘误（不修改原始回执）
+
+1. `fixed_state_cuda/RECEIPT.json` 与 `source_gn_cuda/RECEIPT.json` 的 `CPU_seconds` 分别为1.875与1.953125秒，是明确计时起点之后的 **post-import CPU下界**。`CPU_scope`模板后半句“whole OS process separately measured by transport”不实：对应transport只记录远端run的wall，没有GetProcessTimes/whole-OS CPU。完整远端import/启动CPU为 **NOT_MEASURED/null**，不得以run wall补作CPU，不得补0。保留原始回执和本勘误便于审计；Mac transport controller与本地SSH/SCP子CPU仍是独立已测费用。
+2. `remaining_transport/MEASUREMENT_OVERLAY_COST.json` 的local_controller_CPU_seconds来自该一次性Python进程的总process_time，包含其imports/zip/JSON小开销；不是远端CPU。其本地SSH/SCP子CPU和远端解压CPU未单独测量，仍为NOT_MEASURED。后续protocol/timing overlay另外记录了本地child CPU，也不包含远端解压CPU。
+3. 今后的remaining controller以Windows GetProcessTimes量化两个scientific child的whole CPU；对应child自己的PROCESS_COST及arm/profile/工程probe均为重叠nested，不能重复加。nvidia-smi query helper是独立子进程CPU，应在whole scientific child以外仅加一次。
+4. 本机 `man 2 wait4`明确其rusage包含“terminated process and all its children”。因此Mac per-object wait4 scientific CPU是inclusive，已经包含worker自己的RSS `ps`子进程；`POST_ARCHIVE_STORAGE_RELEASE.RSS_monitor_helper_CPU_seconds`仅分解，不能另加。Mac controller自身process_time则不含它自己的vm_stat/ps监控子进程，配套monitor_helper_CPU可独立加一次。任何“wait4等待controller”的CPU包含该controller的全部scientific子孙，是重叠全树视图，不能再叠加每对象wait4。
+5. 全局public-only seal observer为35/15工程分流受控重启，第一次PID匹配忽略相对argv而短暂出现两个observer；二者均不创建physics或读GT，已替换为一个。记录在`confirmation_host_union/CONTROLLED_35_15_OBSERVER_RESTART.json`，旧observer CPU只有ps百分之一秒精度观测，不伪作高精度scientific timer。没有重复scientific任务或预测。
+6. CPU历史J/Q单memmap的write_CPU/wall包含flush子项，且本来就在paid completion/whole process计时中；不要再把map setup/write/flush/close分解叠加whole wait4。8.00GB是804-slot虚拟文件容量，临时实占磁盘以关闭前st_blocks报告，不等于物理RAM占用。每arm归档后删的是自建临时spool，原scientific NPZ/JSON均保留。

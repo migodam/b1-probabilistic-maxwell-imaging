@@ -1,0 +1,283 @@
+{
+  "physics": {
+    "width": 0.6,
+    "inverse_side": 12,
+    "N_material": 1728,
+    "M_vector_current": 5184,
+    "lambda0": 1,
+    "k": "2pi",
+    "model": "Inherited R1/R8/R9 full vector dyadic CM+RR DDA density J=chi E; finite model only",
+    "material_box": [
+      0,
+      8
+    ],
+    "initial_chi": 0.25,
+    "prior": "R0",
+    "boundary_mixture": "Arithmetic cell-volume contrast; same geometric integration coarse/fine; no sphere-MG substitution",
+    "time_factor": "exp(-i omega t)",
+    "current": "J=chi Q is normalized contrast-polarization/algorithm contrast-current, not raw physical electric current; j_phys=-i omega epsilon_b J; p=epsilon_b VJ, epsilon_b=1 here",
+    "self_density": "s=-1/3+i k^3 V/(6pi)",
+    "polarizability": "alpha=V chi/(1-s chi)=3Vchi/(chi+3-i k^3 Vchi/(2pi))",
+    "continuous_scope": "Finite dyadic CM+RR point DDA only; no continuous-Maxwell accuracy certificate, no original2019 3lambda reproduction",
+    "vector_components_per_illumination": 5184,
+    "full_current_complex_array_entries_all60": 311040,
+    "material_real_DOF_shared_all60": 1728
+  },
+  "acquisition": {
+    "sources": 60,
+    "receiver_positions": 60,
+    "receiver_components": 3,
+    "circle_points_each": 20,
+    "circle_radius": 0.9,
+    "circle_centers": [
+      [
+        0.04,
+        0,
+        -0.02
+      ],
+      [
+        0.02,
+        0,
+        -0.03
+      ],
+      [
+        -0.01,
+        0.02,
+        0
+      ]
+    ],
+    "circle_normals_and_dipole_polarizations": [
+      "z",
+      "x",
+      "y"
+    ],
+    "all_cases_and_grids_identical_acquisition": true
+  },
+  "noise": {
+    "model": "iid circular complex",
+    "expected_relative_Frobenius": 0.03,
+    "public_sigma": "0.03*norm(Yclean,F)/sqrt(180*60)",
+    "convention": "Eabs(n)^2=sigma^2",
+    "no_realization_renormalization": true
+  },
+  "execution_backend": "cuda-dense",
+  "status": "ROOT_FROZEN_BEFORE_NEW_GENERATION",
+  "execution_authorized": true,
+  "private_generation_authorized": true,
+  "proposed_utc": "2026-11-06T23:34:26.530820+00:00",
+  "statistical_unit": "8 distinct prescribed designs; no iid population inference",
+  "case_ids": [
+    "c11",
+    "c12",
+    "c13",
+    "c14",
+    "c15",
+    "c16",
+    "c17",
+    "c18"
+  ],
+  "primary_arms": [
+    "sourceCIE",
+    "sourceDual",
+    "globalDual",
+    "fullGreen",
+    "contractedLagged"
+  ],
+  "arm_map": {
+    "sourceCIE": {
+      "current": "sourcewise PR",
+      "beta_current": [
+        6,
+        3,
+        1
+      ],
+      "material": "ordinary exact scalar CIE"
+    },
+    "sourceDual": {
+      "current": "sourcewise PR",
+      "beta_current": [
+        6,
+        4,
+        3
+      ],
+      "material": "ordinary exact scalar CIE"
+    },
+    "fullGreen": {
+      "current": "global PR",
+      "beta_current": [
+        6,
+        4,
+        3
+      ],
+      "material": "full source-rank120 Galerkin denominator,8PG/GN initial alpha/Armijo<=8"
+    },
+    "contractedLagged": {
+      "current": "global PR",
+      "beta_current": [
+        6,
+        4,
+        3
+      ],
+      "material": "fixed T in z=m/(1+beta*m),8 feasible PG/exact quadratic lines"
+    },
+    "globalDual": {
+      "current": "global PR",
+      "beta_current": [
+        6,
+        4,
+        3
+      ],
+      "material": "ordinary exact scalar CIE"
+    }
+  },
+  "inverse": {
+    "native_MF": [
+      2,
+      3,
+      4
+    ],
+    "max_iterations_per_stage": 500,
+    "minimum_iterations_per_stage": 20,
+    "coefficient_delta_RMS_tolerance": 0.001,
+    "beta_material": [
+      6,
+      3,
+      1
+    ],
+    "initial_chi": 0.25,
+    "material_box": [
+      0,
+      8
+    ],
+    "prior": "R0",
+    "corrector": {
+      "accepted_maxiter": 320,
+      "strict_maxfun": 800,
+      "maxls": 12,
+      "ftol": 1e-12,
+      "gtol": 1e-08,
+      "checkpoints_accepted": [
+        80,
+        160,
+        240,
+        320
+      ]
+    }
+  },
+  "basis": {
+    "formula": "orth([Einc,G Einc])",
+    "rank": 120,
+    "relative_SVD_cutoff": 1e-10,
+    "fixed_before_new_Y": true,
+    "projection": "galerkin",
+    "no_rank_search": true,
+    "no_allstrong_or_fullG_completeness_claim": true
+  },
+  "noise_contract": {
+    "model": "iid circular complex CN",
+    "expected_relative_Frobenius": 0.03,
+    "sigma_formula": ".03*norm(Yclean,F)/sqrt(180*60)",
+    "convention": "E abs(n)^2=sigma^2",
+    "renormalize_realization": false,
+    "per_source_whitening": false,
+    "noise_seed": 2026110713,
+    "private_noise_independent_child_per_observation": true,
+    "public_sigma_only": true
+  },
+  "normalizers": {
+    "physical_Phi": "mean_s sum(abs(S J_s-Y_s)^2)/sum(abs(Y_s)^2), no1/2 and R0",
+    "material_metric": "0.5*rho*beta^2*sum_s ws_s*norm(w_s)^2 with rho=1/60 and ws_s=1/norm(Einc_s)^2",
+    "sigma_ML": "Separate raw whitened sum(abs(residual)^2)/sigma^2 and CN99 full-data radius; never call inherited Phi iid ML",
+    "DPCS": "minimum numerically supported contiguous receiver-SVD prefix satisfying one public full-noise CN99 ball"
+  },
+  "cost_prefixes": {
+    "CPU_seconds": [
+      480,
+      960
+    ],
+    "wall_seconds": [
+      480,
+      960
+    ],
+    "physical_LU": [
+      80,
+      160,
+      240,
+      320
+    ],
+    "natural_stopping_unchanged": true,
+    "prefix_selection": "minimum public physical Phi among already-paid full physical states whose completion total arm cost is <=budget, including initial/stage/line-trial states; no interpolation or post-budget solve",
+    "undefined_if_no_eligible_state": true,
+    "material_states_saved_every_physical_evaluation": true,
+    "wall_includes_pauses_primary": true,
+    "paused_adjusted_wall_diagnostic": true,
+    "shared_setup": "Unique shared background/sourcebasis setup paid once in campaign; also report stand-alone cold per-arm costs with common setup and each method-specific basis cost stated, never sum overlapping views"
+  },
+  "crossgrid": {
+    "status": "FROZEN_AND_AUTHORIZED_SEPARATE_GROUP",
+    "design_ids": [
+      "c13",
+      "c18"
+    ],
+    "generation_side": 18,
+    "inverse_side": 12,
+    "arms": 5,
+    "inversions": 10,
+    "new_independent_material_count": 0,
+    "same_continuous_geometry_as_matched": true,
+    "noise_independent_from_matched": true,
+    "score_against_exact_coarse_effective_material": true,
+    "model_mismatch_not_added_to_measurement_sigma": true,
+    "not_pooled_with_matched_success": true
+  },
+  "scoring": {
+    "root_only": true,
+    "GT_read_after_all_predictions_and_cost_prefix_seals": true,
+    "chi_relative_L2": "norm(mhat-mGT)/norm(mGT)",
+    "amplitude_normalized_RMSE": "sqrt(mean((mhat-mGT)^2))/(max(mGT)-min(mGT))",
+    "paper_Err": "sqrt(mean(((mhat-mGT)/(1+mGT))^2))",
+    "support_threshold": 0.5,
+    "support_rule": "m>.5 for both effective-cell GT and prediction",
+    "regions": {
+      "background": "mGT==0",
+      "low": "0<mGT<=1",
+      "middle": "1<mGT<=3",
+      "high": "3<mGT<=8"
+    },
+    "no_GT_online_selectors": true,
+    "no_universal_win_gate": true
+  },
+  "GlobalDual_fresh_control": {
+    "status": "INCLUDED_ON_ALL8_AND_CROSS2",
+    "extra_inversions_if_added": 0,
+    "value": "Isolates matrix-readout gain from global versus sourcewise PR on fresh objects; necessary for a fresh causal attribution claim, not necessary for whole-pipeline fresh comparison with matched DEV controls clearly scoped",
+    "recommendation": "Root decides before any new data: retain4 for empirical whole-method confirmation, addGlobal on all8 only if main paper claims fresh material-denominator-specific causal superiority"
+  },
+  "estimated_cost": {
+    "reference": "Actual R11 v04_sourceCIE DEV:676.875 CPU s for320 accepted,327 physicalLU; not a universal percase speed claim",
+    "planning_per_inverse_CPU_wall_seconds": [
+      600,
+      1200
+    ],
+    "envelope_is_not_a_hard_cap": true,
+    "maximum_physical_request_calls_primary": 40000,
+    "other_costs": "All imports/setup/generation/basis/material-inner/rejected trials/helper children/failed starts/transport/scoring separate receipts; actual costs replace forecast",
+    "fine_generation_reference": "R10 two matched12 plus two cross18 generations together36.44CPU/37.70wall s; new shapes may require more GMRES work or fail qualification",
+    "matched_inverse_count": 40,
+    "cross_inverse_count": 10,
+    "total_inverse_count": 50,
+    "planning_total_CPU_wall_hours": [
+      8.333333333333334,
+      16.666666666666668
+    ]
+  },
+  "scope_limits": [
+    "Finite full-vector dyadic CM+RR point DDA, no author-2019 reproduction",
+    "Matched-grid is finite-model algorithm confirmation, not continuous-Maxwell or real-material validation",
+    "18to12 crossgrid combines geometry/discretization model error;3% measurement sigma does not certify that error",
+    "Source rank120 captures public background first two source propagations, not unknown Dm closure or complete Green strong subspace",
+    "8 prescribed geometries across4 families do not establish population-level or arbitrary-material reliability"
+  ],
+  "freeze_utc": "2026-11-06T23:38:44.442693+00:00",
+  "dispatch_order": "Within each case cyclic arm order offset by case index, matched and cross labels kept separate; no response to scores"
+}

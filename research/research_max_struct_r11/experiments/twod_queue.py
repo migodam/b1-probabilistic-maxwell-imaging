@@ -13,8 +13,23 @@ def utc():return datetime.now(timezone.utc).isoformat()
 
 
 def dump(path,value):
-    p=Path(path);tmp=p.with_suffix(p.suffix+'.tmp')
-    tmp.write_text(json.dumps(value,indent=2,allow_nan=False)+'\n');tmp.replace(p)
+    # Windows readers can deny rename/delete sharing. Always retain an immutable
+    # complete receipt checkpoint before best-effort promotion of the live alias.
+    p=Path(path);p.parent.mkdir(parents=True,exist_ok=True)
+    body=json.dumps(value,indent=2,allow_nan=False,ensure_ascii=True)+'\n'
+    if p.name=='RECEIPT.json':
+        checkpoints=p.parent/'CHECKPOINTS';checkpoints.mkdir(exist_ok=True)
+        checkpoint=checkpoints/(str(time.time_ns())+'.json')
+        checkpoint_tmp=checkpoint.with_suffix('.tmp');checkpoint_tmp.write_text(body,encoding='utf-8');checkpoint_tmp.replace(checkpoint)
+    tmp=p.with_suffix(p.suffix+'.tmp');tmp.write_text(body,encoding='utf-8')
+    for attempt in range(60):
+        try:tmp.replace(p);return
+        except PermissionError:
+            time.sleep(.05)
+    # No child is killed because a reader holds the mutable alias. The immutable
+    # checkpoint remains authoritative and another save will retry promotion.
+    with (p.parent/'SHARING_RETRY_EVENTS.jsonl').open('a',encoding='utf-8') as f:
+        f.write(json.dumps(dict(path=str(p),utc=utc(),status='ALIAS_PROMOTION_DEFERRED_IMMUTABLE_CHECKPOINT_RETAINED'))+'\n')
 
 
 def external_cpu(process):
@@ -42,7 +57,7 @@ def main():
     ap.add_argument('--vendor-path',type=Path)
     ap.add_argument('--execute',action='store_true')
     args=ap.parse_args()
-    if len(set(args.cpus))!=len(args.cpus) or len(args.cpus)>4:raise ValueError('At most four distinct authorized CPUs')
+    if len(set(args.cpus))!=len(args.cpus) or len(args.cpus)>4 or not set(args.cpus).issubset({0,2,4,6,8,10}):raise ValueError('At most four root-authorized independent P-core logical IDs; no HT/E/vector cores')
     # Preserve a venv symlink entry rather than resolve() to its base interpreter.
     python=Path(args.python).expanduser().absolute()
     out=args.receipt_dir.absolute()
@@ -135,7 +150,7 @@ def main():
                     auxiliary_iterations=child.get('auxiliary_iterations'),corrector=child.get('corrector'))
             info['status']='FINISHED' if code==0 and info.get('child_status') in ('SEALED_PUBLIC_PREDICTION','CPU_BUDGET_REACHED') else 'FAILED'
             if info['status']=='FAILED':info['error_log_tail']=log_tail=Path(info['log']).read_text(errors='replace')[-5000:]
-            jobs.append(info);del running[p];emit(dict(event='END',**info));save()
+            dump(out/'TERMINAL_JOBS'/(info['task_id']+'.json'),info);jobs.append(info);del running[p];emit(dict(event='END',**info));save()
         if stopped and not running:break
         if running:time.sleep(.5)
     receipt.update(status=('STOPPED_DISPATCH_CHILDREN_FINISHED' if pending else

@@ -6,7 +6,7 @@ OUT=ROOT/'delegated/twod/dev_transport';OUT.mkdir(parents=True,exist_ok=True)
 HOST='jayzh@100.121.97.39';KEY='/Users/migodam/.ssh/heatcryst_xinan_ed25519';REMOTE='D:/AI/MAX_STRUCT_R11_DEV_20261107'
 def run(cmd,label):
  t,c=time.perf_counter(),time.process_time();before=resource.getrusage(resource.RUSAGE_CHILDREN)
- p=subprocess.run(cmd,capture_output=True,text=True);after=resource.getrusage(resource.RUSAGE_CHILDREN)
+ p=subprocess.run(cmd,capture_output=True,text=True,encoding='utf-8',errors='replace');after=resource.getrusage(resource.RUSAGE_CHILDREN)
  with (OUT/'TRANSPORT_COSTS.jsonl').open('a') as f:f.write(json.dumps(dict(label=label,returncode=p.returncode,wall_seconds=time.perf_counter()-t,controller_CPU_seconds=time.process_time()-c,child_CPU_seconds=after.ru_utime+after.ru_stime-before.ru_utime-before.ru_stime))+'\n')
  if p.returncode:raise RuntimeError(p.stderr+'\n'+p.stdout)
  return p.stdout
