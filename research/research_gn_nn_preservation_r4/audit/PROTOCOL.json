@@ -1,0 +1,121 @@
+{
+  "study": "GN-NN-R4-preservation",
+  "start_utc": "2026-11-07T04:44:27Z",
+  "deadline_utc": "2026-11-07T10:44:27Z",
+  "source_commit": "4baa5b0f88db1a49e9880c8e159e8ba336cc7da1",
+  "physics": {
+    "grid": [
+      24,
+      24
+    ],
+    "sources": 12,
+    "receivers": 48,
+    "box": [
+      0.02,
+      20
+    ],
+    "forward": "frozen R4 nonlinear scalar-TM disk-pulse VIE",
+    "physics_dtype": "complex128",
+    "training_dtype": "float32 real pair/complex64"
+  },
+  "data": {
+    "train_parents": 504,
+    "val_parents": 78,
+    "test_parents": 108,
+    "amplitudes": [
+      0.1,
+      0.2,
+      0.4
+    ],
+    "background": [
+      0.08,
+      0.15
+    ],
+    "noise": [
+      0.0,
+      0.001
+    ],
+    "seen_digits": [
+      1,
+      2,
+      3,
+      5,
+      6,
+      8,
+      9
+    ],
+    "withheld_digits": [
+      4,
+      7
+    ],
+    "withheld_shape": "curved_bar",
+    "train_fonts": [
+      "Arial Bold.ttf",
+      "Georgia Bold.ttf"
+    ],
+    "ood_fonts": [
+      "Times New Roman Bold.ttf",
+      "Verdana Bold.ttf"
+    ],
+    "test_groups": {
+      "new_instance": 60,
+      "unseen_class": 18,
+      "unseen_style": 30
+    },
+    "seed": 2026110704,
+    "test_truth_status": "SEALED_NOT_SCORED"
+  },
+  "training": {
+    "arms": [
+      "v_physics",
+      "j_full",
+      "j_null",
+      "g_weak",
+      "g_dark",
+      "soft_dark"
+    ],
+    "passes": 2,
+    "seeds": [
+      7,
+      17,
+      27
+    ],
+    "train_from_scratch": true,
+    "epochs": 100,
+    "batch": 64,
+    "patience": 15,
+    "lr": 0.001,
+    "regularizer_weight": 0.01,
+    "soft_alpha_grid": [
+      0,
+      0.1,
+      0.3,
+      0.6,
+      1
+    ]
+  },
+  "budgets": {
+    "anchor": {
+      "seconds": 45,
+      "LU": 500,
+      "RHS": 30000
+    },
+    "post": {
+      "seconds": 10,
+      "LU": 100,
+      "RHS": 6000
+    },
+    "correction": {
+      "seconds": 3,
+      "max_nfev": 8
+    }
+  },
+  "acceptance": {
+    "clean_residual": 0.001,
+    "noisy_residual": 0.003,
+    "NRMSE": 0.15,
+    "IoU": 0.7
+  },
+  "public_input": "G/E0/S,Y,noise,GN anchors only; labels and support are evaluator only",
+  "status": "RUNNING"
+}

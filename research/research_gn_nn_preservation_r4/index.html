@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GN–NN R4 · 强方向保护与独立泛化</title>
+<style>body{margin:0;background:#eef3f6;color:#192b36;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}header{background:#143b4b;color:#f2fbff;padding:26px max(20px,calc((100vw - 1200px)/2))}h1{font-size:30px;line-height:1.4}header p{color:#cce1e8}nav,.links{display:flex;gap:12px;flex-wrap:wrap}nav a{color:#ecfaff;text-decoration:none;border:1px solid #69929f;padding:4px 10px;border-radius:4px}main,footer{max-width:1200px;margin:auto;padding:25px 30px}main{background:white}a{color:#006d8e}h2{margin-top:2em;border-bottom:1px solid #d5e2e8}img{max-width:100%;height:auto}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td,th{border:1px solid #d8e3e8;padding:8px 12px;white-space:nowrap}th{background:#eef6f9}pre{padding:16px;background:#f0f5f7;overflow:auto;font-size:14px}code{font-size:.9em}.math{overflow:auto;padding:10px 0}footer{color:#58717e;font-size:14px}@media(max-width:650px){main,footer{padding:18px}h1{font-size:25px}body{font-size:16px}}</style>
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script>window.MathJax={tex:{displayMath:[["$$","$$"]],inlineMath:[["$","$"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head>
+<body><header><div>GN–NN R4 · 2026-11-07</div><h1>NN 改善材料时，强方向发生了什么？</h1><p>真实 Maxwell 电流绝对误差、完整暗电流约束、两级 Cascade 与独立图像／类别／字体泛化。</p><nav><a href="?doc=RESEARCH_REPORT_ZH.md">实验与成像</a><a href="?doc=MATHEMATICAL_THEORY.md">数学机制</a><a href="?doc=CODEX_TO_PRO_HANDOFF.md">理论交接</a><a href="?doc=BLIND_PROTOCOL.md">训练／测试身份</a><a href="?doc=REPRODUCE.md">复现</a></nav></header>
+<main><div class="links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_gn_nn_preservation_r4">代码与证据</a><a id="raw">Raw Markdown</a><a href="results/RESULTS_SUMMARY.json">结果汇总</a><a href="figures/all_test_cases/GALLERY.html">独立测试完整图册</a></div><article id="report">正在读取研究报告…</article></main>
+<footer>具体图像未训练、类别未见、字体／规则未见分别标注。历史 R3 仅作已披露诊断；新 TEST 在方法与预测封存后评分。绝对误差、原数据相容、材料质量、预算和未运行项分别报告。</footer>
+<script>
+const root="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_gn_nn_preservation_r4/";
+const doc=new URLSearchParams(location.search).get("doc")||"RESEARCH_REPORT_ZH.md";
+document.getElementById("raw").href=root+doc;
+const esc=x=>x.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+fetch(doc).then(r=>{if(!r.ok)throw Error(r.status);return r.text()}).then(text=>{
+ const codes=[];text=text.replace(/```[\s\S]*?```|`[^`\n]+`/g,c=>{const k="GNNCODE"+codes.length+"TOKEN";codes.push(c);return k;});
+ text=text.replace(/\\\[([\s\S]*?)\\\]/g,(_,m)=>"$$"+m+"$$").replace(/\\\(([\s\S]*?)\\\)/g,(_,m)=>"$"+m+"$");
+ const maths=[];text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const k="GNNMATH"+maths.length+"TOKEN";maths.push('<div class="math">$$'+esc(m)+'$$</div>');return "\n\n"+k+"\n\n";});
+ text=text.replace(/(^|[^\\])\$([^\n$]+)\$/g,(_,prefix,m)=>{const k="GNNMATH"+maths.length+"TOKEN";maths.push('<span>$'+esc(m)+'$</span>');return prefix+k;});
+ codes.forEach((c,i)=>text=text.replace("GNNCODE"+i+"TOKEN",()=>c));let rendered=marked.parse(text);maths.forEach((m,i)=>rendered=rendered.replace("GNNMATH"+i+"TOKEN",()=>m));
+ const article=document.getElementById("report");article.innerHTML=rendered;const base=new URL(doc,location.href);
+ article.querySelectorAll("img[src],a[href]").forEach(el=>{const attr=el.tagName==="IMG"?"src":"href",v=el.getAttribute(attr);if(!/^(https?:|#|mailto:)/.test(v)){const target=new URL(v,base);if(el.tagName==="A"&&target.pathname.endsWith(".md"))el.href=location.pathname+"?doc="+encodeURIComponent(target.pathname.split("/research_gn_nn_preservation_r4/")[1]||v);else el.setAttribute(attr,target.href);}});
+ MathJax.startup.promise.then(()=>MathJax.typesetPromise([article]));
+}).catch(e=>document.getElementById("report").textContent="报告暂不可读取："+e.message);
+</script></body></html>
