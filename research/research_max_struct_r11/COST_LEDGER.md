@@ -1,8 +1,8 @@
 # R11 cost ledger
 
-Generated 2026-11-07T08:07:43.540847+00:00. Metadata-only compilation; no science, forward, optimizer, GT read or remote command.
+Generated 2026-11-07T08:24:59.402255+00:00. Metadata-only compilation; no science, forward, optimizer, GT read or remote command.
 
-Known nonoverlapping recorded CPU lower bound: **132712.037080 seconds**. This mixes documented exact child measurements and partial timers as a lower bound; it is not an exact total or a cross-hardware speed comparison. All frozen scientific tasks are terminal; unmeasured setup/import/exit/editorial costs still prevent an exact campaign total.
+Known nonoverlapping recorded CPU lower bound: **133106.212714 seconds**. This mixes documented exact child measurements and partial timers as a lower bound; it is not an exact total or a cross-hardware speed comparison. All frozen scientific tasks are terminal; unmeasured setup/import/exit/editorial costs still prevent an exact campaign total.
 
 |Physical matrix dimension|Known LU|Known complex RHS|Known source RHS|Known adjoint RHS|
 |---:|---:|---:|---:|---:|
@@ -103,6 +103,10 @@ Counters are lower bounds when producer splits are missing. 17496 uses two fine-
 |main48_independent_review_editorial|COMPLETE_CPU_UNMEASURED|null|Bounded completed review and text-only report corrections; `delegated/diagnostics/main48_final_review/RECEIPT.json`|
 |Mac_postrun_package_inventory|POSTRUN_READONLY_PACKAGE_METADATA_NOT_LAUNCH_RECEIPT|0.107974|Read-only package metadata observation after runs, not a launch receipt; `audit/MAC_POSTRUN_PACKAGE_METADATA.json`|
 |root_vector50_public_seal_review|ROOT_AUTHORIZED_FRESH3D_OFFLINE_SCORING_AFTER_ALL50_PUBLIC_SEALS|0.715675|Root review of all50 public material/data/prefix selections before freshGT; `audit/VECTOR50_ROOT_POSTSEAL_AUTHORIZATION.json`|
+|lossless_publication_archives|COMPLETE_KNOWN_COMPONENTS|351.140912|Publication only: archive or repository/release transport; zero new science; `audit/PACKAGING_RECEIPT.json`|
+|publication_control|COMPLETE_EVIDENCE_RELEASE_PUBLISHED|42.375180|Publication only: archive or repository/release transport; zero new science; `audit/ROOT_RELEASE_PROCESS_COST.json`|
+|publication_snapshot_supplement|COMPLETE|0.195328|Publication only: archive or repository/release transport; zero new science; `audit/PACKAGING_SUPPLEMENT_RECEIPT.json`|
+|publication_supplement_transport|COMPLETE|0.464214|Publication only: archive or repository/release transport; zero new science; `audit/ROOT_RELEASE_SUPPLEMENT_COST.json`|
 |unmeasured_setup_and_failures|KNOWN_GAPS|null (view only)|Recorded failed environment starts, source preparation and uninstrumented remote extraction; `delegated/vector/IMPLEMENTATION_NOTES.md`|
 |historical_R10_reference|REFERENCE_ONLY_NOT_CHARGED|0.000000 (view only)|Read-only reused R10 states/operators/scores, not rerun R10 campaign; `no new execution source`|
 |portfolio_views|NONADDITIVE_VIEW|0.000000 (view only)|Overlapping deployment/secondary views, no new solver run; `delegated/diagnostics/bothblocks_confirmation/PORTFOLIO_RULE_BEFORE_DATA_SCORE.json`|

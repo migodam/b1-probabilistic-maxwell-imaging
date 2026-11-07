@@ -14,3 +14,5 @@
 - [完整成本与计量缺口](COST_LEDGER.md)
 
 - [真三维50次最终比较与全图](VECTOR_CONFIRMATION_REPORT_ZH.md)
+
+- [全部原始证据Release：40个分包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r11-20261107)（解压01–39后再解压40；40保留历史源码/输入快照及报告生成器的文字修正）

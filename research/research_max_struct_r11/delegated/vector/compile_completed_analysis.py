@@ -60,7 +60,7 @@ model=json.loads((S/'CROSSGRID_MODEL_ERROR.json').read_text());dump(O/'SUMMARY.j
 md=['# R11 真实三维有限确认：完成报告','',
 '本轮50个冻结反演全部完成：8个独立材料×5方法=40个matched12任务，另2个预选材料的18→12跨网格观测×5方法=10个任务。两组分开统计；交叉观测不增加独立材料数。GT在50个预测与400个公开cost-prefix逐项封存并经root独立审查后才离线评分。未新增物理调用、算法、对象、预算或3D成功门。','',
 '8例matched的材料主轮廓通常可辨认；这与冻结IoU数值、分相幅值是否准确是不同问题。full-r120相对普通Dual在5/8例的χ相对L2较小，但八例平均仍略高于Dual；有限预算下总体接近，不应说所有方法“未成像”，也不足以据此把Green分母设为新的普适默认。局部改善与退化均保留。','',
-'full-r120与contracted-r120仅改材料块，current始终ordinary CIE；二者使用同一公开背景源基U=orth([Einc,G Einc])、rank120。它们不是二维G19、不是BothBlocks，也不声称rank120覆盖全dyadic G。full指材料依赖分母，非全秩G。full/contracted与Global匹配global-PR current及β_current=4；Dual采用sourcewise-PR且β_current=4，CIE采用sourcewise-PR且β_current=3。因此full对Global是材料块匹配对照；对Dual的差异还包含PR聚合方式，不能只归因于材料分母。','',
+'full-r120与contracted-r120仅改材料块，current始终ordinary CIE；二者使用同一公开背景源基U=orth([Einc,G Einc])、rank120。它们不是二维G19、不是BothBlocks，也不声称rank120覆盖全dyadic G。full指材料依赖分母，非全秩G。full/contracted与Global匹配global-PR current，三个阶段的β_current均为[6,4,3]；Dual采用sourcewise-PR且β_current同为[6,4,3]，CIE采用sourcewise-PR且β_current=[6,3,1]。所有方法β_material=[6,3,1]。因此full对Global是材料块匹配对照；对Dual的差异还包含PR聚合方式，不能只归因于材料分母。','',
 '## 冻结合同与指标','',
 '12³、1728个实各向同性χ、5184×60复电流、180×60观测；CM+RR dyadic物理不变，FP64/complex128，m0=.25、box0..8、R0、3%独立圆复高斯噪声。MF2/3/4各max500/min20，corrector320 accepted/800requests；50/50最终均达到320 accepted上限，PG∞仍高于1e−8，不标作收敛。','',
 'χ-relative L2与amplitude-normalized RMSE同时列出，避免空背景分母美化误差。fixed IoU是原先固定阈值的连续重叠指标，不补设3D成败阈值。Phi3是source-normalized拟合目标，CN99是另一个按σ定义的全观测噪声球一致性指标；CN99内不等于材料正确。','',

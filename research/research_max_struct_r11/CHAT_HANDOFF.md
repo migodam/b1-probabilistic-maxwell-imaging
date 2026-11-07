@@ -51,6 +51,7 @@
 
 ## 直接阅读
 
+- [完整原始数组、轨迹与历史源码：40分包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r11-20261107)
 - [完整中文报告与建议](RESEARCH_REPORT_ZH.md)
 - [48对象完整比较](CONFIRMATION48_REPORT_ZH.md)
 - [16对象正例与反例](CONFIRMATION16_REPORT_ZH.md)

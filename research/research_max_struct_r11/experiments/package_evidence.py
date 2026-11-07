@@ -1,8 +1,9 @@
 """Lossless R11 scientific archives, after all scientific writers finish.
 
 Reuse the R10 release convention: paths and byte sizes, no content hashes.
-Redundant transport ZIPs, Python caches and third-party reading copies are not
-scientific evidence; their launch/transport receipts remain included.
+Redundant result transports, Python caches and third-party reading copies are
+excluded. Historical source/input/overlay archives are execution evidence and
+remain included together with their launch/transport receipts.
 """
 from pathlib import Path
 import argparse
@@ -14,9 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def excluded(path):
+    historical_archive = (path.suffix == ".zip" and path.name != "RESULT.zip") or path.name in {
+        "PUBLIC_INVERSE_INPUTS_V2.tgz", "independent48_generation_sources.tgz",
+        "independent48_public_start.tgz", "inverse_only.tgz"}
     return (bool(set(path.parts) & {"__pycache__", "primary_texts", "release_assets", ".git"})
-            or path.suffix in {".pyc", ".zip", ".tgz", ".tar"}
-            or path.name.endswith(".tar.gz")
+            or path.suffix == ".pyc"
+            or (not historical_archive and (path.suffix in {".zip", ".tgz", ".tar"} or path.name.endswith(".tar.gz")))
             or path.name.startswith("undermind_search_")
             or path.name in {"vector_fulltext_extraction.json", "verified_metadata.json"}
             or path.name in {"PUBLICATION_MANIFEST.json", "PACKAGING_RECEIPT.json", ".gitignore"})

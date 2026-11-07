@@ -223,7 +223,7 @@ def main():
  if metadata:add('Mac_postrun_package_inventory','Read-only package metadata observation after runs, not a launch receipt',[mm],metadata.get('status'),metadata.get('CPU_seconds_near_write'),'Own absolute process_time lower bound; external OS/exit tail unmeasured',zero(),notes=['No Torch/CUDA imports or physical solve. Windows metadata costs are already included once in main48 producer ledger.'])
  va='audit/VECTOR50_ROOT_POSTSEAL_AUTHORIZATION.json';vx=read(va)
  if vx:add('root_vector50_public_seal_review','Root review of all50 public material/data/prefix selections before freshGT',[va],vx.get('status'),vx.get('CPU_seconds_near_write'),'Own process_time lower bound; external OS/exit tail unmeasured',zero())
- for name,path,key in [('lossless_publication_archives','audit/PACKAGING_RECEIPT.json','CPU_seconds'),('publication_control','audit/ROOT_RELEASE_PROCESS_COST.json','known_complete_child_CPU_seconds')]:
+ for name,path,key in [('lossless_publication_archives','audit/PACKAGING_RECEIPT.json','CPU_seconds'),('publication_control','audit/ROOT_RELEASE_PROCESS_COST.json','known_complete_child_CPU_seconds'),('publication_snapshot_supplement','audit/PACKAGING_SUPPLEMENT_RECEIPT.json','CPU_seconds'),('publication_supplement_transport','audit/ROOT_RELEASE_SUPPLEMENT_COST.json','known_complete_child_CPU_seconds')]:
   x=read(path)
   if x:add(name,'Publication only: archive or repository/release transport; zero new science',[path],x.get('status','COMPLETE_KNOWN_COMPONENTS'),x.get(key),'Distinct publication process CPU; receipt retains exclusions and unknowns',zero())
  # Coverage gaps and excluded aliases remain visible; absent costs are not invented.
