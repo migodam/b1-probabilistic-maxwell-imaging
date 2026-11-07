@@ -39,9 +39,15 @@ def main():
     p.add_argument('--mode', choices=['alpha', 'constrained', 'loss'], required=True)
     p.add_argument('--runs', nargs='+', required=True)
     p.add_argument('--reference-run')
+    p.add_argument('--reference-scores',type=Path,nargs='*',default=[])
     p.add_argument('--output', type=Path, required=True)
     a = p.parse_args()
     rows = summaries(a.scores)
+    existing={r['run']for r in rows}
+    for path in a.reference_scores:
+        for row in summaries(path):
+            if row['run']not in existing:
+                rows.append(row);existing.add(row['run'])
     lookup = {r['run']: r for r in rows}
     candidates = [lookup[x] for x in a.runs if x in lookup and lookup[x]['complete']]
     reference = lookup.get(a.reference_run)
@@ -57,6 +63,7 @@ def main():
     selected = min(candidates, key=key) if candidates else None
     result = dict(status='SELECTED' if selected else 'NO_ELIGIBLE_COMPLETED_ARM', mode=a.mode,
                   declared_contract='audit/VAL_SELECTION_CONTRACT.json', time_unix=time.time(),
+                  reference_score_files=[str(path)for path in a.reference_scores],
                   truth_scope='VAL_ONLY', runs=a.runs, reference=reference,
                   summaries=[r for r in rows if r['run'] in a.runs or r['run'] == a.reference_run], selected=selected)
     if a.mode == 'alpha' and selected:

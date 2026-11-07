@@ -6,7 +6,7 @@ Absolute deadline is fixed and only this controller's own children may be stoppe
 from pathlib import Path
 from collections import Counter
 from datetime import datetime,timezone
-import json,os,platform,re,signal,subprocess,sys,time
+import json,os,platform,signal,subprocess,sys,time
 
 STUDY=Path(__file__).resolve().parents[2]
 REQUEST=STUDY/'audit/VAL_EVALUATION_REQUEST.json'
@@ -16,7 +16,6 @@ DEADLINE_TEXT='2026-11-07T10:44:27Z'
 DEADLINE=datetime(2026,11,7,10,44,27,tzinfo=timezone.utc).timestamp()
 POLL_SECONDS=15
 TERMINAL_PREPARATION={'LOCAL_PHYSICS_COMPLETE','LOCAL_COMPLETE_UPLOADED','LOCAL_COMPLETE_UPLOAD_INCOMPLETE'}
-RUN_RE=re.compile(r'^[A-Za-z0-9_-]+$')
 INITIAL_RUNS=['v_physics_seed7_cascade2','j_full_seed7_cascade2','j_null_seed7_cascade2','g_weak_seed7_cascade2','g_dark_seed7_cascade2']
 
 def write_json(path,value):
@@ -38,8 +37,7 @@ def public_val_ids():
 def request_runs():
     request=read_json(REQUEST)
     runs=request.get('runs')
-    if not isinstance(runs,list) or any(not isinstance(r,str) or not RUN_RE.fullmatch(r) for r in runs):
-        raise ValueError('Request runs must be an explicit list of safe run names')
+    if not isinstance(runs,list):raise ValueError('Request runs must be an explicit list')
     if len(set(runs))!=len(runs):raise ValueError('Duplicate run in request')
     if not isinstance(request.get('closed',False),bool):raise ValueError('closed must be boolean')
     return request,runs

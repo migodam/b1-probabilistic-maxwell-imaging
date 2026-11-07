@@ -92,6 +92,7 @@ def main():
     with threadpool_limits(limits=1):
         for oi,r in enumerate(sorted(records,key=lambda z:z['obs_id'])):
             obs=r['obs_id'];public=load_npz(HERE/'data'/r['public_path']);Y=public['Y']
+            common_gn_material=load_npz(HERE/'anchors'/f'{obs}.npz')['m0']
             active=[p for p in plans if items[p['run'],obs]['disposition']=='SEALED']
             if not active:
                 notrun.extend(dict(run=p['run'],obs_id=obs,reason='SEALED_NOT_RUN')for p in plans);continue
@@ -113,7 +114,9 @@ def main():
                 run=plan['run'];item=items[run,obs]
                 if item['disposition']!='SEALED':notrun.append(dict(run=run,obs_id=obs,reason='SEALED_NOT_RUN'));continue
                 arrays=load_npz(item['npz']['path']);receipt=json.loads(Path(item['json']['path']).read_text())
-                ma=np.asarray(arrays['anchor']);ja,ya=physical(ma,'TEST_energy_anchor')
+                # Cold CIE has a different method initialization. All plotted
+                # GN-to-result errors use the same strict GN reference instead.
+                ma=np.asarray(common_gn_material);ja,ya=physical(ma,'TEST_energy_common_strict_GN')
                 meta={k:r.get(k)for k in ('obs_id','parent_id','group','family','noise','amplitude')}
                 meta.update(run=run,arm=plan.get('arm',run),seed=plan.get('seed'),passes=plan.get('passes'))
                 raw_receipt=next((c for c in receipt.get('candidates',[])if c['label']=='raw_1'),None)
@@ -124,7 +127,7 @@ def main():
                     emit(meta,'material_complex_Green_embedding','anchor_to_raw_1',ma-mt,raw-mt)
                     emit(meta,'Maxwell_current','anchor_to_raw_1',ja-jt,jr-jt)
                 else:notrun.append(dict(run=run,obs_id=obs,reason='NO_FROZEN_RAW_1_CANDIDATE_raw_energy_NOT_RUN'))
-                if 'j_aux'in arrays:
+                if 'j_aux'in arrays and plan.get('kind')=='NN':
                     emit(meta,'auxiliary_current_head_OFFLINE_not_Maxwell_solution','anchor_to_auxiliary_head',ja-jt,np.asarray(arrays['j_aux'])-jt)
                     if raw is not None:
                         jaux=np.asarray(arrays['j_aux']);qaux=ops['E0']+ops['G']@jaux
@@ -176,6 +179,7 @@ def main():
         max_full_VIE_equation_defect=max(defects,default=None),wall_seconds=time.perf_counter()-start,
         BLAS_threads=1,CPU_workers=1,truth_access='NEW_TEST_ONLY_AFTER_FULL_INVENTORY_VALIDATION',
         raw_definition='actual frozen raw_1 candidate material, including its original box clipping',
+        before_reference='the common strict GN m0 for every method, not the cold CIE initialization',
         auxiliary_scope='separately named head discrepancies, never substituted for nonlinear Maxwell currents',
         material_scope='complex Green coordinate embedding only, not real material observability',
         no_new_optimization=True,no_new_training=True,geometry=geom.metadata,

@@ -4,7 +4,7 @@
 
 Run `python research/research_gn_nn_preservation_r4/experiments/plot_energy_mechanism.py` from the repository. It writes only the two requested PNGs and this note. Inputs are `results/e0/grouped_absolute_energy.csv` and `results/e0/per_case_energy.csv`. The former supplies saved energy sums; the latter is read only to confirm matching observation/mother identities before connecting stages.
 
-Both figures use seed7, one pass, low amplitude, clean/noisy separately, with all 64 mothers per noise. The selected arms are J-full, J-null and voxel physics (`v_physics`), the voxel arm with physical training loss. `v_image`, other seeds, cascades and A2.5 are outside these figures, not removed from E0. Amplitude groups are pooled with their saved case counts; means are not unweighted means of amplitude means.
+Both figures use seed7, one pass, low amplitude, clean/noisy separately, with all 64 mothers per noise. The selected arms are J-full, J-null and voxel physics (`v_physics`), the voxel arm with physical input channels and material supervision, not an extra full-Maxwell training loss. `v_image`, other seeds, cascades and A2.5 are outside these figures, not removed from E0. Amplitude groups are pooled with their saved case counts; means are not unweighted means of amplitude means.
 
 The unit is the discrete squared current norm Σ over 576 cells and 12 sources of |error|², averaged across the 64 observations. It is not physical power, flux, a continuum integral or an error-energy share. All signs and numeric magnitudes come from saved CSV fields. No new confidence intervals or significance claim are produced.
 

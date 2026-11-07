@@ -1,5 +1,5 @@
 {
-  "status": "PREPARED_NOT_RUN",
+  "status": "AUTHORIZED_BY_PREDECLARED_VAL_GATE",
   "selection": "first128 TRAIN mothers by round-robin category-by-amplitude stratum, frozen before VAL network scoring",
   "parent_ids": [
     "train_p0000",
@@ -138,7 +138,37 @@
   "lambda_full_data_hinge": 1.0,
   "noisy_delta": 0.0011,
   "clean_delta": 1e-06,
-  "pairing": "same starting checkpoint, batches and update count for pure-existing-loss control versus existing loss plus exact full-VIE hinge",
+  "pairing": "same selected R4 checkpoint, batches and320updates: pure material L1+0.1edge versus the same plus exact full-VIE hinge; starting checkpoint may have const loss but both FT arms omit that term",
   "trigger": "VAL corrected NRMSE improvement >=5percent and physical qualification drop <=5percentagepoints; >=30min in training window",
-  "scope": "TRAIN subset, no TEST access"
+  "scope": "TRAIN subset, no TEST access",
+  "execution": {
+    "status": "TRAINED",
+    "pair_wall_seconds": 34.090966208372265,
+    "runs": [
+      {
+        "mode": "material_loss_control",
+        "optimizer_steps": 320,
+        "epochs": 10,
+        "bridge_counts": {
+          "LU": 0,
+          "source_complex_RHS": 0,
+          "adjoint_complex_RHS": 0,
+          "actual_complex_RHS": 0
+        }
+      },
+      {
+        "mode": "full_vie_hinge",
+        "optimizer_steps": 320,
+        "epochs": 10,
+        "bridge_counts": {
+          "LU": 2560,
+          "source_complex_RHS": 30720,
+          "adjoint_complex_RHS": 30720,
+          "actual_complex_RHS": 61440,
+          "forward_cases": 2560,
+          "backward_cases": 2560
+        }
+      }
+    ]
+  }
 }

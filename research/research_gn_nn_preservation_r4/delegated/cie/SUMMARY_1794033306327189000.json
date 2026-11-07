@@ -1,0 +1,74 @@
+{
+  "status": "FINITE_PUBLIC_QUEUE_CLOSED",
+  "split": "val",
+  "scope": "figure13",
+  "methods": [
+    "cie_dual"
+  ],
+  "parent_test_freeze_assertion": false,
+  "workers": 2,
+  "BLAS_threads_per_worker": 1,
+  "mothers": 1,
+  "observations": 2,
+  "tasks": 2,
+  "observation_ids": [
+    "obs_bb500efe50f35ed6a2c5",
+    "obs_ee8838e9f4da5abfb153"
+  ],
+  "truth_access": "NONE_PUBLIC_INPUT_ONLY",
+  "budget": {
+    "wall_seconds": 55,
+    "max_LU": 600,
+    "max_complex_RHS": 36000
+  },
+  "comparison": "cold CIE55s versus common NN GN45s plus post10s; actual costs remain separate",
+  "baseline_schedule": "mf3/beta1 \u2192 mf6/beta.2 \u2192 mf10/beta.2; min50, max500/stage, coefficient_tol1e-8; later dual beta_current1",
+  "prior": "zero spatial prior, declared adaptation matching NN data-only correction",
+  "resource_coordination": "parent coordinates CPU training; no remote i9 use",
+  "queue_wall_seconds": 3.992276791948825,
+  "entries": [
+    {
+      "run": "cie_dual_cold55",
+      "obs_id": "obs_bb500efe50f35ed6a2c5",
+      "status": "COMPLETED",
+      "selection_status": "PASS",
+      "wall_seconds": 1.2120959986932576,
+      "costcounts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 6,
+        "actual_complex_RHS": 120,
+        "LU": 6,
+        "source_RHS": 72,
+        "full_factorization_dimension": 3456,
+        "FULL_ANALYTIC_J": 1,
+        "receiver_transpose_RHS": 48,
+        "FullJ": 1,
+        "material_J_builds": 1
+      },
+      "current_status": "SCHEDULE_COMPLETE"
+    },
+    {
+      "run": "cie_dual_cold55",
+      "obs_id": "obs_ee8838e9f4da5abfb153",
+      "status": "COMPLETED",
+      "selection_status": "PASS",
+      "wall_seconds": 3.3573868749663234,
+      "costcounts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 9,
+        "actual_complex_RHS": 300,
+        "LU": 9,
+        "source_RHS": 108,
+        "full_factorization_dimension": 5184,
+        "FULL_ANALYTIC_J": 4,
+        "receiver_transpose_RHS": 192,
+        "FullJ": 4,
+        "material_J_builds": 4
+      },
+      "current_status": "SCHEDULE_COMPLETE"
+    }
+  ],
+  "existing": [],
+  "total_LU": 15,
+  "total_complex_RHS": 420
+}

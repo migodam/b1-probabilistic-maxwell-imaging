@@ -5,8 +5,10 @@ import argparse,json,sys,time
 from pathlib import Path
 S=Path(__file__).resolve().parents[1];sys.path.insert(0,str(S.parents[1]))
 import numpy as np
+import torch
 from research.research_gn_nn_preservation_r4.src.anchors import generate_anchor,prepare_reference
 from research.research_gn_nn_preservation_r4.src.predict import predict_anchors
+from research.research_gn_nn_preservation_r4.src.predict_recurrent import predict_recurrent_anchors
 from research.research_gn_nn_preservation_r4.src.evaluate import evaluate_arm,save_result
 
 def load(path):
@@ -20,7 +22,14 @@ def main():
     ref=a.output/'public_reference.npz';setup=prepare_reference(a.operators,ref)
     anchor_path=a.output/'public_anchor.npz';anchor_cost=generate_anchor(a.operators,a.observation,anchor_path,ref)
     pred_dir=a.output/'public_prediction'
-    info=predict_anchors(a.checkpoint,[anchor_path],a.operators,pred_dir,a.device)[0]
+    dispatch_start=time.perf_counter()
+    header=torch.load(a.checkpoint,map_location='cpu',weights_only=False)
+    predict=predict_recurrent_anchors if header['format']=='gn_nn_r4_recurrent_feedback_v1'else predict_anchors
+    del header
+    dispatch_seconds=time.perf_counter()-dispatch_start
+    info=predict(a.checkpoint,[anchor_path],a.operators,pred_dir,a.device)[0]
+    info['preparation_cost']['wall_seconds']+=dispatch_seconds
+    info['preparation_cost']['checkpoint_dispatch_seconds']=dispatch_seconds
     prediction=load(pred_dir/'public_anchor.npz');public={**load(a.operators),**load(a.observation)}
     receipt,arrays=evaluate_arm(public,load(anchor_path),prediction,arm=info['arm'],
         noise='clean'if float(public['noise'])==0 else'noisy',preparation_cost=info['preparation_cost'])

@@ -18,7 +18,8 @@ from research.research_z_alg_r4_diversity.src.physics import Model, Regularizer,
 DEFAULTS = dict(wall_seconds=45., max_lu=500, max_rhs=30000,
                 lower=.02, upper=20., initial_material=.1,
                 stages=[8, 12, 24], stage_fractions=[.20, .25, .55],
-                ftol=1e-12, xtol=1e-12, gtol=1e-12, max_nfev=2000, discrepancy_stop=False)
+                ftol=1e-12, xtol=1e-12, gtol=1e-12, max_nfev=2000, discrepancy_stop=False,
+                discrepancy_each_scale=False)
 
 
 def read_npz(path):
@@ -159,12 +160,23 @@ class AnchorRun:
             state = state_at(x)
             # SciPy requests a new Jacobian after accepting a TRF step.
             # Saving here prevents rejected residual trials becoming endpoints.
-            accepted = cached_saved
-            self.endpoint = accepted
-            if stage == 24:
-                self.all_unknowns_released = True
+            if not self.cfg["discrepancy_each_scale"]:
+                # Retain the legacy primary/final-only/weakreg assignment order.
+                accepted = cached_saved
+                self.endpoint = accepted
+                if stage == 24:
+                    self.all_unknowns_released = True
             J = self.model.jacobian(state)@B/np.sqrt(self.scale2)
-            if stage == 24 and self.cfg["discrepancy_stop"] and accepted["relative_residual"] <= self.discrepancy_threshold:
+            if self.cfg["discrepancy_each_scale"]:
+                # This new control records an endpoint only after its real
+                # forward and analytic Jacobian have both completed in budget.
+                accepted = cached_saved
+                accepted["analytic_j_completed"] = True
+                self.endpoint = accepted
+                if stage == 24:
+                    self.all_unknowns_released = True
+            discrepancy_active = self.cfg["discrepancy_each_scale"] or (stage == 24 and self.cfg["discrepancy_stop"])
+            if discrepancy_active and accepted["relative_residual"] <= self.discrepancy_threshold:
                 raise DiscrepancyStop("PUBLIC_DISCREPANCY_THRESHOLD")
             if not self.weakreg:
                 return J
@@ -181,17 +193,28 @@ class AnchorRun:
                                 x_scale="jac", tr_solver="exact", ftol=self.cfg["ftol"],
                                 xtol=self.cfg["xtol"], gtol=self.cfg["gtol"], max_nfev=self.cfg["max_nfev"])
             # fit.x is the optimizer endpoint, and is already a computed physical state.
-            if cached_x is not None and np.array_equal(fit.x, cached_x):
-                accepted = cached_saved
-            elif accepted is None or not np.array_equal(fit.x, accepted["c"]):
-                state_at(fit.x)
-                accepted = cached_saved
+            if self.cfg["discrepancy_each_scale"]:
+                # TRF can terminate before requesting the endpoint Jacobian.
+                # Confirm that accepted optimizer endpoint with the same counted
+                # analytic API; a reached discrepancy gate is handled below.
+                jacobian(fit.x)
+            else:
+                if cached_x is not None and np.array_equal(fit.x, cached_x):
+                    accepted = cached_saved
+                elif accepted is None or not np.array_equal(fit.x, accepted["c"]):
+                    state_at(fit.x)
+                    accepted = cached_saved
             self.endpoint = accepted
             fit_info = dict(optimizer_status=int(fit.status), optimizer_success=bool(fit.success),
                             message=str(fit.message), nfev=int(fit.nfev), njev=int(fit.njev), optimality=float(fit.optimality))
         except DiscrepancyStop as exc:
-            status, reason = "DISCREPANCY_STOP", str(exc)
-            self.status, self.stop_reason = status, reason
+            reason = str(exc)
+            if self.cfg["discrepancy_each_scale"] and stage != 24:
+                # End this scale only. run() still prolongs to12 and24.
+                status = "STAGE_DISCREPANCY_STOP"
+            else:
+                status = "DISCREPANCY_STOP"
+                self.status, self.stop_reason = status, reason
         except PhaseStop as exc:
             status, reason = "PHASE_BUDGET_STOP", str(exc)
         except BudgetStop as exc:
@@ -208,6 +231,11 @@ class AnchorRun:
                             numerical_error_type=type(exc).__name__,
                             numerical_error_operation="SciPy dense exact TRF SVD",
                             fallback_or_restart_used=False)
+        if self.cfg["discrepancy_each_scale"]:
+            fit_info.update(discrepancy_each_scale=True,
+                            discrepancy_threshold=self.discrepancy_threshold,
+                            discrepancy_reached=status in ("STAGE_DISCREPANCY_STOP", "DISCREPANCY_STOP"),
+                            accepted_forward_and_analytic_j_completed=bool(accepted is not None and accepted.get("analytic_j_completed", False)))
         self.events.append(dict(stage=stage, parameter_dimension=stage*stage, status=status,
                                 stop_reason=reason, seconds=time.perf_counter()-started,
                                 start_counts=before, end_counts=dict(self.model.counts),

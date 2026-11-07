@@ -48,6 +48,8 @@ def score(seal_path,output):
                                     'GT_self_IoU_Otsu':g['IoU_Otsu'],'GT_self_shape_gate':g['IoU_Otsu']>=.7}
         truth=truth_cache[key];a=npz(study/'evaluation'/row['run']/f"{row['obs_id']}.npz")
         amp=float(truth['amplitude'])
+        row['actual_saved_candidate_count']=len(row['candidates'])
+        row['bestK_scope']='OFFLINE over the actual finite saved candidate set; K is method-specific, not universally five; no posterior or global-root coverage'
         for candidate,material in zip(row['candidates'],a['candidate_materials']):
             candidate.update(structure_metrics(material,truth['m'],amp))
         # Copies of selected candidate dictionaries are from the same JSON model.
@@ -59,10 +61,17 @@ def score(seal_path,output):
         row['GT_used_online']=False
         row['budgeted_joint_success']=bool(row['joint_success'] and row.get('accounted_within_budget',False))
         cold=row['cost_scope'].startswith(('INDEPENDENT','COLD','SEPARATE_FULL45'))
+        own_receipt=read_json(study/'evaluation'/row['run']/f"{row['obs_id']}.json")
+        # Old anchor preparation computes an NN feature even for ordinary
+        # baselines. Keep it in execution ledgers, but do not charge an unused
+        # feature as a necessary traditional deployment operation.
+        unused_features=float(own_receipt.get('baseline_unused_feature_wall_seconds',0.))if cold else 0.
+        row['actual_executed_method_wall_seconds']=row['wall_seconds']
+        row['unused_NN_feature_wall_seconds_excluded_from_deployment']=unused_features
         if row['obs_id']not in anchor_cost_cache:
             anchor_cost_cache[row['obs_id']]=read_json(study/'anchors'/f"{row['obs_id']}.json")
         base=anchor_cost_cache[row['obs_id']]
-        row['online_total_wall_seconds']=row['wall_seconds']+(0. if cold else base['solve_wall_seconds'])
+        row['online_total_wall_seconds']=row['wall_seconds']-unused_features+(0. if cold else base['solve_wall_seconds'])
         row['online_total_LU']=row['costcounts'].get('LU',0)+(0 if cold else base['counts'].get('LU',0))
         row['online_total_RHS']=row['costcounts'].get('actual_complex_RHS',0)+(0 if cold else base['counts'].get('actual_complex_RHS',0))
         row['online_total_within55']=bool(row['accounting_status']=='COMPLETE'and row['online_total_wall_seconds']<=55 and row['online_total_LU']<=600 and row['online_total_RHS']<=36000)
@@ -76,6 +85,8 @@ def score(seal_path,output):
                      selected_edge_RMSE=None if row.get('top1')is None else row['top1']['edge_RMSE_amplitude'],
                      LU=row.get('costcounts',{}).get('LU'),RHS=row.get('costcounts',{}).get('actual_complex_RHS'))
         table.update({k:row[k]for k in ('online_total_wall_seconds','online_total_LU','online_total_RHS','online_total_within55','joint_success_total55')})
+        table.update(actual_executed_method_wall_seconds=row['actual_executed_method_wall_seconds'],
+                     unused_NN_feature_wall_seconds_excluded_from_deployment=unused_features)
         raw=next((c for c in row['candidates']if c['label']=='raw_1'),None)
         table.update(raw_NRMSE=None if raw is None else raw['NRMSE'],
                      raw_data_relative_residual=None if raw is None else raw['relative_residual'],
@@ -86,7 +97,30 @@ def score(seal_path,output):
                      distinct_material_candidates=row.get('candidate_distinct_material_count'),
                      qualified_bestK_NRMSE=None if row.get('qualified_bestK_OFFLINE')is None else row['qualified_bestK_OFFLINE']['NRMSE'],
                      all_bestK_NRMSE=None if row.get('all_bestK_OFFLINE')is None else row['all_bestK_OFFLINE']['NRMSE'])
+        table['actual_saved_candidate_count']=row['actual_saved_candidate_count']
         tables.append(table)
+    # Independent cold CIE has its own uniform starting material. Comparative
+    # gains and failure-filled diagnostics use the shared strict GN, not that
+    # easier cold reference. Endpoint quality itself remains unchanged.
+    common={}
+    ordered=sorted(data['rows'],key=lambda r:0 if r['run']=='strict_gn45_anchor'else 1)
+    for row in ordered:
+        if row.get('transport_status')!='SEALED'or row['run'].startswith('cie_'):continue
+        candidate=next((c for c in row.get('candidates',[])if c['label']=='anchor'),None)
+        if candidate is not None:
+            common.setdefault(row['obs_id'],dict(row['anchor'],joint_success=bool(candidate['joint_success']),source_run=row['run']))
+    by_table={(r['run'],r['obs_id']):r for r in tables}
+    for row in data['rows']:
+        reference=common.get(row['obs_id']);table=by_table[row['run'],row['obs_id']]
+        table['method_anchor_NRMSE']=table['anchor_NRMSE']
+        row['common_strict_GN_reference']=reference
+        if reference is not None:
+            table.update(anchor_NRMSE=reference['NRMSE'],common_strict_anchor_NRMSE=reference['NRMSE'],
+                         common_strict_anchor_joint_success=reference['joint_success'])
+            gained=bool(row.get('joint_success')and not reference['joint_success'])
+            lost=bool(reference['joint_success']and not row.get('joint_success'))
+            row.update(new_joint_success_over_strict_GN=gained,lost_joint_success_vs_strict_GN=lost)
+            table.update(new_joint_success_over_strict_GN=gained,lost_joint_success_vs_strict_GN=lost)
     data.update(schema='gn-nn-r4-scored-v1',scored_unix=time.time(),
                 truth_scope='VAL_MODEL_SELECTION' if set(seal['splits'])=={'val'} else 'NEW_TEST_AFTER_METHOD_AND_PREDICTION_FREEZE',
                 statistical_unit='independent parent; clean/noisy and model seeds are correlated repetitions',
@@ -105,6 +139,8 @@ def score(seal_path,output):
                           'budgeted_joint_success':sum(bool(r.get('budgeted_joint_success'))for r in rs),
                           'joint_success_total55':sum(bool(r.get('joint_success_total55'))for r in rs),
                           'anchor_fallback':sum(bool(r.get('anchor_fallback'))for r in rs),
+                          'new_joint_success_over_strict_GN':sum(bool(r.get('new_joint_success_over_strict_GN'))for r in rs),
+                          'lost_joint_success_vs_strict_GN':sum(bool(r.get('lost_joint_success_vs_strict_GN'))for r in rs),
                           'not_run':sum(r['status']=='NOT_RUN'for r in rs),
                           'NRMSE_mean':float(np.mean([r['selected_NRMSE']for r in valid]))if valid else None,
                           'anchor_NRMSE_mean':float(np.mean([r['anchor_NRMSE']for r in rs if r['anchor_NRMSE']is not None]))if any(r['anchor_NRMSE']is not None for r in rs)else None,

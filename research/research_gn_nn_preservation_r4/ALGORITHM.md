@@ -6,7 +6,7 @@
 
 `src/anchors.py`复用R3解析Full-J及8→12→24材料参数化，每阶段仍解576阶物理系统。每个主锚点45秒/500LU/30000复RHS，停止容差1e-12，无数据合格门提前结束。保存真实电流j0、总场Q0、材料m0、公开观测Y和背景Jacobian回投影gb。数值收敛与预算停止分列，full24只表明576材料已释放。
 
-discrepancy及weakreg1e-5为独立后缀基线，不可替换NN的严格GN输入。discrepancy门为clean1e-6/noisy.0011，并在完整24阶段检查。所有失败与重新准备费用保留。
+discrepancy及weakreg1e-5为独立后缀基线，不可替换NN的严格GN输入。旧 discrepancy 在完整24阶段检查 clean1e-6/noisy.0011；新增 `discrepancy_allscales` 在8、12、24每阶段检查同一门，避免粗层先拟合噪声。达到粗层门仍继续 prolong 到下一层，最终仍使用576材料和完整物理。该普通停止策略修正先于 TEST 评分冻结，旧计算及所有失败费用保留。
 
 ## 六个两级共享权重Cascade
 
@@ -47,3 +47,7 @@ clean/noisy物理门为.001/.003。另保存相同候选的旧data+TV排序、�
 严格GN、继续TRF、弱正则、discrepancy与成熟结构CIE/Fourier-TSOM分别列出。CIE复用冻结原实现的3→6→10 Fourier掩模及单/双beta结构，采用全576实材料和完整原物理校正；显式Fourier列不等于已实现FFT复杂度。其冷55秒口径与NN的GN45秒+增量10秒并列，实际LU/RHS和当前自由度另报，不以相同时间上限冒充同等实际计算量。
 
 本轮无概率后验、全根枚举、全局唯一性、GT必达或transverse全局收敛保证。
+
+## 追加的共享权重反馈补充
+
+[recurrent_feedback.py](src/recurrent_feedback.py) 在电流补偿和材料读出之间加入固定G/S及伴随的物理下降层，不计算完整L逆。[理论及条件](theory/A17_RECURRENT_FEEDBACK.md) 区分固定材料二次下降、读出后的剖面下降与整个NN映射的稳定性。原六臂保持固定锚点Q输入；补充的refreshed-Q、二次feedback1与噪声容许feedback_hinge使用当前辅助Q，网络容量和两次权重共享相同，rho固定1。原J-full复用为无反馈控制，不重复训练同一个模型。三种补充均已从头训练并完成VAL；独立TEST、16步深度诊断以最终运行回执为准。GN初始化与最终验收仍求解完整 Maxwell，不宣称全管线无LU。

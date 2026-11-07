@@ -1,5 +1,7 @@
 """VAL-only posthoc final-current soft release, not a trained-soft Cascade."""
-import argparse,json,sys,time
+import argparse,json,sys,time,os
+for key in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):
+    os.environ[key]='1'
 from pathlib import Path
 S=Path(__file__).resolve().parents[1];sys.path.insert(0,str(S.parents[1]))
 import numpy as np

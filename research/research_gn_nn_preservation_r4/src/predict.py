@@ -74,8 +74,6 @@ def predict_anchors(checkpoint_path, anchor_paths, operators_path, output_dir, d
     model.eval()
     operators_reused = operators is not None
     operators = operators if operators_reused else OperatorCache(operators_path).to(target_device)
-    if operators.G_re.device != target_device:
-        raise ValueError("Shared operator device mismatch")
     _sync(target_device)
     setup = {"checkpoint_and_operator_setup_seconds": time.perf_counter()-start,
              "V48_source": operators.v48_source, "device": str(target_device),

@@ -9,11 +9,11 @@ import torch
 
 try:
     from .networks import NC, NS, OperatorCache, choose_device, normalized_features
-    from .recurrent_feedback import RecurrentFeedback
+    from .recurrent_feedback import RecurrentFeedback, HINGE_CLEAN_DELTA, HINGE_NOISY_DELTA
     from .predict import _sync, _tensor, _numpy, _read_optional_json
 except ImportError:
     from networks import NC, NS, OperatorCache, choose_device, normalized_features
-    from recurrent_feedback import RecurrentFeedback
+    from recurrent_feedback import RecurrentFeedback, HINGE_CLEAN_DELTA, HINGE_NOISY_DELTA
     from predict import _sync, _tensor, _numpy, _read_optional_json
 
 
@@ -45,6 +45,8 @@ def predict_recurrent_anchors(checkpoint_path, anchor_paths, operators_path, out
              "checkpoint": str(checkpoint_path), "operators": str(operators_path),
              "device": str(target), "arm": config["arm"], "mode": config["mode"],
              "rho": config["rho"], "cascade_passes": 2,
+             "feedback_step_rule": "hinge_majorizer" if config["mode"] == "feedback_hinge" else "quadratic_exact_line",
+             "noise_added_to_NN_channels": False,
              "operators_reused": operators_reused, "TRAIN_feature_stats_reused": stats_reused,
              "new_operator_uploads": int(not operators_reused),
              "projectors": operators.projector_metadata, "base_anchor_cost_included": False,
@@ -84,11 +86,12 @@ def predict_recurrent_anchors(checkpoint_path, anchor_paths, operators_path, out
         j0 = _tensor(anchor["j0"][None], target, complex_value=True)
         q0 = _tensor(anchor["Q0"][None], target, complex_value=True)
         public_y = _tensor(anchor["Y"][None], target, complex_value=True)
+        public_noise = _tensor(np.asarray(anchor["noise"]).reshape(1), target)
         _sync(target)
         feature_seconds = time.perf_counter()-feature_started
         inference_started = time.perf_counter()
         with torch.no_grad():
-            output = model(operators, features, m0, j0, public_y, stats, q0)
+            output = model(operators, features, m0, j0, public_y, stats, q0, public_noise=public_noise)
         _sync(target)
         inference_seconds = time.perf_counter()-inference_started
         transfer_started = time.perf_counter()
@@ -100,7 +103,8 @@ def predict_recurrent_anchors(checkpoint_path, anchor_paths, operators_path, out
         diagnostics = {}
         if model.feedback_steps:
             for key in ("tau", "gradient_norm2", "curvature", "phi_before", "phi_after",
-                        "zero_gradient", "zero_curvature", "zero_y_normalization", "zero_j0_normalization"):
+                        "zero_gradient", "zero_curvature", "zero_y_normalization", "zero_j0_normalization",
+                        "data_tolerance", "data_theta", "relative_data_residual_before", "relative_data_residual_after"):
                 value = torch.stack([torch.stack([step[key] for step in layer], dim=1)
                                      for layer in output["feedback_diagnostics"]], dim=1)
                 diagnostics["feedback_"+key] = _numpy(value)[0]
@@ -119,7 +123,9 @@ def predict_recurrent_anchors(checkpoint_path, anchor_paths, operators_path, out
                 "output_transfer_seconds": transfer_seconds, "fixed_operator_cost": fixed_counts,
                 "base_anchor_included": False, "global_setup_reference": setup_name}
         receipt = {"obs_id": obs_id, "arm": config["arm"], "mode": config["mode"],
-                   "rho": config["rho"], "cascade_passes": 2, "anchor_path": str(path),
+                   "rho": config["rho"], "cascade_passes": 2,
+             "feedback_step_rule": "hinge_majorizer" if config["mode"] == "feedback_hinge" else "quadratic_exact_line",
+             "noise_added_to_NN_channels": False, "anchor_path": str(path),
                    "preparation_cost": cost, "fixed_operator_cost": fixed_counts,
                    "inference_seconds": inference_seconds, "anchor_io_seconds": anchor_io_seconds,
                    "base_anchor_cost": base_anchor_cost, "truth_access": "NONE",

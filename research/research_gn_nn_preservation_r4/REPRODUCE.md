@@ -22,7 +22,15 @@ python research/research_gn_nn_preservation_r4/experiments/release_anchors.py
 python research/research_gn_nn_preservation_r4/experiments/train_models.py --data-ready --arms v_physics j_full j_null g_weak g_dark --seeds 7 --device mps --predict-val
 ```
 
-alpha、额外种子和场约束的实际冻结选择见最终方法清单。`--loss const`或`--loss internal`分别运行单项消融，均为新模型。已存在的训练模型不应被覆盖。
+实际soft-alpha选择为1，因此复用J-full；受约束C*为G-weak。Voxel/J-full/G-weak均补17/27种子。`--loss const`或`--loss internal`分别运行J-full/G-weak的单项消融，均为新模型。完整20个NN及6个传统／继续方法的路径与种子见 `audit/FINAL_RUNS.json`，不能事后按TEST删方法。已存在训练权重不覆盖。
+
+追加RNN的实际训练入口为：
+
+```bash
+python research/research_gn_nn_preservation_r4/experiments/train_recurrent.py --authorized --rho 1 --modes refreshed_q feedback1 feedback_hinge --device mps --predict-val
+```
+
+可选完整VIE微调已通过预声明VAL门，实际运行两个各320次更新的匹配臂。它们从G-weak-const的同一checkpoint开始，本阶段分别为纯材料监督与材料监督加完整VIE hinge；没有在控制臂额外保留const项。实际合同与更正记录位于 `audit/OPTIONAL_FT_*.json`。
 
 ## 公开输入推理、验收与离线评分
 
@@ -36,19 +44,30 @@ python research/research_gn_nn_preservation_r4/experiments/score_predictions.py 
 python research/research_gn_nn_preservation_r4/experiments/score_predictions.py score --split val
 ```
 
-TEST在最终`audit/METHOD_FREEZE.json`后，按冻结run列表执行同样流程并将split改为test。不能使用TEST评分重新选择checkpoint、alpha、损失或seed。完整物理能量使用同一封存与冻结run清单：
+TEST方法与checkpoint在08:03:14UTC冻结。全量公开推理使用 `experiments/predict_frozen_test.py`，只读online清单与公共锚点，一个固定算子上传复用20个模型；它不会读取GT。原执行队列按固定M4/i9分配，准确命令与覆盖见 [双机执行说明](delegated/data/TEST_EXECUTION.md)。不能使用TEST评分重新选择checkpoint、alpha、损失或seed。完整物理能量使用同一封存与冻结run清单：
 
 ```bash
 python research/research_gn_nn_preservation_r4/experiments/test_energy.py --seal research/research_gn_nn_preservation_r4/evaluation/TEST_SEALED.json --runs-json research/research_gn_nn_preservation_r4/audit/FINAL_RUNS.json
-python research/research_gn_nn_preservation_r4/experiments/plot_results.py
+python research/research_gn_nn_preservation_r4/experiments/plot_results.py --tag main --runs discrepancy_allscales45_anchor cie_dual_cold55 v_physics_seed7_cascade2 j_full_seed7_cascade2 g_weak_seed7_cascade2_const recurrent_feedback1_seed7_cascade2
+python research/research_gn_nn_preservation_r4/experiments/plot_test_energy.py
+python research/research_gn_nn_preservation_r4/experiments/plot_generalization.py
+python research/research_gn_nn_preservation_r4/experiments/plot_completion_costs.py
 ```
 
 ## 成熟结构CIE参考
 
-默认CLI仅列公开计划，数值运行需明确`--execute`。CIE从公共均匀材料.1冷启动，不能免费使用NN的GN锚点。主参考为固定13母体×两种噪声；扩大覆盖时必须保留所有预先定义对象。
+默认CLI仅列公开计划，数值运行需明确`--execute`。CIE从公共均匀材料.1冷启动，不能免费使用NN的GN锚点。最终范围为全部108母体／216观测，按两个主机分配；13母体只是主图展示清单，不是总实验分母。
 
 ```bash
-python research/research_gn_nn_preservation_r4/experiments/run_cie_reference.py --split test --scope figure13 --methods cie_dual --workers 2 --execute --test-methods-frozen
+python research/research_gn_nn_preservation_r4/experiments/run_cie_reference.py --split test --scope all108 --methods cie_dual --workers 2 --execution-partition local --execute --test-methods-frozen
 ```
+
+该命令只执行固定local子集72份观测；其余144份由原i9队列执行。它不是单机全216的伪命令。独立平台上运行单个未知观测可直接用前述 `infer_observation.py`，不需要原双机主机配置、类别、清单或GT；批量NN前向也不受原主机分配限制。重新执行的硬件／耗时属于新复算，不冒充原实验计时。
+
+## 归档结果的直接重评分
+
+Release保留权重、公开输入、全部候选、真实物理输出和离线数据。恢复入口见 [归档说明](delegated/data/RELEASE_PACKAGING.md)。原seal记录原机绝对路径，不应编辑成新机器路径；在恢复目录另建本地seal，再用同一评分器得到复算表。无需为重画图重复运行GN或训练。
+
+主科学图为PNG；全部对象／全部方法图册使用**无损WebP**以控制静态网站体积。两者均由真实数值数组绘制，固定材料色阶，不使用生成图像。
 
 所有figure身份标记由清单生成；TRAIN/VAL/TEST图不可混用。raw、物理校正top1、离线best@K分别命名。最终结果与实际运行覆盖以结果表及回执为准，代码可运行不等于相应实验已经运行。

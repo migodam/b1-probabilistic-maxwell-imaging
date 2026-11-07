@@ -6,6 +6,8 @@ def read(path):return json.loads(Path(path).read_text())
 
 def collect(study):
     study=Path(study);rows=[];seen_setups=set()
+    online=read(study/'data/manifests/online.json')['records']
+    case_meta={r['obs_id']:r for r in online}
     def emit(stage,identifier,wall=None,counts=None,scope='actual execution',additive=True,**extra):
         c=counts or {}
         rows.append(dict(stage=stage,identifier=identifier,wall_seconds=wall,
@@ -24,9 +26,14 @@ def collect(study):
             seen_setups.add(identity)
             emit('public_background_J_setup',f.stem,setup.get('wall_seconds'),setup.get('counts',{}),scope='actual public reference setup in this batch; reused setup records excluded')
     for f in sorted((study/'anchors').glob('obs_*.json')):
-        d=read(f);emit('GN_or_traditional_anchor',f.stem,d.get('solve_wall_seconds'),d.get('counts'),
+        d=read(f);obs=f.stem.split('_discrepancy')[0].split('_weakreg')[0]
+        split=case_meta.get(obs,{}).get('split');primary=obs==f.stem
+        purpose='offline_TRAIN_VAL_anchor_preparation'if split in('train','val')else'TEST_target_solver'
+        emit('GN_or_traditional_anchor',f.stem,d.get('solve_wall_seconds'),d.get('counts'),
+                     split=split,primary_anchor=primary,purpose=purpose,
                      status=d.get('status'),stop_reason=d.get('stop_reason'),origin=d.get('execution_origin',d.get('origin')))
         emit('anchor_public_features',f.stem,d.get('feature_wall_seconds'),d.get('feature_counts',{}),
+             split=split,purpose='NN_public_input_features',
              scope='gb actually computed once here; later method budgets may reference its cost')
     for f in (study/'models').rglob('summary.json'):
         d=read(f);emit('NN_training',f.parent.name,d.get('training_seconds',d.get('training_wall_seconds')),
@@ -41,17 +48,23 @@ def collect(study):
     for f in inference_files:
         d=read(f);emit('NN_model_load',f.parent.name,d.get('checkpoint_and_operator_setup_seconds'),{},
                      scope='model/checkpoint preparation; operator cache reuse status in source receipt')
+    for f in (study/'predictions').glob('prediction_runs_*.json'):
+        d=read(f);emit('NN_shared_operator_upload',f.stem,d.get('global_operator_setup_seconds'),{},scope='one immutable operator upload for this actual bulk inference invocation')
     for f in (study/'predictions').glob('*/obs_*.json'):
         d=read(f);c=d.get('preparation_cost',{});wall=sum(c.get(k,0.)for k in ('feature_normalization_seconds','inference_seconds','output_transfer_seconds'))
         # Posthoc projections actually happened too; the original NN prediction is a shared source.
         if 'posthoc_projection_seconds'in c:wall=c['posthoc_projection_seconds']
         emit('NN_prediction',f.parent.name+'/'+f.stem,wall,c.get('fixed_operator_cost',{}),
+             split=case_meta.get(f.stem,{}).get('split'),
              scope='actual normalization/inference/transfer only; inherited gb is already counted at anchor',
              method_budget_preparation_seconds=c.get('wall_seconds'))
     for f in (study/'evaluation').glob('*/obs_*.json'):
-        d=read(f);c=d.get('verification_costcounts',d.get('costcounts',{}))
+        d=read(f);c=dict(d.get('verification_costcounts',d.get('costcounts',{})))
+        for key,value in d.get('current_phase',{}).get('cost',{}).items():
+            if isinstance(value,(int,float))and key!='wall_seconds':c['CIE_'+key]=value
         wall=d.get('evaluator_wall_seconds',d.get('verification_wall_seconds',d.get('wall_seconds')))
         emit('physical_verification_correction',f.parent.name+'/'+f.stem,wall,c,
+             split=d.get('split',case_meta.get(f.stem,{}).get('split')),
              scope='actual evaluator execution; prior inference is separate',status=d.get('status'),
              method_budget_seconds=d.get('wall_seconds'),budget_scope=d.get('cost_scope','post_GN_increment'),
              wall_overshoot=d.get('wall_overshoot_seconds'))
@@ -59,6 +72,21 @@ def collect(study):
         f=study/'results'/sub/'RECEIPT.json'
         if f.exists():
             d=read(f);emit('offline_energy_diagnostic',sub,d.get('total_recorded_wall_seconds',d.get('wall_seconds')),d.get('physical_costcounts',d.get('model_counts',d.get('counts',{}))),scope='scientific diagnostic, excluded from deployment cost; measured phase sum if whole process was not recorded')
+    f=study/'cache/projector_setup_creation.json'
+    if f.exists():
+        d=read(f);emit('fixed_Green_projector_preparation','creation',d.get('setup_seconds'),{},scope='actual once-only projector creation; later model receipts only load this cache')
+    for f in (study/'results/recurrent_iterations').glob('*/RECEIPT.json'):
+        d=read(f);emit('offline_recurrent_depth_diagnostic',f.parent.name,d.get('wall_seconds'),d.get('physical_costcounts',{}),scope='VAL public-input depth diagnostic, not deployment or extra training')
+    for f in (study/'audit').glob('anchor_grad_*/RECEIPT.json'):
+        d=read(f);emit('offline_projected_gradient_diagnostic',f.parent.name,d.get('wall_seconds'),d.get('costcounts',{}),scope='public anchor adjoint diagnostic; separate from original solver and deployment',status=d.get('status'))
+    for f in (study/'audit').glob('REMOTE_TRANSFER_*.json'):
+        d=read(f);action=d.get('action','unknown');queue=action.startswith('queue_')
+        emit('remote_queue_elapsed'if queue else'remote_transfer_or_packaging',f.stem,d.get('wall_seconds'),{},
+             scope='overlapping queue elapsed, not additive physical task time'if queue else'actual transport/setup overhead, not Maxwell computation',
+             additive=not queue,status=d.get('status'))
+    f=study/'audit/PUBLICATION_METADATA_ATTEMPT.json'
+    if f.exists():
+        d=read(f);emit('stopped_publication_metadata_probe',f.stem,None,{'LU':0,'actual_complex_RHS':0},scope='nonphysical metadata probe; exact elapsed not recorded',status=d['status'])
     f=study/'audit/ANCHOR_PROTOCOL_CORRECTION.json'
     if f.exists():
         d=read(f)

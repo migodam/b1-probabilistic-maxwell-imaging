@@ -91,7 +91,7 @@ def read_scores(path, split):
         row = {k: raw.get(k) for k in ("run", "obs_id", "parent_id", "split", "group", "status")}
         row.update(noise=number(raw.get("noise")), amplitude=number(raw.get("amplitude")),
                    selected_NRMSE=selected_error,
-                   anchor_NRMSE=number(anchor.get("NRMSE", raw.get("anchor_NRMSE"))),
+                   anchor_NRMSE=number((raw.get('common_strict_GN_reference')or{}).get('NRMSE',raw.get('common_strict_anchor_NRMSE',raw.get('anchor_NRMSE',anchor.get('NRMSE'))))),
                    selected_data_residual=residual,
                    selected=selected_error is not None,
                    not_run=raw.get("status") == "NOT_RUN",
@@ -319,7 +319,7 @@ def cost_figure(summary, output):
 
 def one_time_costs(study):
     rows = []
-    for path in sorted((study/"models").glob("*/summary.json")):
+    for path in sorted((study/"models").rglob("summary.json")):
         data = json.loads(path.read_text())
         rows.append(dict(scope="one_time_training", run=path.parent.name,
                          measured_seconds=number(data.get("training_seconds")), source=str(path),
@@ -337,7 +337,7 @@ def one_time_costs(study):
 
 
 def training_curves(study, output):
-    paths = sorted((study/"models").glob("*/history.json"))
+    paths = sorted((study/"models").rglob("history.json"))
     if not paths:
         return None
     plt = pyplot();fig, ax = plt.subplots(figsize=(11, 6))

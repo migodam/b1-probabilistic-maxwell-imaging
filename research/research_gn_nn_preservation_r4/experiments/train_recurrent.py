@@ -14,7 +14,8 @@ STUDY = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(STUDY/"src"))
 from networks import (NC, NS, GRID, MATERIAL_SCALE, OperatorCache, choose_device,
                       fit_feature_stats, material_loss, public_regularizer)
-from recurrent_feedback import MODES, RecurrentFeedback, feedback_step
+from recurrent_feedback import (MODES, RecurrentFeedback, feedback_step,
+                                HINGE_CLEAN_DELTA, HINGE_NOISY_DELTA)
 from predict_recurrent import predict_recurrent_anchors
 from train import (SupervisedAnchors, load_anchor, released_training_cohort,
                    to_device, _sync, _json_write)
@@ -27,6 +28,7 @@ class RecurrentAnchors(SupervisedAnchors):
         with np.load(self.anchor_root/f"{obs_id}.npz", allow_pickle=False) as p:
             item["public_y"] = torch.from_numpy(np.asarray(p["Y"], np.complex64).copy())
             item["anchor_q"] = torch.from_numpy(np.asarray(p["Q0"], np.complex64).copy())
+            item["public_noise"] = torch.tensor(float(np.asarray(p["noise"]).reshape(-1)[0]), dtype=torch.float32)
         return item
 
 
@@ -41,7 +43,8 @@ def _epoch(model, operators, loader, stats, device, loss_name, regularizer_weigh
             batch = {key: to_device(value, device) for key, value in batch.items()}
             if optimizer is not None:
                 optimizer.zero_grad(set_to_none=True)
-            out = model(operators, batch["x"], batch["m0"], batch["j0"], batch["public_y"], stats, batch["anchor_q"])
+            out = model(operators, batch["x"], batch["m0"], batch["j0"], batch["public_y"], stats, batch["anchor_q"],
+                        public_noise=batch["public_noise"])
             mloss, terms = material_loss(out["m_proposal"], batch["m_gt"])
             rloss = public_regularizer(out, batch["j0"], batch["q0_norm2"], operators, loss_name)
             loss = mloss+regularizer_weight*rloss
@@ -94,10 +97,13 @@ def train_recurrent(data_root, manifest_path, operators_path, anchor_root, outpu
     train_set = RecurrentAnchors(train, data_root, anchor_root, stats, "j_full")
     val_set = RecurrentAnchors(val, data_root, anchor_root, stats, "j_full")
     output_dir.mkdir(parents=True, exist_ok=True)
-    _json_write(output_dir/"shared_setup.json", {"operator_uploads": 1, "device": str(target),
+    setup_receipt = {"operator_uploads": 1, "device": str(target),
                  "wall_seconds": time.perf_counter()-setup_start, "feature_stats_source": stats_source,
                  "normalization_refitted_per_layer": False, "old_network_weights_loaded": False,
-                 "training_status": "EXPLICIT_PARENT_AUTHORIZED", "test_truth_access": "NONE"})
+                 "training_status": "EXPLICIT_PARENT_AUTHORIZED", "test_truth_access": "NONE",
+                 "invocation_unix_ns": time.time_ns()}
+    _json_write(output_dir/f"shared_setup_{setup_receipt['invocation_unix_ns']}.json", setup_receipt)
+    _json_write(output_dir/"shared_setup.json", setup_receipt)
     summaries = []
     for mode in modes:
         random.seed(seed)
@@ -114,6 +120,12 @@ def train_recurrent(data_root, manifest_path, operators_path, anchor_root, outpu
         optimizer = torch.optim.AdamW(model.parameters(), lr=.001)
         config = {"arm": f"recurrent_{mode}", "network_arm": "j_full", "mode": mode,
                   "rho": float(rho), "rho_fixed": True, "cascade_passes": 2,
+                  "device": str(target), "requested_device": device,
+                  "feedback_data_objective": "noise_ball_squared_hinge" if mode == "feedback_hinge" else "quadratic",
+                  "feedback_step_rule": "hinge_majorizer" if mode == "feedback_hinge" else "quadratic_exact_line",
+                  "feedback_data_tolerance": {"clean": HINGE_CLEAN_DELTA, "noisy": HINGE_NOISY_DELTA,
+                                              "source": "explicit_public_anchor_noise"} if mode == "feedback_hinge" else 0.,
+                  "noise_added_to_NN_channels": False,
                   "feedback_steps_per_layer": model.feedback_steps, "seed": seed,
                   "max_epochs": 100, "batch_size": 64, "patience": 15, "lr": .001,
                   "optimizer": "AdamW", "weight_decay": .01, "loss": loss_name,

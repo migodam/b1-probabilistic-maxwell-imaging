@@ -1,0 +1,45 @@
+{
+  "schema": "gn-nn-r4-offline-anchor-gradient-v1",
+  "status": "COMPLETED",
+  "diagnostic_origin": "OFFLINE_RECOMPUTED_NOT_SOLVER_REPORTED",
+  "start_utc": "20261107T072741Z",
+  "splits": [
+    "train",
+    "val"
+  ],
+  "planned_observations": 1164,
+  "attempted_observations": 1164,
+  "planned_parents": 582,
+  "limit": null,
+  "statuses": {
+    "COMPLETED": 1164
+  },
+  "costcounts": {
+    "LU": 1164,
+    "actual_complex_RHS": 13968,
+    "adjoint_complex_RHS": 13968,
+    "forward_complex_RHS": 0
+  },
+  "operation_counter_semantics": "Actual dispatched LU/RHS calls, including failed/interrupted calls; no assumed successful completion of a failed solve",
+  "wall_seconds": 25.321145124733448,
+  "cpu_seconds": 20.236925000000003,
+  "operator_setup_seconds": 0.007905083242803812,
+  "sum_observation_wall_seconds": 24.922474498860538,
+  "BLAS_threads": 1,
+  "CPU_workers": 1,
+  "threadpools": [],
+  "objective": "0.5 ||S j0 - Y||_F^2 / ||Y||_F^2; original data objective only",
+  "derivative": "L=I-diag(m0)G; lambda=L^{-*}S*(Sj0-Y)/||Y||^2; g=Re sum_s conj(lambda) Q0",
+  "gradient_mapping": "m0 - clip(m0 - g, .02, 20), unit step in original real material coordinates",
+  "Frank_Wolfe_gap": "g dot (m0-v), v_i=lower if g_i>=0 else upper",
+  "activity_tolerance": 1e-08,
+  "physics_dtype": "complex128",
+  "forward_RHS": 0,
+  "truth_access": "NONE; online manifest, operators, public anchor m0/j0/Q0/Y and scalar original receipt only",
+  "optimization_performed": false,
+  "Full_J_constructed": false,
+  "formula_or_FD_validation_performed": false,
+  "original_anchor_and_solver_receipts_modified": false,
+  "interpretation": "Offline diagnostic only; does not replace solver-reported optimality or alter original stop status; no GT recovery or causal overfit conclusion",
+  "csv": "audit/anchor_grad_train_val/PER_OBSERVATION.csv"
+}

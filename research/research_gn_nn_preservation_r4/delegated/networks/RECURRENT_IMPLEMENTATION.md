@@ -4,13 +4,13 @@ Only `src/recurrent_feedback.py`, `experiments/train_recurrent.py` and this docu
 
 ## Primitive and recurrence
 
-`feedback_step(operators, current, material, public_y, anchor_current, rho, ...)` implements the supplied quadratic feedback using only fixed G/S products and their Hermitian adjoints. Material and rho are fixed across its inner steps. Public Y and original j0 squared norms remain fixed denominators. For exactly zero gradient or curvature, the per-observation step is zero; division uses a safe denominator before masking, so no numerical 0/0 is evaluated. Zero public normalization norms use the same 1e-20 floor as the existing network algebra and are exposed in diagnostics.
+`feedback_step(operators, current, material, public_y, anchor_current, rho, ...)` implements the supplied quadratic feedback by default, or the noise-ball majorizer below when a data tolerance is supplied, using only fixed G/S products and their Hermitian adjoints. Material and rho are fixed across its inner steps. Public Y and original j0 squared norms remain fixed denominators. For exactly zero gradient or curvature, the per-observation step is zero; division uses a safe denominator before masking, so no numerical 0/0 is evaluated. Zero public normalization norms use the same 1e-20 floor as the existing network algebra and are exposed in diagnostics.
 
 The returned field and receiver residual are updated by linearity and reused by a second feedback step. No LU, inverse, optimizer, truth/support input, or finite-difference physics occurs inside this layer. Autograd differentiates the entire unrolled computation, including the upstream rowLS material; “fixed material” means held constant during the inner feedback updates, not detached from outer training.
 
 `RecurrentFeedback(mode, rho)` contains one `ResidualUNet('j_full')`, shared across exactly two passes. Each pass predicts an additive cumulative-current increment, computes the existing shared-real boxed rowLS material, performs zero/one/two fixed-material feedback steps, then refreshes rowLS after feedback. Material and current both propagate to the next pass.
 
-All four modes have identical 121,528 network parameters and two network passes:
+The original four modes have identical 121,528 network parameters and two network passes:
 
 - `no_feedback`: original fixed-anchor Q channels; current/rowLS cascade only.
 - `refreshed_q`: Q refreshed from the current but no physics feedback.
@@ -41,3 +41,18 @@ For the checked batch of two observations, feedback2 used 6 forward G products, 
 `src/predict_recurrent.py` provides `predict_recurrent_anchors(checkpoint_path, explicit_public_anchor_paths, operators_path, output_dir, device="mps", operators=shared, stats=shared)`. It opens the recurrent checkpoint, only the six public anchor inputs and public cost receipts; it never opens a manifest, evaluator, class labels or truth. The shared immutable G/E/S upload and TRAIN statistics are reused. Candidate files contain the existing evaluation arrays, both stage arrays, optional feedback diagnostics, per-case inference timing, `preparation_cost_json` and fixed-operator cost fields. Global setup and base-anchor solving remain separate, following the existing preparation-cost convention. Missing feature receipts remain explicitly incomplete.
 
 `train_recurrent --predict-val` calls this module after each new best model is complete, writing `predictions/recurrent_{mode}_seed7_cascade2/<obs_id>.npz`. It uses exactly the full156 VAL records established by the existing central launch-time cohort check. Default new training scope is now only `refreshed_q` and `feedback1`, rho=1, seed7. Existing Jfull baseline is reused; no no-feedback or feedback2 model is scheduled. The original six-arm interfaces and active processes are unchanged. Parent authorization and the existing6h total budget still control whether these models actually run. No additional wiring check or inference/training execution was performed for this supplement.
+
+
+## Before-first-RNN supplementary contract: noise-aware feedback
+
+Status at this amendment: no RNN training has started. `feedback_hinge` is prepared as a separately scheduled third focused comparison alongside `refreshed_q` and `feedback1`; it is not added to the default two-mode training list. Its purpose is to isolate noise-aware feedback, not to search a parameter grid. Parent authorization and the original6h total budget remain unchanged.
+
+A noisy physical truth can satisfy the state equation while its receiver residual equals measurement noise. The quadratic data feedback still pushes such a state. The new mode uses a public noise-tolerance ball so an otherwise qualified state inside that ball can have zero feedback. This statement concerns the explicit feedback block; NN proposals and whole-loop imaging performance still require evidence.
+
+The frozen contract is: two shared network passes, one feedback step per pass, rho=1, unchanged121,528 parameters and27 input channels. Public `noise` is passed as the explicit `public_noise=` forward keyword from each public anchor, through `RecurrentAnchors` and public recurrent inference. It is never inferred from GT and never appended as an additional NN channel. Noise already present in the original input remains unchanged. Delta is fixed to1e-6 for clean and.0011 for noisy anchors, reusing the master plan's optional-FT tolerances without tuning.
+
+For s=||r||/||Y||, theta=max(0,1-delta/s), with the zero-residual branch evaluated safely, the data gradient is theta*S*r/||Y||². The state gradient is unchanged. The denominator remains the FULL ||Sg||²/||Y||²+rho||Lg||²/||j0||², with no theta factor. This is the quadratic upper-bound/majorizer step for the squared hinge objective, not an exact line minimizer of the hinge. Recorded phi is .5*max(s-delta,0)² plus the original state term. Diagnostics and checkpoint/receipt metadata identify the tolerance, theta, normalized residual and majorizer step rule. Passing the default scalar tolerance0 preserves the old quadratic calculation and exact-line terminology for existing modes.
+
+This is a nonlinear current→material→fixed-operator feedback recurrence. It is not the A17 Schur algorithm, and it does not execute A17's compressed endpoint, Cholesky or Woodbury solve.
+
+Verification for this amendment: static Python syntax only, PASS for the three code files. No renewed wiring, finite differences, random numerical checks, cohort inference or training was run. Prior wiring evidence applies to the earlier quadratic recurrence; the new hinge path will be exercised by an actually authorized training run.

@@ -1,5 +1,7 @@
 """Explicit closure and offline scoring; TEST requires a method freeze record."""
-import argparse,json,sys
+import argparse,json,sys,os
+for key in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):
+    os.environ[key]='1'
 from pathlib import Path
 S=Path(__file__).resolve().parents[1];sys.path.insert(0,str(S.parents[1]))
 from research.research_gn_nn_preservation_r4.src.score import seal_predictions,score

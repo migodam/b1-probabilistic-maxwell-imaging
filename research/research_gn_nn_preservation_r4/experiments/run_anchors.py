@@ -44,12 +44,17 @@ def main():
     parser.add_argument("--limit", type=int)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--discrepancy", action="store_true", help="Separate discrepancy baseline, never primary NN anchor")
+    parser.add_argument("--discrepancy-all-scales", action="store_true", help="Separate standard discrepancy control at every8/12/24 scale")
     parser.add_argument("--full-trf", action="store_true", help="Disable discrepancy stopping for explicit mature control")
     parser.add_argument("--weakreg", type=float, default=0.)
     parser.add_argument("--worker-obs", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--worker-output", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--core-mask", type=int, help="Optional Windows affinity mask; affects this worker only")
     args = parser.parse_args()
+    if args.discrepancy_all_scales and (args.full_trf or args.weakreg):
+        parser.error("--discrepancy-all-scales is an independent unregularized control")
+    solver_config=dict(discrepancy_stop=bool((args.discrepancy or args.discrepancy_all_scales) and not args.full_trf),
+                       discrepancy_each_scale=bool(args.discrepancy_all_scales))
     from research.research_gn_nn_preservation_r4.src.anchors import generate_anchor, prepare_reference, dump
     if args.worker_obs is not None:
         # Fresh subprocesses recheck canonical completion after queue submission.
@@ -57,15 +62,15 @@ def main():
         output=args.worker_output
         if output.exists() and output.with_suffix(".json").exists():
             receipt=json.loads(output.with_suffix(".json").read_text(encoding="utf-8"))
-            expected=bool(args.discrepancy and not args.full_trf)
-            if receipt.get("weakreg",0.)!=args.weakreg or bool(receipt.get("config",{}).get("discrepancy_stop",False))!=expected:
+            expected=solver_config["discrepancy_stop"]
+            if receipt.get("weakreg",0.)!=args.weakreg or bool(receipt.get("config",{}).get("discrepancy_stop",False))!=expected or bool(receipt.get("config",{}).get("discrepancy_each_scale",False))!=solver_config["discrepancy_each_scale"]:
                 raise ValueError("Existing canonical receipt has incompatible public solver configuration")
             print(json.dumps(dict(worker_action="REUSED_COMPLETE_PAIR",status="REUSED_COMPLETE_PAIR",new_physics_counts={},canonical_origin=receipt.get("execution_origin",{}))))
             return
         reservations=args.output/"LOCAL_RESERVED_IDS.json"
         # Actual worker --output defaults to STUDY/anchors, matching canonical
         # paths for both the live remote queue and local finite batch.
-        if sys.platform=="win32" and reservations.exists() and not args.weakreg and not args.discrepancy and not args.full_trf:
+        if sys.platform=="win32" and reservations.exists() and not args.weakreg and not args.discrepancy and not args.discrepancy_all_scales and not args.full_trf:
             reserved=json.loads(reservations.read_text(encoding="utf-8"))
             if output.stem in reserved.get("obs_ids",[]):
                 print(json.dumps(dict(worker_action="DEFERRED_TO_LOCAL",status="DEFERRED_TO_LOCAL",new_physics_counts={})))
@@ -73,7 +78,7 @@ def main():
         if args.core_mask and sys.platform == "win32":
             import ctypes
             ctypes.windll.kernel32.SetProcessAffinityMask(ctypes.windll.kernel32.GetCurrentProcess(), args.core_mask)
-        receipt = generate_anchor(args.data/"operators.npz", args.worker_obs, args.worker_output, args.reference, args.weakreg, dict(discrepancy_stop=args.discrepancy and not args.full_trf))
+        receipt = generate_anchor(args.data/"operators.npz", args.worker_obs, args.worker_output, args.reference, args.weakreg, solver_config)
         print(json.dumps(dict(worker_action="COMPUTED_NEW", **{key: receipt[key] for key in ("status", "solve_wall_seconds", "feature_wall_seconds", "final_stage", "final_relative_residual", "counts")})))
         return
     if args.workers < 1 or args.workers > (4 if sys.platform == "win32" else 2):
@@ -95,7 +100,7 @@ def main():
         if args.noise is not None and record["noise"] != args.noise: continue
         records.append(record)
     if args.limit: records = records[:args.limit]
-    suffix = "_weakreg1e-5" if args.weakreg else ("_discrepancy" if args.discrepancy else ("_fulltrf" if args.full_trf else ""))
+    suffix = "_discrepancy_allscales" if args.discrepancy_all_scales else ("_weakreg1e-5" if args.weakreg else ("_discrepancy" if args.discrepancy else ("_fulltrf" if args.full_trf else "")))
     tasks, skipped = [], []
     for record in records:
         output = args.output/(record["obs_id"]+suffix+".npz")
@@ -107,6 +112,7 @@ def main():
                    "--worker-output", str(output.resolve()), "--weakreg", str(args.weakreg)]
         if args.full_trf: command.append("--full-trf")
         if args.discrepancy: command.append("--discrepancy")
+        if args.discrepancy_all_scales: command.append("--discrepancy-all-scales")
         if args.core_mask:
             command.extend(["--core-mask", str(args.core_mask)])
         tasks.append((command, output))
@@ -140,7 +146,7 @@ def main():
                  wall_seconds=time.perf_counter()-tick, shared_reference_setup=shared_setup,
                  aggregate_model_counts=dict(costs), canonical_case_counts=dict(canonical_costs), worker_actions=dict(actions), stop_histogram=dict(stops),
                  sum_solver_wall_seconds=solve_seconds, sum_feature_wall_seconds=feature_seconds,
-                 jobs=completions, online_truth_access="NONE", weakreg=args.weakreg, discrepancy_stop=args.discrepancy and not args.full_trf)
+                 jobs=completions, online_truth_access="NONE", weakreg=args.weakreg, **solver_config)
     batch_id = "_".join(args.split or ["selected"])+suffix+"_"+str(time.time_ns())
     dump(args.output/("BATCH_"+batch_id+".json"), batch)
     print(json.dumps({key: batch[key] for key in ("status", "selected", "launched", "wall_seconds")}))

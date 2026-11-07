@@ -1,0 +1,71 @@
+{
+  "schema": "gn-nn-r4-rnn-test-static-review-v1",
+  "status": "SCOPED_STATIC_REVIEW_COMPLETE",
+  "review_scope": "RNN theory/code alignment, A17 attribution, trained/diagnostic depth separation, public TEST execution protocol and figure identity paths",
+  "source_mutation_during_review": true,
+  "open_material_findings": [],
+  "resolved_findings": [
+    {
+      "id": "A17_ORTHOGONAL_COMPLEMENT_PRECONDITION",
+      "severity": "P2",
+      "kind": "theory_statement_precondition",
+      "status": "FIXED_BY_PARENT_STATICALLY_CONFIRMED",
+      "current_source": "theory/A17_RECURRENT_FEEDBACK.md:15-21",
+      "finding": "The simplified dressing C+R_U D_m G C requires R_U C=0; the initial text omitted U* C=0.",
+      "resolution": "The parent explicitly stated orthogonal added modes and retained the general C-R_U C+R_U D_m G C expansion.",
+      "actual_RNN_code_bug": false
+    },
+    {
+      "id": "VAL_INPUT_TO_TEST_ATLAS",
+      "severity": "P1",
+      "kind": "actual_entrypoint_protocol_mismatch",
+      "status": "FIXED_BY_PARENT_STATICALLY_CONFIRMED",
+      "entry_source": "experiments/plot_results.py:5-6",
+      "current_guard_source": "src/plots.py:30-35",
+      "truth_path_source": "src/plots.py:50-52",
+      "finding": "The generic --scores option formerly accepted VAL scores while the renderer unconditionally selected and read the TEST atlas.",
+      "resolution": "METHOD_FREEZE and nonempty all-TEST score rows are checked before metadata/truth loading; VAL score-only plotting stays separate.",
+      "observed_TEST_leak": false,
+      "parent_report": "No previous VAL use of the TEST atlas occurred."
+    }
+  ],
+  "alignment_source_map": {
+    "fixed_inner_material_with_upstream_autograd": "src/recurrent_feedback.py:172-189",
+    "Hermitian_state_gradient_and_fixed_norms": "src/recurrent_feedback.py:68-94",
+    "hinge_theta_gradient_unscaled_majorizer_curvature": "src/recurrent_feedback.py:74-108",
+    "shared_real_row_LS": "src/recurrent_feedback.py:34-42",
+    "no_L_inverse_LU_or_Schur_layer": "src/recurrent_feedback.py:201-207",
+    "A17_architectural_inspiration_scope": "theory/A17_RECURRENT_FEEDBACK.md:7-34",
+    "two_shared_trained_passes": "src/recurrent_feedback.py:144-165",
+    "separate_16_pass_VAL_diagnostic": "experiments/recurrent_iterations.py:23-61",
+    "TEST_host_partition_and_freeze": "experiments/run_test_partition.py:24-59",
+    "TEST_scoring_gate": "src/score.py:25-30",
+    "NOT_RUN_denominator_and_separate_budget_success": "src/score.py:34-69",
+    "fixed_figure_identity_and_exposure": "src/plots.py:68-100"
+  },
+  "public_partition_identity_summary": {
+    "local_parents": 36,
+    "local_observations": 72,
+    "remote_parents": 72,
+    "remote_observations": 144,
+    "overlapping_parents": 0,
+    "overlapping_observations": 0,
+    "total_parents": 108,
+    "total_observations": 216,
+    "scientific_arrays_read_for_this_summary": false
+  },
+  "operations_performed": {
+    "static_source_and_public_protocol_reading": true,
+    "experiment_or_training": false,
+    "finite_difference_or_formula_numerical_check": false,
+    "TEST_score_read": false,
+    "truth_array_read": false,
+    "TEST_private_array_read": false,
+    "plot_rendering": false,
+    "hashes": false,
+    "uploads": false,
+    "unrelated_source_edits": false
+  },
+  "limitations": "Static review only. No independent certification of runtime completion, trained model quality, coupled-RNN contraction, 16-pass stability, TEST success, A17 numerical certificate transfer or novelty. Final scientific validity and novelty decisions remain with parent Codex.",
+  "review_document": "delegated/review/RNN_AND_TEST_PROTOCOL_REVIEW.md"
+}

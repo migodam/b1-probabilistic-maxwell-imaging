@@ -249,8 +249,6 @@ def train_model(data_root, manifest_path, operators_path, output_dir, arm,
     setup_start = time.perf_counter()
     operators_reused = operators is not None
     operators = operators if operators_reused else OperatorCache(operators_path).to(target_device)
-    if operators.G_re.device != target_device:
-        raise ValueError("Shared operator device mismatch")
     _sync(target_device)
     operator_setup_seconds = time.perf_counter()-setup_start
     generator = torch.Generator().manual_seed(seed)
@@ -545,8 +543,8 @@ def finetune_model(checkpoint_path, data_root, manifest_path, operators_path, ou
     """Run the frozen, matched optional-stage pair only after parent authorization.
 
     Both arms start from exactly the same R4 best checkpoint and use one saved
-    seed7 batch schedule. Control retains the starting loss, including any
-    const/internal term; the treatment adds the exact full-VIE hinge. All ten
+    seed7 batch schedule. Both use pure material/edge supervision in this stage;
+    the treatment adds the exact full-VIE hinge. All ten
     epochs run; full VAL material loss alone selects each best checkpoint.
     """
     if not authorized:
@@ -591,7 +589,7 @@ def finetune_model(checkpoint_path, data_root, manifest_path, operators_path, ou
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
     summaries = []
     pair_start = time.perf_counter()
-    for mode in ("existing_loss_control", "full_vie_hinge"):
+    for mode in ("material_loss_control", "full_vie_hinge"):
         random.seed(7)
         np.random.seed(7)
         torch.manual_seed(7)
@@ -606,6 +604,7 @@ def finetune_model(checkpoint_path, data_root, manifest_path, operators_path, ou
                       patience=None, train_from_scratch=False, initial_weights_source=str(checkpoint_path.resolve()),
                       residual_head_initialization="same_R4_best_checkpoint_for_both_optional_arms",
                       device=str(target_device), requested_device=device, train_count=len(train), val_count=len(val))
+        config.update(loss='material',regularizer_weight=0.)
         config["fine_tune"] = {"mode": mode, "base_checkpoint": str(checkpoint_path.resolve()),
                                "base_checkpoint_best_epoch": checkpoint["best_epoch"],
                                "base_seed": base_config["seed"], "num_parents": len(parents),
@@ -615,8 +614,9 @@ def finetune_model(checkpoint_path, data_root, manifest_path, operators_path, ou
                                "planned_optimizer_steps": schedule["optimizer_steps_per_arm"],
                                "lambda_full_data_hinge": float(contract["lambda_full_data_hinge"]) if mode == "full_vie_hinge" else 0.,
                                "clean_delta": float(contract["clean_delta"]), "noisy_delta": float(contract["noisy_delta"]),
-                               "existing_loss": base_config["loss"],
-                               "existing_regularizer_weight": base_config["regularizer_weight"],
+                               "source_checkpoint_loss": base_config["loss"],
+                               "existing_loss": "material",
+                               "existing_regularizer_weight": 0.,
                                "authorization": setup["authorization"]}
         config["split_exposure"] = {"TRAIN": {"material_targets": True, "optimizer": True,
                                                 "parents": len(parents), "observations": len(train)},

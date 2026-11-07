@@ -1,10 +1,14 @@
 {
-  "status": "PREDECLARED_CONDITIONAL_SUPPLEMENT_NOT_YET_TRAINED",
+  "status": "THREE_MODELS_TRAINED_VAL_COMPLETE_FROZEN_TEST_IN_PROGRESS",
   "reason": "User requested A17-inspired shared-weight current/material/physics feedback without full L inverse during the active experiment",
   "deadline_utc": "2026-11-07T10:44:27Z",
   "core_priority": "Preserve original six-space seed7 study, key multi-seeds and new TEST; supplement cannot extend total six-hour cap",
   "inclusion_condition": "Initial five models finish before07:45UTC and implementation ready; use the existing MPS worker sequentially, without delaying a ready core soft-alpha task",
-  "modes": ["refreshed_q", "feedback1"],
+  "modes": [
+    "refreshed_q",
+    "feedback1",
+    "feedback_hinge"
+  ],
   "rho": 1.0,
   "seed": 7,
   "from_scratch": true,
@@ -18,5 +22,29 @@
   "status_boundary": "two trained passes do not establish convergence to a fixed point or GT",
   "feedback2_training": "NOT_RUN",
   "small_A17_Schur_preconditioner_training": "NOT_RUN",
-  "novelty": "Learned alternating current-material unrolling has SOM-Net/CSI precedents. This is an exploratory controlled feedback ablation, not an asserted new A17 theorem."
+  "novelty": "Learned alternating current-material unrolling has SOM-Net/CSI precedents. This is an exploratory controlled feedback ablation, not an asserted new A17 theorem.",
+  "amendment_before_first_recurrent_training": {
+    "time_unix": 1794034095.578045,
+    "additional_mode": "feedback_hinge",
+    "reason": "Quadratic data feedback generally moves even a true physical GT current under noise. The fixed public discrepancy ball can leave data-acceptable physical states stationary. No TEST scores used.",
+    "delta_clean": 1e-06,
+    "delta_noisy": 0.0011,
+    "rho": 1.0,
+    "new_hyperparameter_search": false,
+    "control": "same feedback1 gradient layer, replace only data residual term; unchanged full Sg curvature upper bound",
+    "step": "quadratic upper-bound minimizer, not exact hinge line search"
+  },
+  "initial_status": "PREDECLARED_CONDITIONAL_SUPPLEMENT_NOT_YET_TRAINED",
+  "execution": {
+    "modes": [
+      "refreshed_q",
+      "feedback1",
+      "feedback_hinge"
+    ],
+    "new_models": 3,
+    "trained_shared_passes": 2,
+    "test_runs_registered": true,
+    "VAL_scores": "results/VAL_RECURRENT_SCORES.json",
+    "independent_TEST": "pending full candidate seal and offline score"
+  }
 }

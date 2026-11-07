@@ -36,7 +36,7 @@ def main():
         x=normalized_features(anchor,stats,'j_full')[None].to(device)
         arguments=[_tensor(anchor[k][None].reshape(1,576)if k=='m0'else anchor[k][None],device,complex_value=k!='m0') for k in ('m0','j0','Y','Q0')]
         _sync(device);tick=time.perf_counter()
-        with torch.no_grad():result=network(operators,x,*arguments[:3],stats,arguments[3])
+        with torch.no_grad():result=network(operators,x,*arguments[:3],stats,arguments[3],public_noise=_tensor(np.asarray(anchor['noise']).reshape(1),device))
         _sync(device);inference_seconds+=time.perf_counter()-tick
         materials=_numpy(result['stage_materials'])[0];currents=_numpy(result['stage_currents'],current=True)[0];fields=_numpy(result['stage_fields'],current=True)[0]
         operation_counts.append(dict(obs_id=obs,**result['preparation_counts']))
@@ -47,6 +47,8 @@ def main():
                 current_relative_step=float(np.linalg.norm(j-previous_j)/jn),
                 auxiliary_relative_data=float(np.linalg.norm(public_ops['S']@j-y)/yn),
                 constitutive_relative_defect=float(np.linalg.norm(j-m[:,None]*q)/jn),
+                physical_current_gap_relative=float(np.linalg.norm(real['j']-j)/jn),
+                physical_internal_field_gap_relative=float(np.linalg.norm(real['Q']-q)/np.linalg.norm(anchor['Q0'])),
                 true_FullVIE_relative_data=float(np.linalg.norm(real['y']-y)/yn)))
             previous_m,previous_j=m,j
         np.savez_compressed(out/f'{obs}.npz',stage_materials=materials,stage_currents=currents,stage_fields=fields)
