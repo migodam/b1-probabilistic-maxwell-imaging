@@ -6,9 +6,9 @@ NRMSE is ||m−GT||₂ divided by24(max(GT)−.1), with fixed support defined by
 
 Object0022 had controller-aborted attempts and explicit engineering retries. All48 objects remain primary; separate47-object paired sensitivity is labelled and never replaces primary. Valid-prefix childCPU and end-to-end cost including interruption/retry are distinct; exact end-to-end same-cost is indeterminate for affected comparisons. Original failure records/cost bounds remain visible.
 
-The four fixed CPU checkpoints are allowed budgets. Natural stopping consumes less; actual child expenditure comes from external GetProcessTimes and includes setup, auxiliary work, corrector, failures and finalization. The physical LU display grid resamples already-paid original-Phi frontiers; it does not equalize auxiliary work or CPU. Missingness is tabulated separately.
+The four fixed CPU checkpoints are allowed budgets. Natural stopping consumes less. Reported CPU columns and plots describe only the final valid scientific children, measured by external GetProcessTimes including setup, auxiliary work, corrector and finalization within each child. They exclude the separately charged 4 controller-interrupted attempts and 3 zero-forward preparation failures; original interrupted end-to-end CPU is partly unknown. Zero valid-final-attempt execution failures does not mean zero engineering failures in the campaign. The physical LU display grid resamples already-paid original-Phi frontiers; it does not equalize auxiliary work or CPU. Missingness is tabulated separately.
 
-|Method|Finite/48|Material success/48|Median NRMSE|Median IoU|Median actual CPU s|Total actual CPU s|CN99 pass|Execution failures|
+|Method|Finite/48|Material success/48|Median NRMSE|Median IoU|Median valid child CPU s|Total valid child CPU s|CN99 pass|Valid final-attempt execution failures|
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 |CIE|48|21|0.1135238214030172|0.6711647727272727|153.8984375|7664.6875|42|0|
 |Dual CIE|48|22|0.11110621714405172|0.6784126984126984|153.125|7475.96875|44|0|
@@ -17,9 +17,9 @@ The four fixed CPU checkpoints are allowed budgets. Natural stopping consumes le
 |Freeze A|48|16|0.12356482075119014|0.5634057971014492|168.6875|7825.265625|31|0|
 |Contracted T|48|23|0.11153538790301021|0.6773809523809524|192.171875|9426.984375|45|0|
 
-Paired stratified bootstrap, exactly as frozen/scored. Sign: CIE minus the comparison method; objects, not pixels, are the sampling unit.
+Paired stratified bootstrap, exactly as frozen/scored. Sign: CIE minus the comparison method; objects, not pixels, are the sampling unit. These are pointwise exploratory 95% intervals without multiplicity adjustment across methods, metrics or views. The same 48 materials are reused; method/view comparisons are not additional independent samples, and no single interval establishes an overall ordering.
 
-|Comparison|Finite pairs|Mean ΔNRMSE [95%]|Median ΔNRMSE [95%]|CIE-only success|Other-only success|
+|Comparison|Finite pairs|Mean ΔNRMSE [pointwise 95%]|Median ΔNRMSE [pointwise 95%]|CIE-only success|Other-only success|
 |---|---:|---|---|---:|---:|
 |cie_dual|48|0.02081444561626616 [-0.00018474331333672537, 0.04888373684891546]|2.785839917915367e-05 [-0.00022122028946380823, 0.00037032033226996885]|1|2|
 |global_dual|48|0.020862410716889518 [-0.0001519857579250487, 0.04904769003459416]|2.2864358833765697e-05 [-0.00031448131839868776, 0.00019812799470989018]|0|2|
@@ -29,7 +29,7 @@ Paired stratified bootstrap, exactly as frozen/scored. Sign: CIE minus the compa
 
 Matched-control contrasts must be read separately. CIE/Dual versus Global can explain changes already produced by the current/schedule control. Global versus each Green variant is the matched material-rule contrast; a benefit already present in Global is not Green-specific. No benefit is asserted by this template.
 
-|Global minus method|Finite pairs|Mean ΔNRMSE [95%]|Median ΔNRMSE [95%]|
+|Global minus method|Finite pairs|Mean ΔNRMSE [pointwise 95%]|Median ΔNRMSE [pointwise 95%]|
 |---|---:|---|---|
 |fullG19|48|-0.008532711161657842 [-0.02688847667094525, 0.005017257281494374]|0.0005733753664674893 [-0.00015505768503282225, 0.0009110833552600228]|
 |freezeA|48|-0.08771364747460082 [-0.12741321668586078, -0.0500105849246105]|-0.0004542749591284895 [-0.0014887177427704568, 0.00019120068947769964]|

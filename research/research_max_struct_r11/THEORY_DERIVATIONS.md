@@ -226,7 +226,7 @@
 
 **DERIVED，标准数值优化的接线说明，不是新的Maxwell机制。** 记P为同一box投影、g为未缩放原Phi梯度。给优化器sPhi时的映射是`p_s=m−P(m−s g)`，通常不等于`s[m−P(m−g)]`。例如距下界d>0、g>0的一维分量，有`p_s=min(sg,d)`。故`||p_s||inf≤tau`不一般等价于`||p_1||inf≤tau/s`：近界距离可能先截断它。
 
-实际L-BFGS-B的projgr使用这种带边界距离截断的映射；已对照[SciPy官方Fortran实现](https://raw.githubusercontent.com/scipy/scipy/v1.14.1/scipy/optimize/lbfgsb_src/lbfgsb.f)的projgr及后续C实现。版本引用用于核对公式，不能冒充本轮未记录的runtime SciPy版本。
+实际L-BFGS-B的projgr使用这种带边界距离截断的映射；已对照[SciPy官方Fortran实现](https://raw.githubusercontent.com/scipy/scipy/v1.14.1/scipy/optimize/lbfgsb_src/lbfgsb.f)的projgr及后续C实现。引用版本用于核对公式。随后取得的只读post-run包清单记录Windows实际解释器环境SciPy 1.15.3、Mac环境SciPy 1.18.1；它们是运行后的环境盘点，不冒充原任务启动时已保存的清单，也不改写旧回执。见[Windows清单](delegated/twod/environment/WINDOWS_POST_RUN_INVENTORY.json)与[Mac清单](audit/MAC_POSTRUN_PACKAGE_METADATA.json)。
 
 主48全部288个已封存终点的零FW重算中，s=1e6、tau=.01的映射满足数为45/44/45/41/43/43，与各方法的PGTOL退出集合相符；未缩放映射≤1e−8的描述计数为27/27/29/25/32/27。94项不一致的未缩放映射最大也仅1.79994e−8，不能把它们误报成94个明显未收敛大梯度对象，更不能把数学上不等价的容差偷当新成功门。
 
