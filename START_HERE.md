@@ -1,3 +1,11 @@
+<!-- GN_NN_R3_PUBLICATION -->
+## GN–NN R3：Voxel与接收零空间电流学习
+
+1024训练母体、64独立确认母体、17模型、三训练种子及完整Maxwell校正。硬接收零空间没有获得带噪优势；J-full较稳，V-physics有正例但存在训练种子敏感性。材料图、全部失败、模型权重、费用和下一轮理论问题公开。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_gn_nn_completion_r3/) · [Chat理论交接](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_gn_nn_completion_r3/CODEX_TO_PRO_HANDOFF.md) · [全部数据与权重](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/gn-nn-completion-r3-20261107)
+<!-- /GN_NN_R3_PUBLICATION -->
+
 <!-- MAX_STRUCT_R10_PUBLICATION -->
 ## MAX-STRUCT R10：Green材料分母、能量归因与条件补偿
 

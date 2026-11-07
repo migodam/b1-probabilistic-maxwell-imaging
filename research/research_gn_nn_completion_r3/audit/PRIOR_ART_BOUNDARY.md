@@ -1,0 +1,13 @@
+# 本轮的直接先例与贡献边界
+
+直接先例为 Si、Wang、Fang、Dai，*Two-Step Contrast Source Learning Method for Electromagnetic Inverse Scattering Problems*，Sensors 2024，24(18):5997，DOI 10.3390/s24185997。[期刊原文](https://www.mdpi.com/1424-8220/24/18/5997)；[作者论文的 PMC 全文存档](https://pmc.ncbi.nlm.nih.gov/articles/PMC11435635/)。本轮读取了该原文的摘要、引言与问题设定；后续网页请求受限，没有据此声称完成全面文献审计。
+
+该文已有“估计完整 contrast source→转为初始 contrast→U-Net精修”的两阶段方法，并讨论从已确定电流部分学习未知部分。因此，电流学习、材料读出、CNN与物理求解结合，以及两阶段网络本身均不能作为本轮原创性主张。
+
+另一项直接数学先例是 Schwab、Antholzer、Haltmeier 的 [Deep Null Space Learning for Inverse Problems: Convergence Analysis and Rates](https://arxiv.org/abs/1806.06137)（作者预印本，2018）。该工作已提出将学习修正限制在零空间以保持数据一致性，并研究相应正则化性质。本轮的投影式网络修正本身因此也不是新结构。关键适用边界是：J-null 保持的是辅助线性观测 S j，随后的非线性共享实材料读出会改变真实 Maxwell 响应，不能把线性零空间网络的数据一致性结论直接移植到 F(m)。
+
+本轮可能有价值的是可复现的受控问题：在同一严格 GN 端点、完整接收零空间、共享实材料读出、相同材料监督与物理验收下，比较 voxel、完整电流与零空间电流；再用 oracle 表示损失、辅助本构缺陷和完整 Maxwell 校正解释差异。这项机制裁决是否成立，只能由实际结果支持。
+
+当前读出微分及其 Gram 公式由标准实线性代数与本构关系推导。两个公开状态上的575维数值秩是诊断观察，不构成新全局零空间定理，更不是神经网络成功保证。未做更广泛先例排查前，不将该局部表达式作为已确认的新数学发现。
+
+本轮尚未训练完成时，本文件只冻结归因边界，不判断任何实验臂优于已有方法。最终科学裁决见最终审查及中文报告。

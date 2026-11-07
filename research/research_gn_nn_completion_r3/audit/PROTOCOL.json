@@ -1,0 +1,77 @@
+{
+  "study": "GN-NN R3",
+  "start_utc": "2026-11-06T21:26:37.884265+00:00",
+  "deadline_utc": "2026-11-07T03:26:37.884265+00:00",
+  "source_commit": "fc8807b42ef13cf2c891aa31ce4af87e5c48b077",
+  "scope": "Low contrast full-material completion; receiver-null current ablation; no weak-spectrum truncation",
+  "physics": {
+    "n": 576,
+    "sources": 12,
+    "receivers": 48,
+    "model": "frozen nonlinear scalar-TM disk-pulse VIE",
+    "bounds": [
+      0.02,
+      20.0
+    ],
+    "background": [
+      0.08,
+      0.15
+    ],
+    "amplitude_train": [
+      0.1,
+      0.2,
+      0.4
+    ],
+    "amplitude_stress": 2.5,
+    "noise": [
+      0.0,
+      0.001
+    ]
+  },
+  "arms": [
+    "v_image",
+    "v_physics",
+    "j_full",
+    "j_null",
+    "j_null_current"
+  ],
+  "train": {
+    "initial_parents": 256,
+    "validation_parents": 64,
+    "test_parents": 64,
+    "stress_test_parents": 32,
+    "lr": 0.001,
+    "batch_size": 64,
+    "max_epochs": 100,
+    "patience": 15,
+    "seed": 7,
+    "confirmation_seeds": [
+      17,
+      27
+    ],
+    "expand_gate_mean_nrmse_improvement": 0.05,
+    "expand_gate_max_qualification_drop": 0.05
+  },
+  "budgets": {
+    "anchor_seconds": 45,
+    "anchor_lu": 500,
+    "anchor_rhs": 30000,
+    "post_seconds": 10,
+    "post_lu": 100,
+    "post_rhs": 6000,
+    "candidate_seconds": 3,
+    "candidate_nfev": 8
+  },
+  "data_gate": {
+    "clean": 0.001,
+    "noisy": 0.003
+  },
+  "joint_gate": {
+    "nrmse": 0.15,
+    "iou": 0.7
+  },
+  "online_selection": "feasible closest-to-full-learned-material proposal, fallback feasible anchor; old data+TV score recorded separately",
+  "calibration": "Train-only statistics. No GT amplitude/background/mask/label in inference. GT available only to generator/train/validation/scoring. Test scored after freezing predictions.",
+  "novelty": "Controlled representation study, not a new CNN or a new Maxwell theorem",
+  "execution": "Sol native agents; no DeepSeek; no SHA; no frozen-source edits; no repeated formula/errorfloor tests; no CUDA installation"
+}
