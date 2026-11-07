@@ -259,6 +259,10 @@ def score_predictions(seal_path, *, output=None, include_oracle=False, study_ove
                 constitutive_relative_defect=(receipt.get('auxiliary')or{}).get('constitutive_relative_defect'),
                 auxiliary_data_relative_residual=(receipt.get('auxiliary')or{}).get('auxiliary_data_relative_residual'))
         materials=arrays['candidate_materials']
+        if selected is not None:
+            row['selected_RMS_displacement_from_anchor']=float(np.sqrt(np.mean((materials[selected['index']]-arrays['anchor'])**2)))
+        else:
+            row['selected_RMS_displacement_from_anchor']=None
         groups=[]
         for index,m in enumerate(materials):
             match=next((g for g in groups if np.sqrt(np.mean((m-materials[g[0]])**2))<=1e-8),None)

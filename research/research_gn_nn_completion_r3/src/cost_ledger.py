@@ -15,7 +15,11 @@ def main():
         if f.exists():
             d=read(f);add('fullwave_data_generation',f,d,d.get('wall_seconds'),d.get('counts'))
     for f in sorted((s/'anchors').glob('obs*.json')):
-        d=read(f);add('weakreg45_anchor'if '_weakreg'in f.stem else'GN_anchor',f,d,d.get('anchor_plus_feature_wall_seconds'),d.get('counts'))
+        d=read(f)
+        wall=d.get('anchor_plus_feature_wall_seconds')
+        if wall is None and d.get('solve_wall_seconds') is not None:
+            wall=d['solve_wall_seconds']+d.get('feature_wall_seconds',0.)
+        add('weakreg45_anchor'if '_weakreg'in f.stem else'GN_anchor',f,d,wall,d.get('counts'))
     for f in sorted((s/'anchors').glob('BATCH*.json')):
         d=read(f);add('anchor_batch_elapsed',f,d,d.get('wall_seconds'),d.get('aggregate_model_counts'),scope='aggregate_of_anchor_rows_do_not_double_count')
     for f in sorted((s/'audit').glob('ANCHOR_FAILURE_INITIAL*.json')):
@@ -37,6 +41,19 @@ def main():
     f=s/'cache/reference_jacobian.json'
     if f.exists():
         d=read(f);add('local_shared_reference',f,d,d.get('wall_seconds'),d.get('counts'))
+    # Oracle costs are offline diagnostics, never an online inference advantage.
+    seen_oracles=set()
+    for f in [s/'evaluation/DEV_INTEGRATION_SCORES.json',
+              s/'evaluation/PILOT256_VAL_SCORES.json',
+              s/'evaluation/CONFIRMATION_SCORES.json']:
+        if not f.exists():continue
+        for d in read(f).get('oracle_rows',[]):
+            key=d.get('obs_id')
+            if key in seen_oracles:continue
+            seen_oracles.add(key)
+            add('offline_GT_current_oracle',f,d,d.get('wall_seconds'),d.get('costcounts'),
+                scope='offline_diagnostic_not_online_cost')
+            rows[-1]['id']+='Object:'+str(key)
     out=s/'results';out.mkdir(exist_ok=True)
     with (out/'COST_LEDGER.csv').open('w',newline='')as f:
         w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)

@@ -71,7 +71,10 @@ def main():
     anchor_costs={r['obs_id']:json.loads((study/'anchors'/f"{r['obs_id']}.json").read_text())for r in records}
     for run,label in zip(runs,labels):
         rr=[r for r in s['rows']if r['run']==run and r.get('level','low')=='low'and r.get('top1')]
-        total_wall=[r['wall_seconds']+(0 if run=='weakreg45_anchor'else anchor_costs[r['obs_id']]['anchor_plus_feature_wall_seconds'])for r in rr]
+        total_wall=[r['wall_seconds']+(0 if run=='weakreg45_anchor'else
+            anchor_costs[r['obs_id']].get('anchor_plus_feature_wall_seconds',
+            anchor_costs[r['obs_id']]['solve_wall_seconds']+
+            anchor_costs[r['obs_id']].get('feature_wall_seconds',0.)))for r in rr]
         total_lu=[r['costcounts'].get('LU',0)+(0 if run=='weakreg45_anchor'else anchor_costs[r['obs_id']]['counts']['LU'])for r in rr]
         axes[0].scatter(total_wall,[r['top1']['NRMSE']for r in rr],s=13,alpha=.5,label=label)
         axes[1].scatter(total_lu,[r['top1']['NRMSE']for r in rr],s=13,alpha=.5)

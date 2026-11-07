@@ -31,6 +31,10 @@ def summarize(scores, by_amplitude=False):
         result.update(n_observations=len(rows), n_parents=len({r['parent_id'] for r in rows}),
                       cost_scope=rows[0].get('cost_scope', 'INCREMENTAL_WARM_MODEL_POST_GN'),
                       n_selected=len(selected), n_joint_success=sum(r.get('joint_success', False) for r in rows),
+                      n_anchor_selected=sum(r['top1'].get('kind')=='anchor'for r in selected),
+                      n_raw_selected=sum(r['top1'].get('kind')=='raw'for r in selected),
+                      n_corrected_selected=sum(r['top1'].get('kind')=='corrected'for r in selected),
+                      mean_selected_RMS_displacement=mean([r.get('selected_RMS_displacement_from_anchor')for r in selected]),
                       n_within_incremental_budget=sum(r.get('accounted_within_budget', False) for r in rows),
                       n_not_run=sum(r.get('status') == 'NOT_RUN' for r in rows),
                       physical_qualification_rate=len(selected)/len(rows),
@@ -147,7 +151,8 @@ def main():
             for field in ('NRMSE', 'RMSE', 'IoU_Otsu', 'relative_residual'):
                 item[name+'_'+field] = metric(row, name, field)
         item.update(LU=row.get('costcounts', {}).get('LU', 0),
-                    complex_RHS=row.get('costcounts', {}).get('actual_complex_RHS', 0))
+                    complex_RHS=row.get('costcounts', {}).get('actual_complex_RHS', 0),
+                    selected_RMS_displacement_from_anchor=row.get('selected_RMS_displacement_from_anchor'))
         for k, value in (row.get('current_metrics') or {}).items():
             if isinstance(value, (int, float)):
                 item[k] = value
