@@ -36,7 +36,15 @@
 
 这是一条有内容的负结论：即使两块使用同一Green残差族，也不产生全局恢复保证；当前双β仍无共同目标。单块凸化、较好current条件数及更多Green能量都不足以预测材料恢复。它没有否定原Green在特定环上的实际价值。
 
-另外，本组12–14个数据CN99合格而只有4–7个材料成功，且多种方法留下很相似的平滑/缺失细结构。正在对全16×5做零新FW的truth/candidate Phi、prior与有限噪声球诊断；不能在完成前将这些失败一律叫错误basin或一律叫不可辨识。
+另外，本组12–14个数据CN99合格而只有4–7个材料成功，且多种方法留下很相似的平滑/缺失细结构。全16×5的零新FW审计已经完成：65个候选和GT都在实际y的CN99球内，其中38个材料FAIL、涉及8个独立材料。这65个候选同时比GT有更低数据项和更低prior，不能只责怪prior。另15个候选在球外而GT在球内，仍需解释算法路径/预算问题。38对预测的sigma距离为4.30–6.09，并非接近零；噪声球共同容纳不能称Gaussian统计不可区分或精确多解。详见[完整审计](delegated/diagnostics/bothblocks_confirmation/finite_noise_prior_audit/FACTUAL_SUMMARY_ZH.md)。
+
+## 已完成的预算与停止补充诊断
+
+公开成本/停止状态规则在32个CIE或Dual对象对中触发7次续算，用同对象Green实际CPU减去原基线CPU作为新增上限。新增62.857739 CPU秒、7370个576阶LU、176880 complex RHS；预测先封存后评分。CIE/Dual仍4/16和5/16，mean NRMSE仅从.231343/.210683变为.231240/.210673。4次触cap、3次提前PGTOL结束；不空转填满预算，也不把晚于cap的候选倒填。原子及序列化尾部.789021秒照常计费。它支持该范围内的增量并非仅由这些基线少用的corrector时间解释，但不证明任意预算下的优势。
+
+这不是无缝延长：L-BFGS历史重置，原已PGTOL或花费已更高的对保留；它是POSTHOC_BUDGET_CONTROL，主80结果不改。完整选择及成本见[预算审计](delegated/diagnostics/bothblocks_confirmation/posthoc_budget_control/FACTUAL_SUMMARY_ZH.md)。
+
+首次公开CN99命中的65个保留状态，材料NRMSE全部较最终差，材料成功0改善、19回退。读取已评分轨迹的GT oracle边界检查也未发现任何先满足材料成功后在最终丢失的运行。两者只针对已保存Phi-incumbents，不能排除未保留状态或其他停止规则，但没有支持用当前噪声门早停来修复。见[停止诊断](delegated/diagnostics/bothblocks_confirmation/first_cn99_hit/FACTUAL_SUMMARY_ZH.md)。
 
 ## 全部图像与原始事实
 

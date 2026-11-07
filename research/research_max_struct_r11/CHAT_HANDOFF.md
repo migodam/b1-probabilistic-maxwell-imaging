@@ -30,7 +30,15 @@
 
 三维分母采用公开固定`span(Einc,G Einc)`的rank120投影。top32最大奇异模式对晚期defect传播遗漏很大；source空间也不完整，不能宣称完整G或连续Maxwell精度。full/freezeA/contractedT已完成一次必要的真实3N共享材料导数接线核对，完整反演正在运行。保持FP64、真实LU/RHS与全部失败成本。
 
+## 补充预算与停止诊断
+
+同对象Green实际CPU余量下，CIE/Dual的7个公开规则触发corrector重启已完成，新增62.86 CPU秒，成功仍4/5，未消除原Green的7/16增量。部分提前正常结束，不称实际等花费；L-BFGS历史重置也明确保留。首次CN99命中在65个命中状态全部使NRMSE更差；已保存轨迹没有先成功后丢失成功的例子，不能简单用提前停止解释本组失败。以上均为解盲后的诊断，不改主结果。
+
 ## 可直接阅读
+
+- [执行中的中文综合报告](RESEARCH_REPORT_ZH.md)
+- [全部已完成成本及未完成边界](COST_LEDGER.md)
+- [英文论文工作稿](PAPER_DRAFT.md)
 
 - [公式、证明与边界](THEORY_DERIVATIONS.md)
 - [研究如何根据失败转向](RESEARCH_LOOP.md)
@@ -40,4 +48,4 @@
 - [BothBlocks16冻结合同](delegated/diagnostics/bothblocks_confirmation/FROZEN_CONTRACT.json)
 - [三维正式冻结合同](configs/vector_confirmation_contract.json)
 
-尚不能回答新算法在新48/16或三维上是否改善恢复。本轮不会以三个开发正例或一次gate替代这些正在执行的实验。新确认不得读取GT调参；最终报告会包含全部失败、原物理残差、材料误差、等允许CPU/实际费用/物理LU三种比较及其区别。
+16对象已给出上述明确判断；新48对象和三维的整体胜负仍须等待完整封存评分。本轮不会以三个开发正例或一次gate替代这些正在执行的实验。新确认不得读取GT调参；最终报告会包含全部失败、原物理残差、材料误差、等允许CPU/实际费用/物理LU三种比较及其区别。

@@ -18,7 +18,7 @@
 
 普通材料块沿用项目成熟_baseline_readout：含prior时保持该实现的求解，而不是为了“解析读出”删掉prior。新矩阵材料full/freezeA/contractedT保持冻结8步inner预算；不能将更准确的材料子问题直接等同更好的全波材料恢复。两个β不同意味着这些算法一般没有共同交替下降目标。
 
-开发中还将补齐Green-current/ordinary-material这一缺失的2×2因子消融，仅使用三个已公开对象；它不改变已冻结确认组，未运行前不列为确认方法。
+Green-current/ordinary-material这一缺失的2×2因子消融已在三个公开对象完成：环/壳/桥NRMSE=.4220/.5151/.5546，均未恢复。两块Green在旧桥的修复因此不能归因于current单独改善；完整四格表见delegated/diagnostics/current_only_dev/REVIEW_ZH.md。这是开发诊断，不改变已冻结确认组。
 
 ## 三维实际比较
 
