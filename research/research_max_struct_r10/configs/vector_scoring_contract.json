@@ -1,0 +1,44 @@
+{
+  "status": "FROZEN_BEFORE_ANY_R10_VECTOR_GT_SCORE",
+  "frozen_utc": "2026-11-06T20:22:45.961417+00:00",
+  "scope": "Offline only when root explicitly requests scoring after all required predictions seal; no online material/support selection",
+  "continuous": {
+    "chi_relative_L2": "norm(chi_hat-chi_GT,2)/norm(chi_GT,2)",
+    "amplitude_normalized_RMSE": "sqrt(mean((chi_hat-chi_GT)^2))/(max(chi_GT)-min(chi_GT))",
+    "paper_Err": "sqrt(mean(((chi_hat-chi_GT)/(1+chi_GT))^2))",
+    "box": [
+      0,
+      8
+    ],
+    "scalar_material_dof": 1728
+  },
+  "primary_support": {
+    "threshold": 0.5,
+    "strict_comparison": "chi>.5 for BOTH effective-cell GT and prediction",
+    "metric": "IoU intersection/union on all1728 unknown voxels",
+    "meaning": "Effective cell-averaged contrast threshold, not exact continuous geometric volume",
+    "empty_union_rule": "IoU1 when both masks empty; otherwise ordinary intersection/union"
+  },
+  "regional_metrics": {
+    "background": "chi_GT==0",
+    "low_effective_contrast": "0<chi_GT<=1",
+    "middle_effective_contrast": "1<chi_GT<=3",
+    "high_effective_contrast": "3<chi_GT<=8",
+    "metrics": [
+      "absolute RMSE",
+      "mean signed error",
+      "number of voxels"
+    ],
+    "empty_bin": "null with count0",
+    "interpretation": "Fixed effective-contrast bins; fractional high-material boundary cells can fall in lower bins; not automatically geometric phase masks"
+  },
+  "legacy_Otsu": {
+    "status": "DIAGNOSTIC_ONLY",
+    "histogram_bins": 256,
+    "primary_selection_or_success": false,
+    "scope": "Thresholds independently computed from a stored volume; report full threshold convention; never replace fixed support metric"
+  },
+  "no_universal_win_gate": true,
+  "prediction_selection": "Frozen lowest public physical Phi; score never selects iterate/algorithm/candidate",
+  "known_threshold_boundary": "v04 was amended before generation to lowest bulk chi1; executed18 include v02/v09/v04/v08, all lowest positive bulk chi>=1. Unexecuted v11/v12 draft still contain chi=.5, excluded by strict support definition if ever used."
+}

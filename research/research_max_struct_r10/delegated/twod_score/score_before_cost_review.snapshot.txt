@@ -1,0 +1,333 @@
+"""Explicitly authorized, all168-terminal, postseal scoring; never an inverse runner.
+
+Do not execute until root authorizes fresh-GT scoring. Merely importing this
+module does not read manifests, predictions, metadata or truth.
+"""
+import os
+for _k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):
+    os.environ[_k]='1'
+from pathlib import Path
+from datetime import datetime,timezone
+from itertools import combinations
+import argparse,csv,json,math,time,traceback
+import numpy as np
+from scipy.stats import chi2
+
+ROOT=Path(__file__).resolve().parents[1];REPO=ROOT.parents[1]
+METHODS=('cie_single','cie_dual','a_plus','a_plus_sourcewise','matrix_twofold','matrix_green19','global_dual')
+PRIMARY=METHODS[:-1]
+LABELS=dict(cie_single='CIE single',cie_dual='Dual CIE',a_plus='A+ global',a_plus_sourcewise='A+ source',
+            matrix_twofold='Matrix Twofold28',matrix_green19='Matrix Green19',global_dual='GlobalDual internal')
+CPU_BUDGETS=(50.,100.,200.,400.);LU_BUDGETS=(50,100,300,600)
+BOOTSTRAP_SEED=20261107;BOOTSTRAP_REPLICATES=10000
+
+def utc():return datetime.now(timezone.utc).isoformat()
+def readjson(p):return json.loads(Path(p).read_text())
+def loadnpz(p):
+    with np.load(p,allow_pickle=False) as z:return {k:z[k].copy() for k in z.files}
+def resolve(p):
+    p=Path(p);return p if p.is_absolute() else REPO/p
+def stamp(p):
+    p=Path(p);s=p.stat();return dict(path=str(p),bytes=s.st_size,mtime_ns=s.st_mtime_ns)
+def jsonable(x):
+    if isinstance(x,dict):return {str(k):jsonable(v) for k,v in x.items()}
+    if isinstance(x,(tuple,list)):return [jsonable(v) for v in x]
+    if isinstance(x,np.ndarray):return jsonable(x.tolist())
+    if isinstance(x,np.generic):return jsonable(x.item())
+    if isinstance(x,float) and not math.isfinite(x):return None
+    if isinstance(x,Path):return str(x)
+    return x
+def dump(p,x):Path(p).write_text(json.dumps(jsonable(x),indent=2,allow_nan=False)+'\n')
+def csvwrite(p,rows):
+    if not rows:return
+    keys=list(dict.fromkeys(k for r in rows for k in r))
+    with Path(p).open('w',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=keys);w.writeheader()
+        for r in rows:w.writerow({k:json.dumps(jsonable(v),ensure_ascii=False) if isinstance(v,(dict,list,tuple)) else v for k,v in jsonable(r).items()})
+
+def algorithm(task):
+    return task.get('material_readout',{}).get('label',task['arm'])
+
+def public_gate(args):
+    """All authorization/terminal checks finish before any fresh private read."""
+    if args.authorize_postseal!='ROOT_EXPLICIT_POSTSEAL_AUTHORIZATION' or not args.authorization_note.strip():
+        raise PermissionError('Root explicit postseal authorization and its note are required; no truth opened.')
+    freeze=readjson(args.freeze)
+    if freeze['status']!='FROZEN_BEFORE_ANY_FRESH_GT_READ_OR_SCORING':raise ValueError('Scoring contract is not frozen')
+    if (freeze['primary_support']['threshold'],freeze['primary_success']['nrmse_threshold'],freeze['primary_success']['fixed_support_iou_threshold'])!=(1.,.15,.7):
+        raise ValueError('Unexpected frozen scoring contract; review source before use')
+    tasks=[];evidence=[stamp(args.freeze)]
+    for manifest,count in ((args.baseline_manifest,120),(args.candidate_manifest,48)):
+        doc=readjson(manifest)
+        if len(doc['tasks'])!=count:raise ValueError('Manifest task count mismatch')
+        evidence.append(stamp(manifest));tasks.extend(doc['tasks'])
+    ids=[t['task_id'] for t in tasks];cases=sorted({t['case_id'] for t in tasks})
+    if len(tasks)!=168 or len(set(ids))!=168 or len(cases)!=24:raise ValueError('Require168 unique tasks and24 objects')
+    for case in cases:
+        ts=[t for t in tasks if t['case_id']==case]
+        if sorted(algorithm(t) for t in ts)!=sorted(METHODS):raise ValueError('Unbalanced seven-method case '+case)
+    jobs={};queues=[]
+    for path,count in ((args.baseline_queue,120),(args.candidate_queue,48)):
+        q=readjson(path);evidence.append(stamp(path));queues.append(q)
+        if q['status'] not in ('COMPLETED','COMPLETED_WITH_ERRORS') or q.get('pending',0) or q.get('running') or q.get('not_started_task_ids'):
+            raise RuntimeError('Queue is not fully terminal: '+str(path))
+        if len(q['jobs'])!=count:raise RuntimeError('Missing explicit terminal child outcomes')
+        for j in q['jobs']:
+            if j['task_id'] in jobs or j['status'] not in ('FINISHED','FAILED','LAUNCH_FAILED'):raise RuntimeError('Ambiguous child outcome')
+            jobs[j['task_id']]=j
+    if set(jobs)!=set(ids):raise RuntimeError('Queue/manifest task identities differ')
+    entries=[]
+    for task in tasks:
+        d=resolve(task['output_dir']);rp=d/'RECEIPT.json';job=jobs[task['task_id']]
+        rec=readjson(rp) if rp.exists() else None
+        if rec and rec.get('status') in ('RUNNING','PREPARING','PREPARED'):raise RuntimeError('Nonterminal task receipt '+task['task_id'])
+        sealed=bool(rec and rec.get('status')=='SEALED_PUBLIC_PREDICTION')
+        if job['status']=='FINISHED' and not sealed:raise RuntimeError('Finished child lacks sealed prediction')
+        if sealed:
+            for n in ('prediction.npz','prediction.json','PUBLIC_TASK.json'):
+                if not (d/n).exists():raise RuntimeError('Incomplete public seal '+str(d/n))
+            pt=readjson(d/'PUBLIC_TASK.json')
+            if (pt['task_id'],pt['case_id'],pt['arm'],algorithm(pt))!=(task['task_id'],task['case_id'],task['arm'],algorithm(task)):
+                raise ValueError('PUBLIC_TASK candidate identity mismatch')
+            if (rec.get('task_id'),rec.get('case_id'),rec.get('arm'))!=(task['task_id'],task['case_id'],task['arm']):raise ValueError('Receipt identity mismatch')
+            evidence.extend(stamp(d/n) for n in ('prediction.npz','prediction.json','PUBLIC_TASK.json','RECEIPT.json'))
+        entries.append(dict(task=task,directory=d,receipt=rec,job=job,sealed=sealed))
+    return freeze,tasks,cases,entries,evidence,queues
+
+def otsu(m):
+    """Literal inherited256-bin prediction-only Otsu, first argmax."""
+    if np.ptp(m)<=1e-12:return np.zeros(m.size,bool),float(m[0])
+    h,e=np.histogram(m,bins=256);c=(e[:-1]+e[1:])/2;w=np.cumsum(h);s=np.cumsum(h*c);den=w*(w[-1]-w)
+    v=np.full(256,-np.inf);ok=den>0;v[ok]=(s[-1]*w[ok]-s[ok]*w[-1])**2/den[ok]
+    threshold=float(c[np.argmax(v)]);return m>threshold,threshold
+def iou(a,b):
+    union=np.count_nonzero(a|b);return float(np.count_nonzero(a&b)/union) if union else 1.
+def material_metrics(m,truth,amplitude,high_chi):
+    m=np.asarray(m);truth=np.asarray(truth)
+    if m.shape!=(576,) or np.iscomplexobj(m) or not np.isfinite(m).all():raise ValueError('Invalid576-dimensional finite real material')
+    if truth.shape!=(576,) or np.iscomplexobj(truth) or not np.isfinite(truth).all():raise ValueError('Invalid truth schema')
+    if amplitude<=0 or not np.isclose(amplitude,np.max(truth)-.1,rtol=0,atol=1e-10):raise ValueError('Sealed amplitude metadata mismatch')
+    dm=m-truth;rmse=float(np.linalg.norm(dm)/24);nrmse=rmse/amplitude
+    q=m.dtype==np.float32;ltol=float(np.spacing(np.float32(.02))) if q else 1e-12;utol=float(np.spacing(np.float32(20.))) if q else 1e-12
+    legal=bool(np.min(m)>=.02-ltol and np.max(m)<=20+utol);fixed=iou(m>1.,truth>1.)
+    seg,threshold=otsu(m);legacy=iou(seg,truth>.1+.5*amplitude);full=iou(seg,truth>1.)
+    result=dict(RMSE=rmse,amplitude_NRMSE=nrmse,fixed_support_IoU=fixed,material_legal=legal,
+        material_success=bool(nrmse<=.15 and fixed>=.7 and legal),legacy_Otsu_IoU=legacy,
+        Otsu_full_support_IoU=full,legacy_Otsu_threshold=threshold,legacy_success=bool(nrmse<=.15 and legacy>=.7 and legal),
+        material_min=float(np.min(m)),material_max=float(np.max(m)),material_error_squared_energy=float(np.vdot(dm,dm).real),
+        material_dtype=str(m.dtype),legality_lower_tolerance=ltol,legality_upper_tolerance=utol)
+    masks=dict(low=np.isclose(truth,2.5,rtol=0,atol=1e-12),high=np.isclose(truth,float(high_chi),rtol=0,atol=1e-12),
+               background=np.isclose(truth,.1,rtol=0,atol=1e-12))
+    # low-only objects can declare high_chi=2.5; the high definition is always12/18.
+    if float(high_chi) not in (12.,18.):masks['high']=np.zeros(576,bool)
+    for name,mask in masks.items():
+        result['true_'+name+'_cells']=int(np.count_nonzero(mask));result['RMSE_true_'+name+'_region']=float(np.sqrt(np.mean(dm[mask]**2))) if mask.any() else None
+    return result
+
+def base_row(entry,meta):
+    t=entry['task'];r=entry['receipt'] or {};j=entry['job'];c=r.get('physical_model_cost') or j.get('physical_model_cost') or {};ops=(r.get('auxiliary_execution_receipt') or {}).get('operation_counts') or {}
+    external=j.get('child_process_CPU_seconds');external_scope=j.get('CPU_scope','UNKNOWN')
+    if external is not None and 'GetProcessTimes' not in external_scope:external=None
+    return dict(task_id=t['task_id'],case_id=t['case_id'],method=algorithm(t),canonical_arm=t['arm'],primary_comparison=algorithm(t) in PRIMARY,
+        regime=meta['regime'],family=meta.get('family'),high_chi=meta['high_chi'],status=r.get('status','NO_TASK_RECEIPT'),
+        queue_child_status=j['status'],queue_returncode=j.get('returncode'),queue_error=j.get('error'),queue_error_log_tail=j.get('error_log_tail'),prediction_sealed=entry['sealed'],
+        material_success=False,material_legal=False,amplitude_NRMSE=None,fixed_support_IoU=None,legacy_Otsu_IoU=None,Otsu_full_support_IoU=None,
+        external_full_child_CPU_seconds=external,external_CPU_scope=external_scope,queue_child_wall_seconds=j.get('wall_seconds'),
+        nested_R10_CPU_seconds=r.get('r10_total_cpu_seconds'),nested_R8_CPU_seconds=r.get('cpu_seconds'),
+        nested_auxiliary_CPU_seconds=r.get('auxiliary_cpu_seconds'),nested_corrector_CPU_seconds=r.get('corrector',{}).get('cpu_seconds'),
+        physical_LU=c.get('LU'),physical_complex_RHS=c.get('actual_complex_RHS'),physical_source_RHS=c.get('source_RHS'),physical_adjoint_RHS=c.get('adjoint_RHS'),
+        denominator_small_LU=ops.get('denominator_small_LU'),denominator_small_LU_dimension_sum=ops.get('denominator_small_LU_dimension_sum'),
+        denominator_small_triangular_complex_RHS=ops.get('denominator_small_triangular_complex_RHS'),
+        corrector_stop=r.get('corrector',{}).get('stop'),corrector_success=r.get('corrector',{}).get('success'),
+        corrector_iterations=r.get('corrector',{}).get('iterations'),execution_platform=r.get('execution_platform'),
+        original_Phi=r.get('physical_objective'),relative_residual=r.get('physical_relative_residual'),truth_access='POST_ALL168_TERMINAL_ROOT_AUTHORIZED')
+
+def budget_scores(entry,row,truth,amp,high,final):
+    d=entry['directory'];r=entry['receipt'] or {};p=d/'R10_BUDGET_STATES.npz'
+    result=[];audit=dict(task_id=row['task_id'],file=str(p),status='NOT_AVAILABLE',external_clock_exact_prefix=False)
+    if not p.exists():return result,audit
+    z=loadnpz(p);costs=z['costs'];mats=z['m'];cols=[str(x) for x in z['columns']]
+    if costs.ndim!=2 or costs.shape[1]!=4 or mats.shape!=(len(costs),576) or not len(costs):
+        return result,dict(audit,status='INVALID_BUDGET_SCHEMA')
+    if not np.isfinite(costs).all() or np.any(np.diff(costs[:,:3],axis=0)<-1e-8) or np.any(np.diff(costs[:,3])>1e-8):
+        return result,dict(audit,status='INVALID_NONMONOTONE_PAID_INCUMBENT')
+    if cols[0]!='CPU_seconds_including_R10_preparation':return result,dict(audit,status='UNSUPPORTED_CPU_CLOCK',columns=cols)
+    ext=row['external_full_child_CPU_seconds'];internal=row['nested_R10_CPU_seconds'];last=float(costs[-1,0]);overhead=None
+    proof=bool(ext is not None and internal is not None and ext>=internal-1e-7 and internal>=last-1e-7 and ext>=last)
+    if proof:overhead=float(ext-last)
+    audit.update(status='AVAILABLE',columns=cols,last_internal_paid_CPU=last,last_paid_physical_LU=float(costs[-1,1]),external_full_child_CPU=ext,
+        nested_internal_total_CPU=internal,conservative_external_prefix_bound_proven=proof,unassigned_external_overhead_upper_bound=overhead,
+        external_bound_semantics='t_internal+(external_total-internal_last); all unknown overhead placed before snapshot, not an observed exact prefix' if proof else 'NOT_PROVEN',
+        quantization='Saved material dtype retained; float32 oneULP bounds only where actual dtype=float32',selection='Latest recorded already-paid original-Phi incumbent satisfying cost bound; never GT or minimum error')
+    metcache={}
+    for axis,budgets,col in [('internal_paid_CPU',CPU_BUDGETS,0),('physical_LU',LU_BUDGETS,1),('external_full_child_CPU_conservative',CPU_BUDGETS,0)]:
+        for target in budgets:
+            b=dict(task_id=row['task_id'],case_id=row['case_id'],regime=row['regime'],method=row['method'],endpoint_status=row['status'],queue_child_status=row['queue_child_status'],budget_axis=axis,budget=target,
+                status='NO_PAID_STATE_WITHIN_BUDGET',selection_kind=None,amplitude_NRMSE=None,fixed_support_IoU=None,material_success=False)
+            final_cost=internal if axis=='internal_paid_CPU' else row['physical_LU'] if axis=='physical_LU' else ext
+            if final is not None and final_cost is not None and final_cost<=target:
+                b.update(status='AVAILABLE',selection_kind='COMPLETED_PUBLIC_PHI_ENDPOINT',selected_index=None,selected_cost=final_cost,
+                    original_Phi=row['original_Phi'],**material_metrics(final,truth,amp,high))
+            else:
+                if axis=='external_full_child_CPU_conservative' and not proof:
+                    b['status']='EXTERNAL_PREFIX_CLOCK_NOT_PROVEN';result.append(b);continue
+                clock=costs[:,col]+(overhead if axis=='external_full_child_CPU_conservative' else 0.)
+                eligible=np.flatnonzero(clock<=target)
+                if len(eligible):
+                    k=int(eligible[-1])
+                    if k not in metcache:metcache[k]=material_metrics(mats[k],truth,amp,high)
+                    b.update(status='AVAILABLE',selection_kind='LATEST_SAVED_PUBLIC_PHI_INCUMBENT',selected_index=k,selected_cost=float(clock[k]),
+                        actual_internal_paid_CPU=float(costs[k,0]),actual_physical_LU=float(costs[k,1]),actual_physical_complex_RHS=float(costs[k,2]),original_Phi=float(costs[k,3]),**metcache[k])
+            result.append(b)
+    return result,audit
+
+def paired_and_aggregate(rows):
+    index={(r['case_id'],r['method']):r for r in rows};cases=sorted({r['case_id'] for r in rows});pairs=[];summaries=[];means=[]
+    for case in cases:
+        for a,b in combinations(METHODS,2):
+            ra,rb=index[case,a],index[case,b];valid=ra['amplitude_NRMSE'] is not None and rb['amplitude_NRMSE'] is not None
+            pairs.append(dict(case_id=case,regime=ra['regime'],method_A=a,method_B=b,comparison_role='PRIMARY_METHODS' if a in PRIMARY and b in PRIMARY else 'INTERNAL_MATCHED_CURRENT_ABLATION',
+                valid_pair=valid,status_A=ra['status'],status_B=rb['status'],amplitude_NRMSE_A=ra['amplitude_NRMSE'],amplitude_NRMSE_B=rb['amplitude_NRMSE'],
+                NRMSE_A_minus_B=ra['amplitude_NRMSE']-rb['amplitude_NRMSE'] if valid else None,
+                fixed_IoU_A_minus_B=ra['fixed_support_IoU']-rb['fixed_support_IoU'] if valid else None,
+                material_success_A=ra['material_success'],material_success_B=rb['material_success']))
+    rng=np.random.default_rng(BOOTSTRAP_SEED)
+    for regime in ('all','low','high','mixed'):
+        subset=[r for r in rows if regime=='all' or r['regime']==regime]
+        for method in METHODS:
+            rr=[r for r in subset if r['method']==method];valid=[r for r in rr if r['amplitude_NRMSE'] is not None]
+            m=dict(regime=regime,method=method,expected_objects=len(rr),valid_predictions=len(valid),missing_or_invalid_predictions=len(rr)-len(valid),
+                material_success_count=sum(r['material_success'] for r in rr),material_success_rate=sum(r['material_success'] for r in rr)/len(rr) if rr else None)
+            for field in ('amplitude_NRMSE','fixed_support_IoU','legacy_Otsu_IoU','Otsu_full_support_IoU','external_full_child_CPU_seconds','physical_LU','RMSE_true_low_region','RMSE_true_high_region','RMSE_true_background_region'):
+                vals=[r.get(field) for r in rr if r.get(field) is not None]
+                m[field+'_mean']=float(np.mean(vals)) if vals else None;m[field+'_median']=float(np.median(vals)) if vals else None;m[field+'_available_n']=len(vals)
+            means.append(m)
+        for a,b in combinations(METHODS,2):
+            pp=[p for p in pairs if p['method_A']==a and p['method_B']==b and (regime=='all' or p['regime']==regime)]
+            valid=[p for p in pp if p['valid_pair']];v=np.array([p['NRMSE_A_minus_B'] for p in valid]);iv=np.array([p['fixed_IoU_A_minus_B'] for p in valid])
+            s=dict(regime=regime,method_A=a,method_B=b,comparison_role='PRIMARY_METHODS' if a in PRIMARY and b in PRIMARY else 'INTERNAL_MATCHED_CURRENT_ABLATION',
+                expected_objects=len(pp),valid_pairs=len(valid),excluded_missing_pairs=len(pp)-len(valid),wins_A=int(np.sum(v < -1e-12)),wins_B=int(np.sum(v > 1e-12)),ties=int(np.sum(abs(v)<=1e-12)),
+                mean_NRMSE_A_minus_B=float(np.mean(v)) if len(v) else None,median_NRMSE_A_minus_B=float(np.median(v)) if len(v) else None,
+                mean_fixed_IoU_A_minus_B=float(np.mean(iv)) if len(iv) else None,
+                material_success_A_all_objects=sum(p['material_success_A'] for p in pp),material_success_B_all_objects=sum(p['material_success_B'] for p in pp),
+                bootstrap_seed=BOOTSTRAP_SEED,bootstrap_replicates=BOOTSTRAP_REPLICATES,CI_scope='Descriptive object-paired percentile95 CI on complete pairs; not broad population guarantee; no multiplicity correction')
+            if len(v):
+                sample=rng.integers(0,len(v),size=(BOOTSTRAP_REPLICATES,len(v)));boot=v[sample]
+                s.update(mean_NRMSE_difference_CI95_low=float(np.quantile(boot.mean(1),.025)),mean_NRMSE_difference_CI95_high=float(np.quantile(boot.mean(1),.975)),
+                    median_NRMSE_difference_CI95_low=float(np.quantile(np.median(boot,axis=1),.025)),median_NRMSE_difference_CI95_high=float(np.quantile(np.median(boot,axis=1),.975)))
+            summaries.append(s)
+    return pairs,summaries,means
+
+def figures(out,figdir,rows,truths,pictures):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    figdir.mkdir(parents=True,exist_ok=False);index={(r['case_id'],r['method']):r for r in rows};files=[]
+    for regime in ('low','high','mixed'):
+        cases=sorted({r['case_id'] for r in rows if r['regime']==regime})
+        fig,axs=plt.subplots(len(cases),8,figsize=(19,2.05*len(cases)),squeeze=False,constrained_layout=True)
+        for i,case in enumerate(cases):
+            for k,method in enumerate(('GT',)+METHODS):
+                ax=axs[i,k];m=truths[case] if method=='GT' else pictures.get((case,method))
+                if m is not None:im=ax.imshow(m.reshape(24,24),origin='lower',vmin=.02,vmax=20,cmap='viridis')
+                else:ax.text(.5,.5,'FAILED / MISSING',ha='center',va='center',transform=ax.transAxes,color='crimson')
+                ax.set_xticks([]);ax.set_yticks([])
+                label=(case+' GT') if method=='GT' else LABELS[method]
+                if method!='GT' and m is not None:
+                    r=index[case,method];label+='\nN %.3f | fixedIoU %.3f'%(r['amplitude_NRMSE'],r['fixed_support_IoU'])
+                ax.set_title(label,fontsize=7)
+        fig.colorbar(im,ax=axs,shrink=.5,label='real contrast chi; common scale [.02,20]')
+        fig.suptitle(regime+' | all8 objects | root-authorized postseal | GlobalDual internal ablation',fontsize=12)
+        p=figdir/('MATERIALS_'+regime+'.png');fig.savefig(p,dpi=160);files.append(str(p));fig.savefig(p.with_suffix('.pdf'));plt.close(fig)
+    fig,axs=plt.subplots(1,2,figsize=(13,5),constrained_layout=True);colors=plt.get_cmap('tab10')
+    for i,method in enumerate(METHODS):
+        rr=[r for r in rows if r['method']==method and r['amplitude_NRMSE'] is not None]
+        paid=[r for r in rr if r['external_full_child_CPU_seconds'] is not None]
+        axs[0].scatter([r['external_full_child_CPU_seconds'] for r in paid],[max(r['amplitude_NRMSE'],1e-8) for r in paid],color=colors(i),label=LABELS[method],alpha=.65,s=24)
+        vals=[max(r['amplitude_NRMSE'],1e-8) for r in rr]
+        if vals:axs[1].boxplot(vals,positions=[i],widths=.5,patch_artist=True,boxprops=dict(facecolor=colors(i),alpha=.5),medianprops=dict(color='black'))
+    axs[0].set_xscale('log');axs[0].set_yscale('log');axs[0].set_xlabel('full child GetProcessTimes CPU seconds');axs[0].set_ylabel('amplitude NRMSE');axs[0].grid(alpha=.2)
+    axs[1].set_yscale('log');axs[1].set_xticks(range(7),[LABELS[m] for m in METHODS],rotation=35,ha='right');axs[1].set_ylabel('amplitude NRMSE');axs[1].grid(axis='y',alpha=.2)
+    axs[0].legend(fontsize=7);fig.suptitle('Measured same-physics endpoints | descriptive costs, not equal-time claims')
+    p=figdir/'COST_PERFORMANCE.png';fig.savefig(p,dpi=170);files.append(str(p));fig.savefig(p.with_suffix('.pdf'));plt.close(fig)
+    dump(out/'FIGURE_MANIFEST.json',dict(files=files,scope='All24 objects split by regime; common physical material color range; fixedIoU main; failures explicit. No GT-selected candidates or snapshots.'))
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--authorize-postseal',required=True);ap.add_argument('--authorization-note',required=True)
+    ap.add_argument('--baseline-manifest',type=Path,default=ROOT/'configs/twod_tasks.json');ap.add_argument('--candidate-manifest',type=Path,default=ROOT/'configs/denominator_confirmation_tasks.json')
+    ap.add_argument('--baseline-queue',type=Path,default=ROOT/'delegated/twod/REMOTE_QUEUE_RECEIPT.json');ap.add_argument('--candidate-queue',type=Path,default=ROOT/'delegated/twod/DENOMINATOR_QUEUE_RECEIPT.json')
+    ap.add_argument('--freeze',type=Path,default=ROOT/'delegated/twod/FREEZE_SCORING.json')
+    ap.add_argument('--truth-dir',type=Path,default=ROOT/'sealed_truth/twod');ap.add_argument('--output',type=Path,default=ROOT/'delegated/twod_score/scored')
+    ap.add_argument('--figure-dir',type=Path,default=ROOT/'FIGURES/twod_comparison');args=ap.parse_args()
+    start=time.perf_counter();cpu=time.process_time();freeze,tasks,cases,entries,evidence,queues=public_gate(args)
+    if args.output.exists() or args.figure_dir.exists():raise FileExistsError('Write-once scoring/figure output exists; preserve it and choose a new destination')
+    out=args.output;out.mkdir(parents=True)
+    dump(out/'ALL168_PUBLIC_SEAL.json',dict(status='ALL168_TERMINAL_PUBLIC_OUTPUTS_VERIFIED',created_utc=utc(),root_authorization_note=args.authorization_note,
+        truth_opened_by_this_process=False,evidence=evidence,task_statuses=[dict(task_id=e['task']['task_id'],method=algorithm(e['task']),prediction_sealed=e['sealed'],queue_status=e['job']['status'],receipt_status=(e['receipt'] or {}).get('status')) for e in entries]))
+    # FIRST fresh private read occurs only here, after explicit authority AND full public gate.
+    scoremeta=readjson(args.truth_dir/'score_metadata.json');generatormeta=readjson(args.truth_dir/'generator_metadata.json')
+    amplitudes={r['case_id']:float(r['amplitude']) for r in scoremeta['records']};metadata={r['case_id']:r for r in generatormeta['records']}
+    if set(amplitudes)!=set(cases) or set(metadata)!=set(cases):raise ValueError('Private metadata does not match frozen24-case set')
+    if any(sum(metadata[c]['regime']==regime for c in cases)!=8 for regime in ('low','high','mixed')):raise ValueError('Expected8 low/high/mixed cases')
+    truths={c:loadnpz(args.truth_dir/(c+'.npz'))['m'].ravel() for c in cases}
+    rows=[];stage_rows=[];budget_rows=[];budget_audit=[];pictures={};failures=[];sources=evidence+[stamp(__file__),stamp(args.truth_dir/'score_metadata.json'),stamp(args.truth_dir/'generator_metadata.json')]
+    for entry in entries:
+        t=entry['task'];case=t['case_id'];meta=metadata[case];row=base_row(entry,meta);row['amplitude']=amplitudes[case]
+        final=None
+        if entry['sealed']:
+            try:
+                pred=loadnpz(entry['directory']/'prediction.npz');final=pred['m'];row.update(material_metrics(final,truths[case],amplitudes[case],meta['high_chi']))
+                pub={}
+                for p in t['public_files']:pub.update(loadnpz(resolve(p)))
+                if 'Y_prediction' in pred:
+                    residual=float(np.linalg.norm(pred['Y_prediction']-pub['Y']));sigma=float(pub['sigma']);radius=float(np.sqrt(chi2.ppf(.99,2*pub['Y'].size)/2))
+                    row.update(saved_prediction_relative_residual=residual/float(np.linalg.norm(pub['Y'])),CN99_whitened_residual=residual/sigma if sigma>0 else None,
+                        CN99_radius=radius,CN99_raw_noise_pass=bool(residual/sigma<=radius) if sigma>0 else None,noise_gate_in_primary_success=False)
+                pictures[case,row['method']]=final
+                for p in sorted(entry['directory'].glob('stage_*_physical.npz'))+[entry['directory']/'selected_before_corrector.npz']:
+                    if not p.exists():continue
+                    try:stage_rows.append(dict(case_id=case,method=row['method'],regime=meta['regime'],state=p.stem,**material_metrics(loadnpz(p)['m'],truths[case],amplitudes[case],meta['high_chi'])))
+                    except Exception as exc:
+                        stage_rows.append(dict(case_id=case,method=row['method'],regime=meta['regime'],state=p.stem,status='INVALID_SAVED_STAGE',error=repr(exc)))
+                        failures.append(dict(task_id=t['task_id'],scope='SAVED_STAGE_ONLY_FINAL_SCORE_RETAINED',source=str(p),error=repr(exc)))
+            except Exception as exc:
+                row.update(status='INVALID_SEALED_ARRAY_OR_SCORING_ERROR',material_success=False,material_legal=False,amplitude_NRMSE=None,fixed_support_IoU=None)
+                failures.append(dict(task_id=t['task_id'],error=repr(exc),traceback=traceback.format_exc()));final=None
+        else:row['failure_reason']=(entry['receipt'] or {}).get('error',entry['job'].get('error',entry['job'].get('error_log_tail','Explicit terminal missing/failed prediction')))
+        try:
+            b,a=budget_scores(entry,row,truths[case],amplitudes[case],meta['high_chi'],final);budget_rows.extend(b);budget_audit.append(a)
+        except Exception as exc:budget_audit.append(dict(task_id=t['task_id'],status='BUDGET_SCORING_ERROR',error=repr(exc)))
+        rows.append(row)
+    pairs,summary,means=paired_and_aggregate(rows)
+    for name,data in [('SCORES_FINAL.csv',rows),('SCORES_STAGES.csv',stage_rows),('PAIRED_OBJECTS.csv',pairs),('PAIRED_BOOTSTRAP_SUMMARY.csv',summary),('REGIME_METHOD_SUMMARY.csv',means),('BUDGET_SCORES.csv',budget_rows)]:csvwrite(out/name,data)
+    dump(out/'SCORES_FINAL.json',rows);dump(out/'BUDGET_CLOCK_AUDIT.json',budget_audit);dump(out/'SCORING_ERRORS.json',failures)
+    # Explicit compact per-object wide table includes every method and failure.
+    wide=[]
+    for case in cases:
+        w=dict(case_id=case,regime=metadata[case]['regime'])
+        for r in rows:
+            if r['case_id']==case:
+                for k in ('status','amplitude_NRMSE','fixed_support_IoU','material_success','external_full_child_CPU_seconds','physical_LU'):w[r['method']+'__'+k]=r.get(k)
+        wide.append(w)
+    csvwrite(out/'OBJECT_WIDE_COMPARISON.csv',wide)
+    child_cost=sum(r['external_full_child_CPU_seconds'] or 0 for r in rows);controller_cost=sum(q.get('controller_CPU_seconds',0) for q in queues)
+    dump(out/'COST_ACCOUNTING.json',dict(additive_remote_child_GetProcessTimes_CPU_known=child_cost,unknown_external_child_CPU_tasks=[r['task_id'] for r in rows if r['external_full_child_CPU_seconds'] is None],
+        additive_remote_queue_controller_CPU=controller_cost,nested_views=[{k:r.get(k) for k in ('task_id','external_full_child_CPU_seconds','nested_R10_CPU_seconds','nested_R8_CPU_seconds','nested_auxiliary_CPU_seconds','nested_corrector_CPU_seconds')} for r in rows],
+        scope='Sum disjoint child lifetimes and separate queue controllers once; internal R10/R8/aux/corrector times overlap and are never added. Generation/transport/archive/failed engineering attempts remain separately itemized in existing twod cost ledgers.',
+        known_physical_LU=sum(r['physical_LU'] or 0 for r in rows),known_physical_complex_RHS=sum(r['physical_complex_RHS'] or 0 for r in rows),unknown_physical_cost_tasks=[r['task_id'] for r in rows if r['physical_LU'] is None or r['physical_complex_RHS'] is None],denominator_small_LU=sum(r['denominator_small_LU'] or 0 for r in rows),
+        denominator_small_LU_dimension_sum=sum(r['denominator_small_LU_dimension_sum'] or 0 for r in rows),denominator_small_triangular_complex_RHS=sum(r['denominator_small_triangular_complex_RHS'] or 0 for r in rows)))
+    figures(out,args.figure_dir,rows,truths,pictures)
+    dump(out/'FROZEN_SCORING_CONTRACT_USED.json',freeze);dump(out/'SOURCE_PROVENANCE.json',sources+[stamp(args.truth_dir/(c+'.npz')) for c in cases])
+    dump(out/'RECEIPT.json',dict(status='COMPLETE_WITH_SCORING_ERRORS' if failures else 'COMPLETE',created_utc=utc(),root_authorization_note=args.authorization_note,
+        expected_tasks=168,expected_objects=24,regime_cases=dict(low=8,high=8,mixed=8),valid_predictions=sum(r['amplitude_NRMSE'] is not None for r in rows),terminal_missing_or_invalid_predictions=sum(r['amplitude_NRMSE'] is None for r in rows),
+        truth_access='POST_ALL168_TERMINAL_ROOT_AUTHORIZED_ONLY',new_inverse_runs=0,new_physical_calls=0,new_physical_LU=0,new_physical_RHS=0,
+        GT_selected_candidate=False,GT_selected_iterate=False,budget_selection='Fixed saved cost thresholds and original public-Phi incumbents only',
+        bootstrap_seed=BOOTSTRAP_SEED,bootstrap_replicates=BOOTSTRAP_REPLICATES,bootstrap_scope='Descriptive object paired CI, no broad population or multiplicity guarantee',
+        CPU_seconds=time.process_time()-cpu,wall_seconds=time.perf_counter()-start,main_methods=list(PRIMARY),internal_ablation='global_dual',
+        limitations=['No unseen-family or broad-population guarantee from24 objects','Internal snapshot clocks are distinct from full child CPU; conservative external bounds labeled','No claim that low residual implies GT recovery','Historical40ac was already solved by a different R9 profile full-current route; this is not a first-ever solution or superiority over all physical routes']))
+    print(json.dumps(dict(status='SCORING_COMPLETE',tasks=168,output=str(out),figures=str(args.figure_dir))))
+
+if __name__=='__main__':
+    from threadpoolctl import threadpool_limits
+    with threadpool_limits(limits=1):main()

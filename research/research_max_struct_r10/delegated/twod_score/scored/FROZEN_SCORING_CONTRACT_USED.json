@@ -1,0 +1,84 @@
+{
+  "status": "FROZEN_BEFORE_ANY_FRESH_GT_READ_OR_SCORING",
+  "freeze_utc": "2026-11-06T20:21:41.043434+00:00",
+  "authority": "Root instruction 2026-11-07, three-level metric-definition correction independent of new predictions/GT scores",
+  "scope": {
+    "cases": 24,
+    "baseline_tasks": 120,
+    "root_frozen_candidate_tasks": 48,
+    "same_rules_all_methods": true
+  },
+  "access_gate": "No fresh GT array reads or scoring until root explicitly authorizes after all task predictions/terminal outcomes are sealed and all candidate design frozen",
+  "primary_continuous": {
+    "name": "amplitude_NRMSE",
+    "formula": "sqrt(mean((m_prediction-m_true)^2))/(max(m_true)-0.1)",
+    "amplitude_source": "Previously generated sealed score_metadata.json; max true chi minus .1",
+    "background": 0.1,
+    "normalization_unchanged": true
+  },
+  "primary_support": {
+    "name": "fixed_support_IoU",
+    "threshold": 1.0,
+    "comparison": "strict chi > 1.0 for BOTH prediction and GT",
+    "formula": "count(pred_support AND true_support)/count(pred_support OR true_support)",
+    "empty_union_value": 1.0,
+    "scope": "All 24 cases, including mixed low/high materials",
+    "meaning": "Predeclared detection of material chi>1, not an online inverse prior or method-specific threshold"
+  },
+  "primary_success": {
+    "name": "material_success",
+    "formula": "amplitude_NRMSE <= 0.15 AND fixed_support_IoU >= 0.7 AND material_legal",
+    "nrmse_threshold": 0.15,
+    "fixed_support_iou_threshold": 0.7,
+    "residual_gate": false,
+    "convergence_is_separate": true
+  },
+  "legality": {
+    "shape": [
+      576
+    ],
+    "real_material": true,
+    "finite": true,
+    "box": [
+      0.02,
+      20.0
+    ],
+    "float64_bound_tolerance": 1e-12,
+    "float32_saved_budget_tolerance": "one float32 ULP at each bound, only for genuinely quantized paid-budget snapshots; inherited R7 rule",
+    "terminal_missing_or_failed_prediction": "No material success; retain status and cost, do not fabricate an array"
+  },
+  "legacy_diagnostic": {
+    "name": "legacy_Otsu_IoU",
+    "prediction": "Inherited prediction-only 256-bin Otsu, first argmax, strict m>threshold; constant image yields empty support",
+    "truth_support": "Inherited R7/R8 definition m_true > 0.1 + 0.5*amplitude",
+    "source": "research/research_max_struct_r7/experiments/score_primary.py::otsu/material_metrics plus inherited generator half-amplitude support",
+    "legacy_success": "amplitude_NRMSE <= .15 AND legacy_Otsu_IoU >= .7 AND material_legal",
+    "primary": false,
+    "limitation": "Mixed material low-chi regions may be excluded by Otsu and the historical half-amplitude truth support; this diagnostic does not measure full chi>1 support"
+  },
+  "additional_segmentation_diagnostic": {
+    "name": "Otsu_full_support_IoU",
+    "prediction": "Same inherited prediction-only 256-bin Otsu",
+    "truth_support": "m_true > 1.0",
+    "primary": false,
+    "purpose": "Expose whether Otsu misses the true low-material region; do not silently conflate this with strict historical legacy_Otsu_IoU"
+  },
+  "postseal_region_diagnostics": {
+    "metrics": [
+      "RMSE_true_low_region",
+      "RMSE_true_high_region"
+    ],
+    "low_mask": "m_true == 2.5 within absolute tolerance1e-12",
+    "high_mask": "m_true == generator-declared12 or18 within absolute tolerance1e-12",
+    "formula": "sqrt(mean((m_prediction-m_true)^2) over the stated TRUE region)",
+    "units": "raw real-contrast chi",
+    "report_region_cell_counts": true,
+    "empty_region_value": null,
+    "use": "Offline diagnosis only after seal/root authorization; never online selection or hyperparameter tuning"
+  },
+  "selection_unchanged": "Original public physical Phi incumbent, original stage/current/material/physics budgets and same prior; no GT chosen iterate",
+  "reason": "A fixed three-level object has background .1, low2.5 and high12/18. A single Otsu/half-amplitude division need not represent its full material support, even for exact truth. Correction is definitional, not result rescue.",
+  "new_physical_calls": 0,
+  "fresh_GT_arrays_read": 0,
+  "scoring_calls": 0
+}

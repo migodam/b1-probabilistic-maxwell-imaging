@@ -1,3 +1,11 @@
+<!-- MAX_STRUCT_R10_PUBLICATION -->
+## MAX-STRUCT R10：Green材料分母、能量归因与条件补偿
+
+24新二维材料×7方法、18真矢量3D反演；默认替换未整体胜出。最后四新对象中，CIE→Green19条件补偿恢复3/4，CIE及同触发Dual重试2/4，完整CPU为CIE的1.46倍。包含所有失败、跨网格误差和真实费用。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r10/) · [Chat入口](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_max_struct_r10/CHAT_HANDOFF.md) · [完整证据Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r10-20261107)
+<!-- /MAX_STRUCT_R10_PUBLICATION -->
+
 <!-- GN_GREEN_ERROR_20261106 -->
 
 <!-- GN_GREEN_R2 -->

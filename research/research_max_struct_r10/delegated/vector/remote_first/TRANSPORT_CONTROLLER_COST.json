@@ -1,0 +1,77 @@
+{
+  "status": "FAILED",
+  "platform": "Mac",
+  "local_controller_CPU_seconds": 0.016603,
+  "local_transport_child_CPU_seconds": 0.065437,
+  "wall_seconds": 780.4843581249006,
+  "steps": [
+    {
+      "operation": "create_isolated",
+      "exit": 0,
+      "wall_seconds": 0.41844941722229123,
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=3",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -c \"from pathlib import Path; Path('D:/AI/MAX_STRUCT_R10_VECTOR_20261107').mkdir(exist_ok=False)\""
+      ]
+    },
+    {
+      "operation": "upload",
+      "exit": 0,
+      "wall_seconds": 0.5315991672687232,
+      "command": [
+        "scp",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r10_worktree/research/research_max_struct_r10/delegated/vector/remote_first/SOURCE_BUNDLE.zip",
+        "jayzh@100.121.97.39:D:/AI/MAX_STRUCT_R10_VECTOR_20261107/SOURCE_BUNDLE.zip"
+      ]
+    },
+    {
+      "operation": "extract",
+      "exit": 0,
+      "wall_seconds": 0.4077873327769339,
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=3",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -c \"import zipfile,time,json;from pathlib import Path;t=time.perf_counter();c=time.process_time();p=Path('D:/AI/MAX_STRUCT_R10_VECTOR_20261107');zipfile.ZipFile(p/'SOURCE_BUNDLE.zip').extractall(p);(p/'EXTRACTION_COST.json').write_text(json.dumps(dict(platform='XINAN',CPU_seconds=time.process_time()-c,wall_seconds=time.perf_counter()-t,operation='SOURCE_EXTRACTION_ONLY')))\""
+      ]
+    },
+    {
+      "operation": "probe",
+      "exit": 77,
+      "wall_seconds": 779.1146404589526,
+      "command": [
+        "ssh",
+        "-i",
+        "/Users/migodam/.ssh/heatcryst_xinan_ed25519",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=3",
+        "jayzh@100.121.97.39",
+        "D:/python/python.exe -u D:/AI/MAX_STRUCT_R10_VECTOR_20261107/research/research_max_struct_r10/experiments/vector_run.py probe --output RESULTS/vector/queue_probe"
+      ]
+    }
+  ],
+  "scope": "Own local controller/SSH/SCP only; remote scientific/main/helper CPU excluded",
+  "new_private_array_reads": false
+}

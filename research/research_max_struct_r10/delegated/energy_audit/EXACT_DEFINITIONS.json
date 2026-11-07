@@ -1,0 +1,60 @@
+{
+  "energy": "energy(X)=Re tr(X* X)=sum abs(X)^2; Euclidean/Frobenius squared norm, not full electromagnetic energy",
+  "physics": "L(m)=I-diag(m)G; j(m)=L(m)^-1 diag(m)E0; 3D m is repeated per vector component",
+  "quantities": {
+    "material": "dm=mhat-mGT; real scalar coordinate vector",
+    "true_current": "j(mhat)-j(mGT)",
+    "auxiliary_current_error": "J_aux-j(mGT)",
+    "physical_consistency_defect": "r=J_aux-diag(mhat)(E0+G J_aux)",
+    "auxiliary_minus_physical_current": "g=J_aux-j(mhat)=L(mhat)^-1 r"
+  },
+  "identities": [
+    "auxiliary_error=true_current_error+auxiliary_minus_physical_current",
+    "||auxiliary_error||^2=||true_current_error||^2+||auxiliary_minus_physical_current||^2+2Re<true_current_error,auxiliary_minus_physical_current>"
+  ],
+  "bands": {
+    "primary_tau": 0.1,
+    "sensitivity_taus": [
+      0.03,
+      0.3
+    ],
+    "rank_relative_tolerance": 1e-12,
+    "strong": "sigma/sigma0 >=tau",
+    "weak": "1e-12 <sigma/sigma0 <tau",
+    "complement": "sigma/sigma0<=1e-12 including structural right null"
+  },
+  "basis": {
+    "complex": "right singular basis of raw Gin=G and Gob=S",
+    "real_material_control": "right singular basis of vertically stacked [Re A;Im A]",
+    "vector_material_control": "dm repeated per voxel component and divided by sqrt(3); isometric but arbitrary coordinate lift, not material Jacobian or observability"
+  },
+  "twofold": {
+    "in_then_ob": "X_ab=P_ob,b P_in,a X",
+    "ob_then_in": "X_ab=P_in,a P_ob,b X",
+    "sequential_scope": "Each order sums squared component energies to total; components across different cells need not all be orthogonal; not intersections",
+    "numerical_intersection": "Q_ab orthonormal basis of ker(V_ob,b_perp*V_in,a), lifted into V_in,a",
+    "intersection_sin_angle_tolerance": 1e-09,
+    "intersection_tolerance_sensitivity": [
+      1e-10,
+      1e-08
+    ],
+    "intersection_remainder": "X-sum_ab Q_ab Q_ab*X; must retain",
+    "overlapping_projected_spans": "orth(P_ob,b V_in,a), absolute rank cutoff1e-10; energies can sum beyond100%",
+    "legacy_chart": "[V_ob,strong, orth((I-P_ob,strong)V_in,strong)]; separate from actual FFT-TSOM",
+    "propagated_cross": "signed_cross_energy=||A X||^2-sum_ab ||A X_ab||^2 at tau.1, includes all pair cross terms; isolated component output energies are not a unique output partition"
+  },
+  "actual_affine": {
+    "JD": "Vd diag(sigma_d)^-1 Ud*Y using actual frozen rank per run",
+    "U": "(I-VdVd*)F_mf with exact native orthonormal IFFT frequency mask and vector component order",
+    "range_basis": "Q=orth(U), absolute singular cutoff1e-10",
+    "GT_projection": "J_proj=JD+QQ*(jGT-JD)",
+    "irreducible": "jGT-J_proj",
+    "in_range_error": "J_aux-J_proj",
+    "identity": "||J_aux-jGT||^2=||jGT-J_proj||^2+||J_aux-J_proj||^2 when J_aux belongs to the saved affine family",
+    "scope": "Only auxiliary J constrained. m-derived physical and corrector currents can be outside, so no final recovery lower bound"
+  },
+  "attribution": "Paired absolute_band_energy_reduction=ordinary band squared error minus A+ band squared error. Positive=improvement. Percentage shifts alone do not establish absolute error improvement.",
+  "GT_status": "EXPOSED_OFFLINE_DIAGNOSTIC; no optimization, online GT, new inverse data, GT-based state/rank/mf selection",
+  "operator_provenance": "New SVD per exact G/S group. Grouping requires np.array_equal on full matrices. No reuse of GN reference spectra.",
+  "sparse_state_scope": "Only actually saved initial, stage_joint, pre-corrector selected/raw, prediction. No reconstructed hidden trajectory or dense interpolation."
+}
