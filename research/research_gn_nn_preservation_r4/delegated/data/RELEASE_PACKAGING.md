@@ -1,6 +1,6 @@
 # Finite Release packaging entrypoint
 
-`experiments/package_release.py` prepares assets for a GitHub Release on the **existing B1 repository**. It does not create a repository, upload, install anything, start a service, decode GT arrays, run physics, or score TEST. This delivery ran syntax compilation and metadata-only planning; no ZIP was created. Final reports/plots and actual publication remain the parent's work.
+`experiments/package_release.py` prepares assets for a GitHub Release on the **existing B1 repository**. It does not create a repository, upload, install anything, start a service, decode GT arrays, run physics, or score TEST. The worker's initial delivery was metadata-only. The parent subsequently froze science and ran explicit packing; its actual receipt and public download links are recorded in ARTIFACTS.md, without altering the frozen numerical results.
 
 ## Plan now, pack only after closure
 
