@@ -24,7 +24,8 @@ def main():
     for f in sorted((s/'models').glob('**/summary.json')):
         d=read(f);add('NN_training',f,d,d.get('training_seconds'),scope='actual_unique_training_MPS_LU_RHS_not_applicable')
     for f in sorted((s/'predictions').glob('*/inference_setup.json')):
-        d=read(f);add('NN_inference_cold_setup',f,d,d.get('checkpoint_and_operator_setup_seconds'),scope='shared_once_per_run_not_in_warm_arm_time')
+        d=read(f);reused=(f.parent/'REUSED_PROPOSALS.json').exists()or'_filter_'in f.parent.name
+        add('NN_inference_cold_setup',f,d,d.get('checkpoint_and_operator_setup_seconds'),scope='reused_source_setup_no_new_execution_do_not_double_count'if reused else'shared_once_per_run_not_in_warm_arm_time')
     for f in sorted((s/'evaluation').glob('*/obs*.json')):
         d=read(f)
         if d.get('schema')!='gn-nn-completion-r3-evaluation-v1':continue

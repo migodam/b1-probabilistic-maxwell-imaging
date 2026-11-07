@@ -68,6 +68,12 @@ def paired_comparisons(scores):
                 peer = re.fullmatch(r'(.*)_(v_image|v_physics|j_full|j_null_current|j_null)_seed(\d+)', other)
                 if peer and peer.group(1) == tag.group(1) and peer.group(3) == tag.group(3):
                     peer_runs.append(other)
+        filtered=re.fullmatch(r'(.+)_filter_(background|current)',run)
+        if filtered and filtered.group(1)in runs:
+            peer_runs.append(filtered.group(1))
+            peer_runs.extend(other for other in runs if other.startswith(filtered.group(1)+'_filter_'))
+        if run.endswith('_cascade2')and run[:-9]in runs:
+            peer_runs.append(run[:-9])
         for comparator in ['anchor', 'continue_trf', 'weakreg45_anchor'] + peer_runs:
             if run == comparator:
                 continue

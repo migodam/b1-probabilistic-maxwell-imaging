@@ -27,6 +27,7 @@ start=time.time()
 for plan in plans:
     dest=S/'predictions'/plan['run'];dest.mkdir(exist_ok=True)
     source=S/'predictions'/plan['source']
+    (dest/'REUSED_PROPOSALS.json').write_text(json.dumps(dict(source_run=plan['source'],actual_new_NN_inference=False,scope='Same frozen public proposals; per-arm deployment preparation is conservatively re-invoiced by evaluator')))
     for obs in ids:
         for suffix in ('.npz','.json'):
             os.link(source/f'{obs}{suffix}',dest/f'{obs}{suffix}')
