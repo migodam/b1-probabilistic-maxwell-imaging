@@ -68,14 +68,16 @@ def main():
         for ax in axes[:,col]:ax.tick_params(axis='x',rotation=45,labelsize=8)
     fig.savefig(a.output/'quality_and_joint_success.png',dpi=170);plt.close(fig)
     fig,axes=plt.subplots(1,3,figsize=(16,4.5),layout='constrained')
+    anchor_costs={r['obs_id']:json.loads((study/'anchors'/f"{r['obs_id']}.json").read_text())for r in records}
     for run,label in zip(runs,labels):
         rr=[r for r in s['rows']if r['run']==run and r.get('level','low')=='low'and r.get('top1')]
-        scope='45s independent anchor'if run=='weakreg45_anchor'else'post shared GN'
-        axes[0].scatter([r['wall_seconds']for r in rr],[r['top1']['NRMSE']for r in rr],s=13,alpha=.5,label=label+' ('+scope+')')
-        axes[1].scatter([r['costcounts'].get('LU',0)for r in rr],[r['top1']['NRMSE']for r in rr],s=13,alpha=.5)
+        total_wall=[r['wall_seconds']+(0 if run=='weakreg45_anchor'else anchor_costs[r['obs_id']]['anchor_plus_feature_wall_seconds'])for r in rr]
+        total_lu=[r['costcounts'].get('LU',0)+(0 if run=='weakreg45_anchor'else anchor_costs[r['obs_id']]['counts']['LU'])for r in rr]
+        axes[0].scatter(total_wall,[r['top1']['NRMSE']for r in rr],s=13,alpha=.5,label=label)
+        axes[1].scatter(total_lu,[r['top1']['NRMSE']for r in rr],s=13,alpha=.5)
         axes[2].scatter([r['top1']['relative_residual']for r in rr],[r['top1']['NRMSE']for r in rr],s=13,alpha=.5)
     for ax in axes:ax.set_yscale('log');ax.set_ylabel('Material NRMSE / amplitude')
-    axes[0].set_xlabel('Measured charged wall seconds (different scopes labeled)');axes[1].set_xlabel('Charged LU');axes[2].set(xlabel='Full VIE relative data residual',xscale='log')
+    axes[0].set_xlabel('Recorded anchor + post seconds (mixed hosts; training separate)');axes[1].set_xlabel('Anchor + post LU (weak-reg: own anchor)');axes[2].set(xlabel='Full VIE relative data residual',xscale='log')
     axes[0].legend(fontsize=6);fig.savefig(a.output/'cost_quality_physical.png',dpi=175);plt.close(fig)
 
 if __name__=='__main__':main()

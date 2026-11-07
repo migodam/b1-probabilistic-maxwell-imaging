@@ -42,6 +42,8 @@ def summarize(scores, by_amplitude=False):
         for name in ('top1', 'old_score_top1', 'qualified_bestK_OFFLINE', 'all_bestK_OFFLINE'):
             result[name+'_NRMSE'] = mean([metric(r, name, 'NRMSE') for r in rows])
             result[name+'_IoU'] = mean([metric(r, name, 'IoU_Otsu') for r in rows])
+            result[name+'_physical_rate'] = sum(bool(r.get(name) and r[name].get('physical_data_feasible')) for r in rows)/len(rows)
+            result[name+'_joint_rate'] = sum(bool(r.get(name) and r[name].get('joint_success')) for r in rows)/len(rows)
         raw = [next((c for c in r.get('candidates', []) if c['label'] == 'raw_1'), None) for r in rows]
         result['raw_full_NRMSE'] = mean([c['NRMSE'] for c in raw if c])
         result['raw_full_physical_rate'] = sum(bool(c and c['physical_data_feasible']) for c in raw)/len(rows)
@@ -71,6 +73,7 @@ def paired_comparisons(scores):
                 continue
             for level in ('low', 'stress'):
                 parents = defaultdict(list)
+                joint_parents = defaultdict(list)
                 planned = 0
                 for row in scores['rows']:
                     if row['run'] != run or row.get('level', 'low') != level:
@@ -78,20 +81,33 @@ def paired_comparisons(scores):
                     planned += 1
                     top = row.get('top1')
                     other = row.get('anchor') if comparator == 'anchor' else lookup.get((comparator, row['obs_id']), {}).get('top1')
+                    other_row = lookup.get((comparator, row['obs_id']))
+                    if comparator == 'anchor':
+                        anchor_candidate = next((c for c in row.get('candidates',[]) if c['kind']=='anchor'),None)
+                        if anchor_candidate is not None:
+                            joint_parents[row['parent_id']].append(int(row.get('joint_success',False))-int(anchor_candidate.get('joint_success',False)))
+                    elif other_row is not None and row.get('status')!='NOT_RUN' and other_row.get('status')!='NOT_RUN':
+                        joint_parents[row['parent_id']].append(int(row.get('joint_success',False))-int(other_row.get('joint_success',False)))
                     if top and other:
                         parents[row['parent_id']].append(other['NRMSE']-top['NRMSE'])
                 values = np.array([np.mean(v) for v in parents.values()])
-                if not len(values):
+                if not len(values) and not joint_parents:
                     continue
                 rng = np.random.default_rng(20261107)
-                boot = np.mean(values[rng.integers(0, len(values), size=(2000, len(values)))], axis=1)
+                boot = np.mean(values[rng.integers(0, len(values), size=(2000, len(values)))], axis=1)if len(values)else None
+                joint_values=np.array([np.mean(v)for v in joint_parents.values()])
+                joint_boot=np.mean(joint_values[rng.integers(0,len(joint_values),size=(2000,len(joint_values)))],axis=1)if len(joint_values)else np.array([np.nan])
                 out.append(dict(run=run, comparator=comparator, level=level,
                                 planned_observations=planned,
                                 paired_observations=sum(map(len, parents.values())),
                                 independent_parents=len(values),
-                                mean_parent_NRMSE_improvement=float(values.mean()),
-                                paired_parent_bootstrap95_low=float(np.quantile(boot, .025)),
-                                paired_parent_bootstrap95_high=float(np.quantile(boot, .975)),
+                                mean_parent_NRMSE_improvement=float(values.mean())if len(values)else None,
+                                paired_parent_bootstrap95_low=float(np.quantile(boot, .025))if len(values)else None,
+                                paired_parent_bootstrap95_high=float(np.quantile(boot, .975))if len(values)else None,
+                                joint_success_difference=float(joint_values.mean())if len(joint_values)else None,
+                                joint_bootstrap95_low=float(np.quantile(joint_boot,.025))if len(joint_values)else None,
+                                joint_bootstrap95_high=float(np.quantile(joint_boot,.975))if len(joint_values)else None,
+                                joint_independent_parents=len(joint_values),
                                 population='available paired top1; selection failures reported separately, never silently imputed as recovery',
                                 sign='positive means the named run has lower NRMSE'))
     return out
