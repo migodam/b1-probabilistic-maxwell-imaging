@@ -1,0 +1,93 @@
+{
+  "status": "DRAFT_PENDING_ROOT_REVIEW_DO_NOT_EXECUTE",
+  "seed": 202611071118,
+  "cases": [
+    {
+      "case_id": "r11_crossgrid8_0000",
+      "family": "annulus",
+      "regime": "high",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0001",
+      "family": "annulus",
+      "regime": "mixed",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0002",
+      "family": "slotted_shell",
+      "regime": "high",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0003",
+      "family": "slotted_shell",
+      "regime": "mixed",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0004",
+      "family": "bridge",
+      "regime": "high",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0005",
+      "family": "bridge",
+      "regime": "mixed",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0006",
+      "family": "multi_island",
+      "regime": "high",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    },
+    {
+      "case_id": "r11_crossgrid8_0007",
+      "family": "multi_island",
+      "regime": "mixed",
+      "high_chi": 12.0,
+      "low_chi": 2.5
+    }
+  ],
+  "generation_grid": 48,
+  "inverse_grid": 24,
+  "ROI_width": 0.96,
+  "wavelength": 1.0,
+  "sources": 12,
+  "receivers": 48,
+  "radius_over_spacing": 0.45,
+  "material_background": 0.1,
+  "material_box": [
+    0.02,
+    20.0
+  ],
+  "relative_complex_RMS_noise": 0.01,
+  "noise_model": "iid_circular_complex",
+  "coarse_operator_source": "research/research_max_struct_r10/data_public/twod/operators.npz",
+  "public_output": "research/research_max_struct_r11/data_public/crossgrid8",
+  "private_output": "research/research_max_struct_r11/sealed_truth/crossgrid8",
+  "inverse_output": "research/research_max_struct_r11/RESULTS/crossgrid8",
+  "methods": [
+    "cie_single",
+    "cie_dual",
+    "global_dual",
+    "fullG19"
+  ],
+  "projection": "m_coarse[y,x] = mean(m_fine[2*y:2*y+2,2*x:2*x+2]); equal fine disk areas; explicit first-order polarization-volume material projection, not exact coarse scattering truth",
+  "independence": "SeedSequence(seed).spawn(8); separate case child, then child.spawn(2) independent geometry/noise substreams; no shared geometry between high/mixed; no reroll/rejection by forward, residual or GT",
+  "exposure": "New independent8 after DEV review; separate supplementary fine-data/coarse-model mismatch cohort, not replacing same-grid48 or3D",
+  "dispatch": "Only after primary48 queues naturally terminal and root releases i9 logical Pcores0,2,8,10; BLAS1, max4 lanes; noGPU, no3D resource preemption",
+  "cap": "480 complete-child CPU per inverse; allsetup/failed attempts included",
+  "truth_gate": "No inverse-side fine materials/labels; all32 terminal public outcomes/predictions and fixed public selections sealed before offline GT/model-mismatch scoring",
+  "offline_model_error": "Exactly one coarse-projected-truth forward per case only after32 predictions sealed; norm(Ycoarse(m_projected)-Yfine_clean)/sigma and relative to Yfine_clean; not online noise inflation or selection"
+}

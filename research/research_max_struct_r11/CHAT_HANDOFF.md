@@ -28,8 +28,11 @@
 |主二维确认|48，8拓扑×high/mixed×χ8/12/18|288，6臂|i9 P核，CIE/Dual/Global/fullG19/freezeA/contractedT，480 whole-child CPU与成本曲线|
 |BothBlocks后续确认（已完成）|16，8拓扑×high/mixed|80，5臂|Mac两lane，CIE/Dual/Global/fullG19/BothBlocks；全臂同硬件，不合并Windows原CPU|
 |新三维确认|8个规定设计，4拓扑×high/mixed|40 matched +10 cross-grid|4060与Mac按对象分流，真3分量dyadic，12³全部1728材料未知量，sourceCIE/Dual/Global/fullGreen/contractedLagged|
+|配对网格补充（生成完成，逆解待派发）|8个新独立材料|64，matched24/cross48→24各四臂|CIE/Dual/Global/G19；两条件不是16材料，等待主288自然完成后使用同4P核|
 
 二维两组都在各自新对象生成前冻结；16组已在完整封存后评分，48组仍未读GT。三维生成端已完成8 matched12及2个18→12观测，新确认已经启动；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
+
+主48在132次完成后发生控制程序故障，四个在途attempt中断、三次恢复准备失败；全部保留，按同冻结算法继续。受影响case0022原中断CPU有未知项，完整费用不能由成功重试CPU代替。最终同时保留48对象主表与47对象成本敏感性，详见[attempt清单](delegated/twod/independent48/CONTROL_ABORT_INVENTORY.json)。配对网格补充已冻结、生成并仅传输公开输入，[PLAN_V2](delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md)说明共同projected target与噪声；尚未运行64逆解，不把生成叫成像结果。
 
 三维分母采用公开固定`span(Einc,G Einc)`的rank120投影。top32最大奇异模式对晚期defect传播遗漏很大；source空间也不完整，不能宣称完整G或连续Maxwell精度。full/freezeA/contractedT已完成一次必要的真实3N共享材料导数接线核对，完整反演正在运行。保持FP64、真实LU/RHS与全部失败成本。
 
