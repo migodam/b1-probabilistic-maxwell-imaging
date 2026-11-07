@@ -1,0 +1,41 @@
+{
+  "status": "FROZEN_BEFORE_ANY_NEW_GT_OR_NEW_RESULT_ANALYSIS",
+  "freeze_utc": "2026-11-06T23:43:25.471552+00:00",
+  "authority": "Root explicit predeclared paid-deployment view; no new solver run",
+  "portfolios": [
+    {
+      "name": "CIE_plus_Dual",
+      "always_run": [
+        "cie_single",
+        "cie_dual"
+      ]
+    },
+    {
+      "name": "CIE_plus_BothBlocks",
+      "always_run": [
+        "cie_single",
+        "fullGreenBothBlocks"
+      ]
+    }
+  ],
+  "rule": "After all80 terminal and before GT read: select lower originalPhi among two existing paid incumbents; exact tie retains CIE",
+  "final_view": "Each arm uses its frozen 480CPU eligible incumbent; all selected arrays and costs sealed before GT",
+  "deployment_cost": "Sum two actual exact external childCPU costs, including setup/failures/serialization; overlapping campaign arms charged once in campaign total, but both candidates paid in each deployment scenario",
+  "prefix_view": {
+    "portfolio_arm_allowed_CPU_caps": [
+      240,
+      240
+    ],
+    "portfolio_total_allowed_CPU_cap": 480,
+    "single_CIE_allowed_CPU_cap": 480,
+    "selection": "Only existing paid checkpoints eligible within per-arm caps; same Phi/tie-CIE rule",
+    "actual_spend": "If arm naturally ended within prefix cap use exact actual childCPU; otherwise prefix is a saved-state allowed-budget slice and exact interrupted deployment spend is not observed; do not label allowed cap as equal actual cost"
+  },
+  "wall_policy": "Do not call shared queue wall time a single deployment wall time",
+  "forbidden": [
+    "GT-selected trigger or threshold",
+    "Skipping a planned arm based on observed data",
+    "Claiming free candidate selection",
+    "Claiming equal actual spend because allowed caps are equal"
+  ]
+}

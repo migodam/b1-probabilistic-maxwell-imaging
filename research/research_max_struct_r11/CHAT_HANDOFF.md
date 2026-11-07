@@ -1,6 +1,12 @@
 # MAX-STRUCT R11 · 执行中的证据交接
 
-**状态：IN_PROGRESS。扩大确认与三维反演正在执行，不能把本页当作最终结论。** R10冻结证据保持。本页先公开已完成的公式、开发正反例和冻结合同；后续会补齐独立结果、全部成本与论文资格判断。
+**状态：IN_PROGRESS。16对象确认已完成；48对象主比较与三维反演仍在执行，不能把本页当作整轮最终结论。** R10冻结证据保持。本页先公开已完成的公式、开发正反例和冻结合同；后续会补齐独立结果、全部成本与论文资格判断。
+
+## 最新独立结果：修正没有通过推广检验
+
+16新对象×5臂80次已全部GT前封存并评分。CIE/Dual/Global/原Green材料分母/BothBlocks的材料成功为**4/5/6/7/5**。原Green平均NRMSE .14485、实际CPU约CIE的1.269倍；BothBlocks平均.17357、CPU1.310倍。BothBlocks毁掉一个原Green恢复的新高对比环，因此不将旧桥开发正例升级为默认算法。
+
+[16对象完整判断、全部图和成本](CONFIRMATION16_REPORT_ZH.md)。同全波LU视图成功数不变。CIE+Dual、CIE+Both两付费组合均5/16，后者更贵。新补current-only旧三例全失败，支持两块交互的解释，不能支持普遍恢复优势。48主比较与三维合同保持，不因该负结果停机或调参。
 
 ## 已完成的主要发现
 
@@ -17,10 +23,10 @@
 |组|独立材料|实际计划反演|硬件与范围|
 |---|---:|---:|---|
 |主二维确认|48，8拓扑×high/mixed×χ8/12/18|288，6臂|i9 P核，CIE/Dual/Global/fullG19/freezeA/contractedT，480 whole-child CPU与成本曲线|
-|BothBlocks后续确认|16，8拓扑×high/mixed|80，5臂|Mac两lane，CIE/Dual/Global/fullG19/BothBlocks；全臂同硬件，不合并Windows原CPU|
+|BothBlocks后续确认（已完成）|16，8拓扑×high/mixed|80，5臂|Mac两lane，CIE/Dual/Global/fullG19/BothBlocks；全臂同硬件，不合并Windows原CPU|
 |新三维确认|8个规定设计，4拓扑×high/mixed|40 matched +10 cross-grid|4060真3分量dyadic，12³全部1728材料未知量，sourceCIE/Dual/Global/fullGreen/contractedLagged|
 
-二维两组都在各自新对象生成前冻结，尚未读取新GT评分。三维生成端已完成8 matched12及2个18→12观测，反演有限队列会在曝光DEV之后自动接续；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
+二维两组都在各自新对象生成前冻结；16组已在完整封存后评分，48组仍未读GT。三维生成端已完成8 matched12及2个18→12观测，反演有限队列会在曝光DEV之后自动接续；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
 
 三维分母采用公开固定`span(Einc,G Einc)`的rank120投影。top32最大奇异模式对晚期defect传播遗漏很大；source空间也不完整，不能宣称完整G或连续Maxwell精度。full/freezeA/contractedT已完成一次必要的真实3N共享材料导数接线核对，完整反演正在运行。保持FP64、真实LU/RHS与全部失败成本。
 
