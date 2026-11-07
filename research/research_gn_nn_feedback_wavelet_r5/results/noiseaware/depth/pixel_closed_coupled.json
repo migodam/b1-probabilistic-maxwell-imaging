@@ -1,0 +1,84 @@
+{
+  "scope": "PUBLIC_INPUT_ONLY",
+  "checkpoint": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_gn_nn_feedback_wavelet_r5/models_noiseaware/pixel_closed_coupled/best.pt",
+  "epoch": 11,
+  "config": {
+    "arms": [
+      "pixel_closed_coupled",
+      "haar_closed_coupled",
+      "db2_closed_coupled",
+      "haar_closed_no_fullfield",
+      "haar_free_coupled"
+    ],
+    "epochs": 12,
+    "batch": 8,
+    "device": "mps",
+    "seed": 7,
+    "patience": 6,
+    "wiring_only": false,
+    "anchor_mode": "noiseaware",
+    "arm": "pixel_closed_coupled",
+    "representation": "pixel",
+    "closed": true,
+    "lambda_field": 100.0,
+    "params": {
+      "total": 23818,
+      "prior_network": 22649,
+      "metric_network": 1169
+    },
+    "TRAIN": 128,
+    "VAL": 78,
+    "test_status": "NOT_RUN",
+    "forward_loss": "full nonlinear Maxwell complex128 retained LU and analytic VJP at every selected inverse stage",
+    "inverse_layer_LU": 0,
+    "train_depths": [
+      2,
+      4,
+      6
+    ],
+    "val_depth": 4,
+    "new_weights": "FROM_SCRATCH_NO_R4_INITIALIZATION"
+  },
+  "steps": 16,
+  "cases": 6,
+  "wall_seconds": 1.6320194168947637,
+  "NN_loop_seconds": 1.2592563750222325,
+  "input_GN_cost": "cached actual R4 input, must be paid in independent deployment; not included in inference-only seconds",
+  "fixed_operator_calls": {
+    "G_matmul_calls": 17,
+    "G_adjoint_matmul_calls": 16,
+    "S_matmul_calls": 17,
+    "S_adjoint_matmul_calls": 16
+  },
+  "physical_validation": {
+    "backend": "scipy_complex128_retained_LU_exact_real_material_VJP",
+    "operators": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r2_publication/repository/research/research_gn_nn_preservation_r4/data/operators.npz",
+    "setup_seconds": 0.003303375095129013,
+    "counts": {
+      "LU": 6,
+      "source_complex_RHS": 72,
+      "adjoint_complex_RHS": 0,
+      "actual_complex_RHS": 72,
+      "forward_cases": 6,
+      "backward_cases": 0
+    },
+    "calls": [
+      {
+        "stage": "forward",
+        "cases": 6,
+        "LU": 6,
+        "source_complex_RHS": 72,
+        "adjoint_complex_RHS": 0,
+        "actual_complex_RHS": 72,
+        "wall_seconds": 0.03363562515005469,
+        "transfer_wall_seconds_including_input_producer_wait": 0.002402250189334154,
+        "cpu_physics_wall_seconds": 0.03117170836776495
+      }
+    ],
+    "truth_access": "NONE",
+    "finite_difference_physics": false,
+    "runtime_status": "EXECUTED",
+    "total_wall_seconds": 0.03363562515005469
+  },
+  "truth_access": "NONE"
+}

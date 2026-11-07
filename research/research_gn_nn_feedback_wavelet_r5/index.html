@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GN–NN R5 · 耦合场损失与物理闭环CNN</title>
+<style>body{margin:0;background:#eef3f6;color:#192b36;font:17px/1.85 system-ui,-apple-system,"PingFang SC",sans-serif}header{background:#143b4b;color:#f2fbff;padding:26px max(20px,calc((100vw - 1200px)/2))}h1{font-size:30px;line-height:1.4}header p{color:#cce1e8}nav,.links{display:flex;gap:12px;flex-wrap:wrap}nav a{color:#ecfaff;text-decoration:none;border:1px solid #69929f;padding:4px 10px;border-radius:4px}main,footer{max-width:1200px;margin:auto;padding:25px 30px}main{background:white}a{color:#006d8e}h2{margin-top:2em;border-bottom:1px solid #d5e2e8}img{max-width:100%;height:auto}table{border-collapse:collapse;display:block;overflow:auto;width:100%;font-size:15px}td,th{border:1px solid #d8e3e8;padding:8px 12px;white-space:nowrap}th{background:#eef6f9}pre{padding:16px;background:#f0f5f7;overflow:auto;font-size:14px}code{font-size:.9em}.math{overflow:auto;padding:10px 0}footer{color:#58717e;font-size:14px}@media(max-width:650px){main,footer{padding:18px}h1{font-size:25px}body{font-size:16px}}</style>
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script>window.MathJax={tex:{displayMath:[["$$","$$"]],inlineMath:[["$","$"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head>
+<body><header><div>GN–NN R5 · 2026-11-08</div><h1>正反向耦合 Loss × 完整小波 × 物理闭环 CNN</h1><p>从 GN 出发的 CNN 电流补偿；真实完整 Maxwell 场反传；Haar/db2 全部576系数。11次训练，开发证据与失败分开。</p><nav><a href="?doc=RESEARCH_REPORT_ZH.md">结果与成像</a><a href="?doc=MATHEMATICAL_THEORY.md">固定点与反馈推导</a><a href="?doc=ALGORITHM.md">实际CNN闭环</a><a href="?doc=CODEX_TO_PRO_HANDOFF.md">理论交接</a><a href="?doc=BLIND_AND_DATA_PROTOCOL.md">TRAIN／VAL身份</a><a href="?doc=REPRODUCE.md">复现</a><a href="?doc=ARTIFACTS.md">权重与完整数组</a></nav></header>
+<main><div class="links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_gn_nn_feedback_wavelet_r5">代码与证据</a><a id="raw">Raw Markdown</a><a href="results/RESULTS_SUMMARY.json">结果汇总</a><a href="?doc=figures/noiseaware/FIGURE_INDEX.md">完整VAL图册</a></div><article id="report">正在读取研究报告…</article></main>
+<footer>DEVELOPMENT：128个TRAIN母体、78个VAL母体。具体VAL图像和母体未参与训练，VAL用于checkpoint／方法选择；类别和字体可能训练见过。新鲜TEST、高对比度和多种子为NOT_RUN。辅助能量下降不保证真实材料场随循环深度改善。</footer>
+<script>
+const root="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/research_gn_nn_feedback_wavelet_r5/";
+const doc=new URLSearchParams(location.search).get("doc")||"RESEARCH_REPORT_ZH.md";
+document.getElementById("raw").href=root+doc;
+const esc=x=>x.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+fetch(doc).then(r=>{if(!r.ok)throw Error(r.status);return r.text()}).then(text=>{
+ const codes=[];text=text.replace(/```[\s\S]*?```|`[^`\n]+`/g,c=>{const k="GNNCODE"+codes.length+"TOKEN";codes.push(c);return k;});
+ text=text.replace(/\\\[([\s\S]*?)\\\]/g,(_,m)=>"$$"+m+"$$").replace(/\\\(([\s\S]*?)\\\)/g,(_,m)=>"$"+m+"$");
+ const maths=[];text=text.replace(/\$\$([\s\S]*?)\$\$/g,(_,m)=>{const k="GNNMATH"+maths.length+"TOKEN";maths.push('<div class="math">$$'+esc(m)+'$$</div>');return "\n\n"+k+"\n\n";});
+ text=text.replace(/(^|[^\\])\$([^\n$]+)\$/g,(_,prefix,m)=>{const k="GNNMATH"+maths.length+"TOKEN";maths.push('<span>$'+esc(m)+'$</span>');return prefix+k;});
+ codes.forEach((c,i)=>text=text.replace("GNNCODE"+i+"TOKEN",()=>c));let rendered=marked.parse(text);maths.forEach((m,i)=>rendered=rendered.replace("GNNMATH"+i+"TOKEN",()=>m));
+ const article=document.getElementById("report");article.innerHTML=rendered;const base=new URL(doc,location.href);
+ article.querySelectorAll("img[src],a[href]").forEach(el=>{const attr=el.tagName==="IMG"?"src":"href",v=el.getAttribute(attr);if(!/^(https?:|#|mailto:)/.test(v)){const target=new URL(v,base);if(el.tagName==="A"&&target.pathname.endsWith(".md"))el.href=location.pathname+"?doc="+encodeURIComponent(target.pathname.split("/research_gn_nn_feedback_wavelet_r5/")[1]||v);else el.setAttribute(attr,target.href);}});
+ MathJax.startup.promise.then(()=>MathJax.typesetPromise([article]));
+}).catch(e=>document.getElementById("report").textContent="报告暂不可读取："+e.message);
+</script></body></html>
