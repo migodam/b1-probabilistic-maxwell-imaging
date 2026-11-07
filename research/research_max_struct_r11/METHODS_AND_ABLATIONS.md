@@ -1,5 +1,7 @@
 # 方法、消融与名称边界
 
+Full G19是本项目对R10 Green分母材料读出的实验命名，不是独立标准文献算法，也不是原版A/A+的同义词。它仍建立在CIE/FFT-TSOM电流表示和相同原物理corrector上；本轮分别记账原G19、冻结A、contractedT等分母规则，不能把这些版本的全部结果直接归给原A+。
+
 **fullGreen/fullG19中的full指保留材料依赖分母的完整导数，不指采用全部Green自由度。** 二维K为固定19维Galerkin截断，三维K为公开source空间rank120的P G P。全文把K=G只用于明确标注的解析机制极限。
 
 ## 二维实际比较

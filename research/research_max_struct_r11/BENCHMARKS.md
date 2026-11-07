@@ -32,7 +32,7 @@ fine48盘半径.009λ、coarse24盘半径.018λ，四fine盘总面积等于一co
 
 材料NRMSE分母在生成前固定为12−.1=11.9；IoU仍strict m>1，成功描述仍.15/.7及合法box。纯low/high/background仅指fine2×2块全同2.5/12/.1，其他cell另标partial-volume boundary，避免平均值恰落在某相就误标。全部64预测及公共选根封存后才能评分和读取private cleanY计算模型失配；不会在线扩大σ吸收失配。
 
-已实际生成8个2304阶fine LU及8个576阶coarse LU，各96 source RHS，0adjoint/0失败。对照合同在任何逆解前增补matched臂，v1草案及理由保留。生成外部CPU8.816213秒，峰值RSS736657408字节。它是两种有限disk-pulse模型间的匹配/失配对照，不是严格PDE网格收敛证书。64次反演已在主288自然结束并完整公共封存后开始，尚未评分。详见delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md。
+已实际生成8个2304阶fine LU及8个576阶coarse LU，各96 source RHS，0adjoint/0失败。对照合同在任何逆解前增补matched臂，v1草案及理由保留。生成外部CPU8.816213秒，峰值RSS736657408字节。它是两种有限disk-pulse模型间的匹配/失配对照，不是严格PDE网格收敛证书。64次反演在主288自然结束后执行，已全体终态、公共选择封存并于05:27:39Z获单独授权评分。详见[CROSSGRID8_REPORT_ZH](CROSSGRID8_REPORT_ZH.md)及delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md。主完整终点G19为6/8，其余三臂4/8；共同CPU前缀另列，不把两种grid算16材料，也不据GT选择更有利的前缀。
 
 流程偏差：一次与已完成48对象停止诊断有关的过宽rg文本检索，意外显示paired8私有generator_metadata中的inner字段一行；内部实际扫描私有文本范围未知，不能声称整个研究进程从未触及私有metadata。未加载GT材料数组、未改变正在运行的冻结算法/数据/选择、没有重抽对象；线上inverse输入仍仅公开观测包。完整命令、已知范围与未知项见delegated/diagnostics/private_metadata_search_incident/INCIDENT_AUDIT.md。该组按冻结独立测试报告，披露偏差，不包装成无任何过程偏差的全流程盲实验。
 

@@ -1,6 +1,14 @@
 # MAX-STRUCT R11 · 执行中的证据交接
 
-**状态：IN_PROGRESS。48对象288次主比较与16对象80次确认已完成封存评分；配对网格64次、新三维50次仍在执行。** R10冻结证据保持；本页不是整轮最终结论。
+**状态：IN_PROGRESS，按用户要求收尾。48对象288次、16对象80次、8对象配对网格64次均已完成封存评分；新三维50次继续到完整交付。** 此后不设计或启动新算法/实验。R10冻结证据保持；本页不是整轮最终结论。
+
+## 新完成的跨网格正结果必须保留
+
+原G19在matched24与cross48→24中均6/8通过冻结材料标准，CIE/Dual/Global均4/8；完整终点额外救回高对比环和开缝壳。这是明显的材料成像收益，不只是residual变小。另外两个多岛仍有主要形态，只是边界/低相细节未达IoU标准，不能与基线的环严重错解混称“完全失败”。
+
+与Dual共同CPU界限下两条件仍4对6，但增量对象有交换：matched为环+壳，cross为环+较早的混合多岛；cross壳在Dual较短B内未达到形状标准。完整G19费用比Dual多20.8%/34.7%。8材料×两grid仍是8独立材料，不与48或16组混成一次预注册统计。[完整报告、全部图与费用](CROSSGRID8_REPORT_ZH.md)。
+
+**名称边界：Full G19是R10继承的实验材料读出，不是标准文献算法，也不是原A+的同义词。** G19指分母中的19维Green投影；Full指完整分母材料导数，完整物理正演仍用原G。三维对应fullGreen使用rank120 source空间，不能称19维。contractedT是另一个只冻结非局部反馈、保留普通CIE收缩的修正。
 
 ## 48对象扩大结果已经完成
 
@@ -8,7 +16,7 @@ CIE/Dual/Global/G19/freezeA/contractedT恢复21/22/23/23/16/23例，平均NRMSE�
 
 [48对象完整中文判断](CONFIRMATION48_REPORT_ZH.md)、[全部48对象图集](delegated/twod/independent48/plots/PLOT_REPORT.md)。有效科学child共49968.922CPU秒；旧控制中断的完整费用部分未知，保留全部48并另报47对象成本敏感性。CIE→G19/→Dual/→Global三种付费条件策略均23/48，没有分母专属组合收益。
 
-## 最新独立结果：修正没有通过推广检验
+## 另16对象：两块修正的推广反例
 
 16新对象×5臂80次已全部GT前封存并评分。CIE/Dual/Global/原Green材料分母/BothBlocks的材料成功为**4/5/6/7/5**。原Green平均NRMSE .14485、实际CPU约CIE的1.269倍；BothBlocks平均.17357、CPU1.310倍。BothBlocks毁掉一个原Green恢复的新高对比环，因此不将旧桥开发正例升级为默认算法。
 
@@ -34,11 +42,11 @@ CIE/Dual/Global/G19/freezeA/contractedT恢复21/22/23/23/16/23例，平均NRMSE�
 |主二维确认（已完成评分）|48，8拓扑×high/mixed×χ8/12/18|288，6臂|i9 P核，CIE/Dual/Global/fullG19/freezeA/contractedT，480 whole-child CPU与成本曲线|
 |BothBlocks后续确认（已完成）|16，8拓扑×high/mixed|80，5臂|Mac两lane，CIE/Dual/Global/fullG19/BothBlocks；全臂同硬件，不合并Windows原CPU|
 |新三维确认|8个规定设计，4拓扑×high/mixed|40 matched +10 cross-grid|4060与Mac按对象分流，真3分量dyadic，12³全部1728材料未知量，sourceCIE/Dual/Global/fullGreen/contractedLagged|
-|配对网格补充（逆解运行中）|8个新独立材料|64，matched24/cross48→24各四臂|CIE/Dual/Global/G19；两条件不是16材料，主288结束后接续同4P核|
+|配对网格补充（已完成评分）|8个新独立材料|64，matched24/cross48→24各四臂|CIE/Dual/Global/G19；两条件不是16材料，主288结束后接续同4P核|
 
 二维两组都在各自新对象生成前冻结；16与48组均已在完整封存后评分。三维生成端已完成8 matched12及2个18→12观测，新确认正在执行；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
 
-主48在132次完成后发生控制程序故障，四个在途attempt中断、三次恢复准备失败；全部保留，最终288已完成。受影响case0022原中断CPU有未知项，完整费用不能由成功重试CPU代替。48主表与47敏感性均保留，详见[attempt清单](delegated/twod/independent48/CONTROL_ABORT_INVENTORY.json)。配对网格64正在运行，[PLAN_V2](delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md)说明共同projected target与噪声。离线诊断的一次过宽检索误显示该组私有生成metadata的inner字段一行，已披露；线上算法/选择均未使用，未改对象或重抽。
+主48在132次完成后发生控制程序故障，四个在途attempt中断、三次恢复准备失败；全部保留，最终288已完成。受影响case0022原中断CPU有未知项，完整费用不能由成功重试CPU代替。48主表与47敏感性均保留，详见[attempt清单](delegated/twod/independent48/CONTROL_ABORT_INVENTORY.json)。配对网格64现已零科学失败完成，576公共选择/128对比较先封存后授权评分；[PLAN_V2](delegated/diagnostics/crossgrid8_protocol/PLAN_V2.md)说明共同projected target与噪声。离线诊断的一次过宽检索误显示该组私有生成metadata的inner字段一行，已披露；线上算法/选择均未使用，未改对象或重抽，不称全流程完美盲态。
 
 三维分母采用公开固定`span(Einc,G Einc)`的rank120投影。top32最大奇异模式对晚期defect传播遗漏很大；source空间也不完整，不能宣称完整G或连续Maxwell精度。full/freezeA/contractedT已完成一次必要的真实3N共享材料导数接线核对，完整反演正在运行。保持FP64、真实LU/RHS与全部失败成本。
 
@@ -60,4 +68,4 @@ CIE/Dual/Global/G19/freezeA/contractedT恢复21/22/23/23/16/23例，平均NRMSE�
 - [BothBlocks16冻结合同](delegated/diagnostics/bothblocks_confirmation/FROZEN_CONTRACT.json)
 - [三维正式冻结合同](configs/vector_confirmation_contract.json)
 
-16和48对象已给出上述明确判断；配对网格及新三维仍须等待完整封存评分。本轮没有用开发正例替代扩大实验，也不会读取GT调整运行中的算法。最终报告保留全部失败、原物理残差、材料误差、允许CPU/实际费用/物理LU三种比较及其区别。
+16、48及8个配对网格对象已给出上述判断；仅新三维仍待完整封存评分。本轮没有用开发正例替代扩大实验，也不会读取GT调整运行中的算法。最终报告保留全部失败、原物理残差、材料误差、允许CPU/实际费用/物理LU三种比较及其区别。用户已明确本轮完成分析与建议后结束，不自动续开算法迭代。
