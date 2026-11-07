@@ -4,6 +4,7 @@ import csv,json,time
 import numpy as np
 from research.research_gn_nn_completion_r3.src.score import (
     seal_predictions,score_predictions,read_json,write_json,npz,
+    material_metrics,
 )
 
 def structure_metrics(m,truth,amplitude):
@@ -28,7 +29,7 @@ def score(seal_path,output):
         raise RuntimeError('New TEST numerical scoring requires the final method freeze')
     path=score_predictions(seal_path,output=output,include_oracle=False)
     data=read_json(path);seal=read_json(seal_path);root=Path(seal['data_root']);study=Path(seal['study'])
-    truth_cache={};anchor_cost_cache={};tables=[]
+    truth_cache={};truth_calibration={};anchor_cost_cache={};tables=[]
     for row in data['rows']:
         if row.get('transport_status')!='SEALED':
             table={k:row.get(k)for k in ('run','obs_id','parent_id','split','group','noise','family','digit','amplitude','seen_image','seen_parent','seen_class','seen_font','seen_rule')}
@@ -40,7 +41,11 @@ def score(seal_path,output):
             row['budgeted_joint_success']=False;tables.append(table)
             continue
         key=row['truth_path']
-        if key not in truth_cache:truth_cache[key]=npz(root/key)
+        if key not in truth_cache:
+            truth_cache[key]=npz(root/key)
+            t=truth_cache[key];g=material_metrics(t['m'],t['m'],t['amplitude'],t['alpha'])
+            truth_calibration[key]={'parent_id':row['parent_id'],'group':row.get('group'),'family':row.get('family'),
+                                    'GT_self_IoU_Otsu':g['IoU_Otsu'],'GT_self_shape_gate':g['IoU_Otsu']>=.7}
         truth=truth_cache[key];a=npz(study/'evaluation'/row['run']/f"{row['obs_id']}.npz")
         amp=float(truth['amplitude'])
         for candidate,material in zip(row['candidates'],a['candidate_materials']):
@@ -77,6 +82,8 @@ def score(seal_path,output):
                      selected_label=None if row.get('top1')is None else row['top1']['label'],
                      anchor_fallback=bool(row.get('top1')and row['top1']['kind']=='anchor'),
                      selected_RMS_displacement=row.get('selected_RMS_displacement_from_anchor'),
+                     old_score_NRMSE=None if row.get('old_score_top1')is None else row['old_score_top1']['NRMSE'],
+                     distinct_material_candidates=row.get('candidate_distinct_material_count'),
                      qualified_bestK_NRMSE=None if row.get('qualified_bestK_OFFLINE')is None else row['qualified_bestK_OFFLINE']['NRMSE'],
                      all_bestK_NRMSE=None if row.get('all_bestK_OFFLINE')is None else row['all_bestK_OFFLINE']['NRMSE'])
         tables.append(table)
@@ -108,5 +115,7 @@ def score(seal_path,output):
     data['inherited_R3_summary']=data.pop('summary')
     data['summary']=summaries
     data['summary_scope']='R4 groups explicitly distinguish new_instance, unseen_class and unseen_style; inherited R3 ID defaults are not used for these claims'
+    data['GT_shape_metric_calibration']={'parents':list(truth_calibration.values()),
+        'warning':'Otsu on continuous GT can differ from alpha>=.5; this describes the frozen metric and is not a strict upper bound on reconstruction IoU. Gate unchanged.'}
     write_json(path,data)
     return path

@@ -29,7 +29,7 @@ def summarize():
     return dict(status='PUBLIC_ANCHOR_PREPARATION',time_unix=time.time(),splits=all_rows,primary_counts=dict(costs),primary_statuses=dict(stops),primary_sum_solve_seconds=solve,wrong_primary=wrong,test_truth_status='SEALED_NOT_SCORED',remote_affinity_mask=20560,remote_cores=[4,6,12,14])
 
 if __name__=='__main__':
-    began=time.time();loops=0;baselines=None;published=False
+    began=time.time();loops=0;baselines=None;published=(STUDY/'audit/DATA_READY.json').exists()
     while time.time()-began<6*3600:
         for split in ('train','val','test'):
             if not (STUDY/'audit/data_progress.json').exists() or split!='test' or published:
@@ -45,7 +45,7 @@ if __name__=='__main__':
         if all_base and baselines is None:
             # The existing base queue has finished its actual tasks before this
             # independent four-worker baseline queue starts.
-            log=(STUDY/'delegated/data/remote_baselines_session.log').open('w')
+            log=(STUDY/'delegated/data/remote_baselines_session.log').open('a')
             baselines=subprocess.Popen([PYTHON,str(STUDY/'src/remote_jobs.py'),'run','--kind','baselines'],stdout=log,stderr=subprocess.STDOUT)
             print(json.dumps(dict(baseline_local_process=baselines.pid)),flush=True)
         if baselines is not None:

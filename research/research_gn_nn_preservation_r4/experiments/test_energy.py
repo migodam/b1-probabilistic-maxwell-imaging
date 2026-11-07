@@ -66,8 +66,8 @@ def main():
     # First truth access can occur only below this completed validation boundary.
     out=a.output;out.mkdir(parents=True,exist_ok=True)
     ops=load_npz(HERE/'data/operators.npz')
-    geom=FixedEnergyGeometry.from_cache(REPO/'research/research_gn_green_error_20261106/results/fixed_spectra.npz',G=ops['G'],S=ops['S'])
-    model=Model(ops);truth_cache={};notrun=[];residuals=[];stats=defaultdict(int);defects=[]
+    geom=FixedEnergyGeometry.from_cache(REPO/'research/research_gn_green_error_20261106/results/fixed_spectra.npz',G=ops['G'],S=ops['S'],sensitivity=True)
+    model=Model(ops);truth_cache={};notrun=[];residuals=[];realization=[];stats=defaultdict(int);defects=[]
     aggregate=defaultdict(lambda:dict(n=0,sums=defaultdict(float)))
     boot=defaultdict(lambda:defaultdict(list))
     fp=(out/'per_case_energy.csv').open('w',newline='');writer=None
@@ -126,6 +126,19 @@ def main():
                 else:notrun.append(dict(run=run,obs_id=obs,reason='NO_FROZEN_RAW_1_CANDIDATE_raw_energy_NOT_RUN'))
                 if 'j_aux'in arrays:
                     emit(meta,'auxiliary_current_head_OFFLINE_not_Maxwell_solution','anchor_to_auxiliary_head',ja-jt,np.asarray(arrays['j_aux'])-jt)
+                    if raw is not None:
+                        jaux=np.asarray(arrays['j_aux']);qaux=ops['E0']+ops['G']@jaux
+                        state_defect=jaux-raw[:,None]*qaux
+                        gap=jr-jaux;aux_receiver=ops['S']@(jaux-ja);receiver_gap=ops['S']@gap
+                        realization.append(dict(meta,state_defect_energy=squared_norm(state_defect),
+                            current_realization_gap_energy=squared_norm(gap),
+                            internal_realization_gap_energy=squared_norm(ops['G']@gap),
+                            aux_receiver_update_energy=squared_norm(aux_receiver),
+                            receiver_realization_gap_energy=squared_norm(receiver_gap),
+                            signed_receiver_cross=float(2*np.vdot(aux_receiver,receiver_gap).real),
+                            physical_receiver_update_energy=squared_norm(yr-ya),
+                            definition='F(raw)-F(anchor)=S(jaux-janchor)+S(jphysical_raw-jaux); current realization gap=-L_raw^-1 state_defect',
+                            scope='NN matched auxiliary/readout when applicable; baseline raw incumbents need their own current pairing interpretation'))
                 final=np.asarray(arrays['top1'])if'top1'in arrays else None
                 if final is not None:
                     jf,yf=physical(final,'TEST_energy_frozen_top1')
@@ -157,6 +170,7 @@ def main():
         means=values[rng.integers(0,n,(1000,n))].mean(1)
         brows.append(dict(zip(bootstrap_keys,key),mothers=n,delta_mean=float(values.mean()),delta_ci_low=float(np.quantile(means,.025)),delta_ci_high=float(np.quantile(means,.975)),mother_improvement_fraction=float(np.mean(values<0)),bootstrap_repetitions=1000))
     writecsv(out/'mother_paired_bootstrap.csv',brows);writecsv(out/'data_residual_relation.csv',residuals);writecsv(out/'NOT_RUN.csv',notrun)
+    writecsv(out/'current_realization_gap.csv',realization)
     receipt=dict(status='COMPLETE_FINITE_SEALED_PLAN_AUDITED',seal_path=str(a.seal.resolve()),runs_json=str(a.runs_json.resolve()),
         planned_models=len(plans),planned_observations=len(records),counts=dict(stats),physical_costcounts=dict(model.counts),
         max_full_VIE_equation_defect=max(defects,default=None),wall_seconds=time.perf_counter()-start,

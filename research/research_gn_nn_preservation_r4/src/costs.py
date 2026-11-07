@@ -28,20 +28,24 @@ def collect(study):
                      status=d.get('status'),stop_reason=d.get('stop_reason'),origin=d.get('execution_origin',d.get('origin')))
         emit('anchor_public_features',f.stem,d.get('feature_wall_seconds'),d.get('feature_counts',{}),
              scope='gb actually computed once here; later method budgets may reference its cost')
-    for f in (study/'models').glob('*/summary.json'):
-        d=read(f);emit('NN_training',f.parent.name,d.get('training_seconds'),{},
-                     scope='training, not online; optimizer and validation are included',epochs=d.get('epochs_run'))
-    f=study/'models/shared_setup.json'
-    if f.exists():
-        d=read(f);emit('TRAIN_normalization_and_operator_setup','shared',d.get('seconds'),{},scope='shared preparation, not multiplied by model count')
-    for f in (study/'predictions').glob('*/inference_setup.json'):
+    for f in (study/'models').rglob('summary.json'):
+        d=read(f);emit('NN_training',f.parent.name,d.get('training_seconds',d.get('training_wall_seconds')),
+                     d.get('bridge_cost',{}).get('counts',{}),
+                     scope='training, not online; optimizer and validation included, bridge wall is part of this training wall',epochs=d.get('epochs_run'))
+    setup_files=list((study/'models').rglob('shared_setup_*.json'))
+    setup_files += [f for f in (study/'models').rglob('shared_setup.json') if not list(f.parent.glob('shared_setup_*.json'))]
+    for f in setup_files:
+        d=read(f);emit('TRAIN_normalization_and_operator_setup',str(f.relative_to(study)),d.get('seconds',d.get('wall_seconds')),{},scope='actual preparation per invocation; latest aliases not counted twice')
+    inference_files=list((study/'predictions').glob('*/inference_setup_*.json'))
+    inference_files += [f for f in (study/'predictions').glob('*/inference_setup.json') if not list(f.parent.glob('inference_setup_*.json'))]
+    for f in inference_files:
         d=read(f);emit('NN_model_load',f.parent.name,d.get('checkpoint_and_operator_setup_seconds'),{},
                      scope='model/checkpoint preparation; operator cache reuse status in source receipt')
     for f in (study/'predictions').glob('*/obs_*.json'):
         d=read(f);c=d.get('preparation_cost',{});wall=sum(c.get(k,0.)for k in ('feature_normalization_seconds','inference_seconds','output_transfer_seconds'))
         # Posthoc projections actually happened too; the original NN prediction is a shared source.
         if 'posthoc_projection_seconds'in c:wall=c['posthoc_projection_seconds']
-        emit('NN_prediction',f.parent.name+'/'+f.stem,wall,{},
+        emit('NN_prediction',f.parent.name+'/'+f.stem,wall,c.get('fixed_operator_cost',{}),
              scope='actual normalization/inference/transfer only; inherited gb is already counted at anchor',
              method_budget_preparation_seconds=c.get('wall_seconds'))
     for f in (study/'evaluation').glob('*/obs_*.json'):
@@ -54,7 +58,7 @@ def collect(study):
     for sub in ('e0','test_energy'):
         f=study/'results'/sub/'RECEIPT.json'
         if f.exists():
-            d=read(f);emit('offline_energy_diagnostic',sub,d.get('wall_seconds'),d.get('counts',d.get('model_counts',{})),scope='scientific diagnostic, excluded from deployment cost')
+            d=read(f);emit('offline_energy_diagnostic',sub,d.get('total_recorded_wall_seconds',d.get('wall_seconds')),d.get('physical_costcounts',d.get('model_counts',d.get('counts',{}))),scope='scientific diagnostic, excluded from deployment cost; measured phase sum if whole process was not recorded')
     f=study/'audit/ANCHOR_PROTOCOL_CORRECTION.json'
     if f.exists():
         d=read(f)
@@ -62,6 +66,8 @@ def collect(study):
         emit('preparation_protocol_correction','17completed_reused_receipts',d.get('sum_completed_solve_seconds'),d.get('completed_counts'),
              scope='nonadditive reference: completed attempts counted individually as TRAIN discrepancy anchors',additive=False)
         emit('interrupted_preparation','up_to4_inflight',None,{},scope='unknown partial costs, not zero',status='UNKNOWN_PARTIAL_COST')
+    for f in (study/'audit').glob('data_recovery_*.json'):
+        d=read(f);emit('interrupted_preparation',f.stem,None,{},scope='unknown interrupted local attempts beyond the earlier protocol correction, not zero',status='UNKNOWN_PARTIAL_COST',details=d.get('interrupted_local_inflight'))
     keys=list(dict.fromkeys(k for r in rows for k in r));dest=study/'results/COST_LEDGER.csv';dest.parent.mkdir(exist_ok=True)
     with dest.open('w',newline='')as f:
         w=csv.DictWriter(f,fieldnames=keys);w.writeheader();w.writerows(rows)

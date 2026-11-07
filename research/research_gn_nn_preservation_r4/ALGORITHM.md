@@ -14,6 +14,8 @@ discrepancy及weakreg1e-5为独立后缀基线，不可替换NN的严格GN输入
 
 voxel头输出576维材料修正；current头输出576×12复修正，分别应用完整、接收零空间、G弱、联合暗、软暗投影。所有current头参数相同，但允许的实电流自由度不同，不能与576材料自由度混称。每级通过共享实材料row-LS读出并保持box。
 
+soft alpha大于零时允许电流仍为完整13824实维，alpha是方向缩放而非硬幅度限制。没有独立明方向范数约束时，不预设它能够保护真实强方向；必须测量实际aux/raw/final更新。
+
 `train.train_model`的alpha、loss_name及seed明确进入checkpoint；选择指标统一为VAL材料L1+0.1边缘L1，不使用TEST。AdamW lr.001、batch64、100轮上限、15轮无改善停止。stage1/stage2材料及辅助电流随预测存档。
 
 ## 物理后处理与在线排序

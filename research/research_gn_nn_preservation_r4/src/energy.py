@@ -17,11 +17,11 @@ def squared_norm(x):
 class FixedEnergyGeometry:
     """Reusable fixed projections; accepts (576,) or (576, sources)."""
     @classmethod
-    def from_cache(cls, path, G=None, S=None):
+    def from_cache(cls, path, G=None, S=None, sensitivity=False):
         with np.load(Path(path), allow_pickle=False) as z:
-            return cls(z['in_V'], z['in_s'], z['ob_V'], z['ob_s'], G, S)
+            return cls(z['in_V'], z['in_s'], z['ob_V'], z['ob_s'], G, S, sensitivity)
 
-    def __init__(self, in_V, in_s, ob_V, ob_s, G=None, S=None):
+    def __init__(self, in_V, in_s, ob_V, ob_s, G=None, S=None, sensitivity=False):
         self.G, self.S = G, S
         self.n = len(in_s)
         self.I = np.asarray(in_V)[:, np.asarray(in_s) >= in_s[0] * .1]
@@ -47,6 +47,15 @@ class FixedEnergyGeometry:
             material_scope='complex Green right-domain embedding of real material error, not the real material Jacobian')
         if self.metadata['ranks'] != dict(P_in_strong19=19,P_in_weak557=557,S_strong9=9,S_weak39=39,S_null528=528,S_visible48=48,D509=509,B67=67):
             raise ValueError('Frozen Green rank contract changed')
+        self.sensitivity={}
+        if sensitivity:
+            for tau in (.03,.3):
+                vi=np.asarray(in_V)[:,np.asarray(in_s)>=in_s[0]*tau]
+                vo=np.asarray(ob_V)[:,np.asarray(ob_s)>=ob_s[0]*tau]
+                u,d,_=svd(np.concatenate((vi,self.O),axis=1),full_matrices=False,check_finite=False)
+                union=u[:,d>1e-9]
+                self.sensitivity[f'tau{tau:g}']=(vi,vo,union)
+            self.metadata['sensitivity']={k:dict(in_strong=v.shape[1],ob_strong=o.shape[1],dark=self.n-b.shape[1],bright=b.shape[1],training_changed=False)for k,(v,o,b)in self.sensitivity.items()}
 
     @staticmethod
     def _part(x, q, complement=False):
@@ -66,6 +75,11 @@ class FixedEnergyGeometry:
             e[name] = max(0.,total-v) if comp else v
         if self.G is not None: e['G_field'] = squared_norm(self.G @ x)
         if self.S is not None: e['S_field'] = squared_norm(self.S @ x)
+        for tag,(vi,vo,union)in self.sensitivity.items():
+            gi=squared_norm(vi.conj().T@x);so=squared_norm(vo.conj().T@x);bright=squared_norm(union.conj().T@x)
+            e.update({tag+'__Gin_strong':gi,tag+'__Gin_weak':max(0.,total-gi),
+                      tag+'__S_strong':so,tag+'__S_weak':max(0.,e['S_visible48']-so),
+                      tag+'__dark':max(0.,total-bright),tag+'__bright':bright})
         if twofold:
             ip=[self._part(x,self.I), self._part(x,self.I,True)]
             op=[self._part(x,self.Os),self._part(x,self.Ow),self._part(x,self.O,True)]

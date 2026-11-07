@@ -48,7 +48,10 @@ def main():
     setup = {"seconds": time.perf_counter()-start, "operator_uploads": 1,
              "stats_fitted_on": "TRAIN_public_anchors_only", "train_count": len(train),
              "projectors": operators.projector_metadata, "device": str(device)}
-    (args.output/"shared_setup.json").write_text(json.dumps(setup, indent=2)+"\n")
+    setup["invocation_unix_ns"] = time.time_ns()
+    text = json.dumps(setup, indent=2)+"\n"
+    (args.output/f"shared_setup_{setup['invocation_unix_ns']}.json").write_text(text)
+    (args.output/"shared_setup.json").write_text(text)
     results = []
     for seed in args.seeds:
         if seed not in (7,17,27):

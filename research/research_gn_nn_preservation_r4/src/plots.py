@@ -1,6 +1,6 @@
 """Scientific plots with explicit sample/class/style training exposure labels."""
 from pathlib import Path
-import html,json
+import html,json,textwrap
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -52,7 +52,10 @@ def make_plots(scores_path,study,runs=None):
         return np.asarray(a[key]).reshape(24,24)if key in a else None
     def panel(ax,image,title,caption='',vmax=.55):
         if image is None:ax.text(.5,.5,'NOT RUN /\nNO FEASIBLE TOP1',ha='center',va='center',fontsize=7,transform=ax.transAxes)
-        else:ax.imshow(image,cmap='viridis',vmin=.02,vmax=vmax,interpolation='nearest')
+        else:
+            ax.imshow(image,cmap='viridis',vmin=.02,vmax=vmax,interpolation='nearest')
+            saturated=int(np.count_nonzero((image<.02)|(image>vmax)))
+            if saturated:caption+=("\n"if caption else"")+f'color-saturated cells: {saturated}'
         ax.set_xticks([]);ax.set_yticks([]);ax.set_title(title,fontsize=8)
         if caption:ax.set_xlabel(caption,fontsize=7)
     produced=[]
@@ -63,7 +66,10 @@ def make_plots(scores_path,study,runs=None):
             for i,r in enumerate(chosen):
                 panel(axs[i,0],truth(r),'GT');panel(axs[i,1],anchor(r),'Strict GN')
                 axs[i,0].set_ylabel(f"{r.get('digit',r['family'])}\n{r['group']}",fontsize=8)
-                axs[i,0].set_title(exposure(r),fontsize=7,loc='left')
+                axs[i,0].set_title('GT | '+r['parent_id'],fontsize=8)
+                c='SEEN'if r.get('seen_class')else'UNSEEN';f=('SEEN'if r.get('seen_font')else'UNSEEN')if r.get('font')else'N/A'
+                rule='SEEN'if r.get('seen_rule')else'UNSEEN'
+                axs[i,0].set_xlabel(f"image/mother NOT TRAINED\nclass {c}; font {f}\nrule {rule}; A={r['amplitude']:g}",fontsize=7)
                 for j,run in enumerate(runs):panel(axs[i,j+2],material(run,r,stage),short(run),metric_text(by.get((run,r['obs_id'])),stage))
             fig.suptitle(f"NEW INDEPENDENT TEST | {'clean'if noise==0 else'noise=1e-3'} | {stage}\nAll displayed images/mothers absent from TRAIN; class/style exposure explicitly labelled. Fixed material scale [.02,.55].",fontsize=13)
             im=plt.cm.ScalarMappable(norm=plt.Normalize(.02,.55),cmap='viridis');fig.colorbar(im,ax=axs.ravel().tolist(),shrink=.3,label='Real material contrast; values beyond range saturate',extend='both')
@@ -78,7 +84,7 @@ def make_plots(scores_path,study,runs=None):
                 panel(axs[i,0],truth(r),'GT');panel(axs[i,1],anchor(r),'Strict GN')
                 axs[i,0].set_ylabel(stage,fontsize=10)
                 for j,run in enumerate(chunk):panel(axs[i,j+2],material(run,r,stage),short(run),metric_text(by.get((run,r['obs_id'])),stage))
-            fig.suptitle(exposure(r)+'\nFixed material color scale [.02,.55]; raw and true-physics-qualified online top1.',fontsize=10)
+            fig.suptitle(textwrap.fill(exposure(r),110)+'\nFixed material color scale [.02,.55]; raw and true-physics-qualified online top1.',fontsize=9)
             file=gallery/f"{r['obs_id']}_p{start//5+1}.png";fig.savefig(file,dpi=130);plt.close(fig)
             pages.append({'file':file.name,'identity':exposure(r),'parent_id':r['parent_id'],'obs_id':r['obs_id'],'runs':chunk})
     (gallery/'INDEX.json').write_text(json.dumps(pages,indent=2)+'\n')

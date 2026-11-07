@@ -84,7 +84,11 @@ def predict_anchors(checkpoint_path, anchor_paths, operators_path, output_dir, d
              "projectors": operators.projector_metadata, "operators_reused": operators_reused,
              "base_anchor_cost_included": False}
     setup["dev_only"] = bool(checkpoint["config"].get("dev_only", False))
-    (output_dir/"inference_setup.json").write_text(json.dumps(setup, indent=2)+"\n")
+    setup_name = f"inference_setup_{time.time_ns()}.json"
+    setup["receipt_filename"] = setup_name
+    setup_text = json.dumps(setup, indent=2)+"\n"
+    (output_dir/setup_name).write_text(setup_text)
+    (output_dir/"inference_setup.json").write_text(setup_text)
     receipts = []
     for path in anchor_paths:
         path = Path(path)
@@ -140,7 +144,7 @@ def predict_anchors(checkpoint_path, anchor_paths, operators_path, output_dir, d
                 "complete": feature_known, "feature_receipt": feature_receipt,
                 "feature_normalization_seconds": feature_seconds,
                 "inference_seconds": inference_seconds, "output_transfer_seconds": transfer_seconds,
-                "base_anchor_included": False, "global_setup_reference": "inference_setup.json"}
+                "base_anchor_included": False, "global_setup_reference": setup_name}
         receipt = {"obs_id": obs_id, "arm": arm, "cascade_passes": passes,
                    "alpha": alpha, "loss": checkpoint["config"]["loss"],
                    "anchor_path": str(path), "preparation_cost": cost,

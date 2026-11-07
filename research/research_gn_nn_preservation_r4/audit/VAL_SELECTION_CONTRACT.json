@@ -1,0 +1,31 @@
+{
+  "status": "DECLARED_BEFORE_FIRST_R4_TRAINING_OR_VAL_MODEL_SCORING",
+  "split": "VAL78_PARENTS_156_OBSERVATIONS_ONLY",
+  "checkpoint": "minimum VAL material L1 plus 0.1 edge L1; no TEST access",
+  "selection_statistical_unit": "equal-weight parent average over its clean and noisy observations",
+  "post_correction_material_metric": "mean amplitude NRMSE of online top1; if no physically feasible top1, use the common GN material error as an explicit selection-only failure fill, retaining FAIL in all deployment success counts",
+  "post_correction_physical_rate": "number of observations with physically qualified online top1 divided by all156 planned observations",
+  "incomplete_run": "not eligible for selection; missing cases are not dropped",
+  "alpha": {
+    "grid": [0, 0.1, 0.3, 0.6, 1],
+    "alpha1": "reuse existing J-full prediction/evaluation exactly; no duplicate physical computation",
+    "eligibility": "physical rate no more than0.05 below alpha1",
+    "selection": "minimum failure-filled mean material NRMSE; tie within1e-12 favors larger alpha",
+    "endpoint0": "reuse separately trained g_dark, report that posthoc selection is not the trained stage trajectory",
+    "endpoint1": "reuse j_full; no artificial sixth distinct model",
+    "interior": "train soft_dark from scratch using the selected global alpha"
+  },
+  "constrained_arm": {
+    "pool": ["j_null", "g_weak", "g_dark", "trained interior soft_dark if present"],
+    "selection": "minimum failure-filled mean material NRMSE; ties favor physical rate then lexicographic run name",
+    "use": "extra seeds17/27 and const/internal loss arms; TEST cannot change this choice"
+  },
+  "optional_full_vie_finetune": {
+    "relative_material_improvement": 0.05,
+    "maximum_physical_rate_drop": 0.05,
+    "reference": "same spatial arm, seed7, material-only loss",
+    "minimum_training_window_remaining_seconds": 1800,
+    "selection": "best qualifying const/internal arm by failure-filled mean NRMSE; preserve all loss results"
+  },
+  "new_recurrent_feedback": "supplementary user-requested architecture; no new model may be selected using TEST; training status and any VAL-only inclusion must be frozen explicitly"
+}

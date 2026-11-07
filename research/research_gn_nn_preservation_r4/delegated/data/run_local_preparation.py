@@ -3,7 +3,15 @@ from pathlib import Path
 import sys,json,time,subprocess,collections,importlib.util
 STUDY=Path(__file__).resolve().parents[2];sys.path.insert(0,str(STUDY.parents[1]))
 from research.research_gn_nn_preservation_r4.src.remote_jobs import upload_local_pairs
-all_ids=json.loads((STUDY/'delegated/data/local_reserved_ids.json').read_text());uploaded=set();started=time.time();history=[]
+all_ids=json.loads((STUDY/'delegated/data/local_reserved_ids.json').read_text());started=time.time()
+progress_path=STUDY/'audit/LOCAL_PREPARATION_PROGRESS.json'
+upload_path=STUDY/'audit/LOCAL_PREPARATION_UPLOADS.json'
+previous_progress=json.loads(progress_path.read_text()) if progress_path.exists() else {}
+history=json.loads(upload_path.read_text()) if upload_path.exists() else []
+uploaded={obs for item in history for key in ('imported','existing') for obs in item.get(key,[])}
+prior_controller_wall=float(previous_progress.get('controller_wall_seconds',0.))
+recovery_history=list(previous_progress.get('recovery_history',[]))
+recovery_history.append(dict(recovery_unix=started,prior_status=previous_progress.get('status'),prior_ready=previous_progress.get('ready'),prior_uploaded=previous_progress.get('uploaded'),prior_controller_wall_seconds=prior_controller_wall,interrupted_inflight_costs='UNKNOWN_NOT_ZERO; up to2 local CPU jobs, exact IDs/counters unavailable'))
 def progress(stage,process):
     canonical=collections.Counter();completed=[];nonfull=[];solve=0.
     for obs in all_ids:
@@ -13,7 +21,7 @@ def progress(stage,process):
         if r.get('execution_origin',{}).get('machine')!='arm64':continue
         completed.append(obs);canonical.update(r['counts']);solve+=r['solve_wall_seconds']
         if r['final_stage']!=24 or not r['all_unknowns_released']:nonfull.append(obs)
-    out=dict(status=stage,local_process_pid=process.pid if process else None,local_process_returncode=process.poll() if process else None,ready=len(completed),expected=len(all_ids),uploaded=len(uploaded),actual_local_counts=dict(canonical),actual_local_solve_seconds=solve,controller_wall_seconds=time.time()-started,nonfull=nonfull,truth_access='NONE',test_truth_status='SEALED_NOT_SCORED')
+    out=dict(status=stage,local_process_pid=process.pid if process else None,local_process_returncode=process.poll() if process else None,ready=len(completed),expected=len(all_ids),uploaded=len(uploaded),actual_local_counts=dict(canonical),actual_local_solve_seconds=solve,controller_wall_seconds=prior_controller_wall+time.time()-started,controller_this_segment_wall_seconds=time.time()-started,controller_pid=__import__('os').getpid(),recovery_history=recovery_history,nonfull=nonfull,truth_access='NONE',test_truth_status='SEALED_NOT_SCORED')
     p=STUDY/'audit/LOCAL_PREPARATION_PROGRESS.json';tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps(out,indent=2)+'\n');tmp.replace(p)
     print(json.dumps(out),flush=True)
 def upload():
@@ -25,7 +33,8 @@ def upload():
 if __name__=='__main__':
     for group in ('val','train'):
         command=[sys.executable,str(STUDY/'experiments/run_anchors.py'),'--id-file',str(STUDY/f'delegated/data/local_{group}_ids.json'),'--workers','2']
-        with (STUDY/f'delegated/data/local_{group}_run.log').open('w') as log:
+        with (STUDY/f'delegated/data/local_{group}_run.log').open('a') as log:
+            log.write(json.dumps(dict(recovery_runner_start_unix=time.time(),command=command))+'\n');log.flush()
             process=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)
             while process.poll() is None:
                 upload();progress('RUNNING_'+group.upper(),process);time.sleep(30)
