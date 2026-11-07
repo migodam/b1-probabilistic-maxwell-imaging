@@ -1,6 +1,6 @@
 # R4 scientific freeze — 2026-11-07 09:40 UTC
 
-Numerical science is complete; publication and artifact transfer are in progress. Six-hour deadline remains 10:44:27 UTC. Earlier checkpoints are retained as historical records.
+Numerical science is complete; the report website and Release are publicly accessible. Final download-navigation and packaging-correction documentation are being committed. Six-hour deadline remains 10:44:27 UTC. Earlier checkpoints are retained as historical records.
 
 - 504 TRAIN / 78 VAL / 108 independent TEST mothers, paired clean/noisy: all 1,380 strict GN anchors complete. Noisy strict endpoints are mostly budget stops, not claimed converged.
 - All 1,116 VAL/TEST traditional control endpoints complete: weak regularization, original final-only discrepancy, and corrected all-scales discrepancy stopping.
@@ -15,3 +15,5 @@ Numerical science is complete; publication and artifact transfer are in progress
 - Optional paired full-VIE fine-tune ran after the declared VAL trigger. Mixed TEST outcome retained; no universal loss/feedback advantage claimed.
 
 Final scientific judgment: clean material-learning benefit supported, current-space superiority and fixed-point algorithm claims HOLD. No high-contrast generalization claim, no probability posterior, no full-root enumeration, no whole-system speedup. Original frozen physics unchanged.
+
+Publication: existing B1 Release gn-nn-preservation-r4-20261107 is public with 17 actual assets; no new repository. Report rendered in the real browser, original deployment 42360962399 succeeded. Relative Python import closure omission corrected in the small dependency ZIP/index only; no physical or learning reruns.

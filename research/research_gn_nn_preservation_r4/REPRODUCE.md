@@ -1,6 +1,6 @@
 # 复现入口
 
-从现有B1仓库根运行，Python需NumPy/SciPy/PyTorch/Matplotlib/Pillow/threadpoolctl。无需安装CUDA、驱动、服务或新调度系统。当前主机使用既有`Gaussian/.venv_nn`；训练MPS、最终物理complex128/float64。
+从现有B1仓库根运行，Python需NumPy/SciPy/PyTorch/Matplotlib/Pillow/threadpoolctl。无需安装CUDA、驱动、服务或新调度系统。当前主机使用既有`Gaussian/.venv_nn`；训练MPS、最终物理complex128/float64。实际数据、20套权重和全部候选的 [下载及一键恢复步骤](ARTIFACTS.md) 已发布。
 
 以下路径均相对仓库根，新实验目录简称`research/research_gn_nn_preservation_r4`。先从本轮Release恢复公开的数据/锚点/权重/预测归档，保留research目录层级。图像生成使用系统字体；没有同名字体的平台请使用冻结数据，不要替换字体后声称复现同一数据。
 

@@ -63,7 +63,13 @@ def old_python_dependencies():
         for node in ast.walk(tree):
             modules=[]
             if isinstance(node,ast.Import):modules=[alias.name for alias in node.names]
-            elif isinstance(node,ast.ImportFrom) and node.module and node.level==0:modules=[node.module]
+            elif isinstance(node,ast.ImportFrom):
+                if node.level:
+                    package=path.parent
+                    for _ in range(node.level-1):package=package.parent
+                    prefix='.'.join(package.relative_to(REPO).parts)
+                    modules=[prefix+'.'+node.module]if node.module else[prefix+'.'+a.name for a in node.names if a.name!='*']
+                elif node.module:modules=[node.module]
             for module in modules:
                 if not module.startswith('research.'):
                     external.add(module.split('.')[0]);continue
@@ -80,7 +86,8 @@ def old_python_dependencies():
                 parent=candidate.parent
                 while parent!=REPO and within(parent,REPO):
                     init=parent/'__init__.py'
-                    if init.is_file() and not init.is_symlink() and any(within(init,REPO/r)for r in OLD_PY_ROOTS):found.setdefault(init,item(init,'old-study package initializer'))
+                    if init.is_file() and not init.is_symlink() and any(within(init,REPO/r)for r in OLD_PY_ROOTS)and init not in found:
+                        found[init]=item(init,'old-study package initializer');queue.append(init)
                     parent=parent.parent
     # R2 Search loads this physics module through importlib; the explicit runtime
     # dependency is retained even if a future AST closure no longer sees a from-import.

@@ -4,7 +4,7 @@
 
 最重要的结论是：**voxel补全在clean材料成像上有明确收益；硬暗电流约束没有成为更好的默认表示；显式反馈RNN能改善完整电流网络的一部分失败，但尚未超过voxel，也没有成为可反复调用至收敛的不动点求解器。** 噪声下，普通TRF的停止方式比原先表面上看到的NN增益更重要。新算法论文主张判为 **HOLD**，不是否定已经得到的成像和机制证据。
 
-[完整逐案例图册](figures/all_test_cases/GALLERY.html) · [结构化汇总](results/RESULTS_SUMMARY.json) · [逐观测评分](results/TEST_SCORES.csv) · [费用账本](results/COST_LEDGER.csv) · [RNN专门分析](RECURRENT_FINDINGS_ZH.md) · [复现与下载](REPRODUCE.md)
+[完整逐案例图册](figures/all_test_cases/GALLERY.html) · [结构化汇总](results/RESULTS_SUMMARY.json) · [逐观测评分](results/TEST_SCORES.csv) · [费用账本](results/COST_LEDGER.csv) · [RNN专门分析](RECURRENT_FINDINGS_ZH.md) · [数据与20套权重](ARTIFACTS.md) · [复现](REPRODUCE.md)
 
 ## 1. 先看真实图像与数据身份
 
