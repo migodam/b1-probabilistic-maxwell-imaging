@@ -1,33 +1,44 @@
-"""Public-only independent48 actual-cost compilation, partial or terminal."""
+"""Public-only campaign costs: designated science prefixes and all engineering attempts."""
 import json,csv,time
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1];REPO=ROOT.parents[1];D=ROOT/'delegated/twod/independent48';T=ROOT/'delegated/twod/dev_transport'
+from twod_recovery import queue_paths,active_job,registry
+ROOT=Path(__file__).resolve().parents[1];D=ROOT/'delegated/twod/independent48';T=ROOT/'delegated/twod/dev_transport'
 def read(p):return json.loads(Path(p).read_text())
+def table(path,rows):
+ if not rows:return
+ fields=list(dict.fromkeys(k for r in rows for k in r))
+ with path.open('w',newline='') as f:w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
 def main():
- D.mkdir(parents=True,exist_ok=True);jobs={};controllers=[];queues=[]
- for name in ('queue','interleaved_queue'):
-  p=D/name/'RECEIPT.json'
-  if not p.exists():continue
-  q=read(p);queues.append(dict(name=name,status=q['status'],pending=q.get('pending'),running=q.get('running'),completed=len(q['jobs'])))
-  controllers.append(dict(queue=name,CPU_seconds=q['controller_CPU_seconds']))
+ D.mkdir(parents=True,exist_ok=True);active={};all_ended=[];controllers=[];queues=[]
+ for p in queue_paths():
+  q=read(p);name=p.parent.parent.name if p.parent.name=='CHECKPOINTS' else p.parent.name;queues.append(dict(name=name,status=q['status'],pending=q.get('pending'),running=q.get('running'),raw_terminal=len(q['jobs']),source=str(p)));controllers.append(dict(queue=name,CPU_seconds=q['controller_CPU_seconds'],scope=q.get('controller_CPU_scope','queue selfCPU lifetime')))
   for j in q['jobs']:
-   if j['task_id'] in jobs:raise ValueError('Do not double charge duplicate task attempts without explicit attempt schema')
-   jobs[j['task_id']]=dict(queue=name,task_id=j['task_id'],status=j['status'],child_status=j.get('child_status'),CPU_seconds=j.get('child_process_CPU_seconds'),LU=(j.get('physical_model_cost') or {}).get('LU'),complex_RHS=(j.get('physical_model_cost') or {}).get('actual_complex_RHS'))
- transport=[]
+   pc=j.get('physical_model_cost') or {};row=dict(queue=name,cpu_logical=j.get('cpu'),task_id=j['task_id'],output_dir=j['output_dir'],status=j['status'],child_status=j.get('child_status'),CPU_seconds=j.get('child_process_CPU_seconds'),LU=pc.get('LU'),complex_RHS=pc.get('actual_complex_RHS'),designated_scientific_attempt=active_job(j),cost_scope='Whole GetProcessTimes child',exact_CPU=True)
+   all_ended.append(row)
+   if active_job(j):
+    if j['task_id'] in active:raise ValueError('Duplicate designated science attempt')
+    active[j['task_id']]=row
+ reg=registry();aborted=[]
+ for r in reg.get('interrupted_attempts',[]):
+  pc=r.get('physical_counts_lower_bound') or {};aborted.append(dict(task_id=r['task_id'],attempt_id=r['attempt_id'],status='ENGINEERING_CONTROL_ABORT_NO_FINAL_RECEIPT',CPU_seconds=None,CPU_lower_bound_seconds=r.get('CPU_lower_bound_seconds'),CPU_upper_observed_wall_bound_seconds=r.get('CPU_upper_observed_wall_bound_seconds'),LU_lower_bound=pc.get('LU'),complex_RHS_lower_bound=pc.get('actual_complex_RHS'),exact_CPU=False,designated_scientific_attempt=False))
+ transport=[];after=False
  if (T/'TRANSPORT_COSTS.jsonl').exists():
-  after_dev=False
   for line in (T/'TRANSPORT_COSTS.jsonl').read_text().splitlines():
-   r=json.loads(line)
-   if after_dev:transport.append(r)
-   if r['label']=='fetch_outputs':after_dev=True
- generation=read(D/'GENERATION_RECEIPT.json') if (D/'GENERATION_RECEIPT.json').exists() else {}
- setup=read(T/'INDEPENDENT48_SOURCE_PACKAGE_RECEIPT.json') if (T/'INDEPENDENT48_SOURCE_PACKAGE_RECEIPT.json').exists() else {}
- sync_receipts=[read(p) for p in D.glob('SYNC_*.json')]
- totals=dict(remote_sync_packaging_CPU_seconds=sum(r['remote_packaging_CPU_seconds'] for r in sync_receipts),local_sync_extraction_CPU_seconds=sum(r['local_extraction_CPU_seconds'] for r in sync_receipts),inversion_child_CPU_seconds=sum(j['CPU_seconds'] or 0 for j in jobs.values()),queue_controller_CPU_seconds=sum(c['CPU_seconds'] for c in controllers),generation_internal_whole_child_CPU_lower_bound_seconds=generation.get('whole_child_CPU_seconds',0),source_packaging_CPU_seconds=setup.get('CPU_seconds',0),local_transport_controller_CPU_seconds=sum(r['controller_CPU_seconds'] for r in transport),local_transport_child_CPU_seconds=sum(r['child_CPU_seconds'] for r in transport))
- status='ALL288_TERMINAL' if len(jobs)==288 and all(not q['running'] for q in queues) and queues[-1]['status'] in ('COMPLETED','COMPLETED_WITH_ERRORS') else 'PARTIAL'
- doc=dict(status=status,queues=queues,tasks_terminal=len(jobs),failed=sum(j['status']!='FINISHED' for j in jobs.values()),totals=totals,known_CPU_lower_bound_seconds=sum(totals.values()),jobs=list(jobs.values()),controllers=controllers,transport=transport,truth_access='NONE',GT_scoring='NOT_RUN',cost_rule='Disjoint actual GetProcessTimes jobs plus each controller lifetime once. Internal objective/aux/corrector timers overlap and are not additive. Explicit STOP_DISPATCH return1 is a controller handoff, not inversion failure.',unknown_costs=['Generation final serialization/process-exit CPU beyond final absolute self timestamp','Remote source extraction, status/probe, final packaging and local extraction if no separate receipt','Metadata preparation/compiler final tail CPU'])
- (D/'COSTS.json').write_text(json.dumps(doc,indent=2)+'\n')
- if jobs:
-  with (D/'INVERSION_COSTS.csv').open('w',newline='') as f:w=csv.DictWriter(f,fieldnames=list(next(iter(jobs.values()))));w.writeheader();w.writerows(jobs.values())
- print(json.dumps(dict(status=status,tasks=len(jobs),failed=doc['failed'],known_CPU_lower_bound_seconds=doc['known_CPU_lower_bound_seconds'])))
+   row=json.loads(line)
+   if after:transport.append(row)
+   if row['label']=='fetch_outputs':after=True
+ generation=read(D/'GENERATION_RECEIPT.json') if (D/'GENERATION_RECEIPT.json').exists() else {};setup=read(T/'INDEPENDENT48_SOURCE_PACKAGE_RECEIPT.json') if (T/'INDEPENDENT48_SOURCE_PACKAGE_RECEIPT.json').exists() else {};sync=[read(p) for p in D.glob('SYNC_*.json')]
+ public_pack=read(T/'package_independent48_public.json') if (T/'package_independent48_public.json').exists() else {};public_extract=read(T/'extract_independent48_public.json') if (T/'extract_independent48_public.json').exists() else {}
+ seals=[read(p) for p in (D/'secondary/SEAL_PROCESS_COST.json',D/'secondary/global_appendix/PUBLIC_SEAL_PROCESS_COST.json',D/'actual_cpu_fairness/PUBLIC_SEAL_PROCESS_COST.json') if p.exists()];checks=[read(p) for p in (D/'SCORER_SYNTHETIC_CHECK.json',D/'SCORER_DATA_CHECK.json') if p.exists()];probes=[read(p) for p in D.glob('RESOURCE_UPDATE*.json')]
+ environment_dir=ROOT/'delegated/twod/environment'; environment=read(environment_dir/'WINDOWS_POST_RUN_INVENTORY.json') if (environment_dir/'WINDOWS_POST_RUN_INVENTORY.json').exists() else {}; environment_transport=[json.loads(line) for line in (environment_dir/'TRANSPORT_COSTS.jsonl').read_text().splitlines()] if (environment_dir/'TRANSPORT_COSTS.jsonl').exists() else []
+ recovered_copy=read(D/'PRIVATE_COPY_RECOVERED_EXTRACTION.json') if (D/'PRIVATE_COPY_RECOVERED_EXTRACTION.json').exists() else {}
+ postprocess=[read(p) for p in sorted((D/'POSTPROCESS_EXECUTIONS').glob('*.json'))] if (D/'POSTPROCESS_EXECUTIONS').exists() else []
+ totals=dict(shared_post_run_environment_metadata_child_CPU_seconds=environment.get('external_child_cost',{}).get('child_process_CPU_seconds',0),shared_post_run_environment_body_CPU_lower_bound_seconds=environment.get('controller_CPU_seconds_before_write',0),shared_post_run_environment_transport_CPU_seconds=sum(x['controller_CPU_seconds']+x['child_CPU_seconds'] for x in environment_transport),recovered_private_copy_local_extraction_CPU_seconds=recovered_copy.get('local_extraction_CPU_seconds',0),postprocess_external_whole_child_CPU_seconds=sum(r['whole_child_CPU_seconds'] for r in postprocess),postprocess_controller_CPU_seconds=sum(r['controller_CPU_seconds'] for r in postprocess),known_ended_inverse_child_CPU_seconds=sum(r['CPU_seconds'] for r in all_ended if r['CPU_seconds'] is not None),aborted_attempt_recorded_CPU_lower_bound_seconds=sum(r['CPU_lower_bound_seconds'] for r in aborted if r['CPU_lower_bound_seconds'] is not None),queue_controller_recorded_CPU_seconds=sum(r['CPU_seconds'] for r in controllers),generation_internal_whole_child_CPU_lower_bound_seconds=generation.get('whole_child_CPU_seconds',0),source_packaging_CPU_seconds=setup.get('CPU_seconds',0),local_transport_controller_CPU_seconds=sum(r['controller_CPU_seconds'] for r in transport),local_transport_child_CPU_seconds=sum(r['child_CPU_seconds'] for r in transport),remote_sync_packaging_CPU_seconds=sum(r['remote_packaging_CPU_seconds'] for r in sync),local_sync_extraction_CPU_seconds=sum(r['local_extraction_CPU_seconds'] for r in sync),initial_public_packaging_CPU_seconds=public_pack.get('packaging_CPU_seconds',0),initial_public_extraction_CPU_seconds=public_extract.get('CPU_seconds',0),public_seal_external_child_CPU_seconds=sum(r['whole_child_CPU_seconds'] for r in seals),public_seal_controller_CPU_seconds=sum(r['controller_CPU_seconds'] for r in seals),synthetic_scoring_checks_recorded_CPU_lower_bound_seconds=sum(r.get('CPU_seconds',0) for r in checks),remote_probes_recorded_CPU_lower_bound_seconds=sum(r.get('probe_CPU_seconds',0) for r in probes))
+ status='ALL288_DESIGNATED_TERMINAL_END_TO_END_COST_INCOMPLETE' if len(active)==288 and all(not q['running'] for q in queues) and queues[-1]['status'] in ('COMPLETED','COMPLETED_WITH_ERRORS') else 'PARTIAL'
+ score=read(D/'scored/RECEIPT.json') if (D/'scored/RECEIPT.json').exists() else {};GTstatus=score.get('status','NOT_RUN')
+ primary_post=[r for r in postprocess if r['kind']=='primary']
+ if primary_post:GTstatus=primary_post[-1]['GT_scoring_status']
+ doc=dict(status=status,queues=queues,tasks_terminal=len(active),failed=sum(j['status']!='FINISHED' for j in active.values()),engineering_interrupted_attempts=len(aborted),zero_physics_startup_failures=len(reg.get('zero_physics_retry02_failures',[])),actual_worker_process_attempts_recorded=len(all_ended)+len(aborted),totals=totals,known_CPU_lower_bound_seconds=sum(totals.values()),exact_campaign_CPU_seconds=None if aborted else sum(totals.values()),views_not_additive=dict(scientific_prefix_child_CPU_seconds=sum(r['CPU_seconds'] for r in active.values() if r['CPU_seconds'] is not None),startup_failed_child_CPU_seconds=sum(j['child_process_CPU_seconds'] for j in reg.get('zero_physics_retry02_failures',[]))),jobs=list(active.values()),all_ended_attempts=all_ended,aborted_attempts=aborted,controllers=controllers,transport=transport,GT_scoring=GTstatus,GT_access_by_compiler='NONE',shared_post_run_environment_cost_scope='Charged once here; post-run observation, not original startup metadata; metadata parent imports/final tail unmeasured',cost_rule='All ended child GetProcessTimes once, including startup failures; aborted attempts separate unknown+lower bounds. Designated scientific-prefix view is nested, not additive. Each queue controller once; original interrupted controller final tail unknown.',affected_objects=reg.get('affected_objects',[]),exact_end_to_end_cost_qualification='Affected object0022 cannot support exact end-to-end same-CPU assertion; retain all48 plus separately labelled47-object sensitivity',unknown_costs=['Four controller-aborted attempt endCPU unavailable; never substitute0','Interrupted controller final tail and failed UTF8 transport final cost unavailable','Generation final write/exit beyond self timestamp','Unmeasured metadata preparation/probe/import/tails and monitor reload failures','Authorized private-copy initial failed Python3.9 extraction: remote packCPU unavailable; retained as unknown, local transport billed, existing archive reused'])
+ (D/'COSTS.json').write_text(json.dumps(doc,indent=2)+'\n');table(D/'INVERSION_COSTS.csv',list(active.values()));table(D/'ALL_ENDED_ATTEMPT_COSTS.csv',all_ended);table(D/'ABORTED_ATTEMPT_COST_BOUNDS.csv',aborted)
+ print(json.dumps(dict(status=status,tasks=len(active),failed=doc['failed'],engineering_interrupted=len(aborted),startup_failed=doc['zero_physics_startup_failures'],known_CPU_lower_bound_seconds=doc['known_CPU_lower_bound_seconds'],GT_scoring=GTstatus)))
 if __name__=='__main__':main()

@@ -42,7 +42,9 @@ def main():
     out = runner.resolve(task['output_dir']).resolve()
     if not out.is_relative_to(ROOT/'RESULTS'): raise ValueError('R11 output only')
     if out.exists(): raise FileExistsError(out)
-    prepared = ROOT/'delegated/twod/adapter_inputs'/task['task_id']
+    prepared_key=task.get('engineering_attempt_id',task['task_id'])
+    if not prepared_key.replace('_','').isalnum(): raise ValueError('Invalid engineering preparation key')
+    prepared = ROOT/'delegated/twod/adapter_inputs'/prepared_key
     prepared.mkdir(parents=True, exist_ok=False)
     old_observer, old_dispatch = solver.PaidStateObserver, solver.run_auxiliary
     solver.PaidStateObserver = budget.observer_class(old_observer)
