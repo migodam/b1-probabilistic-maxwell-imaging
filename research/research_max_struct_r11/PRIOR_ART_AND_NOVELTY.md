@@ -10,3 +10,16 @@
 |强奇异Maxwell体积算子及Fredholm条件已有严谨分析|Costabel, Darrigrand & Sakly, The essential spectrum of the volume integral operator in electromagnetic scattering by a homogeneous body (2012), [DOI](https://doi.org/10.1016/j.crma.2012.01.017)|Tier A：root直接核查Theorem3.2、Corollary3.3与Theorem5.1；限定均匀体、光滑界面及H(curl)。不能外推为任意PML/非均匀张量的同一结论。|
 
 R11当前的增量候选是：明确区分普通β收缩与Green新项的失败诊断；full/freezeA/freezeT三种更新的可证局部性质与真实反例；低秩metric增减权的惯性边界；相同实际CPU下的独立高对比/混合比较；同一分母族在真实3D矢量材料反演中的适用范围。是否有算法论文价值取决于尚在运行的确认结果。矩阵求逆、Woodbury、凸二次LS、lagged权重、Krylov源空间和低秩惯性均不列为新发明。
+
+## 失败之后提出的吸收型控制：额外先例约束
+
+根线程由Im_H G≥0推导固定材料current增益界，提出固定−iβ的吸收型分母DEV。该界不要求G normal，但并不证明反演凸化。定向补查确认以下边界：
+
+- [Twofold SOM, Zhong & Chen 2009](https://doi.org/10.1088/0266-5611/25/8/085003)：出版社检索摘要已核验；Green谱用于current子空间continuation已有先例。直接全文请求受robots限制，不能写成已逐式读完。
+- [WT-TSOM/CIE, Electronics 2020](https://doi.org/10.3390/electronics9111760)：出版社检索正文明确复β范围；直接全文访问429。故K=0虚移位控制不作为新算法，纯虚边界的当前资格另由root证明。
+- [Erlangga等2004](https://doi.org/10.1016/j.apnum.2004.01.009)：出版社摘要及作者机构2004说明已核验；复移位线性正演预条件不是新机制。
+- [Yavich & Zhdanov 2016](https://doi.org/10.1093/gji/ggw237)：出版社原文能量/收缩预条件段已核查；有电磁正演先例，但电导率FD条件不同于本轮介电有限VIE。
+- [Osnabrugge等2016](https://doi.org/10.1016/j.jcp.2016.06.034)：出版社/机构摘要确认convergent Born正演背景；不把其正演收敛当成反演恢复。
+- [Jakobsen 2026预印本](https://arxiv.org/abs/2604.20282)：仅摘要/元数据核验，明确已有CBS的Cayley-resolvent解释；本轮不宣称首次提出这种联系。
+
+以上候选仍需与同成本K=0控制比较。若控制解释全部收益，停止其新算法主张；这不影响已冻结48对象和真三维研究继续完成。

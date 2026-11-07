@@ -74,7 +74,7 @@ The first two are GT-free selection/sealing. All80 terminal outcomes, 80 predict
 
 ## Independent48 x six-arm campaign: still active
 
-Use `delegated/twod/independent48/RUNNING_HANDOFF.md` and the existing transport/monitor state. Do not rerun launchers from this document. Original scientific files are `configs/twod_independent48_{generator,solver,scoring}.json`, `twod_independent48_all_tasks.json`, and public `data_public/independent48/manifest.json`. Original baseline-first dispatch completed five tasks before its explicit stop; the remaining283 use `twod_independent48_interleaved_remaining_tasks.json`. PLAN/FROZEN_MANIFEST/FROZEN_SOLVER and DISPATCH_REORDER_RECEIPT retain that chronology rather than rewriting history as initially interleaved.
+Use `delegated/twod/independent48/RUNNING_HANDOFF.md` and the existing transport/monitor state. Do not rerun launchers from this document. Original scientific files are `configs/twod_independent48_{generator,solver,scoring}.json`, `twod_independent48_all_tasks.json`, and public `data_public/independent48/manifest.json`. Original baseline-first dispatch completed five tasks before its explicit stop; the remaining283 initially used `twod_independent48_interleaved_remaining_tasks.json`. After public resource availability changed, root approved a third expanded dispatch on P0/2/8/10: the old two-lane queue stopped new dispatch and its children finished naturally,68 total terminal were retained, and220 remaining tasks entered expanded_queue with unchanged BLAS1/480/science. EXPANDED_DISPATCH_RECEIPT and engineering_v1 snapshots retain this change; all three queue task identities must be unioned once. PLAN/FROZEN_MANIFEST/FROZEN_SOLVER and DISPATCH_REORDER_RECEIPT retain that chronology rather than rewriting history as initially interleaved.
 
 `experiments/twod_independent_score.py` is the real primary scorer; it requires manifest/queue arguments, the frozen scoring contract, explicit postseal authorization/note, and the public secondary selection seal. Do not invoke it while any of288 attempts remains pending/running. Secondary `twod_secondary_score.py` only reindexes already scored primary results after its public seal. Its policy was registered after independent16 scoring and before any48GT read, not as the original primary pre-registration. The cost compiler reads only receipts, never48GT.
 
@@ -120,3 +120,45 @@ Vector early DEV-only postseal export/scoring is another producer: `delegated/ve
 The executed fixed rule/32pair manifest is `delegated/diagnostics/bothblocks_confirmation/posthoc_budget_control/FROZEN_MANIFEST.json`. `diagnose_budget_control_freeze.py` reads only public original child CPU and stop reasons. `diagnose_budget_control_queue.py` executed only its7 triggered pairs through `diagnose_budget_control_run.py`, using unchanged r6 physical corrector plus R11 whole-child observer. Existing destinations refuse overwrite; L-BFGS history is reset.
 
 `diagnose_budget_control_seal_score.py --phase seal` freezes all32 public-Phi selections before `--phase score` reads authorized GT. Original candidates and original80/48 results remain intact. Actual old+new CPU, unused allowance, charged overrun and eligible paid-state CPU are distinct fields. These are not naturally equal-spend executions; no idle-fill or new threshold was used. New7-child cost is additive, while old32/G19 deployment reference costs are not added to the original80 campaign again.
+
+
+## Mixed low-phase display supplement
+
+`experiments/diagnose_plot_mixed_low_phase.py` creates only `FIGURES/bothblocks_confirmation/MIXED_LOW_PHASE_SCALE_0_3p5.{png,pdf}` and `MIXED_LOW_REGION_RMSE_AND_MEAN.{png,pdf}`. It reuses all8 mixed GT and all5 sealed method materials plus `finite_noise_prior_audit/CANDIDATE_DATA_PRIOR_ALL80.csv`; no solver or48GT. The0–3.5 color scale intentionally saturates every value above3.5 in orange, including true high12/18, and is not a full-contrast display. RMSE/mean labels use original unclipped values and the common GT-low mask chi=2.5. Original0–20 plates remain unchanged. One new plot process's exact external wait4 CPU is recorded in MIXED_LOW_PHASE_EXTERNAL_COST.json; its internal plot timer is nested and not added twice.
+
+
+## Exposed endpoint-segment diagnostic and cached plot
+
+Root executed `experiments/diagnose_exposed_endpoint_paths.py` once with its saved `RESULTS/exposed_endpoint_paths/FROZEN_CONFIG.json`:3 old exposed endpoint pairs,9 fixed legal segment positions,27 actual576-LU forwards plus27 adjoints,324source+324adjoint=648complexRHS, authoritative external CPU.998588s. Direction uses larger→smaller originalPhi endpoints, not GT. The per-case historical `full_factorization_dimension=5184` is accumulated9×576, not a3D matrix order; the historical record is preserved.
+
+`experiments/plot_exposed_endpoint_paths.py` only reads existing ROWS/SUMMARY/FROZEN_CONFIG JSON. It creates `FIGURES/exposed_development/EXPOSED_ENDPOINT_PATH_PHI.png/.pdf`, with symlog t to expose.001, measured9-point markers, dotted reading guides, initialPhi reference, initial directional derivative/PGinf and active lower/upper counts. Dotted links are not extra measured samples or a continuous-path certificate. It does not import the physics/GT backend or generate a new forward. Plot CPU is a separate external wait4 entry; root diagnostic CPU is not recharged as a plot expense.
+
+
+## Vector host partition and Mac controller accounting amendment
+
+Root's later engineering partition is preserved in `configs/vector_confirmation_host_dispatch.json`:50 unique tasks split Mac25/GPU25 without changing science or numerical budgets. The old remote controller log's requested50 label is not actual50 GPU execution; child HOST_DISPATCH/TERMINALS and the union of both host manifests determine coverage. No cross-platform seconds are pooled as an algorithm-speed claim.
+
+Mac object `PROCESS_RECEIPTS.json` under `mac_confirmation_controller` and `mac_confirmation_spooled_controller` uses inclusive wait4 CPU: it includes the scientific worker's own RSS-ps subprocesses. Do not add `POST_ARCHIVE_STORAGE_RELEASE` helperCPU or `MATERIAL_HISTORY_SPOOL` setup/write/flush/close again. Controller own process_time excludes its monitor children, so its monitor_helper_CPU is distinct and counted once. A parent-only controlled handoff is classified separately from scientific failure. `PHASE2_INCLUSIVE_WAIT4_VIEW` overlaps phase2 controller plus all scientific descendants and is never additive. The accounting compiler supports these actual metadata producers when they arrive; absent final cost remains null. This amendment neither starts nor stops any active worker.
+
+Root face-Hessian diagnostic is reproduced from `experiments/diagnose_exposed_face_curvature.py` with artifacts in `RESULTS/exposed_face_curvature/`. Its saved near-exit CPU is a lower bound; no external OS CPU was measured, despite a stale receipt scope template. Counts are five 576-cell LU and 2124 complex RHS (60 source, 96 adjoint, 1968 tangent); retain these distinct from 5184-order vector work. The cost compiler reads saved receipts only and does not rerun the diagnostic.
+
+## Fixed absorptive exposed DEV audit
+
+The immutable contract and exact eight-task manifest are `delegated/diagnostics/absorptive_dev/FROZEN_PROTOCOL.json`, `TASKS.json`, and `SOLVER_CONFIG.json`. Four already exposed objects are used; this is DEV, not a new confirmation set. The two controls fix the shift to `c=-i beta`, with K19 and K0, positive real outer beta, unchanged original prior, source weighting, FFT/APCS, and corrector. K0 is not mature original CIE. No phase or beta search is performed.
+
+New production code is isolated in `src/absorptive_denominator.py`, `src/absorptive_adapter.py`, and `experiments/absorptive_dev_run.py`; existing frozen real-BothBlocks/48/3D sources are not edited. The run queue executes one Mac BLAS1 child at a time and measures complete child CPU with wait4, including imports/setup/output/exit. It refuses an existing queue to avoid silent replay. To reproduce in a separate output tree, copy the contract and change only output paths in a new manifest and queue output-root constant; preserve the original results and failed attempts.
+
+From the R11 worktree root, use the existing interpreter without resolving its symlink:
+
+```sh
+"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python" research/research_max_struct_r11/experiments/absorptive_dev_wiring.py
+"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python" research/research_max_struct_r11/experiments/absorptive_dev_queue.py
+"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python" research/research_max_struct_r11/experiments/absorptive_dev_seal_score.py --phase seal
+"/Volumes/migodam's-external-brain/Research/Inv_SLAM/Gaussian/.venv_nn/bin/python" research/research_max_struct_r11/experiments/absorptive_dev_seal_score.py --phase score
+```
+
+The initial wiring check uses one public saved state, checks the complex current adjoint and real-material gradient for both controls, and costs zero new physical FW. Scoring is allowed only after the complete eight-prediction seal. Reused historical endpoints are nonadditive references. `source_snapshot/`, `QUEUE.json`, each task receipt, `ALL8_PREDICTIONS_SEALED_BEFORE_GT.json`, and postseal score/cost tables preserve the actual implementation and accounting. Exact external wiring and postprocessing costs replace their nested timers in the top-level cost ledger.
+
+The completed absorptive audit material plate is rendered without a solver by `experiments/plot_absorptive_dev.py`; saved panel sources are in `FIGURES/absorptive_dev/MATERIAL_SOURCE_TABLE.csv`. PNG/PDF and the independent external render cost are in the same figure directory. The fixed0..20 display retains all four exposed objects, both negative arms, and all available existing references. Reference host CPU must not be compared across columns; only the eight new arms share the same Mac execution environment.
+
+Local document-target existence is checked by `experiments/check_local_document_references.py`: it checks R11 root Markdown documents, the absorptive factual handoff and all24 saved panel source paths, and writes `delegated/diagnostics/absorptive_dev/LOCAL_DOCUMENT_REFERENCE_CHECK.json`. It performs no solver or GT-array read. This local check does not validate remote URLs or anchor names.

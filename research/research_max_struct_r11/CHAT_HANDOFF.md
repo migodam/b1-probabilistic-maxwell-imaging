@@ -15,6 +15,9 @@
 3. 新控制BothBlocks把Green分母真正接入current与material两块，保持原FFT/APCS、PR、β、初值、prior和corrector。历史桥的NRMSE由材料-only Green的.337降到.10088，同时环仍约.105；开缝壳仍约.515。桥已在辅助stage2/3改变路径，不是同起点corrector突然变强。
 4. CIE在桥上约.097，仍略优于BothBlocks；因此这是修复Green对桥的损害，不能写成桥上打败CIE。环的CIE约.423，Green各版本约.10，是保留的开发优势。
 5. 真实同状态current曲率只中等改善，reset方向cos却很低；单一条件数改善不能预测成功。标准resolvent结构给出强Green通道饱和的解释，但尚未建立充分的成功预测规则。
+6. 原物理端点线段和精确face Hessian将失败分开：环/CIE、壳/Green坏点接近box驻点，free Hessian正；桥仍有负曲率和错号乘子，不能统称已收敛。详见理论第14–16节。
+7. 真三维两个旧开发对象×6臂已完成：Green仅轻微改善v04幅度误差且IoU更差，v09全部有高核心衰减。所有臂320步cap，不称收敛或三维优势。见[三维已完成报告](VECTOR_DEV_REPORT_ZH.md)。
+8. 固定吸收型分母8次曝光DEV已完成，K19对K0各1/4恢复，分别仅壳/桥；原环收益丢失。利用耗散Green得current增益上界，仍不保证材料恢复；复CIE/复移位本身已有先例。不继续相位扫描，保留[推导与边界](ABSORPTIVE_DENOMINATOR_DERIVATION.md)及全部失败。
 
 ![全部曝光正反对象](FIGURES/exposed_development/MATERIAL_COMPARISON_3x8.png)
 
@@ -24,9 +27,9 @@
 |---|---:|---:|---|
 |主二维确认|48，8拓扑×high/mixed×χ8/12/18|288，6臂|i9 P核，CIE/Dual/Global/fullG19/freezeA/contractedT，480 whole-child CPU与成本曲线|
 |BothBlocks后续确认（已完成）|16，8拓扑×high/mixed|80，5臂|Mac两lane，CIE/Dual/Global/fullG19/BothBlocks；全臂同硬件，不合并Windows原CPU|
-|新三维确认|8个规定设计，4拓扑×high/mixed|40 matched +10 cross-grid|4060真3分量dyadic，12³全部1728材料未知量，sourceCIE/Dual/Global/fullGreen/contractedLagged|
+|新三维确认|8个规定设计，4拓扑×high/mixed|40 matched +10 cross-grid|4060与Mac按对象分流，真3分量dyadic，12³全部1728材料未知量，sourceCIE/Dual/Global/fullGreen/contractedLagged|
 
-二维两组都在各自新对象生成前冻结；16组已在完整封存后评分，48组仍未读GT。三维生成端已完成8 matched12及2个18→12观测，反演有限队列会在曝光DEV之后自动接续；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
+二维两组都在各自新对象生成前冻结；16组已在完整封存后评分，48组仍未读GT。三维生成端已完成8 matched12及2个18→12观测，新确认已经启动；这不是已经取得50个三维重建结果。cross-grid两观测不是两个新独立材料，且不与matched成功数合并。
 
 三维分母采用公开固定`span(Einc,G Einc)`的rank120投影。top32最大奇异模式对晚期defect传播遗漏很大；source空间也不完整，不能宣称完整G或连续Maxwell精度。full/freezeA/contractedT已完成一次必要的真实3N共享材料导数接线核对，完整反演正在运行。保持FP64、真实LU/RHS与全部失败成本。
 
