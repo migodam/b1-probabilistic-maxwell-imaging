@@ -38,6 +38,29 @@ python research/research_gn_nn_feedback_wavelet_r5/experiments/infer_observation
 
 ## 校正、评分、绘图
 
+训练入口只训练／选择checkpoint，不会自动写公共预测。恢复归档已有完整预测；若从头重训，先按以下相同VAL公共锚点执行批量预测，再评分。这里仅读清单的split／obs_id，不读GT数组：
+
+```python
+from pathlib import Path
+import json
+from research.research_gn_nn_feedback_wavelet_r5.experiments.predict_public import infer
+root = Path('research/research_gn_nn_feedback_wavelet_r5')
+r4 = root.parent/'research_gn_nn_preservation_r4'
+records = json.loads((r4/'data/manifests/evaluation.json').read_text())['records']
+ids = [r['obs_id'] for r in records if r['split'] == 'val']
+arms = ['pixel_closed_coupled', 'haar_closed_coupled', 'db2_closed_coupled',
+        'haar_closed_no_fullfield', 'haar_free_coupled']
+for mode in ['strict', 'noiseaware']:
+    models = root/('models' if mode == 'strict' else 'models_noiseaware')
+    anchors = r4/'anchors' if mode == 'strict' else root/'inputs/noiseaware_anchors'
+    results = root/'results' if mode == 'strict' else root/'results/noiseaware'
+    chosen = arms if mode == 'strict' else arms+['haar_closed_noiseball_coupled']
+    for arm in chosen:
+        infer(models/arm/'best.pt', [anchors/(i+'.npz') for i in ids],
+              r4/'data/operators.npz', results/'VAL_PREDICTIONS'/(arm+'.npz'),
+              steps=4, batch_size=8, device='mps')
+```
+
 ```bash
 python research/research_gn_nn_feedback_wavelet_r5/experiments/score_development.py --anchor-mode strict
 python research/research_gn_nn_feedback_wavelet_r5/experiments/score_development.py --anchor-mode noiseaware
