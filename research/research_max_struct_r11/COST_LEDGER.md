@@ -1,13 +1,13 @@
 # R11 cost ledger
 
-Generated 2026-11-07T00:56:23.684830+00:00. Metadata-only compilation; no science, forward, optimizer, GT read or remote command.
+Generated 2026-11-07T01:58:19.854539+00:00. Metadata-only compilation; no science, forward, optimizer, GT read or remote command.
 
-Known nonoverlapping recorded CPU lower bound: **20295.167304 seconds**. This mixes documented exact child measurements and partial timers as a lower bound; it is not an exact total or a cross-hardware speed comparison. Ongoing48/3D work and unmeasured setup/import/exit costs prevent a complete total.
+Known nonoverlapping recorded CPU lower bound: **35211.857694 seconds**. This mixes documented exact child measurements and partial timers as a lower bound; it is not an exact total or a cross-hardware speed comparison. Ongoing48/3D work and unmeasured setup/import/exit costs prevent a complete total.
 
 |Physical matrix dimension|Known LU|Known complex RHS|Known source RHS|Known adjoint RHS|
 |---:|---:|---:|---:|---:|
-|576|268993|6447072|2219904|2214180|
-|5184|2640|235680|118620|117060|
+|576|382015|9158172|2430552|2424444|
+|5184|4272|470880|236760|234120|
 |17496|0|120|120|0|
 
 Counters are lower bounds when producer splits are missing. 17496 uses two fine-grid iterative forward batches, not LU. Small denominator LU/RHS remain auxiliary counters in JSON.
@@ -15,7 +15,7 @@ Counters are lower bounds when producer splits are missing. 17496 uses two fine-
 |Entry|Status|Recorded additive CPU s|Scope/source|
 |---|---|---:|---|
 |twod_remote_DEV|COMPLETED_KNOWN_CPU_LOWER_BOUND|1165.234148|Remote 2D DEV attempts/setup/transport/failed metadata; `delegated/twod/TWOD_DEV_COSTS.json`|
-|twod_independent48|PARTIAL|8431.624952|Remote 48x6 confirmation completed lower bound, generation and transport; `delegated/twod/independent48/COSTS.json`|
+|twod_independent48|PARTIAL|18990.300679|Remote 48x6 confirmation completed lower bound, generation and transport; `delegated/twod/independent48/COSTS.json`|
 |contracted_DEV3|COMPLETE|169.950853|Three actual local exposed-DEV inversions; `delegated/diagnostics/CONTRACTED_DEV_COST_LEDGER.json`|
 |contracted_DEV3_scoring|COMPLETE|0.006708|Standalone cached postseal scoring; `delegated/diagnostics/CONTRACTED_DEV_COST_LEDGER.json`|
 |BothBlocks_DEV3|COMPLETE|225.008589|Three actual local exposed-DEV inversions; `delegated/diagnostics/BOTHBLOCKS_DEV_COST_LEDGER.json`|
@@ -59,32 +59,50 @@ Counters are lower bounds when producer splits are missing. 17496 uses two fine-
 |vector_ordinary_DEV6|COMPLETE|4088.453125|Six ordinary DEV arms in one shared scientific process; `delegated/vector/dev_ordinary_process/PROCESS_COST.json`|
 |vector_ordinary_DEV6_gate_helper|COMPLETE|50.890625|Distinct gate helper of ordinary shared process; `delegated/vector/dev_ordinary_process/PROCESS_COST.json`|
 |vector_confirmation_generation|COMPLETE|119.206795|10 independent vector observations generated, no inverse score; `delegated/vector/confirmation_generation/PROCESS_COST.json`|
-|vector_dev_denominator|RUNNING_OR_QUEUED_NOT_SCORED|1452.562500|Running/queued vector phase; completed nested producer lower bound only; `delegated/vector/dev_denominator_process/PROCESS_COST.json`|
-|vector_confirmation|RUNNING_OR_QUEUED_NOT_SCORED|null|Running/queued vector phase; completed nested producer lower bound only; `delegated/vector/confirmation_process/PROCESS_COST.json`|
+|vector_dev_denominator|COMPLETE|4292.234375|Shared vector scientific phase including setup/probe and task arms; `delegated/vector/remaining_controller/PHASE_COSTS.json`|
+|vector_dev_denominator_gate_helper|COMPLETE|48.859375|Distinct phase gate helper; `delegated/vector/dev_denominator_process/PROCESS_COST.json`|
+|vector_confirmation|RUNNING_OR_QUEUED_NOT_SCORED|671.750000|Running/queued vector phase; completed nested producer lower bound only; `delegated/vector/confirmation_process/PROCESS_COST.json`|
 |vector_remaining_controller|RUNNING|null|Still-running controller, own final CPU not yet received; `delegated/vector/remaining_controller/PROCESS_COST.json`|
-|vector_DEV_early_postseal_controller|RUNNING_WAITING_DEV6_TERMINAL|null|Independent early-DEV waiting controller, final costs not yet available; `delegated/vector/dev_early_postseal/PROCESS_COST.json`|
+|vector_DEV_early_postseal_controller|COMPLETE|1.179619|Independent local waiting/export controller; `delegated/vector/dev_early_postseal/PROCESS_COST.json`|
+|vector_DEV_early_postseal_transport_children|COMPLETE|6.036545|Distinct local pack/download transport children; `delegated/vector/dev_early_postseal/PROCESS_COST.json`|
+|vector_DEV_early_scorer|COMPLETE|14.214806|Old exposed DEV postseal scorer only; `delegated/vector/dev_early_postseal/PROCESS_COST.json`|
+|vector_DEV_early_remote_pack|COMPLETE|4.234375|Independent remote archive producer, no physics; `delegated/vector/dev_early_postseal/REMOTE_PACK_COST.json`|
 |first_CN99_hit_posthoc|COMPLETE_POSTHOC_OFFLINE_DIAGNOSTIC|2.941704|Two standalone zero-FW public selection then GT-scoring processes; `delegated/diagnostics/bothblocks_confirmation/first_cn99_hit/EXTERNAL_PROCESS_COSTS.json`|
 |posthoc_budget_control_children|COMPLETE_POSTHOC_BUDGET_CONTROL|62.857739|Only triggered restarted original-Maxwell corrector children; original80 costs excluded; `delegated/diagnostics/bothblocks_confirmation/posthoc_budget_control/COST_LEDGER.json`|
 |posthoc_budget_control_controller|COMPLETE_POSTHOC_BUDGET_CONTROL|0.044582|Distinct finite continuation controller; `delegated/diagnostics/bothblocks_confirmation/posthoc_budget_control/COST_LEDGER.json`|
 |posthoc_budget_control_postprocess|COMPLETE|1.042965|Public32pair seal then separate postseal scorer; `delegated/diagnostics/bothblocks_confirmation/posthoc_budget_control/POSTPROCESS_EXTERNAL_COSTS.json`|
 |oracle_trace_boundary|COMPLETE|0.478958|Root saved-scored158626node CSV audit, no new GT arrays; `delegated/diagnostics/bothblocks_confirmation/oracle_trace_boundary/RECEIPT.json`|
+|mixed_low_phase_plots|COMPLETE|4.124288|Only new all8 mixed low-scale plate and paired low-RMSE/mean chart; `FIGURES/bothblocks_confirmation/MIXED_LOW_PHASE_EXTERNAL_COST.json`|
+|exposed_endpoint_path_diagnostic|COMPLETE|0.998588|Root fixed3x9 legal endpoint-segment actual physical evaluations; `RESULTS/exposed_endpoint_paths/EXTERNAL_PROCESS_COST.json`|
+|exposed_endpoint_path_plot|COMPLETE|1.824294|Only plotting saved27 rows, no new physics or GT; `FIGURES/exposed_development/EXPOSED_ENDPOINT_PATH_PLOT_EXTERNAL_COST.json`|
+|exposed_face_Hessian|COMPLETE_WITH_EXTERNAL_CPU_UNMEASURED|0.923438|Root exact face-Hessian/JVP wiring diagnostic at3 exposed endpoint materials; `RESULTS/exposed_face_curvature/RECEIPT.json`|
+|absorptive_DEV_wiring|COMPLETE|0.870579|One public-state complex-adjoint and real-material derivative wiring process for K19/K0; `delegated/diagnostics/absorptive_dev/WIRING_EXTERNAL_COST.json`|
+|absorptive_DEV8_children|COMPLETED|759.281010|Fixed4 exposed DEV x2 complex-shift controls, one local Mac lane; `delegated/diagnostics/absorptive_dev/QUEUE.json`|
+|absorptive_DEV8_controller|COMPLETED|0.141694|Own finite sequential local queue; `delegated/diagnostics/absorptive_dev/QUEUE.json`|
+|absorptive_DEV8_postprocess|COMPLETE|2.121386|Public all8 prediction seal then separately authorized offline scorer; `delegated/diagnostics/absorptive_dev/POSTPROCESS_EXTERNAL_COSTS.json`|
+|vector_mac_confirmation_controller_own|RUNNING|null|Active finite Mac queue, final own CPU not yet written; `delegated/vector/mac_confirmation_controller/CONTROLLER_COST.json`|
+|vector_host_split_engineering|COMPLETE_KNOWN_COMPONENTS|0.043008|Distinct local host dispatch/overlay transport only; `delegated/vector/remaining_transport/HOST_SPLIT_ENGINEERING_COST.json`|
+|absorptive_DEV_material_plot|COMPLETE|1.699283|Saved4x6 exposed-material plate and source table only; `FIGURES/absorptive_dev/EXTERNAL_PROCESS_COST.json`|
+|local_public_document_reference_check|PASS|0.040500|Local link and saved panel-source existence check only; `delegated/diagnostics/absorptive_dev/LOCAL_DOCUMENT_REFERENCE_CHECK.json`|
 |unmeasured_setup_and_failures|KNOWN_GAPS|null (view only)|Recorded failed environment starts, source preparation and uninstrumented remote extraction; `delegated/vector/IMPLEMENTATION_NOTES.md`|
 |historical_R10_reference|REFERENCE_ONLY_NOT_CHARGED|0.000000 (view only)|Read-only reused R10 states/operators/scores, not rerun R10 campaign; `no new execution source`|
 |portfolio_views|NONADDITIVE_VIEW|0.000000 (view only)|Overlapping deployment/secondary views, no new solver run; `delegated/diagnostics/bothblocks_confirmation/PORTFOLIO_RULE_BEFORE_DATA_SCORE.json`|
 
 ## Running and incomplete coverage
 
-48 progress snapshot: RUNNING / 59 terminal / 227 pending.
+48 progress snapshot: RUNNING / 128 terminal / 156 pending.
 3D: RUNNING_NOT_SCORED. Whole running-phase/helper/transport CPU is null until final receipt; completed engineering probe is only a replaceable lower bound.
 
 ## Deduplication and gaps
 
 - Never add nested arm/corrector/aux timers to their whole process.
-- 576,5184 LU and17496 iterative solves remain separate.
+- 576,5184 LU and17496 iterative solves remain separate; never infer matrix order from legacy accumulated full_factorization_dimension.
 - Count source/primal and adjoint aliases only once.
 - Fixed-state merged50FW already includes ordinary repair10FW.
 - Portfolio scenarios overlap underlying attempts; never add them to campaign total.
 - GPU stream interval, wall time, active kernel time and CPU are not interchangeable.
+- Mac scientific wait4 is inclusive of its child RSS helpers; Windows GetProcessTimes is own-process and its independent helper is separate.
+- Mac spool/write/flush/close telemetry is nested; phase2 inclusive parent wait4 is an overlapping view, never added to per-object scientific children.
 - Missing/running/unmeasured values stay null; displayed totals are lower bounds, not complete exact project cost.
 
 - Two early CUDA audit receipts contained a template suggestion of external OS CPU measurement. The producer confirms none was captured: post-import CPU is retained as a lower bound, imports/exit stay unknown.
