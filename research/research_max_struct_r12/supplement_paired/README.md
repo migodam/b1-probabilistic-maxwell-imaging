@@ -11,3 +11,7 @@ Keep raw, corrected, primary minPhi and secondary minR within legal CN99 ball, a
 Use remote i9 <=4 confirmed independent P cores (0,2,4,6), single BLAS, equal normal priority. New remote directory D:/AI/MAX_STRUCT_R12_PAIRED_20261112; no other processes changed. All new local large outputs on external disk. No CUDA port or extra network.
 
 Deliver paired raw/corrected plots, all24 strategies and triggers, common CPU prefixes, corrector D/R/Phi/material/noise contrasts, Chinese report, cost ledger, source scripts/configs, update main report/paper/handoff and website; publish on existing repository/release with readback. Stop after this supplement is complete.
+
+## Completed state
+
+All44 child runs completed; whole-child CPU4669.46875s, parallel wall1240.1518s. Complete public-contract acceptance passed with no errors/warnings and exact initial-state comparisons; all44 sealed before scoring. Latest tables RESULTS/offline_v2 fix a v1 parent CPU summation mistake; all744 metric/selection rows unchanged. See RESEARCH_REPORT_ZH.md, COST_LEDGER.md and index.html. New figures count21 (PNG+PDF); no additional algorithms/runs after the approved44. Publication acceptance is recorded separately under audit/PUBLICATION_READBACK.json once completed.
