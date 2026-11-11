@@ -124,3 +124,17 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python delegated/conf
 ```
 
 这是原评分入口的已实现参数；本交付没有为生成说明而重跑科学。scorer保留10000次按对象bootstrap和主/次NA语义。额外保存的GT噪声资格、rawDR抽取与坏端点pooloracle各有独立script/receipt；它们不改变冻结算法。大状态恢复路径和来源见ARTIFACTS.md及release内容索引，完整历史轨迹不必载入即可读取compact最终材料与评分。
+
+## GitHub release传输分片的恢复
+
+大逻辑包上传发生HTTP408后，发布改用128MiB运输分片。它们不是新实验或新数据；按PUBLICATION_PARTS_MANIFEST.json中顺序连接便还原原验收逻辑包，不能单独unzip某个part。所有目录条目/字节索引仍保留。
+
+只取需要的逻辑包，可用本目录`restore_release_assets.py`，必须显式指定输出目录（建议外置盘）：
+
+```sh
+python3 research/research_max_struct_r12/restore_release_assets.py \
+  --asset max-struct-r12-remote-01.zip.zst \
+  --output-dir /path/to/external-disk/r12-archives --decode
+```
+
+`--decode`需要已有zstd命令；得到ZIP后按ARTIFACTS的目录映射恢复。补充包本身为.zip，不需zstd。脚本只下载/连接，不运行科学。首次归档中的文稿可能早于最终修订；以Git仓库最终报告为准，原科学数组/源快照不被覆盖。

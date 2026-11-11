@@ -15,7 +15,8 @@ def guard():
     assert ROOT.is_dir()and(ROOT/'package_release.py').is_file()
     mount=subprocess.check_output(['mount'],text=True)
     assert " on /Volumes/migodam's-external-brain (apfs"in mount,'Expected APFS mount missing; never write placeholder mount path'
-def dump(path,data):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n')
+def dump(path,data):
+    path.parent.mkdir(parents=True,exist_ok=True);temp=path.with_name(path.name+'.tmp');temp.write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n');os.replace(temp,path)
 def log(row):
     REC.mkdir(parents=True,exist_ok=True)
     with(REC/'OPERATIONS.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
@@ -62,25 +63,40 @@ def ready_manifest():
     # Migrated remote01 was decoded and directory-verified before interruption;
     # copy_equal additionally compared source/destination bytes after remount.
     prior=REC/'VERIFICATION_RECEIPT.json'
-    if prior.exists():
-        for x in json.loads(prior.read_text())['assets']:
+    remote=[]
+    if prior.exists():remote+=json.loads(prior.read_text())['assets']
+    extra=REC/'REMOTE_VERIFIED_ASSETS.json'
+    if extra.exists():remote+=json.loads(extra.read_text())['assets']
+    if remote:
+        for x in {a['name']:a for a in remote}.values():
             name=x['name'];p=OUT/name;index=AUDIT/(name[:-8]+'.index.json');zpath=OUT/name[:-4]
             if p.exists()and zpath.exists():
                 count=validate_zip(zpath,index);assets.append(dict(name=name,path='release_assets/'+name,upload_local_path=str(p),bytes=p.stat().st_size,format='zstandard-wrapped ZIP64',content_index=str(index.relative_to(ROOT)),file_count=count,ready=True))
     local=REC/'LOCAL_ZSTD_RECOVERED_RECEIPT.json'
     if local.exists():
         for x in json.loads(local.read_text())['archives']:
-            if not x.get('decoded_byte_equality'):continue
+            if x.get('selected')and not x.get('decoded_byte_equality'):continue
             name=x['name']if x['selected']else x['zip_name'];p=OUT/name;index=AUDIT/(x['zip_name'][:-4]+'.index.json');count=json.loads(index.read_text())['file_count']
+            if not x['selected']:validate_zip(p,index)
             assets.append(dict(name=name,path='release_assets/'+name,upload_local_path=str(p),bytes=p.stat().st_size,format='zstandard-wrapped ZIP64'if x['selected']else'ZIP64',content_index=str(index.relative_to(ROOT)),file_count=count,ready=True))
-    assets.sort(key=lambda x:x['name']);data=dict(status='PARTIAL_READY_VERIFIED',assets=assets,pending='Other local wrappers and remote03-05 download/validation; only ready=true assets may be uploaded',source_files_deleted=0,published=False,hashes='NOT_COMPUTED')
+    assets.sort(key=lambda x:x['name']);expected=len(list(AUDIT.glob('max-struct-r12-*.index.json')));complete=len(assets)==expected
+    data=dict(status='READY_ALL_VERIFIED'if complete else'PARTIAL_READY_VERIFIED',assets=assets,pending=None if complete else'Other logical assets still downloading/validating; only ready=true entries are accepted',publication_transport_manifest='PUBLICATION_PARTS_MANIFEST.json',publication_scope='These are logical evidence wrappers; root splits/uploads128MiB transport parts without altering them',source_files_deleted=0,published=False,hashes='NOT_COMPUTED')
     dump(ROOT/'UPLOAD_MANIFEST_READY.json',data)
-    lines=['# R12已验收证据资产（逐步更新）','','状态PARTIAL_READY_VERIFIED；下表每包已验收，可以分别上传draft。未列包仍pending，不能当作整组完成。','', '|正式包|字节|文件条目|索引|','|---|---:|---:|---|']
+    lines=['# R12已验收逻辑证据包（逐步更新）','',f"状态{data['status']}；下表每包已验收。未列包仍pending，不能当作整组完成。平台上传采用root生成的128MiB运输parts，另见PUBLICATION_PARTS_MANIFEST.json，逻辑包不因split而改变。",'', '|逻辑包|字节|文件条目|索引|','|---|---:|---:|---|']
     for x in assets:lines.append(f"|`{x['name']}`|{x['bytes']}|{x['file_count']}|[{Path(x['content_index']).name}]({x['content_index']})|")
-    lines+=['','只上传UPLOAD_MANIFEST_READY.json列出的正式文件，勿上传ZIP副本、partial或操作临时文件。完整源文件与历史中断产物均保留，尚未发布。']
+    lines+=['','只上传UPLOAD_MANIFEST_READY.json列出的正式文件，勿上传ZIP副本、partial或操作临时文件。完整源文件与历史中断产物均保留，尚未发布。Git上的最新科学文稿/图/代码优先；大包中的历史文稿仅是执行时快照，不用为小文稿修订重打原始证据包。']
     (ROOT/'ARTIFACTS.md').write_text('\n'.join(lines)+'\n')
     dump(ROOT/'ARTIFACTS.json',dict(status=data['status'],assets=assets,remaining_status=data['pending'],full_indices='audit/release/max-struct-r12-*.index.json',source_files_deleted=0,hashes='NOT_COMPUTED'))
     return data
+def verify_available_remote():
+    guard();meta=json.loads((AUDIT/'REMOTE_ZSTD_RECEIPT.json').read_text());rows=[]
+    for a in meta['archives']:
+        source=OUT/a['name'];zpath=OUT/a['zip_name'];index=AUDIT/(a['zip_name'][:-4]+'.index.json')
+        if not source.exists():continue
+        if source.stat().st_size!=a['bytes']:raise ValueError('Formal compressed source size mismatch')
+        if not zpath.exists():run(['zstd','-q','-d',str(source),'-o',str(zpath)],'decode_available_remote_'+source.name)
+        count=validate_zip(zpath,index);rows.append(dict(name=a['name'],compressed_bytes=source.stat().st_size,decoded_zip_bytes=zpath.stat().st_size,entries=count,central_directory_names_sizes_exact=True,hashes='NOT_COMPUTED'))
+        dump(REC/'REMOTE_VERIFIED_ASSETS.json',dict(status='PARTIAL_READY'if len(rows)<len(meta['archives'])else'COMPLETE',assets=rows));ready_manifest();print(json.dumps(rows[-1]),flush=True)
 def local_wrappers():
     guard();old=AUDIT/'LOCAL_ZSTD_RECEIPT.json';prior={x['zip_name']:x for x in json.loads(old.read_text())['archives']}if old.exists()else{};rows=[]
     for index in sorted(AUDIT.glob('max-struct-r12-local*.index.json')):
@@ -120,7 +136,8 @@ def local_wrappers():
     receipt=dict(status='COMPLETE',archives=rows,source_files_deleted=0,scientific_forward_calls=0,scope='Sequential, at most1compression thread; complete decoded bytes compared to original ZIPs; interruption copies preserved')
     dump(old,receipt);dump(REC/'LOCAL_ZSTD_RECOVERED_RECEIPT.json',receipt)
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=['migrate','local-wrappers','ready']);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=['migrate','local-wrappers','ready','verify-remote']);a=p.parse_args()
     if a.mode=='migrate':migrate()
     elif a.mode=='ready':print(json.dumps(ready_manifest()))
+    elif a.mode=='verify-remote':verify_available_remote()
     else:local_wrappers()

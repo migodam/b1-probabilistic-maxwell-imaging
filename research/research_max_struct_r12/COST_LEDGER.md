@@ -60,7 +60,7 @@ startup失败的原因是浅Windows包路径上 eager `ROOT.parents[3]`默认表
 
 ## 仍缺失或不可加总的项
 
-源码/文献阅读、调度者推理、部分prepare/seal/scoring/report、core projector工程基准与旧ad-hoc探测的完整进程CPU均为`null`或仅有局部计时。发布/打包/远端可访问性检查费用当前=`null`。全局GPU费用=`null`（本文已列本地组均CPU执行；不能由此推断整个项目历史无GPU费用）。
+源码/文献阅读、调度者推理、部分prepare/seal/scoring/report、core projector工程基准与旧ad-hoc探测的完整进程CPU均为`null`或仅有局部计时。归档准备的已知不重叠CPU下界为237.198548秒，见[准备成本汇总](audit/release/PACKAGING_COSTS.md)；完整准备CPU/总wall/货币费用仍为`null`，实际发布分片/上传由后文独立回执记录。全局GPU费用=`null`（本文已列本地组均CPU执行；不能由此推断整个项目历史无GPU费用）。
 
 因此本初稿不生成一个混合body/external/phase的“精确全局合计”，也不把8臂240CPU预算乘法当成实际花费。确认attempt已按下表汇总；后续归档/发布费用独立登记，不重跑或补造科学结果。
 
@@ -86,3 +86,9 @@ startup失败的原因是浅Windows包路径上 eager `ROOT.parents[3]`默认表
 确认评分及制图CPU为27.371442秒（独立后处理，不加入算法预算），见[评分费用](delegated/confirmation/RESULTS/offline_scoring_v1/SCORING_AND_FIGURES_COST.json)。附加raw/噪声诊断、3D图版及候选pool oracle各自保留receipt，均不新增反演。
 
 2026-11-11外盘I/O错误导致归档中断，12日恢复；已完成科学结果没有重跑。中断传输、已下载partial、本地压缩和恢复费用见audit/release，发布运输回执继续追加。计时未覆盖的人工阅读/推理与旧准备部分仍为null，不提供虚假精确研究总额。
+
+## 发布传输层
+
+1GB整包上传HTTP408后改为128MiB运输分片；正式逻辑包保持不变。已知首片上传wall12.12秒、user+sys0.33秒；其余每批外部childCPU/controllerCPU/wall及各part错误完整记录于audit/release/PART_UPLOAD_COSTS.jsonl与PART_UPLOAD_ATTEMPTS.jsonl。两次原大包失败各约65秒wall并行发生，不能相加冒充历时，未测CPU为null。
+
+用户要求的结构判读补充为事后目视及已封存图像重绘，0新forward/0新反演；绘图费用另见FIGURES/structural_review_v1回执。它不改变算法计时或旧确认统计。

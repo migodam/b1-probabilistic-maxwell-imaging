@@ -122,4 +122,4 @@ Primary保持原Phi，保证历史可比性。新增secondary只在已有、合�
 
 该secondary同时用于独立24八个方法，并保持240CPU整child、144proposal/96corrector与原primary。附加R/残差检查、快照及写出仍计费。不同方法的审计池覆盖率、无候选频率、失败与atomic overrun资格必须一起核查。它是新增candidate-selection estimator，不能将未来收益全归于DR反射。
 
-截至本稿，secondary注册与代码hook是执行证据；确认效果仍需整组seal、独立评分、失败计入和主线程最终审查。没有可据此宣称“secondary已验证”“DR普适恢复”或“原Phi被证明错误”的结论。
+确认192运行的整组seal与离线评分现已完成，详见确认完整报告。secondary覆盖率与主规则分别报告；它未消除全部失败，也不证明DR普适恢复或原Phi数学错误。正面与负面机制的综合定位见COMPREHENSIVE_EVALUATION_ZH.md。

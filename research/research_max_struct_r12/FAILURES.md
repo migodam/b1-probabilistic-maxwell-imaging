@@ -28,3 +28,9 @@
 - Dense H Cholesky is not a validated large-scale FFT/CUDA projection backend. R12 scientific execution here is CPU, despite remoteGPU availability. GPU speedup and continuoushigh-index3D accuracy remain unclaimed.
 - Some imports, orchestration, reportgeneration and old setup costs were not completely metered. Missing fields remainnull; no mixed nested-timer exactglobaltotal is constructed.
 - Fullrawarrays are being transported/archived separately fromgit; delivery is incomplete until releaseassets and publiclinks are verified. Transport retries are not scientific reruns and are separately logged.
+
+## 发布工程中断与恢复（2026-11-11至12）
+
+外置SSD出现I/O错误并从磁盘列表消失，归档中断；部分晚期小文稿未持久化。12日重新挂载后，原始评分、图与候选pool可读，root按保存结果恢复交接并独立核对192行与aggregate；不重新跑科学，不更改预测。已下载内盘暂存按用户要求停止新增，恢复后所有新大文件仅外盘。
+
+GitHub首次约1GB整包上传两次在约65秒返回HTTP408，保留UPLOAD_ATTEMPTS；停止该批后以128MiB分片重试，首片12.12秒成功。后续使用同一正式逻辑包的顺序分片，不改变科学数组/压缩内容。发布分片不是新的独立实验。GitHub draft首次短target_commitish被API拒绝，随后以已推送main创建成功。全部拒绝/中断计时已知部分留存，未测CPU保持null。

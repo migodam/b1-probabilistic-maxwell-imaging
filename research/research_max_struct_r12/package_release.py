@@ -15,11 +15,12 @@ MAX_ASSET=1_800_000_000
 GROUP_LIMIT=1_650_000_000
 OUT=ROOT/'release_assets'
 AUDIT=ROOT/'audit/release'
-DENIED_PARTS={'.git','.ssh','.codex','__pycache__','node_modules','.venv','.venv_nn','primary_texts'}
+DENIED_PARTS={'.git','.ssh','.codex','__pycache__','node_modules','.venv','.venv_nn','primary_texts','operational_handoff','private_operational'}
 DENIED_NAMES={'.env','id_rsa','id_ed25519','authorized_keys','known_hosts','chat_history.json','conversation.json','conversations.json','credentials.json'}
 TRANSPORT_DUPLICATES={'R12_SELECTED_PUBLIC_OUTPUTS_20261111.zip','R12_CONFIRMATION_PUBLIC_OUTPUTS.zip'}
 
-def dump(p,x):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(x,indent=2,ensure_ascii=False)+'\n')
+def dump(p,x):
+    p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_name(p.name+'.tmp');tmp.write_text(json.dumps(x,indent=2,ensure_ascii=False)+'\n');os.replace(tmp,p)
 def denied(p):
     return bool(set(p.parts)&DENIED_PARTS)or p.name.lower()in DENIED_NAMES or p.suffix in {'.pyc','.pem','.key','.exp'}
 def groups(entries,stem):
@@ -304,15 +305,26 @@ def manifest():
         if rel.parts[0]=='release_assets'or rel.parts[:2]==('audit','remote_snapshot')or denied(rel)or rel.as_posix()in archived_local or p.name in TRANSPORT_DUPLICATES:continue
         n=p.stat().st_size
         if p.suffix in {'.npz','.npy'}and n>8*1024**2:unplanned_large.append(dict(path=rel.as_posix(),bytes=n));continue
-        retained.append(dict(path=(PREFIX/rel).as_posix(),bytes=n,placement='git_code_metadata_figures_small_predictions'))
+        if p.name not in {'ARTIFACTS.json','ARTIFACTS.md','UPLOAD_MANIFEST.json','UPLOAD_MANIFEST_READY.json'}:
+            retained.append(dict(path=(PREFIX/rel).as_posix(),bytes=n,placement='git_code_metadata_figures_small_predictions'))
     m=dict(format=1,status='PREPARED_NOT_PUBLISHED',asset_limit_bytes=MAX_ASSET,assets=assets,asset_bytes=sum(a['bytes']for a in assets),archived_file_entries=sum(a['file_count']for a in assets),git_retained=retained,unplanned_large_local=unplanned_large,excluded_local=localplan.get('excluded',[]),excluded_remote=remoteplan.get('excluded',[]),hashes='NOT_COMPUTED_USER_INSTRUCTION',source_files_deleted=0,private_chat_key_repo_history_archived=False,remote_runtime_shared_sources='Canonical source snapshot once under remote_runtime/shared_legacy; no git history or installed libraries',restore='ZIP entries use repo-relative paths; extract into an empty review checkout/directory. remote_complete retains full remote confirmation outputs without overwriting compact Git selections. Source roots in indices record actual provenance.')
+    archived_paths={e['archive_path']for a in assets for e in a['entries']}
+    for item in m['excluded_local']:
+        parts=Path(item['path']).parts;candidate=None
+        if parts[:4]==('audit','remote_snapshot','RESULTS','basin_v1'):candidate=(PREFIX/'RESULTS/basin_remote'/Path(*parts[4:])).as_posix()
+        elif parts[:3]==('audit','remote_snapshot','audit'):candidate=(PREFIX/'remote_runtime/research/research_max_struct_r12/audit'/Path(*parts[3:])).as_posix()
+        if candidate:item.update(canonical_archive_path=candidate,canonical_present_in_index=candidate in archived_paths)
+    aliases=AUDIT/'CANONICAL_PATH_ALIASES.json'
+    if aliases.exists():
+        alias=json.loads(aliases.read_text());m.update(unique_archived_paths=alias['unique_archived_paths'],overlapping_paths=alias['overlapping_paths'],canonical_alias_index='audit/release/CANONICAL_PATH_ALIASES.json',overlap_policy=alias['policy'])
     dump(ROOT/'ARTIFACTS.json',m)
-    upload=dict(status='PREPARED_NOT_UPLOADED',assets=[dict(name=a['name'],path=a['relative_asset_path'],bytes=a['bytes'],format=a['format'],content_index=a['index'])for a in assets],metadata=[],exclusions='Do not upload ZIP originals behind selectedzip.zst, .partial, incomplete_transfers/, workers, plans, temporary files or source duplicates',original_zip_files_preserved_locally=True,published=False)
+    m['publication_transport_manifest']='PUBLICATION_PARTS_MANIFEST.json';m['documentation_precedence']='Latest Git scientific documents/figures/code take precedence over historical documentation snapshots inside raw evidence ZIPs';dump(ROOT/'ARTIFACTS.json',m)
+    upload=dict(status='LOGICAL_ASSETS_PREPARED',assets=[dict(name=a['name'],path=a['relative_asset_path'],upload_local_path=str(OUT/a['name']),bytes=a['bytes'],format=a['format'],content_index=a['index'])for a in assets],metadata=[],publication_transport_manifest='PUBLICATION_PARTS_MANIFEST.json',publication_scope='Root splits these unchanged logical wrappers into128MiB transport parts; use publicationparts manifest for actual GitHub uploads/reassembly',exclusions='Do not upload ZIP originals behind selectedzip.zst, .partial, incomplete_transfers/, workers, plans, temporary files or source duplicates',original_zip_files_preserved_locally=True,published=False)
     upload['metadata']=[dict(path='ARTIFACTS.json',purpose='full sourcepath/byte/content mapping'),dict(path='ARTIFACTS.md',purpose='reader restoration index')]+[dict(path=a['index'],purpose='perasset content index')for a in assets]
     dump(ROOT/'UPLOAD_MANIFEST.json',upload)
     lines=['# R12 原始证据归档（准备完成，尚未发布）','', '所有源文件保持原位。代码、JSON/CSV/MD、图片与小预测留Git；巨大数组及运行bundle保存在分包资产。单包严格小于1.8GB。未计算内容hash；核对ZIP中央目录的路径、条数、字节和实际包体大小。','', '|资产相对路径|字节|文件条目|内容索引|','|---|---:|---:|---|']
     for a in assets:lines.append(f"|`{a['relative_asset_path']}`|{a['bytes']}|{a['file_count']}|[{Path(a['index']).name}]({a['index']})|")
-    lines+=['',f"包体总计{m['asset_bytes']}字节，{m['archived_file_entries']}个条目。完整映射在[ARTIFACTS.json](ARTIFACTS.json)。",'', '远端basin原始states恢复到RESULTS/basin_remote；confirmation完整RESULTS/queues/engineering在delegated/confirmation/remote_complete；实际部署的R12源与共享legacy源在remote_runtime中。单个源文件只在对应canonical档案计一次；展开后的运行bundle本身作为历史输入保留，其内部共享源不是又一次科学计算。没有私人聊天、密钥文件、原始Fresnel测量或仓库全history。','', '恢复：.zip.zst先用`zstd -d <asset>.zip.zst -o <asset>.zip`无损解码；然后在空目录运行`python -m zipfile -e <asset>.zip <empty-destination>`。普通.zip直接第二步。归档路径均相对仓库，不要解到正在写入的科学工作树。','', '费用和运输见audit/release/{LOCAL_PACKAGING_RECEIPT,REMOTE_PACKAGING_RECEIPT,REMOTE_ZSTD_RECEIPT}.json及TRANSPORT_COSTS.jsonl。远端压缩只读取已结束任务，写入专用export目录，不触碰其他会话。没有发布、push或删除源。']
+    lines+=['',f"逻辑包总计{m['asset_bytes']}字节，{m['archived_file_entries']}个ZIP条目、{m.get('unique_archived_paths',len(archived_paths))}个去重科学路径。完整映射在[ARTIFACTS.json](ARTIFACTS.json)，最终覆盖复核见[FINAL_ARCHIVAL_COVERAGE_REVIEW](audit/release/FINAL_ARCHIVAL_COVERAGE_REVIEW.json)。",'', '远端basin原始states恢复到RESULTS/basin_remote；confirmation完整RESULTS/queues/engineering在delegated/confirmation/remote_complete；实际部署的R12源与共享legacy源在remote_runtime中。共享源按canonical路径计一次；15个已存历史basin复制文件作为逐字节相同的别名保留，见[别名索引](audit/release/CANONICAL_PATH_ALIASES.json)，不重新打包、不计第二次科学运行。历史输入bundle亦不是新实验。没有私人聊天、密钥文件、原始Fresnel测量或仓库全history。','', '发布采用128MiB运输parts，另见[PUBLICATION_PARTS_MANIFEST.json](PUBLICATION_PARTS_MANIFEST.json)。这些parts只切分逻辑包字节、不重算/重压缩科学证据；先按运输索引连接parts恢复原wrapper，再进行以下解码。不要把逻辑包和parts当成两份独立科学证据或重复收费。','', '恢复：.zip.zst先用`zstd -d <asset>.zip.zst -o <asset>.zip`无损解码；然后在空目录运行`python -m zipfile -e <asset>.zip <empty-destination>`。普通.zip直接第二步。归档路径均相对仓库，不要解到正在写入的科学工作树。Git最新科学文稿、图和代码优先于大包中的历史文稿快照；大包专门保留原始数值/执行证据，不为小文稿更新重打。','', '费用和运输见audit/release/{LOCAL_PACKAGING_RECEIPT,REMOTE_PACKAGING_RECEIPT,REMOTE_ZSTD_RECEIPT}.json及TRANSPORT_COSTS.jsonl。远端压缩只读取已结束任务，写入专用export目录，不触碰其他会话。准备脚本没有发布、push或删除源；实际draft/release上传由root另行记账。']
     (ROOT/'ARTIFACTS.md').write_text('\n'.join(lines)+'\n');print(json.dumps(dict(assets=len(assets),bytes=m['asset_bytes'],entries=m['archived_file_entries'],status=m['status'])))
 
 def main():
