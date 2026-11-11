@@ -143,14 +143,15 @@ class VectorPublicModel(DenseVectorModel):
 
 
 def run_vector_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
-                         *,outer=120,inner=12):
+                         *,audit_due=None,outer=120,inner=12):
     """Existing R8 vector PR-CG/material primitives with caller-owned budgets.
 
     No corrector lives here. CIE/Dual/Global preserve native 3D projected-IFFT
     mf1->2, material beta6->1, Dual current beta3 late, SVD range coordinates,
     shared real material and full quadratic prior. All vector components are
     in every material gradient. Audit scheduling is explicitly caller-owned.
-    Callback signature: (m, paid_state, original_Phi, metadata).
+    Optional audit_due() replaces iteration cadence for periodic audits only;
+    native stage/final audits remain. Callback: (m, paid_state, original_Phi, metadata).
     """
     from scipy.optimize import minimize
     names={'cie':'CIE_sourcewise','dual_cie':'Dual_sourcewise',
@@ -158,6 +159,7 @@ def run_vector_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
            'Dual_sourcewise':'Dual_sourcewise','CIE_global':'CIE_global'}
     if method not in names:
         raise ValueError('Mature vector adapter supports CIE/Dual/Global only; scalar G19/A+ are not vector substitutes')
+    if audit_due is not None and not callable(audit_due):raise TypeError('audit_due must be callable or None')
     method=names[method];b=model.legacy;check();z=np.asarray(m0,float).copy()
     before=dict(model.cost);started=time.process_time();b.prstate=None
     prep=b.prepare(Y);check();steps=[]
@@ -180,7 +182,8 @@ def run_vector_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
         z=result.x
         steps.append(dict(iteration=iteration+1,mf=mf,beta_material=beta,beta_current=current_beta,
             nfev=int(result.nfev),nit=int(result.nit),message=str(result.message)))
-        if (iteration+1)%audit_every==0 or iteration+1 in (outer//2,outer):
+        periodic_due=bool(audit_due()) if audit_due is not None else (iteration+1)%audit_every==0
+        if periodic_due or iteration+1 in (outer//2,outer):
             check();st=model.state(z);value=model.physical_score(z,Y)
             audit_callback(z.copy(),st,value,dict(vector_method=method,iteration=iteration+1,
                 mf=mf,beta_material=beta,beta_current=current_beta,paid_physical_audit=True))
@@ -188,6 +191,8 @@ def run_vector_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
     return dict(status='FIXED_VECTOR_AUXILIARY_CYCLES_COMPLETE',m=z,
         method=method,iterations=outer,optimizer=steps,subspace=prep,
         CPU_seconds=time.process_time()-started,
+        periodic_audit_schedule='caller audit_due CPU clock' if audit_due is not None else f'every{audit_every} material updates',
+        native_stage_and_final_audits_retained=True,
         counts={k:v-before.get(k,0) for k,v in model.cost.items()},
         qualification='R8 mature reduced-vector adaptation; native3D IFFT range mf1/2, not scalar FFT transplant')
 

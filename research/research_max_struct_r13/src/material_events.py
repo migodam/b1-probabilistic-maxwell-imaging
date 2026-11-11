@@ -97,11 +97,16 @@ def event_start(projector, ax, aq, mode, rng=None, overshoot=.001):
     error = norm_pair(tx - ax, tq - aq)
     th = finite_threshold(cx, cq, dx, dq, m, projector.scale,
                           projector.lower, projector.upper, projector.components)
+    th.update(cX=cx,cQ=cq,dX=dx,dQ=dq,reference_m=m)
     t = th['first_t']
     meta = dict(first_cell=th['first_cell'], first_t=t if np.isfinite(t) else None,
                 gap=gap, pair_defect=error, relative_pair_defect=error/max(gap, 1e-300),
                 amplitude_normal_defect=float(np.linalg.norm(th['amplitude_normal_defect'])),
                 semantics='Approximate-pair finite state proposal; not exact DR fast-forward')
+    resolution=32*np.finfo(float).eps*norm_pair(ax,aq)
+    meta['floating_state_gap_resolution']=resolution
+    if gap<=resolution:
+        return ax.copy(),aq.copy(),dict(meta,status='NO_RESOLVED_NORMAL_GAP'),th
     if not np.isfinite(t) or gap == 0:
         return ax.copy(), aq.copy(), dict(meta, status='NO_FINITE_EVENT'), th
     if mode == 'double':

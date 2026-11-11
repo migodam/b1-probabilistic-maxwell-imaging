@@ -19,6 +19,11 @@ from research.research_max_struct_r11.src.material_readouts import prepare_full,
 MODES = ('restricted', 'full_apcs', 'full_current')
 
 
+def _physical_audit_due(config, iteration, audit_every):
+    due = config.get('physical_audit_due')
+    return bool(due()) if due is not None else bool(audit_every and iteration % audit_every == 0)
+
+
 class _Proxy:
     def __init__(self, target, **overrides):
         self._target = target
@@ -65,12 +70,18 @@ def run_full_current(model, Y, m0, config, mode='restricted', *,
     readout into CIE. For a strict algorithm control retain the original config.
     On budget exceptions, callbacks already received all eligible incumbents;
     final receipt is still delivered through config['cost_callback'].
+
+    Optional config['physical_audit_due'] is a no-argument callable replacing
+    the interval for periodic audits only. It is checked after a completed
+    material update; inherited initial/stage-end audits remain unchanged.
     """
     if mode not in MODES:
         raise ValueError('Unknown current family: '+str(mode))
     if int(audit_every) != audit_every or audit_every < 0:
         raise ValueError('audit_every must be a nonnegative integer')
     cfg = dict(config)
+    if cfg.get('physical_audit_due') is not None and not callable(cfg['physical_audit_due']):
+        raise TypeError('physical_audit_due must be a no-argument callable')
     physics_family = cfg.get('physics_family', 'original_disk_pulse')
     backend = inherited
     physics_overrides = {}
@@ -172,7 +183,7 @@ def run_full_current(model, Y, m0, config, mode='restricted', *,
     def iteration(row):
         progress.update(global_iteration=progress['global_iteration']+1,
                         stage=int(row['stage']), iteration=int(row['iteration']))
-        if audit_every and progress['global_iteration'] % audit_every == 0:
+        if _physical_audit_due(cfg, progress['global_iteration'], audit_every):
             audit(row['m'], 'periodic')
             diagnostics['periodic_physical_audits'] += 1
         if caller_iteration is not None:
@@ -267,6 +278,8 @@ def run_full_current(model, Y, m0, config, mode='restricted', *,
             whole_adapter_CPU_seconds=time.process_time()-cpu,
             whole_adapter_wall_seconds=time.perf_counter()-wall,
             audit_every_material_updates=int(audit_every), eligible_physical_audits=len(audits),
+            periodic_physical_audit_policy='caller physical_audit_due after completed material updates' if cfg.get('physical_audit_due') is not None else 'fixed material-update interval',
+            audit_every_is_fallback_only=cfg.get('physical_audit_due') is not None,
             audit_schedule='inherited initial/stage ends plus periodic; no PR restart',
             initialize_physical_current=bool(cfg.get('initialize_physical_current', False)),
             best_audit=min((a['objective'] for a in audits), default=None),

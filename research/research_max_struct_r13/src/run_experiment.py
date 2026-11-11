@@ -43,9 +43,10 @@ def main():
     from material_events import norm_pair, event_start, finite_threshold, angular_branch_margin
     manifest=json.loads(args.manifest.read_text())
     task=next(t for t in manifest['tasks'] if t['task_id']==args.task_id)
+    algorithm=task.get('algorithm',task['method'])
     cfg=manifest['protocol']; cap=float(task.get('CPU_cap',cfg['CPU_cap']))
     proposal_fraction=float(cfg.get('proposal_fraction',.6))
-    deadline=cap if task['method']=='direct' else cap*proposal_fraction
+    deadline=cap if algorithm=='direct' else cap*proposal_fraction
     out=root/'RESULTS'/task['campaign']/task['task_id'];out.mkdir(parents=True,exist_ok=False)
     with np.load(root/task['input_file'],allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}
     m0=public.pop('m_init'); Y=public['Y']; sigma=float(public['sigma'])
@@ -63,13 +64,18 @@ def main():
     normY2=float(np.vdot(Y,Y).real)
     history=[]; materials=[]; best=None; secondary=None; phase_best={}; phase='initial'
     projection_history=[]; event_history=[]; auxiliary_cost={}; auxiliary_receipt={}
-    P=None; snapshots={}; stop={}; error=None; status='COMPLETE'; final_states={}
+    P=None; snapshots={}; stop={}; error=None; status='COMPLETE'; final_states={};forecast_rows=[]
+    audit_interval=cfg.get('physical_audit_CPU_interval')
+    next_audit_CPU=float(audit_interval) if audit_interval else None
+
+    def audit_due():
+        return next_audit_CPU is not None and time.process_time()>=next_audit_CPU
 
     def check():
         if time.process_time() >= deadline: raise BudgetEnd()
 
     def record(m,state,value=None,gradient=None,extra=None):
-        nonlocal best,secondary
+        nonlocal best,secondary,next_audit_CPU
         rr=state['Y']-Y
         D=model.data_objective(rr,Y) if hasattr(model,'data_objective') else .5*float(np.vdot(rr,rr).real)/normY2
         R=float(model.reg.evaluate(m)[0]); t=time.process_time()
@@ -82,6 +88,8 @@ def main():
                   physics_cost=dict(model.cost),auxiliary=extra)
         row=dict(m=np.asarray(m).copy(),j=state['j'].copy(),Q=state['Q'].copy(),Y_prediction=state['Y'].copy(),metadata=meta)
         history.append(meta);materials.append(row['m'])
+        if audit_interval and phase=='proposal':
+            next_audit_CPU=(int(t/float(audit_interval))+1)*float(audit_interval)
         if meta['eligible'] and legal:
             if best is None or meta['Phi']<best['metadata']['Phi']: best=row
             if phase not in phase_best or meta['Phi']<phase_best[phase]['metadata']['Phi']: phase_best[phase]=row
@@ -100,14 +108,14 @@ def main():
             record(m,model.state(m),value,grad);check()
             return value*1e6,grad*1e6
         result=minimize(fun,start,method='L-BFGS-B',jac=True,bounds=[(lower,upper)]*model.n,
-                        options=dict(maxiter=6000 if task['method']=='direct' else 3000,
-                                     maxfun=24000 if task['method']=='direct' else 12000,
+                        options=dict(maxiter=6000 if algorithm=='direct' else 3000,
+                                     maxfun=24000 if algorithm=='direct' else 12000,
                                      ftol=1e-12,gtol=.01,maxls=30))
         return dict(message=str(result.message),iterations=int(result.nit),evaluations=int(result.nfev))
 
     try:
         initial=physical(m0);snapshots['initial']=initial
-        if task['method']=='direct':
+        if algorithm=='direct':
             phase='direct'
             try: stop['direct']=correct(m0)
             except BudgetEnd: stop['direct']='WHOLE_PROCESS_CPU'
@@ -115,11 +123,21 @@ def main():
         else:
             phase='proposal'
             try:
-                method=task['method']
-                if (kind=='fresnel' or components==3) and method in ('cie','dual_cie','global_dual','a_plus','g19','g19_full_apcs','g19_full_current'):
+                method=algorithm
+                if method=='nfft_equations':
+                    from nfft_control import run_nfft
+                    dec=noise_ball_rank(model.S,Y,sigma,out/'RECEIVER_DPCS.npz')
+                    numerical=dict(dpcs_rank=dec['rank'],material_box=[lower,upper],regularizer=lambda m:model.reg.evaluate(m)[:2],
+                        maxiter=6000,receipt_path=str(out/'NFFT_EQUATIONS_EXECUTION.json'),cost_callback=auxiliary_receipt.update)
+                    if audit_interval:numerical['physical_audit_due']=audit_due
+                    result=run_nfft(model,Y,m0,numerical,check,g19_audit,audit_every=cfg['audit_every'])
+                    final_states=dict(J=result['final_joint_J'],m=result['final_joint_m'])
+                    stop['proposal']=result['status']
+                elif (kind=='fresnel' or components==3) and method in ('cie','dual_cie','global_dual','a_plus','g19','g19_full_apcs','g19_full_current'):
                     from vector_adapter import run_vector_auxiliary,run_fresnel_auxiliary
                     adapter=run_fresnel_auxiliary if kind=='fresnel' else run_vector_auxiliary
                     options=dict(audit_every=cfg['audit_every'])
+                    if audit_interval:options['audit_due']=audit_due
                     if kind=='fresnel':options['cost_callback']=auxiliary_receipt.update
                     result=adapter(model,Y,m0,method,check,g19_audit,**options)
                     auxiliary_receipt.update(result)
@@ -146,6 +164,7 @@ def main():
                     if method=='a_plus':
                         from research.research_max_struct_r7.src.aplus_readout import mobius_material_readout
                         numerical['material_readout']=mobius_material_readout
+                    if audit_interval:numerical['physical_audit_due']=audit_due
                     mode='full_apcs' if method=='g19_full_apcs' else 'full_current' if method=='g19_full_current' else 'restricted'
                     result=run_full_current(model,Y,m0,numerical,mode=mode,budget_check=check,
                         audit_callback=g19_audit,audit_every=cfg['audit_every'],g19=method.startswith('g19'))
@@ -157,6 +176,9 @@ def main():
                     check(); x,q=initial['j']/scale,initial['Q'].copy()
                     rng=np.random.default_rng(int(task.get('seed',13013)))
                     prep=int(cfg.get('AP_preparation',128)) if method.startswith(('event_','normal_','random_','ap_dr','reset_','online_')) else 0
+                    forecast_reference=None;ray_t0=1.
+                    def periodic(iteration):
+                        return audit_due() if audit_interval else iteration%cfg['audit_every']==0
                     for k in range(prep):
                         check();cx,cq,cm=P.material(x,q)
                         if method.startswith('online_'):
@@ -164,7 +186,7 @@ def main():
                             x,q=x+ax-cx,q+aq-cq
                         else:
                             x,q=P.affine_ball(cx,cq)
-                        if (k+1)%cfg['audit_every']==0: physical(cm,dict(preparation_iteration=k+1))
+                        if periodic(k+1): physical(cm,dict(preparation_iteration=k+1))
                     if prep:
                         if method.startswith('online_'):
                             # Form a single A point from the CURRENT DR shadow,
@@ -173,10 +195,21 @@ def main():
                         mode='random_integer' if method=='random_integer' else 'integer' if 'integer' in method else 'double' if method.startswith('normal_') else 'random' if method.startswith('random_') or method=='online_random' else 'fractional'
                         if method=='ap_dr':
                             event_history.append(dict(status='AP_PREPARATION_THEN_ORDINARY_DR',preparation=prep))
+                            if cfg.get('forecast_trace'):
+                                cx,cq,rm=P.material(x,q);dx,dq=x-cx,q-cq
+                                tx,tq=P.affine_ball(cx,cq)
+                                th=finite_threshold(cx,cq,dx,dq,rm,P.scale,P.lower,P.upper,P.components)
+                                th.update(cX=cx,cQ=cq,dX=dx,dQ=dq,reference_m=rm)
+                                forecast_reference=th
+                                event_history.append(dict(first_cell=th['first_cell'],first_t=th['first_t'] if np.isfinite(th['first_t']) else None,
+                                    gap=norm_pair(dx,dq),pair_defect=norm_pair(tx-x,tq-q),predicted_first_strict_posttie_index=int(np.floor(th['first_t'])) if np.isfinite(th['first_t']) else None,
+                                    qualification='Prospective approximate AP128 ray forecast; no future trajectory guarantee'))
+                                np.savez_compressed(out/'EVENT_GEOMETRY.npz',**{k:v for k,v in th.items() if isinstance(v,np.ndarray)})
                         else:
                             x,q,event,th=event_start(P,x,q,mode,rng)
                             event['preparation']=prep;event['method']=method
                             event_history.append(event)
+                            forecast_reference=th;ray_t0=event.get('target_t',1.)
                             np.savez_compressed(out/'EVENT_GEOMETRY.npz',**{k:v for k,v in th.items() if isinstance(v,np.ndarray)})
                             if method.startswith('reset_'):
                                 _,_,cm=P.material(x,q);row=physical(cm,dict(event_memory_reset=True))
@@ -184,6 +217,17 @@ def main():
                     prev_x=None;prev_q=None;prev_f=None;prev_r=None
                     for k in range(int(cfg['steps'])):
                         check();cx,cq,cm=P.material(x,q)
+                        if cfg.get('forecast_trace') and forecast_reference is not None and k<30:
+                            ref=forecast_reference;rx=ref['cX']+(ray_t0+k)*ref['dX'];rq=ref['cQ']+(ray_t0+k)*ref['dQ']
+                            radii=np.sqrt(np.sum(abs(x-rx).reshape(P.cells,-1)**2+abs(q-rq).reshape(P.cells,-1)**2,axis=1))
+                            margin=angular_branch_margin(rx,rq,P.lower,P.upper,P.scale,P.components,radii)
+                            old=ref['reference_m'];mid=(np.arctan(P.lower/P.scale)+np.arctan(P.upper/P.scale))/2
+                            half=np.arctan(cm/P.scale)>mid;oldhalf=np.arctan(old/P.scale)>mid
+                            robust=margin['robust_high']|margin['robust_low']
+                            forecast_rows.append(dict(index=k,ray_t=ray_t0+k,ray_deviation=norm_pair(x-rx,q-rq),
+                                angular_half_changes=int(np.sum(half!=oldhalf)),large_changes=int(np.sum(abs(cm-old)>=.25*(P.upper-P.lower))),
+                                robust_cells=int(np.sum(robust)),posterior_certificate_disagreements=int(np.sum(robust&(half!=margin['robust_high']))),
+                                first_cell_material=float(cm[ref['first_cell']]),qualification='state-ball bound uses observed deviation, a posteriori not a forecast certificate'))
                         if method in ('ap','anderson'):
                             ax,aq=P.affine_ball(cx,cq)
                             if method=='anderson':
@@ -202,7 +246,7 @@ def main():
                         else:
                             ax,aq=P.affine_ball(2*cx-x,2*cq-q)
                             x,q=x+ax-cx,q+aq-cq
-                        if (k+1)%cfg['audit_every']==0 or k+1==cfg['steps']:
+                        if periodic(k+1) or k+1==cfg['steps']:
                             gap=norm_pair(ax-cx,aq-cq)
                             physical(cm,dict(iteration=k+1,shadow_gap=gap))
                             projection_history.append(dict(iteration=k+1,CPU_seconds=time.process_time(),shadow_gap=gap,cost=dict(P.costs)))
@@ -229,6 +273,7 @@ def main():
     if final_states: np.savez_compressed(out/'FINAL_AUXILIARY_STATE.npz',**final_states)
     dump(out/'HISTORY.json',history);dump(out/'PROJECTION_HISTORY.json',projection_history)
     dump(out/'EVENTS.json',event_history)
+    dump(out/'FORECAST_TRACE.json',forecast_rows)
     prefixes=[]
     for point in cfg.get('prefixes',[15,30,60,90,120]):
         rows=[h for h in history if h['eligible'] and h['CPU_seconds']<=point]

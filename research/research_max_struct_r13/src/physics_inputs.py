@@ -92,12 +92,13 @@ class SourceSpecificPublicModel(SourceReceiverModel):
 
 
 def run_fresnel_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
-                          *,cost_callback=None):
+                          *,audit_due=None,cost_callback=None):
     """Unchanged R8 source-specific CIE loop with per-call paid audit hooks.
 
     A private function-globals copy wraps only the inherited material readout,
     SVD and Counter constructors. Material updates/PR state are unchanged.
-    Every audit_every completed material updates adds one original physical
+    Optional audit_due() replaces iteration cadence for periodic audits only.
+    Otherwise every audit_every completed material updates adds a physical
     audit; all original initial/stage-end audits remain. A finally receipt is
     retained as model.r13_auxiliary_cost even when caller BudgetEnd interrupts.
     """
@@ -108,6 +109,7 @@ def run_fresnel_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
     arm={'cie':'cie_single','dual_cie':'cie_dual','global_dual':'global_dual'}.get(method)
     if arm is None:raise ValueError('No qualified measured source-dependent G19/A+ transplant supplied')
     if int(audit_every)!=audit_every or audit_every<1:raise ValueError('audit_every must be a positive integer')
+    if audit_due is not None and not callable(audit_due):raise TypeError('audit_due must be callable or None')
     Y=np.asarray(Y,complex)
     if not hasattr(model,'Ss') or model.Ss.shape!=(Y.shape[0],model.E.shape[0],model.E.shape[1]):
         raise ValueError('Actual source-specific S_s with matching receive/source dimensions required')
@@ -135,7 +137,9 @@ def run_fresnel_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
     def observed_readout(*args,**kwargs):
         check();answer=inherited.run.__globals__['_baseline_readout'](*args,**kwargs)
         counts['material_updates_completed']+=1
-        if counts['material_updates_completed']%audit_every==0:
+        periodic_due=(bool(audit_due()) if audit_due is not None
+            else counts['material_updates_completed']%audit_every==0)
+        if periodic_due:
             physical_audit(answer[0],dict(paid_periodic_candidate=True,audit_kind='periodic_material_update',
                 audit_every=int(audit_every)))
         check();return answer
@@ -161,6 +165,8 @@ def run_fresnel_auxiliary(model,Y,m0,method,check,audit_callback,audit_every=50,
         status='INTERRUPTED_OR_FAILED';error=type(exc).__name__;raise
     finally:
         receipt=dict(status=status,error_type=error,method=arm,audit_every=int(audit_every),
+            periodic_audit_schedule='caller audit_due CPU clock' if audit_due is not None else f'every{audit_every} material updates',
+            native_initial_and_stage_audits_retained=True,
             operation_counts=dict(captured[0]) if captured else{},observer_counts=dict(counts),
             physical_model_delta={k:v-before.get(k,0) for k,v in model.cost.items()},
             CPU_seconds=time.process_time()-started,wall_seconds=time.perf_counter()-wall,
