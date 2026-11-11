@@ -19,5 +19,5 @@ GitHub： https://github.com/migodam/b1-probabilistic-maxwell-imaging 。新工�
 - 192确认＋48开发均已封存，正式离线评分完成。12日root回读逐对象与aggregate一致；科学完成不等于新方法胜出。
 - 科学报告、英文初稿、原始负例均保留；外盘掉线后重新核对文稿、图像、子任务。
 - 所有新大文件只写外盘；复用已有内盘暂存但不新增内盘大副本。
-- 当前剩余：全证据归档验收、提交既有GitHub、上传release并核验网页/图像/资产可访问。最终状态以audit/PUBLICATION_READBACK.json为准。
+- 全证据12包/89运输分片已公开并逐个匿名回读；代码、报告、结构与综合评价已提交GitHub。发布回执audit/PUBLICATION_READBACK.json；最终网页验收audit/PUBLIC_WEB_FINAL_QA.json。
 - 研究没有取消；硬件问题不替代研究交付，子任务报告完成也不替代root验收。

@@ -19,3 +19,7 @@
 |中文报告、英文论文、图表、原始数据、GitHub/网页|各分支报告已成；根RESEARCH_REPORT_ZH/PAPER_DRAFT/CHAT_HANDOFF已整合并恢复验收|科学文稿完成；归档发布未完成，须上传既有仓库并核验链接|
 
 尚未完整覆盖的实验轴应明确列出：独立24主要是固定1%噪声/12源全孔径/24²匹配离散；其它孔径/源数见已公开NN开发对象，跨网格见Austria和vector。不能将分散开发试验说成所有轴的全面独立统计验证。是否继续新增实验须从确认结果和实际机制出发，不按GT筛样。
+
+## 2026-11-12最终发布
+
+完整原始证据已归档至[GitHub Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r12-20261111)，12个逻辑包、89分片，共11,416,183,356字节；逐个公开回读通过。新增综合评价与结构复核已纳入，不改变冻结原指标或在线规则。所有新增大文件位于外置盘。

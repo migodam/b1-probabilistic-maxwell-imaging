@@ -1,4 +1,4 @@
-# R12 原始证据归档（准备完成，尚未发布）
+# R12 原始证据归档（已公开并验收）
 
 所有源文件保持原位。代码、JSON/CSV/MD、图片与小预测留Git；巨大数组及运行bundle保存在分包资产。单包严格小于1.8GB。未计算内容hash；核对ZIP中央目录的路径、条数、字节和实际包体大小。
 
@@ -26,3 +26,7 @@
 恢复：.zip.zst先用`zstd -d <asset>.zip.zst -o <asset>.zip`无损解码；然后在空目录运行`python -m zipfile -e <asset>.zip <empty-destination>`。普通.zip直接第二步。归档路径均相对仓库，不要解到正在写入的科学工作树。Git最新科学文稿、图和代码优先于大包中的历史文稿快照；大包专门保留原始数值/执行证据，不为小文稿更新重打。
 
 费用和运输见audit/release/{LOCAL_PACKAGING_RECEIPT,REMOTE_PACKAGING_RECEIPT,REMOTE_ZSTD_RECEIPT}.json及TRANSPORT_COSTS.jsonl。远端压缩只读取已结束任务，写入专用export目录，不触碰其他会话。准备脚本没有发布、push或删除源；实际draft/release上传由root另行记账。
+
+## 最终发布验收
+
+12个逻辑归档以89个运输分片公开；逐个匿名Range回读确认可下载与完整远端尺寸。见[公开回执](audit/PUBLICATION_READBACK.json)、[Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r12-20261111)及[运输清单](PUBLICATION_PARTS_MANIFEST.json)。使用restore_release_assets.py按顺序恢复；旧归档内文稿以当前Git文稿为准。
