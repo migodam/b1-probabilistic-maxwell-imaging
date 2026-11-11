@@ -1,0 +1,50 @@
+{
+  "status": "FROZEN_BEFORE_CONFIRMATION_GENERATION",
+  "utc": "2026-11-11T08:34:28.903378+00:00",
+  "physics": "inherited R10 24x24 full scalar TM operators and R8 prior; all576material unknown",
+  "methods": [
+    "cie_single",
+    "cie_dual",
+    "global_dual",
+    "a_plus",
+    "fullG19",
+    "dr",
+    "multistart",
+    "nn_direct"
+  ],
+  "dr": {
+    "core": "src/field_current.py",
+    "grouped_ports": true,
+    "scale": 6,
+    "omega": 1,
+    "steps": 3000,
+    "audit_every": 50
+  },
+  "CPU": {
+    "total": 240,
+    "proposal": 144,
+    "corrector": 96,
+    "prefixes": [
+      30,
+      60,
+      120,
+      240
+    ],
+    "selection": "paid completed originalPhi min; exclude atomic overrun"
+  },
+  "nn": "frozen R8 physics weights, training prior disclosed separately; no retraining",
+  "multistart": "same initial.1 plus smoothed zero-meanGaussian RMS1/4/10 cyclic, seed120120 onward,24CPUperrestart",
+  "scoring": {
+    "primary": "paired continuous amplitudeNRMSE and relative materialL2; independent material cluster",
+    "NRMSE": "norm(m-truth)/sqrt576/(maxtruth-.1)",
+    "RMSE": "norm(m-truth)/sqrt576",
+    "superlevel_IoU": "fixed chi>1 superlevel IoU, not physical support for continuous material",
+    "inherited_descriptive_success": "legal box and amplitudeNRMSE<=.15 and chi>1 superlevelIoU>=.7; not stopping or selection",
+    "low_high_errors": "offline separate contrast phases where generated, plus background",
+    "noise": "raw iid complex RMS sigma, CN99 global radius",
+    "bootstrap": "paired material-object resampling10000 seeded20261112"
+  },
+  "eligibility": "No confirmation material/data/GT generated or inspected before this freeze. Sixdev observations generated, one CIE run, no devGT scoring.",
+  "case_generator": "CONFIRM24_GENERATOR_DRAFT.json fixed families/seeds unchanged",
+  "scope": "independent synthetic matched24; crossgrid and acquisitionstress separately counted as same objects"
+}

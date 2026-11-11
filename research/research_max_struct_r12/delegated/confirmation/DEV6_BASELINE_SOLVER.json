@@ -1,0 +1,92 @@
+{
+  "run_id": "r12_mature_native24_6dev_240CPU",
+  "freeze_utc": "2026-11-11T08:24:35.441103+00:00",
+  "status": "FROZEN_FOR_INVERSION",
+  "common": {
+    "host": 0.1,
+    "material_box": [
+      0.02,
+      20.0
+    ],
+    "dpcs_rtol": 0.001
+  },
+  "continuation_stages": [
+    {
+      "mf": 12,
+      "maxiter": 1500
+    }
+  ],
+  "corrector_maxiter": 3000,
+  "corrector_accepted_checkpoints": [
+    100,
+    500,
+    1000,
+    2000,
+    3000
+  ],
+  "scientific_wallcap": null,
+  "threads_per_process": 1,
+  "workers": 1,
+  "truth_access": "NONE",
+  "auxiliary_backend": "R7_matrix_free_fft_tsom",
+  "corrector_evaluation_checkpoints": [
+    100,
+    500,
+    1000,
+    2000,
+    3000
+  ],
+  "methods": [
+    "cie_single",
+    "cie_dual",
+    "global_dual",
+    "a_plus",
+    "fullG19"
+  ],
+  "physical_direct_maxiter": 6000,
+  "aplus_options": {
+    "aplus_mode": "mobius",
+    "aplus_arc_candidates": true,
+    "aplus_inherited_gtol": true,
+    "aplus_sweeps": 2,
+    "aplus_step_tol": 1e-08
+  },
+  "development_selection": "Inherited R9 noise-aware DPCS and R8 mature readout; no fresh GT or online family access",
+  "public_sources": 12,
+  "dpcs_rule": "noise_ball_99",
+  "expected_public": {
+    "grid_shape": [
+      24,
+      24
+    ],
+    "material_bounds": [
+      0.02,
+      20.0
+    ]
+  },
+  "freeze_authority": "Root directed sixdev preparation with actual24x24 inherited physics/native schedule/prior and240CPU, no remote launch yet",
+  "whole_child_CPU_budget_seconds": 240,
+  "CPU_budget_checkpoints_seconds": [
+    30,
+    60,
+    120,
+    240
+  ],
+  "experiment_scope": "INDEPENDENT_DEV6_RUNTIME_ONLY_NO_GT_TUNING",
+  "parent_pending": [
+    "DR core and its prior-compatible integration",
+    "24 confirmation release",
+    "directmultistart/NNdirect optional later"
+  ],
+  "proposal_max_CPU_seconds": 144.0,
+  "corrector_max_CPU_seconds": 96.0,
+  "root_core_freeze": {
+    "version": "v2",
+    "grouped_ports": true,
+    "scale": 6.0,
+    "omega": 1.0,
+    "audit_every": 50,
+    "proposal_iterations": 3000,
+    "authority": "Root freeze before confirm24;6dev only currently authorized"
+  }
+}

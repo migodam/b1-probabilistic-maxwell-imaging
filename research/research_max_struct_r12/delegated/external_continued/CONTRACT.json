@@ -1,0 +1,116 @@
+{
+  "status": "FROZEN_POST_V1_SCORE_BEFORE_NEW_RUNS",
+  "cases": [
+    "dielTM_dec8f",
+    "twodielTM_8f",
+    "austria_eps4_400MHz"
+  ],
+  "methods": [
+    "Dual"
+  ],
+  "bounds": [
+    0,
+    20
+  ],
+  "Fresnel": {
+    "side": 24,
+    "width_m": 0.16,
+    "frequency_GHz": 2,
+    "initial": 0.1,
+    "illumination": "existing outgoing multipole empty-target fit",
+    "masks": "27training sources x39actualreceiver rows; heldout711channels never used in inversion/selection",
+    "delta_relative": 0.15,
+    "delta_status": "MODEL_DISCREPANCY_DIAGNOSTIC; no known noise covariance and no CN certificate",
+    "aux_stages": [
+      {
+        "mf": 3,
+        "beta_material": 1,
+        "beta_current": 1,
+        "maxiter": 500
+      },
+      {
+        "mf": 6,
+        "beta_material": 0.2,
+        "beta_current": 1,
+        "maxiter": 500
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.2,
+        "beta_current": 1,
+        "maxiter": 500
+      },
+      {
+        "mf": 12,
+        "beta_material": 0.2,
+        "beta_current": 1,
+        "maxiter": 1500
+      }
+    ]
+  },
+  "Austria": {
+    "case": "austria_eps4_400MHz",
+    "inverse_side": 32,
+    "forward_side": 64,
+    "initial": 0,
+    "frequency_Hz": 400000000.0,
+    "epsilon_r": 4,
+    "material": "chi=epsilon_r-1, real; unknown all1024cells",
+    "delta_relative": 0.12,
+    "noise": "Inherited actual R8 observations with10% fixed-Frobenius noise; .12||noisyY|| data ball is a predetermined discrepancy diagnostic, not iid CN99",
+    "aux_stages": [
+      {
+        "mf": 5,
+        "beta_material": 8,
+        "beta_current": 8,
+        "maxiter": 300,
+        "coefficient_tol": 0.0001
+      },
+      {
+        "mf": 8,
+        "beta_material": 2,
+        "beta_current": 8,
+        "maxiter": 300,
+        "coefficient_tol": 1e-06
+      },
+      {
+        "mf": 10,
+        "beta_material": 0.5,
+        "beta_current": 8,
+        "maxiter": 300,
+        "coefficient_tol": 1e-06
+      }
+    ]
+  },
+  "prior": "R8 inherited smooth1e-4/TV1e-4/epsilon.01",
+  "projection": {
+    "scale": 6,
+    "steps": 5000,
+    "audit_every": 50,
+    "omega": 1,
+    "grouped_ports": true,
+    "CPU_cap_seconds": 180
+  },
+  "auxiliary_CPU_cap_seconds": 180,
+  "common_corrector": {
+    "maxiter": 1000,
+    "maxfun": 4000,
+    "CPU_cap_seconds": 60,
+    "ftol": 1e-12,
+    "gtol": 0.01,
+    "scale": 1000000.0,
+    "maxls": 30
+  },
+  "selection": "minimum original training physical Phi including same prior; all paid line-search/accepted/stage/audit candidates",
+  "heldout_selection": false,
+  "no_raw_original_measurement_redistribution": true,
+  "truth_access": "NONE during inversion/selection; Austria scorer only after all12 predictions sealed",
+  "reason": "Root requested full native baseline budget control after v1 scoring; exploratory postscore budget diagnostic, not new confirmation",
+  "schedule_provenance": {
+    "Fresnel": "research/research_max_struct_r8/experiments/fresnel_invert.py stages full:500/500/500/1500 mf3/6/10/12; only lower bound0 air correction retained",
+    "Austria": "research/research_max_struct_r8/experiments/paper_benchmark.py solve(): case mf5/8/10 beta8/2/.5 currentbeta8; parser default iterations300 per stage; DPCS15 literal inherited",
+    "caps": "same180proposal+60correctorCPU as externalv1; no rank/radius/box/prior/start changes",
+    "selection": "same paid original physical Phi, no GT/heldout tuning",
+    "no_raw_measurement_redistribution": true
+  }
+}

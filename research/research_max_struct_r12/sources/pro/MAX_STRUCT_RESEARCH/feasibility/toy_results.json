@@ -1,0 +1,273 @@
+{
+  "scope": "Exploratory fixed finite scalar TM model; not CIE comparison, no equal-cost performance claim.",
+  "parameters": {
+    "n": 10,
+    "ns": 6,
+    "nr": 24,
+    "side_wavelength": 1.0,
+    "box": [
+      0,
+      12
+    ],
+    "scale": 6.0,
+    "projection_steps": 3000,
+    "physical_audit_every": 50,
+    "noise_relative_rms": 0.01,
+    "initial_material": 0.1,
+    "prior": "none"
+  },
+  "cases": [
+    {
+      "case": "ring_high",
+      "sigma_complex_rms": 0.002007624166732696,
+      "delta_CN99": 0.026434956438198907,
+      "relative_noise_bound": 0.010981976217197669,
+      "methods": {
+        "direct": {
+          "relative_material_l2": 1.0,
+          "relative_data_l2": 1.0,
+          "seconds": 0.006414731999996093,
+          "lu_count": 4,
+          "rhs_count": 42,
+          "iterations": 2,
+          "status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        "alternating_projection": {
+          "relative_material_l2": 1.0,
+          "relative_data_l2": 1.0,
+          "seconds": 2.102096985000003,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 50,
+          "last_shadow": {
+            "relative_material_l2": 1.0,
+            "relative_data_l2": 1.0
+          },
+          "last_gap": 1.54037426851784
+        },
+        "alternating_projection_plus_200_direct": {
+          "relative_material_l2": 1.0,
+          "relative_data_l2": 1.0,
+          "extra_seconds": 0.0026544680000029075,
+          "extra_lu": 2,
+          "extra_rhs": 18,
+          "iterations": 0
+        },
+        "douglas_rachford": {
+          "relative_material_l2": 0.08700138484081626,
+          "relative_data_l2": 0.009390396187878472,
+          "seconds": 1.9310531960000503,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 1500,
+          "last_shadow": {
+            "relative_material_l2": 0.08688471985920779,
+            "relative_data_l2": 0.009429973762981691
+          },
+          "last_gap": 0.00034714214171540145
+        },
+        "douglas_rachford_plus_200_direct": {
+          "relative_material_l2": 0.051557727701013,
+          "relative_data_l2": 0.009073246348321207,
+          "extra_seconds": 0.14717787000000726,
+          "extra_lu": 217,
+          "extra_rhs": 2598,
+          "iterations": 200
+        }
+      }
+    },
+    {
+      "case": "split_shell_high",
+      "sigma_complex_rms": 0.0033334475088989952,
+      "delta_CN99": 0.04389244817179979,
+      "relative_noise_bound": 0.010968738052679792,
+      "methods": {
+        "direct": {
+          "relative_material_l2": 1.0,
+          "relative_data_l2": 1.0,
+          "seconds": 0.004325542000003679,
+          "lu_count": 5,
+          "rhs_count": 54,
+          "iterations": 3,
+          "status": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL"
+        },
+        "alternating_projection": {
+          "relative_material_l2": 0.9877034148540166,
+          "relative_data_l2": 1.090416704480532,
+          "seconds": 2.095678171999964,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 0,
+          "last_shadow": {
+            "relative_material_l2": 1.1205735537641017,
+            "relative_data_l2": 1.1302122826927408
+          },
+          "last_gap": 2.8190892228867965
+        },
+        "alternating_projection_plus_200_direct": {
+          "relative_material_l2": 1.0,
+          "relative_data_l2": 1.0,
+          "extra_seconds": 0.006301113000006353,
+          "extra_lu": 5,
+          "extra_rhs": 54,
+          "iterations": 3
+        },
+        "douglas_rachford": {
+          "relative_material_l2": 0.17774938960671316,
+          "relative_data_l2": 0.00993657217719456,
+          "seconds": 2.0493733399999883,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 2500,
+          "last_shadow": {
+            "relative_material_l2": 0.17785659864324196,
+            "relative_data_l2": 0.01008389743383044
+          },
+          "last_gap": 0.0016585725039727744
+        },
+        "douglas_rachford_plus_200_direct": {
+          "relative_material_l2": 0.16121001316576902,
+          "relative_data_l2": 0.009697486893877717,
+          "extra_seconds": 0.14815832799996542,
+          "extra_lu": 214,
+          "extra_rhs": 2562,
+          "iterations": 200
+        }
+      }
+    },
+    {
+      "case": "bridge_high",
+      "sigma_complex_rms": 0.0027365103874245227,
+      "delta_CN99": 0.03603240789932057,
+      "relative_noise_bound": 0.010968866213628959,
+      "methods": {
+        "direct": {
+          "relative_material_l2": 0.920612860091131,
+          "relative_data_l2": 0.5204185365689215,
+          "seconds": 0.10734980199998745,
+          "lu_count": 167,
+          "rhs_count": 1998,
+          "iterations": 152,
+          "status": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+        },
+        "alternating_projection": {
+          "relative_material_l2": 0.887424949684208,
+          "relative_data_l2": 0.5683464030563443,
+          "seconds": 2.5004345600000306,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 1150,
+          "last_shadow": {
+            "relative_material_l2": 0.8951532424983933,
+            "relative_data_l2": 0.5686891309386032
+          },
+          "last_gap": 1.5185240737770478
+        },
+        "alternating_projection_plus_200_direct": {
+          "relative_material_l2": 0.9206128633754299,
+          "relative_data_l2": 0.5204185365689694,
+          "extra_seconds": 0.09883620900001233,
+          "extra_lu": 140,
+          "extra_rhs": 1674,
+          "iterations": 133
+        },
+        "douglas_rachford": {
+          "relative_material_l2": 0.6049087103137509,
+          "relative_data_l2": 0.18759523345077284,
+          "seconds": 2.427011230000005,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 1150,
+          "last_shadow": {
+            "relative_material_l2": 0.6055152983916448,
+            "relative_data_l2": 0.41626902252337594
+          },
+          "last_gap": 2.3511607251513102
+        },
+        "douglas_rachford_plus_200_direct": {
+          "relative_material_l2": 0.720027305784677,
+          "relative_data_l2": 0.03472719710210158,
+          "extra_seconds": 0.1318013659999906,
+          "extra_lu": 206,
+          "extra_rhs": 2466,
+          "iterations": 200
+        }
+      }
+    },
+    {
+      "case": "disk_low",
+      "sigma_complex_rms": 0.0031866352376254854,
+      "delta_CN99": 0.0419593293839221,
+      "relative_noise_bound": 0.010972779755294473,
+      "methods": {
+        "direct": {
+          "relative_material_l2": 0.12505674280381926,
+          "relative_data_l2": 0.009395068212509983,
+          "seconds": 0.41900095700003703,
+          "lu_count": 621,
+          "rhs_count": 7446,
+          "iterations": 600,
+          "status": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+        },
+        "alternating_projection": {
+          "relative_material_l2": 0.31423270437451206,
+          "relative_data_l2": 0.011648694211145233,
+          "seconds": 1.7905239429999824,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 3000,
+          "last_shadow": {
+            "relative_material_l2": 0.31423270437451206,
+            "relative_data_l2": 0.011648694211145233
+          },
+          "last_gap": 0.0026459285983291042
+        },
+        "alternating_projection_plus_200_direct": {
+          "relative_material_l2": 0.1642714698974269,
+          "relative_data_l2": 0.00950980707128829,
+          "extra_seconds": 0.09214015899999595,
+          "extra_lu": 164,
+          "extra_rhs": 1962,
+          "iterations": 151
+        },
+        "douglas_rachford": {
+          "relative_material_l2": 0.1286311616571328,
+          "relative_data_l2": 0.009454886024798853,
+          "seconds": 1.5617963520000444,
+          "lu_count": 61,
+          "rhs_count": 366,
+          "projection_A": 3000,
+          "projection_C": 3000,
+          "selected_iteration_by_data": 500,
+          "last_shadow": {
+            "relative_material_l2": 0.1275825562025712,
+            "relative_data_l2": 0.00956557323089748
+          },
+          "last_gap": 4.734755255315166e-06
+        },
+        "douglas_rachford_plus_200_direct": {
+          "relative_material_l2": 0.10639648693356868,
+          "relative_data_l2": 0.00939883873445881,
+          "extra_seconds": 0.13871475299998792,
+          "extra_lu": 212,
+          "extra_rhs": 2538,
+          "iterations": 200
+        }
+      }
+    }
+  ]
+}
