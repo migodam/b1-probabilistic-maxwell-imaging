@@ -128,3 +128,15 @@ Reviewed the actual `RESULTS/offline_v1/` products and sealed online outputs aft
 9. **offline_v1 has a known parent-cost accounting defect; its scientific scores are unaffected.** Independent summation of the original B parent external completion receipts gives4290.1875 CPU seconds; offline_v1 PARENT_COST_LEDGER sums4286.734375, an underestimate3.453125. Root assigned a separate scoring worker to produce corrected v2 cost tables. Treat v1 parent/strategy totals as superseded; this reviewer did not alter them or infer a corrected scientific result from that cost correction.
 
 No additional numerical/source mismatch was found. These findings validate the saved-output consistency and delimit presentation; they do not constitute a final novelty, mechanism or publication judgment.
+
+## Final report fact-check against offline_v2
+
+Read the completed supplement RESEARCH_REPORT_ZH.md, COST_LEDGER.md and the parent's PAPER_DRAFT.md paired-follow-up section against offline_v2 and the actual receipts. No new science, optimization, forward evaluation or data edits were performed.
+
+No numerical or denominator blocker was found. Independent comparison confirms zero changes across the744 score rows' RMSE/NRMSE/IoU/relativeL2/Phi/D/R/candidate fields from v1 to v2. B's corrected parent external sum is4290.1875, DR additional336.875 and combined4627.0625 CPU seconds; the increment is7.8522209%. The A/B/C tables, raw/corrected means, B3/4 material-and-CN99 improvements versus2/4 inherited descriptive successes, twenty B bypassed originals, G19 ring win, C near tie/secondary reversal and G19 initial-current losses match the saved evidence.
+
+All22 AP/DR children completed3000 A and C projections each; their66000/66000 totals and reported H setup/iteration RHS match aggregate receipts. Reported47716 physical LU,529224 source RHS,513390 adjoint RHS and1042614 total complex RHS also agree. C percentages recompute to31.1290% less child CPU than G19,39.6358% lower primary mean NRMSE than direct and45.4268% more child CPU than direct. The upstream NN preprocessing record is .763496 CPU seconds; the report correctly separates that old-platform shared cost from the new same-platform child comparison.
+
+The report and paired manuscript section retain the important maximum-cap versus actual-expenditure, G19 PR-reset/affine-projection, same-start, exposed/posthoc and corrector counterexample qualifications. Scientific claims and final publication judgment remain with the parent.
+
+Minor wording ambiguity only: report section7 says “之后一次授权读取GT”. Both v1 and v2 performed authorized offline scoring after the same immutable prediction seal, so “封存后经授权进行离线评分” would avoid implying there was only one actual GT-read pass. The report already discloses both offline versions and the cost correction; this wording does not affect numbers or the seal-before-truth chronology.

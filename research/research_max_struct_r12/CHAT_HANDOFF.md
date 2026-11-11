@@ -4,7 +4,7 @@
 
 ## 最新配对补充：优先阅读
 
-[中文报告](supplement_paired/RESEARCH_REPORT_ZH.md)、[图集](supplement_paired/GALLERY.html)、[费用](supplement_paired/COST_LEDGER.md)。A三坏终点×4，B原G19全24保留、4球外×4救援，C四冻结NN×4；共44条，先封存再评分。新图统一完整ID和whole-child CPU。
+[中文报告](supplement_paired/RESEARCH_REPORT_ZH.md)、[GitHub直接图集](supplement_paired/GALLERY.md)、[费用](supplement_paired/COST_LEDGER.md)。A三坏终点×4，B原G19全24保留、4球外×4救援，C四冻结NN×4；共44条，先封存再评分。新图统一完整ID和whole-child CPU。
 
 - B：G19→DR全24平均NRMSE0.106261，原G190.143891，增加约7.85%实际CPU；3/4触发对象材料显著改善且进球，2/4满足旧合取条件，0010仍失败。20旁路不运行，不是DR执行后无损。
 - A：环G19重启0.114232优于DR0.140651；壳/桥DR0.112699/0.097269优于G190.515137/0.371690。当前比较是合法投影重启而非恢复原PR历史。
@@ -69,3 +69,5 @@ DR的17个旧阈值未通过中，11个已进噪声球且NRMSE≤0.15，只是�
 ## 2026-11-12最终发布
 
 完整原始证据已归档至[GitHub Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r12-20261111)，12个逻辑包、89分片，共11,416,183,356字节；逐个公开回读通过。新增综合评价与结构复核已纳入，不改变冻结原指标或在线规则。所有新增大文件位于外置盘。
+
+发布补充：新结果与完整原始证据Release已公开。验收时GitHub Actions/Pages官方重大故障导致新Pages仍排队；使用supplement_paired/GALLERY.md可直接在GitHub查看21图。Pages部署未冒称完成，状态回执与官方快照在补充audit。

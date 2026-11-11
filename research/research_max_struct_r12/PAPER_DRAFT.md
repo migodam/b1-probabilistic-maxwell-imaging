@@ -1,6 +1,6 @@
 # Reflected Shared-Material Feasibility for Maxwell Inversion: Basin Intervention and the Limits of Physical Selection
 
-**Research manuscript draft, MAX-STRUCT R12, 11 November 2026.** This is an evidence-constrained draft, not a claim of acceptance or a camera-ready manuscript. The independent cohort has been executed, sealed and scored; detailed tables and figures accompany the confirmation report. The implementation, exposed diagnostic cases and confirmation cohort must remain distinguished.
+**Research manuscript draft, MAX-STRUCT R12; original study 11 November 2026, paired follow-up 12 November 2026.** This is an evidence-constrained draft, not a claim of acceptance or a camera-ready manuscript. The independent cohort has been executed, sealed and scored; detailed tables and figures accompany the confirmation report. The implementation, exposed diagnostic cases and confirmation cohort must remain distinguished.
 
 ## Abstract
 

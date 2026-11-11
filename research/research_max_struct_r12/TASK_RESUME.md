@@ -25,3 +25,9 @@ GitHub： https://github.com/migodam/b1-probabilistic-maxwell-imaging 。新工�
 ## 2026-11-12用户批准的有限配对补充（正在执行）
 
 新入口：[supplement_paired/README.md](supplement_paired/README.md)、冻结协议configs/FROZEN_PROTOCOL.json、44任务configs/TASKS.json。实施三组：A3坏终点×4、B24全部保留且4球外×4救援、C4NN×4；不开发新算法、不重训。新远端D:/AI/MAX_STRUCT_R12_PAIRED_20261112，4P核0/2/4/6，统一NORMAL。父任务完成不能代替root验收；先封存44预测再统一评分、改图、分析与既有GitHub发布回读。新计费为whole-child，G19为已有合法物理电流投影重启，保留原affine空间。新大文件只写外盘/专用远端。用户明确本组完成后收尾，不自动扩研究循环。
+
+### 配对补充当前完成状态
+
+44科学运行完成（solver CPU4669.46875秒，4核wall1240.1518秒），全部封存，公开接线验收0错误/0警告。offline_v2已纠正父CPU口径，744材料/选择行与v1完全一致。root已验收图和结果，报告/英文稿/成本/全部原始证据已发布新release research-max-struct-r12-paired-20261112。新数据不属于新盲确认。最新补充GALLERY.md在GitHub直接渲染21图，可供Chat阅读。
+
+GitHub官方Actions与Pages重大故障incident dvy0t3mvh1lg使Pages构建queued；新Pages实际部署尚未验收，不伪称完成。补充audit/PUBLIC_WEB_QA.json记录本地HTML真浏览器通过及公开PNG/文档回读；audit/PUBLICATION_READBACK.json记录全部原始归档资产可下载。远端科学队列已结束，不再占任务P核。用户要求本补充后收尾，不因Pages故障重开算法研究。
