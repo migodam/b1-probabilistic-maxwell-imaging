@@ -1,0 +1,3 @@
+# State DOF metadata amendment
+
+The original development_v1/v2/representation_v1 generic receipt field state_real_DOF counted the real scalars in a stored two-field X/Q array, 4*rows*sources. It was not the independent CIE optimization rank or direct material dimension. All original receipts are preserved. Use auxiliary_receipt.current_spaces for actual CIE/G19 ranks and 2*rank*sources, and material_DOF separately. Source changes before independent confirmation rename this to stored_field_real_scalars and explicitly qualify unknown independent state counts. This changes metadata only; predictions, optimization, candidate selection and costs are unchanged.

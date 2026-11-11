@@ -32,7 +32,8 @@ def main():
                 input_file=str(path.relative_to(r)),seed=13013,parent_run=task['task_id']))
     result=dict(campaign=policy['campaign'],status='FROZEN_PUBLIC_RULE_INSTANTIATED_NO_GT',
         protocol=policy['protocol'],tasks=tasks,all48_deployment_rows=rows,
-        policy_file='configs/conditional_rescue_policy.json',truth_access='NONE',new_forward=0)
+        policy_file='configs/conditional_rescue_policy.json',truth_access='NONE',new_forward=0,
+        preparation_whole_process_CPU_seconds=time.process_time())
     with (r/'configs/confirmation_rescue48.json').open('x') as f:json.dump(result,f,indent=2);f.write('\n')
     print(json.dumps(dict(cases=len(rows),triggered=sum(x['trigger'] for x in rows),tasks=len(tasks),truth_access='NONE')))
 
