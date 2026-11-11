@@ -1,0 +1,56 @@
+{
+  "campaign": "development_v4_local",
+  "status": "FROZEN_BEFORE_REFINEMENT_RUNS",
+  "protocol": {
+    "CPU_cap": 120,
+    "proposal_fraction": 0.6,
+    "steps": 3000,
+    "audit_every": 50,
+    "AP_preparation": 128,
+    "scale": 6,
+    "omega": 1,
+    "corrector": "inherited original physical L-BFGS-B",
+    "selection": "minimum paid physical Phi; secondary minR within original CN99",
+    "material_box": [
+      0.02,
+      20
+    ],
+    "prior": {
+      "smooth": 0.0001,
+      "tv": 0.0001,
+      "epsilon": 0.01
+    },
+    "random_seed": 13013,
+    "primary": "all paid physical candidates including original",
+    "prefixes": [
+      15,
+      30,
+      60,
+      90,
+      120
+    ],
+    "scope": "exposed B0010 decisive mechanism controls, all on same Apple CPU; never merge timing with i9 runs",
+    "refinement_reason": "Exact norm match for integer event; avoid AP damage by forming an event from DR128 state. Same budgets, prior, audit cadence, no fresh truth access.",
+    "physical_audit_CPU_interval": 2.0,
+    "forecast_trace": true
+  },
+  "tasks": [
+    {
+      "task_id": "B__r12_confirm24_0010__online_midpoint",
+      "case_id": "B__r12_confirm24_0010",
+      "method": "online_midpoint",
+      "campaign": "development_v4_local",
+      "input_file": "data_public/development/B__r12_confirm24_0010.npz",
+      "seed": 13013
+    },
+    {
+      "task_id": "B__r12_confirm24_0010__online_midpoint_random",
+      "case_id": "B__r12_confirm24_0010",
+      "method": "online_midpoint_random",
+      "campaign": "development_v4_local",
+      "input_file": "data_public/development/B__r12_confirm24_0010.npz",
+      "seed": 13013
+    }
+  ],
+  "development_revision_reason": "Test newly predicted one-event window: fractional ray crosses1cell whiledoubling crosses35. Midpoint betweenfirsttwoeventtimesisparameterfree; compareexactnormrandom. Exposedcaseonly, notfreshGT."
+}

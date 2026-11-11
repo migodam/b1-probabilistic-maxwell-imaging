@@ -113,9 +113,15 @@ def event_start(projector, ax, aq, mode, rng=None, overshoot=.001):
         target = 2.
     elif mode in ('integer','random_integer'):
         target = max(1., float(np.floor(t) + 1))
+    elif mode in ('midpoint','random_midpoint'):
+        later=th['thresholds'][th['thresholds']>t+32*np.finfo(float).eps*max(1.,abs(t))]
+        second=float(np.min(later)) if len(later) else np.inf
+        target=(t+second)/2 if np.isfinite(second) else (1+overshoot)*t
+        meta['second_distinct_event_t']=second if np.isfinite(second) else None
+        meta['target_semantics']='midpoint of first two distinct event times; one event group on the ideal normal ray'
     else:
         target = max(1., (1 + overshoot) * t)
-    if mode in ('random','random_integer'):
+    if mode in ('random','random_integer','random_midpoint'):
         rng = np.random.default_rng(13013) if rng is None else rng
         rx = rng.normal(size=ax.shape) + 1j*rng.normal(size=ax.shape)
         rq = rng.normal(size=aq.shape) + 1j*rng.normal(size=aq.shape)

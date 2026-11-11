@@ -28,10 +28,12 @@ def main():
     parser.add_argument('--task-id',required=True)
     parser.add_argument('--cpu',type=int)
     args=parser.parse_args(); root=args.root.resolve(); wall=time.perf_counter()
-    import psutil
-    proc=psutil.Process()
-    if args.cpu is not None and hasattr(proc, 'cpu_affinity'): proc.cpu_affinity([args.cpu])
-    if os.name=='nt': proc.nice(psutil.NORMAL_PRIORITY_CLASS)
+    proc=None
+    if os.name=='nt':
+        import psutil
+        proc=psutil.Process()
+        if args.cpu is not None: proc.cpu_affinity([args.cpu])
+        proc.nice(psutil.NORMAL_PRIORITY_CLASS)
     sys.path[:0]=[str(args.legacy_repo),str(root/'runtime'),str(root/'src')]
     import numpy as np
     from scipy.stats import chi2
@@ -192,8 +194,8 @@ def main():
                             # Form a single A point from the CURRENT DR shadow,
                             # rather than pay a separate AP convergence phase.
                             cx,cq,_=P.material(x,q);x,q=P.affine_ball(cx,cq)
-                        mode='random_integer' if method=='random_integer' else 'integer' if 'integer' in method else 'double' if method.startswith('normal_') else 'random' if method.startswith('random_') or method=='online_random' else 'fractional'
-                        if method=='ap_dr':
+                        mode='random_midpoint' if method=='online_midpoint_random' else 'midpoint' if method=='online_midpoint' else 'random_integer' if method=='random_integer' else 'integer' if 'integer' in method else 'double' if method.startswith('normal_') or method=='online_double' else 'random' if method.startswith('random_') or method=='online_random' else 'fractional'
+                        if method in ('ap_dr','online_noevent'):
                             event_history.append(dict(status='AP_PREPARATION_THEN_ORDINARY_DR',preparation=prep))
                             if cfg.get('forecast_trace'):
                                 cx,cq,rm=P.material(x,q);dx,dq=x-cx,q-cq
@@ -211,7 +213,7 @@ def main():
                             event_history.append(event)
                             forecast_reference=th;ray_t0=event.get('target_t',1.)
                             np.savez_compressed(out/'EVENT_GEOMETRY.npz',**{k:v for k,v in th.items() if isinstance(v,np.ndarray)})
-                            if method.startswith('reset_'):
+                            if method.startswith('reset_') or method=='online_reset':
                                 _,_,cm=P.material(x,q);row=physical(cm,dict(event_memory_reset=True))
                                 x,q=row['j']/scale,row['Q'].copy()
                     prev_x=None;prev_q=None;prev_f=None;prev_r=None
@@ -295,7 +297,7 @@ def main():
         prior=dict(name=getattr(model.reg,'name','inherited_scalar_regularizer'),
             smooth=getattr(model.reg,'smooth',None),tv=getattr(model.reg,'tv',None),epsilon=getattr(model.reg,'epsilon',None)),
         affinity=proc.cpu_affinity() if hasattr(proc,'cpu_affinity') else None,
-        endpoint_RSS_bytes=proc.memory_info().rss,
+        endpoint_RSS_bytes=proc.memory_info().rss if proc is not None else None,
         memory_scope='end-of-process resident snapshot, not measured peak',
         timer_scope='absolute process CPU including imports/setup/proposal/audits/corrector/export; external exit CPU separately')
     dump(out/'RECEIPT.json',receipt)
