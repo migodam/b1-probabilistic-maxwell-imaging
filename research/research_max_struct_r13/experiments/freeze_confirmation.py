@@ -49,9 +49,18 @@ def main():
             original_NFFT_qualification='nfft_equations is Eq3-6 real/prior/box/global-LBFGS adaptation, not mature author-code reproduction')
         path=ROOT/'configs'/(name+'.json')
         with path.open('x') as f:json.dump(data,f,indent=2);f.write('\n')
+    rescue=dict(status='FROZEN_BEFORE_PARENT_RUNS_AND_TEST_SCORES',created_at_utc=stamp,protocol=protocol,
+        campaign='confirmation_rescue48',parent_campaign='confirmation_core48',parent_method='g19',
+        trigger='parent original primary complete physical residual_over_delta > 1; no GT; all48 deployment denominator',
+        methods=dict(g19_restart='g19',full_current_restart='g19_full_current',dr_rescue='dr',event_rescue='event_integer',direct_rescue='direct'),
+        parent_cost='all48 original G19 completed external child CPU; add each triggered rescue actual external CPU separately',
+        bypass='retain original G19 primary exactly when parent is in ball; not evidence of running rescue without damage',
+        new_source_or_prior=False,all_prediction_seals_before_fresh_truth=True)
+    with (ROOT/'configs/conditional_rescue_policy.json').open('x') as f:json.dump(rescue,f,indent=2);f.write('\n')
     record=dict(status='INDEPENDENT_ALGORITHMS_AND_ESTIMATORS_FROZEN',created_at_utc=stamp,
         source_commit=source,core_tasks=len(core),mechanism_tasks=len(extra),material_objects=48,
         selected_subset=chosen,core_methods=methods,extra_methods=ordinary+['nn_dr','nn_g19','nn_direct'],
+        conditional_rescue_policy='conditional_rescue_policy.json; no future trigger count promised',
         no_new_GT_access=True,no_confirmation_results_exist=not (ROOT/'RESULTS/confirmation_core48').exists(),
         outstanding='actual queues, acceptance, joint seals, scoring, scientific review and publication')
     (ROOT/'audit/CONFIRMATION_FREEZE.json').write_text(json.dumps(record,indent=2)+'\n')
