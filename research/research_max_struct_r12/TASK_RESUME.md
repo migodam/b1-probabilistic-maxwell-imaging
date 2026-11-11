@@ -21,3 +21,7 @@ GitHub： https://github.com/migodam/b1-probabilistic-maxwell-imaging 。新工�
 - 所有新大文件只写外盘；复用已有内盘暂存但不新增内盘大副本。
 - 全证据12包/89运输分片已公开并逐个匿名回读；代码、报告、结构与综合评价已提交GitHub。发布回执audit/PUBLICATION_READBACK.json；最终网页验收audit/PUBLIC_WEB_FINAL_QA.json。
 - 研究没有取消；硬件问题不替代研究交付，子任务报告完成也不替代root验收。
+
+## 2026-11-12用户批准的有限配对补充（正在执行）
+
+新入口：[supplement_paired/README.md](supplement_paired/README.md)、冻结协议configs/FROZEN_PROTOCOL.json、44任务configs/TASKS.json。实施三组：A3坏终点×4、B24全部保留且4球外×4救援、C4NN×4；不开发新算法、不重训。新远端D:/AI/MAX_STRUCT_R12_PAIRED_20261112，4P核0/2/4/6，统一NORMAL。父任务完成不能代替root验收；先封存44预测再统一评分、改图、分析与既有GitHub发布回读。新计费为whole-child，G19为已有合法物理电流投影重启，保留原affine空间。新大文件只写外盘/专用远端。用户明确本组完成后收尾，不自动扩研究循环。
