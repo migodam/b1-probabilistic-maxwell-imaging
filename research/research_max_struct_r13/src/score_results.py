@@ -161,11 +161,14 @@ def figures(out,rows,candidates,pictures,truths,costs,methods,structure_gallery=
                     arrays=[('Offline truth',gt),('Common initial',initial)]+[(method,pictures.get((cid,method,'primary'))) for method in subset]
                     for j,(label,array) in enumerate(arrays):
                         clipped=int(np.count_nonzero(array>vmax)) if array is not None else 0
-                        title=cid+'\n'+label+f'\nrow vmax={vmax:.4g}; saturated cells={clipped}'
+                        title=(cid+'\n' if j==0 else '')+label+f'\nrow vmax={vmax:.4g}\nsaturated cells={clipped}'
                         show(axes[i,j],array,title,lo=0,hi=vmax)
-                    fig.colorbar(axes[i,0].images[0],ax=list(axes[i,:]),fraction=.014,pad=.01,label='physical contrast chi; row-common')
                 fig.suptitle('DIAGNOSTIC VIEW ONLY: GT-derived scale shared by every method in each row. Absolute [0,20] gallery retained.',fontsize=10)
-                fig.subplots_adjust(top=.91,hspace=.55,wspace=.12);save(fig,f'diagnostic_structure_methods{mg//5+1}_page{page:02d}')
+                fig.subplots_adjust(left=.025,right=.935,top=.90,bottom=.025,hspace=.62,wspace=.14)
+                for i in range(len(batch)):
+                    pos=axes[i,-1].get_position();bar=fig.add_axes([.95,pos.y0,.008,pos.height])
+                    fig.colorbar(axes[i,0].images[0],cax=bar,label='physical contrast chi; row-common')
+                save(fig,f'diagnostic_structure_methods{mg//5+1}_page{page:02d}')
     # Per-case paid Phi incumbent trajectories; CPU and physical LU are separate axes.
     grouped={};costlookup={(c['case_id'],c['method']):c for c in costs}
     for r in candidates:
@@ -312,7 +315,7 @@ def main():
         if(folder/'EVENTS.json').is_file():
             for e in read(folder/'EVENTS.json'):eventrows.append(dict(common,event=e))
         job=jobs.get(tid,{});external=job.get('external',{});cpu=external.get('child_process_CPU_seconds',job.get('child_process_CPU_seconds'));phys=receipt.get('physical_cost',{});proj=receipt.get('projector_cost') or{}
-        costs.append(dict(common,status=status,returncode=job.get('returncode'),external_child_CPU_seconds=cpu,external_child_CPU_scope='external queue child-process total' if cpu is not None else'UNKNOWN_NOT_IMPUTED',internal_process_CPU_seconds=receipt.get('whole_process_CPU_seconds'),queue_task_wall_seconds=job.get('wall_seconds'),internal_wall_seconds=receipt.get('wall_seconds'),**physical_counts(phys),physical_cost=phys,projector_cost=proj,auxiliary_receipt_not_added_again=receipt.get('auxiliary_receipt'),physical_count_scope='physical_cost already includes model calls; operation categories/LU/auxiliary deltas not added together',endpoint_RSS_bytes=receipt.get('endpoint_RSS_bytes'),peak_memory_bytes=None))
+        costs.append(dict(common,status=status,returncode=job.get('returncode'),external_child_CPU_seconds=cpu,external_child_CPU_scope='external queue child-process total' if cpu is not None else'UNKNOWN_NOT_IMPUTED',internal_process_CPU_seconds=receipt.get('whole_process_CPU_seconds'),queue_task_wall_seconds=job.get('wall_seconds'),internal_wall_seconds=receipt.get('wall_seconds'),**physical_counts(phys),physical_cost=phys,projector_cost=proj,auxiliary_receipt_not_added_again=receipt.get('auxiliary_receipt'),physical_count_scope='physical_cost already includes model calls; operation categories/LU/auxiliary deltas not added together',endpoint_RSS_bytes=receipt.get('endpoint_RSS_bytes'),peak_memory_bytes=external.get('peak_RSS_bytes'),peak_memory_scope=external.get('memory_scope','NOT_MEASURED; end-of-process resident snapshot is not peak memory')))
         if issue or status=='FAILED' or not valid:failures.append(dict(common,status=status,issues=issue,runner_error=receipt.get('error'),valid_paid_candidates=len(valid),policy='Retained in full expected-task denominator; valid failed-run candidates separately labeled partial.'))
     # Full rows are retained; availability denominators accompany every mean.
     summary=[];domains=list(dict.fromkeys(r['domain'] for r in rows))

@@ -1,0 +1,11 @@
+# Optional common process-CPU audit cadence: new confirmation only
+
+`full_current.run_full_current` and `nfft_control.run_nfft` now accept optional `config['physical_audit_due']`, a no-argument callable returning whether a paid periodic physical audit is due. When supplied, its decision replaces the every-50-update test; when absent/None, the original `audit_every` fallback remains unchanged. Existing inherited initial/stage audits and NFFT initial/terminal audits remain and are charged normally. Candidate filters, PR/L-BFGS state, current/material updates, priors and budgets are unchanged.
+
+The parent confirmation protocol can use one absolute process-CPU cadence, for example a 2-second bucket rule shared with every other proposal, and update the next bucket in its physical-record callback. This avoids equating 50 cheap dense projection steps with 50 much more expensive alternating material updates as if they gave equal audit opportunities. The callable owns the clock/cadence policy; these adapters neither tune nor advance its bucket.
+
+The callback is checked only after a completed CIE material update or accepted NFFT joint update. An update, line search, or physical LU can cross a requested CPU bucket before control returns. Therefore actual audit times can overshoot the nominal cadence. The actual process CPU and all paid physics remain recorded; no missed bucket is fabricated and no extra physical candidate is treated as free. Native stage-end audits may add opportunities between buckets and retain their paid cost.
+
+These are optional **new confirmation protocol** hooks. Frozen development/representation runtime bundles and manifests were not modified, and their absent-hook behavior stays as before. The parent must declare common cadence before the new confirmation freeze and keep the historical policies distinct in reporting.
+
+New receipt fields identify caller-driven versus fixed-update periodic audits and retain the fallback interval. Pure callback tests verified fallback at update50, callable-False suppressing that periodic trigger, callable-True triggering at update1, and one callable invocation per checkpoint. No physical run, result material or GT was opened: `CONFIRMATION_AUDIT_DUE_CHECKS.json`.

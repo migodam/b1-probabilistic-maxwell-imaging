@@ -1,0 +1,24 @@
+# Qualification differences and runner audit
+
+| Input family | Real evidence and limit | Radius/noise | Actual compatible mature baseline |
+|---|---|---|---|
+| New matched vector6³ | Full dyadic3-component current/shared real material; h=.04,upperchi8 phase.754. Exact original-R8 value/gradient agreement. | New iidCN1% noise supports raw known-sigma99% event on matched discrete model. | Existing native3D VectorPR3D sourcewiseCIE/Dual; globalPR declared adaptation; mf1→2 and beta6→1 preserved. |
+| New vector8³→6³ | Same physical acquisition, clean crossgrid difference8.006%; strict1%noise alone does not certify coarse target feasibility. | Preserve strict noise test/failure; no radius was changed during preparation. | Same vector baseline on coarse unknown cube. |
+| Independent highcontrast Mie sphere | Same eps9/radius.09 backend; staircase h.02/.015 far errors9.015%/7.064%; volume-averagechi19.76%/16.93%. Convergent bounded evidence, material boundary bias, no general continuumcertificate. | Forward validation has no inverse/noise fit. | TensorDDA original Green/self, no fittedgain used for prediction. |
+| Fresnel single2001 | Actual27×39 channels; empty-field validation median.02515; unknown receivehorn response and noise covariance. Affine rank floor1.865% of||Y||. | Fixed.15 model discrepancy diagnostic reachable; zero ball rejected. No known-sigma99% event. | Existing per-source SVD DPCS/nativeFourier APCS and matched receiveadjoint, R8 fresnel_solver. CIE/Dual/global supported. Scalar commonportG19 unsupported. |
+| Fresnel twin2001 | Same masks; empty-field validation median.02408; affine rank floor3.252%. No pixelGT. | Fixed.15 diagnostic reachable; zero ball rejected. | Same source-specific baseline. |
+| Austria150²→32² | Actual published-style acquisition:2m square,20plane waves,40receivers at3.75m,400MHz,epsilon4/chi3. Known coarseGT residual.225256 exceeds.12 historical ball. Not original inverse64 reproduction. | Historical10% fixed-norm complex direction; fixed.12 discrepancyball. NoCN99 assertion. | Equal-area disk paper_cie_fft with DPCS15,mf5/8/10,beta8/2/.5,currentbeta8Dual/global,100/stage. |
+| Austria matched32² | Existing matchedcontrol reuses authorized coarse clean prediction; true material residual.099513 within.12. Post-exposure diagnostic, not fresh confirmation. | Same10% fixednorm, fixed.12 diagnostic. | Same contract but actual matchedallowance300/stage. |
+
+OriginalNIE2016 contract in existing PAPER_CONTRACTS.json uses150² forward/64² inverse, DPCS15, initialmaterial0/APIC0, paperstopdelta2D .01/.001/.001 and no extra prior. R13 classic32² comparisons add the common inherited prior and corrector; R8 independent paper_nie is an equation-based real-material adaptation, not author-certified software. The3D adaptation is not a literal CIE2019 grid/domain reproduction. Do not merge these qualification levels into one claim.
+
+## Generic runner audit, no remote execution
+
+- Correct: vector branch reads components3; objective ledger now calls data_objective so R8 source normalization/factor is preserved; physical gradient and prior agree. Priorreceipt safely uses explicitNone for vector smooth/tv/epsilon plus realpriorname.
+- Fixed on adapter side: SourceSpecificPublicModel/run_fresnel_auxiliary are reexported from vector_adapter, with relative/standalone fallback for the common runtime. Authoritative definitions remain physics_inputs.py; include that file in remote source bundles.
+- Correct: Fresnel projector uses projector_S list; source-dependent physical receiveadjoint is retained. Common model.S alone is not the measured acquisition.
+- Parent action required: kindclassic branch must call classic_auxiliary_config rather than generic arm_config/noise-rankedDPCS/mf12. Configurationcheck confirms0initial, realprior, DPCS15 and actualstagearrays without any physical forward.
+- Parent/full-current worker action required: select physics_family equal_area_disk (paper_cie_fft or EqualAreaGreen/PaperOneHopAbsorption privateglobals). Generic nonoverlap diskconstructor would reject the correct Austria radius; do not shrink it.
+- Restrict method manifests to actual adapter support: vector and Fresnel CIE/Dual/global; AP/DR/direct available. G19source-dependentFresnel and scalarG19-to-vectortransplant are rejected rather than mislabelled. Classic scalarG19/fullAPCS/fullcurrent can use compatible equalarea32²backend with explicitcurrentfamily controls.
+- Noise feasibility labels in generic output mean membership of the declared ball. For Fresnel/classics this is discrepancy feasibility, not statistical noise qualification; receipts include sigma_role but finaltables must preserve that distinction.
+- Classic input preparation paid0 forward/0LU/0RHS/0newvalidation. One acquisition operatorassembly and opaque filecopies are recorded separately; constructor-onlyconfigurationchecks also paid0physicalsolves.
