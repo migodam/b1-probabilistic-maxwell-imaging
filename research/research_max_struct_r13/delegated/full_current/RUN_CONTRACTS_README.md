@@ -30,6 +30,14 @@ JSON uses null and CSV writes the literal `null`. Unknown frequency units, missi
 
 `source_commit`, `shipping_commit`, `algorithm_freeze_commit` and detailed provenance are separate. Current HEAD is never substituted. The C3 prefix is explicitly session-declared, not a cryptographic content attestation. Every per-run and top-level `code_hash` / `config_hash` is null with exact reason `userforbidsSHAchecks`; no SHA checks are performed.
 
+### Physics dependency-recovery composition amendment
+
+`physics_recovery_v1` and composed `physics_v1` additionally reference `PHYSICS_DEPENDENCY_RECOVERY_PLAN.json`, `PHYSICS_C4_PREPARATION_RECEIPT.json` and `PHYSICS_RECOVERY_COMPOSITION.json` when those files exist. The immutable numerical base remains C2 shipping689850… / algorithm3a91…; `runtime_physics_dependency_C4.zip` supplies the unchanged R1 vector_backend/a9_green dependencies. It is not a new numerical algorithm or prior. Documentation/recovery/portability commit `a611` is explicitly excluded as a numerical-source claim.
+
+For a terminal composed queue, `job.attempt_source_campaign` labels each row's actual C2 `physics_v1` or C4 `physics_recovery_v1` attempt. Missing labels remain unknown rather than guessing from method name; missing composition evidence does not assert a completed future composition. The wrapper preserves mixed-attempt provenance instead of calling every composed row an original C2 execution. No pending row gains executed-source/attempt fields.
+
+C3 keeps shipping prefix4bd unless an exact compatible longer value is present in registered manifest/source-snapshot metadata. Such a value can resolve shipping provenance without substituting it for inherited algorithm3a91 or using current HEAD. No Git/content hash check is introduced.
+
 ## Public metadata access
 
 G/E/S/m_init/coordinate arrays are read **only as NPZ/NPY headers** for shape/dtype, never as numeric payloads. Y is not loaded. Small whitelisted public metadata covers mesh shape, components, explicit frequency/unit fields, k, bounds, width/spacing, material/time convention and noise qualification. Hz conversion occurs only for explicitly Hz/GHz-labeled metadata; otherwise raw frequency/k may remain present while frequency_Hz is null with a reason. The wrapper does not infer physical Hz from normalized k.

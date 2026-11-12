@@ -82,12 +82,14 @@ def public_metadata(path):
         access_scope='headers and whitelist metadata only; Y/G/E/S/m_init numeric payloads not read')
 
 
-def provenance(root,campaign,manifest,terminal):
+def provenance(root,campaign,manifest,terminal,attempt_source_campaign=None):
     protocol=manifest.get('protocol',{});snapshot_path=root/'queues'/campaign/'SOURCE_SNAPSHOT.json'
     snapshot,_=safe_json(snapshot_path)
     declared=protocol.get('source_commit') or manifest.get('source_freeze')
     shipping=None;algorithm=declared;evidence=[];qualification='Unknown executed source; current HEAD never substituted'
-    if campaign in C2:
+    physics_campaign=campaign in ('physics_v1','physics_recovery_v1')
+    recovery=None
+    if campaign in C2 or campaign=='physics_recovery_v1':
         p=root/'audit/CONFIRMATION_FINAL_BUNDLE.json';bundle,_=safe_json(p)
         if bundle:
             shipping=bundle.get('shipping_commit');algorithm=bundle.get('algorithm_freeze',declared)
@@ -95,9 +97,40 @@ def provenance(root,campaign,manifest,terminal):
     elif campaign=='confirmation_online_controls16':
         shipping='4bd';evidence.append('parent session declaration: C3 controls shipping source4bd')
         qualification='C3 session-declared commit prefix; full commit not invented; separate from inherited algorithm freeze3a91'
+        registered=[]
+        for origin,mapping in [('queue SOURCE_SNAPSHOT',snapshot or{}),('manifest',manifest),('manifest protocol',protocol)]:
+            for key in ('shipping_commit','source_freeze','source_commit'):
+                value=mapping.get(key)
+                if isinstance(value,str) and value.startswith('4bd') and len(value)>3:
+                    registered.append(dict(origin=origin,field=key,value=value))
+        if registered and all(x['value'].startswith(min((r['value'] for r in registered),key=len)) for x in registered):
+            shipping=max((x['value'] for x in registered),key=len)
+            evidence.extend(registered)
+            qualification='C3 shipping source resolved from registered config/source-snapshot metadata; separate from algorithm freeze; no hash validation'
     if snapshot:
-        algorithm=snapshot.get('source_freeze',algorithm);evidence.append(str(snapshot_path))
-        qualification='terminal local source snapshot record; source byte/mtime inventory is not cryptographic verification'
+        evidence.append(str(snapshot_path))
+        if campaign not in C2 and campaign not in ('physics_recovery_v1','confirmation_online_controls16'):
+            algorithm=snapshot.get('source_freeze',algorithm)
+            qualification='terminal local source snapshot record; source byte/mtime inventory is not cryptographic verification'
+    if physics_campaign:
+        records={}
+        for name in ('PHYSICS_DEPENDENCY_RECOVERY_PLAN.json','PHYSICS_C4_PREPARATION_RECEIPT.json','PHYSICS_RECOVERY_COMPOSITION.json'):
+            path=root/'audit'/name;record,_=safe_json(path)
+            if record is not None:records[name]=record;evidence.append(str(path))
+        plan=records.get('PHYSICS_DEPENDENCY_RECOVERY_PLAN.json',{})
+        recovery=dict(dependency_bundle=plan.get('bundle'),base_numerical_source=plan.get('base_numerical_source'),
+            algorithm_change=plan.get('algorithm_change'),
+            preparation_status=records.get('PHYSICS_C4_PREPARATION_RECEIPT.json',{}).get('status'),
+            composition_record_present='PHYSICS_RECOVERY_COMPOSITION.json' in records,
+            actual_attempt_source_campaign=attempt_source_campaign if terminal else None,
+            attempt_origin_unknown_reason=None if terminal and attempt_source_campaign else 'Actual C2/C4 attempt requires terminal job.attempt_source_campaign; not inferred from completed future recovery',
+            dependency_scope='C4 adds unchanged R1 vector_backend/a9_green dependencies to the unchanged immutable C2 numerical runtime',
+            excluded_numerical_source='a611 denotes recovery/portability documentation, not the numerical algorithm source')
+        qualification=('Mixed attempt provenance: composed physics_v1 preserves original C2 attempts and C4 dependency-recovery attempts; '
+            'per-task terminal job.attempt_source_campaign labels the actual attempt. Numerical base remains C2 shipping689850; '
+            'dependency bundle is separate; no numerical-source claim for documentation commit a611.')
+        if not recovery['composition_record_present']:
+            qualification+=' Composition record is absent; no completed composition is asserted.'
     if not evidence and declared:
         evidence.append('manifest protocol.source_commit / source_freeze declaration')
         qualification='Manifest algorithm/config declaration only; actual executed source unknown'
@@ -105,6 +138,8 @@ def provenance(root,campaign,manifest,terminal):
     return dict(executed_source_commit=executed if terminal else None,
         shipping_commit=shipping if terminal else None,algorithm_freeze_commit=algorithm,
         declared_config_source_commit=declared,source_evidence=evidence or None,
+        physics_dependency_recovery=recovery,
+        attempt_source_campaign=attempt_source_campaign if terminal else None,
         qualification=qualification if terminal else 'Execution pending/queue nonterminal; declarations retained but no executed source asserted',
         code_hash=None,config_hash=None,code_hash_reason=HASH_REASON,config_hash_reason=HASH_REASON)
 
@@ -147,10 +182,11 @@ def baseline(algorithm,protocol,aux):
 def make_row(root,manifest_path,manifest,task,queue,terminal,public_cache,validation_rows):
     campaign=manifest['campaign'];protocol=manifest.get('protocol',{});tid=task['task_id'];algorithm=task.get('algorithm',task['method'])
     folder=root/'RESULTS'/campaign/tid;public_path=(root/task['input_file'].replace('\\','/')).resolve()
+    job=next((x for x in (queue or{}).get('jobs',[]) if isinstance(x,dict) and x.get('task_id')==tid),{})
     row=dict(run_id=campaign+'/'+tid,task_id=tid,case_id=task['case_id'],campaign=campaign,method=task['method'],algorithm=algorithm,
         manifest_path=str(manifest_path),data_id=task['case_id'],public_filepath=str(public_path),
         execution_available=False,execution_status=None,queue_status=queue.get('status') if queue else None,
-        provenance=provenance(root,campaign,manifest,terminal),public_metadata=None,material_contract=None,
+        provenance=provenance(root,campaign,manifest,terminal,job.get('attempt_source_campaign')),public_metadata=None,material_contract=None,
         box=None,prior=None,initialization=None,state_representation=None,baseline=None,termination=None,
         selection=None,physical_residual=None,auxiliary_defect=None,constraint=None,cost=None,candidate_ids=None,
         online_truth_access=None,validation=None,artifact_coverage=None,unknown_reasons={},
@@ -159,6 +195,7 @@ def make_row(root,manifest_path,manifest,task,queue,terminal,public_cache,valida
             selection=protocol.get('selection'),cohort=task.get('cohort'),physics_kind=task.get('physics_kind')))
     row.update(source_commit=row['provenance']['executed_source_commit'],
         shipping_commit=row['provenance']['shipping_commit'],algorithm_freeze_commit=row['provenance']['algorithm_freeze_commit'],
+        attempt_source_campaign=row['provenance']['attempt_source_campaign'],
         code_hash=None,config_hash=None,code_hash_reason=HASH_REASON,config_hash_reason=HASH_REASON)
     if not terminal:
         row['unknown_reasons']['execution']='Queue missing/nonterminal; receipt, result metadata and public payload not opened'
@@ -167,6 +204,10 @@ def make_row(root,manifest_path,manifest,task,queue,terminal,public_cache,valida
     if receipt is None:
         row['unknown_reasons']['execution']='Terminal expected task has no readable frozen receipt: '+str(error)
         row['source_commit']=None;row['provenance']['executed_source_commit']=None
+        row['attempt_source_campaign']=None;row['provenance']['attempt_source_campaign']=None
+        if row['provenance'].get('physics_dependency_recovery'):
+            row['provenance']['physics_dependency_recovery']['actual_attempt_source_campaign']=None
+            row['provenance']['physics_dependency_recovery']['attempt_origin_unknown_reason']='No readable per-run execution receipt'
         row['unknown_reasons']['source_commit']='Shipped/config context may be known, but no per-run execution receipt exists'
         return row
     row['execution_available']=True;row['execution_status']=receipt.get('status');row['receipt_path']=str(folder/'RECEIPT.json')
