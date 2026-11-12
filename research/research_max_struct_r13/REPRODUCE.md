@@ -74,7 +74,7 @@ python src/run_experiment.py --root R13_ROOT --legacy-repo LEGACY_ROOT --manifes
 
 独立确认配置见 `configs/confirmation_core48.json`、`configs/confirmation_mechanism16.json`、`configs/conditional_rescue_policy.json` 和 `configs/physics_v1.json`。触发数来自公开物理残差，不能事先虚构；旁路对象原样保留并不代表已运行救援算法无损。
 
-M1上的 `src/local_queue.py` 与 `configs/development_v3_local.json` 是另列的已暴露对象控制；它的CPU时间不与i9跨平台合并作速度排名。
+M4上的 `src/local_queue.py` 与 `configs/development_v3_local.json` 是另列的已暴露对象控制；它的CPU时间不与i9跨平台合并作速度排名。
 
 ## 封存、离线评分和图表
 

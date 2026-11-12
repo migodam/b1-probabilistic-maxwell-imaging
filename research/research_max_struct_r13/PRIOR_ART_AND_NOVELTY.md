@@ -26,6 +26,10 @@ DR/RRR、非物理中间状态、法向漂移、反射记忆和非凸可行性�
 
 NIE/CIE原文、DCTMC、WRI及ADMM对应原始来源和读取状态见上述claim ledger。CIE2019原文是 [Zhong–Xu, J. Imaging 5(2),27](https://doi.org/10.3390/jimaging5020027)。比较中 `global_dual` 指 global-PR Dual-CIE，`physical_globaldual` 才是既有总场source-Gram的物理GlobalDual（β=0）；不能混用名称填补基线。
 
+父线程补读了 [DCTMC Part I](https://arxiv.org/pdf/1401.3319) 的迭代与计算步骤，以及 [Part II](https://arxiv.org/pdf/1505.06777) 的§VI对照。允许非局部中间相互作用、保持数据相容再逼近局部材料，明显早于本项目。其T↔V和force-diagonalization循环不能直接改名为本轮正交PC/PA；Part II的三维实验是**标量波、clean数据**，也不能作为已完成的三维矢量Maxwell比较。该文已展示物理拟合继续改善而材料误差变差，故这一现象本身不是R13原创。R13没有完成其有资格的同数据算法复现，不能宣称优于DCTMC。
+
+另核对到2026年 [FBE-CIE＋L2/3＋ADMM](https://doi.org/10.1016/j.apm.2025.116666)。本轮取得出版方摘要，全文403；它说明CIE＋稀疏正则/ADMM已有直接先例。没有审读完整算法或运行该baseline，也不把其不同prior的文献结果与本轮表格混为同条件比较。未检索到某个词组不构成不存在前人的证明。
+
 ## 本轮可保留的贡献单元
 
 1. 继承并独立审查有界实材料首次竞争定律，区分精确快进和近似对新动作；给出真实Maxwell中的可证伪预测，而不是重复机器精度恒等式。

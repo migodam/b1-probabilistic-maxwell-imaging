@@ -49,7 +49,9 @@ def truth_spec(root,task):
         return dict(path=str(root/'sealed_truth/fresh48'/f'{cid}.npz'),key='material_coarse',support_rule='fixed_chi_gt_1',amplitude_rule='max_truth_minus_host',host=.1,object_id=cid)
     if '__' in cid and cid.split('__')[0] in ['A','B','C']:
         cohort,ident=cid.split('__',1)
-        return dict(path=str(root.parents[1]/'research/research_max_struct_r12/supplement_paired/offline_truth'/cohort/f'{ident}.npz'),key='m',support_key='support',amplitude_key='amplitude',support_rule='prediction_Otsu256_vs_saved_support' if cohort=='C' else'fixed_chi_gt_1',object_id=cid)
+        portable=root/'sealed_truth/development'/f'{cid}.npz'
+        path=portable if portable.is_file() else root.parents[1]/'research/research_max_struct_r12/supplement_paired/offline_truth'/cohort/f'{ident}.npz'
+        return dict(path=str(path),key='m',support_key='support',amplitude_key='amplitude',support_rule='prediction_Otsu256_vs_saved_support' if cohort=='C' else'fixed_chi_gt_1',object_id=cid)
     vector=root/'delegated/physics/new3d/sealed_truth'/f'{cid}.npz'
     if vector.is_file():return dict(path=str(vector),key='chi',support_rule='fixed_chi_gt_1',amplitude_rule='max_truth_minus_host',host=.1,object_id=cid.split('_crossgrid')[0])
     return dict(path=None,material_truth_available=False,support_rule='NO_PIXEL_GT',object_id=cid)
@@ -234,6 +236,10 @@ def main():
     out.mkdir(parents=True,exist_ok=False)
     import numpy as np
     cfg=seal['manifest_snapshot'];campaign=cfg['campaign'];tasks=cfg['tasks'];methods=list(dict.fromkeys(t['method'] for t in tasks));now=datetime.now(timezone.utc).isoformat()
+    policy_path=root/'predictions/min_change_paid_pool'/campaign/'SELECTIONS.json'
+    policy=read(policy_path) if policy_path.is_file() else None
+    if policy is not None and (policy.get('truth_access')!='NONE' or policy.get('campaign')!=campaign):raise ValueError('Minimum-change policy provenance mismatch')
+    policy_rows={r['task_id']:r for r in policy['tasks']} if policy else{}
     queue_path=root/'queues'/campaign/'RECEIPT.json';queue=read(queue_path) if queue_path.is_file() else{};job_list=queue.get('jobs',[]);jobs={r['task_id']:r for r in job_list}
     attempt_rows=[]
     for key,values in queue.items():
@@ -293,11 +299,14 @@ def main():
         indices={'initial':index_from_json('initial'),'raw':receipt.get('raw_candidate'),'corrected':index_from_json('corrected'),'primary':receipt.get('primary_candidate'),'secondary_only':receipt.get('secondary_candidate')}
         indices['secondary']=indices['secondary_only'] if indices['secondary_only'] in valid else indices['primary']
         raw=valid.get(indices['raw']);indices['feasible_raw_retain']=indices['raw'] if raw is not None and raw.get('noise_feasible') else indices['primary']
+        if policy is not None:indices['min_change_paid_pool']=policy_rows.get(tid,{}).get('selection_candidate')
         for view,index in indices.items():
             selected=valid.get(index);fallback=view=='secondary' and indices['secondary_only'] not in valid or view=='feasible_raw_retain' and index!=indices['raw']
+            if view=='min_change_paid_pool':fallback=policy_rows.get(tid,{}).get('fallback_to_primary',True)
             if selected:
                 r=dict(selected,view=view,selection_candidate=index,fallback_to_primary=bool(fallback),requested_view=view,selection_rule='minR among paid noise-feasible, fallback primary' if view=='secondary' else'raw retained if noise-feasible, otherwise primary' if view=='feasible_raw_retain' else'runner frozen '+view)
                 pictures[(cid,method,view)]=mats[index].copy()
+                if view=='min_change_paid_pool':r.update(selection_rule=policy['rule'],selection_prior_semantics=policy['prior_semantics'],selection_extra_CPU_seconds=policy_rows.get(tid,{}).get('CPU_seconds'),raw_anchor_RMS_distance=policy_rows.get(tid,{}).get('raw_anchor_RMS_distance'))
             else:r=dict(common,view=view,available=False,availability_reason='NO_LEGAL_ELIGIBLE_PAID_'+view.upper(),run_status=status,partial_failed_run=status=='FAILED',selection_candidate=index,fallback_to_primary=bool(fallback),NRMSE=None)
             rows.append(r)
         stored=read(folder/'PREFIXES.json') if(folder/'PREFIXES.json').is_file() else[];stored_map={float(r['CPU_cap']):r.get('candidate') for r in stored}

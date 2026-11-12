@@ -9,7 +9,7 @@ import argparse,csv,itertools,json,re
 from pathlib import Path
 
 METRICS=['RMSE','NRMSE','boxrange_NRMSE','relativeL2','IoU','mean_amplitude_bias','mean_amplitude_bias_normalized','D','R','Phi','residual_over_delta']
-VIEWS=['raw','corrected','primary','secondary','feasible_raw_retain']
+VIEWS=['raw','corrected','primary','secondary','feasible_raw_retain','min_change_paid_pool']
 
 
 def load(path):return json.loads(Path(path).read_text())

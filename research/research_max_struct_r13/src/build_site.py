@@ -103,7 +103,7 @@ def main():
             downloads.extend(f for f in directory.iterdir() if f.is_file() and ('download' in f.name.lower() or 'release' in f.name.lower() and 'manifest' in f.name.lower()) and f.suffix.lower() in ['.json','.md','.csv'])
     body='<p>MAX-STRUCT R13 的报告、数学推导、实际分析图集和复现入口。以下按数据暴露状态与物理合同分组；不从文件存在推断方法优劣。</p><p class="note">当前页面按本地文件生成。未生成的独立确认报告、论文和下载地址不会占位，也不表示已经发布。</p>'
     body+='<h2 id="documents">实际文档</h2><div class="doclist">'+''.join('<a href="'+link(path,root)+'">'+esc(label)+'</a>' for path,label in docs)+'</div>'
-    body+='<h2 id="protocol">执行合同</h2><div class="cards"><article class="card"><h3>C1 · 开发与表示对照</h3><p>历史四P核队列；mod50投影/材料步审计及阶段内原生审计按各配置记录。已暴露对象与后续独立对象分开。</p></article><article class="card"><h3>C2 · 独立确认</h3><p>八P核、每BLAS一线程。统一绝对进程CPU每2秒桶，在下一次完整材料更新后付费审计；原生初始/阶段/终点审计保留。corrector与direct每次已付物理目标评价记录。</p><p class="note">桶可能被不可中断操作跨过，不补造审计；全部实际费用保留。M1本地控制另列，不与i9计时直接混合。</p></article></div>'
+    body+='<h2 id="protocol">执行合同</h2><div class="cards"><article class="card"><h3>C1 · 开发与表示对照</h3><p>历史四P核队列；mod50投影/材料步审计及阶段内原生审计按各配置记录。已暴露对象与后续独立对象分开。</p></article><article class="card"><h3>C2 · 独立确认</h3><p>八P核、每BLAS一线程。统一绝对进程CPU每2秒桶，在下一次完整材料更新后付费审计；原生初始/阶段/终点审计保留。corrector与direct每次已付物理目标评价记录。</p><p class="note">桶可能被不可中断操作跨过，不补造审计；全部实际费用保留。M4本地控制另列，不与i9计时直接混合。</p></article></div>'
     for key,(title,note) in GROUPS.items():
         members=[c for c in campaigns if c['group']==key]
         if not members:continue
