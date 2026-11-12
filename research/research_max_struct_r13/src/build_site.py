@@ -49,7 +49,7 @@ def heading(path,label):
 
 
 def page(title,body,nav=''):
-    return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title)+'</title><style>'+CSS+'</style></head><body><main><header><h1>'+esc(title)+'</h1>'+nav+'</header>'+body+'<footer>由实际文件生成的导航与图集。附件可访问性、科学判断和发布验收分别记录；本地生成不代表已经公开。</footer></main></body></html>\n'
+    return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title)+'</title><style>'+CSS+'</style></head><body><main><header><h1>'+esc(title)+'</h1>'+nav+'</header>'+body+'<footer>MAX-STRUCT R13 · 报告、真实图件、原始结果与复现入口。科学适用条件及完整失败见研究报告。</footer></main></body></html>\n'
 
 
 def figure_html(path,base):
@@ -133,7 +133,7 @@ def main():
     for directory in [root,root/'archives']:
         if directory.is_dir():
             downloads.extend(f for f in directory.iterdir() if f.is_file() and ('download' in f.name.lower() or 'release' in f.name.lower() and 'manifest' in f.name.lower()) and f.suffix.lower() in ['.json','.md','.csv'])
-    body=summary_body+'<p>MAX-STRUCT R13 的报告、数学推导、实际分析图集和复现入口。以下按数据暴露状态与物理合同分组；不从文件存在推断方法优劣。</p><p class="note">当前页面按本地文件生成。未生成的独立确认报告、论文和下载地址不会占位，也不表示已经发布。</p>'
+    body=summary_body+'<p>报告、数学推导、完整分析图集与复现入口。新对象确认、既有开发、经典对象、实测及三维分别列出，完整保留正面和负面结果。</p>'
     body+='<h2 id="documents">实际文档</h2><div class="doclist">'+''.join('<a href="'+link(path,root)+'">'+esc(label)+'</a>' for path,label in docs)+'</div>'
     body+='<h2 id="protocol">执行合同</h2><div class="cards"><article class="card"><h3>C1 · 开发与表示对照</h3><p>历史四P核队列；mod50投影/材料步审计及阶段内原生审计按各配置记录。已暴露对象与后续独立对象分开。</p></article><article class="card"><h3>C2 · 独立确认</h3><p>八P核、每BLAS一线程。统一绝对进程CPU每2秒桶，在下一次完整材料更新后付费审计；原生初始/阶段/终点审计保留。corrector与direct每次已付物理目标评价记录。</p><p class="note">桶可能被不可中断操作跨过，不补造审计；全部实际费用保留。M4本地控制另列，不与i9计时直接混合。</p></article></div>'
     for key,(title,note) in GROUPS.items():
@@ -146,6 +146,15 @@ def main():
             body+='<small>'+esc(', '.join(c['domains']))+'</small></article>'
         body+='</div>'
     if downloads:body+='<h2>实际下载清单</h2><div class="doclist">'+''.join('<a href="'+link(path,root)+'">'+esc(path.name)+'</a>' for path in downloads)+'</div>'
+    manifest=root/'DOWNLOADS.json'
+    if manifest.is_file():
+        data=json.loads(manifest.read_text())
+        if data.get('published') is True:
+            body+='<p>以下附件已公开并读回核对。大文件分片按编号二进制连接；下载和解压建议使用外置盘。初次失败、恢复来源与规范结果分别保留，勿覆盖混用。</p><div class="comparison"><table><thead><tr><th>原始附件</th><th>字节</th><th>下载分片（依次连接）</th></tr></thead><tbody>'
+            for asset in data['logical_assets']:
+                parts=' · '.join('<a href="'+esc(part['url'])+'">'+esc(part['name'])+'</a>' for part in asset['parts'] if part.get('url_readback_verified') is True)
+                body+='<tr><td>'+esc(asset['name'])+'</td><td>'+format(asset['bytes'],',')+'</td><td>'+parts+'</td></tr>'
+            body+='</tbody></table></div>'
     nav='<nav><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging">GitHub项目首页</a>'+('<a href="RESEARCH_REPORT_ZH.md">中文研究报告</a>' if (root/'RESEARCH_REPORT_ZH.md').is_file() else '')+'<a href="#documents">文档</a><a href="#protocol">执行合同</a><a href="GALLERY.html">全部图集</a><a href="GALLERY.md">GitHub图集</a></nav>'
     (root/'index.html').write_text(page(summary_title or 'MAX-STRUCT R13 · 报告与证据导航',body,nav))
     gallery='<p class="note">此页只汇总真实分析目录。图片采用原文件；科学解释请读取各组报告。虚拟验证夹具不在本图集中。</p>'
