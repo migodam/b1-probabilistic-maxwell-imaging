@@ -37,7 +37,7 @@ def main():
     sys.path[:0]=[str(args.legacy_repo),str(root/'runtime'),str(root/'src')]
     import numpy as np
     from scipy.stats import chi2
-    from scipy.optimize import minimize
+    from scipy.optimize import minimize,least_squares
     from research.research_fbg_r3_experiments.src.physics import MaxwellModel
     from research.research_max_struct_r8.src import benchmark_solver as solver
     from research.research_max_struct_r10.src.twod_adapter import noise_ball_rank
@@ -48,7 +48,7 @@ def main():
     algorithm=task.get('algorithm',task['method'])
     cfg=manifest['protocol']; cap=float(task.get('CPU_cap',cfg['CPU_cap']))
     proposal_fraction=float(cfg.get('proposal_fraction',.6))
-    deadline=cap if algorithm=='direct' else cap*proposal_fraction
+    deadline=cap if algorithm in ('direct','physical_trf') else cap*proposal_fraction
     out=root/'RESULTS'/task['campaign']/task['task_id'];out.mkdir(parents=True,exist_ok=False)
     with np.load(root/task['input_file'],allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}
     m0=public.pop('m_init'); Y=public['Y']; sigma=float(public['sigma'])
@@ -117,9 +117,31 @@ def main():
 
     try:
         initial=physical(m0);snapshots['initial']=initial
-        if algorithm=='direct':
+        if algorithm in ('direct','physical_trf'):
             phase='direct'
-            try: stop['direct']=correct(m0)
+            try:
+                if algorithm=='physical_trf':
+                    # Existing FBG native TRF objective/Jacobian, with all
+                    # physical trial candidates retained by original Phi.
+                    data_scale=np.linalg.norm(Y)
+                    def residual(m):
+                        check();state=model.state(m)
+                        prior,_=model.regularizer_residual(m)
+                        record(m,state,extra=dict(physical_solver='inherited_full_J_TRF'))
+                        check()
+                        return np.r_[model.pack(state['Y']-Y)/data_scale,prior]
+                    def jacobian(m):
+                        check();_,prior_j=model.regularizer_residual(m)
+                        matrix=np.vstack((model.jacobian(m)/data_scale,prior_j))
+                        check();return matrix
+                    result=least_squares(residual,m0,jac=jacobian,bounds=(lower,upper),
+                        method='trf',x_scale='jac',max_nfev=3000,ftol=1e-10,xtol=1e-10,gtol=1e-8)
+                    stop['direct']=dict(message=str(result.message),evaluations=int(result.nfev),
+                        Jacobian_evaluations=int(result.njev),optimality=float(result.optimality))
+                    auxiliary_receipt.update(algorithm='inherited_FBG_full_J_TRF',
+                        source='research.research_fbg_r3_experiments.src.full_maxwell_corrector.corrector',
+                        adaptation='shared paid-candidate record and absolute process CPU; max_nfev3000 bounded by paid cap')
+                else:stop['direct']=correct(m0)
             except BudgetEnd: stop['direct']='WHOLE_PROCESS_CPU'
             snapshots['raw']=initial;snapshots['corrected']=best
         else:
@@ -315,7 +337,7 @@ def main():
         secondary_candidate=secondary['metadata']['candidate'] if secondary else None,
         eligible_candidates=sum(h['eligible'] for h in history),overrun_candidates=sum(not h['eligible'] for h in history),
         components=components,material_DOF=model.n,stored_field_real_scalars=4*model.G.shape[0]*model.ns,
-        independent_algorithm_state_DOF=model.n if algorithm in ('direct','physical_globaldual') else 2*model.G.shape[0]*model.ns+model.n if algorithm=='nfft_equations' else None,
+        independent_algorithm_state_DOF=model.n if algorithm in ('direct','physical_trf','physical_globaldual') else 2*model.G.shape[0]*model.ns+model.n if algorithm=='nfft_equations' else None,
         state_DOF_qualification='Stored X/Q ambient scalars are not independent CIE DOF. CIE/G19 actual current ranks and source DOF are in auxiliary_receipt.current_spaces; direct optimizes material only; DR keeps an unconstrained two-field iterator, AP returns a propagation-constrained iterator.',
         delta=delta,sigma_complex_RMS=sigma,
         noise_qualification=str(public.get('sigma_role','iid circular complex RMS; CN99 raw ball')),
