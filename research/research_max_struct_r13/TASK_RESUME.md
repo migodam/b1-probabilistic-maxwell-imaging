@@ -66,3 +66,7 @@ Next: KEEPWAITING/DO REALREMAINING WORK. Parentmustextracteachdownloadedterminal
 ## FINAL NUMERICAL STATE / publication phase
 
 All queues, seals and seven canonical scores completed; no new inverse loops remain. Read RESEARCH_REPORT_ZH.md and CHAT_HANDOFF.md for final interpretation. 962canonicalruns,48fresh2D;1004contractrecords include42recovery aliases. Final tasks are packaging, cost/public link verification, GitHub existing-main/Pages delivery, and final reply. Do not restart science or re-open GT selection.
+
+## COMPLETE — public readback accepted
+
+All required scientific work, final Chinese report, English manuscript, code, raw arrays, failure/cost records and actual galleries delivered. Existing main/Pages published; Release research-max-struct-r13-20261112 has23logicalassets/24publicverifiedparts (4,671,477,738bytes). Pages build/deploy succeeded; IAB home and four real figures visibly checked,16public web resources200 with exact current content. See audit/PUBLIC_READBACK_PAGES_FINAL.json. No numerical/new algorithm work remains. Final publication-only receipts do not change frozen methods/results or revive research loops.

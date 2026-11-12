@@ -30,6 +30,7 @@ def supplemental_receipts(root,add):
     final_metadata += [(p,'publication_inventory') for p in (root/'audit').glob('GIT_PUBLICATION_*/GIT_ALLOWLIST.json')]
     final_metadata += [(p,'publication_link_check') for p in (root/'audit').glob('GIT_PUBLICATION_*/LINK_CHECK.json')]
     final_metadata += [(p,'publication_readback') for p in (root/'audit').glob('PUBLIC_READBACK*.json')]
+    final_metadata += [(root/'audit'/name,'publication_failed_attempt') for name in ['METADATA_SIZE_PROBE_ABORTED.json','DOWNLOAD_INDEX_FIRST_READBACK_FAILURE.json']]
     for f,phase in final_metadata:
         if not f.is_file():continue
         d=load(f);add('final_metadata:'+str(f.relative_to(root)),phase,d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,scope='One actual metadata/document/publication verification process; nested records not charged again')

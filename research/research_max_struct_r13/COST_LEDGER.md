@@ -1,6 +1,6 @@
 # R13 成本账本
 
-费用以实测整进程 CPU、各独立队列历时和算子分类计数为准；不把所有并行 child wall 相加称作总历时。货币费用、历史 NN 训练和若干早期中断计时无法获得，保留 null。本页已知费用是下界，最终发布阶段元数据总表见 `analysis/cost_inventory_publication/`（此前快照仍保留）；网页打包前快照见 `analysis/cost_inventory_prepublication/`。
+费用以实测整进程 CPU、各独立队列历时和算子分类计数为准；不把所有并行 child wall 相加称作总历时。货币费用、历史 NN 训练和若干早期中断计时无法获得，保留 null。本页已知费用是下界，最终发布阶段元数据总表见 `analysis/cost_inventory_verified_publication/`（此前快照仍保留）；网页打包前快照见 `analysis/cost_inventory_prepublication/`。
 
 |主机 / 项目|已知 CPU 秒|解释|
 |---|---:|---|
@@ -41,3 +41,5 @@ Fresnel后验留出验证增加27 LU、972源RHS；stationarity另增加393 LU�
 主要 i9 使用已确认P核、单BLAS线程、统一NORMAL优先级，有限任务队列；具体核心列表以各回执为准。Apple参考为M4十核24GiB。没有R13 CUDA计算、GPU训练或新常驻调度服务。单任务CPU、单队列wall和不同主机CPU分别报告。环境与依赖版本见 `audit/ENVIRONMENT_I9.json` / `audit/ENVIRONMENT_APPLE.json`。
 
 四份丢失控制器的partial run、部分setup/读取和人工/模型审查的CPU/wall未知。模型调用金额未知。最终账本不会把它们填0；未知行数随发布回执增加而可能变化，机器表为准。
+
+最终逐项费用可直接网页读取：[全部成本分片](analysis/review_tables/final_cost_inventory/README.md)；[按主机/阶段及矩阵维数汇总](analysis/cost_inventory_verified_publication/COST_SUMMARY.json)。3729条含引用记录不是3729份运行；27条CPU未知记录保留。少量最终Git传输和模型审查费用仍未知。

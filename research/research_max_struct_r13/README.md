@@ -13,3 +13,5 @@
 - [原始附件](ARTIFACTS.md) / [复现](REPRODUCE.md) / [成本](COST_LEDGER.md) / [失败](FAILURES.md)
 
 保留R4–R12原证据。方法完成、物理资格、材料恢复和论文资格分别判断，不将发布成功当作科学结论。
+
+公开入口：[研究网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r13/) · [原始结果Release](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r13-20261112)。网页、四张主图、三维/经典/实测附件及公开下载均已实际读回。
