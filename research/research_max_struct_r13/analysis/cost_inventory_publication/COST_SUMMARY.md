@@ -1,0 +1,2518 @@
+# R13 已知费用清单（元数据快照）
+
+这是按host/阶段分列的已知消耗下界，不是最终全费用或并行历时。当前无终态回执的队列保留为不完整；缺失/中断/评分计时为空，不补零。
+
+|Host / 阶段|已知CPU秒|未知CPU记录|
+|---|---:|---:|
+|i9_remote / online|80241.937500|0|
+|i9_remote / online_controller|31.828125|0|
+|i9_remote / online_reference|0.000000|0|
+|i9_remote / online_operator_reference|0.000000|0|
+|i9_remote / online_failed_attempt|36.734375|0|
+|Apple_local / online|3995.173641|0|
+|Apple_local / online_controller|1.014103|0|
+|Apple_local / online_reference|0.000000|0|
+|Apple_local / online_operator_reference|0.000000|0|
+|i9_remote / online_failed|0.000000|4|
+|Apple_local / validation_failed|0.000000|2|
+|Apple_local / setup_generation|5.125994|0|
+|Apple_local / setup_NN|1.285002|0|
+|Apple_local / setup_failed|0.000000|4|
+|UNMEASURED_LEGACY / inherited_prior|0.000000|0|
+|Apple_local / setup_packing|3.512927|3|
+|Apple_local / validation_exposed|9.146260|0|
+|Apple_local / validation_operator_reference|0.000000|0|
+|Apple_local / validation_wiring|3.458161|0|
+|Apple_local / validation_physics|4.933219|0|
+|Apple_local / validation_reference|0.000000|0|
+|Apple_local / setup_validation|2.504684|3|
+|i9_remote / release_compression|296.765625|0|
+|Apple_local / release_compression|14.899302|0|
+|Apple_local / public_selection|10.837421|0|
+|Apple_local / public_selection_reference|0.000000|0|
+|Apple_local / environment_metadata|0.019025|0|
+|i9_remote / environment_metadata|0.718750|0|
+|unrecorded_metadata_host / environment_metadata|0.000000|1|
+|Apple_local / scoring_plotting|217.157707|7|
+|Apple_local / report_assembly|0.001008|0|
+|Apple_local / metadata_contracts|1.836256|0|
+|Apple_local / publication_inventory|6.975596|0|
+|Apple_local / publication_link_check|0.647818|0|
+|Apple_local / release_extraction|4.370955|0|
+|Apple_local / setup_transport|0.031737|0|
+|i9_remote / setup_packing|0.031250|0|
+|Apple_local / release_composition|0.757485|0|
+|Apple_local / release_packaging|16.326555|0|
+|Apple_local / release_upload|13.138334|0|
+|Apple_local / release_download|28.099188|0|
+|Apple_local / validation_public_interfaces|20.713653|0|
+|Apple_local / release_packaging_failed_attempt|4.329245|0|
+|Apple_local / offline_holdout_validation|0.757567|0|
+|parent-declared Apple_M4 analysis / offline_stationarity|4.231737|0|
+|Apple_local / release_site|0.000000|1|
+
+外部child CPU只从权威队列计一次；内部计时、分析COST_TOTALS与恢复子队列为引用。队列wall不与child wall求和。不同矩阵维数的LU/RHS分列，projector/current/Gram动作不能当作物理LU RHS。
+
+## 明确未知或重叠
+
+- `queue:physics_v1`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:physics_v1:slotted_high_frame__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:slotted_high_frame__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:slotted_high_frame__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:slotted_high_frame__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:slotted_high_frame__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:slotted_high_frame__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:slotted_high_frame__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:unequal_coupled_steps__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:unequal_coupled_steps__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:unequal_coupled_steps__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:unequal_coupled_steps__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:unequal_coupled_steps__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:unequal_coupled_steps__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:unequal_coupled_steps__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:unequal_coupled_steps__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:unequal_coupled_steps__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:unequal_coupled_steps__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:mixed_crossed_bracket__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:mixed_crossed_bracket__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:mixed_crossed_bracket__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:mixed_crossed_bracket__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:mixed_crossed_bracket__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:mixed_crossed_bracket__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:mixed_crossed_bracket__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:mixed_crossed_bracket__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:mixed_crossed_bracket__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:mixed_crossed_bracket__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame_crossgrid8__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame_crossgrid8__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame_crossgrid8__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:slotted_high_frame_crossgrid8__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:slotted_high_frame_crossgrid8__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:slotted_high_frame_crossgrid8__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:slotted_high_frame_crossgrid8__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:slotted_high_frame_crossgrid8__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:slotted_high_frame_crossgrid8__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:slotted_high_frame_crossgrid8__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:dielTM_dec8f__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:dielTM_dec8f__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:dielTM_dec8f__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:dielTM_dec8f__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:dielTM_dec8f__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:dielTM_dec8f__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:dielTM_dec8f__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:dielTM_dec8f__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:dielTM_dec8f__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:dielTM_dec8f__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:twodielTM_8f__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:twodielTM_8f__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:twodielTM_8f__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:twodielTM_8f__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:twodielTM_8f__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:twodielTM_8f__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:twodielTM_8f__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:twodielTM_8f__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:twodielTM_8f__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:twodielTM_8f__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_150to32__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:austria_150to32__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:austria_150to32__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:austria_150to32__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:austria_150to32__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:physics_v1:austria_matched32__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:austria_matched32__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:austria_matched32__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_v1:austria_matched32__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:physics_v1:austria_matched32__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `queue:development_v1_recovery`：Merged parent queue already includes these jobs/controller window; reference only
+- `controller:development_v1_recovery`：Included in merged parent controller total
+- `job:development_v1_recovery:C__r8_test_0001__dr`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__ap`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__ap_dr`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__event_integer`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__event_fractional`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__random_event`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__normal_double`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__anderson`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__ap`：Already counted in merged parent
+- `job:development_v1_recovery:C__r8_test_0001__reset_fractional`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__dr`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__ap_dr`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__event_integer`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__event_fractional`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__anderson`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__random_event`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__normal_double`：Already counted in merged parent
+- `job:development_v1_recovery:A__r10_twod_0001__reset_fractional`：Already counted in merged parent
+- `queue:confirmation_online_controls16`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:confirmation_online_controls16:r13_fresh_0003__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0003__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0006__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0006__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0003__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0003__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0003__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0003__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0006__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0006__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0000__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0000__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0000__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0000__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0000__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0000__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0009__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0009__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0006__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0006__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0009__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0009__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0009__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0009__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0012__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0012__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0012__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0012__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0015__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0015__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0012__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0012__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0015__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0015__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0015__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0015__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0018__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0018__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0021__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0021__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0021__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0021__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0018__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0018__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0018__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0018__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0021__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0021__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0024__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0024__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0024__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0024__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0024__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0024__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0027__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0027__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0030__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0030__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0027__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0027__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0030__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0030__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0027__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0027__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0030__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0030__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0033__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0033__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0033__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0033__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0033__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0033__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0036__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0036__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0036__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0036__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0036__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0036__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0039__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0039__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0039__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0039__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0039__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0039__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0042__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0042__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0042__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0042__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0045__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0045__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0042__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0042__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0045__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0045__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_online_controls16:r13_fresh_0045__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_online_controls16:r13_fresh_0045__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `queue:representation_v1`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:representation_v1:A__r10_twod_0004__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0004__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:B__r12_confirm24_0010__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:C__r8_test_0001__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:representation_v1:A__r10_twod_0001__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `queue:development_v2`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:development_v2:B__r12_confirm24_0010__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:B__r12_confirm24_0010__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:A__r10_twod_0004__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:A__r10_twod_0004__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:A__r10_twod_0004__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:A__r10_twod_0004__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:A__r10_twod_0004__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:A__r10_twod_0004__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:B__r12_confirm24_0010__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:B__r12_confirm24_0010__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:B__r12_confirm24_0010__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:B__r12_confirm24_0010__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:C__r8_test_0001__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:C__r8_test_0001__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:C__r8_test_0001__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:C__r8_test_0001__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:C__r8_test_0001__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:C__r8_test_0001__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:A__r10_twod_0001__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:A__r10_twod_0001__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:A__r10_twod_0001__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:A__r10_twod_0001__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v2:A__r10_twod_0001__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v2:A__r10_twod_0001__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `queue:confirmation_local_reference16`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:confirmation_local_reference16:r13_fresh_0000__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0000__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0000__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0000__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0000__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0000__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0000__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0003__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0003__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0003__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0003__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0003__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0003__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0006__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0006__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0003__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0006__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0006__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0006__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0006__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0006__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0009__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0009__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0009__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0009__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0009__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0009__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0009__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0012__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0012__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0012__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0012__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0012__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0012__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0012__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0015__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0015__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0015__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0015__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0015__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0015__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0015__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0018__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0018__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0018__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0018__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0018__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0018__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0018__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0021__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0021__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0021__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0021__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0021__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0021__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0021__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0024__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0024__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0024__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0024__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0024__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0024__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0024__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0027__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0027__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0027__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0027__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0027__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0027__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0027__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0030__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0030__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0030__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0030__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0030__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0030__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0030__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0033__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0033__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0033__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0033__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0033__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0033__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0033__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0036__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0036__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0036__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0036__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0036__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0036__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0036__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0039__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0039__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0039__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0039__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0039__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0039__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0039__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0042__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0042__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0042__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0042__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0042__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0042__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0042__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0045__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0045__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0045__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0045__physical_globaldual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_reference16:r13_fresh_0045__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_local_reference16:r13_fresh_0045__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_local_reference16:r13_fresh_0045__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `queue:development_v4_local`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:development_v4_local:B__r12_confirm24_0010__online_midpoint`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v4_local:B__r12_confirm24_0010__online_midpoint:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v4_local:B__r12_confirm24_0010__online_midpoint_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v4_local:B__r12_confirm24_0010__online_midpoint_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `queue:confirmation_rescue48`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:confirmation_rescue48:r13_fresh_0002__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0007__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0007__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0007__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0007__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0007__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0007__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0002__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0002__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0002__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0002__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0002__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0002__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0007__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0016__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0016__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0016__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0016__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0016__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0016__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0017__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0017__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0016__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0017__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0017__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0024__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0017__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0017__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0024__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0024__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0024__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0024__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0029__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0029__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0029__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0029__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0029__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0017__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0024__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0024__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0029__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0029__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0037__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0037__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0037__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0037__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0037__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0037__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0037__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0042__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0042__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0042__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0042__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0042__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0042__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0044__dr_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0044__dr_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_rescue48:r13_fresh_0044__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0042__direct_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0044__full_current_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0044__g19_restart`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_rescue48:r13_fresh_0044__event_rescue`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_rescue48:r13_fresh_0044__event_rescue:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `queue:physics_recovery_v1`：Merged parent queue already includes these jobs/controller window; reference only
+- `controller:physics_recovery_v1`：Included in merged parent controller total
+- `job:physics_recovery_v1:slotted_high_frame__cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame__dual_cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame__global_dual`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame__direct`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame__dr`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:slotted_high_frame__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:slotted_high_frame__ap`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:slotted_high_frame__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:unequal_coupled_steps__cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame__event_integer`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:slotted_high_frame__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:unequal_coupled_steps__dual_cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:unequal_coupled_steps__global_dual`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:unequal_coupled_steps__direct`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:unequal_coupled_steps__dr`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:unequal_coupled_steps__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:unequal_coupled_steps__ap`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:unequal_coupled_steps__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:unequal_coupled_steps__event_integer`：Already counted in merged parent
+- `internal:physics_recovery_v1:unequal_coupled_steps__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:unequal_coupled_steps__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:mixed_crossed_bracket__cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:mixed_crossed_bracket__dual_cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:mixed_crossed_bracket__global_dual`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:mixed_crossed_bracket__direct`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:mixed_crossed_bracket__dr`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:mixed_crossed_bracket__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__dual_cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:mixed_crossed_bracket__ap`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:mixed_crossed_bracket__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:mixed_crossed_bracket__event_integer`：Already counted in merged parent
+- `internal:physics_recovery_v1:mixed_crossed_bracket__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:mixed_crossed_bracket__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__global_dual`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__direct`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__dr`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:slotted_high_frame_crossgrid8__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__ap`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:slotted_high_frame_crossgrid8__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:slotted_high_frame_crossgrid8__event_integer`：Already counted in merged parent
+- `internal:physics_recovery_v1:slotted_high_frame_crossgrid8__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:slotted_high_frame_crossgrid8__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:dielTM_dec8f__cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:dielTM_dec8f__dual_cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:dielTM_dec8f__global_dual`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:dielTM_dec8f__dr`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:dielTM_dec8f__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:dielTM_dec8f__ap`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:dielTM_dec8f__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:twodielTM_8f__cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:dielTM_dec8f__event_integer`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:dielTM_dec8f__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:twodielTM_8f__dual_cie`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:dielTM_dec8f__direct`：Already counted in merged parent
+- `internal:physics_recovery_v1:dielTM_dec8f__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:twodielTM_8f__global_dual`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:twodielTM_8f__direct`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `job:physics_recovery_v1:twodielTM_8f__event_integer`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:twodielTM_8f__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:twodielTM_8f__dr`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:twodielTM_8f__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `job:physics_recovery_v1:twodielTM_8f__ap`：Already counted in merged parent
+- `internal:physics_recovery_v1:twodielTM_8f__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:physics_recovery_v1:twodielTM_8f__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `queue:confirmation_core48`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:confirmation_core48:r13_fresh_0000__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0000__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0000__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0000__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0000__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0000__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0000__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0000__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0000__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0000__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0000__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0000__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0001__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0001__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0001__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0001__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0001__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0001__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0002__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0002__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0002__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0002__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0002__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0002__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0002__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0002__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0002__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0002__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0002__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0002__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0003__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0003__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0003__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0003__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0003__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0003__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0003__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0003__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0003__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0003__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0003__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0003__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0004__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0004__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0004__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0004__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0004__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0004__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0005__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0005__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0005__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0005__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0005__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0005__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0005__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0005__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0005__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0005__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0005__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0006__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0005__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0006__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0006__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0006__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0006__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0006__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0006__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0006__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0006__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0006__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0006__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0007__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0007__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0006__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0007__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0007__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0007__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0007__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0007__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0007__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0007__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0007__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0007__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0008__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0008__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0007__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0008__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0008__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0008__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0008__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0009__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0009__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0009__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0009__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0009__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0009__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0009__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0009__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0009__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0009__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0009__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0009__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0010__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0010__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0010__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0010__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0010__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0010__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0011__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0011__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0011__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0011__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0011__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0011__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0011__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0011__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0011__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0011__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0011__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0011__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0012__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0012__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0012__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0012__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0012__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0012__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0012__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0012__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0012__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0012__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0012__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0012__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0013__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0013__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0013__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0013__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0013__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0013__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0013__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0013__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0013__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0013__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0013__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0013__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0014__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0014__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0014__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0014__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0014__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0014__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0015__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0015__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0015__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0015__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0015__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0015__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0015__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0015__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0015__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0015__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0015__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0015__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0016__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0016__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0016__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0016__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0016__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0016__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0017__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0017__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0017__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0017__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0017__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0017__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0017__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0017__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0017__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0017__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0017__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0017__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0018__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0018__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0018__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0018__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0018__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0018__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0019__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0019__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0019__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0019__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0019__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0019__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0019__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0019__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0019__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0019__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0019__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0019__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0020__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0020__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0020__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0020__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0020__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0020__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0020__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0020__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0020__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0020__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0020__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0020__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0021__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0021__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0021__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0021__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0021__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0021__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0021__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0021__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0021__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0021__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0021__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0021__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0022__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0022__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0022__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0022__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0022__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0023__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0022__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0023__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0023__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0023__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0023__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0023__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0023__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0023__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0023__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0023__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0023__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0023__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0024__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0024__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0024__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0024__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0024__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0024__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0024__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0024__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0024__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0024__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0024__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0024__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0025__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0025__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0025__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0025__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0025__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0025__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0025__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0025__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0025__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0025__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0025__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0025__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0026__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0026__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0026__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0026__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0026__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0026__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0026__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0026__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0026__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0026__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0026__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0026__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0027__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0027__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0027__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0027__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0027__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0027__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0027__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0027__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0027__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0027__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0027__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0027__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0028__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0028__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0028__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0028__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0028__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0028__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0028__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0028__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0028__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0028__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0028__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0028__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0029__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0029__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0029__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0029__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0029__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0029__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0029__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0029__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0029__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0029__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0029__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0029__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0030__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0030__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0030__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0030__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0030__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0030__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0030__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0030__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0030__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0030__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0030__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0030__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0031__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0031__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0031__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0031__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0031__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0031__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0031__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0031__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0031__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0031__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0031__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0031__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0032__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0032__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0032__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0032__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0032__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0032__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0033__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0033__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0033__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0033__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0033__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0033__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0033__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0033__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0033__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0033__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0033__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0033__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0034__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0034__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0034__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0034__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0034__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0034__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0034__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0034__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0034__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0034__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0034__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0034__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0035__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0035__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0035__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0035__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0035__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0035__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0035__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0035__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0035__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0035__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0035__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0035__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0036__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0036__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0036__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0036__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0036__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0036__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0036__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0036__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0036__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0036__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0036__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0036__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0037__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0037__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0037__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0037__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0037__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0038__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0037__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0038__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0038__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0038__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0038__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0038__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0038__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0038__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0038__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0038__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0038__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0038__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0039__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0039__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0039__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0039__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0039__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0039__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0039__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0039__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0039__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0039__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0039__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0040__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0040__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0039__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0040__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0040__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0040__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0041__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0041__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0040__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0041__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0041__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0041__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0041__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0041__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0041__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0041__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0041__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0041__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0041__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0042__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0042__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0042__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0042__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0042__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0042__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0042__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0042__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0042__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0042__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0042__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0042__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0043__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0043__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0043__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0043__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0043__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0043__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0043__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0043__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0043__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0043__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0043__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0043__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0044__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0044__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0044__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0044__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0044__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0044__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0044__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0044__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0044__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0044__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0044__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0045__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0045__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0044__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0045__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0045__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0045__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0045__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0046__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0046__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0046__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0046__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0046__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0046__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0046__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0046__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0046__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0046__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0046__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0046__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0047__dual_cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0047__cie`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0047__g19_full_apcs`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0047__g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0047__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0047__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0047__g19_full_current`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_core48:r13_fresh_0047__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0047__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0047__random_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_core48:r13_fresh_0047__random_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_core48:r13_fresh_0047__direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `queue:confirmation_mechanism16`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:confirmation_mechanism16:r13_fresh_0000__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0000__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0000__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0000__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0000__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0000__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0000__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0000__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0003__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0003__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0000__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0003__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0003__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0003__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0003__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0000__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0003__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0000__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0003__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0003__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0003__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0003__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0003__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0003__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0003__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0003__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0006__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0006__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0006__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0006__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0003__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0003__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0006__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0006__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0006__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0006__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0006__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0006__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0006__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0006__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0006__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0009__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0009__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0006__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0006__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0009__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0009__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0009__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0006__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0006__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0009__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0009__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0009__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0009__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0009__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0009__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0009__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0009__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0009__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0009__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0012__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0012__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0009__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0009__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0012__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0012__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0012__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0012__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0012__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0012__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0012__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0015__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0015__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0015__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0015__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0012__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0015__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0015__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0015__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0015__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0015__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0015__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0015__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0018__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0018__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0015__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0015__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0018__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0018__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0015__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0015__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0015__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0018__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0015__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0018__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0018__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0018__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0018__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0018__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0018__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0018__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0018__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0018__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0018__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0018__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0021__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0021__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0021__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0021__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0018__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0021__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0021__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0021__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0021__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0021__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0021__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0021__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0021__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0021__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0021__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0024__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0024__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0021__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0024__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0024__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0021__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0021__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0024__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0024__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0024__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0024__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0024__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0024__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0024__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0024__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0024__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0024__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0024__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0027__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0027__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0027__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0027__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0024__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0024__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0027__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0027__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0027__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0027__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0027__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0027__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0027__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0027__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0030__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0030__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0030__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0030__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0027__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0027__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0027__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0027__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0027__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0030__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0030__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0030__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0030__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0030__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0030__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0030__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0030__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0030__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0030__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0030__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0033__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0033__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0033__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0033__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0030__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0033__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0033__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0033__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0033__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0030__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0033__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0033__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0033__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0033__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0033__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0033__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0033__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0036__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0036__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0036__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0036__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0033__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0033__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0036__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0036__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0036__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0036__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0036__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0036__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0036__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0036__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0036__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0036__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0036__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0039__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0039__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0039__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0039__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0036__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0036__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0039__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0039__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0039__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0039__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0039__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0039__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0039__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0039__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0039__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0039__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0039__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0042__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0042__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0042__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0042__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0042__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0042__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0039__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0042__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0042__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0042__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0039__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0042__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0042__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0042__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0042__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0042__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0042__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0045__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0045__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0045__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0045__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0042__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0042__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0045__global_dual`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0045__a_plus`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0045__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0045__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0045__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0045__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0045__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0045__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0045__nfft_equations`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0045__nn_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:confirmation_mechanism16:r13_fresh_0045__nn_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:confirmation_mechanism16:r13_fresh_0045__nn_g19`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_mechanism16:r13_fresh_0045__nn_direct`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `queue:development_v1`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:development_v1:A__r10_twod_0004__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__event_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__event_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__random_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__random_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__normal_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__normal_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0004__reset_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0004__reset_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__event_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__event_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__random_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__random_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__normal_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__normal_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:B__r12_confirm24_0010__reset_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:B__r12_confirm24_0010__reset_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__event_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__event_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__random_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__random_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__normal_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__normal_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__ap`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__ap:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:C__r8_test_0001__reset_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:C__r8_test_0001__reset_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__ap_dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__ap_dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__event_integer`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__event_integer:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__event_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__event_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__anderson`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__anderson:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__random_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__random_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__normal_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__normal_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v1:A__r10_twod_0001__reset_fractional`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v1:A__r10_twod_0001__reset_fractional:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `queue:confirmation_local_trf16`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:confirmation_local_trf16:r13_fresh_0009__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0012__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0000__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0006__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0018__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0003__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0024__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0030__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0015__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0033__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0039__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0036__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0042__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:B__r12_confirm24_0010__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0045__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0027__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `internal:confirmation_local_trf16:r13_fresh_0021__physical_trf`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `queue:development_v3_local`：Queue elapsed is an independent interval; never sum child wall times.
+- `internal:development_v3_local:B__r12_confirm24_0010__online_event`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v3_local:B__r12_confirm24_0010__online_event:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v3_local:B__r12_confirm24_0010__online_random`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v3_local:B__r12_confirm24_0010__online_random:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v3_local:B__r12_confirm24_0010__online_double`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v3_local:B__r12_confirm24_0010__online_double:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v3_local:B__r12_confirm24_0010__online_noevent`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v3_local:B__r12_confirm24_0010__online_noevent:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v3_local:B__r12_confirm24_0010__online_reset`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v3_local:B__r12_confirm24_0010__online_reset:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `internal:development_v3_local:B__r12_confirm24_0010__dr`：Internal pre-exit timer/counters overlap authoritative job row; do not add
+- `operator:development_v3_local:B__r12_confirm24_0010__dr:projector_cost`：Operator/H/port actions are distinct from physical solves; nested in job CPU
+- `analysis_cost_reference:physics_v1`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:confirmation_online_controls16`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:representation_v1`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:development_v2`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:confirmation_local_reference16`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:development_v4_local`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:confirmation_rescue48`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:confirmation_core48`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:confirmation_mechanism16`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:development_v1`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:confirmation_local_trf16`：Same jobs as queue; analysis totals cross-check, not additional work
+- `analysis_cost_reference:development_v3_local`：Same jobs as queue; analysis totals cross-check, not additional work
+- `aborted_C1:C__r8_test_0001__dr`：child terminated on SSH/controller exit before its final receipt; no recoverable process handle
+- `aborted_C1:C__r8_test_0001__ap`：child terminated on SSH/controller exit before its final receipt; no recoverable process handle
+- `aborted_C1:C__r8_test_0001__ap_dr`：child terminated on SSH/controller exit before its final receipt; no recoverable process handle
+- `aborted_C1:C__r8_test_0001__event_integer`：child terminated on SSH/controller exit before its final receipt; no recoverable process handle
+- `local_psutil_import_failure`：Original CPU/wall was not captured; no recoverable timing record
+- `dual_pressure_failed_serialization`：Not captured before failure; unknown, not imputed from wall time
+- `generation_failed_launch:1`：Failed before generation; original launch timing unknown
+- `generation_failed_launch:2`：Failed before generation; original launch timing unknown
+- `inherited_NN_training`：Historical training CPU/GPU/forward cost unknown; not zero
+- `runtime_pack_untimed:runtime_refinement_v2_final.zip`：Archive exists but no matching outer packaging timer receipt found; file bytes do not imply CPU
+- `runtime_pack_untimed:runtime_development_v1.zip`：Archive exists but no matching outer packaging timer receipt found; file bytes do not imply CPU
+- `runtime_pack_untimed:runtime_refinement_v2.zip`：Archive exists but no matching outer packaging timer receipt found; file bytes do not imply CPU
+- `diagnostic_operators:profile_diagnostic_v2/C__r8_test_0001/PROFILE.json:profile_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:profile_diagnostic_v2/B__r12_confirm24_0010/PROFILE.json:profile_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:profile_diagnostic_v2/A__r10_twod_0004/PROFILE.json:profile_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:forecast_diagnostic_v2/C__r8_test_0001/FORECAST.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:forecast_diagnostic_v2/B__r12_confirm24_0010/FORECAST.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:forecast_diagnostic_v2/A__r10_twod_0004/FORECAST.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/C__r8_test_0001/DUAL_PRESSURE.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/C__r8_test_0001/DUAL_PRESSURE.json:total_dense_operator_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/B__r12_confirm24_0010/DUAL_PRESSURE.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/B__r12_confirm24_0010/DUAL_PRESSURE.json:total_dense_operator_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/A__r10_twod_0001/DUAL_PRESSURE.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/A__r10_twod_0001/DUAL_PRESSURE.json:total_dense_operator_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/A__r10_twod_0004/DUAL_PRESSURE.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:dual_pressure_diagnostic_v2/A__r10_twod_0004/DUAL_PRESSURE.json:total_dense_operator_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `diagnostic_operators:same_shadow_witness/WITNESS.json:projector_cost`：Nested operator/QR/SVD/RHS counts retained separately; not additional physical solves or CPU
+- `wiring_operators:validation/a_plus_full_current/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_full_current/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_full_current/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_restricted/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_restricted/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_restricted/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/cie_dual_restricted/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/cie_dual_restricted/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/cie_dual_restricted/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_full_apcs/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_full_apcs/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/a_plus_full_apcs/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/interrupted/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/interrupted/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:validation/interrupted/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/cie_restricted/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/cie_restricted/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/cie_restricted/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_full_apcs/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_full_apcs/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_full_apcs/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_restricted/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_restricted/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_restricted/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_full_current/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_full_current/EXECUTION.json:denominator_setup_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:equal_area_wiring_v2/g19_full_current/EXECUTION.json:adapter_diagnostic_cost`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring_operators:nfft_equations_wiring/INTERRUPTED_EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `wiring:nfft_equations_wiring/EXECUTION.json`：Included in measured outer NFFT validation interval
+- `wiring_operators:nfft_equations_wiring/EXECUTION.json:operation_counts`：Nested adapter counts; no duplicate timing/physical RHS
+- `nfft_derivative_operator_counts`：Operator calls, not Maxwell solve RHS; included in outer validation CPU
+- `Mie_first_summary_overlap`：Same volume-solve receipts retained unchanged in final combined refinement summary; overlap unresolved, not counted twice
+- `new3d_generation_solve:0`：Per-solve CPU not separately timed; included in outer generation interval
+- `new3d_generation_solve:1`：Per-solve CPU not separately timed; included in outer generation interval
+- `new3d_generation_solve:2`：Per-solve CPU not separately timed; included in outer generation interval
+- `new3d_generation_solve:3`：Per-solve CPU not separately timed; included in outer generation interval
+- `physical_pack_check:INTEGRATION_CHECK.json`：Outer CPU or full solve counters absent where null; not reconstructed from successful comparison values
+- `physical_pack_check:new3d/runner_public/PACKAGING_RECEIPT.json`：Outer CPU or full solve counters absent where null; not reconstructed from successful comparison values
+- `physical_pack_check:fresnel_public/PACKAGING_RECEIPT.json`：Outer CPU or full solve counters absent where null; not reconstructed from successful comparison values
+- `min_change_selector_task:physics_v1:slotted_high_frame__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:unequal_coupled_steps__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:mixed_crossed_bracket__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:slotted_high_frame_crossgrid8__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:dielTM_dec8f__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:twodielTM_8f__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_150to32__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:physics_v1:austria_matched32__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0000__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0000__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0000__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0003__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0003__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0003__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0006__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0006__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0006__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0009__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0009__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0009__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0012__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0012__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0012__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0015__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0015__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0015__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0018__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0018__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0018__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0021__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0021__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0021__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0024__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0024__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0024__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0027__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0027__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0027__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0030__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0030__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0030__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0033__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0033__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0033__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0036__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0036__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0036__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0039__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0039__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0039__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0042__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0042__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0042__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0045__online_double`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0045__online_noevent`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_online_controls16:r13_fresh_0045__online_reset`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0000__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0000__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0000__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0000__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0000__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0000__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0003__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0003__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0003__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0003__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0003__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0003__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0006__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0006__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0006__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0006__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0006__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0006__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0009__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0009__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0009__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0009__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0009__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0009__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0012__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0012__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0012__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0012__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0012__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0012__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0015__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0015__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0015__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0015__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0015__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0015__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0018__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0018__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0018__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0018__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0018__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0018__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0021__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0021__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0021__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0021__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0021__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0021__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0024__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0024__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0024__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0024__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0024__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0024__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0027__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0027__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0027__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0027__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0027__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0027__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0030__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0030__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0030__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0030__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0030__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0030__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0033__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0033__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0033__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0033__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0033__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0033__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0036__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0036__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0036__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0036__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0036__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0036__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0039__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0039__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0039__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0039__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0039__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0039__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0042__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0042__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0042__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0042__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0042__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0042__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0045__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0045__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0045__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0045__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0045__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_reference16:r13_fresh_0045__physical_globaldual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0002__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0002__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0002__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0002__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0002__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0007__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0007__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0007__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0007__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0007__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0016__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0016__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0016__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0016__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0016__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0017__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0017__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0017__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0017__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0017__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0024__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0024__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0024__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0024__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0024__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0029__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0029__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0029__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0029__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0029__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0037__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0037__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0037__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0037__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0037__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0042__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0042__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0042__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0042__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0042__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0044__g19_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0044__full_current_restart`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0044__dr_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0044__event_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_rescue48:r13_fresh_0044__direct_rescue`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0000__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0001__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0002__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0003__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0004__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0005__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0006__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0007__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0008__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0009__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0010__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0011__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0012__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0013__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0014__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0015__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0016__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0017__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0018__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0019__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0020__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0021__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0022__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0023__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0024__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0025__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0026__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0027__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0028__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0029__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0030__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0031__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0032__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0033__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0034__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0035__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0036__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0037__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0038__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0039__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0040__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0041__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0042__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0043__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0044__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0045__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0046__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__dual_cie`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__g19_full_apcs`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__g19_full_current`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__event_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__random_integer`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_core48:r13_fresh_0047__direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0000__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0003__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0006__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0009__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0012__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0015__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0018__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0021__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0024__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0027__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0030__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0033__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0036__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0039__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0042__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__ap`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__anderson`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__a_plus`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__global_dual`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__ap_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__online_event`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__online_random`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__nfft_equations`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__nn_dr`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__nn_g19`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_mechanism16:r13_fresh_0045__nn_direct`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0000__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0003__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0006__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0009__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0012__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0015__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0018__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0021__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0024__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0027__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0030__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0033__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0036__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0039__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0042__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:r13_fresh_0045__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `min_change_selector_task:confirmation_local_trf16:B__r12_confirm24_0010__physical_trf`：Per-task scan interval nested in the authoritative selector batch CPU; never add twice
+- `environment_readback:ENVIRONMENT_READBACK_FAILED_ATTEMPT.json`：exception occurred before timing serialization; not imputed
+- `scoring_plot:representation_v1`：Scorer/figure CPU and wall were not recorded where null; not zero
+- `scoring_plot:development_v2`：Scorer/figure CPU and wall were not recorded where null; not zero
+- `scoring_plot:development_v4_local`：Scorer/figure CPU and wall were not recorded where null; not zero
+- `scoring_plot:development_v1`：Scorer/figure CPU and wall were not recorded where null; not zero
+- `scoring_plot:development_v3_local`：Scorer/figure CPU and wall were not recorded where null; not zero
+- `table_aggregation:analysis/delegated/development_aggregation_v2/AGGREGATION_RECEIPT.json`：Table/bootstrap/plot aggregation timer not measured; original online/source costs are not new work
+- `table_aggregation:analysis/delegated/development_aggregation_v1/AGGREGATION_RECEIPT.json`：Table/bootstrap/plot aggregation timer not measured; original online/source costs are not new work
+- `dependency_pack_failed_metadata`：Original failed metadata preparation timing unknown where null
+- `physics_C4_failed_transport`：Failed command-length transport before remote Python; original cost unknown, not zero
+- `static_site_build`：Builder recorded wall only; historic builder reruns were not separately timed

@@ -17,6 +17,7 @@
 |cross-grid噪声球失配|12新2D粗真材料、Austria cross与3D cross的模型误差超过噪声额度。|不调宽原CN99球冒充通过；单列discrepancy。|
 |三维Mie误差仍较大|有限体素几何/自项离散限制，细化有改善但未达1%精度。|真正vector inversion已运行；连续高精度资格不宣称。|
 |Fresnel无新最终领先|接收horn/噪声模型未充分已知，corrector后各法接近。|1053训练/711留出真实测量可预测，非GT材料证书。|
+|Release首次下载索引读回404|草稿untagged资产URL在正式发布后改变；重新读取实际已发布元数据，24个分片全部公网size-readback通过。|原失败记录保留；没有猜测或手工编造下载URL。|
 |NFFT、PADMM等原算法未完整复现|已有完整current方程适配，缺原优化日程或全文。|NOT_RUN为“成熟原版复现”，不能用适配失败算原法失败。|
 
 ## 明确未运行的扩展

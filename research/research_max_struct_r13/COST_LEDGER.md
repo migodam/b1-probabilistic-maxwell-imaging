@@ -1,6 +1,6 @@
 # R13 成本账本
 
-费用以实测整进程 CPU、各独立队列历时和算子分类计数为准；不把所有并行 child wall 相加称作总历时。货币费用、历史 NN 训练和若干早期中断计时无法获得，保留 null。本页已知费用是下界，最终元数据总表见 `analysis/cost_inventory_final/`；网页打包前快照见 `analysis/cost_inventory_prepublication/`。
+费用以实测整进程 CPU、各独立队列历时和算子分类计数为准；不把所有并行 child wall 相加称作总历时。货币费用、历史 NN 训练和若干早期中断计时无法获得，保留 null。本页已知费用是下界，最终发布阶段元数据总表见 `analysis/cost_inventory_publication/`（此前快照仍保留）；网页打包前快照见 `analysis/cost_inventory_prepublication/`。
 
 |主机 / 项目|已知 CPU 秒|解释|
 |---|---:|---|
