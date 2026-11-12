@@ -58,6 +58,12 @@ def main():
                 add('internal:'+name+':'+tid,'online_reference',host,rp,'whole_process_CPU_seconds',cpu=receipt.get('whole_process_CPU_seconds'),counter=counter,dimension=dimension,cpu_include=False,physics_include=False,reason='Internal pre-exit timer/counters overlap authoritative job row; do not add')
                 for field in ['projector_cost']:
                     if receipt.get(field):add('operator:'+name+':'+tid+':'+field,'online_operator_reference',host,rp,field,counter=receipt[field],dimension=dimension,cpu_include=False,physics_include=False,reason='Operator/H/port actions are distinct from physical solves; nested in job CPU')
+        # Composition retains replaced technical failures as additional attempts.
+        # Recovery jobs/controller are already in the merged parent; failures are not.
+        for i,job in enumerate(d.get('failed_attempts',[])):
+            ext=job.get('external') or {};tid=job.get('task_id',f'failed{i}');rp=root/str(job.get('result_receipt_relative',''))
+            receipt=load(rp) if rp.is_file() else {};counter=receipt.get('physical_cost')
+            add('failed_attempt:'+name+':'+str(i)+':'+tid,'online_failed_attempt',host,path,f'failed_attempts[{i}]',cpu=ext.get('child_process_CPU_seconds',job.get('child_process_CPU_seconds')),wall=job.get('wall_seconds'),counter=counter,cpu_include=not recovery_reference,physics_include=not recovery_reference,status=job.get('child_status'),reason='Separate original technical failure, not present in final primary jobs; missing timing/counters remain null',scope=ext.get('CPU_scope','Original child exit accounting; no failure cost inferred from successful retry'))
         for item in d.get('running',[]):add('running:'+name+':'+item['task_id'],'online_incomplete',host,path,'running',cpu=None,counter=None,status='RUNNING_AT_SNAPSHOT',reason='Unfinished child exit CPU/physical totals not available; not zero')
     # Expected manifests with no local queue evidence remain visible, including remote work.
     for f in (root/'configs').glob('*.json'):
@@ -160,6 +166,16 @@ def main():
     for f in downloads:
         d=load(f);add('download:'+str(f.relative_to(root)),'release_download','Apple_local',f,cpu=d.get('CPU_seconds',d.get('cpu_seconds')),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Absent timer fields remain null; bytes/URLs do not determine CPU or elapsed time')
     if not downloads:add('artifact_download_timing_unknown','release_download','Apple_local','No measured download timing receipt found',cpu=None,counter=dict(LU=0,RHS=0),reason='Artifact bytes alone are not download elapsed time; prior downloads not timed')
+    # Public selector: batch scan is additional CPU, task intervals nested inside.
+    for f in (root/'predictions/min_change_paid_pool').glob('*/SELECTIONS.json') if(root/'predictions/min_change_paid_pool').is_dir() else[]:
+        d=load(f);name=d.get('campaign',f.parent.name);selector_host=d.get('host','Apple_local')
+        add('min_change_selector:'+name,'public_selection',selector_host,f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=d.get('new_Maxwell_LU',0),RHS=0),status=d.get('status'),scope=d.get('cost_policy','Additional paid-pool scan CPU; all original proposal/corrector costs retained'))
+        for i,task in enumerate(d.get('tasks',[])):
+            add('min_change_selector_task:'+name+':'+task['task_id'],'public_selection_reference',selector_host,f,f'tasks[{i}]',cpu=task.get('CPU_seconds'),wall=task.get('wall_seconds'),counter=dict(LU=0,RHS=0),cpu_include=False,physics_include=False,reason='Per-task scan interval nested in the authoritative selector batch CPU; never add twice')
+    for name,host in [('ENVIRONMENT_APPLE.json','Apple_local'),('ENVIRONMENT_I9.json','i9_remote'),('ENVIRONMENT_READBACK_FAILED_ATTEMPT.json','unrecorded_metadata_host')]:
+        f=root/'audit'/name
+        if not f.is_file():continue
+        d=load(f);add('environment_readback:'+name,'environment_metadata',host,f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=d.get('new_physical_LU',0),RHS=0),status=d.get('status','METADATA_READBACK'),reason=d.get('unknown_reason'),scope='Metadata query only; verified AppleM4/10cores/24GiB and i9 package versions. Failed threadpoolctl query CPU unknown,0physical calls.')
     # Scoring/plotting are real work, but most historic runs have no timer.
     for f in (root/'analysis').glob('*/SCORING_RECEIPT.json'):
         d=load(f);add('scoring_plot:'+f.parent.name,'scoring_plotting','Apple_local',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Scorer/figure CPU and wall were not recorded where null; not zero',scope='Offline scoring/plot process only; source online costs excluded')

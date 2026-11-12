@@ -49,7 +49,7 @@ def main():
     files={};directories=[]
     for d in [results,queue]:
         inv=inventory(d);files.update({x['path']:x for x in inv});directories.append({'path':str(d),'files':[x['path'] for x in inv]})
-    for f in [manifest]+[root/t['input_file'] for t in cfg['tasks']]:
+    for f in [manifest]+[root/t['input_file'].replace('\\','/') for t in cfg['tasks']]:
         if f.is_file():files[str(f.resolve())]=snapshot(f)
     tasks=[]
     for t in cfg['tasks']:
@@ -58,7 +58,7 @@ def main():
             try:receipt=read(rp)
             except Exception as ex:reason.append('UNREADABLE_RECEIPT:'+repr(ex))
         else:reason.append('MISSING_RECEIPT')
-        if not(root/t['input_file']).is_file():reason.append('MISSING_PUBLIC_INPUT')
+        if not(root/t['input_file'].replace('\\','/')).is_file():reason.append('MISSING_PUBLIC_INPUT')
         for name in ['CANDIDATES.npz','HISTORY.json','PREFIXES.json']:
             if not(folder/name).is_file():reason.append('MISSING_'+name)
         if receipt and receipt.get('truth_access')!='NONE':reason.append('UNEXPECTED_ONLINE_TRUTH_DECLARATION')

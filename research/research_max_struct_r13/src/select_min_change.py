@@ -6,7 +6,7 @@ discrepancy-feasible materials, with primary fallback if none are available.
 """
 import os
 for key in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','VECLIB_MAXIMUM_THREADS'):os.environ[key]='1'
-import argparse,json,time
+import argparse,json,time,sys
 from pathlib import Path
 from seal_results import read,validate_seal
 
@@ -37,6 +37,6 @@ def main():
                 else:reason='NO_LEGAL_PAID_BALL_CANDIDATE_PRIMARY_FALLBACK'
         except Exception as error:reason='UNAVAILABLE:'+repr(error)
         rows.append(dict(task_id=task['task_id'],case_id=task['case_id'],method=task['method'],selection_candidate=selected,fallback_to_primary=fallback,raw_anchor_RMS_distance=distance,qualified_candidates=n,reason=reason,CPU_seconds=time.process_time()-cpu,wall_seconds=time.perf_counter()-wall,truth_access='NONE'))
-    result=dict(status='PUBLIC_SELECTION_NO_GT_NO_NEW_SOLVES',campaign=campaign,prediction_seal=str(a.seal.resolve()),rule='minimum RMS material change from raw among legal paid discrepancy-feasible candidates; Phi then candidate index break exact ties; primary fallback',prior_semantics='Explicit raw-anchor preference, different from minPhi or minR. This is selection/retention, not improved same-objective optimization.',cost_policy='All original proposal/corrector costs retained; selection scan is extra CPU. No measured skipped-corrector or full-wave saving.',tasks=rows,CPU_seconds=time.process_time()-c,wall_seconds=time.perf_counter()-w,truth_access='NONE',new_Maxwell_LU=0,new_optimization=0)
+    result=dict(status='PUBLIC_SELECTION_NO_GT_NO_NEW_SOLVES',campaign=campaign,prediction_seal=str(a.seal.resolve()),host='Apple_local' if sys.platform=='darwin' else 'Windows_CPU' if os.name=='nt' else 'local_CPU',rule='minimum RMS material change from raw among legal paid discrepancy-feasible candidates; Phi then candidate index break exact ties; primary fallback',prior_semantics='Explicit raw-anchor preference, different from minPhi or minR. This is selection/retention, not improved same-objective optimization.',cost_policy='All original proposal/corrector costs retained; selection scan is extra CPU on its declared host, not a cross-host end-to-end timing sum. No measured skipped-corrector or full-wave saving.',tasks=rows,CPU_seconds=time.process_time()-c,wall_seconds=time.perf_counter()-w,truth_access='NONE',new_Maxwell_LU=0,new_optimization=0)
     (out/'SELECTIONS.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(dict(campaign=campaign,tasks=len(rows),CPU_seconds=result['CPU_seconds'],truth_access='NONE',new_Maxwell_LU=0)))
 if __name__=='__main__':main()

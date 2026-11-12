@@ -77,7 +77,7 @@ def main():
     for task in tasks:by_case.setdefault(task['case_id'],[]).append(task)
     for cid,case_tasks in by_case.items():
         setup_cpu,setup_wall=time.process_time(),time.perf_counter()
-        public_path=root/case_tasks[0]['input_file']
+        public_path=root/case_tasks[0]['input_file'].replace('\\','/')
         held_spec=case_tasks[0].get('heldout_spec',cfg.get('heldout_specs',{}).get(cid))
         if not held_spec:raise RuntimeError(f'Missing predeclared heldout metadata for {cid}')
         held_path=root/held_spec['path'];context=None;cache=[]

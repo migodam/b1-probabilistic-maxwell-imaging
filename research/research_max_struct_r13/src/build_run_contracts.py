@@ -146,7 +146,7 @@ def baseline(algorithm,protocol,aux):
 
 def make_row(root,manifest_path,manifest,task,queue,terminal,public_cache,validation_rows):
     campaign=manifest['campaign'];protocol=manifest.get('protocol',{});tid=task['task_id'];algorithm=task.get('algorithm',task['method'])
-    folder=root/'RESULTS'/campaign/tid;public_path=(root/task['input_file']).resolve()
+    folder=root/'RESULTS'/campaign/tid;public_path=(root/task['input_file'].replace('\\','/')).resolve()
     row=dict(run_id=campaign+'/'+tid,task_id=tid,case_id=task['case_id'],campaign=campaign,method=task['method'],algorithm=algorithm,
         manifest_path=str(manifest_path),data_id=task['case_id'],public_filepath=str(public_path),
         execution_available=False,execution_status=None,queue_status=queue.get('status') if queue else None,

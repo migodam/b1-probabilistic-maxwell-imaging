@@ -12,8 +12,8 @@ from datetime import datetime,timezone
 
 PART_BYTES=1_000_000_000
 TERMINAL={'COMPLETED','COMPLETED_WITH_ERRORS','COMPLETED_AFTER_EXPLICIT_CONTROLLER_RECOVERY'}
-BLOCKED_PARTS={'.git','.venv','venv','__pycache__','.cache','node_modules','scorer_fixture'}
-BLOCKED_FILES={'CHAT_READBACK.json','.DS_Store','.env','credentials.json','token.json','id_rsa','id_ed25519'}
+BLOCKED_PARTS={'.git','.venv','venv','__pycache__','.cache','node_modules','scorer_fixture','private_operational'}
+BLOCKED_FILES={'PRO_CHAT_READBACK.json','CHAT_READBACK.json','.DS_Store','.env','credentials.json','token.json','id_rsa','id_ed25519'}
 
 
 def load(path):return json.loads(Path(path).read_text())
@@ -27,6 +27,7 @@ def dump(path,value):
 def exclusion(name):
     path=PurePosixPath(str(name).replace('\\','/'));parts=path.parts
     if path.is_absolute() or '..' in parts:return 'absolute/traversal path'
+    if any(parts[i:i+2] in [('audit','transfers'),('audit','remote_metadata')] for i in range(max(0,len(parts)-1))) or path.name=='REMOTE_TRANSFER_PROGRESS.json':return 'Private operational SSH/controller/transfer metadata excluded from all publication assets'
     if any(p in BLOCKED_PARTS or 'scorer_fixture' in p.lower() for p in parts):return 'git/environment/cache/fake fixture'
     if path.name in BLOCKED_FILES or any(x in path.name.lower() for x in ['chat_readback','private_chat','conversation_readback','thread_readback']) or path.name.lower().startswith(('.env.','credentials.','secret.')):return 'private chat payload or sensitive filename'
     if path.suffix.lower() in ['.pem','.key','.p12','.pfx','.exp']:return 'sensitive key/original third-party raw measurement'
@@ -53,9 +54,21 @@ def terminal_assets(root):
         if receipt.resolve() in recovery:continue
         q=load(receipt);campaign=receipt.parent.name
         if q.get('status') not in TERMINAL or q.get('pending') or q.get('running'):continue
-        path=root/'archives'/(campaign+'_full_results.zip')
+        archive_name=q.get('archive_filename',campaign+'_full_results.zip')
+        if Path(archive_name).name!=archive_name or not archive_name.endswith('.zip'):raise ValueError('Invalid explicit campaign archive filename')
+        path=root/'archives'/archive_name
         if path.is_file():candidates.append(dict(path=path,kind='terminal_campaign',campaign=campaign,terminal_receipt=str(receipt)))
         else:missing.append(dict(campaign=campaign,reason='Terminal queue exists but complete campaign archive absent',expected_path=str(path)))
+        # Composed physics retains its immutable failed-initial archive as a
+        # separate asset; never replace it with the recovered final ZIP.
+        if campaign=='physics_v1' and q.get('recovery_source') and archive_name!='physics_v1_full_results.zip':
+            initial=root/'archives/physics_v1_full_results.zip'
+            attempt=receipt.parent/'attempts/initial_RECEIPT.json'
+            if initial.is_file() and attempt.is_file():
+                original=load(attempt)
+                if original.get('status') not in TERMINAL:raise ValueError('Initial physics attempt receipt is not terminal')
+                candidates.append(dict(path=initial,kind='immutable_failed_initial_campaign',campaign='physics_v1_initial_attempt',terminal_receipt=str(attempt)))
+            else:missing.append(dict(campaign='physics_v1_initial_attempt',reason='Composed physics requires original immutable archive AND initial attempt receipt for accessible failed-attempt logs',expected_path=str(initial),expected_receipt=str(attempt)))
     candidates += [dict(path=f,kind='frozen_runtime',campaign=None,terminal_receipt=None) for f in sorted(root.glob('runtime*.zip'))]
     return candidates,missing
 
@@ -172,6 +185,10 @@ def main():
     if a.include_postseal:
         verified=postseal_authorization(root,a.authorization)
         inputs,excluded=gather(root,['data_public','sealed_truth','sources/pro/MAX_STRUCT_20261112','sources/user','src','runtime','experiments','configs','audit','delegated/full_current','delegated/physics','delegated/evidence','THEORY_DERIVATIONS.md','TASK_RESUME.md','REPRODUCE.md','ARTIFACTS.md','RESEARCH_REPORT_ZH.md','PAPER_DRAFT.md']);exclusions+=excluded
+        selection_indices,excluded=gather(root,['predictions/min_change_paid_pool'],extensions={'.json'});exclusions+=excluded
+        for f in selection_indices:
+            if f.stat().st_size<=2_000_000:inputs.append(f)
+            else:exclusions.append(dict(path=f.relative_to(root).as_posix(),reason='Selection JSON exceeds compact public-index limit; selected NPZ never included by this gather'))
         analysis,excluded=gather(root,['analysis'],extensions={'.json','.csv','.jsonl','.tsv','.npz'});exclusions+=excluded
         for name,files in [('max-struct-r13-postseal-inputs-sources.zip',inputs),('max-struct-r13-postseal-analysis-tables.zip',analysis)]:
             path,index=create_zip(root,out,name,files,extra_json={'RELEASE_REPRODUCIBILITY_SOURCE_INDEX.json':source} if 'inputs-sources' in name else None);assets.append(dict(path=path,kind='postseal_own_study',campaign=None,terminal_receipt=None));indices[path.name]=str(index)

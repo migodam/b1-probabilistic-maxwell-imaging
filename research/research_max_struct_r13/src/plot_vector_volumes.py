@@ -104,7 +104,7 @@ def main():
             ax.set_zlabel('z / lambda0',fontsize=7,labelpad=0);ax.tick_params(labelsize=6,pad=0)
         for cid,case_tasks in cases.items():
             source_case=case_tasks[0]
-            with np.load(root/source_case['input_file'],allow_pickle=False) as public:
+            with np.load(root/source_case['input_file'].replace('\\','/'),allow_pickle=False) as public:
                 if tuple(map(int,public['grid_shape']))!=(6,6,6) or float(public['width'])!=.24:
                     raise ValueError('Original exact6-cubed/.24lambda vector grid required')
                 if float(public['lower'])!=0 or float(public['upper'])!=8:

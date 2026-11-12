@@ -31,7 +31,7 @@ def main():
     for t in tasks:
         if t['campaign']!=campaign:raise ValueError('Campaign mismatch')
         if(root/'RESULTS'/campaign/t['task_id']).exists():raise FileExistsError('Task directory already exists; no overwrite: '+t['task_id'])
-        if not(root/t['input_file']).is_file():raise FileNotFoundError(root/t['input_file'])
+        if not(root/t['input_file'].replace('\\','/')).is_file():raise FileNotFoundError(root/t['input_file'].replace('\\','/'))
     queue=root/'queues'/campaign;queue.mkdir(parents=True,exist_ok=False);(queue/'logs').mkdir()
     snapshots=[]
     for f in [manifest]+sorted((root/'src').glob('*.py'))+sorted((root/'runtime').glob('*.py')):

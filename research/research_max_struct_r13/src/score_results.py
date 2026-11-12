@@ -260,7 +260,7 @@ def main():
         truth=truths[cid];hist=[];mats=None;receipt={};issue=[]
         public_kind='';components=1;known_noise=True;crossgrid=False;public_noise_role=None
         try:
-            with np.load(root/task['input_file'],allow_pickle=False) as public_info:
+            with np.load(root/task['input_file'].replace('\\','/'),allow_pickle=False) as public_info:
                 public_kind=str(public_info['kind']) if 'kind' in public_info else ''
                 components=int(public_info['components']) if 'components' in public_info else 1
                 known_noise=bool(public_info['noise_sigma_known']) if 'noise_sigma_known' in public_info else True
@@ -280,7 +280,7 @@ def main():
         except Exception as ex:issue.append(repr(ex));hist=[];mats=None
         lower=float(cfg['protocol'].get('material_box',[.02,20])[0]);upper=float(cfg['protocol'].get('material_box',[.02,20])[1])
         try:
-            with np.load(root/task['input_file'],allow_pickle=False) as public:
+            with np.load(root/task['input_file'].replace('\\','/'),allow_pickle=False) as public:
                 lower=float(public['lower']) if 'lower' in public else lower
                 upper=float(public['upper']) if 'upper' in public else upper
         except Exception as ex:issue.append('PUBLIC_INPUT_UNAVAILABLE:'+repr(ex))
@@ -306,7 +306,7 @@ def main():
             if selected:
                 r=dict(selected,view=view,selection_candidate=index,fallback_to_primary=bool(fallback),requested_view=view,selection_rule='minR among paid noise-feasible, fallback primary' if view=='secondary' else'raw retained if noise-feasible, otherwise primary' if view=='feasible_raw_retain' else'runner frozen '+view)
                 pictures[(cid,method,view)]=mats[index].copy()
-                if view=='min_change_paid_pool':r.update(selection_rule=policy['rule'],selection_prior_semantics=policy['prior_semantics'],selection_extra_CPU_seconds=policy_rows.get(tid,{}).get('CPU_seconds'),raw_anchor_RMS_distance=policy_rows.get(tid,{}).get('raw_anchor_RMS_distance'))
+                if view=='min_change_paid_pool':r.update(selection_rule=policy['rule'],selection_prior_semantics=policy['prior_semantics'],selection_extra_CPU_seconds=policy_rows.get(tid,{}).get('CPU_seconds'),selection_host=policy.get('host'),raw_anchor_RMS_distance=policy_rows.get(tid,{}).get('raw_anchor_RMS_distance'))
             else:r=dict(common,view=view,available=False,availability_reason='NO_LEGAL_ELIGIBLE_PAID_'+view.upper(),run_status=status,partial_failed_run=status=='FAILED',selection_candidate=index,fallback_to_primary=bool(fallback),NRMSE=None)
             rows.append(r)
         stored=read(folder/'PREFIXES.json') if(folder/'PREFIXES.json').is_file() else[];stored_map={float(r['CPU_cap']):r.get('candidate') for r in stored}

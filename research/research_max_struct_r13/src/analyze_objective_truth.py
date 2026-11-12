@@ -28,7 +28,7 @@ def main():
     out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);truth_rows=[];lookup={};rows=[]
     tasks=seal['manifest_snapshot']['tasks'];case_inputs={t['case_id']:t['input_file'] for t in tasks}
     for cid,filename in sorted(case_inputs.items()):
-        with np.load(root/filename,allow_pickle=False) as z:
+        with np.load(root/filename.replace('\\','/'),allow_pickle=False) as z:
             Y=z['Y'].copy();delta=float(z['delta']);lower=float(z['lower']);upper=float(z['upper']);shape=tuple(z['grid_shape']);crossgrid=int(z['forward_side'])!=int(z['inverse_side'])
         with np.load(root/'sealed_truth/fresh48'/f'{cid}.npz',allow_pickle=False) as z:
             m=z['material_coarse'].copy();prediction=z['Y_coarse_truth'].copy()

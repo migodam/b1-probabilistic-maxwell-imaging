@@ -50,7 +50,7 @@ def main():
     proposal_fraction=float(cfg.get('proposal_fraction',.6))
     deadline=cap if algorithm in ('direct','physical_trf') else cap*proposal_fraction
     out=root/'RESULTS'/task['campaign']/task['task_id'];out.mkdir(parents=True,exist_ok=False)
-    with np.load(root/task['input_file'],allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}
+    with np.load(root/task['input_file'].replace('\\','/'),allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}
     m0=public.pop('m_init'); Y=public['Y']; sigma=float(public['sigma'])
     components=int(public.get('components',1)); lower=float(public.get('lower',.02)); upper=float(public.get('upper',20.))
     kind=str(public.get('kind','synthetic'))

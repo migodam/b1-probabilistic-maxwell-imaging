@@ -258,7 +258,7 @@ def main():
         # NN initializers; discard the entire case cache before the next case.
         cache={};starts=[];pooled=[];public_bytes=0
         for task in tasks:
-            path=(root/task['input_file']).resolve();public=None;public_error=None
+            path=(root/task['input_file'].replace('\\','/')).resolve();public=None;public_error=None
             if path in cache:public,public_error=cache[path]
             else:
                 try:

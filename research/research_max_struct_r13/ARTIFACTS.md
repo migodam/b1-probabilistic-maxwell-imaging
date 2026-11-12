@@ -60,3 +60,11 @@ python src/restore_release_assets.py --asset LOGICAL_ARCHIVE_NAME.zip --output-d
 先保留各包独立来源，再在新的独立R13工作目录中按实际运行source/runtime版本组织需要的campaign与input/analysis。不能把多个不同版本runtime的src直接无说明覆盖。继承的R11/R8代码与原NN权重仍依赖已有项目来源；嵌入source index及runtime冻结记录说明这一关系。
 
 **原seal中的绝对路径和mtime不具可移植性。** 恢复后必须在新的独立目录重新用seal_results记录当前预测文件和新root，父线程核对恢复来源后另外授权；不能直接把旧absolute seal视为新目录已通过。重新封存不要求重跑科学，也不引入SHA步骤。
+
+## 公开候选选择记录与隐私边界
+
+后封存source包还收集 `predictions/min_change_paid_pool/**/*.json` 中≤2,000,000B的公开选择索引；该收集不会加载或加入预测NPZ。compact索引可按精确allowlist进入Git；原始状态数组仍仅走Release。选择规则是离raw最近的已付费、合法且满足噪声球候选，Phi/index打破完全相同距离，缺候选回退primary。它表达显式raw-anchor先验，不作为同一目标优化改善或跳过corrector的已测省时。
+
+所有package检查统一排除 `private_operational/**`、`audit/transfers/**`、`audit/REMOTE_TRANSFER_PROGRESS.json`、`audit/remote_metadata/**`，以及CHAT_READBACK/PRO_CHAT_READBACK私人载荷。它们包含操作性SSH/controller/transfer或私聊上下文，不属于研究复现源；科学费用与来源说明使用host类别和相对路径。活动文件未移动。
+
+合成physics恢复证据保留两个独立逻辑ZIP：原 `physics_v1_full_results.zip` 为不可变failed-initial证据（含42失败日志），最终 `physics_v1_recovered_full_results_v2.zip` 为恢复后版本。package计划分别列出初次attempt receipt与最终receipt；缺少原ZIP或初次receipt时拒绝prepare，不以最终包覆盖原包。

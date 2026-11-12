@@ -26,7 +26,7 @@ def main():
         campaign=seal['campaign']
         for task in seal['manifest_snapshot']['tasks']:
             cid=task['case_id'];folder=root/'RESULTS'/campaign/task['task_id']
-            with np.load(root/task['input_file'],allow_pickle=False) as z:
+            with np.load(root/task['input_file'].replace('\\','/'),allow_pickle=False) as z:
                 y=z['Y'].copy();lower=float(z['lower']) if 'lower' in z else .02;upper=float(z['upper']) if 'upper' in z else 20.
             entry=bycase.setdefault(cid,dict(Y=y,materials=[],lower=lower,upper=upper))
             if not np.array_equal(y,entry['Y']):raise ValueError('Same case ID with different observations: '+cid)

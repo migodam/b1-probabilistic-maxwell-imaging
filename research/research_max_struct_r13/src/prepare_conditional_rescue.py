@@ -23,13 +23,13 @@ def main():
             parent_status=receipt['status'])
         rows.append(row)
         if not trigger:continue
-        with np.load(r/task['input_file'],allow_pickle=False) as z:pub={k:z[k].copy() for k in z.files}
+        with np.load(r/task['input_file'].replace('\\','/'),allow_pickle=False) as z:pub={k:z[k].copy() for k in z.files}
         with np.load(folder/'primary.npz',allow_pickle=False) as z:pub['m_init']=z['m'].copy()
         path=dest/(task['case_id']+'.npz');np.savez_compressed(path,**pub)
         for name,algorithm in policy['methods'].items():
             tasks.append(dict(task_id=task['case_id']+'__'+name,case_id=task['case_id'],method=name,algorithm=algorithm,
                 campaign=policy['campaign'],physics_kind='scalar_tm_2d',cohort='fresh48_conditional_rescue',
-                input_file=str(path.relative_to(r)),seed=13013,parent_run=task['task_id']))
+                input_file=path.relative_to(r).as_posix(),seed=13013,parent_run=task['task_id']))
     result=dict(campaign=policy['campaign'],status='FROZEN_PUBLIC_RULE_INSTANTIATED_NO_GT',
         protocol=policy['protocol'],tasks=tasks,all48_deployment_rows=rows,
         policy_file='configs/conditional_rescue_policy.json',truth_access='NONE',new_forward=0,
