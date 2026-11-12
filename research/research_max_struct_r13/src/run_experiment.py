@@ -126,7 +126,32 @@ def main():
             phase='proposal'
             try:
                 method=algorithm
-                if method=='nfft_equations':
+                if method=='physical_globaldual':
+                    # Historical FBG GlobalDual is the total-field source-Gram
+                    # objective at beta=0, not global-PR Dual-CIE and not the
+                    # beta=.2 feedback variant. Preserve its analytic adjoint.
+                    reference=initial
+                    beta=float(cfg.get('physical_globaldual',{}).get('beta',0.))
+                    evaluations=[0]
+                    def gram_objective(m):
+                        check()
+                        value,gradient=model.data_value_gradient(m,Y,beta=beta,reference=reference)
+                        evaluations[0]+=1
+                        record(m,model.state(m),value,gradient,extra=dict(
+                            auxiliary_objective='physical_GlobalDual_source_Gram',
+                            beta=beta,auxiliary_value=float(value),evaluation=evaluations[0]))
+                        check()
+                        return value,gradient
+                    auxiliary_receipt.update(algorithm='historical_physical_GlobalDual',
+                        beta=beta,reference='same public initial physical state',
+                        source_Gram_dimension=model.ns,
+                        distinction='different from global-PR Dual-CIE; primary selector remains original physical Phi')
+                    result=minimize(gram_objective,m0,method='L-BFGS-B',jac=True,
+                        bounds=[(lower,upper)]*model.n,
+                        options=dict(maxiter=3000,maxfun=12000,ftol=1e-12,gtol=1e-8,maxls=30))
+                    stop['proposal']=dict(message=str(result.message),iterations=int(result.nit),
+                        evaluations=int(result.nfev))
+                elif method=='nfft_equations':
                     from nfft_control import run_nfft
                     dec=noise_ball_rank(model.S,Y,sigma,out/'RECEIVER_DPCS.npz')
                     numerical=dict(dpcs_rank=dec['rank'],material_box=[lower,upper],regularizer=lambda m:model.reg.evaluate(m)[:2],
@@ -290,7 +315,7 @@ def main():
         secondary_candidate=secondary['metadata']['candidate'] if secondary else None,
         eligible_candidates=sum(h['eligible'] for h in history),overrun_candidates=sum(not h['eligible'] for h in history),
         components=components,material_DOF=model.n,stored_field_real_scalars=4*model.G.shape[0]*model.ns,
-        independent_algorithm_state_DOF=model.n if algorithm=='direct' else 2*model.G.shape[0]*model.ns+model.n if algorithm=='nfft_equations' else None,
+        independent_algorithm_state_DOF=model.n if algorithm in ('direct','physical_globaldual') else 2*model.G.shape[0]*model.ns+model.n if algorithm=='nfft_equations' else None,
         state_DOF_qualification='Stored X/Q ambient scalars are not independent CIE DOF. CIE/G19 actual current ranks and source DOF are in auxiliary_receipt.current_spaces; direct optimizes material only; DR keeps an unconstrained two-field iterator, AP returns a propagation-constrained iterator.',
         delta=delta,sigma_complex_RMS=sigma,
         noise_qualification=str(public.get('sigma_role','iid circular complex RMS; CN99 raw ball')),
