@@ -1,0 +1,46 @@
+# Source-only all48 follow-up comparison
+
+`compare48.py` is prepared but has **not** been run. Parent must finish download, technical acceptance, new extension32 seal, and explicitly authorize comparison. This does not modify the original R13 runner, results, selection, seals, method settings or site.
+
+Invocation after parent authorization:
+
+```text
+/ABSOLUTE/EXISTING/PYTHON compare48.py --root /ABSOLUTE/R13 --authorization /ABSOLUTE/PARENT_COMPARISON_AUTH.json --out /ABSOLUTE/NEW_SUP_ANALYSIS_DIRECTORY
+```
+
+Optional `--supplement-root` defaults to R13/supplement_aplus48. Output must be new; `--no-figures` is an explicit table-only option, not the default. Use the existing Gaussian/.venv_nn/bin/python, BLAS1 (also set by source); no installation.
+
+Parent authorization must contain `authorized_comparison_scoring: true`, `scope: FOLLOWUP_EXISTING48`, optional exact `root` and `supplement_root`, and optionally `seals` mapping. The three mapping keys are `confirmation_core48`, `confirmation_mechanism16`, `aplus48_extension32`. Values are absolute or R13-relative paths. Defaults: R13/audit/confirmation_core48_seal.json, R13/audit/confirmation_mechanism16_seal.json, SUP/audit/aplus48_extension32_seal.json. Each seal must separately have authorized_scoring=true, correct campaign/root, terminal idle queue and unchanged prediction/input byte/mtime inventories. Extension seal root must be SUP. Guards precede NumPy, scores, materials and truth access.
+
+The script validates exact old16 (every third original ID) and complementary32, all original observation references, literal shared numerical protocol, exact A+ task/method IDs, and per-run receipt task/protocol. Original CIE/Dual/G19/DR metrics reuse authorized core48 SCORES/PAID_PREFIX tables only after checking their original source seal and every view/prefix candidate index against the original paid metadata. Original baseline pools are not rescored. A+ uses the exact existing score_results.material_metrics/load_truth/truth_spec helpers. Only initial/raw/corrected/primary/secondary and original15/30/60/90/120s prefixes receive A+ material metrics; full candidate-pool GT metrics are not generated.
+
+Prefix selection is original minimumPhi over legal old-eligible audited candidates with recorded CPU<=prefix<=120, chosen from public HISTORY before metrics. Stored PREFIXES CPU_cap indices are checked and mismatches exposed. Secondary uses original secondary index when valid, otherwise primary fallback is explicit. Missing/failed tasks stay in all240task and1200view/prefix denominators; legal paid evidence from failed jobs remains labeled partial. No GT-based candidate choice or new success gate.
+
+Outputs: ALL48_SCORES (1200expected rows), PAID_PREFIX_SCORES (1200expected rows), METHOD_VIEW_SUMMARY and PREFIX_SUMMARY with all48/reused16/new32 counts, continuous RMSE/amplitudeNRMSE/boxrangeNRMSE/relativeL2/IoU/bias/data-objective/ball fields, per-object paired A+minus four baseline changes, descriptive4000 object-bootstrap intervals (seed131313), COST_LEDGER/COST_TOTALS and failures. CSV uses LF line terminators; numerical/categorical columns are flat, auxiliary scalar audit fields prefixed audit_aux_. No Wilcoxon/new threshold or scientific winner is introduced.
+
+A+ paid-audit history retains sourceIDs/paths, stages, originalD/R/Phi/residual, trial/audit CPU and eligibility, incumbent candidate/Phi and scalar native metadata. Corrector HISTORY includes line-search trials; optimizer accepted status is not inferred. No unsaved state or between-audit trajectory is interpolated. This is saved-material evidence, not a new online instrument.
+
+COST_LEDGER is one row per original case/method, split by the A+ reused16/new32 case cohort. External whole-job CPU remains distinct from internal CPU, physics LU/aggregate RHS and FFT/Green/coefficient transform counts. Auxiliary FFT/role counters are separate references, never added to physical counters. Only extension32 rows represent new solver consumption; all original A+/baseline rows are paid-run references. Repeated views, prefixes, alternative comparisons and cohort splits must not be summed as extra jobs. Unknown costs stay null; no child-wall sum is reported as elapsed time.
+
+Default figures: all48 GT+five-method primary galleries, twelve four-row pages per scale, PNG+PDF. Absolute scale[0,20] retained; diagnostic per-row common GTmax physical scale labels max/saturation counts. Unavailable panels remain explicit. Primary ECDF uses full range/all48 denominator; scatter uses actual whole-job CPU. ActualCPU means and public-minPhi prefix curves have full supporting tables. Parent may later choose illustrative cases; this script picks none by GT and does not create fake3D or new conditions.
+
+COMPARISON_RECEIPT records process CPU/wall/platform, all seals and input-source references, expected/actual row counts, artifact names and0newLU/RHS/optimization. The outer timer includes authorization/import/metrics/CSV/figures; final receipt write/exit is outside it. No numerical scoring, forward, truth read or source execution was performed during preparation; syntax-only verification passed. Scope remains FOLLOWUP_EXISTING48, never fresh blind confirmation.
+
+## RUN_INDEX.json handoff to physical-prefix diagnostics
+
+Future output has schema `Aplus48_comparison_run_index_v1`, scope FOLLOWUP_EXISTING48, root/supplement_root/authorization/seals, expected_runs240 and runs list. Each case×method records absolute source_root/run_folder and exact source campaign/task ID, original_public_input_path (canonical R13 original observation), execution_public_input_path (actual run root), source_history_path/source_candidates_path/source_receipt_path/source_prefixes_path. These are local provenance references, not portable public URLs; restored studies need explicit root remapping.
+
+`view_candidate_ids` maps initial/raw/corrected/primary/secondary; secondary is effective original fallback selection, while original_secondary_candidate_id and secondary_fallback_to_primary expose the source distinction. `view_metadata` gives candidate/CPU/phase/savedPhi/D/R/residual/noise-feasible/legal/eligible for each view. `prefix_candidate_ids` uses string keys15/30/60/90/120; `prefix_metadata` has corresponding CPU_prefix and the same saved audit fields. Nulls retain missing evidence. No GT metrics are placed in this index.
+
+`external_cost_source` identifies absolute queue_receipt_path, job_index, readable job_json_pointer, full original external cost object, external_child_CPU_seconds, returncode/child_status and child_wall_seconds_reference. It does not manufacture a new elapsed time or charge an old job twice. The physical diagnostic must consume these exact IDs rather than choose new candidates. All fields are populated by comparison only after its parent authorization/seal guards. The source index design was coordinated with r13_physics; no index/scoring run has occurred during preparation.
+
+## Registered common-public-budget diagnostics
+
+SUP/configs/comparison_rules.json was registered before new A+ scoring. The same original minimum-paid-Phi selector is evaluated at two additional per-object public budgets:
+
+- common_actual_CPU=min(120, all five methods’ actual final external whole-child CPU). If any of five costs is unknown/nonfinite/negative, limit=null; do not silently minimize over fewer methods. Qualifying candidates require original eligible+legal flags and audit CPU<=thatlimit and120.
+- common_physical_LU=min(all five whole-job physical LU counts), exact original physical_LU key or LU fallback. Qualifying candidates also require their saved cumulative physical LU<=limit, old flags and CPU<=120. Missing any whole-job limit makes it null; candidate with missing LU cannot qualify. This is a physics-only diagnostic: setup/projector/SVD/FFT/current iterations are not free or equalized.
+
+At future runtime, all limits and public candidate IDs/Phi/flags are serialized in PUBLIC_COMMON_BUDGET_SELECTIONS_BEFORE_METRICS.json **before** reading old score tables or truth. A+ and baseline metrics for only these additional selected IDs then use the same metric helpers. No new solver, primary/policy change, GT-based selection or measured stopped-deployment elapsed time is implied. COMMON_PUBLIC_BUDGET_SCORES has480expected rows; limits retain240source-cost rows, summaries/paired changes/bootstrap retain all48 plus reused16/new32. Missing cases remain in full denominators with explicit counts. RUN_INDEX per-run common_actual_CPU/common_physical_LU objects include limit, selectedcandidate, savedPhi/D/R/CPU/LU/flags and diagnostic labels; original views/prefixes remain unchanged.
+
+PUBLIC_SUBGROUP_VIEW_SUMMARY and PUBLIC_SUBGROUP_PREFIX_SUMMARY use only original public MANIFEST sources/receivers/aperture/noise/forward_side/model-mismatch fields. Source count, receiver aperture, noise, grid side and combined acquisition-noise condition are descriptive conditional axes, not causal effects; conditions can be confounded. Cohort split is explicit; acquisition assignment is not inferred from ID modulo6. PUBLIC_COHORT_FIELDS saves the actual48 public metadata records with old16/new32 membership. No hidden family or new GT-derived labels are accessed for these strata.
