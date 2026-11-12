@@ -35,3 +35,23 @@ python src/build_cost_ledger.py --root R13_ROOT --out R13_ROOT/delegated/evidenc
 当前快照中，C1合并jobs的已知外部CPU与其权威终态记录一致（2800.71875秒），recovery引用没有再计；四个中断尝试仍为null；失败dual-pressure仍为3 LU/84 RHS/null CPU；生成维数拆分为576阶48 LU和1296阶12 LU。这些是成本记账检查，不是新数值实验或成像质量验收。
 
 快照自己的metadata扫描CPU/wall也在JSON顶层保留。所有总计应解释为**按host与阶段分列的已知下界，外加明确未知项**。最终科学/费用与发布验收由父线程完成。
+
+## 后续源代码记账补充（未运行新清单）
+
+`build_cost_ledger.py`现读取公开的 `predictions/min_change_paid_pool/*/SELECTIONS.json`，每campaign的batch CPU仅一次纳入 `public_selection`；逐task计时作为nested引用保留、不相加。使用回执host（当前选择在Apple_local）；不把Apple后处理CPU与i9在线CPU拼成deployment elapsed。所有原proposal/corrector费用保留，不宣称选择器节省了corrector费用或改善同一目标。选择仅扫描已有付费候选，无新Maxwell/优化调用。
+
+加入实际 `audit/ENVIRONMENT_APPLE.json`、`ENVIRONMENT_I9.json` 和失败metadata-query回执的计时来源。已核实本地Apple M4、10 cores、24GiB；Apple_local与i9_remote仍分列。缺少threadpoolctl的失败metadata-query CPU未知、物理调用0；没有安装。该补充仅更新收集器源代码和文档，没有执行新成本扫描、评分或读取新预测/真值。
+
+## 依赖修复重试记账（源代码准备，未合成）
+
+Physics合成回执的60条primary jobs包含原18成功与42重试；原42技术失败单列failed_attempts。collector将后者逐次计入online_failed_attempt，保留原失败CPU/physical_cost或null，不从重试结果倒推。recovery_source排除重试队列的重复加总；合成parent controller已经包含两个controller窗口。详情见PHYSICS_RECOVERY_COMPOSITION.md。
+
+## 最终收集器来源补齐（仅源代码，未执行清单）
+
+新增提取receipt（列表batch逐独立条目一次）、依赖runtime打包（named bundle消除unknown重复）、C4 Apple controller/transport child与i9 preparation分列、command-length失败未知CPU、恢复合成byte-copy、release_preparation包装whole interval，以及逐part上传的controller/transport child CPU。实际下载成本只接受sanitize后的audit/ARTIFACT_TRANSFER_COSTS.json，不将根DOWNLOADS.json的公开索引视为计时。压缩host优先取receipt.host，否则local文件名归Apple，其余i9。
+
+实测heldout读取evaluate_measured_holdout的总receipt字段：total_evaluator_CPU_seconds，unique_physical_LU，unique_source_RHS各计一次；不加allocated view shares、UNIQUE_VALIDATION_COSTS行、forward/setup/import/guard子计时或process near-exit总进程CPU。矢量图使用PLOT_COST_RECEIPT的total_plot_CPU_seconds/total_plot_wall_seconds，不加逐图或import计时。aggregate/objective-truth/feasible-pair/oracle按outer receipt已知CPU或null入账；stationarity源文件当前尚未生成，预留其RECEIPT.json物理cost与outer CPU字段，但未来schema须父线程/作者核对。任何outer未计时保持null，不将子wall相加为历时。
+
+上述更新仅做语法检查、源代码与cost receipt字段形状核对；没有执行collector、打开材料/真值或读取质量表。父线程在最终回执齐全后运行一次完整ledger。
+
+最终source映射已精确加入stationarity receipt的physical_LU_known_sum / physical_complex_RHS_known_sum与outerCPU；forward/adjoint role sums仅引用，不按400请求行相加。每次PUBLIC_ACCEPTANCE/AUDIT.json的validation_cost批次单独保留（包括失败与重试）；CROSS_CAMPAIGN_PUBLIC_INTERFACES、ARCHIVE_METADATA_REPACK_ATTEMPT、PHYSICS_RECOVERY_PROMOTION_RECEIPT与REVIEW_TABLES_RECEIPT也按实际outer回执记录。最终ledger仍未执行。

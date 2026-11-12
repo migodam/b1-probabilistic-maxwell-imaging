@@ -69,6 +69,13 @@ def terminal_assets(root):
                 if original.get('status') not in TERMINAL:raise ValueError('Initial physics attempt receipt is not terminal')
                 candidates.append(dict(path=initial,kind='immutable_failed_initial_campaign',campaign='physics_v1_initial_attempt',terminal_receipt=str(attempt)))
             else:missing.append(dict(campaign='physics_v1_initial_attempt',reason='Composed physics requires original immutable archive AND initial attempt receipt for accessible failed-attempt logs',expected_path=str(initial),expected_receipt=str(attempt)))
+            recovery_receipt=(receipt.parent/str(q['recovery_source']).replace('\\','/')).resolve()
+            recovery_zip=root/'archives/physics_recovery_v1_full_results.zip'
+            if recovery_zip.is_file() and recovery_receipt.is_file():
+                retry=load(recovery_receipt)
+                if retry.get('status') not in TERMINAL:raise ValueError('Explicit recovery alias receipt must be terminal')
+                candidates.append(dict(path=recovery_zip,kind='explicit_recovery_attempt_archive_alias',campaign='physics_recovery_v1',terminal_receipt=str(recovery_receipt),cost_policy='Archive accessibility alias only; recovery_source excludes duplicate online cost'))
+            else:missing.append(dict(campaign='physics_recovery_v1_archive_alias',reason='Composed physics additionally requires original recovery ZIP and receipt',expected_path=str(recovery_zip),expected_receipt=str(recovery_receipt)))
     candidates += [dict(path=f,kind='frozen_runtime',campaign=None,terminal_receipt=None) for f in sorted(root.glob('runtime*.zip'))]
     return candidates,missing
 

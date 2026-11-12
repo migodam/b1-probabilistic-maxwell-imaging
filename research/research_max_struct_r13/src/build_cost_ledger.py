@@ -23,6 +23,78 @@ def canonical(counter):
     return lu,rhs,keys
 
 
+def supplemental_receipts(root,add):
+    """Read only explicit cost receipts, never result tables/material payloads."""
+    zero=dict(LU=0,RHS=0)
+    final_metadata=[(root/'audit/DOCUMENT_ASSEMBLY_RECEIPT.json','report_assembly'),(root/'audit/RUN_CONTRACTS_FINAL/BUILD_RECEIPT.json','metadata_contracts')]
+    final_metadata += [(p,'publication_inventory') for p in (root/'audit').glob('GIT_PUBLICATION_*/GIT_ALLOWLIST.json')]
+    final_metadata += [(p,'publication_link_check') for p in (root/'audit').glob('GIT_PUBLICATION_*/LINK_CHECK.json')]
+    final_metadata += [(p,'publication_readback') for p in (root/'audit').glob('PUBLIC_READBACK*.json')]
+    for f,phase in final_metadata:
+        if not f.is_file():continue
+        d=load(f);add('final_metadata:'+str(f.relative_to(root)),phase,d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,scope='One actual metadata/document/publication verification process; nested records not charged again')
+    extraction=list((root/'audit').glob('*EXTRACTION*RECEIPT.json'))
+    extraction+=[root/'audit/MECHANISM_AND_RESCUE_INPUT_EXTRACTION.json']
+    for f in extraction:
+        if not f.is_file():continue
+        d=load(f);items=d if isinstance(d,list) else[d]
+        for i,item in enumerate(items):add('extraction:'+f.name+':'+str(i),'release_extraction',item.get('host','Apple_local'),f,f'[{i}]' if isinstance(d,list) else'',cpu=item.get('CPU_seconds'),wall=item.get('wall_seconds'),counter=zero,status=item.get('status'),reason='Batch entries each counted once; archive/file byte fields are not timing',scope='Actual extraction interval; no source/GT array payload opened by inventory')
+    f=root/'audit/PHYSICS_DEPENDENCY_RECOVERY_PLAN.json'
+    if f.is_file():
+        d=load(f);add('dependency_runtime_pack','setup_packing',d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,scope='Dependency-only runtime bundle pack; named bundle suppresses unknown-runtime duplicate')
+        failed=d.get('first_metadata_preparation_attempt')
+        if failed:add('dependency_pack_failed_metadata','setup_failed','Apple_local',f,'first_metadata_preparation_attempt',cpu=failed.get('CPU_seconds'),counter=zero,reason='Original failed metadata preparation timing unknown where null')
+    f=root/'audit/PHYSICS_C4_PREPARATION_RECEIPT.json'
+    if f.is_file():
+        d=load(f)
+        for field in ['controller_CPU_seconds','transport_child_CPU_seconds']:add('physics_C4_prepare:'+field,'setup_transport','Apple_local',f,field,cpu=d.get(field),wall=d.get('wall_seconds') if field=='controller_CPU_seconds' else None,counter=zero,status=d.get('status'),scope='Separate controller and transport-child CPU; parent wall recorded once, never summed child walls')
+        rem=d.get('remote_preparation',{});add('physics_C4_remote_prepare','setup_packing','i9_remote',f,'remote_preparation',cpu=rem.get('CPU_seconds'),wall=rem.get('wall_seconds'),counter=zero,status=rem.get('status'),scope='Remote dependency/input preparation; separate host from transport controller')
+        failed=d.get('initial_failed_transport')
+        if failed:add('physics_C4_failed_transport','setup_failed','Apple_local',f,'initial_failed_transport',cpu=failed.get('CPU_seconds'),counter=zero,reason='Failed command-length transport before remote Python; original cost unknown, not zero')
+    for f in (root/'audit').glob('*RECOVERY_COMPOSITION*.json'):
+        d=load(f);add('recovery_composition:'+f.name,'release_composition',d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,status=d.get('status'),scope='Byte-copy and receipt composition only; source attempts not charged again')
+    for f in root.glob('release_preparation_*/PACKAGING_RECEIPT.json'):
+        d=load(f);add('release_packaging:'+f.parent.name,'release_packaging',d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,status=d.get('status'),scope='Whole packaging interval only; nested per-archive/split timers excluded')
+    sources=[]
+    for f in (root/'audit').glob('RELEASE_UPLOAD_COSTS*.jsonl'):
+        for i,line in enumerate(f.read_text().splitlines()):
+            if line.strip():sources.append((f,i,json.loads(line),'release_upload'))
+    f=root/'audit/ARTIFACT_TRANSFER_COSTS.json'
+    if f.is_file():
+        d=load(f);items=d if isinstance(d,list) else d.get('transfers',[])
+        for i,item in enumerate(items):sources.append((f,i,item,'release_download'))
+    for f,i,item,phase in sources:
+        host=item.get('host','Apple_local')
+        for field in ['controller_CPU_seconds','transport_child_CPU_seconds']:add('transfer:'+f.name+':'+str(i)+':'+field,phase,host,f,f'[{i}].'+field,cpu=item.get(field),wall=item.get('wall_seconds') if field=='controller_CPU_seconds' else None,counter=zero,status=item.get('status'),reason='Only sanitized transfer timing; public download index is not a cost receipt',scope='Controller/transport child CPU separate; one observed transfer wall, no child-wall sum')
+    for f in (root/'audit').rglob('AUDIT.json'):
+        if not any('PUBLIC_ACCEPTANCE' in part for part in f.parts):continue
+        d=load(f);cost=d.get('validation_cost',{})
+        add('public_acceptance:'+str(f.relative_to(root)),'validation_public_interfaces',d.get('host','Apple_local'),f,'validation_cost',cpu=cost.get('CPU_seconds'),wall=cost.get('wall_seconds'),counter=dict(LU=cost.get('new_Maxwell_factorizations'),RHS=0 if cost.get('new_Maxwell_factorizations')==0 else None,matvec_actions_reference=cost.get('matvec_actions')),status=d.get('status'),reason='Every actual audit attempt batch charged, including failed WindowsPath/partial wiring audits; task rows not added',scope=cost.get('timer_scope','Outer public saved-state audit interval'))
+    for name,phase in [('CROSS_CAMPAIGN_PUBLIC_INTERFACES.json','validation_public_interfaces'),('ARCHIVE_METADATA_REPACK_ATTEMPT.json','release_packaging_failed_attempt'),('PHYSICS_RECOVERY_PROMOTION_RECEIPT.json','release_composition')]:
+        f=root/'audit'/name
+        if not f.is_file():continue
+        d=load(f);add('additional_receipt:'+name,phase,d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,status=d.get('status'),scope='Actual independent metadata/interface/copy/packing attempt interval; later successful archive compression remains separate')
+    # Receipt schema from evaluate_measured_holdout.py: totals own unique
+    # material LU/RHS, not allocated per-view shares or setup subtimers.
+    for f in (root/'analysis').rglob('*RECEIPT.json'):
+        if any('fixture' in part.lower() or 'fake' in part.lower() for part in f.parts):continue
+        if f.name in ['SCORING_RECEIPT.json','PLOT_RECEIPT.json','AGGREGATION_RECEIPT.json']:continue
+        d=load(f)
+        if 'unique_physical_LU' in d and 'total_evaluator_CPU_seconds' in d:
+            add('heldout_evaluator:'+str(f.relative_to(root)),'offline_holdout_validation',d.get('host','Apple_local'),f,cpu=d.get('total_evaluator_CPU_seconds'),wall=d.get('total_evaluator_wall_seconds'),counter=dict(LU=d.get('unique_physical_LU'),RHS=d.get('unique_source_RHS')),dimension=576,status=d.get('status'),scope='Unique physical totals once; allocated view shares, forward/setup/import/guard subtimers and near-exit process timer all nested')
+        elif 'physical_LU_known_sum' in d and 'physical_complex_RHS_known_sum' in d:
+            add('stationarity:'+str(f.relative_to(root)),'offline_stationarity',d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=d.get('physical_LU_known_sum'),actual_complex_RHS=d.get('physical_complex_RHS_known_sum'),forward_RHS_reference=d.get('physical_forward_RHS_known_sum'),adjoint_RHS_reference=d.get('physical_adjoint_RHS_known_sum')),dimension=576,status=d.get('status'),scope='Deduplicated unique-material receipt sums once; requested400/evaluated rows and forward/adjoint subtotals are references, never additional solves')
+        elif f.name=='REVIEW_TABLES_RECEIPT.json':
+            add('review_table_serialization:'+str(f.relative_to(root)),'scoring_plotting',d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=zero,status=d.get('status'),scope='Compact table serialization outer CPU once; source aggregation and online costs not repeated')
+        elif f.name=='PLOT_COST_RECEIPT.json':
+            add('vector_plot:'+str(f.relative_to(root)),'scoring_plotting',d.get('host','Apple_local'),f,cpu=d.get('total_plot_CPU_seconds'),wall=d.get('total_plot_wall_seconds'),counter=dict(LU=d.get('new_LU'),RHS=d.get('new_RHS')),status=d.get('status'),scope='Whole vector plot process once; imports and per-figure CPU/wall sums are nested, not additive')
+        elif f.name=='RECEIPT.json' and any(key in str(f.parent).lower() for key in ['vector','objective_truth','feasible','oracle','stationarity','portfolio_diagnostic']):
+            no_forward=any(d.get(k)==0 for k in ['new_forward_solves','new_forward','new_Maxwell_LU','new_LU'])
+            counter=d.get('physical_cost',d.get('physical_costs'))
+            if counter is None:counter=zero if no_forward else None
+            add('offline_diagnostic:'+str(f.relative_to(root)),'scoring_plotting',d.get('host','Apple_local'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=counter,status=d.get('status'),reason='Receipt outer timer only; absent CPU/physical counts remain unknown',scope='Offline figure/objective-truth/feasible-pair/oracle/stationarity receipt, no rowwise duplicates')
+
+
 def main():
     started,wall0=time.process_time(),time.perf_counter();p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args();root=a.root.resolve();out=a.out.resolve();out.mkdir(parents=True,exist_ok=False);rows=[];notes=[];seen=set()
     def add(identifier,phase,host,source,pointer='',cpu=None,wall=None,counter=None,dimension=None,cpu_include=True,physics_include=True,status=None,reason=None,scope=None):
@@ -104,6 +176,9 @@ def main():
     known_bundles=set()
     for f in (root/'audit').glob('*BUNDLE.json'):
         d=load(f);known_bundles.add(d.get('bundle'));add('runtime_pack:'+f.name,'setup_packing','Apple_local',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),status=d.get('status','PACKED'),scope='Actual runtime packaging timer; no physics')
+    dependency=root/'audit/PHYSICS_DEPENDENCY_RECOVERY_PLAN.json'
+    if dependency.is_file():known_bundles.add(load(dependency).get('bundle'))
+    known_bundles={Path(str(x).replace('\\','/')).name for x in known_bundles if x}
     for f in root.glob('runtime_*.zip'):
         if f.name not in known_bundles:add('runtime_pack_untimed:'+f.name,'setup_packing','Apple_local',f,cpu=None,counter=dict(LU=0,RHS=0),reason='Archive exists but no matching outer packaging timer receipt found; file bytes do not imply CPU')
     prep=root/'audit/DEVELOPMENT_INPUT_PREPARATION.json'
@@ -159,13 +234,9 @@ def main():
         if isinstance(auxiliary,dict) and auxiliary.get('CPU_seconds') is not None:add('physical_check_partial_timer:'+rel,'setup_validation','Apple_local',f,'auxiliary.CPU_seconds',cpu=auxiliary['CPU_seconds'],wall=auxiliary.get('wall_seconds'),cpu_include=d.get('CPU_seconds') is None,physics_include=False,reason='Known inner interval; outer process timer absent' if d.get('CPU_seconds') is None else'Already included in outer timer')
     # Compression/download/release receipts: names are evidence, no invented transfers.
     for f in (root/'archives').glob('*ARCHIVE_RECEIPT.json'):
-        d=load(f);add('compression:'+f.name,'release_compression','i9_remote',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),status=d.get('status','ARCHIVED'),scope='Archive compression process timer, separate from solve CPU')
-    downloads=[]
-    for directory in [root,root/'audit',root/'archives']:
-        if directory.is_dir():downloads.extend(f for f in directory.iterdir() if f.is_file() and 'download' in f.name.lower() and f.suffix.lower()=='.json')
-    for f in downloads:
-        d=load(f);add('download:'+str(f.relative_to(root)),'release_download','Apple_local',f,cpu=d.get('CPU_seconds',d.get('cpu_seconds')),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Absent timer fields remain null; bytes/URLs do not determine CPU or elapsed time')
-    if not downloads:add('artifact_download_timing_unknown','release_download','Apple_local','No measured download timing receipt found',cpu=None,counter=dict(LU=0,RHS=0),reason='Artifact bytes alone are not download elapsed time; prior downloads not timed')
+        d=load(f);add('compression:'+f.name,'release_compression',d.get('host','Apple_local' if 'local' in f.name.lower() else 'i9_remote'),f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),status=d.get('status','ARCHIVED'),scope='Archive compression process timer, separate from solve CPU')
+    # Download costs are read only from audit/ARTIFACT_TRANSFER_COSTS.json below.
+    if not (root/'audit/ARTIFACT_TRANSFER_COSTS.json').is_file():add('artifact_download_timing_unknown','release_download','Apple_local','Sanitized ARTIFACT_TRANSFER_COSTS receipt absent',cpu=None,counter=dict(LU=0,RHS=0),reason='Public DOWNLOADS.json is an index, not a timing receipt; bytes do not determine time')
     # Public selector: batch scan is additional CPU, task intervals nested inside.
     for f in (root/'predictions/min_change_paid_pool').glob('*/SELECTIONS.json') if(root/'predictions/min_change_paid_pool').is_dir() else[]:
         d=load(f);name=d.get('campaign',f.parent.name);selector_host=d.get('host','Apple_local')
@@ -181,8 +252,10 @@ def main():
         d=load(f);add('scoring_plot:'+f.parent.name,'scoring_plotting','Apple_local',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Scorer/figure CPU and wall were not recorded where null; not zero',scope='Offline scoring/plot process only; source online costs excluded')
     for f in (root/'analysis').glob('*/PLOT_RECEIPT.json'):
         d=load(f);add('measured_plot:'+f.parent.name,'scoring_plotting','Apple_local',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=d.get('new_Maxwell_LU',0),RHS=0),scope='Measured plot-only interval')
-    for f in (root/'analysis/delegated').glob('*/AGGREGATION_RECEIPT.json') if(root/'analysis/delegated').is_dir() else[]:
-        d=load(f);add('table_aggregation:'+f.parent.name,'scoring_plotting','Apple_local',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Table/bootstrap/plot aggregation timer not measured; original online/source costs are not new work')
+    for f in (root/'analysis').rglob('AGGREGATION_RECEIPT.json'):
+        if any('fixture' in part.lower() or 'fake' in part.lower() for part in f.parts):continue
+        d=load(f);add('table_aggregation:'+str(f.relative_to(root)),'scoring_plotting','Apple_local',f,cpu=d.get('CPU_seconds'),wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Table/bootstrap/plot aggregation timer not measured; original online/source costs are not new work')
+    supplemental_receipts(root,add)
     site=root/'SITE_BUILD.json'
     if site.is_file():
         d=load(site);add('static_site_build','release_site','Apple_local',site,cpu=None,wall=d.get('wall_seconds'),counter=dict(LU=0,RHS=0),reason='Builder recorded wall only; historic builder reruns were not separately timed')

@@ -7,3 +7,5 @@ Fields: optional title string; lead string; findings list of objects with text s
 Summary lead/findings/comparison and curated figures precede complete navigation. Every curated figure must resolve beneath actual analysis/, exist, have an image extension and contain no fixture/fake path component; absolute/escaping paths are refused. Captions/text are HTML-escaped. Analysis data tables and truth/prediction arrays are never opened by this builder. Existing Chinese report and GitHub project links appear in primary navigation. BASELINE_AUDIT/METHODS_AND_ABLATIONS/BENCHMARKS/CHAT_HANDOFF/THEORY_STATUS/PRIOR_ART links appear only when files exist.
 
 Global GALLERY now provides campaign links and counts instead of inlining all image payloads. Its Markdown has direct links to every discovered actual figure. Campaign galleries retain every image and domain separation, preserving full discovery. Page generation remains an explicit later parent action.
+
+Campaign galleries omit bulk SCORES/PAID_PREFIX tables and link only listed compact attachments below2MB; existing ../review_tables/README.md is the compact allcase entry. Full plots remain discoverable.

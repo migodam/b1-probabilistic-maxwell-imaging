@@ -16,7 +16,7 @@ GROUPS={
  'physics':('物理合同：矢量3D、实测与经典对象','不同物理域的图集分别列出，不合并材料指标。'),
  'other':('其他实际生成附件','按真实目录列出，不从文件名推断算法优劣。')}
 DOCS=[('BASELINE_AUDIT.md','基线审查'),('METHODS_AND_ABLATIONS.md','方法与消融'),('BENCHMARKS.md','基准与合同'),('CHAT_HANDOFF.md','研究交接'),('THEORY_STATUS.md','理论状态'),('PRIOR_ART.md','先例与范围'),('PRIOR_ART_AND_NOVELTY.md','先例与新颖性审查'),('RESEARCH_REPORT_ZH.md','中文研究报告'),('REPORT.md','研究报告'),('PAPER_DRAFT.md','论文初稿'),('THEORY_DERIVATIONS.md','数学推导'),('REPRODUCE.md','复现与来源'),('COST_LEDGER.md','费用账目'),('FAILURES.md','失败与范围'),('ARTIFACTS.md','原始附件与下载'),('TASK_RESUME.md','任务连续性'),('delegated/evidence/PRIOR_ART.md','最近先例审查'),('delegated/evidence/SOURCE_REUSE.md','历史证据与复用')]
-DATA_DOCS=[('BASELINE_AUDIT.md','基线审查'),('METHODS_AND_ABLATIONS.md','方法与消融'),('BENCHMARKS.md','基准与合同'),('CHAT_HANDOFF.md','研究交接'),('THEORY_STATUS.md','理论状态'),('PRIOR_ART.md','先例与范围'),('PRIOR_ART_AND_NOVELTY.md','先例与新颖性审查'),'REPORT.md','SCORING_RECEIPT.json','METHOD_VIEW_SUMMARY.csv','PAIRED_STATS.csv','SCORES.csv','PAID_PREFIX_SCORES.csv','CORRECTOR_DECOMPOSITION.csv','COST_LEDGER.csv','COST_TOTALS.json','FAILURES.json','TRUTH_SOURCES.json','QUEUE_ATTEMPT_HISTORY.json']
+DATA_DOCS=['REPORT.md','SCORING_RECEIPT.json','METHOD_VIEW_SUMMARY.csv','PAIRED_STATS.csv','CORRECTOR_DECOMPOSITION.csv','COST_LEDGER.csv','COST_TOTALS.json','FAILURES.json','TRUTH_SOURCES.json','QUEUE_ATTEMPT_HISTORY.json']
 
 
 def esc(value):return html.escape(str(value),quote=True)
@@ -95,10 +95,13 @@ def domain_name(directory):
 
 
 def campaign_gallery(root,campaign,figures):
-    base=campaign;title=campaign.name+' · 实际图集';docs=[base/n for n in DATA_DOCS if(base/n).is_file()]
+    base=campaign;title=campaign.name+' · 实际图集';docs=[base/n for n in DATA_DOCS if(base/n).is_file() and (base/n).stat().st_size<2_000_000]
     nav='<nav><a href="../../index.html">R13首页</a><a href="../../GALLERY.html">全部图集</a><a href="GALLERY.md">GitHub Markdown图集</a></nav>'
     body='<p class="note">只列出本目录实际存在的图和分析文件。点击图片打开原尺寸；每张图的解释以已保存报告为准。</p><div class="doclist">'+''.join('<a href="'+relative(p,base)+'">'+esc(p.name)+'</a>' for p in docs)+'</div>'
+    review=root/'analysis/review_tables/README.md'
+    if review.is_file():body+='<p><a href="'+relative(review,base)+'">紧凑全对象复核表</a></p>'
     md=['# '+title,'','[R13首页](../../index.html) · [HTML图集](GALLERY.html)','','仅列出实际生成附件；不以运行状态或图名推断科学结论。','']
+    if review.is_file():md+=['[紧凑全对象复核表]('+relative(review,base)+')','']
     if docs:md+=[' · '.join('['+p.name+']('+relative(p,base)+')' for p in docs),'']
     bydomain={}
     for f in figures:
@@ -121,7 +124,7 @@ def main():
     for directory in sorted((root/'analysis').iterdir()) if(root/'analysis').is_dir() else[]:
         if not directory.is_dir() or any(x in directory.name.lower() for x in ['fixture','fake']):continue
         figures=sorted(f for f in directory.rglob('*') if f.is_file() and f.suffix.lower() in ['.png','.jpg','.jpeg','.svg','.webp'] and 'FIGURES' in f.relative_to(directory).parts and not any('fixture' in x.lower() or 'fake' in x.lower() for x in f.relative_to(directory).parts))
-        documents=[directory/x for x in DATA_DOCS if(directory/x).is_file()]
+        documents=[directory/x for x in DATA_DOCS if(directory/x).is_file() and (directory/x).stat().st_size<2_000_000]
         if not figures and not documents:continue
         domains=campaign_gallery(root,directory,figures);campaigns.append(dict(name=directory.name,path=directory,group=group(directory.name),figures=figures,documents=documents,domains=list(domains)))
     docs=[(root/path,label) for path,label in DOCS if(root/path).is_file()]

@@ -1,0 +1,84 @@
+{
+  "title": "MAX-STRUCT R13｜材料事件、反射记忆与分支可访问性",
+  "lead": "48个新独立二维材料、真实三维矢量反演、Fresnel留出预测与经典Austria。DR与G19各有可重复的条件收益；事件阈值解释了换分支，但尚未形成独有的普遍恢复优势。",
+  "findings": [
+    {
+      "label": "新48对象",
+      "text": "G19平均NRMSE 0.16758，DR 0.17672，Dual-CIE 0.17985；DR实际CPU较低，失败对象互补。"
+    },
+    {
+      "label": "真实坏终点",
+      "text": "全48分母的G19→DR救援降至0.15135，事件救援0.14947；额外CPU约11%，大收益分别集中于两个对象。"
+    },
+    {
+      "label": "事件机制",
+      "text": "在线阈值与随机、法向倍增、无事件重置接近。same-shadow反例说明完整状态记忆重要，不能把首次跳变当恢复保证。"
+    },
+    {
+      "label": "保留正面与反例",
+      "text": "A+固定16对象均值0.10966；NN明显帮助direct。3D主布局可恢复但幅度偏低；实测最终方法接近，未宣称新法全面胜出。"
+    },
+    {
+      "label": "简单替代解释",
+      "text": "事后复用已付费运行的CIE/Dual→uniform DR组合表现更好，支持求解器互补；它不是新盲确认算法。"
+    }
+  ],
+  "table": {
+    "columns": [
+      "新48｜方法",
+      "平均NRMSE",
+      "平均实际CPU秒"
+    ],
+    "rows": [
+      [
+        "CIE",
+        "0.19454",
+        "106.15"
+      ],
+      [
+        "Dual-CIE",
+        "0.17985",
+        "106.26"
+      ],
+      [
+        "G19",
+        "0.16758",
+        "119.08"
+      ],
+      [
+        "DR",
+        "0.17672",
+        "84.50"
+      ],
+      [
+        "整数事件",
+        "0.18149",
+        "86.33"
+      ]
+    ]
+  },
+  "figures": [
+    {
+      "path": "analysis/paper_figures/FIGURES/01_fresh48_ecdf_actual_cpu.png",
+      "caption": "全部48对象与真实CPU，长尾保留；插图仅放大同一分母。"
+    },
+    {
+      "path": "analysis/paper_figures/FIGURES/02_conditional_all48_cost_trigger_changes.png",
+      "caption": "G19条件救援：39旁路、9触发，全部48保留。"
+    },
+    {
+      "path": "analysis/paper_figures/FIGURES/03_fixed16_nn_interfaces.png",
+      "caption": "冻结小网络分别接入DR、G19和direct，训练费用未知另列。"
+    },
+    {
+      "path": "analysis/paper_figures/FIGURES/04_posthoc_six_case_materials.png",
+      "caption": "事后机制展示：同样保留明显正例、反例与共同失败，非新确认子集。"
+    }
+  ],
+  "limitations": [
+    "962份规范运行不等于962个材料；重复子集和恢复别名不增加独立分母。",
+    "固定CPU比较不是收敛极限；M4充分日程参考另列，不能跨机拼速度。",
+    "3D Mie及cross-grid误差超过噪声，实测horn/协方差仍有限；不宣称连续高精度资格。",
+    "本轮未用CUDA或重新训练NN。论文初稿是机制研究，不是已发表或全局收敛算法。"
+  ]
+}

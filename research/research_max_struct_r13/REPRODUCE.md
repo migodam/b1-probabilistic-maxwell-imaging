@@ -1,6 +1,6 @@
 # R13 复现、来源与附件入口
 
-本文说明已经存在的文件与执行入口，不代表尚在运行的队列已完成、独立真值已评分或论文已通过科学审查。方法结论由封存后报告给出。本地静态网页构建不等同于已经公开。
+全部有限队列、联合封存和七组规范离线评分已经完成。本文说明实际执行版本与可复现入口；科学结论由中文报告给出，网页与Release可访问性另有最终发布回执。
 
 ## 来源与实际执行目录
 
@@ -23,7 +23,7 @@ Mac已有Python环境为 `/Volumes/migodam's-external-brain/Research/Inv_SLAM/Ga
 
 ## 实际source/runtime包
 
-下表为本地已经存在的包名；它们不是尚未创建的Release下载链接。
+下表为真实执行runtime；公开下载列表与分片顺序由最终 DOWNLOADS.json 提供。
 
 |包名|用途|
 |---|---|
@@ -31,7 +31,7 @@ Mac已有Python环境为 `/Volumes/migodam's-external-brain/Research/Inv_SLAM/Ga
 |`runtime_refinement_v2_final.zip`|C1开发修订/表示对照runtime|
 |`runtime_confirmation_C2_final.zip`|C2最终发运包，109文件、68,607,527字节；只含公开在线输入|
 
-已有完成队列的完整结果归档在 `archives/`，逐包以对应 `*_ARCHIVE_RECEIPT.json` 为准。动态公开下载清单/Release链接只有在真实产生后才进入网站；目前不补造链接。被冻结的runtime包用于重现实际执行版本；当前 `src/` 的后续评分、绘图、文档改动不自动视为旧队列运行代码。
+已有完成队列的完整结果归档在 `archives/`，逐包以对应 `*_ARCHIVE_RECEIPT.json` 为准。动态公开下载清单只由实际上传且公网字节读回通过的附件生成。被冻结的runtime包用于重现实际执行版本；当前 `src/` 的后续评分、绘图、文档改动不自动视为旧队列运行代码。
 
 ## 公开数据与固定NN初值
 
@@ -98,3 +98,29 @@ python src/build_site.py --root R13_ROOT
 ```
 
 该入口只枚举实际 `analysis/<campaign>/**/FIGURES` 与已有文档，生成 `index.html`、`GALLERY.md`、`GALLERY.html` 及每组图集。没有结果文件就不生成已完成占位卡片；没有下载清单就不显示虚构Release地址。父线程另行完成图像/科学审查与既有GitHub/Pages发布验收。
+
+## 最终实际追加队列与物理恢复
+
+- C3在线控制：`configs/confirmation_online_controls16.json`，16×3，无事件重置/法向倍增/物理记忆重置，在新GT评分前冻结。
+- M4参考：`configs/confirmation_local_reference16.json`，16×6；Full-J另见`confirmation_local_trf16.json`（含一个旧B开发参考）。所有方法同机比较。
+- physics首次18 Austria完成、42导入失败。独立C4补齐原继承R1文件后，以`src/start_physics_recovery.py`运行42份；canonical `physics_v1`合成60，别名保留42，不能多算样本。
+- 发布恢复时优先用`physics_v1_recovered_full_results_v2.zip`作为规范60结果；`physics_v1_full_results.zip`是首次失败证据，`physics_recovery_v1_full_results.zip`是恢复来源。它们分别解压，不覆盖不同尝试目录。
+
+## 从实际发布附件还原
+
+1. 克隆现有仓库并保留R4–R12依赖；大型下载/解压目标放外置盘或任务远端目录。
+2. 查看`DOWNLOADS.json`中真实logical asset名称、字节和顺序。超过1GB的ZIP以part001/part002列出，按顺序二进制连接。
+3. 使用现有恢复入口；输出为NEW外置目录，不会写R12：
+
+```text
+python src/restore_release_assets.py --manifest DOWNLOADS.json --asset max-struct-r13-postseal-inputs-sources.zip --output-dir NEW_EXTERNAL_DOWNLOADS --extract-dir NEW_EXTERNAL_EXTRACT
+```
+
+完整结果按所需campaign选择`--asset`，可一次指定多个。postseal inputs包含当前研究输入和封存GT，仅用于复现及离线评分；它们不应进入在线反演环境。frozen runtime保留真正运行版本，当前src包含其后审计/跨平台路径修复，二者不要混作同一来源。
+
+4. Windows路径只是原现场记录；新路径运行时调整新清单的公开路径和legacy依赖，不改旧清单。原mtime/绝对路径seal不跨解压位置通用；新重放预测重新封存，审核后再授权GT评分。
+5. 完整高容量`SCORES/PAID_PREFIX/ALL_PAID...`在分析ZIP；仓库只放小型review tables、回执与真实图。发表图由`experiments/make_paper_figures.py`从已评分结果产生，不调用新反演。
+
+## 不同费用口径
+
+962规范方法运行去除42恢复别名，另保留42首次失败和4partial未知；1004 run-contract记录包含别名，不能当独立实验数。主机、矩阵维数和阶段分开见COST_LEDGER。未用CUDA，不需安装新GPU环境。历史NN训练费用未知，本轮只复用已跟踪R8权重。

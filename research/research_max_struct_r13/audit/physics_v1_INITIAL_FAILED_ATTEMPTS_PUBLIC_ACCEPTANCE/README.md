@@ -1,0 +1,555 @@
+# Public prediction acceptance audit
+
+Campaign `physics_v1`; 60/60 expected task rows retained; 42 rows have reported wiring/availability issues.
+
+No truth, new Maxwell factorization, optimization or numerical-defect pass gate. Numerical field residuals and exact selector/index issues remain separate. See AUDIT.json for per-view units, relative norms, initial-state max differences, selector/prefix checks, missing counters and stage termination metadata.
+
+Validation matrix actions/CPU are a separate cost, never added to solver physical LU/RHS or used to retroactively create candidates. Shared starts require exact public operators and material initializer; NN groups are separate. Missing tasks/costs are retained as missing/null, never as zero.
+
+Reported issues:
+- `slotted_high_frame__cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__dual_cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__dual_cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__global_dual`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__global_dual`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame__dr`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__dr`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__dr`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__dr`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__dr`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__dr`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame__ap`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__ap`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__ap`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__ap`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__ap`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__ap`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__event_integer`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__event_integer`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame__direct`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame__direct`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame__direct`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame__direct`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame__direct`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__direct`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__dual_cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__dual_cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__global_dual`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__global_dual`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__dr`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__dr`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__ap`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__ap`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__event_integer`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__event_integer`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `unequal_coupled_steps__direct`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__direct`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `unequal_coupled_steps__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__global_dual`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__global_dual`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__dr`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__dr`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__ap`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__ap`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__event_integer`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__event_integer`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `mixed_crossed_bracket__direct`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__direct`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `mixed_crossed_bracket__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `slotted_high_frame_crossgrid8__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__dual_cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__dual_cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__global_dual`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__global_dual`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__dr`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__dr`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__ap`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__ap`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__event_integer`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__event_integer`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `dielTM_dec8f__direct`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__direct`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `dielTM_dec8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__dual_cie`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__dual_cie`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__dual_cie`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__global_dual`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__global_dual`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__global_dual`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__dr`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__dr`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__dr`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__dr`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__ap`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__ap`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__ap`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__ap`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__event_integer`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__event_integer`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__event_integer`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}
+- `twodielTM_8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "RECEIPT.json"}
+- `twodielTM_8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "HISTORY.json"}
+- `twodielTM_8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "CANDIDATES.npz"}
+- `twodielTM_8f__direct`: {"kind": "MISSING_ARTIFACT", "file": "PREFIXES.json"}
+- `twodielTM_8f__direct`: {"kind": "CANDIDATE_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__direct`: {"kind": "PREFIX_LOAD_FAILED", "error": "FileNotFoundError(2, 'No such file or directory')"}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 15}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 30}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 60}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 90}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 120}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 180}
+- `twodielTM_8f__direct`: {"kind": "MISSING_PREFIX", "CPU_prefix": 240}

@@ -1,0 +1,318 @@
+# confirmation_mechanism16 · 实际图集
+
+[R13首页](../../index.html) · [HTML图集](GALLERY.html)
+
+仅列出实际生成附件；不以运行状态或图名推断科学结论。
+
+[紧凑全对象复核表](../review_tables/README.md)
+
+[REPORT.md](REPORT.md) · [SCORING_RECEIPT.json](SCORING_RECEIPT.json) · [METHOD_VIEW_SUMMARY.csv](METHOD_VIEW_SUMMARY.csv) · [PAIRED_STATS.csv](PAIRED_STATS.csv) · [CORRECTOR_DECOMPOSITION.csv](CORRECTOR_DECOMPOSITION.csv) · [COST_LEDGER.csv](COST_LEDGER.csv) · [COST_TOTALS.json](COST_TOTALS.json) · [FAILURES.json](FAILURES.json) · [TRUTH_SOURCES.json](TRUTH_SOURCES.json) · [QUEUE_ATTEMPT_HISTORY.json](QUEUE_ATTEMPT_HISTORY.json)
+
+## scalar_tm_2d_predeclared_every_third_ID16
+
+### corrector_components_a_plus
+
+![corrector_components_a_plus](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_a_plus.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_a_plus.pdf)
+
+### corrector_components_anderson
+
+![corrector_components_anderson](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_anderson.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_anderson.pdf)
+
+### corrector_components_ap
+
+![corrector_components_ap](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_ap.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_ap.pdf)
+
+### corrector_components_ap_dr
+
+![corrector_components_ap_dr](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_ap_dr.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_ap_dr.pdf)
+
+### corrector_components_global_dual
+
+![corrector_components_global_dual](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_global_dual.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_global_dual.pdf)
+
+### corrector_components_nfft_equations
+
+![corrector_components_nfft_equations](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nfft_equations.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nfft_equations.pdf)
+
+### corrector_components_nn_direct
+
+![corrector_components_nn_direct](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nn_direct.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nn_direct.pdf)
+
+### corrector_components_nn_dr
+
+![corrector_components_nn_dr](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nn_dr.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nn_dr.pdf)
+
+### corrector_components_nn_g19
+
+![corrector_components_nn_g19](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nn_g19.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_nn_g19.pdf)
+
+### corrector_components_online_event
+
+![corrector_components_online_event](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_online_event.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_online_event.pdf)
+
+### corrector_components_online_random
+
+![corrector_components_online_random](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_online_random.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_components_online_random.pdf)
+
+### corrector_material_arrows_a_plus
+
+![corrector_material_arrows_a_plus](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_a_plus.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_a_plus.pdf)
+
+### corrector_material_arrows_anderson
+
+![corrector_material_arrows_anderson](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_anderson.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_anderson.pdf)
+
+### corrector_material_arrows_ap
+
+![corrector_material_arrows_ap](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_ap.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_ap.pdf)
+
+### corrector_material_arrows_ap_dr
+
+![corrector_material_arrows_ap_dr](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_ap_dr.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_ap_dr.pdf)
+
+### corrector_material_arrows_global_dual
+
+![corrector_material_arrows_global_dual](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_global_dual.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_global_dual.pdf)
+
+### corrector_material_arrows_nfft_equations
+
+![corrector_material_arrows_nfft_equations](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nfft_equations.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nfft_equations.pdf)
+
+### corrector_material_arrows_nn_direct
+
+![corrector_material_arrows_nn_direct](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nn_direct.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nn_direct.pdf)
+
+### corrector_material_arrows_nn_dr
+
+![corrector_material_arrows_nn_dr](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nn_dr.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nn_dr.pdf)
+
+### corrector_material_arrows_nn_g19
+
+![corrector_material_arrows_nn_g19](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nn_g19.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_nn_g19.pdf)
+
+### corrector_material_arrows_online_event
+
+![corrector_material_arrows_online_event](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_online_event.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_online_event.pdf)
+
+### corrector_material_arrows_online_random
+
+![corrector_material_arrows_online_random](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_online_random.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/corrector_material_arrows_online_random.pdf)
+
+### diagnostic_structure_methods1_page01
+
+![diagnostic_structure_methods1_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page01.pdf)
+
+### diagnostic_structure_methods1_page02
+
+![diagnostic_structure_methods1_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page02.pdf)
+
+### diagnostic_structure_methods1_page03
+
+![diagnostic_structure_methods1_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page03.pdf)
+
+### diagnostic_structure_methods1_page04
+
+![diagnostic_structure_methods1_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods1_page04.pdf)
+
+### diagnostic_structure_methods2_page01
+
+![diagnostic_structure_methods2_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page01.pdf)
+
+### diagnostic_structure_methods2_page02
+
+![diagnostic_structure_methods2_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page02.pdf)
+
+### diagnostic_structure_methods2_page03
+
+![diagnostic_structure_methods2_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page03.pdf)
+
+### diagnostic_structure_methods2_page04
+
+![diagnostic_structure_methods2_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods2_page04.pdf)
+
+### diagnostic_structure_methods3_page01
+
+![diagnostic_structure_methods3_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page01.pdf)
+
+### diagnostic_structure_methods3_page02
+
+![diagnostic_structure_methods3_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page02.pdf)
+
+### diagnostic_structure_methods3_page03
+
+![diagnostic_structure_methods3_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page03.pdf)
+
+### diagnostic_structure_methods3_page04
+
+![diagnostic_structure_methods3_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/diagnostic_structure_methods3_page04.pdf)
+
+### materials_methods1_page01
+
+![materials_methods1_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page01.pdf)
+
+### materials_methods1_page02
+
+![materials_methods1_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page02.pdf)
+
+### materials_methods1_page03
+
+![materials_methods1_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page03.pdf)
+
+### materials_methods1_page04
+
+![materials_methods1_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods1_page04.pdf)
+
+### materials_methods2_page01
+
+![materials_methods2_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page01.pdf)
+
+### materials_methods2_page02
+
+![materials_methods2_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page02.pdf)
+
+### materials_methods2_page03
+
+![materials_methods2_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page03.pdf)
+
+### materials_methods2_page04
+
+![materials_methods2_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods2_page04.pdf)
+
+### materials_methods3_page01
+
+![materials_methods3_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page01.pdf)
+
+### materials_methods3_page02
+
+![materials_methods3_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page02.pdf)
+
+### materials_methods3_page03
+
+![materials_methods3_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page03.pdf)
+
+### materials_methods3_page04
+
+![materials_methods3_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/materials_methods3_page04.pdf)
+
+### paid_cost_curves_page01
+
+![paid_cost_curves_page01](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page01.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page01.pdf)
+
+### paid_cost_curves_page02
+
+![paid_cost_curves_page02](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page02.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page02.pdf)
+
+### paid_cost_curves_page03
+
+![paid_cost_curves_page03](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page03.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page03.pdf)
+
+### paid_cost_curves_page04
+
+![paid_cost_curves_page04](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page04.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paid_cost_curves_page04.pdf)
+
+### paired_primary_NRMSE
+
+![paired_primary_NRMSE](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paired_primary_NRMSE.png)
+
+[PDF](DOMAIN_scalar_tm_2d_predeclared_every_third_ID16/FIGURES/paired_primary_NRMSE.pdf)
+

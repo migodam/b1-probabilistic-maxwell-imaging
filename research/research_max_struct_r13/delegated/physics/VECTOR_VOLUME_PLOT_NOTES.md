@@ -26,3 +26,7 @@ Outputs after execution are:
 - `PRIVATE_ACCESS_LOG.json`, `ISSUES.json`, `PLOT_COST_RECEIPT.json`: authorization provenance, all failures/missing panels and actual plotting costs. No material-recovery statistics or scientific acceptance are invented.
 
 The cost receipt records actual current-run render attempts, successes/failures, import time, per-figure time and total input/plot/export CPU/wall, separately from online and physical-validation cost. Previously failed plotting attempts are unknown and explicitly reported as unknown, never inferred to be zero. New forward/LU/RHS counts remain zero because the script only displays saved arrays. Only the parent may make final scientific/visual acceptance and publication decisions after reviewing actual rendered output.
+
+## Authorized execution update
+
+The parent subsequently authorized offline access and the fixed renderer ran successfully:32 pages,112 method/view panels plus32 repeated GT references, no missing or out-of-box panels, no additional forward solve. Actual external plotting cost was18.863529CPU seconds/19.164855wall seconds. Preparation-time statements above remain historical; the completed figure manifest, access log, cost receipt and basic two-page visual QA are in `analysis/vector_volumes/`. Full scientific/visual acceptance remains with the parent.

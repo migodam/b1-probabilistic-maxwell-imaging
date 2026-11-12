@@ -20,3 +20,7 @@
 |连续Maxwell唯一性、全局凸化、普适优于CIE|NOT_PROVED|本轮没有这类定理|有限矩阵与DDA结果不替代连续PDE证明|
 
 理论推导见 [THEORY_DERIVATIONS.md](THEORY_DERIVATIONS.md)，closest-prior范围见 `delegated/evidence/PRIOR_ART.md`。全文检索与来源读取有缺口，文献表记录阅读深度，不作穷尽优先权保证。
+
+## 最终实验对照
+
+48新对象与固定16控制已封存评分。整数事件不整体优于DR；在线事件没有分离出相对随机/倍增/重置的独有优势。G19→DR/事件在完整48分母上有条件收益，但对象不同；事后普通solver portfolio提供更简单解释。三维/实测实际运行，不宣称新的普遍领先。状态定义、证明与prior-art不因发布而升级。
