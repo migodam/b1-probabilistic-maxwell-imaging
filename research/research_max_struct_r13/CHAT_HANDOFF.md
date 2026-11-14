@@ -1,3 +1,5 @@
+> **2026-11-14已完成补充：** 原A+已按原配置补齐同48。A+-MM/Arc平均NRMSE为.15210/.15214；同实际CPU为.15746/.15282，均保留对CIE/Dual的平均材料增量。NN与corrector的同16/48对照、失败动力学、Theory2素材及全部原始附件见[最新补充交接](supplement_aplus48/CHAT_HANDOFF.md)和[新网页](supplement_aplus48/index.html)。下方保留原R13冻结交接；原A+仅16和旧训练费用未重测的范围由补充核对更新，历史正文/数组不覆盖。
+
 # MAX-STRUCT R13：最终 Chat 交接
 
 请先读 [中文完整报告](RESEARCH_REPORT_ZH.md)，再看 [综合图入口](GALLERY.html) 和 [全图集](GALLERY.html)。原始数组通过 [附件入口](ARTIFACTS.md) 提供。R4–R12 冻结结果没有改写。

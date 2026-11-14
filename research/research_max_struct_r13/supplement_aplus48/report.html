@@ -47,6 +47,7 @@
 <p>下一轮最有价值的问题是：<strong>材料读出如何改变current继续方向，并让变化后的本构/传播缺陷进入或退出可观测端口？</strong> 它比继续提高同一个条件材料子问题求解精度更接近当前瓶颈。公式、假设、可证伪命题和已知先例边界见 <a href="THEORY2_MATERIALS.md">THEORY2_MATERIALS</a>。可逆Möbius坐标本身不消除原Phi严格局部极小；本轮没有全局凸化、混沌或连续Maxwell唯一性新定理。</p>
 <h2>8. CPU与实际执行</h2>
 <p>新184运行均在远端i9-14900HX上，原八个P核、每BLAS一线程，未新增CUDA移植。用户已允许E/HT；本次仍保留冻结P8条件以匹配既有结果，不在半途更换硬件份额。算法差异、LU、FFT、固定投影、setup与失败开销见 <a href="COST_LEDGER.md">COST_LEDGER</a>。</p>
+<p>复用基线和新增运行发生在不同时间段；同host/亲和性/BLAS不等于锁定同一硬件频率，旧逐run温度/功率没有记录。因此同时保留物理计数与CPU前缀，不把几秒差值当作独立锁频微基准。</p>
 <p>忙P核低频不是只读全核平均造成：实际队列64.7秒采样中P8持续繁忙，计数器推算中位约1.52GHz、平均约1.67GHz（不是直接硬件effective-clock读数）。Windows有效AC已为最高性能、最大状态100%、无显式MHz封顶、boost已允许；8worker未显式开启EcoQoS。近7天指定限频/热事件0条不能排除硬件限频。</p>
 <p>目前没有读到CPU封装温度、功率、硬件限制原因和OMEN当前档位，<strong>未确诊、未声称已修复</strong>。最有价值的下一项是OEM/XTU现成界面的这些实时值，而不是重复切已经开启的Windows最高性能。本次没有改BIOS、保护限额、QoS或科学预算；<a href="analysis/cpu_frequency/CAUSE_REPORT.md">完整CPU审计</a>保留已排除与未知项。</p>
 <h2>9. 论文判断与收尾建议</h2>

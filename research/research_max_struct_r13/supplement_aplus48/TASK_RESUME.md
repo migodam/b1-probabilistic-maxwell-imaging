@@ -1,3 +1,7 @@
+# Final science complete; GitHub publication validation pending
+
+Sixassets PUBLIC and anonymousHTTP206/ZIPheaders verified: https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r13-aplus48-20261114 ;1215382781bytes. Source/science commit530450346 pushed branch. All184runs/analyses done, no more experiments. DOWNLOADS/ARTIFACTS real; site rebuilt94figures,8galleries,0local brokenlinks. MainR13 index/hand-off/report/reproduce/paper/readme topaddenda created, oldbody/arrays unchanged. Pending: final selectiveGitcommit, pushbranch+HEAD:main normal; waitPages+rawpublic200; browservisualQA+completion_summary; savepublicreadbackreceipt; final conciseChinese verifiedlinks. Never push olduntracked datasets or private_operational/aliasD:trees.
+
 # ACTIVE CONTINUATION: finish publication; do not restart experiments
 
 All184 new runs and all requested analysis are COMPLETE. Read RESEARCH_REPORT_ZH.md, CHAT_HANDOFF.md, THEORY2_MATERIALS.md. Arc andMM final48 nearly identical; Arc faster; NN effects solver-dependent; costs/dynamics audited. New112 sealed/accepted/authorized/scored; original params and selections unchanged. New derived summary-label correction only, no prediction change. Independent table audit148checks0issues.

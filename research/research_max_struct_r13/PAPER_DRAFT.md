@@ -1,3 +1,5 @@
+> **Completed follow-up, 2026-11-14:** [Paired A+48, neural-interface and dynamics addendum](supplement_aplus48/PAPER_ADDENDUM.md). A+ now covers all48 exposed objects; the frozen arc/guard readout retains recovery with lower cost. The original frozen manuscript below is preserved and must be read with this addendum, not used as the final complete A+ comparison.
+
 # Constitutive Branch Accessibility in Maxwell Inversion: Finite Events, Reflected State Memory, and Paid Candidate Selection
 
 **Research draft, 12 November 2026.** This manuscript reports completed finite-dimensional experiments and conditional results. It is not a claim of journal acceptance, a continuous-Maxwell uniqueness theorem, or a new globally convergent optimizer. All numerical tables below use sealed predictions; raw arrays and execution versions accompany the repository release.

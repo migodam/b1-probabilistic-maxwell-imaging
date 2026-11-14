@@ -1,3 +1,5 @@
+> **最新：** [A+全48、NN接口与失败动力学补充网页](supplement_aplus48/index.html) · [完整报告](supplement_aplus48/RESEARCH_REPORT_ZH.md) · [Chat交接](supplement_aplus48/CHAT_HANDOFF.md) · [原始附件](supplement_aplus48/ARTIFACTS.md)。原R13正文和冻结结果保留。
+
 # MAX-STRUCT R13 — Finite Material Events and Maxwell Branch Accessibility
 
 本轮已完成运行、联合封存与离线评分：48个新独立二维材料，真矢量三维、Fresnel实测留出、Austria适配，以及事件/表示/NN/corrector机制对照。962份规范方法运行不是962个材料。

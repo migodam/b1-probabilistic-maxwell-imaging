@@ -125,6 +125,8 @@ primary继续采用原minPhi，secondary为合法球内候选的minR，缺失时
 
 新184运行均在远端i9-14900HX上，原八个P核、每BLAS一线程，未新增CUDA移植。用户已允许E/HT；本次仍保留冻结P8条件以匹配既有结果，不在半途更换硬件份额。算法差异、LU、FFT、固定投影、setup与失败开销见 [COST_LEDGER](COST_LEDGER.md)。
 
+复用基线和新增运行发生在不同时间段；同host/亲和性/BLAS不等于锁定同一硬件频率，旧逐run温度/功率没有记录。因此同时保留物理计数与CPU前缀，不把几秒差值当作独立锁频微基准。
+
 忙P核低频不是只读全核平均造成：实际队列64.7秒采样中P8持续繁忙，计数器推算中位约1.52GHz、平均约1.67GHz（不是直接硬件effective-clock读数）。Windows有效AC已为最高性能、最大状态100%、无显式MHz封顶、boost已允许；8worker未显式开启EcoQoS。近7天指定限频/热事件0条不能排除硬件限频。
 
 目前没有读到CPU封装温度、功率、硬件限制原因和OMEN当前档位，**未确诊、未声称已修复**。最有价值的下一项是OEM/XTU现成界面的这些实时值，而不是重复切已经开启的Windows最高性能。本次没有改BIOS、保护限额、QoS或科学预算；[完整CPU审计](analysis/cpu_frequency/CAUSE_REPORT.md)保留已排除与未知项。

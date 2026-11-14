@@ -1,3 +1,5 @@
+> **2026-11-14补充复现入口：** [supplement_aplus48/REPRODUCE.md](supplement_aplus48/REPRODUCE.md)、[六个实际附件](supplement_aplus48/ARTIFACTS.md)。实际C2与补充runner分开保存；后续仓库runner不能冒充原执行bundle。历史训练费用核对：R8主训练及训练/验证生成有402.558889 Mac CPU秒记录；原R13的null表示未重测。原复现正文保留。
+
 # R13 复现、来源与附件入口
 
 全部有限队列、联合封存和七组规范离线评分已经完成。本文说明实际执行版本与可复现入口；科学结论由中文报告给出，网页与Release可访问性另有最终发布回执。
