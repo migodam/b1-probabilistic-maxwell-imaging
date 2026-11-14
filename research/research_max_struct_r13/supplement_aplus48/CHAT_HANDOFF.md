@@ -45,3 +45,5 @@ i9忙P核约1.5–1.7GHz的计数器证据成立，Windows已有效最高性能�
 先报告/全48与NN图，再 `analysis/native_summary/EVIDENCE_SUMMARY.md`、Theory2；原始完整状态由下载附件取得。四个分析seal、公有选择索引、版本计数、原C2与stack实际runner及source diff均保留。没有SHA校验。
 
 本次补充已收尾，不再自行启动新算法循环。进一步理论应围绕**材料readout造成的current梯度变化与端口可见缺陷之间的联系**，而不是继续增加事件过冲或求根精度。论文可围绕A+的实际二维材料增量与低成本读出，强TAP三维/实测、强SIAM独有预测、连续IP理论仍有具体缺口。
+
+供Chat直接读取的[紧凑逐对象/solver/初值/阶段总表](analysis/stack_comparison/SCOREBOARD_COMPACT.csv)有2000行，原数值直接列投影；完整列与候选池在分析附件，不新增选择或评分。
