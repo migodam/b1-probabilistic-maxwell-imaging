@@ -1,0 +1,504 @@
+{
+  "src/run_experiment.py": {
+    "archive_member_bytes": 21170,
+    "lines": [
+      {
+        "line": 47,
+        "text": "    cfg=manifest['protocol']; cap=float(task.get('CPU_cap',cfg['CPU_cap']))"
+      },
+      {
+        "line": 48,
+        "text": "    proposal_fraction=float(cfg.get('proposal_fraction',.6))"
+      },
+      {
+        "line": 49,
+        "text": "    deadline=cap if algorithm=='direct' else cap*proposal_fraction"
+      },
+      {
+        "line": 50,
+        "text": "    out=root/'RESULTS'/task['campaign']/task['task_id'];out.mkdir(parents=True,exist_ok=False)"
+      },
+      {
+        "line": 51,
+        "text": "    with np.load(root/task['input_file'],allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}"
+      },
+      {
+        "line": 52,
+        "text": "    m0=public.pop('m_init'); Y=public['Y']; sigma=float(public['sigma'])"
+      },
+      {
+        "line": 67,
+        "text": "    P=None; snapshots={}; stop={}; error=None; status='COMPLETE'; final_states={};forecast_rows=[]"
+      },
+      {
+        "line": 68,
+        "text": "    audit_interval=cfg.get('physical_audit_CPU_interval')"
+      },
+      {
+        "line": 69,
+        "text": "    next_audit_CPU=float(audit_interval) if audit_interval else None"
+      },
+      {
+        "line": 70,
+        "text": ""
+      },
+      {
+        "line": 71,
+        "text": "    def audit_due():"
+      },
+      {
+        "line": 72,
+        "text": "        return next_audit_CPU is not None and time.process_time()>=next_audit_CPU"
+      },
+      {
+        "line": 76,
+        "text": ""
+      },
+      {
+        "line": 77,
+        "text": "    def record(m,state,value=None,gradient=None,extra=None):"
+      },
+      {
+        "line": 78,
+        "text": "        nonlocal best,secondary,next_audit_CPU"
+      },
+      {
+        "line": 79,
+        "text": "        rr=state['Y']-Y"
+      },
+      {
+        "line": 80,
+        "text": "        D=model.data_objective(rr,Y) if hasattr(model,'data_objective') else .5*float(np.vdot(rr,rr).real)/normY2"
+      },
+      {
+        "line": 90,
+        "text": "        history.append(meta);materials.append(row['m'])"
+      },
+      {
+        "line": 91,
+        "text": "        if audit_interval and phase=='proposal':"
+      },
+      {
+        "line": 92,
+        "text": "            next_audit_CPU=(int(t/float(audit_interval))+1)*float(audit_interval)"
+      },
+      {
+        "line": 93,
+        "text": "        if meta['eligible'] and legal:"
+      },
+      {
+        "line": 94,
+        "text": "            if best is None or meta['Phi']<best['metadata']['Phi']: best=row"
+      },
+      {
+        "line": 95,
+        "text": "            if phase not in phase_best or meta['Phi']<phase_best[phase]['metadata']['Phi']: phase_best[phase]=row"
+      },
+      {
+        "line": 96,
+        "text": "            if meta['noise_feasible'] and (secondary is None or (R,D+R)<(secondary['metadata']['R'],secondary['metadata']['Phi'])): secondary=row"
+      },
+      {
+        "line": 97,
+        "text": "        return row"
+      },
+      {
+        "line": 98,
+        "text": ""
+      },
+      {
+        "line": 99,
+        "text": "    def physical(m,extra=None):"
+      },
+      {
+        "line": 104,
+        "text": ""
+      },
+      {
+        "line": 105,
+        "text": "    def correct(start):"
+      },
+      {
+        "line": 106,
+        "text": "        def fun(m):"
+      },
+      {
+        "line": 107,
+        "text": "            check();value,grad=model.data_value_gradient(m,Y)"
+      },
+      {
+        "line": 108,
+        "text": "            record(m,model.state(m),value,grad);check()"
+      },
+      {
+        "line": 109,
+        "text": "            return value*1e6,grad*1e6"
+      },
+      {
+        "line": 110,
+        "text": "        result=minimize(fun,start,method='L-BFGS-B',jac=True,bounds=[(lower,upper)]*model.n,"
+      },
+      {
+        "line": 111,
+        "text": "                        options=dict(maxiter=6000 if algorithm=='direct' else 3000,"
+      },
+      {
+        "line": 112,
+        "text": "                                     maxfun=24000 if algorithm=='direct' else 12000,"
+      },
+      {
+        "line": 113,
+        "text": "                                     ftol=1e-12,gtol=.01,maxls=30))"
+      },
+      {
+        "line": 114,
+        "text": "        return dict(message=str(result.message),iterations=int(result.nit),evaluations=int(result.nfev))"
+      },
+      {
+        "line": 130,
+        "text": "                    numerical=dict(dpcs_rank=dec['rank'],material_box=[lower,upper],regularizer=lambda m:model.reg.evaluate(m)[:2],"
+      },
+      {
+        "line": 131,
+        "text": "                        maxiter=6000,receipt_path=str(out/'NFFT_EQUATIONS_EXECUTION.json'),cost_callback=auxiliary_receipt.update)"
+      },
+      {
+        "line": 132,
+        "text": "                    if audit_interval:numerical['physical_audit_due']=audit_due"
+      },
+      {
+        "line": 133,
+        "text": "                    result=run_nfft(model,Y,m0,numerical,check,g19_audit,audit_every=cfg['audit_every'])"
+      },
+      {
+        "line": 134,
+        "text": "                    final_states=dict(J=result['final_joint_J'],m=result['final_joint_m'])"
+      },
+      {
+        "line": 135,
+        "text": "                    stop['proposal']=result['status']"
+      },
+      {
+        "line": 139,
+        "text": "                    options=dict(audit_every=cfg['audit_every'])"
+      },
+      {
+        "line": 140,
+        "text": "                    if audit_interval:options['audit_due']=audit_due"
+      },
+      {
+        "line": 141,
+        "text": "                    if kind=='fresnel':options['cost_callback']=auxiliary_receipt.update"
+      },
+      {
+        "line": 142,
+        "text": "                    result=adapter(model,Y,m0,method,check,g19_audit,**options)"
+      },
+      {
+        "line": 143,
+        "text": "                    auxiliary_receipt.update(result)"
+      },
+      {
+        "line": 154,
+        "text": "                        name={'cie':'cie_single','dual_cie':'cie_dual','global_dual':'global_dual'}.get(method,'a_plus')"
+      },
+      {
+        "line": 155,
+        "text": "                        numerical=solver.arm_config(name,common,Y,model.E,[dict(mf=12,maxiter=1500)])"
+      },
+      {
+        "line": 156,
+        "text": "                    dump(out/'DPCS_RULE.json',dec)"
+      },
+      {
+        "line": 157,
+        "text": "                    numerical.update(fft_geometry=dict(coords=public['coords'],radius=float(public.get('cell_radius',public['radius'])),k=float(public['k'])),"
+      },
+      {
+        "line": 158,
+        "text": "                        regularizer=lambda m:model.reg.evaluate(m)[:2],aplus_regularizer=model.reg,"
+      },
+      {
+        "line": 162,
+        "text": "                        # CIE/Dual/Global and original R7 A+ leave this false."
+      },
+      {
+        "line": 163,
+        "text": "                        initialize_physical_current=method.startswith('g19'))"
+      },
+      {
+        "line": 164,
+        "text": "                    if method=='a_plus':"
+      },
+      {
+        "line": 165,
+        "text": "                        from research.research_max_struct_r7.src.aplus_readout import mobius_material_readout"
+      },
+      {
+        "line": 166,
+        "text": "                        numerical['material_readout']=mobius_material_readout"
+      },
+      {
+        "line": 167,
+        "text": "                    if audit_interval:numerical['physical_audit_due']=audit_due"
+      },
+      {
+        "line": 168,
+        "text": "                    mode='full_apcs' if method=='g19_full_apcs' else 'full_current' if method=='g19_full_current' else 'restricted'"
+      },
+      {
+        "line": 169,
+        "text": "                    result=run_full_current(model,Y,m0,numerical,mode=mode,budget_check=check,"
+      },
+      {
+        "line": 170,
+        "text": "                        audit_callback=g19_audit,audit_every=cfg['audit_every'],g19=method.startswith('g19'))"
+      },
+      {
+        "line": 171,
+        "text": "                    stop['proposal']=result.get('status')"
+      },
+      {
+        "line": 172,
+        "text": "                else:"
+      },
+      {
+        "line": 173,
+        "text": "                    scale=float(cfg.get('scale',6.))"
+      },
+      {
+        "line": 180,
+        "text": "                    def periodic(iteration):"
+      },
+      {
+        "line": 181,
+        "text": "                        return audit_due() if audit_interval else iteration%cfg['audit_every']==0"
+      },
+      {
+        "line": 182,
+        "text": "                    for k in range(prep):"
+      },
+      {
+        "line": 183,
+        "text": "                        check();cx,cq,cm=P.material(x,q)"
+      },
+      {
+        "line": 184,
+        "text": "                        if method.startswith('online_'):"
+      },
+      {
+        "line": 194,
+        "text": "                            cx,cq,_=P.material(x,q);x,q=P.affine_ball(cx,cq)"
+      },
+      {
+        "line": 195,
+        "text": "                        mode='random_integer' if method=='random_integer' else 'integer' if 'integer' in method else 'double' if method.startswith('normal_') else 'random' if method.startswith('random_') or method=='online_random' else 'fractional'"
+      },
+      {
+        "line": 196,
+        "text": "                        if method=='ap_dr':"
+      },
+      {
+        "line": 197,
+        "text": "                            event_history.append(dict(status='AP_PREPARATION_THEN_ORDINARY_DR',preparation=prep))"
+      },
+      {
+        "line": 198,
+        "text": "                            if cfg.get('forecast_trace'):"
+      },
+      {
+        "line": 258,
+        "text": "                phase='corrector'"
+      },
+      {
+        "line": 259,
+        "text": "                deadline=min(cap,time.process_time()+cap*(1-proposal_fraction))"
+      },
+      {
+        "line": 260,
+        "text": "                try: stop['corrector']=correct(best['m'])"
+      },
+      {
+        "line": 261,
+        "text": "                except BudgetEnd: stop['corrector']='CORRECTOR_PROCESS_CPU'"
+      },
+      {
+        "line": 262,
+        "text": "                snapshots['corrected']=phase_best.get('corrector',best)"
+      },
+      {
+        "line": 302,
+        "text": "    print(json.dumps(dict(task_id=args.task_id,status=status,CPU=receipt['whole_process_CPU_seconds'],candidates=len(history),error=error)),flush=True)"
+      },
+      {
+        "line": 303,
+        "text": "    return 1 if status=='FAILED' or best is None else 0"
+      },
+      {
+        "line": 304,
+        "text": ""
+      },
+      {
+        "line": 305,
+        "text": ""
+      },
+      {
+        "line": 306,
+        "text": "if __name__=='__main__': raise SystemExit(main())"
+      }
+    ]
+  },
+  "src/full_current.py": {
+    "archive_member_bytes": 16730,
+    "lines": [
+      {
+        "line": 16,
+        "text": "from research.research_max_struct_r6.src.fft_tsom_ops import NativeFourierAPCS"
+      },
+      {
+        "line": 17,
+        "text": "from research.research_max_struct_r11.src.material_readouts import prepare_full, full_material_readout"
+      },
+      {
+        "line": 18,
+        "text": ""
+      },
+      {
+        "line": 19,
+        "text": "MODES = ('restricted', 'full_apcs', 'full_current')"
+      },
+      {
+        "line": 20,
+        "text": ""
+      },
+      {
+        "line": 49,
+        "text": ""
+      },
+      {
+        "line": 50,
+        "text": "def run_full_current(model, Y, m0, config, mode='restricted', *,"
+      },
+      {
+        "line": 51,
+        "text": "                     budget_check=None, audit_callback=None, audit_every=50,"
+      },
+      {
+        "line": 52,
+        "text": "                     g19=True):"
+      },
+      {
+        "line": 53,
+        "text": "    \"\"\"Run inherited G19 with one changed admissible current family."
+      },
+      {
+        "line": 54,
+        "text": ""
+      },
+      {
+        "line": 55,
+        "text": "    Required config is the R12/R8 ``arm_config('a_plus', ...)`` dictionary"
+      },
+      {
+        "line": 56,
+        "text": "    including fft_geometry and receipt_path (or a prepared matrix_denominator)."
+      },
+      {
+        "line": 57,
+        "text": "    All stages, beta values, prior, weights, bounds and PR settings are retained;"
+      },
+      {
+        "line": 58,
+        "text": "    only ``mf`` is set to the full mask for the two full modes. The caller owns"
+      },
+      {
+        "line": 67,
+        "text": ""
+      },
+      {
+        "line": 68,
+        "text": "    ``g19=False`` reuses the same audit scheduler for inherited CIE/Dual/Global"
+      },
+      {
+        "line": 69,
+        "text": "    or an explicitly supplied A+ readout. It never substitutes G19 material"
+      },
+      {
+        "line": 70,
+        "text": "    readout into CIE. For a strict algorithm control retain the original config."
+      },
+      {
+        "line": 71,
+        "text": "    On budget exceptions, callbacks already received all eligible incumbents;"
+      },
+      {
+        "line": 110,
+        "text": "    if g19 and arm != 'a_plus':"
+      },
+      {
+        "line": 111,
+        "text": "        raise ValueError('G19 requires original a_plus/global PR config; use g19=False for inherited CIE')"
+      },
+      {
+        "line": 112,
+        "text": "    n, ns = model.E.shape"
+      },
+      {
+        "line": 113,
+        "text": "    shape = tuple(map(int, model.shape))"
+      },
+      {
+        "line": 114,
+        "text": "    if mode != 'restricted':"
+      },
+      {
+        "line": 145,
+        "text": "                cfg = prepare_full(model, cfg)"
+      },
+      {
+        "line": 146,
+        "text": "            cfg['material_readout'] = full_material_readout"
+      },
+      {
+        "line": 147,
+        "text": "        setup_cpu = time.process_time()-cpu"
+      },
+      {
+        "line": 148,
+        "text": "        check()"
+      },
+      {
+        "line": 149,
+        "text": "    except BaseException as exc:"
+      },
+      {
+        "line": 283,
+        "text": "            audit_schedule='inherited initial/stage ends plus periodic; no PR restart',"
+      },
+      {
+        "line": 284,
+        "text": "            initialize_physical_current=bool(cfg.get('initialize_physical_current', False)),"
+      },
+      {
+        "line": 285,
+        "text": "            best_audit=min((a['objective'] for a in audits), default=None),"
+      },
+      {
+        "line": 286,
+        "text": "            whole_adapter_physics_delta={k:model.cost.get(k, 0)-model_before.get(k, 0) for k in set(model.cost)|set(model_before)},"
+      },
+      {
+        "line": 287,
+        "text": "            truth_access='NONE')"
+      },
+      {
+        "line": 310,
+        "text": "    \"\"\"Same paid physical-audit scheduler, preserving inherited material update.\"\"\""
+      },
+      {
+        "line": 311,
+        "text": "    return run_full_current(model, Y, m0, config, g19=False, **kwargs)"
+      }
+    ]
+  }
+}

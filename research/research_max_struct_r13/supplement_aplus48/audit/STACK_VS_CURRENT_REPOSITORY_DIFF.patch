@@ -1,0 +1,149 @@
+--- original_R13_C2_runner
++++ fixed_stack_runner
+@@ -28,16 +28,14 @@
+     parser.add_argument('--task-id',required=True)
+     parser.add_argument('--cpu',type=int)
+     args=parser.parse_args(); root=args.root.resolve(); wall=time.perf_counter()
+-    proc=None
+-    if os.name=='nt':
+-        import psutil
+-        proc=psutil.Process()
+-        if args.cpu is not None: proc.cpu_affinity([args.cpu])
+-        proc.nice(psutil.NORMAL_PRIORITY_CLASS)
++    import psutil
++    proc=psutil.Process()
++    if args.cpu is not None and hasattr(proc, 'cpu_affinity'): proc.cpu_affinity([args.cpu])
++    if os.name=='nt': proc.nice(psutil.NORMAL_PRIORITY_CLASS)
+     sys.path[:0]=[str(args.legacy_repo),str(root/'runtime'),str(root/'src')]
+     import numpy as np
+     from scipy.stats import chi2
+-    from scipy.optimize import minimize,least_squares
++    from scipy.optimize import minimize
+     from research.research_fbg_r3_experiments.src.physics import MaxwellModel
+     from research.research_max_struct_r8.src import benchmark_solver as solver
+     from research.research_max_struct_r10.src.twod_adapter import noise_ball_rank
+@@ -48,9 +46,9 @@
+     algorithm=task.get('algorithm',task['method'])
+     cfg=manifest['protocol']; cap=float(task.get('CPU_cap',cfg['CPU_cap']))
+     proposal_fraction=float(cfg.get('proposal_fraction',.6))
+-    deadline=cap if algorithm in ('direct','physical_trf') else cap*proposal_fraction
++    deadline=cap if algorithm=='direct' else cap*proposal_fraction
+     out=root/'RESULTS'/task['campaign']/task['task_id'];out.mkdir(parents=True,exist_ok=False)
+-    with np.load(root/task['input_file'].replace('\\','/'),allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}
++    with np.load(root/task['input_file'],allow_pickle=False) as f: public={k:f[k].copy() for k in f.files}
+     m0=public.pop('m_init'); Y=public['Y']; sigma=float(public['sigma'])
+     components=int(public.get('components',1)); lower=float(public.get('lower',.02)); upper=float(public.get('upper',20.))
+     kind=str(public.get('kind','synthetic'))
+@@ -117,63 +115,16 @@
+ 
+     try:
+         initial=physical(m0);snapshots['initial']=initial
+-        if algorithm in ('direct','physical_trf'):
++        if algorithm=='direct':
+             phase='direct'
+-            try:
+-                if algorithm=='physical_trf':
+-                    # Existing FBG native TRF objective/Jacobian, with all
+-                    # physical trial candidates retained by original Phi.
+-                    data_scale=np.linalg.norm(Y)
+-                    def residual(m):
+-                        check();state=model.state(m)
+-                        prior,_=model.regularizer_residual(m)
+-                        record(m,state,extra=dict(physical_solver='inherited_full_J_TRF'))
+-                        check()
+-                        return np.r_[model.pack(state['Y']-Y)/data_scale,prior]
+-                    def jacobian(m):
+-                        check();_,prior_j=model.regularizer_residual(m)
+-                        matrix=np.vstack((model.jacobian(m)/data_scale,prior_j))
+-                        check();return matrix
+-                    result=least_squares(residual,m0,jac=jacobian,bounds=(lower,upper),
+-                        method='trf',x_scale='jac',max_nfev=3000,ftol=1e-10,xtol=1e-10,gtol=1e-8)
+-                    stop['direct']=dict(message=str(result.message),evaluations=int(result.nfev),
+-                        Jacobian_evaluations=int(result.njev),optimality=float(result.optimality))
+-                    auxiliary_receipt.update(algorithm='inherited_FBG_full_J_TRF',
+-                        source='research.research_fbg_r3_experiments.src.full_maxwell_corrector.corrector',
+-                        adaptation='shared paid-candidate record and absolute process CPU; max_nfev3000 bounded by paid cap')
+-                else:stop['direct']=correct(m0)
++            try: stop['direct']=correct(m0)
+             except BudgetEnd: stop['direct']='WHOLE_PROCESS_CPU'
+             snapshots['raw']=initial;snapshots['corrected']=best
+         else:
+             phase='proposal'
+             try:
+                 method=algorithm
+-                if method=='physical_globaldual':
+-                    # Historical FBG GlobalDual is the total-field source-Gram
+-                    # objective at beta=0, not global-PR Dual-CIE and not the
+-                    # beta=.2 feedback variant. Preserve its analytic adjoint.
+-                    reference=initial
+-                    beta=float(cfg.get('physical_globaldual',{}).get('beta',0.))
+-                    evaluations=[0]
+-                    def gram_objective(m):
+-                        check()
+-                        value,gradient=model.data_value_gradient(m,Y,beta=beta,reference=reference)
+-                        evaluations[0]+=1
+-                        record(m,model.state(m),value,gradient,extra=dict(
+-                            auxiliary_objective='physical_GlobalDual_source_Gram',
+-                            beta=beta,auxiliary_value=float(value),evaluation=evaluations[0]))
+-                        check()
+-                        return value,gradient
+-                    auxiliary_receipt.update(algorithm='historical_physical_GlobalDual',
+-                        beta=beta,reference='same public initial physical state',
+-                        source_Gram_dimension=model.ns,
+-                        distinction='different from global-PR Dual-CIE; primary selector remains original physical Phi')
+-                    result=minimize(gram_objective,m0,method='L-BFGS-B',jac=True,
+-                        bounds=[(lower,upper)]*model.n,
+-                        options=dict(maxiter=3000,maxfun=12000,ftol=1e-12,gtol=1e-8,maxls=30))
+-                    stop['proposal']=dict(message=str(result.message),iterations=int(result.nit),
+-                        evaluations=int(result.nfev))
+-                elif method=='nfft_equations':
++                if method=='nfft_equations':
+                     from nfft_control import run_nfft
+                     dec=noise_ball_rank(model.S,Y,sigma,out/'RECEIVER_DPCS.npz')
+                     numerical=dict(dpcs_rank=dec['rank'],material_box=[lower,upper],regularizer=lambda m:model.reg.evaluate(m)[:2],
+@@ -213,6 +164,8 @@
+                     if method=='a_plus':
+                         from research.research_max_struct_r7.src.aplus_readout import mobius_material_readout
+                         numerical['material_readout']=mobius_material_readout
++                        if task.get('readout_version')=='R7_FINAL_READOUT':
++                            numerical.update({'aplus_mode': 'mobius', 'aplus_arc_candidates': True, 'aplus_inherited_gtol': True, 'aplus_sweeps': 2, 'aplus_step_tol': 1e-08})
+                     if audit_interval:numerical['physical_audit_due']=audit_due
+                     mode='full_apcs' if method=='g19_full_apcs' else 'full_current' if method=='g19_full_current' else 'restricted'
+                     result=run_full_current(model,Y,m0,numerical,mode=mode,budget_check=check,
+@@ -241,8 +194,8 @@
+                             # Form a single A point from the CURRENT DR shadow,
+                             # rather than pay a separate AP convergence phase.
+                             cx,cq,_=P.material(x,q);x,q=P.affine_ball(cx,cq)
+-                        mode='random_midpoint' if method=='online_midpoint_random' else 'midpoint' if method=='online_midpoint' else 'random_integer' if method=='random_integer' else 'integer' if 'integer' in method else 'double' if method.startswith('normal_') or method=='online_double' else 'random' if method.startswith('random_') or method=='online_random' else 'fractional'
+-                        if method in ('ap_dr','online_noevent'):
++                        mode='random_integer' if method=='random_integer' else 'integer' if 'integer' in method else 'double' if method.startswith('normal_') else 'random' if method.startswith('random_') or method=='online_random' else 'fractional'
++                        if method=='ap_dr':
+                             event_history.append(dict(status='AP_PREPARATION_THEN_ORDINARY_DR',preparation=prep))
+                             if cfg.get('forecast_trace'):
+                                 cx,cq,rm=P.material(x,q);dx,dq=x-cx,q-cq
+@@ -260,7 +213,7 @@
+                             event_history.append(event)
+                             forecast_reference=th;ray_t0=event.get('target_t',1.)
+                             np.savez_compressed(out/'EVENT_GEOMETRY.npz',**{k:v for k,v in th.items() if isinstance(v,np.ndarray)})
+-                            if method.startswith('reset_') or method=='online_reset':
++                            if method.startswith('reset_'):
+                                 _,_,cm=P.material(x,q);row=physical(cm,dict(event_memory_reset=True))
+                                 x,q=row['j']/scale,row['Q'].copy()
+                     prev_x=None;prev_q=None;prev_f=None;prev_r=None
+@@ -337,14 +290,14 @@
+         secondary_candidate=secondary['metadata']['candidate'] if secondary else None,
+         eligible_candidates=sum(h['eligible'] for h in history),overrun_candidates=sum(not h['eligible'] for h in history),
+         components=components,material_DOF=model.n,stored_field_real_scalars=4*model.G.shape[0]*model.ns,
+-        independent_algorithm_state_DOF=model.n if algorithm in ('direct','physical_trf','physical_globaldual') else 2*model.G.shape[0]*model.ns+model.n if algorithm=='nfft_equations' else None,
++        independent_algorithm_state_DOF=model.n if algorithm=='direct' else 2*model.G.shape[0]*model.ns+model.n if algorithm=='nfft_equations' else None,
+         state_DOF_qualification='Stored X/Q ambient scalars are not independent CIE DOF. CIE/G19 actual current ranks and source DOF are in auxiliary_receipt.current_spaces; direct optimizes material only; DR keeps an unconstrained two-field iterator, AP returns a propagation-constrained iterator.',
+         delta=delta,sigma_complex_RMS=sigma,
+         noise_qualification=str(public.get('sigma_role','iid circular complex RMS; CN99 raw ball')),
+         prior=dict(name=getattr(model.reg,'name','inherited_scalar_regularizer'),
+             smooth=getattr(model.reg,'smooth',None),tv=getattr(model.reg,'tv',None),epsilon=getattr(model.reg,'epsilon',None)),
+         affinity=proc.cpu_affinity() if hasattr(proc,'cpu_affinity') else None,
+-        endpoint_RSS_bytes=proc.memory_info().rss if proc is not None else None,
++        endpoint_RSS_bytes=proc.memory_info().rss,
+         memory_scope='end-of-process resident snapshot, not measured peak',
+         timer_scope='absolute process CPU including imports/setup/proposal/audits/corrector/export; external exit CPU separately')
+     dump(out/'RECEIPT.json',receipt)

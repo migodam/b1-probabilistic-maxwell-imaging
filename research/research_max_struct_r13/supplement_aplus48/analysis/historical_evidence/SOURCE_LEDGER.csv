@@ -1,0 +1,696 @@
+id,round,source_path,section,line_start,line_end,cohort,independent_object_count,exposure,methods_versions_representation,initialization,physics_grid_prior_noise,budget_and_clock_scope,estimator_view,metric_success_definition,reported_positive,reported_negative,exact_source_excerpt
+E001,R4,research/research_max_struct_r4/RESEARCH_REPORT_ZH.md,## 2. 从公式得到的 A：传播本构缺陷，而非近似正演,48,72,old b20d difficult bar,1,public historical development,sourcewise CIE8000 / global / self / exact4cell / onehop / anti-phase,same original init,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;12sources48receivers",global/onehop mf3/6/10 x500; native8000; common corrector1000; no equal CPU claim,corrected,"RMSE/12, prediction Otsu IoU, physical residual",onehop .041672/.939759/.0009679 vs global .389183/.422680/.107821; raw onehop .08327/.77451,all correctors hit1000;32grid onehop/global .053068/.053102 both recover; advantage disappears,"算法保留成熟 mf3/6/10、各500步的双β调度（current β=1、后两阶段 material β=.2）、同 source metric 和 global PR。普通 global CIE 是直接机制对照；另给原 sourcewise CIE 追加 mf12、6500步，总8000步。三者最终都接同一原物理 L-BFGS-B corrector，1000步上限，物理目标统一缩放1e6以使数值停止尺度一致。
+
+## 3. 开发正例、反相控制和网格边界
+
+![开发对象与所有主要机制](figures/development_materials.png)
+
+| 开发端点 | RMSE/12 | IoU | 原物理相对残差 |
+|---|---:|---:|---:|
+| 成熟 sourcewise CIE，8000步 | .557674 | .255814 | .0977066 |
+| global CIE，共同 corrector | .389183 | .422680 | .107821 |
+| 只吸收 diagonal self | .389418 | .422680 | .107821 |
+| 精确四单元吸收 | .042654 | .928571 | .0009670 |
+| 缓存版精确吸收 | .041691 | .928571 | .0009695 |
+| 一次交换 Rplus | .041672 | .939759 | .0009679 |
+| 同幅反相 Rminus | .558703 | .257813 | .0976930 |
+
+同物理数据、最终 prior 和 corrector 下，A 确实改善了这个对象的材料图。仅 diagonal self 和额外普通模态/迭代没有复制收益。它在 corrector 前已较好：一次交换 mf10 的 RMSE/12=.08327、IoU=.77451；corrector 后 .04167/.93976。global/self 的 corrector 则降低 residual 同时恶化材料。所有开发 corrector 都触及1000步上限，不据此认证吸引域或局部最优。
+
+![反相与必要细化](figures/validation_development_phase_grid.png)
+
+π反相只令辅助 `Goff→−Goff`，真实 forward G 不变。两罚函数都保留 `||u||²`、`||Lu||²`、相同 metric 对角、图拓扑和逐次运算结构，只翻转 `2Re⟨u,Lu⟩`。反相失败支持符号/相位方向在该实例中有作用，不能外推为真实 Green 相位对所有对象最优。
+
+一次32×32诊断使用同192像素几何、同源/接收、同 Fourier 容量和 prior 数值参数。onehop/global **都恢复**：RMSE/12=.053068/.053102，IoU都 .935484，残差都约 .0009705。A 在24网格上的比较优势没有保持。这里同时改变有限脉冲离散、块物理宽度和噪声实例，不能把它称严格连续 PDE 收敛，也不能省略这个反例只展示24网格。
+
+跨平台复验使用原公开开发观测和冻结 onehop，在既有 Windows NumPy2.2.6/SciPy1.15.3 上重放；本地为 NumPy2.5.3/SciPy1.18.1。Windows 原物理残差 .00096835、Phi6.49305e−6，独立材料评分 RMSE/12=.041603、IoU=.951807，保留材料恢复正例；完整评分见增补。该次 solve wall约376.20秒，不能声称 i9 对此工作负载更快。第一次 wrapper 未加入已有 vendor 的 threadpoolctl 路径，在任何物理运算前失败，已保留费用并修正入口，未安装依赖或改算法。"
+E002,R4,research/research_max_struct_r4/RESEARCH_REPORT_ZH.md,## 4. 六个新鲜对象：没有超越成熟 CIE,74,95,fresh6 ring/bar/island,6,independent-at-original-scoring,onehop / global / mature sourcewise native8000,same init,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;CN independent complex noise; matched24",same full frozen schedules; corrector1000; no wall truncation,corrected primary minPhi,joint descriptive .15/.7 + data/legality,all three4/6 on same four objects,onehop NRMSE1lower5higher vs global; minPhi portfolio still4/6; two failed bars pick worst material arm,"## 4. 六个新鲜对象：没有超越成熟 CIE
+
+全部预测先封存，随后首次读 GT。18个任务全部完成冻结辅助日程；没有失败任务被删掉，也没有短 wall cap 截断基线。
+
+| 对象尾码 / 家族 | onehop RMSE/12 | global | mature native8000 | 三臂联合结果 |
+|---|---:|---:|---:|---|
+|98644322 / 环|.071621|.073369|.085988|均通过|
+|4f224bb3 / 弯条|.761368|.741539|.743118|均失败|
+|78134194 / 双岛|.073440|.072053|.069852|均通过|
+|50fc483c / 弯条|.576876|.575755|.577784|均失败|
+|fbac472d / 双岛|.073560|.072850|.071273|均通过|
+|e5aa42ae / 环|.066619|.063476|.067396|均通过|
+
+三方法都是 **4/6**，相同四对象成功。onehop 相对 global 的材料 NRMSE 仅1/6更低，5/6更高；IoU是3高、2低、1相同。样本小，只描述逐例，不能作统计显著性或人群优越性宣称。
+
+![全部六对象与十八个冻结端点](figures/confirmation_six_materials_postseal.png)
+
+预先声明的三臂候选池按同 Phi 选最小，成本为三臂总和，仍只有4/6。两个弯条恰好都选中了三臂中材料误差最差者。42cb 的 A 将 Phi从 global 的 .004105 降到 .002193，但 NRMSE从 .74154 升到 .76137。这个结果明确区分了物理拟合与材料正确；没有离线按 GT 改选。
+
+两个失败对象的合法 GT 自身都满足声明噪声球，白化残差为25.1189、24.0092，Phi约6.54e−6、6.92e−6。因此当前高残差端点不能作为信息不可辨识的证据；它们没有达到已知可行的数据拟合区域。另一方面全部 corrector 都触限，末段目标仍下降，不能未经诊断就宣称已进入认证局部极小。
+
+详表、候选池择劣和每个任务成本见 [确认评分](results/CONFIRMATION_SCORES.md)、[独立确认审计](audit/confirmation/CONFIRMATION_COMPARISON_AUDIT.md)、[停止诊断](audit/confirmation/FAILURE_STOP_DIAGNOSTIC.md)。"
+E003,R4,research/research_max_struct_r4/RESEARCH_REPORT_ZH.md,## 7. 计算成本与可复现性,133,145,fresh6 compute,6,independent-at-original-scoring,onehop/global/native8000,same,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",CPU3804.34s; foreground elapsed1179.03s; summed workerwall3900.01s; LU18653/RHS445932,cost,not material success,complete18 runs; no dropped failures,onehop wall1147.09 vs global577.95 vs native2174.97; clocks cannot pool,"## 7. 计算成本与可复现性
+
+六对象确认复用现有 i9 四个 CPU worker 的有限 FIFO 队列，无新服务、无CUDA安装，实际GPU任务为0。计入共享生成一次，总 **18653次576维物理LU、445932个complex RHS**。前台远端实测 elapsed **1179.03秒**；记录CPU约3804.34秒。worker wall累计3900.01秒不是并行历时。
+
+| 六任务工作 | 物理LU | complex RHS | worker wall累计秒 |
+|---|---:|---:|---:|
+|onehop|6202|148332|1147.09|
+|global|6216|148680|577.95|
+|native8000|6229|148848|2174.97|
+
+onehop比普通global消耗更多内层计算，没有等算力优势；native得到更多普通模态/迭代，但仍不能把它视为所有CIE日程的充分收敛。小4×4 LU、稀疏邻接动作、标量除法、源/接收RHS和满维物理LU单独记账，不能混加成一个“forward次数”。32网格1024维、微型接线16维也与576维分列。拒绝候选、数值负结果、缓存回放、入口失败和重复上传都保留。
+
+全轮已记录物理总量为38757次LU、980383个model complex RHS：其中576维36698/931161，1024维2054/49116，16维接线5/106；另有非局部局域化30次LU/17280RHS，不混作物理LU。全轮开发、验证、确认、后续诊断及后处理的最终总账见 [COST_LEDGER](COST_LEDGER.md) 和 `audit/cost_ledger/`。金额、LLM/API收费、部分早期bootstrap CPU没有可核定数据，写null而不是零。未核验SHA；普通git基版本、冻结配置与执行源码快照用于来源记录。"
+E004,R5,research/research_max_struct_r5/RESEARCH_REPORT_ZH.md,### 1. 为什么R4在历史弯条上有效？,13,48,four public mechanisms including old b20d,4,public exposed;no independent confirmation,global/global;onehop/onehop;onehop/ordinary;ordinary/onehop,"same original init; stage handoff m,J,Fourier coeff","scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",mf3/6/10x500+common1000corrector;7 finite interventions,corrected,"RMSE/12, IoU, residual",ordinary current+onehop material .041480/.939759; localizes b20d benefit,current-only .558514; stage switches .388613/.558738;42cb .766323 and63ab .404823 fail,"能够确定的是**作用位置和路径条件**，还不是几何充分条件。把one-hop分别放入current和material两块，得到：
+
+| 电流更新 | 材料读出 | RMSE/12 | IoU | 完整物理相对残差 |
+|---|---|---:|---:|---:|
+| 普通global | 普通 | .389183 | .422680 | .107821 |
+| one-hop | one-hop | .041672 | .939759 | .0009679 |
+| one-hop | 普通 | .558514 | .257813 | .0976930 |
+| 普通global | one-hop | **.041480** | **.939759** | **.0009692** |
+
+前两行复用冻结历史端点，后两行为新R5干预；本地重放旧global/one-hop的各阶段状态与历史一致。四臂使用同数据、576个独立实材料、同box/prior/初始化、同mf3/6/10及每阶段500步，最终共同1000步original-Maxwell corrector。辅助运算量不同，不能称等wall或等全部算量优势。
+
+材料读出的额外非局部项确实能改变路径，而current传播不是复制这个正例的必要部件。普通self项和反相控制此前均失败，排除了“只要改自项或加等强耦合就行”。这不是更多物理信息，也不是更高材料容量。
+
+![旧弯条位置消融](FIGURES/03_old_bar_factorial.png)
+
+在第一个自然阶段结束后，完整搬运m、J和Fourier系数，再按原程序扩模/重置PR。普通global→material-only最终NRMSE=.388613；material-only→global为.558738；全程material-only为.041480。**早期状态单独不够，后期更换读出也不够**，仅对这一固定切换点成立。不能据此宣称证明了吸引盆地、必须每一步传播、或其他切换点都会失败。两切换corrector均耗尽1000步，未获渐近收敛证书。
+
+![自然阶段切换](FIGURES/06_natural_stage_handoffs.png)
+
+### 2. 为什么两个新弯条失败？
+
+R5没有找到能仅凭形状提前判定成败的规则，但排除了几个简单解释。失败对象具有与旧成功相同的正cross、同相残差占优和明显的metric导数项；这些量的存在本身不能解释成功。删除current传播的简化也未修复它们：
+
+| 已公开对象 | R4 one-hop NRMSE | R5 material-only NRMSE | R5 IoU | R5原物理残差 |
+|---|---:|---:|---:|---:|
+| 弯条42cb | .761368 | .766323 | .106280 | .066004 |
+| 弯条63ab | .576876 | .404823 | .403846 | .111383 |
+| 正常环100b | .071621 | .072525 | .917355 | .001010 |
+
+R4确认端点来自Windows，R5来自本地CPU；表中微小差异不能解释为算法优势。63ab的材料误差下降较大，但残差更差，仍未恢复；不得据GT在这些候选间选根。42cb几乎维持同类错误结构，正常环保持成功。
+
+![公开开发扩展](FIGURES/04_extension_materials.png)
+
+在one-hop最后辅助阶段的检查点，两个失败对象分别有37、23个材料上界活动cell，旧弯条和环为0；这些上界点的原物理负梯度也朝外，并非单纯“辅助目标顶住了一个物理梯度希望释放的box”。失败对象沿实际材料步的精确物理曲率为负，而两个成功对象为正；但这些检查点有非零投影梯度，不能叫驻点或证明局部极小。Gram中约1e−18的负小特征值是浮点现象，不是负物理曲率或精确零空间证据。
+
+因此当前支持的是：**相同局部残差滤波在不同全波状态上会把材料路径引向不同区域；块内相位结构没有对接收数据方向或材料正确性的普遍保证。** 两失败端点还有显著原物理失配，不能用“不可辨识的等数据解”替它们开脱。预算不足、非凸路径和离散表示影响未完全分离；R4的延长corrector、32网格及分块平移结果继续约束结论。尚不能给出几何层面的完整失败定理。"
+E005,R6,research/research_max_struct_r6/RESEARCH_REPORT_ZH.md,## 最终判断,7,29,historical9digits,9,public historical regression,DPCS-locked Fourier/APCS mf3/6/10 then12; CIE/Dual sourcewise PR; Global global PR; A/A+ global PR unless sourcewise named; A-material nonlinear onehop,uniform host .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;12x48; historical clean contract",3000aux +3000corrector;direct not included,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint;historical clean gate,Dual9/9,CIE8/9;Global8/9;A8/9;A digit5 .1142 but IoU .6667,"| 分层联合成功 | CIE | Dual-CIE | Global-Dual | A-material |
+|---|---:|---:|---:|---:|
+| 公开历史数字1–9 | 8/9 | **9/9** | 8/9 | 8/9 |
+| 公开历史困难对象 | 1/6 | 1/6 | 1/6 | **3/6** |
+| 六个独立新对象 | 4/6 | 4/6 | 4/6 | 4/6 |
+
+联合标志沿用材料NRMSE≤.15、预测自身Otsu IoU≥.7及相应数据/合法性合同；历史clean门与新CN99噪声门分开，不混成同分布成功率。连续指标和所有对象见[完整逐例表](RESULTS/analysis/ALL_CASES.md)。A在数字5的NRMSE=.1142、数据拟合合格，但IoU=.6667，不能把8/9误读为它完全没有成像出数字5；Dual-CIE同例IoU=.7091。普通CIE在数字7则是明显的材料和数据失败。
+
+**可以build upon FFT-TSOM，而且本轮已经实现并跑完。** A的材料读出不依赖显式Fourier矩阵。真实FFT版本替换了U/G及伴随作用，保留非周期自由空间Green、自项、接收和完整Maxwell验收。两例A的总CPU下降约16%和23%，但仍比同FFT的Dual-CIE贵；长轨迹终点有浮点敏感性，不能说仅是完全相同算法轨迹的免费加速。
+
+## 1. 实际改了什么，保留了什么
+
+固定公式是
+
+```text
+r = J − mQ,    Q = Einc + GJ,
+d = 1 + (β−Gii)m,   u = βr/d,
+RA = [I + diag(m/d)Goff]u.
+```
+
+Goff是实际Green在预定2×2 cell邻域内的非对角部分。A只用RA作材料块残差；current仍用普通global PR CIE，精确材料导数包括d随m变化的项。R5缓存仅减少重复求值。最终候选全都由完整物理F(m)和共同公开prior评分，不以辅助损失或GT选根。
+
+四臂同24×24网格、576独立实材料未知量、12源48收、box [.02,20]、host .1、原smooth/TV prior；mf3/6/10各500步，再自然续接mf12共1500步。共同原物理corrector最多3000接受迭代，原停止精度不改、没有45秒墙限。CIE为每阶段current/material同β；Dual-CIE为分块β，二者都保留成熟sourcewise PR；Global-Dual用来拆分global PR本身的影响。没有GT字体/support降维或训练。"
+E006,R6,research/research_max_struct_r6/RESEARCH_REPORT_ZH.md,## 2. 历史困难对象：正面结果确实扩大，但范围有限,33,48,historical difficult6,6,public historical development,DPCS-locked Fourier/APCS mf3/6/10 then12; CIE/Dual sourcewise PR; Global global PR; A/A+ global PR unless sourcewise named; A-material,host .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",3000aux+3000corrector;actual costs differ,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,A3/6 vs CIE/Dual/Global1/6;7b8d .04686 andb20d .04128,42cb .70840;63ab .40475;e499 .42484 fail,"## 2. 历史困难对象：正面结果确实扩大，但范围有限
+
+以下NRMSE均用公开contrast幅度归一化，数字越小越好。
+
+| 对象 | CIE | Dual-CIE | Global-Dual | A |
+|---|---:|---:|---:|---:|
+| FBG曲条7b8d | .57618 | .39313 | .39313 | **.04686** |
+| R4旧弯条b20d | .55310 | .51072 | .38955 | **.04128** |
+| 已公开失败弯条42cb | .75341 | .73918 | .75081 | .70840 |
+| 已公开失败弯条63ab | .57463 | .58186 | .57730 | .40475 |
+| 环e499 | .42483 | .42478 | .42480 | .42484 |
+| 双岛437d | .07595 | .07649 | .07639 | .07641 |
+
+两个成功弯条上，A的原物理相对残差分别为.000154与.000966；Dual-CIE约.112与.101。它们不是仅辅助目标下降，也不是仅材料误差稍小。Global-Dual同样失败，因而global PR本身不能解释这两个正例。**新增的经验认识是：材料块传播的补偿效果可以在第二个公开弯条复现。** 这些都是历史开发对象，不能宣布两次独立盲测突破。
+
+42cb和63ab仍失败；63ab尤其说明指标不可混淆：A的NRMSE下降到.405，但物理残差.1114反而高于Dual-CIE的.0984。环的四种终点几乎一致。故不存在“弯条都受益”或“空腔都失败”的简单形状规则。"
+E007,R6,research/research_max_struct_r6/RESEARCH_REPORT_ZH.md,## 3. 六个新对象：没有新增确认优势,52,75,fresh6 independent,6,independent-at-original-scoring,DPCS-locked Fourier/APCS mf3/6/10 then12; CIE/Dual sourcewise PR; Global global PR; A/A+ global PR unless sourcewise named;A-material,host .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;matched24;.1%complex RMS;12x48",3000aux+3000corrector;thinring all hit cap;open shell reachesPGtol,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint;CN99 separate,all four4/6,A vs Dual3lower3higher;vs Global1lower5higher;thin ring andopen shell fail,"## 3. 六个新对象：没有新增确认优势
+
+| 新对象 | CIE NRMSE | Dual-CIE | Global-Dual | A | 四臂结果 |
+|---|---:|---:|---:|---:|---|
+| 非等三岛 | .09500 | .09376 | .09471 | .09474 | 均合格 |
+| 双层空腔 | .08110 | .08272 | .08258 | .08282 | 均合格 |
+| 细弯条 | .03627 | .03475 | .03437 | .03532 | 均合格 |
+| 偏心薄环 | .61473 | .61841 | .61436 | .61507 | 均失败 |
+| 近邻双岛 | .06773 | .06583 | .06434 | .06438 | 均合格 |
+| 开缝壳 | .61904 | .63312 | .63310 | .62596 | 均失败 |
+
+新六例中，A对Dual-CIE的NRMSE有3低3高，对Global-Dual只有1低5高；多数差值很小，不能拿全21例13个较低制造统计显著性。新细弯条、双层腔和近邻耦合对象都成功，也反驳仅靠“有曲率/有孔/有强邻域耦合”就预测A优势的解释。
+
+![全部独立新对象](RESULTS/scoring_primary/NEW6_CONFIRMATION_all_objects.png)
+
+六例为同离散合成数据，噪声为.1%复RMS，非独立网格或实测验证。现在GT随报告公开，后续使用只能标公开回归。新材料、噪声、先验和评分合同见[数据合同](DATA_CONTRACT.md)。
+
+## 4. 失败来自哪里：可行目标见证与停止状态
+
+仅在封存后，用生成端已保存的合法真材料和Yclean计算原Phi，不新增正演、不改候选。偏心薄环的可行Phi为8.70e−6，四臂却停在约4.85e−3；开缝壳的可行Phi为8.55e−6，四臂约3.81e−3至4.07e−3。算法残差分别约为真材料噪声残差的102–103倍、91–94倍。这说明它们**没有到达已存在的低目标可行区**，不能把本次失败直接解释为数据不可辨识；这同样不证明反演唯一。
+
+两者还必须区分：薄环四臂都达到3000 corrector上限，最终投影梯度约2.8e−6至5.9e−6，预算/慢收敛影响仍未排除；开缝壳四臂按投影梯度条件结束，范数约9e−9，是更清楚的差局部驻点证据。全84任务共76个梯度停止、6个迭代上限、2个相对目标变化停止；另外两个上限是历史42cb的Dual/Global，梯度仍为3.84e−6/1.66e−7。不能把所有失败都写成已收敛，也不能把所有失败都归咎预算。
+
+在四个成功新对象上，重建Phi反而略低于真材料Phi：公开平滑prior与噪声使真材料不必是正则化目标极小点。更小Phi不自动意味着更准确GT。原始见证见[离线可行目标诊断](RESULTS/scoring_primary/GT_FEASIBLE_WITNESS.json)。"
+E008,R6,research/research_max_struct_r6/RESEARCH_REPORT_ZH.md,## 5. 真正FFT接入：已运行，成本收益有界,93,114,21 main task compute andFFT2 engineering,21,9historical+6historical+6fresh kept separate,DPCS-locked Fourier/APCS mf3/6/10 then12; CIE/Dual sourcewise PR; Global global PR; A/A+ global PR unless sourcewise named;dense Fourier vs native FFT,same host,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",main total CPU CIE897.22/Dual932.81/Global956.57/A1504.32; main elapsed1140.37;FFT55.36s,cost+corrected,CPU not wall,A FFT CPU59.02→49.76 and70.58→54.44,A still46%/43% dearer than FFTDual;A main1.61xDual;two FFT objects not new cohort,"| 预指定对象/方法 | 显式Fourier CPU秒 | FFT CPU秒 | 显式NRMSE→FFT NRMSE | 完整联合结果 |
+|---|---:|---:|---:|---|
+| 数字1 Dual-CIE | 36.51 | 34.14 | .09656→.09592 | 均合格 |
+| 数字1 A | 59.02 | 49.76 | .09598→.09644 | 均合格 |
+| 旧b20d Dual-CIE | 39.48 | 38.02 | .51072→.38957 | 均失败 |
+| 旧b20d A | 70.58 | 54.44 | .04128→.04049 | 均合格 |
+
+A总CPU分别减少15.7%、22.9%，其辅助阶段分别41.76→35.51秒、53.53→43.97秒。两例FFT的物理LU反而增加，说明总时间节省来自辅助实现等实际差异，不能说所有计算项都减少。Dual-CIE在b20d上的Phi变高而NRMSE变低，再次显示残差与材料质量不同；浮点作用差异可能改变长轨迹，不能用这张图宣称FFT本身提高了信息量。
+
+在同FFT后端中，A仍比Dual-CIE多约46%和43%总CPU。这里只有两例工程比较，没有做大网格复杂度实测或六新对象FFT再确认。NIE原2016全文已取得，但独立成熟NIE重现未完成；故本轮诚实使用已审计的CIE/Dual-CIE主基线，详见[NIE审计](NIE_BASELINE_AUDIT.md)。
+
+## 6. 成本、九数字与完整负结果
+
+| 主臂：21对象 | 总CPU秒 | 辅助CPU秒 | corrector CPU秒 |
+|---|---:|---:|---:|
+| CIE | 897.22 | 394.98 | 492.12 |
+| Dual-CIE | 932.81 | 401.97 | 520.70 |
+| Global-Dual | 956.57 | 466.37 | 480.51 |
+| A | **1504.32** | **1049.64** | 444.91 |
+
+A物理corrector总费用稍低，但材料内循环开销使整组CPU约为Dual-CIE的1.61倍；没有同实际CPU预算的普遍优势主张。主84任务157418 LU、3773976 complex RHS；四FFT任务6607 LU、158376 RHS。主有限四worker队列两段实际运行历时合计1140.37秒，另有修复间隔41.26秒；FFT队列55.36秒，不能用任务wall之和代替这些并行历时。生成、接线、失败、评分、画图另列[成本账本](COST_LEDGER.md)。
+"
+E009,R7,research/research_max_struct_r7/RESEARCH_REPORT_ZH.md,## 1. 实际完成与分母,15,49,primary30,30,independent-at-original-scoring,DPCS-locked Fourier/APCS mf3/6/10 then12; CIE/Dual sourcewise PR; Global global PR; A/A+ global PR unless sourcewise named;final A+ arc quadratic proposals+priorMM+gtolguard,uniform .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;24matched+6cross36→24;6/12sources;full/half;noise.1/1/.1/.1/.5%;bundled conditions",3000aux+3000corrector;direct6000; no wall cap;CPU CIE1543.60/Dual1539.15/Global1512.97/A2495.14/A+1711.34/direct838.18,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint;support area>=.5;prediction Otsu,CIE21/Dual20/Global20/A21/A+21/direct10 outof30; A+−Dual mean−.03778,A+ CPU11.2%aboveDual;mean gains dominated few objects;A+IoU .69663 boundary loss;no broad successrate proof,"30个独立材料×6方法=180个主反演，追加后选家族20个新材料×4方法=80个确认反演；另有6个相同对象×3方法的初始值对照18run、九数字A+回归9run、四披露对象×5readout的完整开发20run。30是独立材料簇，不把照明、迭代态或重复初始值当新材料。
+
+24个新对象同网格生成/反演；6个36网格生成、24网格反演，仍使用同一disk-pulse物理族。六形状各五个独立几何实现，五条件捆绑contrast/噪声/源数/孔径/网格；没有单因素因果设计。数据/先验/噪声约定见[BENCHMARKS](BENCHMARKS.md)。基线、原A先冻结；A+只用四个旧对象开发并在新对象A+反演前冻结，生成早于最终A+选择，未声称全算法冻结后才生成数据。
+
+三个公开失败锚点各做rank2/rank8搜索、原点局部对照和相同corrector续跑，另做一次rank32结构修正；两个真实Fresnel对象×3方法=6个实际实测反演；真实3D完成125/216材料DOF、375/648矢量系统的16个初始反演和16个长校正结果。它们不混入30个二维材料的统计分母。
+
+## 2. 新30对象：完整强基线比较
+
+|方法|材料成功/30|同网格材料+CN99 /24|中位NRMSE|总CPU秒|LU|复RHS|
+|---|---:|---:|---:|---:|---:|---:|
+|成熟CIE|21/30|15/24|0.08722|1543.60|54873|1154196|
+|成熟Dual-CIE|20/30|14/24|0.08584|1539.15|53408|1137060|
+|Global-Dual|20/30|14/24|0.08653|1512.97|53923|1137684|
+|原A-material|21/30|14/24|0.08177|2495.14|54384|1148820|
+|A+|21/30|14/24|0.08233|1711.34|52156|1103040|
+|原物理L-BFGS-B|10/30|9/24|0.31489|838.18|47754|1009764|
+
+全体方法都输出576个真实材料自由度；原current Fourier/DPCS表示未按形状缩减。
+
+“材料成功”沿用幅度归一化NRMSE≤.15、预测自身Otsu IoU≥.7、合法box；数据CN99另列。成功数不是统计显著性的代名词。跨网格六例的sigma不包含模型误差，不能称完整误差证书。全部连续逐例指标见[评分CSV](RESULTS/scoring/primary/SCORES.csv)，全部180张材料图分为[1](FIGURES/primary/all30_group_01.png)、[2](FIGURES/primary/all30_group_02.png)、[3](FIGURES/primary/all30_group_03.png)、[4](FIGURES/primary/all30_group_04.png)、[5](FIGURES/primary/all30_group_05.png)、[6](FIGURES/primary/all30_group_06.png)，没有只挑正例。
+
+![全部对象的连续指标](FIGURES/primary/continuous_material_distributions.png)
+
+与同global-current的Global-Dual相比，A平均NRMSE差−.04382，对象配对bootstrap95%区间[−.10088,−.00568]；中位配对差的区间跨0，成功率差+1/30的区间[−.0667,+.1333]。平均误差改善主要由少数大幅恢复贡献，不能据此写成各几何稳定胜出。无多重比较调整，区间仅针对本冻结混合条件下的材料抽样，不是普遍Maxwell保证。
+
+A+−A平均NRMSE差+.000604，区间[−.000923,+.002872]；同样21个成功对象不等于未来等价证明，也未预注册非劣性margin。A+每对象CPU少26.13秒，区间[−33.82,−18.62]。与Dual相比，A+平均NRMSE差−.03778[−.09292,−.00309]，每对象CPU多5.74秒[1.92,9.54]。完整[统计审查](RESULTS/scoring/analysis/ANALYSIS.md)及[独立次要A+对Dual比较](RESULTS/scoring/analysis/SECONDARY_APLUS_VS_DUAL.md)保留。
+
+两个具有实质幅度的正例：
+
+|新对象|Global-Dual NRMSE|Dual NRMSE|A NRMSE|A+ NRMSE|A+数据残差|解释|
+|---|---:|---:|---:|---:|---:|---|
+|12曲条，contrast12/六源|.73511|.73500|.03965|.03914|.000942|普通single CIE也失败，支持本材料路径增量|
+|20开缝壳，contrast18/半孔径|.29655|.29636|.06981|.06872|.001057|single CIE已约.07022成功，不能称A独占|
+
+相反，09细弯结构A+ IoU=.69663、Global=.71264，NRMSE都约.095–.098；这是阈值边界loss，不是灾难性材料失败。17的A+也未过IoU，而single通过；24跨网格曲条single失败但Dual/Global/A/A+通过。单β、双β和global的短板不同，不能只挑最弱一臂。"
+E010,R7,research/research_max_struct_r7/RESEARCH_REPORT_ZH.md,## 3. 相同实际成本改变了什么判断,53,61,primary30 paid prefixes,30,independent-at-original-scoring,same six versions,uniform .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",per-pair common actualCPU/LU/RHS; float32 snapshots every10 physicaleval; sparse stage points,paid minPhi prefix,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,A+vsDual common maxCPU/LU/RHS22/30vs20/30,A vs Global commonCPU17/30vs20/30;A+ final21 differs prefix22;cannot promote prefix intoendpoint,"## 3. 相同实际成本改变了什么判断
+
+完整endpoint上A约为Dual的1.62倍CPU，A+约1.11倍。单看相同3000辅助/3000corrector上限不公平；direct6000没有辅助工作，也常很早停在差点。30个direct均报告数值收敛（28梯度、2相对函数），但材料只10/30通过；低CPU不等于成功反演。
+
+逐对象取双方已观测重叠CPU/LU/RHS窗口，按不超预算的最后已支付Phi incumbent评分，不按GT挑迭代。A对Global在成对共同最大CPU时为17/30对20/30，平均NRMSE差区间跨0，额外辅助工作抵消了一部分endpoint收益。A+对A在共同CPU为21/30对17/30。A+对Dual的共同最大CPU/LU/RHS为22/30对20/30，平均NRMSE差区间仍为负；但某些中间检查点的IoU通过会在最后更低Phi后丢失，不能把22改成最终成功数。
+
+预算材料为float32、每10次物理记录与稀疏辅助stage端点，存在检查点分辨率和unused budget。等LU没有给昂贵材料求根免费，等CPU也不是孤立硬件wall基准。完整对象级曲线和次要比较见原始统计文件。
+
+![材料与实际费用frontier](FIGURES/primary/pairwise_actual_cost_frontiers.png)"
+E011,R7,research/research_max_struct_r7/CHAT_HANDOFF.md,## 最后的家族确认,18,20,postselected family20,20,new objects but family selection post30,A+ final arcguard /Dual/Global/CIE,uniform .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;new objects after selecting bar/shell families from30",fullCPU1089.69/1061.57/1027.61/855.19;commonCPU separate,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,A+/Dual/Global/CIE12/9/9/8;bar9/8/8/5;shell3/1/1/3,postselected families cannot merge into prospective50;8 A+ failures retained;single matches all A+ shell successes,"## 最后的家族确认
+
+在原30后选家族、再生成20独立材料，所有算法固定；不要和原30合并成事前50对象总体胜率。A+/Dual/global/single为12/9/9/8；曲条9/8/8/5，壳体3/1/1/3。壳体A+和single成功集合相同；曲条target03仅A+成功。A+对Dual平均NRMSE差−.06831[-.14213,-.01242]，成功率差CI[0,.30]。总CPU1089.69/1061.57/1027.61/855.19；对single等CPU mean误差CI跨0。八个A+失败完整保留，均有更好离线GT-Phi见证。"
+E012,R8,research/research_max_struct_r8/RESEARCH_REPORT_ZH.md,## 3. 神经初始化与独立确认,57,80,42 NN confirmation:ID24/OOD12/cross6,42,independent-at-original-scoring,CIE/Dual/Global/A/A+;sourcewise/global A+ final arcguard;direct,uniform vs frozen NN; optional projected physical current;fixed affine anchor separately,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;6/12sources;full/half;.1/1/3%noise;cross36→24",aux3000+corrector3000;direct6000; hardware/cohort CPU stratified,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint;prediction Otsu;mask>.1+.5amplitude,NNdirect means .0965/.1624/.0843 vs uniformdirect .2497/.4047/.1959,NNglobalA+ .2961/.5939/.3293;NNsourcewiseA+ .3218/.5916/.3281;uniformDual .3684/.6383/.3282;no universal NN→aux benefit,"## 3. 神经初始化与独立确认
+
+以下为**完整预算端点的平均幅度NRMSE；括号为继承复合材料标签的成功数**。标签要求NRMSE≤.15、Otsu IoU≥.7及box合法，只用于评分。不同总体不合并；相同端点预算上限不等于相同实际计算费用。
+
+|方法|同分布24|未训练家族12|跨网格6|
+|---|---:|---:|---:|
+|均匀→原物理|.2497（2/24）|.4047（1/12）|.1959（2/6）|
+|NN→原物理|**.0965（9/24）**|**.1624（6/12）**|**.0843（2/6）**|
+|均匀→single CIE|.3443（8/24）|.6101（3/12）|.3275（2/6）|
+|均匀→Dual-CIE|.3684（7/24）|.6383（1/12）|.3282（2/6）|
+|均匀→Global-Dual|.3569（8/24）|.6254（2/12）|.3287（2/6）|
+|均匀→原A-material|.3389（8/24）|.6359（2/12）|.3288（2/6）|
+|均匀→global A+|.3406（8/24）|.6375（1/12）|.3283（2/6）|
+|NN→Dual-CIE|.3282（7/24）|.5678（2/12）|.3283（2/6）|
+|NN→Global-Dual|.2892（8/24）|.6048（1/12）|.3283（2/6）|
+|NN→global A+|.2961（7/24）|.5939（2/12）|.3293（2/6）|
+|NN→sourcewise A+|.3218（7/24）|.5916（2/12）|.3281（2/6）|
+|NN固定偏置→Dual|.2901（7/24）|.5230（4/12）|.2599（2/6）|
+|NN固定偏置→global A+|.3140（5/24）|.5183（4/12）|.2280（2/6）|
+|NN固定偏置→sourcewise A+|.3129（6/24）|.5016（4/12）|.2283（2/6）|
+
+其余完整臂及全部逐对象值保留在[630主比较表](delegated/warm_analysis/PRIMARY_630_object_rows.csv)、[126偏置结果](delegated/warm_anchor_analysis/CONFIRMATION_SCORES.json)和[全部42材料图](FIGURES/warm_material_all_42.pdf)。NN原始初值的平均NRMSE为.1469/.2190/.1205，后续直接物理优化改善到上表值；不是只把网络输出当作最终重建。ID中15个NNdirect未达复合标签的对象，有12个仅IoU未过，因此不能把标签失败全称为高连续材料误差。
+
+固定偏置的结果与开发预测相符的是“有条件修复”，不支持“保留更多物理current必然更好”：未训练家族成功从原NN A+的2/12升到4/12，但仍低于NNdirect的6/12；ID global A+反而从7/24降到5/24。普通Dual也得到相近修复，不能归为A+专属结构。"
+E013,R8,research/research_max_struct_r8/NEURAL_WARM_STARTS.md,## 模型、数据和公开选择,5,57,42 NN initializer anddirect,42,independent original test; now public,24737param two-scale CNN; physics10features; fixed checkpoint,1536train192val;120epochs;no testGT selection,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;trainingadditionalprior",training+generation402.558889 Mac cumulativeCPU;not remeasuredR13;deploymentfeatures/inference charged,NNraw→directfinal,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,NNraw .14690/.21898/.12052→direct .09647/.16245/.08431,same NN→A+ often loses benefit;NNdirect finalCPU1.06–2.74xuniformdirect,"## 模型、数据和公开选择
+
+主模型为24,737参数两尺度CNN，16通道，十个物理/几何输入。1536训练、192验证对象独立生成，覆盖8类材料、contrast 2.5/6/12/18、复RMS噪声.001/.01/.03、6/12源及半/全孔径。输入含Born/DPCS复读出、场能量和几何，不含测试GT。CPU完成120epoch；独立验证选择权重，另训练同结构Born-only控制。代码和权重路径见[复现](REPRODUCE.md)，完整冻结条件见[协议](NEURAL_PROTOCOL.md)。
+
+42个新材料分为24个训练家族内、12个未训练家族、6个36²生成→24²反演对象。每个保留576实材料自由度；不以形状或GT support缩减。材料box与prior沿用公开合成合同。主630=42×15臂，额外120仅在预先指定8对象上做初始化消融，偏置扩展126=42×3。两套全部完成后才开测试GT；未因NN初始Phi较高而拒绝运行。
+
+所有最终端点取已支付原Maxwell Phi的incumbent。辅助方法最多3000步辅助＋3000步共同物理校正，直接方法最多6000步；另给同实际CPU/LU/RHS allowance下的已执行端点，不能把相同最大步数当相同成本。没有把GT用于初值、阶段、根或停止选择。
+
+## 独立确认结果
+
+下表是幅度归一NRMSE均值，括号是继承复合标签成功数；标签还要求IoU≥.7和合法性，不能只凭这个二值数判断连续材料质量。
+
+|方法|家族内24|家族外12|跨网格6|
+|---|---:|---:|---:|
+|均匀＋直接物理|.24966 (2)|.40474 (1)|.19593 (2)|
+|NN原始材料|.14690|.21898|.12052|
+|NN＋直接物理|**.09647 (9)**|**.16245 (6)**|**.08431 (2)**|
+|均匀＋Dual-CIE|.36843 (7)|.63825 (1)|.32821 (2)|
+|NN＋Dual-CIE|.32822 (7)|.56779 (2)|.32835 (2)|
+|NN＋Global-Dual|.28919 (8)|.60481 (1)|.32834 (2)|
+|NN＋global A+|.29609 (7)|.59393 (2)|.32933 (2)|
+|NN＋sourcewise A+|.32182 (7)|.59164 (2)|.32811 (2)|
+|NN固定偏置＋Dual|.29007 (7)|.52299 (4)|.25988 (2)|
+|NN固定偏置＋global A+|.31395 (5)|.51831 (4)|.22800 (2)|
+|NN固定偏置＋sourcewise A+|.31293 (6)|.50160 (4)|.22833 (2)|
+
+完整15臂、固定8对象的m=.1/1、Born、DPCS、随机、两个NN和joint状态消融、按对象配对区间与停止原因在[原数字备忘录](delegated/warm_analysis/FINAL_NUMERIC_MEMO.md)。不能把固定8对象的Born-only NN局部优势拿来事后替换42对象的冻结网络。所有42对象及所有失败见[主图集](FIGURES/warm_material_all_42.pdf)、[原NN与后续物理图集](FIGURES/neural_initial_to_final_all42.pdf)、[偏置图集](FIGURES/warm_anchor_confirmation_all_materials.pdf)。
+
+## 数学解释与被否定的简单预测器
+
+令物理电流为`jp=jphys(mNN)`，硬数据投影为Pd，早期Fourier可调空间投影为Pu。投影初始化的差可拆成
+
+`δjD = Jd − Pd jp`，`δjN = Pu jp − (I−Pd)jp`。
+
+两项在欧氏current范数下正交，但Maxwell本构缺陷是`(I−XG)(δjD+δjN)`，强耦合可以放大、混合这两个方向。因此NN材料很有用，并不意味着送入硬DPCS/低模态辅助族后仍保留其搜索轨迹。
+
+最小修正是固定`Ja=Jd+(I−Pd)jp`，只继续优化原Fourier系数。它不增加优化DOF，不额外求初始LU，但完整current存储、投影和所有后续求解仍计费；最后完整APCS空间与原法相同。8个验证对象的初始本构缺陷全部下降，材料却不都改善，已经否定该标量诊断作为独立成功预测器。确认集显示它可以部分修复家族外/跨网格退化，但仍远逊于NN直接物理。
+
+预定对象0027展示另一个反例：NN初Phi=.30965，global A+把校正前Phi降至.01565。然而NN直接物理在1814 accepted steps按投影梯度停机，得到NRMSE=.12082；global A+用满3000校正步仍为1.01370。这里直接支路实际少于3000步，所以不能仅用6000上限解释；仍不能据此证明错误吸引域不可逃逸。
+
+![预定家族外对象0027，全部使用相同合法色标](FIGURES/neural_initial_to_final_fixed_r8_test_0027.png)
+
+再保留两条完整支路并按最终Phi选择也不够。NN直接＋global A+的均值变成.07754/.34498/.22882：家族内改善，另外两总体恶化，CPU为单NN直接的2.38–3.17倍。Global-Dual组合出现相似现象，不是A+专有机制。此选择完全不读GT；它说明增加候选和降低数据目标本身不能保证更准确材料。
+
+## 成本与摊销
+
+相对均匀直接物理，NN直接的最终平均CPU增加1.06–2.74倍；均匀初值常较快停在坏材料。因而这一比较支持质量提升，**不支持最终时间加速**。同对象共同CPU/LU/RHS allowance下，五个硬件/总体层的平均误差仍较低，置信区间、未用完预算及稀疏快照间距完整报告。
+
+相对五种均匀和五种NN辅助方法，NN直接在全部五层的最终平均CPU和误差都更低。这十组细比较是在看主结果后加入的描述分析，没有重新调算法；小层区间常跨零，不宣称普遍统计胜出。同CPU也有反例：ID/i9的NN直接减NN Global-Dual平均误差差为+.00281，区间[−.06069,+.06401]。
+
+例如Mac ID部署CPU为NN直接32.03秒、均匀Dual62.12秒；家族外分别39.12/69.89秒。物理特征与推理都收费。主physics网络训练加训练/验证生成为402.558889 Mac累计CPU秒；Born-only和采集域修复训练另列全研究账本。相对均匀直接没有有限CPU摊销盈亏平衡点；相对较贵辅助法的条件性成本收益也不能免去训练、加载、候选验证或跨硬件价比。详见[成本对照](delegated/warm_direct_budget_analysis/REPORT.md)与[全账本](COST_LEDGER.md)。
+
+若明确改用**均匀Dual-CIE**作为成本参照，三组Mac平均每次节省约30.09/30.77/31.82 CPU秒。主网络及训练/验证生成402.56 CPU秒的条件性warm部署摊销为14/14/13次。它只按本次对象均值记CPU账，排除冷加载，不是经济盈亏或等质量保证；全研究中Born/domain训练仍全部收费。两机器之间没有指定CPU价格比，不给混合硬件经济摊销数。计算见[条件性摊销表](delegated/warm_direct_budget_analysis/CONDITIONAL_DEPLOYMENT_AMORTIZATION.json)。"
+E014,R8,research/research_max_struct_r8/RESEARCH_REPORT_ZH.md,### 3.1 一个具体的路径反例,82,86,fixed OOD r8_test_0027,1,predeclared illustration within42,direct vs global/sourcewise A+ arcguard,same NN; material init vsaux interface,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",direct accepted1814 PGTOL;aux commoncorrector3000 cap,precorrector vs corrected,NRMSE andPhi,NNdirect Phi.00042866 NRMSE.12082,A+ precursor Phi.01565<NNinitial.30965 butfinal.00046350 NRMSE1.01370;not explained simply bydirect6000cap,"### 3.1 一个具体的路径反例
+
+预先选定展示对象0027中，NN初值Phi=.30965，global A+给出的校正前候选Phi=.01565，看起来更好。但NN直接物理优化在1814 accepted步按PGTOL正常停止，最终Phi=.00042866、NRMSE=.12082、IoU=.84967；global A+校正3000步到上限，最终Phi=.00046350、NRMSE=1.01370。sourcewise A+同样失败；固定偏置Dual在2789步达到数值PGTOL仍NRMSE=1.06415。
+
+该例中NN直接支路实际少于3000步，不能简单用它的6000步上限解释优势；它支持“校正前更低Phi可以丢失更好后续轨迹”。但没有证明辅助支路永远不能逃出某盆地。全组的严格符号差计数可能包括浮点微差，不能全部称为实质失败。"
+E015,R8,research/research_max_struct_r8/CHAT_HANDOFF.md,## 这轮真正发现了什么,23,25,42 fixed affine anchor andportfolio,42,development mechanism+frozen confirmation extension,NNfixedcurrentanchor;two complete branches minfinalPhi,same frozenNN;Jd+(I-Pd)jphys anchor,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",both branchescharged;portfolioCPU2.38–3.17xNNdirect,corrected/portfolio primary,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,anchor partly repairs OOD/cross;portfolioID mean.07754,NNdirect+A+ portfolio OOD.34498/cross.22882 worse;8/8 initialdefect improvement notpredictive,"1. **有用初值会在接口中丢失。** `jphys(mNN)`进入`Jd+(I−Pd)F a`时，硬DPCS误差与Fourier截断分别可测；Maxwell缺陷由`(I−XG)δj`控制，current L2不能代替。固定`Jd+(I−Pd)jphys(mNN)`偏置部分修复，但所有开发例初始缺陷下降仍不保证材料改善。原理是既有投影结构的具体接线解释，不是新Maxwell恒等式。
+2. **更低起点Phi可导向更差材料。** 预定0027的NN直接1814步达到NRMSE.12082；先经global A+虽起点Phi更低，3000校正步后NRMSE1.01370。不是单凭预算上限可以解释，也未证明永远无法逃逸的basin。
+3. **最终Phi选更多候选仍会伤害泛化。** NN直接＋global A+双支路按最终Phi选，均值.07754/.34498/.22882，家族内改善、家族外和跨网格恶化，CPU为单直接的2.38–3.17倍。Global-Dual有类似现象，不能归为A+独有增益。"
+E016,R9,research/research_max_struct_r9/RESEARCH_REPORT_ZH.md,## 1. 继承与对照资格,17,19,R8 highcontrast audit andR7 reference,26,reanalysis alreadypublic;26and18 neverpool,R8 uniform CIE/Dual/Global/A/globalA+/sourcewiseA+ vsR7 highcontrast18,uniform,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;different acquisition/noise/object contracts",audit630R8 receipts;no rerun,inherited final,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,R7 highcontrastA/A+11/18 vsDual/Global9/18,R8 high26 counts6/3/5/5/4/5;A+−Global mean−.01505 median−.0000713;no A+exclusive success,"R4–R8、Formula Atlas、FBG的实际代码和正负证据保留不动，本轮在隔离工作树、独立R9目录执行。复用R8 native FFT-TSOM、R7 A+、FBG-R3原Maxwell forward/adjoint及原物理corrector；没有另造弱CIE。审计读取630份R8完整回执，并保留R7的高对比正证据。
+
+R8均匀初始化高contrast26例的材料成功数：单β CIE 6、Dual 3、Global 5、A 5、global A+ 4、sourcewise A+ 5。A+−Global的平均NRMSE约−.01505，但中位仅−.0000713，且没有A+独有成功；不能用均值遮蔽失效。R7高contrast18例A/A+各11/18、Dual/Global各9/18，属于不同采集/噪声/对象合同，正结果同样保留而不混分母。"
+E017,R9,research/research_max_struct_r9/RESEARCH_REPORT_ZH.md,## 2. 物理、数据和评分合同,23,43,new6 noise adaptation,6,independent-at-original-scoring,old fixed rtol.001 DPCS rank17 vsCN99 adaptive rank;all four CIEvariants,uniform,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;contrast2.5/12/18;noise.1/1/3%;12x48 full/half;matched24",aux3000+corrector3000;direct6000,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,public noise rank releases shared currentdirections,changescurrent feasible space;not A+exclusive;new6 small,"## 2. 物理、数据和评分合同
+
+第一阶段为**24×24、576个独立实contrast未知量的二维scalar-TM有限VIE**，exp(−iωt)、出射Hankel1、固定μ。复用原G/E/S及非周期FFT作用；源和接收器均在ROI外。材料m=εr−1，box[.02,20]，均匀初值.1；全部方法同一smooth+TV先验，最终以完整原Maxwell观测的Phi选已付费候选。
+
+新六对象为独立随机几何的ellipse、disks、annulus、comb、star、perforated，幅度2.5/12/18，复RMS噪声.1%/1%/3%，12源48接收、全/半发射孔径。一次生成、不重抽、不按结果过滤；六个对象才是分母，66次求解不是66独立样本。属于小型同离散确认，**不是跨网格、实测或3D证据**。已有R8的相关局限继续有效。
+
+主要算法/参数在新数据生成前冻结；补充single-CIE同噪声规则、简化弱阶段臂在生成后、所有确认评分前加入，依据是旧DEV证据，未读取确认GT调节。该时间区别保留在配置，不把补充臂称作完全相同的预生成注册。所有66个预测和两组portfolio的原Phi选择先封存，再首次读取六个GT。
+
+NRMSE=逐像素RMSE/声明contrast幅度；支持分割使用prediction-only Otsu。沿用旧材料成功定义NRMSE≤.15且IoU≥.7及box合法，不为本轮改门。CN99噪声拟合、Phi、求解器停止、材料指标分开。辅助3000步＋共同corrector最多3000步；direct最多6000步。松弛/延拓预算单列，不伪称相同迭代即相同计算。
+
+## 3. 找到了什么问题，实际改了什么
+
+### 3.1 含噪DPCS硬锁
+
+旧阈值rtol=.001在四个R8采集算子中均保留17个receiver奇异方向，最弱保留方向使截断逆的条件数约394。对公开独立圆复噪声，硬读出电流的预期噪声量是
+
+`E||ΔJD||² = Ns σ² Σ(i≤r) 1/si²`。
+
+R8的3%噪声组，这一预期RMS量相对已观测JD范数的中位约91%；不是实际GT电流误差，但足以说明固定强模态阈值不能忽视噪声。R3已有无噪声/释放控制失败，因此它不是全部错误的唯一原因。
+
+**实现修正：**公开σ按E|n|²=σ²解释，取完整数据99%噪声球，选最小连续奇异前缀r使丢弃数据能量落入该球。不同r共享同一个完整噪声事件，不从GT选秩。只改变硬锁/可优化current子空间；后续数据项仍使用完整Y，原物理验收也保留所有通道。额外SVD收费。减少r会释放一些原来锁死的current方向，不能称独立current自由度完全不变；材料仍576维，所有普通CIE也得到相同规则。"
+E018,R9,research/research_max_struct_r9/RESEARCH_REPORT_ZH.md,## 5. 新六材料：修复有效，A+独有优势没有出现,76,98,new6 quantitative,6,independent-at-original-scoring,CIE/Dual/Global/A+ old andnoiseadapted;relaxation;direct,uniform,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;seeE016",mean fullCPU old48.43/46.06/47.96/52.67;adapted38.84/40.81/42.98/46.37,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,allfour old2/6→adapted4/6;adaptedmeans .18666/.18882/.18766/.18552,A+ no extrasuccess;19%moreCPUthansingle;relaxation2/6;portfolio4/6,"## 5. 新六材料：修复有效，A+独有优势没有出现
+
+|方法|材料成功|平均NRMSE|平均完整CPU秒|
+|---|---:|---:|---:|
+|原单β CIE|2/6|.55754|48.43|
+|原Dual-CIE|2/6|.54021|46.06|
+|原Global-Dual|2/6|.54211|47.96|
+|原A+|2/6|.54352|52.67|
+|噪声适配单β CIE|4/6|.18666|38.84|
+|噪声适配Dual|4/6|.18882|40.81|
+|噪声适配Global|4/6|.18766|42.98|
+|噪声适配A+|4/6|.18552|46.37|
+|直接物理优化|2/6|.40359|31.19|
+|完整current松弛延拓|2/6|.34173|15.45|
+|弱阶段＋原物理校正，含初始化|2/6|.34262|14.42|
+|噪声A+＋松弛，两次完整付费|4/6|.18488|61.82|
+|噪声Global＋松弛，两次完整付费|4/6|.18735|58.43|
+
+噪声修正额外恢复的是comb0003和perforated0005，各普通CIE同样取得；annulus0002与star0004仍共同失败。新普通控制0000、0001都保住，但六例不足以证明总体非劣性或成功率显著提升。A+均值略好来自少数连续误差差别，没有新增成功；不能称其恢复增量已稳定复现。
+
+![六例逐对象材料、拟合与成本](FIGURES/confirmation/paired_cost_matrix.png)
+
+[全部六例GT＋十一臂材料图](FIGURES/confirmation/all_six_materials.png)包含所有失败。简化弱阶段平均更便宜，但0000与0003反而稍贵，不是逐例加速。两portfolio在DEV分别4/4与3/4，在确认均4/6；额外花费没有多恢复对象。保留这个泛化负例，不再根据确认GT修改组合。"
+E019,R10,research/research_max_struct_r10/RESEARCH_REPORT_ZH.md,## 2. 新24材料主确认：全部结果,38,65,main24,24,independent-at-original-scoring,CIE/Dual/Global;A+global/sourcewise;G19;twofold30,uniform;inheritedcurrentinterface,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;12x48;1%noise;8familiesxlow/high/mixed;same24",3000aux+3000correctoraccepted/12000eval;fullchildCPU157.71/153.98/150.13/169.49/174.98/187.66/192.53,primary corrected,NRMSE<=.15 ANDfixedchi>1 IoU>=.7 ANDlegal;Otsusecondary,CIE11/.16287;Dual10/.16346;Global10/.16369,A+global8/.18044;sourcewise10/.18045;G198/.17669;Twofold8/.18099;not universaldenominatorwin,"## 2. 新24材料主确认：全部结果
+
+八家族各有low/high/mixed三个独立材料：环、开缝壳、多岛、曲条、梳状体、包覆体、穿孔星形、桥。low χ2.5，high χ12/18，mixed含两级；ROI host χ.1。全部576维未知，12源/48接收，1%期望复噪声，box[.02,20]。高contrast的12/18按既有家族规则分配；本设计不能单独识别contrast与家族的因果作用。
+
+同一有限离散生成/反演，不能称跨网格或实测。168条反演全部完成、无运行失败，先封存全部公开预测再统一读GT。实际每条3000辅助步；共同原物理corrector最多3000接受步/12000评估，无wall截断。140条由投影梯度准则停止、4条由相对函数变化停止、24条到迭代上限，不能将全部终态称为已收敛。
+
+|方法|主材料成功/24|平均NRMSE|中位NRMSE|平均完整child CPU秒|角色|
+|---|---:|---:|---:|---:|---|
+|CIE-single|11|.16287|.13801|157.71|主要成熟基线|
+|Dual-CIE|10|.16346|.13829|153.98|主要成熟基线|
+|A+global|8|.18044|.14531|169.49|原one-hop材料改进|
+|A+sourcewise|10|.18045|.14479|174.98|匹配Dual current的材料消融|
+|Green19矩阵分母|8|.17669|.14638|187.66|本轮新候选|
+|Two-fold30矩阵分母|8|.18099|.14544|192.53|接收子空间候选|
+|Global-Dual|10|.16369|.13894|150.13|内部matched-current控制|
+
+主材料成功沿用已冻结NRMSE≤.15、共同χ>1的IoU≥.7及合法性，**不是研究停止门**。完整连续分数、旧Otsu口径、区域误差、停止原因和全对象配对见[原表](delegated/twod_score/scored/SCORES_FINAL.csv)。主support在GT读取前冻结，避免将混合材料低χ相从分母中删除。没有按GT选择候选或迭代。
+
+|方法|low平均NRMSE / 成功8例|high平均NRMSE / 成功8例|mixed平均NRMSE / 成功8例|
+|---|---|---|---|
+|CIE|.16907 / 4|.21316 / 3|.10638 / 4|
+|Dual-CIE|.16907 / 3|.21460 / 3|.10671 / 4|
+|A+global|.16959 / 2|.26514 / 2|.10660 / 4|
+|A+sourcewise|.16949 / 3|.26533 / 2|.10653 / 5|
+|Green19|.16967 / 2|.25363 / 2|.10676 / 4|
+|Two-fold30|.16984 / 2|.26646 / 2|.10669 / 4|
+
+low和mixed的平均连续差很小，不能从成功数跳变推导大幅优劣。高对比有实质性的相反路径结果，值得逐例研究。对象配对bootstrap仅为这个设计的描述性区间，不是任意几何总体或多重比较校正后的显著性保证。"
+E020,R10,research/research_max_struct_r10/RESEARCH_REPORT_ZH.md,### 三个决定性的新正反例,67,73,three main24 decisive cases,3,subsetof24;notnew3,CIE/Dual/A+global/G19/twofold,uniform,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;sameasmain24",samefullschedules;actualcostdifferent,primary corrected,amplitudeNRMSE,ringCIE.42288/A+.42275→G19.09889,shellCIE.11109→A+/G19.51514;bridgeCIE.09741/A+.09608→G19.33700,"### 三个决定性的新正反例
+
+|对象|CIE|Dual|原A+global|Green19|Two-fold30|原物理现象|
+|---|---:|---:|---:|---:|---:|---|
+|0001 高χ12环|.42288|.43372|.42275|.09889|.10248|新分母把残差13.7%降至约.960%，进入不同可恢复区域|
+|0004 高χ18开缝壳|.11109|.11170|.51514|.51514|.51514|CIE残差.968%，A类均58.98%；新分母没有修复原A的坏路径|
+|0022 高χ18桥|.09741|.09625|.09608|.33700|.43720|CIE/A+残差约.974%，新分母仍16.85%/14.40%，出现反向损害|"
+E021,R10,research/research_max_struct_r10/RESEARCH_REPORT_ZH.md,### 4.3 补偿CIE，而不是强行替换所有材料读出,119,137,new4 conditional deployment,4,independent-at-original-scoring,CIE→G19 vsCIE→Dual; triggeroutsideCN99;retainminPhi,CIEuniform run thenfallback fromprotocol;do not infer sameendpoint restart,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;fournewhighobjects",deploymentwholechildCPU692.84/1015.55/1013.44;sharedCIEprefixnotadditive,primary policy,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,CIE2/4;CIE→Dual2/4;CIE→G193/4;means.43222/.43222/.19711,only2triggers;coatedbodyfails;noGlobalfallback;cannotuniquelyattributetoGreen,"|全新对象|触发|CIE NRMSE|CIE→Dual|CIE→Green19|结论|
+|---|---|---:|---:|---:|---|
+|0000 χ12环|是|1.05000|1.05000|.10958|Green19恢复；IoU .04899→.71098，白化范数135.70→23.10|
+|0001 χ18开缝壳|否|.12797|.12797|.12797|三部署完全同一CIE材料，fallback未运行|
+|0002 χ18桥|否|.09071|.09071|.09071|三部署完全同一CIE材料，fallback未运行|
+|0003 χ18包覆体|是|约.46018|约.46018|约.46018|全部失败，白化范数约702；没有按GT换方法或加预算|
+
+材料成功为CIE 2/4、CIE→Dual 2/4、CIE→Green19 **3/4**；平均NRMSE为.43222、.43222、.19711。三个部署视图的完整child CPU分别692.84、1015.55、1013.44秒；Green19补偿为单CIE的**1.46倍**，与同触发Dual重试成本接近。物理576阶LU为8054、11560、10225，新分母另有19阶小LU。三个视图共享CIE prefix，不能相加；实际整个实验八个科学inverse及一次零物理启动失败的unique child CPU为1336.14秒。
+
+这是“对未拟合数据的CIE增加一条有互补性的合法路径”的初步独立证据，比全体替换材料步更合适。它不会改善已经noise-compatible却材料不准的CIE终点；未触发时按构造原样返回CIE，而不是证明CIE已恢复GT。四对象只产生两个触发，不能据3/4对2/4作统计显著或总体成功率主张。环的效果在两批独立几何中出现，但尚不能预测所有环、壳或其他拓扑的收益。完整候选、未选择成本、失败和未运行臂见[独立审查](delegated/conditional_confirmation_score/REVIEW.md)。
+
+![四个最终确认对象的全部部署结果](delegated/conditional_confirmation_score/ALL4_DEPLOYMENT_MATERIALS.png)
+
+## 5. 三维和独立网格的边界
+
+本轮真正运行四个三维材料、六个观测条件共18主反演，使用12³材料、三分量dyadic Maxwell、60源及180接收分量；其中两对象为18³独立生成→12³反演。CIE/Global/A+三臂共用完整物理corrector。新低秩分母尚未移植3D，不能把原A+三维结果当作新分母的验证。
+
+源为外部真实电偶极，不是非法纵向平面波；非周期零填充FFT和CM+RR自项、同LU多RHS及伴随均继承实际全矢量实现。高ε9内部波长在粗网格约6.67格，细网格10格，gap/壳厚仅两粗格。18→12差异单列，不能靠同算子低残差宣称连续Maxwell准确。R9 Mie及原3λ电尺寸负证据仍然有效。
+"
+E022,R11,research/research_max_struct_r11/RESEARCH_REPORT_ZH.md,## 最终判断,13,15,independent16,16,independent-at-original-scoring,CIE/Dual/Global/G19;samecurrentcapacity;G19rank19notfullG,sameinit;inheritedinterface,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;high/lowmixed",fullCPU G19/CIE1.269;commonLUdifferentfromCPU,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,CIE4/.23134;Dual5/.21068;Global6;G197/.14485;newringexclusivevsGlobal,3newsuccessvsCIE notallGreen-specific;only1vsGlobal,"Green材料分母有真实但有条件的恢复增量。它没有消除Maxwell非凸性，而是改变辅助current残差投向材料方向的方式；这一改变可以救回环，也可以把壳和桥导向错误区域。新16个独立高/低混合对象中，原Green材料分母恢复7/16，成熟CIE为4/16、Dual-CIE为5/16，平均幅度NRMSE分别为.14485、.23134、.21068；代价是Green实际CPU为CIE的1.269倍。完整逐对象结果及负图见[16对象报告](CONFIRMATION16_REPORT_ZH.md)。这些数字支持保留并继续检验Green，而不支持无条件替换CIE。
+
+必须把整条算法的差异与分母本身的增量分开：同global current的普通材料控制已为6/16。G19相对CIE增加环0000、壳0002/0003三个成功；相对Dual增加环0000与壳0002；相对Global仅增加环0000，没有反向成功回退。因此本组最清楚的分母专有效果是新高对比环，不能把三个增量全部归给Green。这个环上G19实际CPU54.48秒，低于CIE73.70及Dual64.79，但高于Global47.40；局部优势和全组平均成本应同时保留。"
+E023,R11,research/research_max_struct_r11/RESEARCH_REPORT_ZH.md,## 最终判断,7,11,independent48,48,independent-at-original-scoring,CIE/Dual/Global/G19/freezeA/contractedT,sameinit;inheritedinterface,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;8families;high/mixedchi8/12/18",effectivechildCPU49968.922;G19/Dual1.334;interruptionCPUunknowncase22,primary corrected,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,counts21/22/23/23/16/23;contractedTfixesbridge/combdamage,Global/G19/contractedTidentical23successset;noG19exclusive;cannotpoolwith16,"**Green分母已有值得保留的条件成像优势：独立新环、以及跨网格的环与开缝壳，确实比CIE/Dual-CIE恢复得明显更好。** 这不是仅降低residual，也不要求所有对象全胜才有意义。与此同时，扩大48对象没有给出普通global控制之外的新成功，几个看似合理的分母修正也引入反例。因此应围绕“何时改变到有利路径、何时破坏路径”建立主张，不能把结果压成一句普遍有效或普遍无效。
+
+扩大到48个独立高对比/混合材料后，CIE/Dual/Global/G19/freezeA/contractedT分别恢复21/22/23/23/16/23个。Global、G19、contractedT成功的是完全相同的23个对象，新分母没有贡献Global控制之外的新增成功。只冻结非局部反馈的contractedT修复了新桥、梳状体上Green造成的大幅连续误差退化，比原Green少用约5.5%的有效反演CPU；但在共同实际成本前缀下，Dual仍为22/48、contractedT为20/48，平均NRMSE差的不确定区间跨零。完整表见[48对象报告](CONFIRMATION48_REPORT_ZH.md)。因此已经找到有用的局部修复，尚未找到值得默认替代Dual-CIE的分母设计。
+
+随后完成的8对象配对网格检验提供了更强的局部正证据：matched24与cross48→24条件下，原G19均6/8通过材料精度标准，CIE/Dual/Global均4/8，新增完整恢复为高对比环与开缝壳。形态图确实显示G19救回这两类，另外两个未达IoU门的多岛仍有大体形态，不能与灾难性错解混称“没成像”。与Dual的共同CPU前缀两条件也均4对6，但cross的新增对象换成环与混合多岛，不能称壳也同成本恢复。完整结果、费用与对象交换见[配对网格报告](CROSSGRID8_REPORT_ZH.md)。这支持有条件、可跨网格保留的收益，不支持用48组零专属增量否定它，也不支持用这8组覆盖48组反例。"
+E024,R11,research/research_max_struct_r11/RESEARCH_REPORT_ZH.md,## 3. 同成本、停止与材料误差的分开记账,53,59,independent48 actualcostprefix,48,independent-at-original-scoring,DualvsG19/contractedT;conditionalCIEportfolios,sameinit,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",B=mincompletepaidCPU per pair;case22endtoendunknown;47sensitivity,paid minPhi prefix,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,conditionalCIE→G19/Dual/Globalall23/48,Dual/G19commonCPU22/21;Dual/contractedT22/20;endpointbestnotcostwin,"## 3. 同成本、停止与材料误差的分开记账
+
+48主比较的有效科学child总CPU为49968.922秒。G19/Dual有效运行费用比约1.334，contractedT/Dual约1.261；有工程中断的case0022端到端费用未知，故上述比值不是包含所有中断的精确campaign倍数，另有47对象敏感性。共同实际成本B=min(两臂完整有效CPU)下，Dual/G19成功22/21，Dual/contractedT为22/20，双方仅按公共已付Phi选状态。48终点最优总误差不自动意味着同成本恢复优势。条件CIE→G19、CIE→Dual、CIE→Global也均23/48，G19没有超过付费控制。所有CPU、LU与原始连续指标单列。
+
+16对象的五臂全部同一Mac平台、同一允许CPU上限、相同材料空间/prior/观测和corrector。共同达到的全波LU预算下成功数仍为4/5/6/7/5；但辅助CPU不同，因此不能称同LU就是同总成本。240秒以上的允许预算对本组多数自然结束运行不再起作用，不用空闲填充制造“实际等成本”。
+
+额外后验预算审计为CIE和Dual-CIE中仍可继续且实际花费低于同对象Green的候选使用剩余CPU。公开停止状态及成本触发7次corrector重启；新增62.86 CPU秒，没有增加材料成功。由于L-BFGS历史重置、部分正常提前终止及原子操作尾部，此控制不是无缝延长，也仍须报告实际花费，而不能仅报统一上限。"
+E025,R11,research/research_max_struct_r11/RESEARCH_REPORT_ZH.md,## 最终判断,11,11,paired8 materials two grids,8,independent-at-original-scoring,CIE/Dual/Global/G19,sameinit,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;matched24andcross48→24 paired;targetfine2x2mean",G19CPU20.8%/34.7%moreDual;total10921.40625s,full primary +commonCPU,amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint,bothgridsCIE/Dual/Global4/8;G196/8;ringandshellrestoredfullendpoint,commonCPUcrossincrementchanges: ring+mixedisland;not shell;not16independentmaterials,随后完成的8对象配对网格检验提供了更强的局部正证据：matched24与cross48→24条件下，原G19均6/8通过材料精度标准，CIE/Dual/Global均4/8，新增完整恢复为高对比环与开缝壳。形态图确实显示G19救回这两类，另外两个未达IoU门的多岛仍有大体形态，不能与灾难性错解混称“没成像”。与Dual的共同CPU前缀两条件也均4对6，但cross的新增对象换成环与混合多岛，不能称壳也同成本恢复。完整结果、费用与对象交换见[配对网格报告](CROSSGRID8_REPORT_ZH.md)。这支持有条件、可跨网格保留的收益，不支持用48组零专属增量否定它，也不支持用这8组覆盖48组反例。
+E026,R11,research/research_max_struct_r11/RESEARCH_REPORT_ZH.md,## 4. 扩大确认与真正三维,73,79,true3D8matched+2crossconditions,8,independent-at-original-scoring,CIE/Dual/Global/fullGreenrank120/contracted;notG19,same perobjecthost,12cube1728realchi;5184complexcurrent/source;60dipoles;CM+RR;3%noise;cross18→12,all50reach320acceptedcorrectorcap;Mac/GPUclocknotpool,primary,relativechiL2 not2DamplitudeNRMSE,matchedmeans .22844/.22608/.23127/.22780/.22774;fullGreen5/8lowerDual,fullGreenoverallmeanhigherDual;cross .46483/.45439/.43356/.46714/.46319;allcrossoutsideball,"三维新分母已经实际接入三分量dyadic Maxwell材料反演：12³个共享实材料未知量、每源5184复current自由度、60个外部偶极源、60个三分量接收位置。先做公开开发对象，再执行8个新设计×5臂，另有两个对象18→12跨网格数据的10次独立标记运行。采用CM+RR有限点模型与FP64原物理验收，不能称二维TM堆叠、完整连续Maxwell误差证明或2019作者设置的原样复现。新50次已经完整终态并在联合公共封存后授权解盲。8 matched对象的CIE/Dual/Global/fullGreen/contracted平均χ相对L2为.22844/.22608/.23127/.22780/.22774；平均IoU为.80869/.81248/.80382/.81335/.81259。fullGreen在5/8个对象的χ误差略低于Dual，但全组均值略高；主要形态均可辨认，没有二维环那样的大幅分母专属改进。两个cross对象的平均χ误差为.46483/.45439/.43356/.46714/.46319，Global最低。见[三维最终报告](VECTOR_CONFIRMATION_REPORT_ZH.md)。
+
+在新三维GT读取前作纯工程分流：最初Mac/4060各25任务；首臂冷启动计时促使尚未启动的c18十任务暂派4060，随后已付Mac暖态/历史current落盘计时表明可以更早完成，取消尚未执行的GPU追加队列，c18回到Mac，最终仍为25/25。每个对象全部五臂及matched/cross始终同host，原计划、变更、等待控制费用全部保留；原精度、算法和预算不变。跨平台秒数不混合成算法加速。Mac落盘只释放已归档历史场的RAM，未改变优化状态或数学计算。
+
+GPU原队列15臂后，资源查询nvidia-smi超时导致c17的sourceDual在315接受步中断，额外320个5184阶LU保留计费。该臂同设置重跑后正常封存；查询重试避免再次丢失状态，但耗时明显。该臂完成后利用下一臂首次FW前既有目录保护自然退出，计数确认下一臂0新增FW，再由新进程使用30秒有效空闲查询缓存完成原九任务。这个变化只修资源协作，不是新算法或物理加速结论。受影响对象的端到端费用/前缀资格与7对象敏感性单列。全部50份预测及400个公共成本前缀经root逐项核对后才授权GT评分；没有新增科学调用。
+
+已完成的三维旧DEV12给出有限预算下的实际反例：v04 Global/Green的幅度NRMSE为.02120/.02038，但IoU为.8551/.8169；v09六臂均有高核心衰减，幅度NRMSE约.10、相对contrast L2约.49–.50。全臂均用完320 accepted corrector步，不能称已收敛或已证明三维优势。完整12臂、固定切片及成本见[真三维开发报告](VECTOR_DEV_REPORT_ZH.md)。新50确认已完成，算法未依据这两个DEV调参。40个matched终点全部CN99兼容，10个cross终点全部在球外；c13/c18干净12/18观测差达17.68%/3.53%，相对于3%名义噪声是实质模型风险。跨网格仍能看出空腔/双体等形态，但材料边界与数值偏差明显。它既不能全归咎于优化器，也不能证明粗模型不可拟合；所有50臂均到320 accepted-step预算终点，不能称充分收敛。"
+E027,R12,research/research_max_struct_r12/RESEARCH_REPORT_ZH.md,## 4. 独立24确认：收益没有成为通用优势,66,101,independent24,24,independent-at-original-scoring,CIE/Dual/Global/A+/G19/DR/physicalsmoothmultistart/NNdirect,uniform exceptfrozenNNdirect;G19warmphysicalcurrent,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;1%CN;12x48;levelset/branch/island/continuous;chi8/18/mixed",wholechildcap240;144proposal96corrector;actualcostunequal;prefix30/60/120/240,primary corrected,"amplitude NRMSE=RMSE/declared contrast; material label <=.15 AND IoU>=.7 AND box legal; CN99 separate unless explicitly joint;supportfixedchi>1 whereinherited; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",means .202932/.185456/.184007/.171692/.143891/.184631/.619361/.149514;G19bestmean,oldlabels9/9/9/9/9/7/4/9;DR11ballinsidefailuresIoUonly;notallnoimage,"## 4. 独立24确认：收益没有成为通用优势
+
+24个独立对象覆盖levelsets、枝状、岛状、连续随机四族，高8/高18/高低混合各组合。固定24²、576个独立实材料未知量、12源48接收、1%复圆高斯噪声、公开box和原prior。八法有相同240 whole-child CPU上限、144proposal/96corrector窗口；记录实际支出和30/60/120/240前缀，不能把上限相同说成消耗必然相同。
+
+封存评分如下；[独立确认完整报告](delegated/confirmation/CONFIRMATION_RESULTS_ZH.md)提供逐对象、条件可用性、配对与全部失败：
+
+|方法|平均幅度NRMSE|旧描述成功/24|
+|---|---:|---:|
+|成熟CIE|.202932|9|
+|Dual-CIE|.185456|9|
+|Global-Dual|.184007|9|
+|A+|.171692|9|
+|G19|.143891|9|
+|DR|.184631|7|
+|物理平滑多初值|.619361|4|
+|冻结NN→direct|.149514|9|
+
+不能只说DR“没过gate”便停止分析，也不能说这组已证明所有结构无价值。它否定的是当前冻结DR作为普遍默认替代器的主张。反射从均匀场出发与从指定坏端点干预是不同实验；一些坏材料已经满足噪声球时，继续反射没有GT选择依据。
+
+新增次规则在24生成后、任何确认逆解/评分前登记：从已付费、合法、原始CN99球内候选中最小化同一R，Phi破平局。它没有增加forward，也没有改轨迹。八方法合计144/192个可用、48/192个不可用的次候选；单法最多24个，DR为18/24可用；不能删掉不可用对象后把均值降低包装成整体改善，也不能拿它悄悄替换主结果。最终需在相同对象交集比较主/次差异，并同时报告覆盖率。
+
+### 同成本前缀与配对不确定性
+
+|whole-child CPU前缀|CIE|Dual|A+|G19|DR|NN→direct|
+|---|---:|---:|---:|---:|---:|---:|
+|30秒|.19411|.17677|.18169|.21718|.18551|.15044|
+|60秒|.19876|.17942|.16787|.14988|.18396|.14881|
+|120秒|.20149|.18404|.17014|.14411|.18408|.14951|
+|240秒|.20293|.18546|.17169|.14389|.18463|.14951|
+
+均为全部24对象的平均幅度NRMSE，公开规则按Phi而非GT选择，所以材料误差可以随预算变差。G19早期setup较重，但60/120/240前缀已优于DR，不能把其最终优势全部解释为多用CPU。NN30秒已较强，然而它带有既有训练prior，不是同信息的纯优化创新。
+
+DR−Dual平均差−.000825，按对象10000次bootstrap的95%区间[−.040982,+.053017]；不能据此宣称统计等价或优势。DR−G19为+.040740，区间[+.001934,+.095095]，本组数据支持G19平均材料误差较低；这是小样本、未校正多重比较的探索性区间，不是跨全部问题的定理。
+
+DR17个旧描述未过中，11个在球内、6个在球外。11个球内对象均NRMSE≤.15，未过的是IoU≥.7这一项，relativeL2为.324–.600；应报告结构/边界不准，不能一概说完全没成像。原始DR proposal minPhi平均NRMSE.185814、最终.184631，12对象改善12退化；本组没有high3D那种原始进球→corrector出球的转移。因此不能把三维开发反例强套为独立二维的统一失败原因。
+"
+E028,R12,research/research_max_struct_r12/RESEARCH_REPORT_ZH.md,### 同成本前缀与配对不确定性,87,101,24 CPU-prefix,24,independent-at-original-scoring,CIE/Dual/A+/G19/DR/NNdirect,asmain24,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",wholechild30/60/120/240 prefixes;notbodyCPU,paid minPhi prefix,"all24 meanamplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",G19 .21718/.14988/.14411/.14389;NNdirect .15044/.14881/.14951/.14951,"DR .18551/.18396/.18408/.18463;DR−G19+.040740CI[+.001934,+.095095];NNadditionalprior","### 同成本前缀与配对不确定性
+
+|whole-child CPU前缀|CIE|Dual|A+|G19|DR|NN→direct|
+|---|---:|---:|---:|---:|---:|---:|
+|30秒|.19411|.17677|.18169|.21718|.18551|.15044|
+|60秒|.19876|.17942|.16787|.14988|.18396|.14881|
+|120秒|.20149|.18404|.17014|.14411|.18408|.14951|
+|240秒|.20293|.18546|.17169|.14389|.18463|.14951|
+
+均为全部24对象的平均幅度NRMSE，公开规则按Phi而非GT选择，所以材料误差可以随预算变差。G19早期setup较重，但60/120/240前缀已优于DR，不能把其最终优势全部解释为多用CPU。NN30秒已较强，然而它带有既有训练prior，不是同信息的纯优化创新。
+
+DR−Dual平均差−.000825，按对象10000次bootstrap的95%区间[−.040982,+.053017]；不能据此宣称统计等价或优势。DR−G19为+.040740，区间[+.001934,+.095095]，本组数据支持G19平均材料误差较低；这是小样本、未校正多重比较的探索性区间，不是跨全部问题的定理。
+
+DR17个旧描述未过中，11个在球内、6个在球外。11个球内对象均NRMSE≤.15，未过的是IoU≥.7这一项，relativeL2为.324–.600；应报告结构/边界不准，不能一概说完全没成像。原始DR proposal minPhi平均NRMSE.185814、最终.184631，12对象改善12退化；本组没有high3D那种原始进球→corrector出球的转移。因此不能把三维开发反例强套为独立二维的统一失败原因。
+"
+E029,R12,research/research_max_struct_r12/RESEARCH_REPORT_ZH.md,## 3. 最清楚的正例：从已陷入的坏材料重新出发,48,56,oldR11bad3 originalbodybudget,3,public exposed,physicalcontinuation/smoothmultistart/AP/DR,same savedbadmaterial fullphysicalJ/Q,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",paid240bodyCPU;notwholechild,primary prefix,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",DRring.16585/shell.11377/bridge.10617,original lacks matchedG19restart;usepairedsupplementforG19comparison,"## 3. 最清楚的正例：从已陷入的坏材料重新出发
+
+R11环CIE、开缝壳G19、桥G19的保存材料原样作为共同起点。重新forward获得完整J/Q后，比较原物理续跑、固定分布平滑扰动多初值、AP和DR。
+
+|幅度NRMSE，付费240 body-CPU内|续跑|平滑多初值|AP|DR|
+|---|---:|---:|---:|---:|
+|高对比环|.42288|.74888|.42288|.16585|
+|开缝壳|.51514|.45633|.51514|.11377|
+|桥|.43673|.43673|.35144|.10617|"
+E030,R12,research/research_max_struct_r12/RESEARCH_REPORT_ZH.md,## 6. NN、实测及经典对象没有被跳过,120,122,NN4 originalinterface,4,publicR8objects,uniformdirect/NNdirect/NNDR/NNCIE,frozenR8NN fullstate forDR;coldCIEinterface asrecorded,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",originallocalCPU;notpairedsupplementcost,primary corrected,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",means .4470/.1419/.0862/.3089,noNNAPsinglefactororiginalarm;cannotattributeallgainstoreflection,"## 6. NN、实测及经典对象没有被跳过
+
+冻结小NN的四对象接口中，uniform→direct、NN→direct、NN→DR、NN→CIE的平均幅度NRMSE约.4470/.1419/.0862/.3089。NN→DR的某些对象好于NN→direct，但两个对象轻微变差，完整CPU也增加；另一个对象CIE已解释相同收益。没有NN→AP单因素臂，不能把全部差异唯一归因于反射。独立24只确认NN→direct；不能宣称全部NN组合已经独立泛化验证。[NN报告](NEURAL_AND_SELECTION_REPORT_ZH.md)。"
+E031,R12,research/research_max_struct_r12/RESEARCH_REPORT_ZH.md,## 5. 材料选择的问题：共同corrector为何会毁掉更好的结果,108,118,3Dcorrectorcounterexample,2,development,DRrawvscommoncorrector;CIE/Dual/APfinalnear,sameDRcandidate,highchi8/mixed2and8;6cubevectorDDA;cross8→6cleanmismatch26.16%,finiteoriginalcorrector;notgeneralconvergencetheorem,raw→corrected,relativechiL2;CNballqualification,raw .06163/.07831 inball,corrected.12978/.22724 outball;D increaseswhileRdecreases;moderategroupdifferencesvanishwithlongercorrector,"## 5. 材料选择的问题：共同corrector为何会毁掉更好的结果
+
+两个high3D matched对象中，DR原始相对材料L2约.06163/.07831，corrector后变为.12978/.22724；CIE/Dual/AP最终也趋近相同材料。分解表明：
+
+- 高χ对象D由1.0210e-4升至1.3577e-4，R由7.1732e-4降至5.9158e-4。
+- 混合对象D由1.0034e-4升至1.3033e-4，R由3.5856e-4降至2.4505e-4。
+- 原始DR均通过raw CN99，校正后两者均出球。
+
+因此Phi下降由prior改善支付，数据和材料同时变差。不能把同Phi校正器自动当作更可靠的最终裁判。这也是预注册次规则的依据。不过另外的AP例子中D与R都改善而材料仍变差，说明所有失败并不能统一归结为prior权重。
+
+三维高χ的6³网格内部cell相位大，8³→6³干净响应差约26.16%。这是真正矢量有限模型研究，尚非连续高对比Maxwell精度验证。moderate组在更长共同corrector后各法材料几乎一致，说明短预算优势可能是预算/收敛差异。详见[EXTERNAL_AND_VECTOR_REPORT_ZH.md](EXTERNAL_AND_VECTOR_REPORT_ZH.md)。"
+E032,R12,research/research_max_struct_r12/supplement_paired/RESEARCH_REPORT_ZH.md,## 2. A：同一个坏终点，谁能改善材料,23,39,pairedA oldbad3,3,public exposed,G19legalrestart/DR/AP/direct,sameoldbadmaterial;G19physicalcurrentLSprojectedthenPRreset;APDRsamefullJ/Q,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",240wholechildcap;144/96;CPUs518.234/426.859/234.109/237.203,primary originalPhi,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",G19/DRring .114232/.140651;DRshell.112699vsG19.515137;DRbridge.097269vsG19.371690,notallbadendpointsDRbeatsG19;G19restartnotunbrokencontinuation,"## 2. A：同一个坏终点，谁能改善材料
+
+下表为原Phi在线选择的最终候选，NRMSE越低越好；没有GT选根。
+
+|对象|G19重启|DR|AP|direct|
+|---|---:|---:|---:|---:|
+|环 r10_twod_0001|**0.114232**|0.140651|0.422880|0.422880|
+|开缝壳 r10_twod_0004|0.515137|**0.112699**|0.515137|0.515137|
+|桥 r10_twod_0022|0.371690|**0.097269**|0.369449|0.436727|
+|均值|0.333686|**0.116873**|0.435822|0.458248|
+|新增三条运行实际CPU秒|518.234|426.859|234.109|237.203|
+
+环中G19和DR都找回主要环结构，G19较准但费用也较高；不能把环再写成G19没有逃逸能力。开缝壳和桥的DR优势是真正的材料结构恢复，非单纯residual更低。桥原起点并非严格收敛局部极小，沿用既有资格限制。
+
+这里补齐了原实验缺失的G19同起点对照。它支持**条件性访问差异**，不证明所有G19热启动或无限预算失败。全三对象图保留GT、共同起点、四法raw与corrected。
+
+## 3. B：把救援连接到同一批24对象"
+E033,R12,research/research_max_struct_r12/supplement_paired/RESEARCH_REPORT_ZH.md,## 3. B：把救援连接到同一批24对象,39,58,pairedB full24policy fourtriggers,24,public exposed,G19→G19/DR/AP/direct,sameG19primary;20bypass;4outsideCN99restartfullphysicalstate,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",120wholechildcap72/48;originalG19CPU4290.1875;DR+336.875=4627.0625,policy primary,"amplitudeNRMSE;oldjointcountsseparate; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",G19mean.143891→DR.106261;3/4triggeredimproveandenterball;oldjoint9→11,G19/AP/direct .143883;0010stillfails;20bypassesnotDRrunnodamage;7.85%extraCPU,"## 3. B：把救援连接到同一批24对象
+
+触发完全由原G19 primary的观测残差是否超过原CN99半径决定。未触发20对象未运行救援，保留它们是策略的旁路设计，不能当成DR运行后“无损”的实验结果。
+
+|触发对象|原G19 NRMSE|G19重启|DR|AP/direct约|DR残差/δ|
+|---|---:|---:|---:|---:|---:|
+|0001|0.4318|0.4318|**0.1072**|0.4318|0.926|
+|0003|0.4297|0.4297|**0.1191**|0.4297|0.922|
+|0010|0.3658|0.3656|0.3656|0.3656|30.08|
+|0022|0.2959|0.2959|**0.0283**|0.2959|0.916|
+
+0001恢复主要弯曲结构，IoU0.659仍有边界/宽度偏差；0003恢复主要高对比部分，低对比成分仍不完整；0022的连续材料恢复较好。三例进球及材料改善应正面报告。按原NRMSE≤.15且IoU≥.7合取条件，只有其中2例新增通过，原全24从9变11；它不等于只有两例有成像。0010仍是实质失败，保留完整图与费用。
+
+所有24对象主结果：原G19平均NRMSE0.143891；G19→G19约0.143883；G19→AP约0.143883；G19→direct约0.143883；**G19→DR为0.106261**。DR平均IoU从原0.601887增至0.676128。20个旁路对象和0010失败都在分母中。
+
+原G19整组实际external CPU4290.1875秒。新增四条救援运行CPU：G19重启355.000、DR336.875、AP239.328、direct62.500秒。因此DR策略总CPU4627.0625秒，原G19为4290.1875秒；其恢复增量不是免费。新G19重启使用了稍多于DR的实际CPU，仍未复制3例改善，这是较强的同成本竞争证据。
+
+AP/direct实际花费较少，不能把共同上限说成相同实际支出。AP/DR均完成3000步且使用相同投影/审计合同，但投影乘子求解与后续corrector费用不同。未运行更长AP，不宣称任意等支出AP必定失败。
+
+## 4. C：NN、完整场接口与反射的贡献"
+E034,R12,research/research_max_struct_r12/supplement_paired/RESEARCH_REPORT_ZH.md,## 4. C：NN、完整场接口与反射的贡献,58,78,pairedC NN4,4,public exposed,NNG19/NNDR/NNAP/NNdirect,samefrozenNN;G19warmLSphysicalcurrent;PRreset;APDRidenticalfullstate,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",240wholechildcap;CPUs790.359/544.328/550.375/374.297;sharedNNprep.763496separate,primary;secondaryminRseparate,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",means.086768/.086094/.187543/.142623;DR31%lessCPUthanG19,AP0001.487912;AP0022.062564matchesDRgain;secondaryG19.080104vsDR.082901reversesmeanordering,"## 4. C：NN、完整场接口与反射的贡献
+
+|R8对象|NN→G19|NN→DR|NN→AP|NN→direct|
+|---|---:|---:|---:|---:|
+|0001|0.077571|0.077988|0.487912|0.076902|
+|0004|0.082156|0.078824|0.080356|0.082944|
+|0022|0.064368|0.067208|0.062564|0.289829|
+|0027|0.122977|0.120354|0.119340|0.120818|
+|均值|0.086768|0.086094|0.187543|0.142623|
+|四条运行新增CPU秒|790.359|544.328|550.375|374.297|
+
+- 0022：AP、DR、G19都能修复direct停留的坏材料。它证明扩大辅助状态搜索的价值，不能独归反射。
+- 0001：AP进入明显错误结构；DR与G19/direct保留两岛结构。AP与DR费用接近（130.48对128.25秒），共同完整初场与投影也一致；因此这个差异不能简单解释为DR多花CPU。
+- 0027：新G19合法热启动也能恢复结构。原NN→单beta CIE接口失败不能外推为所有CIE系初始化都破坏NN信息；本次G19同时改变了读出、global PR与current初始化，不能把修复唯一归因于投影。
+- 0004：几种方法结果接近。没有理由把细小数值差写成重大恢复突破。
+
+DR与G19主均值几乎相同，DR实际CPU低约31%；相对direct，DR材料均值低约39.6%、实际CPU高约45.4%。它是4个暴露开发对象的费用—质量观察，不是总体加速保证，也不是原R12局部机器费用的直接复刻。
+
+secondary球内minR部署均值为G190.080104、DR0.082901；排序可随公开估计器变化，不能GT挑选有利规则。原NN共同预处理0.763496 CPU秒另计一次，旧训练费用未重测。本轮无训练和新推断，复用保存初值。
+
+## 5. Corrector：作用取决于到达的材料区域"
+E035,R12,research/research_max_struct_r12/supplement_paired/RESEARCH_REPORT_ZH.md,## 5. Corrector：作用取决于到达的材料区域,78,86,pairedcorrector,3,public exposed;A3/B24/C4notpooled,DRraw/correctedA3/B24/C4,samecandidate,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",paidcorrectorwindow;no newcorrector,raw→corrected,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",A.200448→.116873;Bfull24.110176→.106261;C.100916→.086094,C0004.074037→.078824;C0022.055806→.067208despiteDandRdown,"## 5. Corrector：作用取决于到达的材料区域
+
+本次DR的raw→corrected平均NRMSE：A 0.200448→0.116873；B完整24 0.110176→0.106261；C 0.100916→0.086094。A三例与B三次有效救援中，反射先产生不同候选，corrector再完成有价值的局部精修；direct从原坏起点无法复制这一过程。
+
+但C0004从0.074037恶化至0.078824，C0022从0.055806恶化至0.067208，虽然Phi下降。C0022数据项和prior均下降，材料仍更差，不能把所有损伤都归结为prior权重。旧高对比三维DR raw0.06163/0.07832经原corrector变0.12978/0.22724、并被推出噪声球的反例也仍成立。
+
+因此本次不采用“一律删除corrector”或“一律强制校正”的结论。raw是已完成完整Maxwell评价的合法材料，corrector是局部D+R估计器。全部raw/primary/secondary及噪声球资格都保留，现有secondary缺失时明确回退primary。没有开发新约束corrector。
+
+## 6. 公式解释与不能越过的边界"
+E036,R13,research/research_max_struct_r13/RESEARCH_REPORT_ZH.md,## 4. 新 48 对象：同实际 CPU 的主比较,46,80,fresh48main,48,independent-at-original-scoring,CIE/Dual/G19/fullAPCS/fullcurrent/DR/event/random/direct;G19warmcurrent;CIE/Dualcold,uniform .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;36matched12cross;6/12sources24/48receivers;1/2%noise;bundledconditions",wholeprocessCPUcap120;proposal72corrector48;direct120;meanCPU106.15/106.26/119.08/117.24/115.86/84.50/86.33/84.50/59.46,primary minimumeligiblepaidPhi,"continuousamplitudeNRMSE;fixedchi>1IoU;no newjointsuccessgate;ballnotrecovery; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",meansCIE.19454/Dual.17985/G19.16758/DR.17672;G19NRMSEbestofcore,G19meanIoU.68577vsDual.71592;fullAPCS.29235/fullcurrent.30985;G19nativeonly1/48completes;crosscoarsetruthalloutsideball,"## 4. 新 48 对象：同实际 CPU 的主比较
+
+全部 576 实材料未知量，不用 shape 标签、GT 支撑或数字类别降维。36 matched，12 cross-grid；包括多岛、连接、孔洞、连续和高低混合 contrast。每方法 120 秒整进程 CPU 额度，proposal 72 秒、共同 corrector 48 秒；direct 使用完整额度。不可中断操作越限仍收费，但预算外候选不进入预算内结果。
+
+|方法|平均 NRMSE|中位 NRMSE|平均 IoU|数据球内 /48|平均实际 CPU 秒|
+|---|---:|---:|---:|---:|---:|
+|CIE|0.19454|0.10279|0.69456|35|106.15|
+|Dual-CIE|0.17985|0.09731|0.71592|37|106.26|
+|G19|**0.16758**|0.10108|0.68577|39|119.08|
+|G19 full APCS|0.29235|0.13189|0.52682|27|117.24|
+|G19 full current|0.30985|0.27012|0.48188|24|115.86|
+|DR|0.17672|0.09818|0.68726|39|**84.50**|
+|整数事件|0.18149|0.09596|0.66314|38|86.33|
+|同范数随机整数动作|0.19840|0.10040|0.65012|36|84.50|
+|direct L-BFGS-B|0.49491|0.36858|0.28438|9|59.46|
+
+球内数是数据资格，**不是恢复成功数**。均值不替代配对图和逐例材料；所有 48 个都保留。[ECDF 与费用图](analysis/paper_figures/FIGURES/01_fresh48_ecdf_actual_cpu.png) 保留 direct 的完整长尾，另以插图放大密集区。
+
+G19 比 CIE 的平均 NRMSE 低约 13.9%，比 Dual 低约 6.8%，但平均 IoU 并不更高；它有明确的材料收益，也有不同失败模式。DR 的平均 NRMSE 接近 Dual，实际 CPU 低约 20.5%，并能恢复一些 CIE/G19 失败的结构。这是值得保留的条件性竞争力，不要求它每个对象都胜出。
+
+matched 36 对象的 CIE / Dual / G19 / DR 平均 NRMSE 为 0.21391 / 0.19437 / 0.17334 / 0.19979；cross-grid 12 对象为 0.13643 / 0.13628 / 0.15029 / 0.10751。分组同时改变物理/获取条件，不能把差异因果归于网格、噪声或孔径中某一个因素。36 个 matched 真材料全部在原 CN99 球内，12 个 cross-grid 的粗网格真材料全部在噪声球外：模型误差确实超过了噪声合同，未事后放宽 delta。
+
+### 正反例的结构解释
+
+- `r13_fresh_0002`：DR/事件保留主要弯曲连通体，CIE/Dual/G19 输出碎片或错位环。G19 NRMSE 0.49750，DR 0.09363，事件 0.08562；属于实际恢复增量。
+- `r13_fresh_0005`、`0031`：CIE/Dual/G19 保留孔洞或实心体，DR/事件退化为碎片。0031 的 CIE/Dual/G19 约 0.026–0.027，DR/事件约 0.386；反射没有自动优势。`0008` 则进一步区分 DR 与事件：普通 DR 保留有孔主体，整数事件塌缩为稀疏碎片，不能把两者合为一个失败结论。
+- `0007`：direct 约 0.0772、IoU 0.852，而几类辅助方法输出错误分支。不能把 direct 的整体较差平均值说成它没有独特好例。
+- `0029`：各主要方法的几何均错误；相似坏材料不能自动解释为数据不可辨识。其坏 Phi 仍远高于真材料参考，搜索和预算问题尚存在。
+- `0042`：DR/full APCS 的嵌套环结构可较好，IoU 或幅度误差单指标不能抹掉可见结构；球外救援未解决其噪声资格。全 48 逐例说明见 [视觉审查表](analysis/visual_review/CASE_OBSERVATIONS.md)。
+
+### 基线充分性与完整 current
+
+i9 上 CIE 46/48、Dual 48/48 完成原生 3000 步，G19 仅 1/48，其余被真实 CPU 截断；full 两臂各 2/48。故这是固定成本结论，不能称“充分运行的完整 G19 本质更差”。在新 GT 打开前另冻 M4 上相同 16 对象的 360 秒参考，CIE/Dual/G19 原生日程全部完成：平均 NRMSE 分别 0.14521 / 0.12464 / 0.13737，DR 0.11509。direct / physical GlobalDual / Full-J TRF 为 0.41081 / 0.36171 / 0.37670，均使用真实解析物理目标/导数，不能以一个弱 GN 冒充强基线。
+
+M4 与 i9 的硬件和科学库版本不同，跨机差异不是纯预算消融。完整 current 从起步解除截断/硬锁同时改变 continuation、每步费用和优化几何；较小 profile 偏差并不保证更好的可访问轨迹。NFFT Eq3–6 的完整 current 适配已运行，但没有复现原作者全部优化细节，不能宣称击败成熟 NFFT-SOM。"
+E037,R13,research/research_max_struct_r13/RESEARCH_REPORT_ZH.md,## 4. 新 48 对象：同实际 CPU 的主比较,64,80,samefresh48 stratum,48,independent-at-original-scoring,CIE/Dual/G19/DR,uniform .1,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",same120cap,primary,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",matched36 .21391/.19437/.17334/.19979;cross12 .13643/.13628/.15029/.10751,differentgrid/noise/acquisitionbundles;notpuregridcausality;cannotturnmeansintooneranking,"G19 比 CIE 的平均 NRMSE 低约 13.9%，比 Dual 低约 6.8%，但平均 IoU 并不更高；它有明确的材料收益，也有不同失败模式。DR 的平均 NRMSE 接近 Dual，实际 CPU 低约 20.5%，并能恢复一些 CIE/G19 失败的结构。这是值得保留的条件性竞争力，不要求它每个对象都胜出。
+
+matched 36 对象的 CIE / Dual / G19 / DR 平均 NRMSE 为 0.21391 / 0.19437 / 0.17334 / 0.19979；cross-grid 12 对象为 0.13643 / 0.13628 / 0.15029 / 0.10751。分组同时改变物理/获取条件，不能把差异因果归于网格、噪声或孔径中某一个因素。36 个 matched 真材料全部在原 CN99 球内，12 个 cross-grid 的粗网格真材料全部在噪声球外：模型误差确实超过了噪声合同，未事后放宽 delta。
+
+### 正反例的结构解释
+
+- `r13_fresh_0002`：DR/事件保留主要弯曲连通体，CIE/Dual/G19 输出碎片或错位环。G19 NRMSE 0.49750，DR 0.09363，事件 0.08562；属于实际恢复增量。
+- `r13_fresh_0005`、`0031`：CIE/Dual/G19 保留孔洞或实心体，DR/事件退化为碎片。0031 的 CIE/Dual/G19 约 0.026–0.027，DR/事件约 0.386；反射没有自动优势。`0008` 则进一步区分 DR 与事件：普通 DR 保留有孔主体，整数事件塌缩为稀疏碎片，不能把两者合为一个失败结论。
+- `0007`：direct 约 0.0772、IoU 0.852，而几类辅助方法输出错误分支。不能把 direct 的整体较差平均值说成它没有独特好例。
+- `0029`：各主要方法的几何均错误；相似坏材料不能自动解释为数据不可辨识。其坏 Phi 仍远高于真材料参考，搜索和预算问题尚存在。
+- `0042`：DR/full APCS 的嵌套环结构可较好，IoU 或幅度误差单指标不能抹掉可见结构；球外救援未解决其噪声资格。全 48 逐例说明见 [视觉审查表](analysis/visual_review/CASE_OBSERVATIONS.md)。
+
+### 基线充分性与完整 current
+
+i9 上 CIE 46/48、Dual 48/48 完成原生 3000 步，G19 仅 1/48，其余被真实 CPU 截断；full 两臂各 2/48。故这是固定成本结论，不能称“充分运行的完整 G19 本质更差”。在新 GT 打开前另冻 M4 上相同 16 对象的 360 秒参考，CIE/Dual/G19 原生日程全部完成：平均 NRMSE 分别 0.14521 / 0.12464 / 0.13737，DR 0.11509。direct / physical GlobalDual / Full-J TRF 为 0.41081 / 0.36171 / 0.37670，均使用真实解析物理目标/导数，不能以一个弱 GN 冒充强基线。
+
+M4 与 i9 的硬件和科学库版本不同，跨机差异不是纯预算消融。完整 current 从起步解除截断/硬锁同时改变 continuation、每步费用和优化几何；较小 profile 偏差并不保证更好的可访问轨迹。NFFT Eq3–6 的完整 current 适配已运行，但没有复现原作者全部优化细节，不能宣称击败成熟 NFFT-SOM。"
+E038,R13,research/research_max_struct_r13/RESEARCH_REPORT_ZH.md,## 5. 事件、NN、A+：固定 16 对象机制审查,82,100,fixed16mechanism NN/A+,16,independent-at-original-scoring,CIE/Dual/G19/A+quinticnoguard/DR/event/NNDR/NNG19/NNdirect,uniformvsfrozenR8NN;16everythirdID,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",same120wholeprocesscap;A+meanactual120.39overrunpaid,primary,"amplitudeNRMSE;nonewjointgate; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",CIE.14920/Dual.12786/G19.15008/A+.10966/DR.12313/event.12189;NNDR.11936/NNG19.12656/NNdirect.27223,16not48;NNDR−uniform−.00377CIincludes0;NNG19−.02352CIincludes0;NNtrainingextraadditionalprior,"## 5. 事件、NN、A+：固定 16 对象机制审查
+
+|方法|平均 NRMSE|范围说明|
+|---|---:|---|
+|CIE / Dual / G19|0.14920 / 0.12786 / 0.15008|同一预定 16 子集|
+|原 A+|**0.10966**|实际平均 CPU 120.39 秒，越限收费；没有跑满 48|
+|global-PR Dual-CIE|0.12620|不是 physical GlobalDual|
+|DR / 整数事件 / 同范数随机|0.12313 / 0.12189 / 0.15973|整数匹配方向对照|
+|AP / depth-one Anderson|0.36214 / 0.36155|普通 AP 局限仍在|
+|AP128→DR|0.12413|准备成本已计入|
+|在线分数事件 / 同范数随机|0.12352 / 0.12392|相同准备与候选审计|
+|法向倍增 / 无事件重置 / 物理记忆重置|0.12290 / 0.11979 / 0.12146|阈值独有收益未分离|
+|NN→DR / NN→G19 / NN→direct|0.11936 / 0.12656 / 0.27223|冻结 R8 小网络|
+
+在线事件相对 random/double/no-event/reset 的配对差均很小，描述性 bootstrap 区间含零。并非因为“未过显著性 gate”而否定方向；关键是最简单的对照已经解释了相近收益。旧 B 的强正例仍成立，但不足以推出新分布上的普遍阈值优势。
+
+NN 只复用 24,737 参数的冻结权重，本轮没有训练。相对各自均匀初值，平均 NRMSE 差 DR 为 −0.00377，G19 为 −0.02352，direct 为 −0.13743；相应配对 95% bootstrap 区间为 [−0.01154,0.00197]、[−0.07238,0.00355]、[−0.24451,−0.04010]。NN 为 direct 提供实质帮助，DR/G19 上并非所有对象受益。训练先验是额外信息，旧训练费用未知，不能声称总体摊销净加速。
+
+A+ 的这个 16 对象正面结果需要明确承认；它不是事件算法，也没有被 G19 或 DR 普遍取代。尚无完整 48、相同部署时间和外部物理分布的同等规模证据，故不能据该子集宣布 A+ 已成为最终最强方法。"
+E039,R13,research/research_max_struct_r13/RESEARCH_REPORT_ZH.md,### 基线充分性与完整 current,76,80,M4localreference16,16,independent-at-original-scoring,CIE/Dual/G19/DR/direct/physicalGlobalDual/FullJTRF,uniformsame16IDs;notNN,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",360CPUonM4;nativeCIE/Dual/G19complete;hardwarelibrariesdifferfromi9,primary,"amplitudeNRMSE; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",means .14521/.12464/.13737/.11509/.41081/.36171/.37670,M4vs i9 notpurebudgetablation;physicalGlobalDualnotglobalPRDual,"### 基线充分性与完整 current
+
+i9 上 CIE 46/48、Dual 48/48 完成原生 3000 步，G19 仅 1/48，其余被真实 CPU 截断；full 两臂各 2/48。故这是固定成本结论，不能称“充分运行的完整 G19 本质更差”。在新 GT 打开前另冻 M4 上相同 16 对象的 360 秒参考，CIE/Dual/G19 原生日程全部完成：平均 NRMSE 分别 0.14521 / 0.12464 / 0.13737，DR 0.11509。direct / physical GlobalDual / Full-J TRF 为 0.41081 / 0.36171 / 0.37670，均使用真实解析物理目标/导数，不能以一个弱 GN 冒充强基线。
+
+M4 与 i9 的硬件和科学库版本不同，跨机差异不是纯预算消融。完整 current 从起步解除截断/硬锁同时改变 continuation、每步费用和优化几何；较小 profile 偏差并不保证更好的可访问轨迹。NFFT Eq3–6 的完整 current 适配已运行，但没有复现原作者全部优化细节，不能宣称击败成熟 NFFT-SOM。"
+E040,R13,research/research_max_struct_r13/RESEARCH_REPORT_ZH.md,## 6. G19 坏终点救援：同起点，完整 48 分母,102,123,G19badendpoint rescue48policy,48,independent-at-original-scoring,G19restart/fullcurrentrestart/directcontinuation/DR/event;posthocuniformDRportfoliosseparate,9badG19primaries+39bypass;fullphysicalrestart;PRreset,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",extra120CPUpertrigger;fullCPU G195716/DR6385.66/event6349.20,policy primary,"amplitudeNRMSE;ballnotrecovery; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",G19.16758→DR.15135/event.14947;twoobjectlargerecoveries,G19restart.16762;fullcurrent.16763;direct.16769;posthocCIE/Dual→uniformDR .13377/.13317notnewconditionalqueue,"## 6. G19 坏终点救援：同起点，完整 48 分母
+
+按原 G19 primary 的公开 residual/delta>1 触发：9 个救援，39 个原样保留。每臂额外 120 秒 CPU，初始材料相同；合法重建内部状态及 fixed projector 均计费，未冒称恢复旧 PR 历史。
+
+|部署策略|全 48 平均 NRMSE|全 48 累计 CPU 秒|相对原 G19|
+|---|---:|---:|---|
+|原 G19|0.16758|5716.00|基准|
+|G19 合法重启|0.16762|6605.63|基本未改善|
+|full-current G19 重启|0.16763|6607.55|基本未改善|
+|direct 续跑|0.16769|6082.75|基本未改善|
+|DR 救援|**0.15135**|6385.66|约 9.7% 误差下降，11.7% 额外 CPU|
+|事件救援|**0.14947**|6349.20|约 10.8% 误差下降，11.1% 额外 CPU|
+
+DR 显著救回 `0002`（0.49750→0.09113）和 `0024`（0.51817→0.14332）；事件救回 `0002` 和 `0017`，没有同样救回 `0024`。这是搜索路径互补。球内从 39 增至 41，仍不是 41 个材料成功。大部分改善来自两个对象，配对均值 bootstrap 区间接近/覆盖零；保留实际收益与对象差异，不制造强总体统计主张。图见 [完整分母与救援热图](analysis/paper_figures/FIGURES/02_conditional_all48_cost_trigger_changes.png)。
+
+### 一个必须披露的简单替代解释
+
+评分后增加了**不新增反演的事后组合诊断**：对 CIE、Dual、G19 各自球外对象，调用已经付费完成的“均匀起点 DR”结果，按原 Phi 选择，不看 GT。全部三种规则一起报告，不能只挑最好的。
+
+CIE→uniform DR 全 48 平均 NRMSE 为 0.13377，CPU 加总 6197.83 秒；Dual→uniform DR 为 0.13317、6035.80 秒；G19→uniform DR 为 0.14803、6492.72 秒。它们没有新的条件队列实测历时，属于复用现成运行的 counterfactual，不是新的独立确认。
+
+这项反例说明：一部分部署收益可以由**已有求解器的互补失败模式**解释，不需要有限事件阈值。不能把 G19→事件包装成唯一最强的统一算法，也不能把事后更好的 portfolio 直接升格为已确认新方法。它为下一轮提供可冻结的简单对照，本轮不再调规则或重启算法循环。"
+E041,R13,research/research_max_struct_r13/RESEARCH_REPORT_ZH.md,## 7. Corrector、驻点与候选选择,125,133,core48corrector,48,independent-at-original-scoring,CIE/Dual/G19/DR/event,samepaidrawcandidates,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4",commoncorrector48CPUwithin120,raw→corrected,"amplitudeNRMSE;minimumPhi primary; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",raw→corrected .19148→.19454/.18295→.17985/.20908→.16758/.20067→.17672/.21822→.18149,"CIEmeanworsens;errorimprove/worsen33/15,35/13,39/9,40/8,41/7;nearestrawballrulesworse","## 7. Corrector、驻点与候选选择
+
+原 corrector 后，新 48 的平均 raw→corrected NRMSE：CIE 0.19148→0.19454，Dual 0.18295→0.17985，G19 0.20908→0.16758，DR 0.20067→0.17672，事件 0.21822→0.18149。它平均上明显帮助 G19/DR/事件，也会损伤个别材料；Phi 下降不等于材料更准确。逐对象 raw→corrected 材料误差下降/上升数分别为 CIE 33/15、Dual 35/13、G19 39/9、DR 40/8、事件 41/7（各48，未改成功定义）。direct 的 raw 是初值，不能将其类似差值称作共同 corrector 损伤。
+
+把球内候选中“离 raw 最近”作为公开保留规则，平均反而较差：G19 0.19184、DR 0.20747、事件 0.22374。球内最小 R 也未稳定更好。因此本轮没有把 corrector 一律删除，亦没有把保留 raw 一律称为改进。保留候选集是必要证据，但选择它需要明确的材料偏好或更多信息。
+
+本轮另对 400 份固定终点作真实 box 梯度诊断，393 个不同材料，393 LU、7632 complex RHS；没有做新优化。多种错误材料具有很小投影梯度，saved Phi 与精确重算一致，支持“单纯续跑不够”的解释，但没有 Hessian/严格局部最小证书。0031 的 DR 坏终点投影梯度仍明显较大，不能把所有失败都归为同一种局部极小。
+
+付费候选池的 GT-best 只在封存后用于 OFFLINE_DIAGNOSTIC，绝不可部署。有限噪声球内存在材料相距较大的候选对，这说明当前观测加 prior 的选择存在歧义；在核心48中，43个对象有这样的已保存合格候选对；逐对象最大 RMS 材料距离的中位数为1.3416，最大3.5374，分别约为材料box宽度的6.71%和17.70%。这是有限噪声与软prior下的候选歧义，不是新的连续 PDE 非置换多解定理，不替代 Z-ALG 的既有结论。对于本身已满足两集合的错误材料，纯 AP/DR 固定点不会凭空得到 GT。"
+E042,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,4,4,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,cie;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,primary,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.1945359164780224;IoU_mean=0.6945573018135299;ball=35/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,cie,primary,48,48,0,48,35,48,2.909715931534526,1.162497268532908,48,0.1945359164780224,0.10279117160524937,48,0.145631428004731,0.05818304647311852,48,0.5159675478352446,0.2584881159657434,48,0.6945573018135299,0.771517082669499,48,-1.1064654697910674,-0.3577123373967862,48,-0.07430523008440065,-0.0317673818792922,48,0.0019106023809706632,0.0001793066476771965,48,1.0295697836389798e-05,5.901791620859987e-06,48,0.0019208980788070526,0.00018543860993183814,48,2.461191629816861,0.9209127494420517"
+E043,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,9,9,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,dual_cie;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,primary,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.17984533048443338;IoU_mean=0.7159174283411804;ball=37/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,dual_cie,primary,48,48,0,48,37,48,2.659017555290895,1.1205462277029972,48,0.17984533048443338,0.09730763348505905,48,0.13308396172627102,0.05608339477992978,48,0.4615180453442623,0.25752546816310923,48,0.7159174283411804,0.7652468076996379,48,-0.9538988262223418,-0.3427860497870845,48,-0.06534761049579275,-0.03003607038678314,48,0.001532904789454362,0.00017245482694024078,48,9.775227876633897e-06,5.660007016011102e-06,48,0.001542680017330996,0.00018113230594912213,48,1.920607509026518,0.9151056971742765"
+E044,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,14,14,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,g19;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,primary,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.16758203911504158;IoU_mean=0.6857688472283993;ball=39/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,g19,primary,48,48,0,48,39,48,2.4289891178771232,1.0489940405217948,48,0.16758203911504158,0.10107965442126127,48,0.12157102692077694,0.052502204230320065,48,0.39038693636069355,0.25696548123003293,48,0.6857688472283993,0.7728110599078342,48,-2.0289014096352207,-0.4321591435283064,48,-0.13128414496001528,-0.03298412894098604,48,0.008603626493921233,0.00017107825687207343,48,6.960475886990071e-06,5.751992510709635e-06,48,0.008610586969808225,0.0001783359899236913,48,4.332207314124659,0.914584903536263"
+E045,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,19,19,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,dr;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,primary,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.17671933834812928;IoU_mean=0.687260322602408;ball=39/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,dr,primary,48,48,0,48,39,48,2.48512269582974,1.193582630893812,48,0.17671933834812928,0.09817547552391853,48,0.1243805153067938,0.059738870415105706,48,0.41116262161693823,0.2669308748326741,48,0.687260322602408,0.7566820276497697,48,-1.5754592686058089,-0.4117742104484552,48,-0.10456756685113176,-0.02943124408080931,48,0.0077793352714169,0.00017241053107807156,48,8.256152804125061e-06,5.67252464358455e-06,48,0.0077875914242210255,0.0001812129945480426,48,4.0752127197324635,0.9146307953294917"
+E046,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/METHOD_VIEW_SUMMARY.csv,24,24,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,a_plus;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,primary,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.15210017110259402;IoU_mean=0.7506265910285571;ball=40/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,a_plus,primary,48,48,0,48,40,48,2.195205794850855,1.0536672142025827,48,0.15210017110259402,0.095059091911771,48,0.10987015990244518,0.05273609680693607,48,0.3762076942801032,0.25444433585218196,48,0.7506265910285571,0.7785114045618247,48,-0.8084998777773897,-0.3339960456379093,48,-0.056301710216604496,-0.029784867022545652,48,0.0008999713695448521,0.00016870761882258335,48,8.806299218481676e-06,5.42565530885581e-06,48,0.0009087776687633337,0.00017466742400914934,48,1.6265111119815858,0.9098980426878553"
+E047,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,2,2,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,cie;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,common_actual_CPU,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.19468445986195548;IoU_mean=0.6947807585920515;ball=34/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,cie,common_actual_CPU,48,48,0,48,34,48,2.9163521231799074,1.227137551539024,48,0.19468445986195548,0.10174505331088068,48,0.14596356972872407,0.06141829587282402,48,0.5181372312365217,0.27030039536937045,48,0.6947807585920515,0.7883457568807339,48,-1.141936627681057,-0.417204252669799,48,-0.07692512875517248,-0.033557459148803495,48,0.0019987292889864228,0.0001814051323995698,48,9.876092046964526e-06,5.949418074920067e-06,48,0.0020086053810333877,0.00018651125963146476,48,2.55014697209459,0.9261038828009043"
+E048,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,4,4,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,dual_cie;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,common_actual_CPU,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.17978262252064484;IoU_mean=0.7165681857022953;ball=36/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,dual_cie,common_actual_CPU,48,48,0,48,36,48,2.664996177056538,1.184584005874051,48,0.17978262252064484,0.10077081470828628,48,0.13338319204487178,0.059288488782485035,48,0.461912457019807,0.2676040982102027,48,0.7165681857022953,0.7793040293040293,48,-0.9759005489862583,-0.4101645295202073,48,-0.06698004588244266,-0.03136371746768023,48,0.0016064589324774647,0.00017681559570547972,48,9.364514047917967e-06,5.47607189362701e-06,48,0.0016158234465253824,0.00018497195508299482,48,2.035911322571883,0.9175053109967746"
+E049,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,6,6,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,g19;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,common_actual_CPU,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.18221555528147837;IoU_mean=0.6551056339386284;ball=34/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,g19,common_actual_CPU,48,48,0,48,34,48,2.6388583007494946,1.4050647348574905,48,0.18221555528147837,0.10890063347933587,48,0.13207499002750223,0.0703235603031777,48,0.4295021592164736,0.3107523585411206,48,0.6551056339386284,0.7136446886446887,48,-2.14655260573453,-0.5971135347427442,48,-0.1399067735709304,-0.04830304229029375,48,0.009103054262499495,0.0001805066902088478,48,7.153634434728115e-06,5.56592060778023e-06,48,0.009110207896934222,0.00018736868126437883,48,4.741269538109957,0.9337672837683895"
+E050,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,8,8,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,dr;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,common_actual_CPU,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.17671944219211944;IoU_mean=0.687260322602408;ball=39/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,dr,common_actual_CPU,48,48,0,48,39,48,2.48512315833447,1.193582630893812,48,0.17671944219211944,0.09817547552391853,48,0.12438053845517867,0.059738870415105706,48,0.4111627988346756,0.2669308748326741,48,0.687260322602408,0.7566820276497697,48,-1.5754675837655048,-0.4117742104484552,48,-0.10456943381444166,-0.02943124408080931,48,0.007779335338287975,0.00017241053107807156,48,8.256176466401396e-06,5.67252464358455e-06,48,0.007787591514754377,0.0001812129945480426,48,4.07521339310905,0.9146307953294917"
+E051,R13,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,research/research_max_struct_r13/supplement_aplus48/analysis/comparison48/COMMON_PUBLIC_BUDGET_SUMMARY.csv,10,10,supplement samefresh48,48,extension32 newruns onalreadypublicobjects+16existing;notnewblind48,a_plus;a_plus=R13quinticnoguardfrozenvariant,uniform .1;coldA+/CIE/Dual;warmG19,"scalar-TM disk-pulse VIE; inverse24x24=576 real chi; box[.02,20]; original smooth/TV1e-4;samecore36matched12cross",120wholeprocesscap72/48;commonactualCPUlimitperobjectminmethods whereviewnamed,common_actual_CPU,"amplitudeNRMSE=RMSE/(max(coarse truth)-.1);ballcountisdataqualification; for fresh scalar confirmation RMSE/(max reference chi-.1), R12 confirmation report line7 and R13 score_results.py:49,67-82; do not substitute a nominal contrast",NRMSE_mean=0.1574596474373644;IoU_mean=0.7326757284750928;ball=37/48,no R7arcguard48experiment;no universalA+versionclaim,"all48,a_plus,common_actual_CPU,48,48,0,48,37,48,2.285758212203858,1.3036827687877455,48,0.1574596474373644,0.09935980038551884,48,0.11440231292311603,0.06524938782721448,48,0.39471650743332765,0.27833729613918756,48,0.7326757284750928,0.7627705627705628,48,-0.9211841702999539,-0.4610706797040359,48,-0.06400870431064161,-0.04024187366892171,48,0.0009853521839376432,0.00017672396534244248,48,8.02417278921151e-06,5.1443167092145284e-06,48,0.000993376356726855,0.00018506705537495838,48,1.791674678065819,0.9287785379253701"

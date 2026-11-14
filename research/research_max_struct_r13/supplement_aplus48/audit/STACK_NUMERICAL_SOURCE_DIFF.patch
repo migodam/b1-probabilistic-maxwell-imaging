@@ -1,0 +1,11 @@
+--- executed_original_C2_runner
++++ executed_fixed_stack_runner
+@@ -164,6 +164,8 @@
+                     if method=='a_plus':
+                         from research.research_max_struct_r7.src.aplus_readout import mobius_material_readout
+                         numerical['material_readout']=mobius_material_readout
++                        if task.get('readout_version')=='R7_FINAL_READOUT':
++                            numerical.update({'aplus_mode': 'mobius', 'aplus_arc_candidates': True, 'aplus_inherited_gtol': True, 'aplus_sweeps': 2, 'aplus_step_tol': 1e-08})
+                     if audit_interval:numerical['physical_audit_due']=audit_due
+                     mode='full_apcs' if method=='g19_full_apcs' else 'full_current' if method=='g19_full_current' else 'restricted'
+                     result=run_full_current(model,Y,m0,numerical,mode=mode,budget_check=check,
