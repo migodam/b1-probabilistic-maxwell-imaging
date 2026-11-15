@@ -43,3 +43,7 @@ exposed48_v1的分析输出重复pair错误已保留其20.179077秒分析CPU，�
 原始档案的无损打包、离线评分、图表、上传和访问核对均为额外工作，不能把这些CPU合成新的反演吞吐量。可实测的远端末三组打包102.031250 CPU秒，新264打包70.640625 CPU秒，四个远端上传批次合计46.343750 CPU秒；Apple fullstates上传4.953722 child CPU秒（44.717459 wall秒）。完整原始回执在audit/publication。新12个Pro checkpoint原字节导出另0.031250 CPU秒，没有新物理计算。
 
 归档计划曾误对已知大数值JSON重复作字符串扫描，停止前已知CPU至少473.875秒，未测尾部保留null；未进行任何新Maxwell步骤。另有partial-clone历史大小查询被停止，CPU/下载量未独立采集而保留null。两次操作与失败记录均保留，不从费用中隐去。最终本地source/diagnostics/Pro/离线真值打包、网页构建与发布核对费用继续记录在audit/publication的实际receipt；其中嵌套计时不重复求和为虚假的全项目总价。API/模型的真实货币账单在本环境不可得，标null。
+
+已完成的本地最终诊断分卷保存8,445,988,623原始bytes（11 ZIP共2,336,876,591bytes），打包CPU24.833176秒/墙钟32.137601秒；逐成员CRC读取4.051634 CPU秒/5.300446 wall秒。source/config/public另保存62,678,443原始bytes，打包.219203 CPU秒；两个inventory计划合计.622820 CPU秒。Pro及独立真值的全部三次打包尝试累计1.022556 CPU秒/2.414672 wall秒。最后23个本地附件上传为6.779713 child CPU秒/67.536950 wall秒。归档不加载科学数组、不改数值、不新增物理步骤。
+
+正式公开后的60个附件合计11,808,228,940bytes；匿名读取各附件header/size/ZIP签名的核对耗.537076 CPU秒/11.805985 wall秒，并未再次下载11.8GB。`PUBLIC_ASSET_READBACK.json`说明访问核对的范围。发布、Git和站点构建的每次实际时间在对应receipt，属于publication，不充当在线算法时间。source/diagnostic归档是有时间戳的科学快照；最后的网页、下载索引与出版回执以Git主分支为准，避免把回执递归嵌入其自身ZIP。

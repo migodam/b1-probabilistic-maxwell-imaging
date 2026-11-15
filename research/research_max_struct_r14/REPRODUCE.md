@@ -45,7 +45,7 @@ python package_evidence.py restore --plan /external/downloads/PACKAGE_PLAN.json 
 - full raw包含RESULTS各endpoint的完整原NPZ、JOINT_FINAL、所有CHECKPOINT、CANDIDATE_POOL/CANDIDATES、完整HISTORY/NATIVE_HISTORY和queues/外部CPU记录。
 - `*_scoring_only.zip`来自export_scoring.py：selected-view NPZ只有未改数值的m；公开material review与已算CSV可以阅读，但不能恢复J/Q、PR、current表示、stage状态或完整干预。
 - `*_REVIEW.zip`是compact审阅材料，`*_ANALYSIS_FULL.zip`是已派生分析，二者均不替代原始fullfield。
-- 新24已完整264任务封存并获准离线评分；此文撰写时compact分析在本地、原始新24全场仍在远端并上传draft。draft上传不等于匿名公开，缺raw时只做compact review，不能声称本机已拥有完整重现材料。
+- 新24已完整264任务封存并获准离线评分；最终60个Release附件已逐一匿名核对；实际URL、尺寸与范围见DOWNLOADS.json。compact分析与12个关键checkpoint在本地，其余完整新24全场由原始分卷提供；本机未重复下载全档不改变公开完整性，缺raw时只做compact review。
 
 若原始SOURCE包引用了R13评分真值，它们不在普通public source包中；只在需要授权重算评分时，从原项目相应已封存资产单独恢复。公开查看表格和图片无需读真值。
 
