@@ -1,0 +1,82 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>公式与理论澄清</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f5f8;color:#17253a;font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:1280px;margin:auto;padding:30px 24px 70px}header{border-bottom:1px solid #d9e0e8;padding:20px 0;margin-bottom:25px}h1{font-size:clamp(27px,4vw,42px);line-height:1.3}h2{font-size:25px;margin-top:36px}h3{font-size:19px}a{color:#165a89;text-decoration:none}a:hover{text-decoration:underline}nav,.doclist{display:flex;flex-wrap:wrap;gap:10px 20px}nav{margin:15px 0}.doclist a{background:white;border:1px solid #dce3eb;border-radius:8px;padding:7px 12px}article{max-width:1100px}article img{max-width:100%;height:auto}.note,footer{color:#526479}.empty{border-left:4px solid #9eb2c8;background:#fff;padding:16px}pre{white-space:pre-wrap;overflow:auto;background:#fff;padding:16px}code{font-size:.9em;background:#e9eff6;padding:1px 4px;border-radius:3px;overflow-wrap:anywhere}.math{white-space:pre-wrap}.math-display{overflow-x:auto;padding:10px 0}mjx-container{max-width:100%}.comparison{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;background:white;font-size:14px}th,td{padding:8px 12px;text-align:left;border:1px solid #dce3eb}th{background:#e9eff6;white-space:nowrap}td{font-variant-numeric:tabular-nums}.gallery{display:grid;grid-template-columns:1fr;gap:24px}figure{margin:0;background:white;border:1px solid #dce3eb;border-radius:10px;padding:12px}figure img{display:block;width:100%;height:auto}figcaption{padding:10px 3px 0;font-size:14px;overflow-wrap:anywhere}.path{display:block;font-size:12px;color:#69798a}details{background:#fff;border:1px solid #dce3eb;border-radius:8px;padding:12px;margin:14px 0}summary{cursor:pointer;font-weight:600}footer{margin-top:40px;border-top:1px solid #dce3eb;padding-top:20px;font-size:13px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{background:#fff;border:1px solid #dce3eb;border-radius:10px;padding:16px}@media(max-width:760px){main{padding:18px 12px 45px}.cards{grid-template-columns:1fr}figure{padding:6px}nav{gap:8px 12px}}</style><script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
+</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body><main><header><h1>公式与理论澄清</h1><nav><a href="index.html">研究报告</a><a href="galleries.html">全部实际图</a><a href="evidence.html">数据与下载</a><a href="theory_clarification_zh.html">公式与理论澄清</a><a href="experiment_contract.html">冻结实验合同</a><a href="reproduce.html">复现说明</a><a href="cost_ledger.html">费用总账</a><a href="failures.html">失败与范围</a><a href="chat_handoff.html">研究交接</a></nav></header><article><h1>传播谱、材料闭环与观测选基：针对本次问题的澄清</h1>
+<p>以下区分已证明的有限矩阵关系、R14实际程序观测和本轮待检验假说；不通过重复机器精度恒等式实验充当新证据。</p>
+<h2>1. 已限制传播算子，为什么材料闭环还能超过1？</h2>
+<p>必须先写清谱属于哪个算子。原A+的一阶四cell残差变换是</p>
+<div class="math math-display">\[
+P_1(m)=(I+D_aG_{o,block})D_p,
+\quad a_i=\frac{m_i}{1+(\beta-G_{ii})m_i},
+\quad p_i=\frac{\beta}{1+(\beta-G_{ii})m_i}.
+\]</div>
+<p>注意“一阶邻域”指残差变换P1。写A=DaGo，则实际平方损失的度量已经是</p>
+<div class="math math-display">\[
+M_1=D_p^*(I+A^*+A+A^*A)D_p.
+\]</div>
+<p>其中A*A来自同一个一阶残差的伴随拉回，不是另加了新的two-hop物理正演。外循环还会反复经过完整G的current更新；因此不能把一次局部残差处理等同于整个算法只做一次局部传播。</p>
+<p>如果“超过1”指I+A本身，也不矛盾：其特征值是1+lambda(A)，即便|lambda(A)|≤q&lt;1，I+A的谱仍可在模长1以上，只是不能到达0。P1还包含Dp缩放，需按实际P1计算，不能直接把I+A的谱当作P1的谱。<strong>而R14报告的1.0027并非这两者，是下面的材料闭环T。</strong></p>
+<p>原资格条件<span class="math">\(\|D_aG_{o,block}\|&lt;1\)</span>（R14实际用行和范数）保证I+DaGo可逆，并连同合法对角分母使M1=P1*P1正定。这与普通CIE的Möbius条件又要分开：按<a href="https://www.mdpi.com/2313-433X/5/2/27">原论文Eq.(3)</a>，修正contrast为R=βm/(1+βm)，非负实m与β&gt;0给出0≤R&lt;1；但完整固定材料传播图为</p>
+<div class="math math-display">\[
+B_\beta=D_{m/(1+\beta m)}(G+\beta I),
+\]</div>
+<p>并非只有R。<strong>R的值域小于1不单独证明rho(Bβ)&lt;1。</strong> 如果你另有条件确实证明了rho(Bβ)&lt;1，那仍然约束的是固定材料的场传播。这几层条件都不自动给出材料外循环的收缩。</p>
+<p>R14所说的1.0027属于另一张图：精确物理根附近、无prior、固定活动面和current切空间、两个块精确最佳响应时的材料闭环</p>
+<div class="math math-display">\[
+T_m=(C^TM_mC)^{-1}C^TM_mK
+(K^TM_cK+D^TD)^{-1}K^TM_cC.
+\]</div>
+<p>这里K=L_*U，Ch=D_hQ_*，D=WSU，均已实化；K不是G19的低秩Green近似。传播、有界可逆残差变换、观测与材料切向先后组合，才得到这张材料图。</p>
+<p>Mc=Mm时，两次最小二乘在同一个几何中配合，Schur补给出T在C^TMC内积下自伴且谱在[0,1]。Mc≠Mm时是不同几何下的斜投影式组合，这个证明不再成立。一个小且有界的邻域作用就可能把原先极接近1的弱收缩方向推过1；无需增加传播阶数，也不违反原传播算子的谱条件。</p>
+<p>从材料读出来看，同一个机制可由R4已有的加权LS关系表达：若C满列秩，Pi_C=CC†，则</p>
+<div class="math math-display">\[
+D_M-C^\dagger=(C^TMC)^{-1}C^TM(I-\Pi_C).
+\]</div>
+<p>原先不能由材料切向解释的current残差，可以被非对角M耦合到材料更新；再通过下一轮current更新反馈回来。界<span class="math">\(\|A\|&lt;1\)</span>没有同时给出材料Gram、切向夹角和观测强度的统一收缩界。这里是对既有公式的解释，不将加权LS本身宣称新发现。</p>
+<p>一个仅用于说明“界不能如此传递”的有限LS例子：令K=(1,0)^T、C=(1,ε)^T，Mc=I，Mm=[[1,−2ε],[−2ε,1]]，D^TD=ε²/2，0&lt;ε&lt;1/2。Mm的特征值是1±2ε，任意小ε都合法且接近I，但</p>
+<div class="math math-display">\[
+T_m=\frac{1-2\epsilon^2}{(1-3\epsilon^2)(1+\epsilon^2/2)}&gt;1.
+\]</div>
+<p>同用I时则T=1/[(1+ε²)(1+ε²/2)]&lt;1。这是抽象块LS的逻辑反例，不冒称具体Maxwell自项；真实有限Maxwell的R14 8²实例另有已保存的1.002712449。无需再运行这个已解析例子。</p>
+<p>还要区分谱半径、奇异值和所用范数：R14的11有rho=.99998866，却在<strong>00的B00范数</strong>下norm约1.24138；这不能反驳11在其自身Gram下的非扩张结论。换范数后的瞬态放大与特征值大于1也不是一回事。</p>
+<h2>2. 大于1不等于进入“另一个噪声domain”</h2>
+<p>噪声半径δ、观测Y和物理可行集合</p>
+<div class="math math-display">\[
+\mathcal M_\delta=\{m:\|W(F(m)-Y)\|\leq\delta,\ m\text{合法}\}
+\]</div>
+<p>没有因迭代metric改变而扩大。若domain指另一个收敛盆地，闭环扩张可以提供离开原根邻域的局部机制；它不保证之后进入哪一个盆地，不保证落入噪声球，更不保证那个材料更正确。正确根也可能被排斥。当前有限PR程序还不等于上述精确最佳响应图，不能直接以理想lambda的幂预测实际长轨迹。</p>
+<h2>3. Möbius方法不需要加法性；需要澄清的是“拿什么做谱分析”</h2>
+<p>你关于算法不必满足加法性的判断是对的。前文若被理解为“不加法所以A+/PL有缺陷”，应纠正：R14检查的是<strong>根附近方向响应是否能代表同一个线性Jacobian</strong>，不是要求算法全局线性。</p>
+<p>Möbius映射本来是非线性的，但在分母不为零时光滑。例如</p>
+<div class="math math-display">\[
+\phi(m)=\frac{m}{1+\beta m},\qquad
+D\phi(m_*)h=\frac{h}{(1+\beta m_*)^2}
+\]</div>
+<p>的导数对h仍然线性、可加。若只作可逆坐标变换并把整条迭代一起运输，则固定点Jacobian由Dphi相似变换，特征值不变；实际A+还改变了两块的残差几何和有限求解步骤，因此不只是坐标改名。</p>
+<p>R14代码实际使用PR及线搜索。一次精确线搜索的current响应可形如alpha(h)b(h)，其中alpha=(b^Tb)/(b^THb)依赖方向。即使这是一个完全正常的最速下降步骤，它也可能只有方向导数而没有统一Fréchet线性化。H=diag(1,2)、b(h)=h时，坐标方向响应为(1,0)、(0,1/2)，合方向为(2/3,2/3)，不等于前两者之和。这个现象不表示该算法不能收敛；它表示不能把若干方向差分拼成矩阵，再不加条件地把矩阵谱当作程序稳定性。</p>
+<h2>4. R14“误差主要在哪”并未证明只需观测S选基</h2>
+<p>R14的局部分解是</p>
+<div class="math math-display">\[
+\delta m-T_mh=
+B_m^{-1}C^TM_mK H_c^{-1}r_c+B_m^{-1}r_m.
+\]</div>
+<p>实际有限响应表更具体地定义ec=δJ−δJ_ideal，em=δm−readout_linear(δJ)，gap=readout_linear(ec)+em。在声明epsilon=.001的h1方向，01的current误差运输到材料后的范数为.831613，em范数为.001973；两者已经在同一个材料输出空间比较。主导项是<strong>current不精确响应经闭环运输到材料输出</strong>。</p>
+<p>这里em是相对于根线性读出的有限程序余项，包含线性化/有限readout/guard等影响，并非经独立精确argmin认证的“纯material内解误差”。前文把它简称内解误差不够精确，应按上述定义解释。两项最终都在材料空间，不能由此断言材料误差位于内部G的弱空间，或S单独已经决定材料更新。实际字段、三种空间与全部正负方向记录见audit/history_evidence。</p>
+<p>对于实际物理状态，L=I−D_mG，有</p>
+<div class="math math-display">\[
+\delta J_s=L^{-1}D_{Q_s}h,\quad
+\delta Y_s=WSL^{-1}D_{Q_s}h.
+\]</div>
+<p>因此真正材料可观测性依赖源场Q、内部多次散射L^{-1}和接收WS共同组成的实化Jacobian。对本次独立同方差复噪声，材料的Gauss–Newton数据Gram为</p>
+<div class="math math-display">\[
+H_{GN}=\Re\sum_s D_{Q_s}^* O_m^*O_mD_{Q_s},
+\qquad O_m=WSL_m^{-1}.
+\]</div>
+<p>这不是大残差处完整物理Hessian，也没有凭此取得全局唯一性结论。S的右奇异空间是直接<strong>电流</strong>可见空间；O是本构缺陷到端口的运输；二者都不能直接叫材料Jacobian谱。把一个实材料误差h直接投到G/S的current右基，可以是坐标形态诊断，但不能替代上式中的D_Q材料切向。</p>
+<p>这也解释为什么“只按G大奇异值保留”没有普遍恢复保证：G强作用未必能被接收，G弱/直接S暗的方向又可能经材料与多次散射变得可见。CIE本身已经使用S的SVD构造DPCS；把S选基放入G19分母，检验的是另一处使用观测几何是否有收益，不是首次引入观测子空间。</p>
+<h2>5. 19维究竟保留什么？</h2>
+<p>原G19的19来自<strong>内部G的强右奇异子空间</strong>，不是材料DOF、不是19个最大Green特征值、不是Fourier/DPCS维数。Full指完整材料导数，不表示K=G。</p>
+<p>矩形S不能直接代替分母里的N×N内部Green。本轮严格比较：用G、WS或公开初值的O0=WSL_m0^{-1}各自选择19维U，再仍用内部G构造K=PGP；同时预声明K=GP控制，隔离输出裁剪。所有真实正演、物理Jacobian、材料先验和576个材料变量均保持原样。</p>
+<p>没有先验定理保证六臂谁恢复最多。S基可以改善直接可见current，却漏掉内部暗通道；O0补充多次散射但只针对公开初值，不保证适合后期高contrast非均匀材料。实验的作用是辨别这几个机制，而不是挑一个覆盖百分比最高的基就宣布成像成功。</p>
+<h2>6. 必须纠正0021的归属</h2>
+<p>新r14_new_0021：一致非局部11的primary NRMSE=.0869648、IoU=.925197、Phi=5.56087e−5；原G19为.512184、.191057、.0348813。旧r13_fresh_0021是另一个对象，其历史最优也不能改称新0021的G19优势。原始逐方法表保存在本轮audit/history_evidence。新0021只可支持“改变current/material的metric配合能够改变可访问材料区域”；不能事后将其归因于一个没有取得该结果的G19观测分解。</p>
+<p>本次G/S/O0选基试验已经完成，实测结果见RESEARCH_REPORT_ZH：S/O0的PGP确实在新0021产生恢复能力，而GP没有复制。这个新结果不改写原R14各方法结果的归属。</p></article><p><a href="THEORY_CLARIFICATION_ZH.md">原始Markdown</a></p><footer>R14 · supplement_observable19。页面只呈现已有文字、图与文件；建站不新增科学结果。公式加载MathJax CDN；无JavaScript时保留LaTex原文。</footer></main></body></html>

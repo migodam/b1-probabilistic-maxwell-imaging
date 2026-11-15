@@ -1,4 +1,10 @@
 <!-- MAX_STRUCT_R14_PUBLICATION -->
+## R14补充：G19的内部传播基与观测基
+
+[中文结果与公式澄清](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r14/supplement_observable19/) · [完整原档](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r14-observable19-20261115)
+
+144次配对反演，24个已曝光对象：观测S基PGP为12/24，内部G基10/24，均值NRMSE .15892对.19843；共同CPU/LU-RHS候选对齐为11对10。0021只由观测PGP恢复；新增正例、损伤对象、126条同状态诊断和全部费用均保留，不称新盲确认。
+
 ## MAX-STRUCT R14：双度量、有限PR与材料可达性
 
 [中文报告与完整图集](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r14/) · [公式与推导](research/research_max_struct_r14/THEORY_DERIVATIONS.md) · [Chat交接](research/research_max_struct_r14/CHAT_HANDOFF.md)
