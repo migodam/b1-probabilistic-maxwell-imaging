@@ -1,0 +1,51 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>Pairwise paid-pool costs</title><style>body{font-family:system-ui;max-width:1400px;margin:25px auto;line-height:1.6}pre{white-space:pre-wrap}img{width:100%}</style><h1>Independent24：六组成对成本比较</h1><pre># Independent24：pair01的六组成对成本附注
+
+固定pair01分别比较cie、dual_cie、g19、dr、pair11、pair01_to11，24case全保留。CPU端点取min(120,两臂原receipt最终processCPU)，物理端点取两臂最终physical LU/aggregate complex RHS的逐分量共同上限。候选必须满足原base eligible/legal/CPU≤120规则，再按公开min(Φ,candidate)选择；缺失费用不补0，缺失候选不以GT另选。
+
+所有端点及CPU曲线计划先写盘，再导入旧score_results helper并读取已授权independent24真值。CPU_CURVE沿用原15/30/60/90/120标称prefix，每case各自clip到本次两臂共同CPU；不能视作全组11方法共同上限。物理小图只画端点paired-difference ECDF，未增加新的物理预算网格。
+
+NRMSE/IoU/RMSE/relativeL2完全复用旧评分函数。CPU/PHYSICS_PAIRED_DIFFERENCES另有选中两臂材料数组间连续RMSE、truth-amplitude归一化RMSE、Linf及固定χ&gt;1 support disagreement，避免仅看阈值过线。差值均pair01−reference。原NRMSE≤.15且IoU≥.70只作后验gain/loss描述，不参与任何选择。
+
+原264个任务的全部OS子进程费用保留在FULL_ORIGINAL_COST_LEDGER_BEFORE_TRUTH；成对cutoff只是原已付费pool的离线比较，不退还后续CPU/物理费用，不是假装提前停止的inverse重跑。pair01在六比较中复用，不能把六比较费用相加当六份新实验。辅助FFT/块动作/设置/失败费用照原receipt保留，未被LU/RHS归一化为免费。
+
+这份附注不更改已有score_extensions或任何原预测/评分；不作最终科学、新颖性或恢复因果解释。
+
+{
+  &quot;status&quot;: &quot;OFFLINE_PAIRWISE_COST_ANALYSIS_COMPLETE&quot;,
+  &quot;campaign&quot;: &quot;independent24_v1&quot;,
+  &quot;cases&quot;: 24,
+  &quot;comparisons&quot;: 6,
+  &quot;expected_endpoint_arm_rows&quot;: 576,
+  &quot;actual_endpoint_arm_rows&quot;: 576,
+  &quot;expected_endpoint_case_pairs&quot;: 288,
+  &quot;actual_endpoint_case_pairs&quot;: 288,
+  &quot;expected_CPU_curve_arm_rows&quot;: 1440,
+  &quot;actual_CPU_curve_arm_rows&quot;: 1440,
+  &quot;source_seal&quot;: &quot;D:\\AI\\MAX_STRUCT_R14_DUALMETRIC_20261115\\audit\\independent24_SEAL_REMOTE_AUTHORIZED.json&quot;,
+  &quot;metrics_helper&quot;: &quot;D:\\AI\\MAX_STRUCT_R14_DUALMETRIC_20261115\\runtime\\scoring_history\\src\\score_results.py&quot;,
+  &quot;original_unique_tasks&quot;: 264,
+  &quot;original_run_status_counts&quot;: {
+    &quot;COMPLETE&quot;: 264
+  },
+  &quot;full_original_OS_child_CPU_seconds&quot;: 30369.53125,
+  &quot;measured_original_OS_child_CPU_subtotal&quot;: 30369.53125,
+  &quot;missing_original_external_CPU_tasks&quot;: [],
+  &quot;all_original_costs_still_charged&quot;: true,
+  &quot;cutoff_refund&quot;: false,
+  &quot;curve_scope&quot;: &quot;CPU prefixes original15/30/60/90/120 clipped independently for each two-arm comparison; physics figure is endpoint-difference ECDF only&quot;,
+  &quot;new_inverse&quot;: 0,
+  &quot;new_forward&quot;: 0,
+  &quot;new_physical_LU&quot;: 0,
+  &quot;new_complex_RHS&quot;: 0,
+  &quot;new_optimizer&quot;: 0,
+  &quot;truth_scope&quot;: &quot;Authorized independent24 only, after all public plans written&quot;,
+  &quot;issues&quot;: 0,
+  &quot;offline_CPU_seconds&quot;: 16.640625,
+  &quot;offline_wall_seconds&quot;: 17.745465999934822,
+  &quot;figures&quot;: [
+    &quot;PAIRWISE_CPU_CURVES.png&quot;,
+    &quot;PAIRWISE_PHYSICS_ENDPOINT_ECDF.png&quot;
+  ],
+  &quot;finished_utc&quot;: &quot;2026-11-15T07:26:03.086729+00:00&quot;,
+  &quot;scientific_review&quot;: &quot;Parent owns scientific conclusions; no final novelty or recovery-causality judgment&quot;
+}</pre><img src="PAIRWISE_CPU_CURVES.png"><img src="PAIRWISE_PHYSICS_ENDPOINT_ECDF.png"></html>

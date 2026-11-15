@@ -1,3 +1,11 @@
+<!-- MAX_STRUCT_R14_PUBLICATION -->
+## MAX-STRUCT R14：双度量、有限PR与材料可达性
+
+[中文报告与完整图集](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r14/) · [公式与推导](research/research_max_struct_r14/THEORY_DERIVATIONS.md) · [Chat交接](research/research_max_struct_r14/CHAT_HANDOFF.md)
+
+576次反演及完整状态干预。独立24对象上A+恢复12、CIE/Dual各9、G19为11、DR为14；一致非局部11独有恢复新的高对比材料0021，也丢失A+的其他正例。方法互补、同成本视图、corrector作用、三维离散限制与全部失败均保留，不声称普适单一赢家。
+<!-- /MAX_STRUCT_R14_PUBLICATION -->
+
 <!-- GN_NN_R3_PUBLICATION -->
 ## GN–NN R3：Voxel与接收零空间电流学习
 

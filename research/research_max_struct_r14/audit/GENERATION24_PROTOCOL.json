@@ -1,0 +1,79 @@
+{
+  "schema_version": "r14_independent24_generation_v1",
+  "status": "FROZEN_BEFORE_GENERATION",
+  "created_at_utc": "2026-11-15T05:02:20.203598+00:00",
+  "objects": 24,
+  "unknowns_per_inverse": 576,
+  "inverse_grid": [
+    24,
+    24
+  ],
+  "forward_grid_options": [
+    24,
+    36
+  ],
+  "crossgrid_objects": 4,
+  "quadrature_reference_side": 216,
+  "material_parameter": "real_scalar_chi_epsilon_r_minus1",
+  "material_box": [
+    0.02,
+    20.0
+  ],
+  "host": 0.1,
+  "m_init": 0.1,
+  "prior": {
+    "smooth": 0.0001,
+    "tv": 0.0001,
+    "epsilon": 0.01
+  },
+  "k": "2*pi",
+  "time_convention": "exp(-i omega t)",
+  "ROI_width_wavelengths": 0.96,
+  "geometry_source": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/max_struct_r1/r13_worktree/research/research_max_struct_r13/experiments/generate_confirmation.py",
+  "geometry_source_symbols": [
+    {
+      "symbol": "ellipse",
+      "line": 45,
+      "end_line": 47
+    },
+    {
+      "symbol": "segment",
+      "line": 48,
+      "end_line": 50
+    },
+    {
+      "symbol": "material",
+      "line": 51,
+      "end_line": 104
+    },
+    {
+      "symbol": "average",
+      "line": 105,
+      "end_line": 106
+    },
+    {
+      "symbol": "acquisition",
+      "line": 107,
+      "end_line": 109
+    }
+  ],
+  "localized_changes": "Only original material first two draw remapping and h=high; all geometry branches untouched",
+  "private_assignment": "default_rng(141499).permutation(24) assigns8families*3regimes",
+  "material_seed_rule": "141500+opaque_index",
+  "noise_seed_rule": "241500+opaque_index",
+  "crossgrid_rule": "First two sorted opaque low-regime IDs,first sorted high ID,first sorted mixed ID; frozen before material calls",
+  "acquisition_rule": "opaque_index%3 => full12/.01,full6/.02,half12/.01",
+  "regimes": {
+    "low": "high=4+uH,low=2+uL",
+    "high": "high=15+3uH,low=10+2uL",
+    "mixed": "original H,L",
+    "normalized_draws": "uH=(H-12)/6,uL=(L-2)/3; H~U[12,18],L~U[2,5] in original RNG order"
+  },
+  "noise": "independent circular complex Gaussian; E|noise|^2=sigma^2; sigma=relative_RMS*RMS(clean)",
+  "delta": "sigma*sqrt(chi2.ppf(.99,2*Y.size)/2),noise only; no model-mismatch allowance",
+  "public_family_seed_regime_labels": false,
+  "truth_policy": "Generator writes separately; no inverse/score/GT plots",
+  "intended_comparison": "Frozen four metric families plus parent-selected strong baselines; adaptive candidate must freeze before its new predictions",
+  "no_new_backend": true,
+  "no_SHA": true
+}

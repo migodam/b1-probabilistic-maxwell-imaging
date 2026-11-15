@@ -1,0 +1,59 @@
+<!doctype html><meta charset="utf-8"><title>R14 dual-metric offline comparison</title>
+<style>body{font:16px system-ui;max-width:1400px;margin:auto;padding:30px}img{max-width:100%}table{border-collapse:collapse}td,th{padding:7px;border:1px solid #ccc}</style>
+<h1>R14 双度量：已曝光48对象离线比较</h1>
+<p>四组合的新封存预测与六组历史 uniform48 primary 参考。科学结论由主线程复核。所有缺失/失败仍保留48分母；历史数据并非新盲测。</p>
+<p>预算偏差：新四臂采用总CPU120、可重分配proposal空余时间；旧C2参考corrector最多48秒。原48口径只作已支付候选池的保守上下界截取，不是实际重跑；全部费用保留。</p>
+<p>NRMSE≤.15 且 IoU≥.70 仅为事后描述性统计；从未用于候选选择。连续误差、原始物理目标、噪声球资格及费用分别列出。</p>
+<table><tr><th>Method</th><th>Available/48</th><th>Posthoc recovered/48</th><th>Mean NRMSE</th><th>Mean IoU</th></tr>
+<tr><td>pair00</td><td>48</td><td>29</td><td>0.20214831538012837</td><td>0.6852661859472765</td></tr>
+<tr><td>pair01</td><td>48</td><td>35</td><td>0.15443020298262564</td><td>0.7519436844657538</td></tr>
+<tr><td>pair10</td><td>48</td><td>30</td><td>0.20457794224828826</td><td>0.6910004955486017</td></tr>
+<tr><td>pair11</td><td>48</td><td>31</td><td>0.18262732394356385</td><td>0.7105057354726871</td></tr>
+<tr><td>cie</td><td>48</td><td>30</td><td>0.1945359164780224</td><td>0.6945573018135298</td></tr>
+<tr><td>dual_cie</td><td>48</td><td>32</td><td>0.17984533048443338</td><td>0.7159174283411804</td></tr>
+<tr><td>g19</td><td>48</td><td>30</td><td>0.16758203911504158</td><td>0.6857688472283993</td></tr>
+<tr><td>dr</td><td>48</td><td>29</td><td>0.17671933834812928</td><td>0.687260322602408</td></tr>
+<tr><td>a_plus_mm_r13</td><td>48</td><td>36</td><td>0.15210017110259402</td><td>0.7506265910285571</td></tr>
+<tr><td>a_plus_arc_r7</td><td>48</td><td>36</td><td>0.1521412321898467</td><td>0.7515254601392979</td></tr>
+</table><p>Missing corrected views stay missing; absent secondary uses archived primary with an explicit fallback flag. Common CPU comparisons use native process-clock cutoffs; external child lifetime CPU remains a separate cost.</p>
+<a href="SUMMARY.csv">SUMMARY CSV</a> · <a href="SUMMARY.json">JSON</a><br>
+<a href="ALL_VIEWS.csv">ALL_VIEWS CSV</a> · <a href="ALL_VIEWS.json">JSON</a><br>
+<a href="PAID_PREFIXES.csv">PAID_PREFIXES CSV</a> · <a href="PAID_PREFIXES.json">JSON</a><br>
+<a href="COMMON_CPU_PREFIXES.csv">COMMON_CPU_PREFIXES CSV</a> · <a href="COMMON_CPU_PREFIXES.json">JSON</a><br>
+<a href="HISTORICAL_PRIMARY.csv">HISTORICAL_PRIMARY CSV</a> · <a href="HISTORICAL_PRIMARY.json">JSON</a><br>
+<a href="PAIRED_METRIC_DIFFERENCES.csv">PAIRED_METRIC_DIFFERENCES CSV</a> · <a href="PAIRED_METRIC_DIFFERENCES.json">JSON</a><br>
+<a href="RECOVERY_GAIN_LOSS.csv">RECOVERY_GAIN_LOSS CSV</a> · <a href="RECOVERY_GAIN_LOSS.json">JSON</a><br>
+<a href="CORRECTOR_EFFECTS.csv">CORRECTOR_EFFECTS CSV</a> · <a href="CORRECTOR_EFFECTS.json">JSON</a><br>
+<a href="COST_LEDGER.csv">COST_LEDGER CSV</a> · <a href="COST_LEDGER.json">JSON</a><br>
+<a href="PAID_CANDIDATE_HISTORY.csv">PAID_CANDIDATE_HISTORY CSV</a> · <a href="PAID_CANDIDATE_HISTORY.json">JSON</a><br>
+<a href="NATIVE_STAGE_HISTORY.csv">NATIVE_STAGE_HISTORY CSV</a> · <a href="NATIVE_STAGE_HISTORY.json">JSON</a><br>
+<a href="ISSUES.csv">ISSUES CSV</a> · <a href="ISSUES.json">JSON</a><br>
+<p><a href="FIGURES/materials_01.png">FIGURES/materials_01.png</a></p>
+<img src="FIGURES/materials_01.png">
+<p><a href="FIGURES/materials_02.png">FIGURES/materials_02.png</a></p>
+<img src="FIGURES/materials_02.png">
+<p><a href="FIGURES/materials_03.png">FIGURES/materials_03.png</a></p>
+<img src="FIGURES/materials_03.png">
+<p><a href="FIGURES/materials_04.png">FIGURES/materials_04.png</a></p>
+<img src="FIGURES/materials_04.png">
+<p><a href="FIGURES/materials_05.png">FIGURES/materials_05.png</a></p>
+<img src="FIGURES/materials_05.png">
+<p><a href="FIGURES/materials_06.png">FIGURES/materials_06.png</a></p>
+<img src="FIGURES/materials_06.png">
+<p><a href="FIGURES/materials_07.png">FIGURES/materials_07.png</a></p>
+<img src="FIGURES/materials_07.png">
+<p><a href="FIGURES/materials_08.png">FIGURES/materials_08.png</a></p>
+<img src="FIGURES/materials_08.png">
+<p><a href="FIGURES/all48_materials.pdf">FIGURES/all48_materials.pdf</a></p>
+<p><a href="FIGURES/recovery_membership.png">FIGURES/recovery_membership.png</a></p>
+<img src="FIGURES/recovery_membership.png">
+<p><a href="FIGURES/paid_prefix_curves.png">FIGURES/paid_prefix_curves.png</a></p>
+<img src="FIGURES/paid_prefix_curves.png">
+<p><a href="FIGURES/corrector_effects.png">FIGURES/corrector_effects.png</a></p>
+<img src="FIGURES/corrector_effects.png">
+<p><a href="FIGURES/paired_metric_differences.png">FIGURES/paired_metric_differences.png</a></p>
+<img src="FIGURES/paired_metric_differences.png">
+<p><a href="FIGURES/common_CPU_prefix_curves.png">FIGURES/common_CPU_prefix_curves.png</a></p>
+<img src="FIGURES/common_CPU_prefix_curves.png">
+<p><a href="FIGURES/external_CPU_costs.png">FIGURES/external_CPU_costs.png</a></p>
+<img src="FIGURES/external_CPU_costs.png">

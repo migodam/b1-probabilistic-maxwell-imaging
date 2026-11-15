@@ -1,0 +1,35 @@
+{
+  "status": "FROZEN_BEFORE_INDEPENDENT_RESULTS",
+  "source_rule": "Pro scripts/replay_selector_audit.py::public_replay feasibility_gated_saved_uniform",
+  "original_BASE": "a_plus_arc_r7",
+  "r14_BASE": "pair01",
+  "order": [
+    "pair01",
+    "g19",
+    "dr"
+  ],
+  "public_columns": [
+    "case_id",
+    "solver",
+    "Phi",
+    "residual_over_delta",
+    "noise_feasible",
+    "noise_certificate_eligible",
+    "external_child_CPU_seconds"
+  ],
+  "stop_exact": "if bool(incumbent.noise_feasible): break",
+  "replace_exact": "if float(trial.Phi) < float(incumbent.Phi): replace incumbent",
+  "cost_exact": "Start with BASE external child CPU; add every invoked child external CPU before comparison, including failed improvements",
+  "child_initialization": "Independent uniform-start stored results, never terminal warmrestart",
+  "scope": "Prospectively frozen saved-result replay benchmark, not measured conditional deployment; no reoptimization",
+  "source_scope": "Only original source public-selection conditions inspected; no archived result thresholds retuned",
+  "excludes": [
+    "NRMSE",
+    "IoU",
+    "relativeL2",
+    "family",
+    "truth_arrays",
+    "pair01_to11"
+  ],
+  "proposed_CPU_baseline": "Sum recorded invoked childCPU; no equal120s totalbudgetclaim; controller/transfer overhead not measured"
+}

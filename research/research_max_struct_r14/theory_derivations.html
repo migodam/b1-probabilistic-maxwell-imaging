@@ -1,0 +1,148 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MAX-STRUCT R14｜公式、推导与边界</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f5f8;color:#17253a;font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:1280px;margin:auto;padding:30px 24px 70px}header{border-bottom:1px solid #d9e0e8;padding:20px 0;margin-bottom:25px}h1{font-size:clamp(27px,4vw,42px);line-height:1.3}h2{font-size:25px;margin-top:36px}h3{font-size:19px}a{color:#165a89;text-decoration:none}a:hover{text-decoration:underline}nav,.doclist{display:flex;flex-wrap:wrap;gap:10px 20px}nav{margin:15px 0}.doclist a{background:white;border:1px solid #dce3eb;border-radius:8px;padding:7px 12px}article{max-width:1100px}article img{max-width:100%;height:auto}.note,footer{color:#526479}.empty{border-left:4px solid #9eb2c8;background:#fff;padding:16px}pre{white-space:pre-wrap;overflow:auto;background:#fff;padding:16px}code{font-size:.9em;background:#e9eff6;padding:1px 4px;border-radius:3px;overflow-wrap:anywhere}.math{white-space:pre-wrap}.math-display{overflow-x:auto;padding:10px 0}mjx-container{max-width:100%}.comparison{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;background:white;font-size:14px}th,td{padding:8px 12px;text-align:left;border:1px solid #dce3eb}th{background:#e9eff6;white-space:nowrap}td{font-variant-numeric:tabular-nums}.gallery{display:grid;grid-template-columns:1fr;gap:24px}figure{margin:0;background:white;border:1px solid #dce3eb;border-radius:10px;padding:12px}figure img{display:block;width:100%;height:auto}figcaption{padding:10px 3px 0;font-size:14px;overflow-wrap:anywhere}.path{display:block;font-size:12px;color:#69798a}details{background:#fff;border:1px solid #dce3eb;border-radius:8px;padding:12px;margin:14px 0}summary{cursor:pointer;font-weight:600}footer{margin-top:40px;border-top:1px solid #dce3eb;padding-top:20px;font-size:13px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{background:#fff;border:1px solid #dce3eb;border-radius:10px;padding:16px}@media(max-width:760px){main{padding:18px 12px 45px}.cards{grid-template-columns:1fr}figure{padding:6px}nav{gap:8px 12px}}</style><script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
+</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body><main><header><h1>MAX-STRUCT R14｜公式、推导与边界</h1><nav><a href="index.html">研究报告</a><a href="galleries.html">全部图集</a><a href="evidence.html">数据与代码</a><a href="theory_derivations.html">公式、推导与边界</a><a href="trajectory_analysis.html">轨迹分析</a><a href="benchmarks.html">比较实验</a><a href="cost_ledger.html">费用总账</a><a href="failures.html">失败与范围</a><a href="reproduce.html">复现说明</a><a href="pro_handoff.html">Pro研究交接</a><a href="chat_handoff.html">研究交接</a><a href="paper_draft.html">论文草稿</a><a href="experiment_contract.html">实验合同</a><a href="independent_contract.html">独立确认合同</a><a href="control_derivation.html">控制推导</a><a href="core_implementation_notes.html">实现说明</a><a href="baseline_audit.html">基线审计</a><a href="theory_status.html">理论状态</a><a href="prior_art_and_novelty.html">先例与新颖性</a><a href="methods_and_ablations.html">方法与消融</a><a href="tech_stack_map.html">技术栈与证据范围</a><a href="pro_packet_contents.html">Pro数据包说明</a><a href="download_guide.html">下载与恢复指南</a></nav></header><p><a href="THEORY_DERIVATIONS.md">下载原始Markdown</a></p><article><h1>双度量、有限 PR 与材料恢复：实际采用的数学</h1>
+<p>状态：主体局部推导先于本轮恢复评分；§7是根据非根程序问题补充的离线诊断分解，不用于修改独立确认算法。有限矩阵、理想局部映射、实际程序、连续 Maxwell 分开。以下线性代数、链式法则和精确线搜索性质不宣称为新发明。</p>
+<h2>1. 同一个度量必须是同一个材料相关函数</h2>
+<p>设 e=J−D_m Q，Q=Einc+GJ，L_m=I−D_mG。两个残差变换为</p>
+<div class="math math-display">\[
+P_0(m)=\operatorname{diag}\frac{b_0}{1+b_0m},\qquad
+P_1(m)=(I+D_aG_o)D_p,
+\]</div>
+<div class="math math-display">\[
+d_i=1+(b_1-G_{ii})m_i,\quad a_i=m_i/d_i,\quad p_i=b_1/d_i.
+\]</div>
+<p>G_o只含原不重叠四cell块的非对角项。度量是M_j=P_j*P_j，而不是P_j。b0=原current的阶段beta，b1=原A+material阶段beta；相同下标在两个块中代表完全同一个函数。</p>
+<p>每个stage的current目标</p>
+<div class="math math-display">\[
+f_c=\tfrac12\|SJ-Y\|_{\Omega_d}^2+
+\tfrac\rho2\|P_c(m)e\|_{\Omega_s}^2,
+\]</div>
+<p>material目标为其对应状态项加R(m)。00/11在单个stage共享势函数；01/10一般不共享势。阶段改变b1时不声称全程同一势。原Dual-CIE的两beta scalar不能被误标为00。</p>
+<p>固定m时current系数a的梯度和Hessian作用来自</p>
+<div class="math math-display">\[
+H_c(a)=P_cL_mUa,\quad
+H_c^*z=U^*L_m^*P_c^*z.
+\]</div>
+<div class="math math-display">\[
+P_1^*z=\overline p\odot[z+G_o^*(\overline a\odot z)].
+\]</div>
+<p>这里只是原onehop的合法current接线，不是改成全局Green逆或增加传播阶数。</p>
+<h3>实际参数下没有利用奇异变换制造额外零点</h3>
+<p>继承R4的解析行和界，实际24²原核、合法m∈[.02,20]上， <span class="math">\(\|D_aG_o\|_\infty\)</span>统一上界在b1=1、.2分别为.0378433、.168100，分母最小模大于1。3D的6³ CM+RR核、χ∈[0,8]、24分量块，对b1=6、1分别为.0771186、.341525，分母最小模为1。这些界都小于1，故I+DaGo可逆、P1可逆，metric严格正定；P1 e=0等价e=0。</p>
+<p>这是既有界在本轮真实参数上的资格，不是新恒等式发现。保守统一最小奇异值下界见<code>audit/METRIC_QUALIFICATION.json</code>。它只针对冻结的有限核及box；不证明L_m全域条件数、可辨识性或连续Maxwell精度。首次运行遇到JSON构造重复scope关键字的输出错误，修复命名后完成；0额外forward/LU，失败CPU未精确捕获，保留为unknown。</p>
+<h2>2. material中的度量导数不可省略</h2>
+<p>记u=P对角部分作用于e，v=G_o u，r=u+a⊙v。固定J/Q时</p>
+<div class="math math-display">\[
+\partial_{m_i}u_i=-b_1(Q_i+(b_1-G_{ii})J_i)/d_i^2,
+\quad \partial_{m_i}a_i=1/d_i^2.
+\]</div>
+<p>因此对任意实方向h，</p>
+<div class="math math-display">\[
+dr=(I+D_aG_o)D_{du}h+D_{da\odot h}G_ou.
+\]</div>
+<p>目标导数是ρ Re⟨rΩs,dr⟩+dR。原R4/R7精确导数、Möbius候选和完整MM先验接受均保留。冻结P1后仅拟合e是另一个算法，本轮四臂没有混入它。</p>
+<h2>3. 理想精确最佳响应的结论与其边界</h2>
+<p>在精确无噪声物理根、固定可微活动面、无prior、固定current切空间U上，把所有复变量实化。令K=L_*U，Ch=D_hQ_*，D=WSU，源权重与ρ吸入相应块。</p>
+<div class="math math-display">\[
+H_c=K^TM_cK+D^TD,\quad B_m=C^TM_mC,
+\]</div>
+<div class="math math-display">\[
+T=B_m^{-1}C^TM_mK H_c^{-1}K^TM_c C.
+\]</div>
+<p>要求Hc、Bm正定；冗余Fourier系数需先在实际独立空间中解释，不能对奇异正规矩阵强行求逆。根处e=0，dP乘e的一阶项消失；这不能用于离根忽略度量导数。</p>
+<p>当Mc=Mm=M时，令A=K^TMC、B=C^TMC。联合二次型</p>
+<div class="math math-display">\[
+\begin{bmatrix}H_c&amp;-A\\-A^T&amp;B\end{bmatrix}\succeq0
+\]</div>
+<p>给出0≼A^THc^{-1}A≼B。因此T在B内积下自伴、谱在[0,1]。这属于加权块GS/投影的已知结构。Schur补B−A^THc^{-1}A是消元辅助模型曲率，不能直接叫统计物理Fisher。</p>
+<p>等号方向要求可用current变化使Kδa=Ch且Dδa=0；在满足表示条件时对应当前端口不能看见的材料切向。严格收缩还需可观测性及足够谱隙；一致不代表容易恢复。Mc≠Mm时上述合同对称化不成立，可有局部扩张；扩张既不保证逃逸坏盆地，也不意味着必然破坏实际成像。</p>
+<h2>4. 非精确块误差给出实际比较应测什么</h2>
+<p>在同一个线性化模型中，用真实更新定义正规方程残差</p>
+<div class="math math-display">\[
+r_c=H_c\delta a-K^TM_cCh,\qquad
+r_m=B_m\delta m-C^TM_mK\delta a.
+\]</div>
+<p>直接代入得</p>
+<div class="math math-display">\[
+\delta m=Th+
+B_m^{-1}C^TM_mK H_c^{-1}r_c+B_m^{-1}r_m.
+\]</div>
+<p>这是精确线性分解，不是恢复误差上界。定义</p>
+<div class="math math-display">\[
+\gamma_{cm}=\|B_m^{-1/2}C^TM_mK H_c^{-1/2}\|_2,
+\]</div>
+<p>则同一线性模型中</p>
+<div class="math math-display">\[
+\|\delta m-Th\|_{B_m}\leq
+\gamma_{cm}\|r_c\|_{H_c^{-1}}+\|r_m\|_{B_m^{-1}}.
+\]</div>
+<p>一致度量时由上一节Schur补得到γcm≤1；非一致时需要实际计算或界，不能默认。平方根都是正定矩阵的对称平方根，norm均在同一声明单位下。</p>
+<p>只有两个余项确实比( T−I )h等理想效应小，才能把理想谱作为有限程序主要解释。例如理想扩张只有10^-7量级，并不意味着固定一次PR的10^-2或更大的方向误差可以忽略。这是理论效应可分辨性的要求，不是强制把所有内解做精确的算法建议。离根、box转面、prior、有限扰动另有余项；本轮保存它们而不把误差统一塞进一个“理论不准”的标签。</p>
+<h2>5. 有限精确线搜索 PR 不自动有一个根处Jacobian</h2>
+<p>即使第一步没有PR历史，固定m的二次current目标一次steepest-descent精确线搜索也给</p>
+<div class="math math-display">\[
+\delta a^+(h)=\alpha(h)b(h),\quad
+b(h)=K^TM_cCh,
+\quad \alpha(h)=\frac{b(h)^Tb(h)}{b(h)^TH_cb(h)}.
+\]</div>
+<p>该方向响应齐次、奇对称，却通常不满足加法性。简单Hc=diag(1,2)、b(h)=h时，两个坐标方向响应分别为(1,0)、(0,1/2)，合方向响应为(2/3,2/3)。故根处未必存在一个统一线性Fréchet导数矩阵。正负有限差分吻合本身不足以证明存在Jacobian，更不能把精确最佳响应T直接当一次PR程序DT。</p>
+<p>这不是新的非光滑优化定理，而是本任务必须检查的实现边界。实际材料readout还含root候选切换、box、gtol停止；即便方向差分随epsilon收敛，也必须比较h1+h2的加法性及分支事件。非根且分母非零、分支固定时可计算局部JVP；PR历史运输/重置则是不同完整状态干预。</p>
+<p><strong>本轮有限程序反例（EMPIRICAL，非稳定性定理）。</strong> 同一个8²人工物理根、同完整Fourier/DPCS起态、同β与零prior，取理想01闭环的最大实特征方向（λ=1.002712449）。按精确最佳响应线性图，32轮的该mode系数为λ³²=1.09054859。实际有限PR／两扫描Arc，在±.001两个扰动下32轮的材料扰动范数比为.691965、.692145；每轮重置PR控制为.633511、.633683。没有换方向或搜索振幅，另两种符号沿同一方向。</p>
+<p>因此理想root扩张没有在这个实际有限程序的声明尺度/时段中复现，不能据谱半径直接选择反馈。这个结果没有证明实际map严格ε→0的Fréchet导数不存在、正根渐近稳定或任意起点恢复；数值floor、gtol、Arc候选和有限迭代仍必须保留。详细512次native更新、48次新物理审计与所有完整state见<code>audit/finite_mode_trajectory_v1/</code>。</p>
+<h3>5.1 一个必须排除的短期解释：只扰动材料会触发场记忆回拉</h3>
+<p><strong>DERIVED_UNDER_ASSUMPTIONS，标准松弛模型的应用，不是实际PR的定理。</strong> 记Gc=Hc^{-1}KᵀMcC、Am=Bm^{-1}CᵀMmK、T=AmGc。假设current只做固定松弛</p>
+<div class="math math-display">\[
+a^+=\theta a+(1-\theta)G_ch,\qquad h^+=A_ma^+,\quad0\leq\theta&lt;1.
+\]</div>
+<p>若Th=λh，完整状态方向<span class="math">\((G_ch/λ,h)\)</span>的放大率为r=θ+(1−θ)λ。因此λ&gt;1时r仍大于1，单纯这种松弛不会消掉扩张。</p>
+<p>但是只扰动材料、保持原current不动，即a0=0、h0=h，会先回拉：</p>
+<div class="math math-display">\[
+h_k=(1-\theta)\lambda[\theta+(1-\theta)\lambda]^{k-1}h_0.
+\]</div>
+<p>例如固定θ=1/2（仅解析示例，没有拟合实际PR），λ=1.002712449，32步材料误差仍约为初始的一半，同时完整状态系统的渐近mode仍扩张。故上一段32步收缩不能被包装为推翻Pro渐近不稳定的定理；它首先反驳的是对材料边缘图直接使用T³²的程序预测。</p>
+<p>本轮已经补完这一诊断：同时按<span class="math">\((Gc h/λ,h)\)</span>扰动current和材料，沿用原先的同一h、±.001、表示与PR策略，完成16条轨迹、512次实际更新。01的128次material readout均nit=0，投影guard梯度为2.56e−9至2.89e−9，低于原1e−8；32步材料扰动范数比保持1。完整state和费用见<code>audit/coupled_mode_trajectory_v1/</code>。这表明声明尺度下的实际程序进入有限guard deadband，既没有复现理想扩张，也没有证明渐近稳定。未更换epsilon或gtol搜索期望现象；固定θ解析模型不能自动套用到实际PR。</p>
+<h2>6. 原物理实现与辅助缺陷的关系</h2>
+<p>继承R13已建立的缺陷运输，不重跑恒等式：u=J−D_mQ，v=Q−Einc−GJ，</p>
+<div class="math math-display">\[
+J-J_{phys}=L_m^{-1}(u+D_mv),\quad
+r_{phys}=r_{aux}-WSL_m^{-1}(u+D_mv).
+\]</div>
+<p>因此新metric减少auxiliary loss、材料步更大、或更强局部扩张，均不能代替端口可见缺陷的实际变化。当前物理审计产生这些量需收费，不把它称免费在线预测器。材料已经数据可行而错误时，纯改变metric不新增信息；五个共同球外失败存在合法GT可行点，也不证明唯一性。</p>
+<h2>7. 本轮允许检验的因果结论</h2>
+<p>四组合保持同globalPR/表示/初始完整状态时，可检验当前实验中哪一种块耦合改变了恢复集合；单独比较历史sourcewise CIE不够归因。00/11在固定stage的真实辅助势应非增，若违背先查实现/容差；这不是原物理Phi或GT误差非增的保证。</p>
+<p>01对11的材料更新相同，但current metric不同；01对00的current metric相同，但材料目标、分母与读出不同。self-only控制才能进一步区分P1对角自作用与四cell非局部项；PR reset控制才可识别继承记忆的影响。结果必须与实际成本、已付费物理候选、prior、corrector及失败对象同时解释。</p>
+<p>已有变量消元/可变Gram、CC-CSI、非势博弈与受控非精确交替优化都需引用；本文件不把这些结构更名为原创理论。本轮真实归因与新颖性判断见<code>PRIOR_ART_AND_NOVELTY.md</code>和主报告。</p>
+<h2>8. 根附近消失、非根状态保留的metric导数力</h2>
+<p>这是一项用于已有完整state的链式法则诊断，不是新的优化器。固定本轮实际J/Q，令e=J−D_mQ，r=P(m)e，C h=D_hQ。源metric为Ωs，则</p>
+<div class="math math-display">\[
+f_m(m;J,Q)=\frac\rho2\operatorname{tr}(r^*r\Omega_s)+R(m).
+\]</div>
+<p>对实h，</p>
+<div class="math math-display">\[
+dr=-P C h+(DP[m]h)e,
+\]</div>
+<p>因而</p>
+<div class="math math-display">\[
+g_m=g_{\rm const}+g_{\rm metric}+\nabla R,
+\]</div>
+<div class="math math-display">\[
+g_{\rm const}=-\rho\,\Re C^*P^*(r\Omega_s),\quad
+\langle g_{\rm metric},h\rangle
+=\rho\Re\langle r\Omega_s,(DP[m]h)e\rangle_F.
+\]</div>
+<p>其中P0和P1都依赖材料，不能把P0的metric导数当成零。已有onehop full derivative包含两项；数值诊断直接复用原函数，再减构成力与prior，不写一个漏导数的替代求解器。</p>
+<p>若声明box上P连续可微，<span class="math">\(\|DP[m]h\|\le L_P\|h\|\)</span>，则</p>
+<div class="math math-display">\[
+\|g_{\rm metric}\|\le
+\rho L_P\|P\|\|\Omega_s\|\|e\|_F^2.
+\]</div>
+<p>这解释了为什么精确物理根的理想一阶闭环不包含该项，却不能在离根的大构成缺陷状态省略它。<span class="math">\(g_{\rm const}\)</span>只有O(\|e\|)的上界，没有普遍正下界；比值大可能来自构成力方向抵消，不能直接解释为新增材料信息或更强物理力。</p>
+<p>本轮只在原7checkpoint×8干预枝的first completed step计算：m取step0，J/Q取current更新后step1，分别用实际material family、β与Ωs，比较三项对真实Δm的内积和角度。无需新forward、GT、有限差分或改变算法。它量化理想根模型遗漏的非根机制；是否能够预测恢复仍须由后续独立研究回答。</p>
+<h3>P0归一化的一个明确符号后果</h3>
+<p>对正实b与P0=b/(1+bm)，每cell的metric导数分量精确为</p>
+<div class="math math-display">\[
+(g_{\rm metric})_i
+=-\rho\frac{b^3}{(1+bm_i)^3}\|e_i\|_{\Omega_s}^2\le0.
+\]</div>
+<p>因此在固定非物理J/Q时，仅通过提高材料、减小归一化残差就存在一个同号梯度分量；它不是新的测量信息。完整构成力、metric导数力与prior一起决定真实readout。P1含复self分母和邻居传播，不能未经推导将这个逐cell同号结论直接套用。</p>
+<p>本轮56个预定first-step状态，<span class="math">\(\|g_{metric}\|/\|g_{const}\|\)</span>范围.1003–2.0673，各(pair,PR策略)七样本组的中位数约.907–1.105。构成力单独对真实Δm的work为正38/56，metric导数力为正6/56，完整梯度work为正0/56。它说明把真实material读出解释为“冻结metric的构成残差投影”会在这批非根state上误读方向。该样本全来自已预选state，不是恢复预测器，也不是支持修改material目标的新确认结果。</p></article><footer>MAX-STRUCT R14 · 此网页呈现已存在的报告、图和文件；实验状态、结果与边界以原始报告及回执为准。网页构建不新增科学结果。</footer></main></body></html>

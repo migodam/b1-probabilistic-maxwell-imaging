@@ -1,0 +1,174 @@
+# R14 实际入口、完整恢复与复现说明
+
+本说明依据当前src的argparse、冻结configs、封存和已保存回执撰写；写说明时没有重跑实验、评分、构建或发布。公开附件的最终真实URL仅从主线程填好的DOWNLOADS.json取得，不在这里猜release路径。阅读compact结果、恢复原始证据、重跑算法是三种不同操作。
+
+## 1. 已有完成范围与文件入口
+
+|工作|冻结配置/已完成规模|当前证据|
+|---|---|---|
+|已暴露48的四度量主实验|dualmetric48_v1；实际按pilot12与remaining36两队列运行，共192任务|analysis/exposed48_v2；不要使用bugged exposed48_v1作为主评分|
+|self-only控制|self_only16_v1，16对象×pair01/pair11/global_dual=48|analysis/self_only16_v1，240 view行，issues=0|
+|stage切换控制|stage_control16_v1，16对象×01→11/11→01=32|analysis/stage_control16_v1，160 view行，issues=0|
+|新24确认|independent24_v1，24×11方法=264，全部COMPLETE|analysis/independent24_v1，1320 view与1320 prefix行，issues=0；原始全场仍以远端原档/release为准|
+|统一材料子求解器控制|shared_readout4_v1，4对象×4pair=16|analysis/shared_readout4_v1/SCORING_RECEIPT.json，明确记录secondary fallback|
+|有限3D矢量类比|vector4_v1，4条件×6方法=24|analysis/vector4_v1/SCORING_RECEIPT.json；3个旧几何加一个crossgrid条件，不是4个独立新几何|
+|完整状态干预|0002的128/512，0017的128/512/2500，0037的128/512，共7checkpoint×8分支|audit/interventions；每分支1/8/32完整update|
+|根与有限程序/force诊断|声明8×8人工根、有限方向响应、两套16轨迹、56个已存首步force分解|audit/local_closed_loop_v1、finite_mode_trajectory_v1、coupled_mode_trajectory_v1、material_force_decomposition_v1|
+
+独立24的11方法为pair00/01/10/11、pair01_to11、CIE、Dual-CIE、G19、DR、global_dual、direct。早期准备文档中的216任务是增加global_dual/direct前的草案，不是最终封存规模。此处不宣称Fresnel、NN训练或新实测结果。
+
+## 2. 新checkout与依赖
+
+旧物理/算法源依赖的已核实Git版本为`959c165e77935d49ad95152e0339fb21d9c416bc`。这只是Git出处，不是SHA256检查。当前R14源/公开输入来自本轮source+configs+public release；原始大RESULTS/queues/NPZ不会通过普通Git checkout自动取得。
+
+```text
+git clone https://github.com/migodam/b1-probabilistic-maxwell-imaging.git b1-probabilistic-maxwell-imaging
+git -C b1-probabilistic-maxwell-imaging checkout 959c165e77935d49ad95152e0339fb21d9c416bc
+```
+
+保留仓库根作为`W`；把恢复后的R14放在`W/research/research_max_struct_r14`作为`R`。这对local_closed_loop/finite_mode等从文件祖先定位repo的入口尤为重要。主要历史依赖为research_max_struct_r2/r4/r6/r7/r8/r10/r11/r13、research_fbg_r3_experiments、research_z_alg_r4_diversity及vendor。不要只复制一个physics.py就声称完整算法可运行。
+
+基础requirements.txt声明NumPy≥2.2,<3；SciPy≥1.15,<2；Matplotlib≥3.9,<4。队列/runner还实际使用psutil，局部诊断使用threadpoolctl；已有兼容环境可直接复用，fresh环境需补齐这两项。没有承诺不同Python、BLAS和硬件逐位相同，也没有新建CUDA/容器/服务的需要。
+
+本轮现成解释器：Windows为D:/python/python.exe；Mac科学诊断优先既有Inv_SLAM/Gaussian/.venv_nn/bin/python；部分shared/vector审计使用保存回执中的Mac Python3.13.13及既有psutil ABI3运行副本。不要把Pro包的Linux依赖版本误标成本轮Windows实际环境。详细配置由ACTUAL_CONFIG、FROZEN_CONFIG、source_snapshot、RESOURCE_PROBE和对应receipt说明。
+
+## 3. 先恢复证据，勿把material-only包当fullfields
+
+从最终DOWNLOADS清单取得每组所有实际分卷、PACKAGE_PLAN.json及RESTORE.md。把源包、raw campaign和本地诊断的文件置于外盘。当前package_evidence只有标准库依赖；下例中的下载目录必须已经存在，target必须是新目录。
+
+```text
+python package_evidence.py restore --plan /external/downloads/PACKAGE_PLAN.json --archive-dir /external/downloads --destination /external/restored_r14
+```
+
+该命令在restore前可以使用release内单独提供或Git中的src/package_evidence.py。它验证成员路径、字节数、各file压缩方式；文本DEFLATED level1无损还原，NPZ/NPY/PNG/PDF保持STORED，无SHA或科学计算。把restored_r14的内容合并到前述`W/research/research_max_struct_r14`，保留源码/报告与原始字段，不删除旧证据。
+
+- full raw包含RESULTS各endpoint的完整原NPZ、JOINT_FINAL、所有CHECKPOINT、CANDIDATE_POOL/CANDIDATES、完整HISTORY/NATIVE_HISTORY和queues/外部CPU记录。
+- `*_scoring_only.zip`来自export_scoring.py：selected-view NPZ只有未改数值的m；公开material review与已算CSV可以阅读，但不能恢复J/Q、PR、current表示、stage状态或完整干预。
+- `*_REVIEW.zip`是compact审阅材料，`*_ANALYSIS_FULL.zip`是已派生分析，二者均不替代原始fullfield。
+- 新24已完整264任务封存并获准离线评分；此文撰写时compact分析在本地、原始新24全场仍在远端并上传draft。draft上传不等于匿名公开，缺raw时只做compact review，不能声称本机已拥有完整重现材料。
+
+若原始SOURCE包引用了R13评分真值，它们不在普通public source包中；只在需要授权重算评分时，从原项目相应已封存资产单独恢复。公开查看表格和图片无需读真值。
+
+## 4. 路径映射和post-restore seal
+
+历史Windows运行根为`D:/AI/MAX_STRUCT_R14_DUALMETRIC_20261115`；Mac本轮实际根位于外盘`.../research/delegated/max_struct_r1/r14_worktree/research/research_max_struct_r14`。JSON中的D:/或/Volumes出处保留原样；不能建立虚假D: alias来让seal“通过”，也不对原remote seal作全局字符串替换。
+
+main与extension seal会校验当前root/绝对路径/文件存在性和字节数，shared/vector还校验mtime_ns。恢复到新路径或解压时间改变时，原授权seal是历史证据，不是新位置的有效本地seal。应保留原文件，先核完整恢复清单，再另写`*_RESTORED_LOCAL_UNAUTHORIZED.json`并记录source_remote_seal、恢复清单及当前路径；由主线程审查同一冻结预测后另存授权副本，不改预测、不重跑optimizer、不覆盖原Windows封存。
+
+main/extension已有真实命令生成**未授权**本地封存：
+
+```text
+python src/score_dualmetric.py --root R14_ROOT --make-seal --seal R14_ROOT/audit/PREDICTION_SEAL_RESTORED_LOCAL_UNAUTHORIZED.json --source-note "Restored original bytes; historical remote seal retained separately"
+python src/score_extensions.py --root R14_ROOT --campaign independent24_v1 --manifest R14_ROOT/configs/independent24_v1.json --make-seal --seal R14_ROOT/audit/independent24_RESTORED_LOCAL_UNAUTHORIZED.json --source-note "Restored original bytes; original remote seal unchanged"
+```
+
+self_only/stage同样用score_extensions并指定各自campaign。`--make-seal`不读GT，始终authorized_scoring=false；评分要求主线程审查后授权的新副本。无法仅凭“0issues”或改root字段替代这一步。
+
+shared/vector没有单独`--make-seal`入口，不要编造命令或为生成seal重跑队列。其现有seal为predictions/shared_readout4_v1/attempt_02/PREDICTION_SEAL.json和predictions/vector4_v1/attempt_01/PREDICTION_SEAL.json。迁移时另存其inventory副本，逐项用恢复后文件重新记录bytes/mtime_ns，保留原seal引用；authorization副本必须指向新seal并由主线程确认。原验证器的字段见score_shared_readout.py::validate、score_vector_factorial.py::validate。未完成此迁移时可读已有compact分析，不能将原mtime校验绕过。
+
+## 5. 算法重跑入口（另建空结果工作区，不在恢复原档上运行）
+
+以下是实际CLI，不是本次文档任务已经再次执行的命令。所有输出目录或campaign已有RESULTS/queues时会拒绝覆盖；若确实要重跑，恢复source/public到新的实验工作区，保留原始冻结config，不同时运行main48配置和两个分区配置。
+
+Windows PowerShell示例变量：
+
+```powershell
+$W='D:/AI/b1-probabilistic-maxwell-imaging'
+$R="$W/research/research_max_struct_r14"
+$Python='D:/python/python.exe'
+```
+
+已执行main192的两分区入口，P8/单线程/每case四臂顺序：
+
+```powershell
+& $Python "$R/src/run_queue.py" --root $R --legacy-repo $W --manifest "$R/configs/dualmetric_pilot12_v1.json" --cores '0,2,4,6,8,10,12,14'
+& $Python "$R/src/run_queue.py" --root $R --legacy-repo $W --manifest "$R/configs/dualmetric_remaining36_v1.json" --cores '0,2,4,6,8,10,12,14'
+```
+
+controls与独立集使用同进程分派入口，实际11臂independent264/同case同core顺序；核类型标签来自对应host资源审计，不猜拓扑：
+
+```powershell
+& $Python "$R/src/queue_independent.py" --root $R --legacy-repo $W --manifest "$R/configs/self_only16_v1.json" --cores '0,2,4,6,8,10,12,14'
+& $Python "$R/src/queue_independent.py" --root $R --legacy-repo $W --manifest "$R/configs/stage_control16_v1.json" --cores '0,2,4,6,8,10,12,14'
+& $Python "$R/src/queue_independent.py" --root $R --legacy-repo $W --manifest "$R/configs/independent24_v1.json" --cores '0,2,4,6,8,10,12,14,16,18,20,22'
+```
+
+单task入口均为`run_independent.py --root --legacy-repo --manifest --task-id [--cpu]`。它将普通pair交给run_experiment.py、schedule交给run_control.py、成熟基线交给runtime/equal_budget_C2_runner.py。后者只在历史C2上把corrector deadline改为绝对cap=120，沿用数值算法；原frozen_C2_runner.py和audit/BASELINE_BUDGET_DIFF.txt保留差异。不要把后来六基线统一预算版本误称历史runner完全逐字节不变。
+
+2D共同设置：120s whole-process CPU，proposal最多72s，剩余预算交corrector；proposal提前完成的余量可用于corrector，因此corrector不是始终只允许48s。原prior smooth=tv=1e−4、epsilon=.01；box[.02,20]；sourcewise/global、DPCS、Fourier、冷/暖current与各stage按config和ACTUAL_CONFIG冻结。新24使用已存在public NPZ，不需要重生成。generate_independent24.py仅用于核生成出处，真实参数为`--root --history-root --legacy-repo`，它会写私有真值并收费正演；不是查看结果的前置步骤，不要无故再次生成。
+
+Mac不支持当前queue要求的CPU affinity；不能把Windows pinned queue直接当Mac命令。单task可不传--cpu；改变硬件仍保留CPU计费，不宣称跨机绝对速度。
+
+### shared-readout与3D
+
+shared控制的实际低层入口：
+
+```text
+python src/run_shared_material.py --root R14_ROOT --legacy-repo REPO_ROOT --manifest R14_ROOT/configs/shared_readout4_v1.json --task-id r13_fresh_0002__pair00__sharedLBFGS60
+```
+
+枚举冻结config的全部16 task可逐一运行，没有新case参数。当前run_shared_material_queue.py的`--root --legacy-repo --manifest --workers {1,2}`是保存过的attempt02显式修复队列，依赖attempt01失败receipt及audit/shared_readout4_v1/runtime_existing_psutil，不是通用首次队列。首次16任务缺psutil的失败、零物理费用及随后复用ABI3 package均留痕；fresh环境直接具备psutil后用低层入口即可，不伪造失败前置文件。
+
+vector实际入口：
+
+```text
+python src/run_vector_factorial.py --root R14_ROOT --legacy-repo REPO_ROOT --manifest R14_ROOT/configs/vector4_v1.json --run-all --workers 2 --attempt 01
+```
+
+也支持互斥的`--task-id`。其模型是声明有限DDA两metric几何类比，box[0,8]、rho=10、120外循环/inner12，protocol中的两stage beta、prior与6method完整保留；不是2D R7Arc的逐字节3D移植，不声称连续介质或实测资格。
+
+## 6. 7checkpoint、局部根与诊断复算
+
+这些入口会产生付费物理检查/辅助动作，均不是恢复评分的必要前置；要复算时用新out目录。原0002/0017/0037、各k值见PRO_PACKET_CONTENTS，不从GT另挑checkpoint。
+
+```text
+python src/intervene_checkpoints.py --root R14_ROOT --legacy-repo REPO_ROOT --input R14_ROOT/data_public/exposed48/r13_fresh_0017.npz --checkpoint R14_ROOT/RESULTS/dualmetric_pilot12_v1/r13_fresh_0017__pair01/CHECKPOINT_00512.npz --out R14_ROOT/audit/interventions_reproduced/r13_fresh_0017_k00512 --steps 1,8,32
+python src/local_closed_loop.py --out R14_ROOT/audit/local_closed_loop_reproduced
+python src/finite_mode_trajectory.py --root R14_ROOT --out R14_ROOT/audit/finite_mode_reproduced
+python src/finite_mode_trajectory.py --root R14_ROOT --coupled-seed --out R14_ROOT/audit/coupled_mode_reproduced
+```
+
+local_closed_loop.py依据源文件祖先定位repo；有限trajectory读取原audit/local_closed_loop_v1固定根和IDEAL映射，必须先恢复这组数据，不能把新out自动误当其输入。干预保留四pair×retain/reset PR的完整状态与current/material步、1/8/32行为，不假设每个分支共享一个理想Jacobian。
+
+已存force分解不执行step/optimizer/forward，只读固定7×8分支的step0/step1：
+
+```text
+python src/material_force_decomposition.py --root R14_ROOT --legacy-repo REPO_ROOT --out R14_ROOT/audit/material_force_reproduced
+```
+
+其输入索引固定为audit/dynamics_all192_v1/INTERVENTION_BRANCHES.json及原audit/interventions；若只恢复7个原checkpoint而没有56分支step0/1，先阅读已有FIRST_STEP_FORCE_ARRAYS与指标，不能声称此命令输入完整。analyze_dynamics.py接受`--root --out --campaigns`；diagnose_endpoints.py接受`--root --out`；build_cost_ledger.py接受`--root --out`。后者仅归集真实成本，不代表science重跑。
+
+## 7. 授权后的离线评分入口
+
+只读CSV/公开报告无需GT。下列评分必须在相同已冻结预测、有效当前路径seal和对应授权下执行；本说明不新增GT访问授权。fresh输出用analysis/*_reproduced，拒绝覆盖原分析。H为实际R13 study根，具有原src/score_results.py和已封存评分资产，不是任意仓库根。
+
+```text
+python src/score_dualmetric.py --root R14_ROOT --history-root R13_STUDY_ROOT --seal R14_ROOT/audit/PREDICTION_SEAL_RESTORED_LOCAL_AUTHORIZED.json --out R14_ROOT/analysis/exposed48_reproduced
+python src/score_extensions.py --root R14_ROOT --history-root R13_STUDY_ROOT --seal R14_ROOT/audit/independent24_RESTORED_LOCAL_AUTHORIZED.json --out R14_ROOT/analysis/independent24_reproduced
+python src/score_shared_readout.py --root R14_ROOT --history-root R13_STUDY_ROOT --manifest R14_ROOT/configs/shared_readout4_v1.json --seal RESTORED_SHARED_SEAL.json --authorization RESTORED_SHARED_AUTHORIZATION.json --out R14_ROOT/analysis/shared_readout_reproduced
+python src/score_vector_factorial.py --root R14_ROOT --legacy-repo REPO_ROOT --history-root R13_STUDY_ROOT --manifest R14_ROOT/configs/vector4_v1.json --seal RESTORED_VECTOR_SEAL.json --authorization RESTORED_VECTOR_AUTHORIZATION.json --out R14_ROOT/analysis/vector4_reproduced
+```
+
+extension的self/stage同一个score_extensions入口，campaign由授权seal确定。先固定所有公共Phi、raw=min(initial,proposal)、secondary fallback和prefix选择，再导入truth；不能用GT重选raw/corrected/primary。当前main/scored扩展原封存的path/time不同，禁止直接把上面LOCAL_AUTHORIZED占位文件名当现成文件。
+
+若只检查已经评分的新24结果，阅读analysis/independent24_v1/RECEIPT、SUMMARY、ALL_VIEWS、COMMON_CPU_PREFIXES、PUBLIC_SELECTOR_REPLAY、RAW_INITIAL_AUDIT、COST_LEDGER即可；无需再次score或加载真值。公开量A+→G19→DR为冻结候选回放，不是重新实测的条件部署控制器，也不宣称三臂合计仅120s。
+
+## 8. 成本、CPU/GPU与传输边界
+
+本轮原算法运行是CPU；GPU/CUDA费用字段为0或NOT_RUN，不由旧CUDA吞吐记录推算本轮收益。Windows P/E核并发与Mac未pin局部诊断的absolute CPU/wall不直接相减。每case同core配对、whole-process CPU（含导入/准备/失败）、外部childOS CPU、controller CPU、wall、原始LU/RHS、onehop/FFT、封存、压缩与上传分别保留，不把wall和CPU相加。复用历史checkpoint计reuse，不重新收费旧操作；新干预的physical checks、失败配置、缺依赖、布局修正及生成工作照实记录。
+
+大NATIVE_STAGE_HISTORY/NATIVE_STEPS/PAID_CANDIDATE_HISTORY不进Git，却完整保留在外盘/release。package_evidence的生成文本扫描曾被主线程停止并留≥473.875CPU回执，后续generated RESULTS/queues/analysis不再做低效SECRET_RE；这不是新的科学算法或免费失败。release归档/上传的实际CPU与network成功状态由各回执说明。当前上传draft只说明工程进展，不能替代公开下载readback。
+
+## 9. 本地网页与真实Pages入口
+
+已查本地HEAD和GitHub main的`.github/workflows`：不存在该目录/404，因此没有可引用的自定义workflow文件，也没有要执行的`gh workflow run ...`。实际`gh api repos/migodam/b1-probabilistic-maxwell-imaging/pages`读回为`build_type=legacy`、`source.branch=main`、`source.path=/`、`status=built`，现有站点为[项目Pages](https://migodam.github.io/b1-probabilistic-maxwell-imaging/)。主线程保存audit/PAGES_SOURCE.json。
+
+最终报告完成、DOWNLOADS写入实际核验URL后，才执行：
+
+```text
+python src/build_site.py --root R14_ROOT
+```
+
+检查SITE_BUILD_RECEIPT的本地href/src、私有链接排除、图数、缺失文档；实际打开公式和完整材料图。主画廊优先FIGURES/exposed48可读8页，bugged analysis/exposed48_v1不入主图库；旧v2材料图单独归档。MathJax CDN失效时仍显示原TeX。
+
+发布步骤由主线程完成：只把R14源、作者报告、紧凑公开metadata/分析、图和生成HTML纳入Git；原始大档通过实际release。将这些静态文件提交到既有main并push，触发现有legacy Pages构建，不新建workflow/站点。随后只读检查Pages build/实际R14子路径和下载附件的匿名可达性，再更新发布回执。此文没有执行build、push、publish或验收。
