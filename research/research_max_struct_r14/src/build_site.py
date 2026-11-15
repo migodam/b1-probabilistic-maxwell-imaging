@@ -251,7 +251,7 @@ def build(root):
         if not files:continue
         target=root/'galleries'/f'{key}.html';sections={}
         for f in files:sections.setdefault(str(f.parent.relative_to(root)),[]).append(f)
-        body='<p>'+str(len(files))+'张实际图。完整文件名和对象ID保留；图中方法、视图与指标以原图为准。</p>'
+        body='<p>'+str(len(files))+'项实际图像／PDF。完整文件名和对象ID保留；图中方法、视图与指标以原图为准。</p>'
         for folder,items in sections.items():
             body+='<h2>'+esc(folder)+'</h2><div class="gallery">'+''.join(gallery_figure(f,target,root,figure_meta.get(f.resolve())) for f in items)+'</div>'
         write(target,label,body);cards.append('<article class="card"><h3><a href="'+relurl(target,root)+'">'+esc(label)+'</a></h3><p>'+str(len(files))+'张实际图</p></article>')

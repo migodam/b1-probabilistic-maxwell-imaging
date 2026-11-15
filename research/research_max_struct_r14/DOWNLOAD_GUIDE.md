@@ -27,4 +27,4 @@
 
 ## 本轮真实发布状态
 
-DOWNLOADS记录60个匿名可读附件，总计11,808,228,940bytes。小Pro ZIP为R14_PRO_PACKET_v1.zip；独立离线GT为R14_SYNTHETIC_OFFLINE_TRUTH_v1.zip。source+diagnostics共用根PACKAGE_PLAN.json及RESTORE.md；terminal3、independent24、local_fullstates各用各自前缀manifest，不混淆。源码ZIP中的HTML为有时间戳的出版前预览，可从随包Markdown重新build；最终公开网页及最后的费用/访问回执以Git主分支为准。
+DOWNLOADS记录60个已上传、匿名可读附件（GitHub另列的两个自动源码压缩档不计入此数），总计11,808,228,940bytes。小Pro ZIP为R14_PRO_PACKET_v1.zip；独立离线GT为R14_SYNTHETIC_OFFLINE_TRUTH_v1.zip。source+diagnostics共用根PACKAGE_PLAN.json及RESTORE.md；terminal3、independent24、local_fullstates各用各自前缀manifest，不混淆。源码ZIP中的HTML为有时间戳的出版前预览，可从随包Markdown重新build；最终公开网页及最后的费用/访问回执以Git主分支为准。
