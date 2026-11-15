@@ -1,0 +1,112 @@
+{
+  "method": "twofold_hop",
+  "geometry": {
+    "schema": "r15_S_conditioned_G_energy_v1",
+    "scalar_domain": "current_complex",
+    "input_shapes": {
+      "G": [
+        576,
+        576
+      ],
+      "S": [
+        48,
+        576
+      ]
+    },
+    "effective_shapes": {
+      "G": [
+        576,
+        576
+      ],
+      "S": [
+        48,
+        576
+      ]
+    },
+    "N": 576,
+    "tau": 0.1,
+    "numerical_rank_rtol": 1e-12,
+    "bits": "S sector first, conditional G energy second: U11=Vs strong, U10=Vs weak, U01=Vw strong, U00=Vw weak",
+    "definition": "Full S right frame then eig(V_sector* G*G V_sector); not simultaneous SVD or exact intersection of global S/G strong spaces",
+    "real_material_rule": "stack(Re operator, Im operator) before all steps; original frames mean pre-conditional full right frames in the selected scalar domain",
+    "eigen_order": "ascending; raw eigenvalues used for >= threshold selection",
+    "S_sigma_max": 0.22672103884653025,
+    "G_sigma_max": 1.4247367432531066,
+    "S_strong_threshold": 0.022672103884653027,
+    "conditional_G_energy_threshold": 0.020298747875754693,
+    "zero_operator_threshold_policy": "Literal declared >= threshold including zero; numerical null ranks separately reported; no synthetic padding",
+    "ranks": {
+      "U11": 11,
+      "U10": 0,
+      "U01": 9,
+      "U00": 556,
+      "S_strong": 11,
+      "S_weak": 565,
+      "global_G_strong": 19,
+      "S_numerical_rank": 48,
+      "S_numerical_null": 528,
+      "G_numerical_rank": 576,
+      "G_numerical_null": 0
+    },
+    "rank_sum": 576,
+    "orthonormality_Frobenius": null,
+    "completeness_Frobenius": null,
+    "cross_S_sector_G_Gram_Frobenius": 1.1096211130433684,
+    "global_projector_commutator_Frobenius": 1.1031586677387273,
+    "repeated_basis_identity_validation": false,
+    "identity_validation_null_reason": "Previously characterized public geometry; no repeated identity checks in online solve",
+    "global_projector_noncommutator_norm_definition": "Frobenius norm of Ps Pg - Pg Ps for independent global tau-strong projectors",
+    "conditional_eigen_diagnostics": {
+      "Sstrong": {
+        "min_eigenvalue": 0.03734971209715905,
+        "tiny_negative_clipped_for_diagnostics": 0
+      },
+      "Sweak": {
+        "min_eigenvalue": 1.9237136458663605e-05,
+        "tiny_negative_clipped_for_diagnostics": 0
+      }
+    },
+    "significant_negative_eigenvalue_issues": [],
+    "operation_counts": {
+      "full_S_SVD": 1,
+      "full_G_SVD": 1,
+      "G_Gram_products": 1,
+      "conditional_Hermitian_eigh": 2,
+      "conditional_Gram_compressions": 2,
+      "cross_S_sector_G_Gram_product": 1,
+      "global_projector_small_overlap_Gram": 1
+    },
+    "CPU_seconds": 0.22041999999999995,
+    "wall_seconds": 0.22174729174003005,
+    "cost_scope": "Public operator SVD/Gram/eigh/diagnostics only, no physical LU/RHS; validation products charged",
+    "truth_access": "NONE"
+  },
+  "denominator": {
+    "rank": 11,
+    "projection": "galerkin",
+    "one_hop": true,
+    "CPU_seconds": 0.0004070000000000462,
+    "wall_seconds": 0.0004081670194864273,
+    "basis_selection": "external supplied fixed U; no SVD or padding",
+    "neighbor": "Original disjoint4cell off-diagonal N; residual R=N-PNP",
+    "qualification": "No all-box contraction guarantee for the truncated residual hop"
+  },
+  "global_G19_is_original_strong_rank": 19,
+  "selected_rank": 11,
+  "material_real_DOF": 576,
+  "exclusion": "Excluded from extra rational/routing feedback, not from Maxwell data/material DOF; local residual hop retained",
+  "reflection": "P_H on BOTH scaled current and field increments; full Maxell projectors; not frequency-decoupled feasibility",
+  "r15_protocol": {
+    "tauS": 0.1,
+    "tauG": 0.1,
+    "numerical_rank_rtol": 1e-12,
+    "period": 16,
+    "omega": 1.0,
+    "scale": 6.0,
+    "DRscale": 6.0,
+    "AP_preparation": 0,
+    "onehop_resolvent_corrections": 1
+  },
+  "truth_access": "NONE",
+  "setup_complete_process_CPU": 1.232903
+}
