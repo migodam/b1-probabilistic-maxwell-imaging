@@ -1,0 +1,19 @@
+diff --git a/research/research_max_struct_r14/supplement_observable19/src/observable19_factory.py b/research/research_max_struct_r14/supplement_observable19/src/observable19_factory.py
+index 057d8aca7..7a5fc2291 100644
+--- a/research/research_max_struct_r14/supplement_observable19/src/observable19_factory.py
++++ b/research/research_max_struct_r14/supplement_observable19/src/observable19_factory.py
+@@ -120,6 +120,14 @@ def bind_runner(arm,anchor_m0=None):
+             return supplied
+         except BaseException as exc:
+             info=dict(context['setup'],status='SETUP_FAILED_OR_INTERRUPTED',error=repr(exc),setup_operation_counts=dict(cost),setup_complete_cpu_seconds=time.process_time()-started,truth_access='NONE',rank_lowering=False)
++            completed_headers=locals().get('headers')
++            if completed_headers is None and len(locals().get('spectra',[]))>=2:
++                completed_headers=dict(singular_G=spectra[0],singular_S=spectra[1])
++            if isinstance(completed_headers,dict):
++                info['computed_public_headers']={k:v for k,v in completed_headers.items() if not isinstance(v,np.ndarray)}
++                info['singular_spectra']={name:spectrum_metadata(completed_headers.get(key),not_computed='not computed before failure') for name,key in [('G','singular_G'),('S','singular_S'),('O0','singular_O0')]}
++                np.savez_compressed(out/'DENOMINATOR_SPECTRA.npz',**{key:completed_headers[key] for key in ('singular_G','singular_S','singular_O0') if key in completed_headers})
++            info['setup_count_scope']='Completed factory operations; any interrupted last operation remains paid in whole-processCPU, never claimed free'
+             write(out/'DENOMINATOR_SETUP_FAILED.json',info);context['setup']=info
+             raise
+ 
