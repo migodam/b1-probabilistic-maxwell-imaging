@@ -1,3 +1,11 @@
+<!-- MAX_STRUCT_R15_PUBLICATION -->
+## MAX-STRUCT R15：twofold G19、观测分母与周期反射
+
+[中文报告、全部24对象及下载](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r15/) · [公式与推导](research/research_max_struct_r15/THEORY_DERIVATIONS.md) · [Chat交接](research/research_max_struct_r15/CHAT_HANDOFF.md)
+
+264次同CPU反演、56次同状态干预。观测分母有部分恢复增量；周期DR救回0020、破坏0021，没有净增恢复。全部成功、失败、费用及完整状态保存；24对象是已曝光材料后续实验，不是新盲测。
+<!-- /MAX_STRUCT_R15_PUBLICATION -->
+
 <!-- MAX_STRUCT_R14_PUBLICATION -->
 ## R14补充：G19的内部传播基与观测基
 

@@ -1,0 +1,3 @@
+# R15 original raw files
+
+All ZIP members retain their R15-root-relative original paths. Extract every listed part into one NEW empty R15 directory. The main264_raw, fork56_raw and source_public groups are separate; do not substitute earlier remote-input/source ZIPs for them. Compare exact member paths, uncompressed sizes and compression with PACKAGE_PLAN.json / FILE_INVENTORY.csv. Normal ZIP CRC is part of lossless ZIP handling; no SHA is used. No arrays are converted or loaded. A PLANNED_NO_ARCHIVES receipt is not an archived release. A PACKAGE_ERROR means incomplete output; preserve it and choose a new destination for any later attempt. Originals are never removed. Analysis and old-endpoint GT-derived arrays are deliberately outside these packages.

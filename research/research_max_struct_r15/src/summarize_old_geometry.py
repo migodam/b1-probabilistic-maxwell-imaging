@@ -244,9 +244,9 @@ def main():
                                 textcoords='offset points', fontsize=7, color=color)
             ax.set_yscale('log')
             ax.grid(alpha=.2)
-            ax.set_xlabel('Background real S numerical-null material-error energy (%)')
-    axes[0].set_ylabel('Isolated S-null finite-chord port energy / total chord port energy')
-    axes[1].set_ylabel('Isolated S-null local port-action energy / total local port-action energy')
+            ax.set_xlabel('Background real S numerical-null\nmaterial-error energy (%)')
+    axes[0].set_ylabel('Isolated S-null chord port energy\n/ complete chord port energy')
+    axes[1].set_ylabel('Isolated S-null local port-action energy\n/ complete local port-action energy')
     axes[0].legend(frameon=False)
     fig.suptitle('Transported response of background S-null material error; ratios are not additive shares', fontsize=11)
     fig.tight_layout(rect=(0, 0, 1, .95))
@@ -272,7 +272,9 @@ def main():
     lines += table(rankrows, [('组', 'group'), ('案例数', 'cases'), ('U11', 'U11'), ('U10', 'U10'), ('U01', 'U01'),
                             ('U00', 'U00'), ('S rank', 'S_numerical_rank'), ('S null', 'S_numerical_null'),
                             ('G strong', 'global_G_strong'), ('G null', 'G_numerical_null'), ('global commutator F', 'commutator')])
+    sm = {(r['method'], r['metric']): r for r in summary}
     lines += ['', '## 全24案例的材料能量汇总', '',
+        f'机械描述：G19/DR的U00材料误差份额逐例中位数为 {sm[("g19", "U00_material_error_fraction")]["case_median"]:.8%} / {sm[("dr", "U00_material_error_fraction")]["case_median"]:.8%}；pooled份额为 {sm[("g19", "U00_material_error_fraction")]["pooled_ratio"]:.8%} / {sm[("dr", "U00_material_error_fraction")]["pooled_ratio"]:.8%}。两种算法的24个端点均有负的finite-chord S-port signed cross。指定0021、0023的总材料误差能量远高于0009、0020，故本表不以单一pooled数替代逐例数；不从这些描述推出恢复机制或预测器。', '',
         'pooled_ratio明确是跨24案例的分子能量总和/分母能量总和；case_median是24个案例比率的中位数。大误差案例会影响pooled，因此并列保留，未把48个端点或每个网格点当独立统计检验样本。', '']
     lines += table(summary, [('方法', 'method'), ('指标', 'metric'), ('pooled ratio', 'pooled_ratio'),
                              ('case median', 'case_median'), ('min', 'case_min'), ('max', 'case_max')])
