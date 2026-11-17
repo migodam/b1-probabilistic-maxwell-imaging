@@ -1,24 +1,10 @@
-# Research publication conventions
+# 发布约定
 
-Updated by the user on 2026-11-18. The standing preference is to keep research in the existing project repository and report site; explicit task restrictions override it. A direct “publish” authorizes the normal commit, push, Release upload, and existing-site deployment workflow without repeated confirmation.
+用户于2026-11-18更新：发布是交付步骤，不是新实验或验收项目。
 
-## Default workflow
-
-1. Publish the completed report, relevant code/evidence, and requested package to the existing project. Preserve scientific limits and negative results. A new phase does not need a new repository.
-2. Use the push/upload result and, when the task includes a website deployment, the provider's completion status. Do not call a queued or failed deployment completed. Wait for the necessary status with reasonable intervals, not frequent unchanged polling.
-3. Return the public links and any actual failure. No obligatory publication receipt, second metadata commit, or second package is needed merely to mark completion.
-
-## No automatic post-publication test suite
-
-- Do not download the released ZIP again, compare bytes or hashes, run SHA-256/CRC, perform anonymous download tests, crawl links, repeatedly probe Pages/CDNs, take browser screenshots, or rerun scientific/smoke tests just because publication occurred.
-- Do such work only when the user explicitly requests it or there is a concrete upload/deployment/correctness problem that the check will resolve. Keep the diagnosis targeted; stop when the issue is resolved.
-- Existing archive manifests may be retained as provenance. Do not generate new manifests or hashes by default. Ordinary documentation-only edits need no research experiment or deployment acceptance exercise.
-- If publication status is successful, finish the task; do not invent an additional “acceptance gate.” If the provider reports failure, fix that specific failure or report the real blocker.
-
-## Repository and evidence boundaries
-
-- B1 stages stay in research/ with a concise current entry in START_HERE and the existing site. C1 continues in its own existing repository; A17 remains its separate theory/publication project.
-- Preserve historical URLs, releases, frozen data, failures, costs, and license status. Keep navigation useful rather than adding a large new process for each round.
-- Do not rewrite frozen scientific results to improve a release. Clearly distinguish post-result development from blind evidence, and publication from scientific validation.
-- Publish source and evidence within the requested scope. Exclude credentials and irrelevant sensitive runtime dumps if encountered. This does not require rescanning the entire project for every upload.
-- Publication does not authorize new physics runs, locked-data access, training, hardware changes, or autonomous research frameworks.
+- 沿用已有项目仓库、网页和Release；用户说“publish”后直接完成，不重复确认。
+- 发布已有报告、代码、结果、图和需要的附件；不因此补做实验、重构工程、添加审计或另造多套材料。
+- 以推送、上传、必要部署的成功返回为完成依据，返回链接。尚未完成或实际报错就如实说明，并针对报错处理。
+- 不再下载ZIP，不测匿名访问，不算哈希/SHA/CRC，不重复比对文件，不巡检网页/CDN，不截图验收，不新增发布收据或为收据再提交一次。
+- 只有用户明确要求，或已经出现的具体故障需要某项检查时才做；故障解决即停止，不扩大成检查清单。
+- 保留科研结论与失败，勿发布凭据。发布成功不等于理论或算法成功。
