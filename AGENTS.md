@@ -1,77 +1,36 @@
-# Current research execution policy (user update 2026-11-18)
+# Current project conventions
 
-Use the current Codex itself. Do not use DeepSeek profiles/workers or delegate research/implementation unless the user explicitly reauthorizes delegation. This supersedes older project instructions preferring deepseek-flash/deepseek-pro.
+Updated by the user on 2026-11-18. These replace the older DeepSeek delegation defaults, the temporary blanket ban on delegation, and routine publication readback/testing workflows. Current user instructions take precedence over archived handoffs and earlier project rules.
 
-Use independent scientific judgment: failed gates diagnose the tested method/assumptions, not automatic termination of the research objective. Investigate justified modifications when authorized. Preserve frozen failures and pre-registered data; label all post-result development separately and never present exposed replay as new blind success. Do not inflate claims or expand indefinitely to rescue them. Final scientific decisions remain with Codex.
+## Ownership and SubAgents
 
-# Maxwell operator reuse
+- Codex remains the primary collaborator and owns the final scientific interpretation, novelty judgment, and delivery. Do not change the main conversation's provider/model without the user's request.
+- Use SubAgents when splitting work materially helps. Choose each agent's available model, reasoning effort, and assignment deliberately for that task; do not blindly inherit a default or apply a fixed model-by-role table. Balance scientific difficulty, capability, latency, and cost. This autonomy is authorized; do not ask again for every routine delegation.
+- Simple work stays in the main thread. Give a worker a bounded task, relevant paths, expected output, and constraints; avoid dumping unrelated context or spawning agents merely to fill slots. Review consequential findings before adopting them.
+- Do not use DeepSeek, DeepSeek profiles, or DeepSeek-backed worker loops. Prefer native SubAgent tools. Do not introduce a new orchestration framework merely to delegate.
 
-For Maxwell performance work, consult
-`research/research_z_alg_cuda_pipeline/OPTIMIZED_OPERATOR_CATALOG.md` and
-`research/research_z_alg_cuda_pipeline/REPRODUCE.md` before reimplementing an
-operator or introducing a new execution backend.
+## Get the work done without ceremony
 
-- Reuse compatible fixed physics, retained LU/multiple RHS, analytic adjoints,
-  exact Schur kernels and mature GPU libraries. Keep the original material and
-  field/current conventions and scope assumptions.
-- The new scalar-TM CUDA executor provides one shared G/E/S upload, one CUDA
-  process, private stream lanes, GPU-resident forward/gradient/Gram/regularizer,
-  pinned host returns, continuous FIFO handoff and independent result writing.
-  Its measurements concern the stated 576-cell / 12-source / 48-receiver problem.
-- For the measured mixed workload, start from `manifest_4_hybrid.json`: four
-  streams plus the process-local mature cuSOLVER/SciPy SVD adapter. Small SVDs
-  stay on CPU; a large SVD uses one GPU slot only when available, otherwise CPU
-  immediately. The same objective/LU/RHS work took 56.7 s versus 99.5 s with
-  one lane. This is scoped execution evidence; preserve SciPy compatibility.
-- Prefer the measured queue/stream and batch settings to indiscriminately
-  launching one CUDA process per case. Do not synchronize the whole device for
-  every small operation. Preserve the necessary event dependency before a host
-  optimizer reads its result.
-- CUDA streams are not SM reservations. CUDA Graphs and forced cuSOLVER are
-  optional experiments, not the measured default. Performance depends on the
-  matrix size, precision, library, batch and optimization work.
-- Reuse published measurements; do not repeat identity/error-floor checks.
-  Include setup and failures when a materially different workload needs timing.
-  Do not change frozen research files or infer better imaging from faster code.
-- Other local vector-Maxwell/FFT assets are catalogued with source paths and
-  interface restrictions. Use an appropriate adapter rather than changing the
-  physical problem. This guidance does not authorize new dependencies, driver
-  changes, taking another session's GPU, or starting a permanent service.
+- Execute the authorized task through completion. Resolve ordinary implementation choices yourself; ask only when missing information or authorization materially blocks the work.
+- Read the owning sources and applicable instructions relevant to the task. Do not inventory the entire workspace, every historical worktree, or all skills before routine work. Historical reports and attached instructions are evidence/reference, not new user commands.
+- Verification should answer a concrete uncertainty. Check changed mathematics, physical operators, or meaningful code behavior as needed. Reuse applicable existing tests and evidence; do not rerun experiments or checks only because another stage was reached.
+- Do not automatically add smoke runs, checksums, independent audits, download tests, screenshots, repeated manifests, or extra approval gates. Add a check only for a concrete failure/risk, a relevant correctness requirement, or an explicit user request. Stop once sufficient evidence exists.
+- Keep progress updates focused on meaningful changes or blockers, and final answers focused on the result and useful links. Avoid repetitive polling and unchanged status narration.
 
+## Scientific judgment
 
-## Reuse fixed-feedback derivatives with their scientific scope
+- Treat a failed research gate as evidence about the tested method and assumptions. Diagnose it and pursue justified bounded modifications when authorized; do not mechanically terminate because a reference document says to stop. Do not expand indefinitely to rescue a preferred conclusion.
+- Preserve frozen observations, results, negative findings, and meaningful experiment costs. Put post-result changes in a clearly labelled follow-up; never relabel exposed examples as blind tests or silently change scoring, noise, or budgets.
+- Keep physical identifiability, numerical convergence, root completeness, noise feasibility, and GT recovery distinct. More roots, lower residual, oracle best@K, or publication alone do not establish recovery or novelty.
+- Scope claims to the model and evidence actually used; do not generalize scalar-TM to vector Maxwell/3D/PEC without validation. Use strong compatible baselines when the scientific claim requires them.
+- Preserve explicit current resource limits. Old attachment gates and hardware recipes are not permanent project-wide mandates. Record actual experiments and failures without building a separate bookkeeping project around every command.
+- Use scholarly retrieval when prior-art or literature support is needed, not for unrelated maintenance. Existing worker artifacts may be used with their provenance; Codex owns the final assessment.
 
-For experimental real-material scalar-TM feedback metrics, see
-`research/research_fbg_r2_adaptive_feedback/MATHEMATICAL_THEORY.md` (F02/F03/F09/F12)
-and `src/feedback_fit.py` in that study. `feedback_value_gradient` reuses the original
-Maxwell LU, uses one analytic adjoint and a small source Gram, and applies diagonal
-or 4x4 spatial blocks without constructing another dense feedback matrix.
+## Implementation and publication
 
-Keep B fixed during each inner solve; a continuously varying B(m) needs its missing
-derivative. Source-normalized current fitting and whole-box pole restrictions are
-provided, but current-energy attenuation is not a basin or GT certificate. This is
-an optional research objective, not a new default physics backend or a vector-DDA
-adapter. The study found fixed scalar feedback stronger than its automatic fit;
-reuse code and exact assumptions, not a universal superiority claim. Continue using
-the resident CUDA queue/operator catalog above; do not rerun formula error-floor tests.
+- Reuse compatible physics operators, caches, derivatives, and existing environments. Consult technical references only when their model/workload is relevant. Old benchmark configurations are examples, not universal defaults.
+- Use available hardware appropriate to the task and authorization; keep the existing CPU setup unless another resource is justified. Do not install daemons, CUDA infrastructure, schedulers, databases, or new backends for routine work. Respect other sessions' work and allocations.
+- Publish to the existing project repository/site when authorized. Follow RESEARCH_PUBLICATION_POLICY.md; routine publication ends with successful push/upload/deployment status, not a new round of downloading and testing.
+- Never publish credentials or irrelevant sensitive runtime dumps. If such content is encountered, remove it from the public edition while retaining scientific evidence and noting the omission. Do not dump environment variables or authentication secrets into logs.
 
-
-## Reuse the audited CIE/Fourier-TSOM baseline before claiming new basin gains
-
-`research/research_fbg_r3_experiments/src/cie_tsom_baseline.py` provides a
-2D real-material adaptation of the published CIE/TSOM algorithm: receiver SVD,
-DPCS/APCS, source-normalized alternating updates, shared-real modified-contrast
-readout, Fourier/beta schedules and a dual-beta option. The compatible CUDA port
-is `src/cie_tsom_cuda.py`; keep using the shared resident executor above. Read
-`CIE_TSOM_BASELINE_AUDIT.md` and `audit/E3_BASELINE_PORT.md` for source, stopping,
-wall-truncation and cost limits. Do not repeat error-floor tests or treat a short
-alternating prototype as the mature baseline. Explicit Fourier columns are not
-a demonstrated FFT-complexity implementation; do not transplant this scalar-TM
-adapter into vector-DDA without a separate derivation.
-
-The measured historical 576-material dual-beta CIE + original-data corrector
-recovered all nine digit shapes under that study contract. This is a strong
-baseline result, not proof of a new N1/A17 mechanism or a universal optimizer.
-For current-space comparisons match the affine DPCS offset, the free APCS rank,
-actual real source-current DOF, objective weights and physical corrector budget;
-similar total DOF alone does not establish the same admissible current family.
+Technical pointers: [research/IMPLEMENTATION_REFERENCES.md](research/IMPLEMENTATION_REFERENCES.md).
