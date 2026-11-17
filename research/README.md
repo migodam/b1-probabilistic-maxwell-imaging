@@ -1,3 +1,11 @@
+<!-- Z_ALG_R5_PUBLICATION -->
+## Z-ALG R5：认证歧义与物理主动测量
+
+CONDITIONAL GO：固定精确观测的全box材料覆盖与一源分支分离已认证；全噪声可行集覆盖、总体恢复优势仍未成立。原失败和后续Codex修订分开报告。
+
+[中文网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r5_measurement/) · [数学证书](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r5_measurement/theory.html) · [完整复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r5-measurement-20261118)
+<!-- /Z_ALG_R5_PUBLICATION -->
+
 <!-- MAX_STRUCT_R3_PUBLICATION -->
 ## MAX-STRUCT-R3：公式驱动的机制研究循环
 

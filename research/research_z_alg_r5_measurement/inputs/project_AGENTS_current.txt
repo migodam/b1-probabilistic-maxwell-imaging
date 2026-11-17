@@ -1,0 +1,52 @@
+# Research orchestration
+
+Codex Desktop is the sole top-level orchestrator. It owns theory comprehension, core mathematics, scientific direction, final novelty judgment, interpretation of whether experiments support claims, and final scientific review. Never change the default Codex provider or model for this project.
+
+## Execution policy — updated by the user on 2026-11-18
+
+- Use the current Codex model itself for this project. Do not launch DeepSeek workers, profiles, agents, or DeepSeek-backed autonomous loops. This supersedes the former deepseek-flash/deepseek-pro delegation policy.
+- Do not delegate research or implementation unless the user explicitly authorizes delegation again. Codex owns literature reading, coding, experiments, mathematical reasoning, and final review. Never change the default Codex provider/model.
+- Historical worker artifacts may be read as attributed evidence; they are not authority and do not justify further worker calls.
+
+## Scientific judgment and research continuation
+
+- Exercise independent scientific judgment. A failed gate is evidence about the tested implementation and assumptions, not an automatic verdict that the research goal is impossible or must stop.
+- Diagnose whether failure comes from physical non-identifiability, an algorithmic limitation, numerical certification conservatism, noise/model-error assumptions, or an unfair/incomplete comparison.
+- When the user authorizes development/validation, investigate concrete, mathematically justified modifications that could meet the original goal. Do not stop merely because an attached report recommends a hard gate.
+- Preserve preregistered cohorts, raw failures, ledgers, and frozen historical data. Put post-result modifications in an explicitly separate development/amendment study; do not retrospectively change the original protocol or relabel exposed examples as new blind evidence.
+- Neither inflate claims nor keep expanding indefinitely to rescue a conclusion. Final GO/CONDITIONAL GO/NO-GO must follow the actual scientific evidence, with remaining uncertainty and attribution explicit.
+- Use scholarqa-research directly for relevant prior-art/evidence work. No DeepSeek cleanup or reviewer delegation. Do not launch Agentic-AI-Scientist or another autonomous worker framework unless separately requested by the user.
+- Default experiments use Apple Silicon CPU; MPS only when naturally supported. Keep resource accounting and bounded stages. Do not install CUDA infrastructure, daemons, schedulers, databases, web UIs, or a new orchestration framework for this workflow.
+
+## Reuse existing Maxwell operators before implementing another backend
+
+For CUDA work explicitly requested by the user, first consult
+`research/delegated/z_alg_r2_publication/repository/research/research_z_alg_cuda_pipeline/OPTIMIZED_OPERATOR_CATALOG.md`
+and its `REPRODUCE.md`. These contain measured RTX 4060 / Windows results and the actual APIs, not a universal GPU speed claim.
+
+- Prefer the existing optimized library primitives (PyTorch/cuBLAS/cuSOLVER/MAGMA, cuFFT) and compatible project kernels before writing a new factorization, FFT, adjoint, or scheduler.
+- For the tested mixed 576-cell TRF/L-BFGS/GlobalDual workload, prefer the provided `manifest_4_hybrid.json` execution pattern: four lanes plus one nonblocking GPU slot for large SVD; other SVD calls use the CPU immediately. It completed the same 631 objective evaluations / 635 LU / 26,880 complex RHS in 56.7 s versus 99.5 s for one lane. Reuse `src/hybrid_svd.py` only with a compatible SciPy TRF interface; this is an engineering speed result, not a GT-recovery claim.
+- For the R3/R4 24x24 scalar-TM VIE, reuse `SharedOperators`, `ObjectiveLane`, and the finite FIFO executor in that directory. Share one CUDA process/context and one immutable G/E/S upload across tasks. Independent optimizations can use 2 or 4 private streams; keep LU, total fields, adjoints, Gram, regularization, and coarse-basis products on the device. Use the recorded workload results to choose concurrency.
+- Reuse A17's CUDA compressed endpoint/Cholesky/Woodbury implementation for its compatible vector-current/material problem; reuse A18 Route A/B's FFT propagation for its compatible uniform vector grid. These are different physical models and are not drop-in replacements for the scalar-TM digit solver. R2 active-block and R9 fixed-host reductions require their original active/complement assumptions.
+- Remove unnecessary device-wide synchronization from hot loops. A stream completion event is still needed when a CPU optimizer consumes a result. Keep shared-operator lifetime and cross-stream dependencies explicit; let independent work proceed while a lane waits for its own result. Pack host returns and reuse pinned buffers.
+- Feed a finite ready-task queue continuously; one finished task should not wait for an unrelated slow task before the next is submitted. Preload small public observations once and write results outside CUDA worker callbacks. Use all illuminations as RHS of one retained LU, rather than repeating LU per source.
+- Do not promise fixed SM allocation from ordinary CUDA streams, or equate nvidia-smi utilization with SM occupancy. Windows CUDA MPS is unavailable; green-context partitioning and CUDA Graphs are not enabled by this executor. Do not change drivers, precision, scientific budgets, acquisition, or frozen historical algorithms to obtain a speedup.
+- Prefer the existing substantive throughput records over repeating formula/error-floor checks. For a new workload, measure only the bottleneck/whole-task result needed to choose an implementation. Include setup, failed attempts, and final physical residual; speed does not establish better GT recovery.
+- This guidance does not authorize interrupting another session or consuming its GPU allocation. Coordinate existing resources; do not install a permanent service for sharing the queue.
+
+
+## Reuse fixed-feedback derivatives with their scientific scope
+
+For experimental real-material scalar-TM feedback metrics, see
+`research/delegated/z_alg_r2_publication/repository/research/research_fbg_r2_adaptive_feedback/MATHEMATICAL_THEORY.md` (F02/F03/F09/F12)
+and `src/feedback_fit.py` in that study. `feedback_value_gradient` reuses the original
+Maxwell LU, uses one analytic adjoint and a small source Gram, and applies diagonal
+or 4x4 spatial blocks without constructing another dense feedback matrix.
+
+Keep B fixed during each inner solve; a continuously varying B(m) needs its missing
+derivative. Source-normalized current fitting and whole-box pole restrictions are
+provided, but current-energy attenuation is not a basin or GT certificate. This is
+an optional research objective, not a new default physics backend or a vector-DDA
+adapter. The study found fixed scalar feedback stronger than its automatic fit;
+reuse code and exact assumptions, not a universal superiority claim. Continue using
+the resident CUDA queue/operator catalog above; do not rerun formula error-floor tests.

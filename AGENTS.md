@@ -1,3 +1,9 @@
+# Current research execution policy (user update 2026-11-18)
+
+Use the current Codex itself. Do not use DeepSeek profiles/workers or delegate research/implementation unless the user explicitly reauthorizes delegation. This supersedes older project instructions preferring deepseek-flash/deepseek-pro.
+
+Use independent scientific judgment: failed gates diagnose the tested method/assumptions, not automatic termination of the research objective. Investigate justified modifications when authorized. Preserve frozen failures and pre-registered data; label all post-result development separately and never present exposed replay as new blind success. Do not inflate claims or expand indefinitely to rescue them. Final scientific decisions remain with Codex.
+
 # Maxwell operator reuse
 
 For Maxwell performance work, consult

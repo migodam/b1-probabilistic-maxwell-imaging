@@ -1,0 +1,5 @@
+from common import *
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+book=Ledger('figure_02_layout_revision');d=json.loads((ROOT/'results/T0/clean/design_freeze.json').read_text());q=json.loads((ROOT/'results/qualification.json').read_text());gap=d['min_pair_gaps'];lower=q['T0']['clean']['pairs'][0]['source_gap_lower_bounds'];x=np.arange(len(gap));fig,ax=plt.subplots(figsize=(12,4.8));ax.plot(x,gap,'o',label='Center separation');ax.plot(x,lower,'s',label='Certified local-box lower bound');ax.axhline(2*(EPS+MODEL_ALLOWANCE),color='r',ls='--',label='2(noise + assumed model allowance)');ax.set_xticks(x);ax.set_xticklabels([v['label'] for v in d['menu']],rotation=65,ha='right',fontsize=8);ax.set_ylabel('Complex response separation');ax.set_title('T0 clean: local exact-root separation, not noisy feasible-set coverage',pad=50);ax.legend(loc='lower left',bbox_to_anchor=(0,1.01),ncols=3,fontsize=8,frameon=False);fig.tight_layout();fig.savefig(ROOT/'figures/02_source_separability.png',dpi=180);plt.close(fig);save(ROOT/'results/plot_revision_receipt.json',book.receipt())

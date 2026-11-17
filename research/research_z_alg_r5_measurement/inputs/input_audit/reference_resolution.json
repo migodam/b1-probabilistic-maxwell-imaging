@@ -1,0 +1,4030 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-11-18",
+  "generated_at_utc": "2026-11-17T16:59:49+00:00",
+  "scope": {
+    "purpose": "Resolve bibliographic identity for 24 report reference labels and probe 12 conversation URLs.",
+    "substantive_claims_evaluated": false,
+    "metadata_use": "Tier C bibliographic context only; no report claim was judged from title, abstract, metadata, or URL availability.",
+    "focused_scholar_search_duplicated": false,
+    "concurrency_limit": 3,
+    "http_timeout_seconds": 25,
+    "retry_policy": "No repeated long backoff."
+  },
+  "methods": {
+    "doi": "Crossref REST API /works/{doi}; publisher landing-page availability tested separately.",
+    "arxiv": "Official arXiv export API by exact identifier.",
+    "title_without_identifier": "One exact-title scholarqa-cli collect attempt received HTTP 429; one Crossref query.bibliographic lookup followed.",
+    "urls": "Single GET with redirect recording, 25 s timeout, 786,432-byte maximum body sample, browser-compatible User-Agent.",
+    "pdf": "Poppler pdfinfo page count plus fresh pdftotext comparison against packaged UTF-8 extract."
+  },
+  "scholarqa_attempt": {
+    "command_scope": "One exact-title query for L17 only.",
+    "result": "HTTP 429 Too Many Requests from Semantic Scholar paper search; no retry performed.",
+    "fallback": "Crossref query.bibliographic returned an exact-title DOI match."
+  },
+  "summary_counts": {
+    "report_labels": 24,
+    "label_match": 21,
+    "label_mismatch": 2,
+    "label_unresolved": 1,
+    "labels_with_mismatches": [
+      "L17",
+      "L21"
+    ],
+    "labels_unresolved": [
+      "L20"
+    ],
+    "conversation_urls": 12,
+    "url_http_ok": 6,
+    "url_access_errors": 6,
+    "urls_with_http_titles": 12,
+    "doi_metadata_records_ok": 20,
+    "arxiv_metadata_records_ok": 3,
+    "l17_title_search_ok": true,
+    "pdf_text_exact_match": true,
+    "pdf_page_count_consistent": true
+  },
+  "reference_label_resolution": [
+    {
+      "id": "L1",
+      "reported_label": {
+        "id": "L1",
+        "authors": "Vasco, D. W.",
+        "year": "2000",
+        "title": "An algebraic formulation of geophysical inverse problems",
+        "venue": "Geophysical Journal International 142, 970-990",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1046/j.1365-246x.2000.00188.x"
+          }
+        ],
+        "reported_access_in_package": "Publisher full text; algebraic modeling, existence/uniqueness, and eigenvalue construction reportedly read",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "An algebraic formulation of geophysical inverse problems",
+            "authors": "Vasco, D. W.",
+            "year": "2000",
+            "venue": "Geophysical Journal International 142, 970-990",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1046/j.1365-246x.2000.00188.x"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1046/j.1365-246x.2000.00188.x",
+            "canonical_doi": "10.1046/j.1365-246x.2000.00188.x",
+            "title": "An algebraic formulation of geophysical inverse problems",
+            "authors": [
+              "Vasco, D. W."
+            ],
+            "year": 2000,
+            "issued_date_parts": [
+              2000,
+              9,
+              1
+            ],
+            "published_print": [
+              2000,
+              9,
+              1
+            ],
+            "published_online": [
+              2000,
+              9,
+              1
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Geophysical Journal International",
+            "volume": "142",
+            "issue": "3",
+            "page": "970-990",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Oxford University Press (OUP)",
+            "url": "https://doi.org/10.1046/j.1365-246x.2000.00188.x",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "vasco d w",
+              "resolved_family_names": [
+                "vasco"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2000",
+              "resolved": 2000,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2000
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1046/j.1365-246x.2000.00188.x",
+              "resolved": "10.1046/j.1365-246x.2000.00188.x"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L2",
+      "reported_label": {
+        "id": "L2",
+        "authors": "Everett, M. E.",
+        "year": "1996",
+        "title": "Homotopy, Polynomial Equations, Gross Boundary Data, and Small Helmholtz Systems",
+        "venue": "Journal of Computational Physics 124, 431-441",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1006/jcph.1996.0070"
+          }
+        ],
+        "reported_access_in_package": "Publisher abstract checked; full text reportedly not obtained",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Homotopy, Polynomial Equations, Gross Boundary Data, and Small Helmholtz Systems",
+            "authors": "Everett, M. E.",
+            "year": "1996",
+            "venue": "Journal of Computational Physics 124, 431-441",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1006/jcph.1996.0070"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1006/jcph.1996.0070",
+            "canonical_doi": "10.1006/jcph.1996.0070",
+            "title": "Homotopy, Polynomial Equations, Gross Boundary Data, and Small Helmholtz Systems",
+            "authors": [
+              "Everett, M.E."
+            ],
+            "year": 1996,
+            "issued_date_parts": [
+              1996,
+              3
+            ],
+            "published_print": [
+              1996,
+              3
+            ],
+            "published_online": [
+              null
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Journal of Computational Physics",
+            "volume": "124",
+            "issue": "2",
+            "page": "431-441",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Elsevier BV",
+            "url": "https://doi.org/10.1006/jcph.1996.0070",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "everett m e",
+              "resolved_family_names": [
+                "everett"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "1996",
+              "resolved": 1996,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                1996
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1006/jcph.1996.0070",
+              "resolved": "10.1006/jcph.1996.0070"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L3",
+      "reported_label": {
+        "id": "L3",
+        "authors": "Everett, M. E.",
+        "year": "2026",
+        "title": "Multiple solutions to geophysical inverse problems via tracking flights across a deeply incised model landscape",
+        "venue": "Geophysical Journal International; online 2026-10-09",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1093/gji/ggag432"
+          }
+        ],
+        "reported_access_in_package": "Public body fragments checked; path examples and heuristic limits discussed",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Multiple solutions to geophysical inverse problems via tracking flights across a deeply incised model landscape",
+            "authors": "Everett, M. E.",
+            "year": "2026",
+            "venue": "Geophysical Journal International; online 2026-10-09",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1093/gji/ggag432"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1093/gji/ggag432",
+            "canonical_doi": "10.1093/gji/ggag432",
+            "title": "Multiple solutions to geophysical inverse problems via tracking flights across a deeply incised model landscape",
+            "authors": [
+              "Everett, M E"
+            ],
+            "year": 2026,
+            "issued_date_parts": [
+              2026,
+              10,
+              8
+            ],
+            "published_print": [
+              2026,
+              10,
+              8
+            ],
+            "published_online": [
+              2026,
+              10,
+              9
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Geophysical Journal International",
+            "volume": "247",
+            "issue": "3",
+            "page": null,
+            "article_number": "ggag432",
+            "type": "journal-article",
+            "publisher": "Oxford University Press (OUP)",
+            "url": "https://doi.org/10.1093/gji/ggag432",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "everett m e",
+              "resolved_family_names": [
+                "everett"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2026",
+              "resolved": 2026,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2026
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1093/gji/ggag432",
+              "resolved": "10.1093/gji/ggag432"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L4",
+      "reported_label": {
+        "id": "L4",
+        "authors": "Bouchet, Rachbauer, Rotter, Mosk, Bossy",
+        "year": "2021",
+        "title": "Optimal Control of Coherent Light Scattering for Binary Decision Problems",
+        "venue": "Physical Review Letters 127, 253902",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1103/PhysRevLett.127.253902"
+          }
+        ],
+        "reported_access_in_package": "Author full text",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Optimal Control of Coherent Light Scattering for Binary Decision Problems",
+            "authors": "Bouchet, Rachbauer, Rotter, Mosk, Bossy",
+            "year": "2021",
+            "venue": "Physical Review Letters 127, 253902",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1103/PhysRevLett.127.253902"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1103/PhysRevLett.127.253902",
+            "canonical_doi": "10.1103/physrevlett.127.253902",
+            "title": "Optimal Control of Coherent Light Scattering for Binary Decision Problems",
+            "authors": [
+              "Bouchet, Dorian",
+              "Rachbauer, Lukas M.",
+              "Rotter, Stefan",
+              "Mosk, Allard P.",
+              "Bossy, Emmanuel"
+            ],
+            "year": 2021,
+            "issued_date_parts": [
+              2021,
+              12,
+              17
+            ],
+            "published_print": [
+              null
+            ],
+            "published_online": [
+              2021,
+              12,
+              17
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Physical Review Letters",
+            "volume": "127",
+            "issue": "25",
+            "page": null,
+            "article_number": "253902",
+            "type": "journal-article",
+            "publisher": "American Physical Society (APS)",
+            "url": "https://doi.org/10.1103/physrevlett.127.253902",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "bouchet rachbauer rotter mosk bossy",
+              "resolved_family_names": [
+                "bouchet",
+                "rachbauer",
+                "rotter",
+                "mosk",
+                "bossy"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2021",
+              "resolved": 2021,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2021
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1103/PhysRevLett.127.253902",
+              "resolved": "10.1103/physrevlett.127.253902"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L5",
+      "reported_label": {
+        "id": "L5",
+        "authors": "Bouchet, Rotter, Mosk",
+        "year": "2021",
+        "title": "Maximum information states for coherent scattering measurements",
+        "venue": "Nature Physics 17, 564-568",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1038/s41567-020-01137-4"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Maximum information states for coherent scattering measurements",
+            "authors": "Bouchet, Rotter, Mosk",
+            "year": "2021",
+            "venue": "Nature Physics 17, 564-568",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1038/s41567-020-01137-4"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1038/s41567-020-01137-4",
+            "canonical_doi": "10.1038/s41567-020-01137-4",
+            "title": "Maximum information states for coherent scattering measurements",
+            "authors": [
+              "Bouchet, Dorian",
+              "Rotter, Stefan",
+              "Mosk, Allard P."
+            ],
+            "year": 2021,
+            "issued_date_parts": [
+              2021,
+              1,
+              21
+            ],
+            "published_print": [
+              2021,
+              5
+            ],
+            "published_online": [
+              2021,
+              1,
+              21
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Nature Physics",
+            "volume": "17",
+            "issue": "5",
+            "page": "564-568",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Springer Science and Business Media LLC",
+            "url": "https://doi.org/10.1038/s41567-020-01137-4",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "bouchet rotter mosk",
+              "resolved_family_names": [
+                "bouchet",
+                "rotter",
+                "mosk"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2021",
+              "resolved": 2021,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2021
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1038/s41567-020-01137-4",
+              "resolved": "10.1038/s41567-020-01137-4"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L6",
+      "reported_label": {
+        "id": "L6",
+        "authors": "Wu, O'Leary-Roseberry, Chen, Ghattas",
+        "year": "2022",
+        "title": "Large-scale Bayesian optimal experimental design with derivative-informed projected neural network",
+        "venue": "arXiv",
+        "identifiers": [
+          {
+            "type": "arxiv",
+            "value": "2201.07925"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Large-scale Bayesian optimal experimental design with derivative-informed projected neural network",
+            "authors": "Wu, O'Leary-Roseberry, Chen, Ghattas",
+            "year": "2022",
+            "venue": "arXiv",
+            "identifier": {
+              "type": "arxiv",
+              "value": "2201.07925"
+            }
+          },
+          "resolved": {
+            "provider": "arXiv",
+            "source_url": "https://export.arxiv.org/api/query?id_list=2201.07925&max_results=1",
+            "canonical_doi": null,
+            "title": "Large-scale Bayesian optimal experimental design with derivative-informed projected neural network",
+            "authors": [
+              "Keyi Wu",
+              "Thomas O'Leary-Roseberry",
+              "Peng Chen",
+              "Omar Ghattas"
+            ],
+            "year": 2022,
+            "issued_date_parts": null,
+            "published_print": null,
+            "published_online": null,
+            "publication_date": "2022-01-20T00:15:45Z",
+            "updated": "2022-09-06T17:31:24Z",
+            "venue": null,
+            "volume": null,
+            "issue": null,
+            "page": null,
+            "article_number": null,
+            "type": null,
+            "publisher": null,
+            "url": null,
+            "arxiv_id": "2201.07925",
+            "canonical_arxiv_url": "http://arxiv.org/abs/2201.07925v2",
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "wu o leary roseberry chen ghattas",
+              "resolved_family_names": [
+                "wu",
+                "o leary roseberry",
+                "chen",
+                "ghattas"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2022",
+              "resolved": 2022,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2022
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "2201.07925",
+              "resolved": "2201.07925"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L7",
+      "reported_label": {
+        "id": "L7",
+        "authors": "Sommese, Verschelde, Wampler",
+        "year": "2001",
+        "title": "Numerical Decomposition of the Solution Sets of Polynomial Systems into Irreducible Components",
+        "venue": "SIAM Journal on Numerical Analysis 38, 2022-2046",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1137/S0036142900372549"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Numerical Decomposition of the Solution Sets of Polynomial Systems into Irreducible Components",
+            "authors": "Sommese, Verschelde, Wampler",
+            "year": "2001",
+            "venue": "SIAM Journal on Numerical Analysis 38, 2022-2046",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1137/S0036142900372549"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1137/S0036142900372549",
+            "canonical_doi": "10.1137/s0036142900372549",
+            "title": "Numerical Decomposition of the Solution Sets of Polynomial Systems into Irreducible Components",
+            "authors": [
+              "Sommese, Andrew J.",
+              "Verschelde, Jan",
+              "Wampler, Charles W."
+            ],
+            "year": 2001,
+            "issued_date_parts": [
+              2001,
+              1
+            ],
+            "published_print": [
+              2001,
+              1
+            ],
+            "published_online": [
+              2006,
+              7,
+              26
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "SIAM Journal on Numerical Analysis",
+            "volume": "38",
+            "issue": "6",
+            "page": "2022-2046",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+            "url": "https://doi.org/10.1137/s0036142900372549",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "sommese verschelde wampler",
+              "resolved_family_names": [
+                "sommese",
+                "verschelde",
+                "wampler"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2001",
+              "resolved": 2001,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2001,
+                2006
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1137/S0036142900372549",
+              "resolved": "10.1137/s0036142900372549"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L8",
+      "reported_label": {
+        "id": "L8",
+        "authors": "Duff, Hill, Jensen, Lee, Leykin, Sommars",
+        "year": "2019",
+        "title": "Solving polynomial systems via homotopy continuation and monodromy",
+        "venue": "IMA Journal of Numerical Analysis 39, 1421-1446; online 2018",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1093/imanum/dry017"
+          }
+        ],
+        "reported_access_in_package": "Publisher full text; coverage/monodromy and complexity assumptions reportedly read",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Solving polynomial systems via homotopy continuation and monodromy",
+            "authors": "Duff, Hill, Jensen, Lee, Leykin, Sommars",
+            "year": "2019",
+            "venue": "IMA Journal of Numerical Analysis 39, 1421-1446; online 2018",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1093/imanum/dry017"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1093/imanum/dry017",
+            "canonical_doi": "10.1093/imanum/dry017",
+            "title": "Solving polynomial systems via homotopy continuation and monodromy",
+            "authors": [
+              "Duff, Timothy",
+              "Hill, Cvetelina",
+              "Jensen, Anders",
+              "Lee, Kisun",
+              "Leykin, Anton",
+              "Sommars, Jeff"
+            ],
+            "year": 2018,
+            "issued_date_parts": [
+              2018,
+              4,
+              13
+            ],
+            "published_print": [
+              2019,
+              7,
+              17
+            ],
+            "published_online": [
+              2018,
+              4,
+              13
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "IMA Journal of Numerical Analysis",
+            "volume": "39",
+            "issue": "3",
+            "page": "1421-1446",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Oxford University Press (OUP)",
+            "url": "https://doi.org/10.1093/imanum/dry017",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "duff hill jensen lee leykin sommars",
+              "resolved_family_names": [
+                "duff",
+                "hill",
+                "jensen",
+                "lee",
+                "leykin",
+                "sommars"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2019",
+              "resolved": 2018,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2018,
+                2019
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1093/imanum/dry017",
+              "resolved": "10.1093/imanum/dry017"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L9",
+      "reported_label": {
+        "id": "L9",
+        "authors": "Hauenstein, Sottile",
+        "year": "2012",
+        "title": "Algorithm 921: alphaCertified: Certifying Solutions to Polynomial Systems",
+        "venue": "ACM Transactions on Mathematical Software",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1145/2331130.2331136"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Algorithm 921: alphaCertified: Certifying Solutions to Polynomial Systems",
+            "authors": "Hauenstein, Sottile",
+            "year": "2012",
+            "venue": "ACM Transactions on Mathematical Software",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1145/2331130.2331136"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/2331130.2331136",
+            "canonical_doi": "10.1145/2331130.2331136",
+            "title": "Algorithm 921: alphaCertified: Certifying Solutions to Polynomial Systems",
+            "authors": [
+              "Hauenstein, Jonathan D.",
+              "Sottile, Frank"
+            ],
+            "year": 2012,
+            "issued_date_parts": [
+              2012,
+              8
+            ],
+            "published_print": [
+              2012,
+              8
+            ],
+            "published_online": [
+              2012,
+              8
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "ACM Transactions on Mathematical Software",
+            "volume": "38",
+            "issue": "4",
+            "page": "1-20",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Association for Computing Machinery (ACM)",
+            "url": "https://doi.org/10.1145/2331130.2331136",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "hauenstein sottile",
+              "resolved_family_names": [
+                "hauenstein",
+                "sottile"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2012",
+              "resolved": 2012,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2012
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1145/2331130.2331136",
+              "resolved": "10.1145/2331130.2331136"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L10",
+      "reported_label": {
+        "id": "L10",
+        "authors": "Breiding, Rose, Timme",
+        "year": null,
+        "title": "Certifying zeros of polynomial systems using interval arithmetic",
+        "venue": "arXiv and official certification documentation",
+        "identifiers": [
+          {
+            "type": "arxiv",
+            "value": "2011.05000"
+          }
+        ],
+        "reported_access_in_package": "Official certification documentation cited",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Certifying zeros of polynomial systems using interval arithmetic",
+            "authors": "Breiding, Rose, Timme",
+            "year": null,
+            "venue": "arXiv and official certification documentation",
+            "identifier": {
+              "type": "arxiv",
+              "value": "2011.05000"
+            }
+          },
+          "resolved": {
+            "provider": "arXiv",
+            "source_url": "https://export.arxiv.org/api/query?id_list=2011.05000&max_results=1",
+            "canonical_doi": null,
+            "title": "Certifying zeros of polynomial systems using interval arithmetic",
+            "authors": [
+              "Paul Breiding",
+              "Kemal Rose",
+              "Sascha Timme"
+            ],
+            "year": 2020,
+            "issued_date_parts": null,
+            "published_print": null,
+            "published_online": null,
+            "publication_date": "2020-11-10T09:31:33Z",
+            "updated": "2024-07-11T16:42:11Z",
+            "venue": null,
+            "volume": null,
+            "issue": null,
+            "page": null,
+            "article_number": null,
+            "type": null,
+            "publisher": null,
+            "url": null,
+            "arxiv_id": "2011.05000",
+            "canonical_arxiv_url": "http://arxiv.org/abs/2011.05000v6",
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "breiding rose timme",
+              "resolved_family_names": [
+                "breiding",
+                "rose",
+                "timme"
+              ]
+            },
+            "year": {
+              "match": null,
+              "reported": null,
+              "resolved": 2020,
+              "note": "No year supplied in report"
+            },
+            "identifier": {
+              "match": true,
+              "reported": "2011.05000",
+              "resolved": "2011.05000"
+            }
+          },
+          "mismatches": [],
+          "warnings": [
+            "report omits a year",
+            "arXiv v1 is dated 2020 and v6 2024; the report gives no year"
+          ],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L11",
+      "reported_label": {
+        "id": "L11",
+        "authors": "van den Berg, Kleinman",
+        "year": "1997",
+        "title": "A contrast source inversion method",
+        "venue": "Inverse Problems 13, 1607",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1088/0266-5611/13/6/013"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "A contrast source inversion method",
+            "authors": "van den Berg, Kleinman",
+            "year": "1997",
+            "venue": "Inverse Problems 13, 1607",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1088/0266-5611/13/6/013"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1088/0266-5611/13/6/013",
+            "canonical_doi": "10.1088/0266-5611/13/6/013",
+            "title": "A contrast source inversion method",
+            "authors": [
+              "Berg, Peter M van den",
+              "Kleinman, Ralph E"
+            ],
+            "year": 1997,
+            "issued_date_parts": [
+              1997,
+              12,
+              1
+            ],
+            "published_print": [
+              1997,
+              12,
+              1
+            ],
+            "published_online": [
+              1999,
+              1,
+              1
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Inverse Problems",
+            "volume": "13",
+            "issue": "6",
+            "page": "1607-1620",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "IOP Publishing",
+            "url": "https://doi.org/10.1088/0266-5611/13/6/013",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "van den berg kleinman",
+              "resolved_family_names": [
+                "berg",
+                "kleinman"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "1997",
+              "resolved": 1997,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                1997,
+                1999
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1088/0266-5611/13/6/013",
+              "resolved": "10.1088/0266-5611/13/6/013"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L12",
+      "reported_label": {
+        "id": "L12",
+        "authors": "Zhong, Chen",
+        "year": "2009",
+        "title": "Twofold subspace-based optimization method for solving inverse scattering problems",
+        "venue": "Inverse Problems 25, 085003",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1088/0266-5611/25/8/085003"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Twofold subspace-based optimization method for solving inverse scattering problems",
+            "authors": "Zhong, Chen",
+            "year": "2009",
+            "venue": "Inverse Problems 25, 085003",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1088/0266-5611/25/8/085003"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1088/0266-5611/25/8/085003",
+            "canonical_doi": "10.1088/0266-5611/25/8/085003",
+            "title": "Twofold subspace-based optimization method for solving inverse scattering problems",
+            "authors": [
+              "Zhong, Yu",
+              "Chen, Xudong"
+            ],
+            "year": 2009,
+            "issued_date_parts": [
+              2009,
+              7,
+              24
+            ],
+            "published_print": [
+              2009,
+              8,
+              1
+            ],
+            "published_online": [
+              2009,
+              7,
+              24
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Inverse Problems",
+            "volume": "25",
+            "issue": "8",
+            "page": "085003",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "IOP Publishing",
+            "url": "https://doi.org/10.1088/0266-5611/25/8/085003",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "zhong chen",
+              "resolved_family_names": [
+                "zhong",
+                "chen"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2009",
+              "resolved": 2009,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2009
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1088/0266-5611/25/8/085003",
+              "resolved": "10.1088/0266-5611/25/8/085003"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L13",
+      "reported_label": {
+        "id": "L13",
+        "authors": "Zhong, Xu",
+        "year": "2019",
+        "title": "Contraction Integral Equation for Three-Dimensional Electromagnetic Inverse Scattering Problems",
+        "venue": "Journal of Imaging 5(2), 27",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.3390/jimaging5020027"
+          }
+        ],
+        "reported_access_in_package": "Open full text and cited 2D precedent reportedly read",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Contraction Integral Equation for Three-Dimensional Electromagnetic Inverse Scattering Problems",
+            "authors": "Zhong, Xu",
+            "year": "2019",
+            "venue": "Journal of Imaging 5(2), 27",
+            "identifier": {
+              "type": "doi",
+              "value": "10.3390/jimaging5020027"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.3390/jimaging5020027",
+            "canonical_doi": "10.3390/jimaging5020027",
+            "title": "Contraction Integral Equation for Three-Dimensional Electromagnetic Inverse Scattering Problems",
+            "authors": [
+              "Zhong, Yu",
+              "Xu, Kuiwen"
+            ],
+            "year": 2019,
+            "issued_date_parts": [
+              2019,
+              2,
+              8
+            ],
+            "published_print": [
+              null
+            ],
+            "published_online": [
+              2019,
+              2,
+              8
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Journal of Imaging",
+            "volume": "5",
+            "issue": "2",
+            "page": "27",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "MDPI AG",
+            "url": "https://doi.org/10.3390/jimaging5020027",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "zhong xu",
+              "resolved_family_names": [
+                "zhong",
+                "xu"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2019",
+              "resolved": 2019,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2019
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.3390/jimaging5020027",
+              "resolved": "10.3390/jimaging5020027"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L14",
+      "reported_label": {
+        "id": "L14",
+        "authors": "Golub, Pereyra; van Leeuwen, Yang",
+        "year": "1973; 2025",
+        "title": "The Differentiation of Pseudo-Inverses and Nonlinear Least Squares Problems Whose Variables Separate; An analysis of constraint-relaxation in PDE-based inverse problems",
+        "venue": "SIAM Journal on Numerical Analysis; Inverse Problems 41, 025009",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1137/0710036"
+          },
+          {
+            "type": "doi",
+            "value": "10.1088/1361-6420/adab89"
+          }
+        ],
+        "reported_access_in_package": "Author full text for the 2025 work",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": 1,
+          "part": "first",
+          "reported": {
+            "title": "The Differentiation of Pseudo-Inverses and Nonlinear Least Squares Problems Whose Variables Separate",
+            "authors": "Golub, Pereyra",
+            "year": "1973",
+            "venue": "SIAM Journal on Numerical Analysis",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1137/0710036"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1137/0710036",
+            "canonical_doi": "10.1137/0710036",
+            "title": "The Differentiation of Pseudo-Inverses and Nonlinear Least Squares Problems Whose Variables Separate",
+            "authors": [
+              "Golub, G. H.",
+              "Pereyra, V."
+            ],
+            "year": 1973,
+            "issued_date_parts": [
+              1973,
+              4
+            ],
+            "published_print": [
+              1973,
+              4
+            ],
+            "published_online": [
+              2006,
+              7,
+              14
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "SIAM Journal on Numerical Analysis",
+            "volume": "10",
+            "issue": "2",
+            "page": "413-432",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+            "url": "https://doi.org/10.1137/0710036",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "golub pereyra",
+              "resolved_family_names": [
+                "golub",
+                "pereyra"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "1973",
+              "resolved": 1973,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                1973,
+                2006
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1137/0710036",
+              "resolved": "10.1137/0710036"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        },
+        {
+          "component": 2,
+          "part": "second",
+          "reported": {
+            "title": "An analysis of constraint-relaxation in PDE-based inverse problems",
+            "authors": "van Leeuwen, Yang",
+            "year": "2025",
+            "venue": "Inverse Problems 41, 025009",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1088/1361-6420/adab89"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1088/1361-6420/adab89",
+            "canonical_doi": "10.1088/1361-6420/adab89",
+            "title": "An analysis of constraint-relaxation in PDE-based inverse problems",
+            "authors": [
+              "van Leeuwen, Tristan",
+              "Yang, Yunan"
+            ],
+            "year": 2025,
+            "issued_date_parts": [
+              2025,
+              1,
+              28
+            ],
+            "published_print": [
+              2025,
+              2,
+              28
+            ],
+            "published_online": [
+              2025,
+              1,
+              28
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Inverse Problems",
+            "volume": "41",
+            "issue": "2",
+            "page": "025009",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "IOP Publishing",
+            "url": "https://doi.org/10.1088/1361-6420/adab89",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "van leeuwen yang",
+              "resolved_family_names": [
+                "van leeuwen",
+                "yang"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2025",
+              "resolved": 2025,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2025
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1088/1361-6420/adab89",
+              "resolved": "10.1088/1361-6420/adab89"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L15",
+      "reported_label": {
+        "id": "L15",
+        "authors": "Chai, Moscoso, Papanicolaou",
+        "year": "2014",
+        "title": "Imaging Strong Localized Scatterers with Sparsity Promoting Optimization",
+        "venue": "SIAM Journal on Imaging Sciences 7, 1358-1387",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1137/130943200"
+          }
+        ],
+        "reported_access_in_package": "Author full text",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Imaging Strong Localized Scatterers with Sparsity Promoting Optimization",
+            "authors": "Chai, Moscoso, Papanicolaou",
+            "year": "2014",
+            "venue": "SIAM Journal on Imaging Sciences 7, 1358-1387",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1137/130943200"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1137/130943200",
+            "canonical_doi": "10.1137/130943200",
+            "title": "Imaging Strong Localized Scatterers with Sparsity Promoting Optimization",
+            "authors": [
+              "Chai, Anwei",
+              "Moscoso, Miguel",
+              "Papanicolaou, George"
+            ],
+            "year": 2014,
+            "issued_date_parts": [
+              2014,
+              1
+            ],
+            "published_print": [
+              2014,
+              1
+            ],
+            "published_online": [
+              2014,
+              6,
+              12
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "SIAM Journal on Imaging Sciences",
+            "volume": "7",
+            "issue": "2",
+            "page": "1358-1387",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+            "url": "https://doi.org/10.1137/130943200",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "chai moscoso papanicolaou",
+              "resolved_family_names": [
+                "chai",
+                "moscoso",
+                "papanicolaou"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2014",
+              "resolved": 2014,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2014
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1137/130943200",
+              "resolved": "10.1137/130943200"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L16",
+      "reported_label": {
+        "id": "L16",
+        "authors": "Cakoni, Harris",
+        "year": "2015",
+        "title": "The factorization method for a defective region in an anisotropic material",
+        "venue": "Inverse Problems 31, 025002",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1088/0266-5611/31/2/025002"
+          },
+          {
+            "type": "arxiv",
+            "value": "1410.3737"
+          }
+        ],
+        "reported_access_in_package": "Scope described as specific 3D acoustic or 2D scalar-TE setting, not general 3D vector Maxwell",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "The factorization method for a defective region in an anisotropic material",
+            "authors": "Cakoni, Harris",
+            "year": "2015",
+            "venue": "Inverse Problems 31, 025002",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1088/0266-5611/31/2/025002"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1088/0266-5611/31/2/025002",
+            "canonical_doi": "10.1088/0266-5611/31/2/025002",
+            "title": "The factorization method for a defective region in an anisotropic material",
+            "authors": [
+              "Cakoni, Fioralba",
+              "Harris, Isaac"
+            ],
+            "year": 2015,
+            "issued_date_parts": [
+              2015,
+              1,
+              21
+            ],
+            "published_print": [
+              2015,
+              2,
+              1
+            ],
+            "published_online": [
+              2015,
+              1,
+              21
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Inverse Problems",
+            "volume": "31",
+            "issue": "2",
+            "page": "025002",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "IOP Publishing",
+            "url": "https://doi.org/10.1088/0266-5611/31/2/025002",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "cakoni harris",
+              "resolved_family_names": [
+                "cakoni",
+                "harris"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2015",
+              "resolved": 2015,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2015
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1088/0266-5611/31/2/025002",
+              "resolved": "10.1088/0266-5611/31/2/025002"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L17",
+      "reported_label": {
+        "id": "L17",
+        "authors": "Ammari, Chow, Zou",
+        "year": "2015 report",
+        "title": "Super-resolution in imaging high contrast targets from the perspective of scattering coefficients",
+        "venue": null,
+        "identifiers": [],
+        "reported_access_in_package": "ETH author full text",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED",
+        "note": "No DOI, arXiv identifier, or URL accompanies this entry in the package"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Super-resolution in imaging high contrast targets from the perspective of scattering coefficients",
+            "authors": "Ammari, Chow, Zou",
+            "year": "2015 report",
+            "venue": null,
+            "identifier": null
+          },
+          "resolved": {
+            "provider": "Crossref title search",
+            "source_url": "https://api.crossref.org/works?query.bibliographic=Super-resolution+in+imaging+high+contrast+targets+from+the+perspective+of+scattering+coefficients&rows=5",
+            "canonical_doi": "10.1016/j.matpur.2017.09.008",
+            "title": "Super-resolution in imaging high contrast targets from the perspective of scattering coefficients",
+            "authors": [
+              "Ammari, Habib",
+              "Chow, Yat Tin",
+              "Zou, Jun"
+            ],
+            "year": 2018,
+            "issued_date_parts": [
+              2018,
+              3
+            ],
+            "published_print": null,
+            "published_online": null,
+            "publication_date": null,
+            "updated": null,
+            "venue": "Journal de Mathématiques Pures et Appliquées",
+            "volume": "111",
+            "issue": null,
+            "page": "191-226",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": null,
+            "url": "https://doi.org/10.1016/j.matpur.2017.09.008",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "ammari chow zou",
+              "resolved_family_names": [
+                "ammari",
+                "chow",
+                "zou"
+              ]
+            },
+            "year": {
+              "match": false,
+              "reported": "2015 report",
+              "resolved": 2018,
+              "note": "Report year differs from canonical publication year",
+              "accepted_years": [
+                2018
+              ]
+            },
+            "identifier": {
+              "match": null,
+              "reported": null,
+              "resolved": null
+            }
+          },
+          "mismatches": [
+            "year"
+          ],
+          "warnings": [
+            "the 2015 item may be a report/preprint; no 2015 identifier was supplied, while the title-resolved DOI is the 2018 journal version"
+          ],
+          "component_status": "MISMATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MISMATCH",
+      "label_mismatch_fields": [
+        "year"
+      ]
+    },
+    {
+      "id": "L18",
+      "reported_label": {
+        "id": "L18",
+        "authors": "Chen, X.",
+        "year": "2018",
+        "title": "Reconstructing Perfect Electric Conductors, Chapter 7",
+        "venue": "Book chapter",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1002/9781119311997.ch7"
+          }
+        ],
+        "reported_access_in_package": "Publisher abstract and bibliographic information checked; paid chapter full text reportedly not obtained",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Reconstructing Perfect Electric Conductors, Chapter 7",
+            "authors": "Chen, X.",
+            "year": "2018",
+            "venue": "Book chapter",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1002/9781119311997.ch7"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1002/9781119311997.ch7",
+            "canonical_doi": "10.1002/9781119311997.ch7",
+            "title": "Reconstructing Perfect Electric Conductors",
+            "authors": [
+              "Chen, Xudong"
+            ],
+            "year": 2018,
+            "issued_date_parts": [
+              2018,
+              5,
+              11
+            ],
+            "published_print": [
+              2018,
+              5,
+              29
+            ],
+            "published_online": [
+              2018,
+              5,
+              11
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Computational Methods for Electromagnetic Inverse Scattering",
+            "volume": null,
+            "issue": null,
+            "page": "183-206",
+            "article_number": null,
+            "type": "other",
+            "publisher": "Wiley",
+            "url": "https://doi.org/10.1002/9781119311997.ch7",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": "10.1002/9781119311997",
+            "author_source_url": "https://api.crossref.org/works/10.1002/9781119311997"
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "chen x",
+              "resolved_family_names": [
+                "chen"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2018",
+              "resolved": 2018,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2018
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1002/9781119311997.ch7",
+              "resolved": "10.1002/9781119311997.ch7"
+            }
+          },
+          "mismatches": [],
+          "warnings": [
+            "chapter Crossref record omits authors; Xudong Chen is resolved from the parent book DOI metadata"
+          ],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L19",
+      "reported_label": {
+        "id": "L19",
+        "authors": "Sun, Klaseboer, Yuffa, Chan",
+        "year": "2020",
+        "title": "Field-Only Surface Integral Equations: Scattering from a Perfect Electric Conductor",
+        "venue": "Journal of the Optical Society of America A",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1364/JOSAA.378665"
+          }
+        ],
+        "reported_access_in_package": "NIST original description cited",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Field-Only Surface Integral Equations: Scattering from a Perfect Electric Conductor",
+            "authors": "Sun, Klaseboer, Yuffa, Chan",
+            "year": "2020",
+            "venue": "Journal of the Optical Society of America A",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1364/JOSAA.378665"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1364/JOSAA.378665",
+            "canonical_doi": "10.1364/josaa.378665",
+            "title": "Field-only surface integral equations: scattering from a perfect electric conductor",
+            "authors": [
+              "Sun, Qiang",
+              "Klaseboer, Evert",
+              "Yuffa, Alex J.",
+              "Chan, Derek Y. C."
+            ],
+            "year": 2020,
+            "issued_date_parts": [
+              2020,
+              1,
+              24
+            ],
+            "published_print": [
+              2020,
+              2,
+              1
+            ],
+            "published_online": [
+              2020,
+              1,
+              24
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Journal of the Optical Society of America A",
+            "volume": "37",
+            "issue": "2",
+            "page": "276",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Optica Publishing Group",
+            "url": "https://doi.org/10.1364/josaa.378665",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "sun klaseboer yuffa chan",
+              "resolved_family_names": [
+                "sun",
+                "klaseboer",
+                "yuffa",
+                "chan"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2020",
+              "resolved": 2020,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2020
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1364/JOSAA.378665",
+              "resolved": "10.1364/josaa.378665"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L20",
+      "reported_label": {
+        "id": "L20",
+        "authors": "NASA",
+        "year": "2020",
+        "title": "NASA/TM-2020-5006765, Volume II, Appendix K, Table K.1",
+        "venue": "NASA technical memorandum",
+        "identifiers": [
+          {
+            "type": "url",
+            "value": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf"
+          }
+        ],
+        "reported_access_in_package": "Specific appendix formula/table and probe-geometry limitation reportedly checked; whole volume not claimed read",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "NASA/TM-2020-5006765, Volume II, Appendix K, Table K.1",
+            "authors": "NASA",
+            "year": "2020",
+            "venue": "NASA technical memorandum",
+            "identifier": {
+              "type": "url",
+              "value": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf"
+            }
+          },
+          "resolved": {
+            "provider": "NASA NTRS",
+            "error": "NTRS metadata and PDF endpoints returned HTTP 403 in this audit",
+            "source_url": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf"
+          },
+          "comparisons": {
+            "title": {
+              "match": false,
+              "similarity": 0.0
+            },
+            "authors": {
+              "match": false,
+              "reported_normalized": "nasa",
+              "resolved_family_names": []
+            },
+            "year": {
+              "match": null,
+              "reported": "2020",
+              "resolved": null,
+              "note": "No year supplied in report"
+            },
+            "identifier": {
+              "match": false,
+              "reported": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf",
+              "resolved": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf",
+              "http_status": 403
+            }
+          },
+          "mismatches": [],
+          "warnings": [
+            "metadata unresolved",
+            "the entry is an appendix/table locator rather than a conventional bibliographic title; NTRS access was blocked"
+          ],
+          "component_status": "UNRESOLVED",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "UNRESOLVED",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L21",
+      "reported_label": {
+        "id": "L21",
+        "authors": "TypeSafe AI",
+        "year": "2026",
+        "title": "Introducing System One Models & Jev",
+        "venue": "Company blog, 2026-09-15",
+        "identifiers": [
+          {
+            "type": "url",
+            "value": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+          }
+        ],
+        "reported_access_in_package": "Official source cited; product claims distinguished from reliability evidence",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Introducing System One Models & Jev",
+            "authors": "TypeSafe AI",
+            "year": "2026",
+            "venue": "Company blog, 2026-09-15",
+            "identifier": {
+              "type": "url",
+              "value": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+            }
+          },
+          "resolved": {
+            "provider": "TypeSafe AI Blog",
+            "source_url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+            "canonical_doi": null,
+            "title": "Introducing System One Models & Jev",
+            "authors": [
+              "Diogo Almeida, founder, TypeSafe"
+            ],
+            "year": 2026,
+            "issued_date_parts": null,
+            "published_print": null,
+            "published_online": null,
+            "publication_date": "2026-09-15",
+            "updated": null,
+            "venue": "TypeSafe AI Blog",
+            "volume": null,
+            "issue": null,
+            "page": null,
+            "article_number": null,
+            "type": null,
+            "publisher": null,
+            "url": null,
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": false,
+              "reported_normalized": "typesafe ai",
+              "resolved_family_names": [
+                "diogo almeida"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2026",
+              "resolved": 2026,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2026
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+              "resolved": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+              "http_status": 200
+            }
+          },
+          "mismatches": [
+            "authors"
+          ],
+          "warnings": [
+            "page names Diogo Almeida, founder, TypeSafe in an embedded byline; TypeSafe AI is the publisher/brand"
+          ],
+          "component_status": "MISMATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MISMATCH",
+      "label_mismatch_fields": [
+        "authors"
+      ]
+    },
+    {
+      "id": "L22",
+      "reported_label": {
+        "id": "L22",
+        "authors": "Guo, Pleiss, Sun, Weinberger",
+        "year": "2017",
+        "title": "On Calibration of Modern Neural Networks",
+        "venue": "ICML; PMLR",
+        "identifiers": [
+          {
+            "type": "url",
+            "value": "https://proceedings.mlr.press/v70/guo17a.html"
+          }
+        ],
+        "reported_access_in_package": "PMLR original cited",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "On Calibration of Modern Neural Networks",
+            "authors": "Guo, Pleiss, Sun, Weinberger",
+            "year": "2017",
+            "venue": "ICML; PMLR",
+            "identifier": {
+              "type": "url",
+              "value": "https://proceedings.mlr.press/v70/guo17a.html"
+            }
+          },
+          "resolved": {
+            "provider": "PMLR",
+            "source_url": "https://proceedings.mlr.press/v70/guo17a.html",
+            "canonical_doi": null,
+            "title": "On Calibration of Modern Neural Networks",
+            "authors": [
+              "Chuan Guo",
+              "Geoff Pleiss",
+              "Yu Sun",
+              "Kilian Q. Weinberger"
+            ],
+            "year": 2017,
+            "issued_date_parts": null,
+            "published_print": null,
+            "published_online": null,
+            "publication_date": "2017/07/17",
+            "updated": null,
+            "venue": "PMLR",
+            "volume": null,
+            "issue": null,
+            "page": null,
+            "article_number": null,
+            "type": null,
+            "publisher": null,
+            "url": null,
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "guo pleiss sun weinberger",
+              "resolved_family_names": [
+                "guo",
+                "pleiss",
+                "sun",
+                "weinberger"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2017",
+              "resolved": 2017,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2017
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "https://proceedings.mlr.press/v70/guo17a.html",
+              "resolved": "https://proceedings.mlr.press/v70/guo17a.html",
+              "http_status": 206
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L23",
+      "reported_label": {
+        "id": "L23",
+        "authors": "Ito, Noma, Ohno; Gopalakrishnan, Neiger, Safey El Din",
+        "year": "2015; 2024",
+        "title": "Maximal minors of a matrix with linear form entries; Optimized Groebner basis algorithms for maximal determinantal ideals and critical point computations",
+        "venue": "Linear and Multilinear Algebra; arXiv",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1080/03081087.2014.959516"
+          },
+          {
+            "type": "arxiv",
+            "value": "2402.07353"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": 1,
+          "part": "first",
+          "reported": {
+            "title": "Maximal minors of a matrix with linear form entries",
+            "authors": "Ito, Noma, Ohno",
+            "year": "2015",
+            "venue": "Linear and Multilinear Algebra",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1080/03081087.2014.959516"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1080/03081087.2014.959516",
+            "canonical_doi": "10.1080/03081087.2014.959516",
+            "title": "Maximal minors of a matrix with linear form entries",
+            "authors": [
+              "Ito, Hiroya",
+              "Noma, Atsushi",
+              "Ohno, Masahiro"
+            ],
+            "year": 2014,
+            "issued_date_parts": [
+              2014,
+              9,
+              23
+            ],
+            "published_print": [
+              2015,
+              8,
+              3
+            ],
+            "published_online": [
+              2014,
+              9,
+              23
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "Linear and Multilinear Algebra",
+            "volume": "63",
+            "issue": "8",
+            "page": "1599-1606",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Informa UK Limited",
+            "url": "https://doi.org/10.1080/03081087.2014.959516",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "ito noma ohno",
+              "resolved_family_names": [
+                "ito",
+                "noma",
+                "ohno"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2015",
+              "resolved": 2014,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2014,
+                2015
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1080/03081087.2014.959516",
+              "resolved": "10.1080/03081087.2014.959516"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        },
+        {
+          "component": 2,
+          "part": "second",
+          "reported": {
+            "title": "Optimized Groebner basis algorithms for maximal determinantal ideals and critical point computations",
+            "authors": "Gopalakrishnan, Neiger, Safey El Din",
+            "year": "2024",
+            "venue": "arXiv",
+            "identifier": {
+              "type": "arxiv",
+              "value": "2402.07353"
+            }
+          },
+          "resolved": {
+            "provider": "arXiv",
+            "source_url": "https://export.arxiv.org/api/query?id_list=2402.07353&max_results=1",
+            "canonical_doi": null,
+            "title": "Optimized Gröbner basis algorithms for maximal determinantal ideals and critical point computations",
+            "authors": [
+              "Sriram Gopalakrishnan",
+              "Vincent Neiger",
+              "Mohab Safey El Din"
+            ],
+            "year": 2024,
+            "issued_date_parts": null,
+            "published_print": null,
+            "published_online": null,
+            "publication_date": "2024-02-12T01:02:33Z",
+            "updated": "2024-02-12T01:02:33Z",
+            "venue": null,
+            "volume": null,
+            "issue": null,
+            "page": null,
+            "article_number": null,
+            "type": null,
+            "publisher": null,
+            "url": null,
+            "arxiv_id": "2402.07353",
+            "canonical_arxiv_url": "http://arxiv.org/abs/2402.07353v1",
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "gopalakrishnan neiger safey el din",
+              "resolved_family_names": [
+                "gopalakrishnan",
+                "neiger",
+                "din"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2024",
+              "resolved": 2024,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2024
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "2402.07353",
+              "resolved": "2402.07353"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    },
+    {
+      "id": "L24",
+      "reported_label": {
+        "id": "L24",
+        "authors": "Alberti, Petit, Santacesaria",
+        "year": "2024",
+        "title": "Localization of point scatterers via sparse optimization on measures",
+        "venue": "SIAM Journal on Imaging Sciences 17, 1619-1649",
+        "identifiers": [
+          {
+            "type": "doi",
+            "value": "10.1137/24M1636265"
+          }
+        ],
+        "reported_access_in_package": "No explicit access depth stated",
+        "local_check": "present_in_report_extract",
+        "external_resolution": "UNVERIFIED"
+      },
+      "components": [
+        {
+          "component": null,
+          "part": "single",
+          "reported": {
+            "title": "Localization of point scatterers via sparse optimization on measures",
+            "authors": "Alberti, Petit, Santacesaria",
+            "year": "2024",
+            "venue": "SIAM Journal on Imaging Sciences 17, 1619-1649",
+            "identifier": {
+              "type": "doi",
+              "value": "10.1137/24M1636265"
+            }
+          },
+          "resolved": {
+            "provider": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1137/24M1636265",
+            "canonical_doi": "10.1137/24m1636265",
+            "title": "Localization of Point Scatterers via Sparse Optimization on Measures",
+            "authors": [
+              "Alberti, Giovanni S.",
+              "Petit, Romain",
+              "Santacesaria, Matteo"
+            ],
+            "year": 2024,
+            "issued_date_parts": [
+              2024,
+              7,
+              23
+            ],
+            "published_print": [
+              2024,
+              9,
+              30
+            ],
+            "published_online": [
+              2024,
+              7,
+              23
+            ],
+            "publication_date": null,
+            "updated": null,
+            "venue": "SIAM Journal on Imaging Sciences",
+            "volume": "17",
+            "issue": "3",
+            "page": "1619-1649",
+            "article_number": null,
+            "type": "journal-article",
+            "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+            "url": "https://doi.org/10.1137/24m1636265",
+            "arxiv_id": null,
+            "canonical_arxiv_url": null,
+            "author_source_doi": null,
+            "author_source_url": null
+          },
+          "comparisons": {
+            "title": {
+              "match": true,
+              "similarity": 1.0
+            },
+            "authors": {
+              "match": true,
+              "reported_normalized": "alberti petit santacesaria",
+              "resolved_family_names": [
+                "alberti",
+                "petit",
+                "santacesaria"
+              ]
+            },
+            "year": {
+              "match": true,
+              "reported": "2024",
+              "resolved": 2024,
+              "note": "No year supplied in report",
+              "accepted_years": [
+                2024
+              ]
+            },
+            "identifier": {
+              "match": true,
+              "reported": "10.1137/24M1636265",
+              "resolved": "10.1137/24m1636265"
+            }
+          },
+          "mismatches": [],
+          "warnings": [],
+          "component_status": "MATCH",
+          "metadata_use": "Bibliographic identity only; not used as evidence for any substantive report claim."
+        }
+      ],
+      "label_status": "MATCH",
+      "label_mismatch_fields": []
+    }
+  ],
+  "conversation_url_audit": [
+    {
+      "url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging",
+      "redirects": [],
+      "ok": true,
+      "http_status": 206,
+      "final_url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging",
+      "content_type": "text/html",
+      "response_title": "GitHub - migodam/b1-probabilistic-maxwell-imaging: Maxwell 概率材料成像与物理参考：连续后验、Top-K 材料事件与可复现研究。 · GitHub",
+      "page_metadata": [
+        {
+          "key": "og:title",
+          "content": "GitHub - migodam/b1-probabilistic-maxwell-imaging: Maxwell 概率材料成像与物理参考：连续后验、Top-K 材料事件与可复现研究。"
+        }
+      ],
+      "body_bytes_sampled": 435410,
+      "access_error": null,
+      "context": "repository reference"
+    },
+    {
+      "url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2",
+      "redirects": [],
+      "ok": true,
+      "http_status": 206,
+      "final_url": "https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/research_z_alg_r2",
+      "content_type": "text/html",
+      "response_title": "b1-probabilistic-maxwell-imaging/research/research_z_alg_r2 at main · migodam/b1-probabilistic-maxwell-imaging · GitHub",
+      "page_metadata": [
+        {
+          "key": "og:title",
+          "content": "b1-probabilistic-maxwell-imaging/research/research_z_alg_r2 at main · migodam/b1-probabilistic-maxwell-imaging"
+        }
+      ],
+      "body_bytes_sampled": 287698,
+      "access_error": null,
+      "context": "repository subtree reference"
+    },
+    {
+      "url": "https://academic.oup.com/imajna/article/39/3/1421/4969753",
+      "redirects": [],
+      "ok": false,
+      "http_status": 403,
+      "final_url": "https://academic.oup.com/imajna/article/39/3/1421/4969753",
+      "content_type": "text/html",
+      "response_title": "Just a moment...",
+      "page_metadata": [],
+      "body_bytes_sampled": 5663,
+      "access_error": "HTTP 403",
+      "context": "homotopy/monodromy reference"
+    },
+    {
+      "url": "https://arxiv.org/abs/2611.00494",
+      "redirects": [],
+      "ok": true,
+      "http_status": 206,
+      "final_url": "https://arxiv.org/abs/2611.00494",
+      "content_type": "text/html",
+      "response_title": "[2611.00494] A Hierarchical direct solver for Lippmann-Schwinger equations based on boundary traces",
+      "page_metadata": [
+        {
+          "key": "og:title",
+          "content": "A Hierarchical direct solver for Lippmann-Schwinger equations based on boundary traces"
+        },
+        {
+          "key": "citation_title",
+          "content": "A Hierarchical direct solver for Lippmann-Schwinger equations based on boundary traces"
+        },
+        {
+          "key": "citation_author",
+          "content": "Cai, Yunhui"
+        },
+        {
+          "key": "citation_author",
+          "content": "Dirckx, Simon"
+        },
+        {
+          "key": "citation_author",
+          "content": "Bagge, Joar"
+        },
+        {
+          "key": "citation_author",
+          "content": "Martinsson, Per-Gunnar"
+        }
+      ],
+      "body_bytes_sampled": 42535,
+      "access_error": null,
+      "context": "hierarchical Lippmann-Schwinger solver"
+    },
+    {
+      "url": "https://doi.org/10.1002/9781119311997.ch7",
+      "redirects": [
+        {
+          "status": 302,
+          "from": "https://doi.org/10.1002/9781119311997.ch7",
+          "to": "https://onlinelibrary.wiley.com/doi/10.1002/9781119311997.ch7"
+        }
+      ],
+      "ok": false,
+      "http_status": 403,
+      "final_url": "https://onlinelibrary.wiley.com/doi/10.1002/9781119311997.ch7",
+      "content_type": "text/html",
+      "response_title": "Just a moment...",
+      "page_metadata": [],
+      "body_bytes_sampled": 5703,
+      "access_error": "HTTP 403",
+      "context": "PEC reconstruction chapter"
+    },
+    {
+      "url": "https://doi.org/10.1137/25M1779048",
+      "redirects": [
+        {
+          "status": 302,
+          "from": "https://doi.org/10.1137/25M1779048",
+          "to": "https://epubs.siam.org/doi/10.1137/25M1779048"
+        }
+      ],
+      "ok": false,
+      "http_status": 403,
+      "final_url": "https://epubs.siam.org/doi/10.1137/25M1779048",
+      "content_type": "text/html",
+      "response_title": "Just a moment...",
+      "page_metadata": [],
+      "body_bytes_sampled": 5631,
+      "access_error": "HTTP 403",
+      "context": "mirror descent paper"
+    },
+    {
+      "url": "https://doi.org/10.1137/S0036142900372549",
+      "redirects": [
+        {
+          "status": 302,
+          "from": "https://doi.org/10.1137/S0036142900372549",
+          "to": "https://epubs.siam.org/doi/10.1137/S0036142900372549"
+        }
+      ],
+      "ok": false,
+      "http_status": 403,
+      "final_url": "https://epubs.siam.org/doi/10.1137/S0036142900372549",
+      "content_type": "text/html",
+      "response_title": "Just a moment...",
+      "page_metadata": [],
+      "body_bytes_sampled": 5673,
+      "access_error": "HTTP 403",
+      "context": "polynomial component decomposition"
+    },
+    {
+      "url": "https://iris.unirc.it/handle/20.500.12318/167028",
+      "redirects": [],
+      "ok": false,
+      "http_status": 403,
+      "final_url": "https://iris.unirc.it/handle/20.500.12318/167028",
+      "content_type": "text/html",
+      "response_title": "Just a moment...",
+      "page_metadata": [],
+      "body_bytes_sampled": 5671,
+      "access_error": "HTTP 403",
+      "context": "LUCIE institutional record"
+    },
+    {
+      "url": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf",
+      "redirects": [],
+      "ok": false,
+      "http_status": 403,
+      "final_url": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf",
+      "content_type": "text/html",
+      "response_title": "403 Forbidden",
+      "page_metadata": [],
+      "body_bytes_sampled": 146,
+      "access_error": "HTTP 403",
+      "context": "NASA skin-depth source"
+    },
+    {
+      "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "redirects": [],
+      "ok": true,
+      "http_status": 200,
+      "final_url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "content_type": "text/html",
+      "response_title": "Introducing System One Models & Jev - TypeSafe AI Blog",
+      "page_metadata": [
+        {
+          "key": "og:title",
+          "content": "Introducing System One Models & Jev - TypeSafe AI Blog"
+        }
+      ],
+      "body_bytes_sampled": 272435,
+      "access_error": null,
+      "context": "Jev product source"
+    },
+    {
+      "url": "https://www.juliahomotopycontinuation.org/guides/introduction/",
+      "redirects": [],
+      "ok": true,
+      "http_status": 206,
+      "final_url": "https://www.juliahomotopycontinuation.org/guides/introduction/",
+      "content_type": "text/html",
+      "response_title": "An introduction to the numerical solution of polynomial systems",
+      "page_metadata": [
+        {
+          "key": "author",
+          "content": ""
+        },
+        {
+          "key": "og:title",
+          "content": "An introduction to the numerical solution of polynomial systems"
+        }
+      ],
+      "body_bytes_sampled": 42726,
+      "access_error": null,
+      "context": "homotopy software/reference starting point"
+    },
+    {
+      "url": "https://www.nist.gov/publications/field-only-surface-integral-equations-scattering-perfect-electric-conductor",
+      "redirects": [],
+      "ok": true,
+      "http_status": 206,
+      "final_url": "https://www.nist.gov/publications/field-only-surface-integral-equations-scattering-perfect-electric-conductor",
+      "content_type": "text/html",
+      "response_title": "Field-Only Surface Integral Equations: Scattering from a Perfect Electric Conductor | NISTLock",
+      "page_metadata": [
+        {
+          "key": "citation_title",
+          "content": "Field-Only Surface Integral Equations: Scattering from a Perfect Electric Conductor"
+        },
+        {
+          "key": "citation_author",
+          "content": "Qiang Sun"
+        },
+        {
+          "key": "citation_author",
+          "content": "Evert Klaseboer"
+        },
+        {
+          "key": "citation_author",
+          "content": "Alex Yuffa"
+        },
+        {
+          "key": "citation_author",
+          "content": "Derek Y. Chan"
+        },
+        {
+          "key": "citation_publication_date",
+          "content": "2020-02-01T07:00-05:00"
+        },
+        {
+          "key": "og:title",
+          "content": "Field-Only Surface Integral Equations: Scattering from a Perfect Electric Conductor"
+        }
+      ],
+      "body_bytes_sampled": 81165,
+      "access_error": null,
+      "context": "PEC field-only surface integral equations"
+    }
+  ],
+  "pdf_extract_consistency": {
+    "pdf": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r5_input_audit/package/Z_ALG_Codex_Handoff_2026-11-18/reference/Z_ALG_Research_Report_2026-11-17.pdf",
+    "extracted_text": "/Volumes/migodam's-external-brain/Research/Inv_SLAM/research/delegated/z_alg_r5_input_audit/package/Z_ALG_Codex_Handoff_2026-11-18/reference/Z_ALG_Research_Report_2026-11-17_extracted_utf8.txt",
+    "pdfinfo_pages": 19,
+    "packaged_form_feeds": 19,
+    "fresh_pdftotext_form_feeds": 19,
+    "packaged_chars": 39641,
+    "fresh_chars": 39641,
+    "exact_text_match": true,
+    "text_similarity": 1.0,
+    "page_count_consistent": true,
+    "command": "pdftotext -layout <pdf> -"
+  },
+  "raw_metadata_index": {
+    "doi:10.1137/0710036": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1137/0710036",
+      "query_url": "https://api.crossref.org/works/10.1137/0710036",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1137/0710036",
+      "canonical_doi": "10.1137/0710036",
+      "title": "The Differentiation of Pseudo-Inverses and Nonlinear Least Squares Problems Whose Variables Separate",
+      "subtitle": null,
+      "authors": [
+        "Golub, G. H.",
+        "Pereyra, V."
+      ],
+      "year": 1973,
+      "issued_date_parts": [
+        1973,
+        4
+      ],
+      "published_print": [
+        1973,
+        4
+      ],
+      "published_online": [
+        2006,
+        7,
+        14
+      ],
+      "venue": "SIAM Journal on Numerical Analysis",
+      "volume": "10",
+      "issue": "2",
+      "page": "413-432",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+      "url": "https://doi.org/10.1137/0710036"
+    },
+    "doi:10.1088/1361-6420/adab89": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1088/1361-6420/adab89",
+      "query_url": "https://api.crossref.org/works/10.1088/1361-6420/adab89",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1088/1361-6420/adab89",
+      "canonical_doi": "10.1088/1361-6420/adab89",
+      "title": "An analysis of constraint-relaxation in PDE-based inverse problems",
+      "subtitle": null,
+      "authors": [
+        "van Leeuwen, Tristan",
+        "Yang, Yunan"
+      ],
+      "year": 2025,
+      "issued_date_parts": [
+        2025,
+        1,
+        28
+      ],
+      "published_print": [
+        2025,
+        2,
+        28
+      ],
+      "published_online": [
+        2025,
+        1,
+        28
+      ],
+      "venue": "Inverse Problems",
+      "volume": "41",
+      "issue": "2",
+      "page": "025009",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "IOP Publishing",
+      "url": "https://doi.org/10.1088/1361-6420/adab89"
+    },
+    "doi:10.1080/03081087.2014.959516": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1080/03081087.2014.959516",
+      "query_url": "https://api.crossref.org/works/10.1080/03081087.2014.959516",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1080/03081087.2014.959516",
+      "canonical_doi": "10.1080/03081087.2014.959516",
+      "title": "Maximal minors of a matrix with linear form entries",
+      "subtitle": null,
+      "authors": [
+        "Ito, Hiroya",
+        "Noma, Atsushi",
+        "Ohno, Masahiro"
+      ],
+      "year": 2014,
+      "issued_date_parts": [
+        2014,
+        9,
+        23
+      ],
+      "published_print": [
+        2015,
+        8,
+        3
+      ],
+      "published_online": [
+        2014,
+        9,
+        23
+      ],
+      "venue": "Linear and Multilinear Algebra",
+      "volume": "63",
+      "issue": "8",
+      "page": "1599-1606",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Informa UK Limited",
+      "url": "https://doi.org/10.1080/03081087.2014.959516"
+    },
+    "arxiv:2402.07353": {
+      "provider": "arXiv",
+      "identifier_type": "arxiv",
+      "identifier": "2402.07353",
+      "query_url": "https://export.arxiv.org/api/query?id_list=2402.07353&max_results=1",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://export.arxiv.org/api/query?id_list=2402.07353&max_results=1",
+      "arxiv_id": "2402.07353",
+      "canonical_arxiv_url": "http://arxiv.org/abs/2402.07353v1",
+      "title": "Optimized Gröbner basis algorithms for maximal determinantal ideals and critical point computations",
+      "authors": [
+        "Sriram Gopalakrishnan",
+        "Vincent Neiger",
+        "Mohab Safey El Din"
+      ],
+      "year": 2024,
+      "published": "2024-02-12T01:02:33Z",
+      "updated": "2024-02-12T01:02:33Z"
+    },
+    "doi:10.1046/j.1365-246x.2000.00188.x": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1046/j.1365-246x.2000.00188.x",
+      "query_url": "https://api.crossref.org/works/10.1046/j.1365-246x.2000.00188.x",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1046/j.1365-246x.2000.00188.x",
+      "canonical_doi": "10.1046/j.1365-246x.2000.00188.x",
+      "title": "An algebraic formulation of geophysical inverse problems",
+      "subtitle": null,
+      "authors": [
+        "Vasco, D. W."
+      ],
+      "year": 2000,
+      "issued_date_parts": [
+        2000,
+        9,
+        1
+      ],
+      "published_print": [
+        2000,
+        9,
+        1
+      ],
+      "published_online": [
+        2000,
+        9,
+        1
+      ],
+      "venue": "Geophysical Journal International",
+      "volume": "142",
+      "issue": "3",
+      "page": "970-990",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Oxford University Press (OUP)",
+      "url": "https://doi.org/10.1046/j.1365-246x.2000.00188.x"
+    },
+    "doi:10.1006/jcph.1996.0070": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1006/jcph.1996.0070",
+      "query_url": "https://api.crossref.org/works/10.1006/jcph.1996.0070",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1006/jcph.1996.0070",
+      "canonical_doi": "10.1006/jcph.1996.0070",
+      "title": "Homotopy, Polynomial Equations, Gross Boundary Data, and Small Helmholtz Systems",
+      "subtitle": null,
+      "authors": [
+        "Everett, M.E."
+      ],
+      "year": 1996,
+      "issued_date_parts": [
+        1996,
+        3
+      ],
+      "published_print": [
+        1996,
+        3
+      ],
+      "published_online": [
+        null
+      ],
+      "venue": "Journal of Computational Physics",
+      "volume": "124",
+      "issue": "2",
+      "page": "431-441",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Elsevier BV",
+      "url": "https://doi.org/10.1006/jcph.1996.0070"
+    },
+    "doi:10.1093/gji/ggag432": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1093/gji/ggag432",
+      "query_url": "https://api.crossref.org/works/10.1093/gji/ggag432",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1093/gji/ggag432",
+      "canonical_doi": "10.1093/gji/ggag432",
+      "title": "Multiple solutions to geophysical inverse problems via tracking flights across a deeply incised model landscape",
+      "subtitle": null,
+      "authors": [
+        "Everett, M E"
+      ],
+      "year": 2026,
+      "issued_date_parts": [
+        2026,
+        10,
+        8
+      ],
+      "published_print": [
+        2026,
+        10,
+        8
+      ],
+      "published_online": [
+        2026,
+        10,
+        9
+      ],
+      "venue": "Geophysical Journal International",
+      "volume": "247",
+      "issue": "3",
+      "page": null,
+      "article_number": "ggag432",
+      "type": "journal-article",
+      "publisher": "Oxford University Press (OUP)",
+      "url": "https://doi.org/10.1093/gji/ggag432"
+    },
+    "doi:10.1103/PhysRevLett.127.253902": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1103/PhysRevLett.127.253902",
+      "query_url": "https://api.crossref.org/works/10.1103/PhysRevLett.127.253902",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1103/PhysRevLett.127.253902",
+      "canonical_doi": "10.1103/physrevlett.127.253902",
+      "title": "Optimal Control of Coherent Light Scattering for Binary Decision Problems",
+      "subtitle": null,
+      "authors": [
+        "Bouchet, Dorian",
+        "Rachbauer, Lukas M.",
+        "Rotter, Stefan",
+        "Mosk, Allard P.",
+        "Bossy, Emmanuel"
+      ],
+      "year": 2021,
+      "issued_date_parts": [
+        2021,
+        12,
+        17
+      ],
+      "published_print": [
+        null
+      ],
+      "published_online": [
+        2021,
+        12,
+        17
+      ],
+      "venue": "Physical Review Letters",
+      "volume": "127",
+      "issue": "25",
+      "page": null,
+      "article_number": "253902",
+      "type": "journal-article",
+      "publisher": "American Physical Society (APS)",
+      "url": "https://doi.org/10.1103/physrevlett.127.253902"
+    },
+    "doi:10.1038/s41567-020-01137-4": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1038/s41567-020-01137-4",
+      "query_url": "https://api.crossref.org/works/10.1038/s41567-020-01137-4",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1038/s41567-020-01137-4",
+      "canonical_doi": "10.1038/s41567-020-01137-4",
+      "title": "Maximum information states for coherent scattering measurements",
+      "subtitle": null,
+      "authors": [
+        "Bouchet, Dorian",
+        "Rotter, Stefan",
+        "Mosk, Allard P."
+      ],
+      "year": 2021,
+      "issued_date_parts": [
+        2021,
+        1,
+        21
+      ],
+      "published_print": [
+        2021,
+        5
+      ],
+      "published_online": [
+        2021,
+        1,
+        21
+      ],
+      "venue": "Nature Physics",
+      "volume": "17",
+      "issue": "5",
+      "page": "564-568",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Springer Science and Business Media LLC",
+      "url": "https://doi.org/10.1038/s41567-020-01137-4"
+    },
+    "arxiv:2201.07925": {
+      "provider": "arXiv",
+      "identifier_type": "arxiv",
+      "identifier": "2201.07925",
+      "query_url": "https://export.arxiv.org/api/query?id_list=2201.07925&max_results=1",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://export.arxiv.org/api/query?id_list=2201.07925&max_results=1",
+      "arxiv_id": "2201.07925",
+      "canonical_arxiv_url": "http://arxiv.org/abs/2201.07925v2",
+      "title": "Large-scale Bayesian optimal experimental design with derivative-informed projected neural network",
+      "authors": [
+        "Keyi Wu",
+        "Thomas O'Leary-Roseberry",
+        "Peng Chen",
+        "Omar Ghattas"
+      ],
+      "year": 2022,
+      "published": "2022-01-20T00:15:45Z",
+      "updated": "2022-09-06T17:31:24Z"
+    },
+    "doi:10.1137/S0036142900372549": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1137/S0036142900372549",
+      "query_url": "https://api.crossref.org/works/10.1137/S0036142900372549",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1137/S0036142900372549",
+      "canonical_doi": "10.1137/s0036142900372549",
+      "title": "Numerical Decomposition of the Solution Sets of Polynomial Systems into Irreducible Components",
+      "subtitle": null,
+      "authors": [
+        "Sommese, Andrew J.",
+        "Verschelde, Jan",
+        "Wampler, Charles W."
+      ],
+      "year": 2001,
+      "issued_date_parts": [
+        2001,
+        1
+      ],
+      "published_print": [
+        2001,
+        1
+      ],
+      "published_online": [
+        2006,
+        7,
+        26
+      ],
+      "venue": "SIAM Journal on Numerical Analysis",
+      "volume": "38",
+      "issue": "6",
+      "page": "2022-2046",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+      "url": "https://doi.org/10.1137/s0036142900372549"
+    },
+    "doi:10.1093/imanum/dry017": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1093/imanum/dry017",
+      "query_url": "https://api.crossref.org/works/10.1093/imanum/dry017",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1093/imanum/dry017",
+      "canonical_doi": "10.1093/imanum/dry017",
+      "title": "Solving polynomial systems via homotopy continuation and monodromy",
+      "subtitle": null,
+      "authors": [
+        "Duff, Timothy",
+        "Hill, Cvetelina",
+        "Jensen, Anders",
+        "Lee, Kisun",
+        "Leykin, Anton",
+        "Sommars, Jeff"
+      ],
+      "year": 2018,
+      "issued_date_parts": [
+        2018,
+        4,
+        13
+      ],
+      "published_print": [
+        2019,
+        7,
+        17
+      ],
+      "published_online": [
+        2018,
+        4,
+        13
+      ],
+      "venue": "IMA Journal of Numerical Analysis",
+      "volume": "39",
+      "issue": "3",
+      "page": "1421-1446",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Oxford University Press (OUP)",
+      "url": "https://doi.org/10.1093/imanum/dry017"
+    },
+    "doi:10.1145/2331130.2331136": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1145/2331130.2331136",
+      "query_url": "https://api.crossref.org/works/10.1145/2331130.2331136",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1145/2331130.2331136",
+      "canonical_doi": "10.1145/2331130.2331136",
+      "title": "Algorithm 921: alphaCertified: Certifying Solutions to Polynomial Systems",
+      "subtitle": "alphaCertified: Certifying Solutions to Polynomial Systems",
+      "authors": [
+        "Hauenstein, Jonathan D.",
+        "Sottile, Frank"
+      ],
+      "year": 2012,
+      "issued_date_parts": [
+        2012,
+        8
+      ],
+      "published_print": [
+        2012,
+        8
+      ],
+      "published_online": [
+        2012,
+        8
+      ],
+      "venue": "ACM Transactions on Mathematical Software",
+      "volume": "38",
+      "issue": "4",
+      "page": "1-20",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Association for Computing Machinery (ACM)",
+      "url": "https://doi.org/10.1145/2331130.2331136"
+    },
+    "arxiv:2011.05000": {
+      "provider": "arXiv",
+      "identifier_type": "arxiv",
+      "identifier": "2011.05000",
+      "query_url": "https://export.arxiv.org/api/query?id_list=2011.05000&max_results=1",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://export.arxiv.org/api/query?id_list=2011.05000&max_results=1",
+      "arxiv_id": "2011.05000",
+      "canonical_arxiv_url": "http://arxiv.org/abs/2011.05000v6",
+      "title": "Certifying zeros of polynomial systems using interval arithmetic",
+      "authors": [
+        "Paul Breiding",
+        "Kemal Rose",
+        "Sascha Timme"
+      ],
+      "year": 2020,
+      "published": "2020-11-10T09:31:33Z",
+      "updated": "2024-07-11T16:42:11Z"
+    },
+    "doi:10.1088/0266-5611/13/6/013": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1088/0266-5611/13/6/013",
+      "query_url": "https://api.crossref.org/works/10.1088/0266-5611/13/6/013",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1088/0266-5611/13/6/013",
+      "canonical_doi": "10.1088/0266-5611/13/6/013",
+      "title": "A contrast source inversion method",
+      "subtitle": null,
+      "authors": [
+        "Berg, Peter M van den",
+        "Kleinman, Ralph E"
+      ],
+      "year": 1997,
+      "issued_date_parts": [
+        1997,
+        12,
+        1
+      ],
+      "published_print": [
+        1997,
+        12,
+        1
+      ],
+      "published_online": [
+        1999,
+        1,
+        1
+      ],
+      "venue": "Inverse Problems",
+      "volume": "13",
+      "issue": "6",
+      "page": "1607-1620",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "IOP Publishing",
+      "url": "https://doi.org/10.1088/0266-5611/13/6/013"
+    },
+    "doi:10.1088/0266-5611/25/8/085003": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1088/0266-5611/25/8/085003",
+      "query_url": "https://api.crossref.org/works/10.1088/0266-5611/25/8/085003",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1088/0266-5611/25/8/085003",
+      "canonical_doi": "10.1088/0266-5611/25/8/085003",
+      "title": "Twofold subspace-based optimization method for solving inverse scattering problems",
+      "subtitle": null,
+      "authors": [
+        "Zhong, Yu",
+        "Chen, Xudong"
+      ],
+      "year": 2009,
+      "issued_date_parts": [
+        2009,
+        7,
+        24
+      ],
+      "published_print": [
+        2009,
+        8,
+        1
+      ],
+      "published_online": [
+        2009,
+        7,
+        24
+      ],
+      "venue": "Inverse Problems",
+      "volume": "25",
+      "issue": "8",
+      "page": "085003",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "IOP Publishing",
+      "url": "https://doi.org/10.1088/0266-5611/25/8/085003"
+    },
+    "doi:10.3390/jimaging5020027": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.3390/jimaging5020027",
+      "query_url": "https://api.crossref.org/works/10.3390/jimaging5020027",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.3390/jimaging5020027",
+      "canonical_doi": "10.3390/jimaging5020027",
+      "title": "Contraction Integral Equation for Three-Dimensional Electromagnetic Inverse Scattering Problems",
+      "subtitle": null,
+      "authors": [
+        "Zhong, Yu",
+        "Xu, Kuiwen"
+      ],
+      "year": 2019,
+      "issued_date_parts": [
+        2019,
+        2,
+        8
+      ],
+      "published_print": [
+        null
+      ],
+      "published_online": [
+        2019,
+        2,
+        8
+      ],
+      "venue": "Journal of Imaging",
+      "volume": "5",
+      "issue": "2",
+      "page": "27",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "MDPI AG",
+      "url": "https://doi.org/10.3390/jimaging5020027"
+    },
+    "doi:10.1137/130943200": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1137/130943200",
+      "query_url": "https://api.crossref.org/works/10.1137/130943200",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1137/130943200",
+      "canonical_doi": "10.1137/130943200",
+      "title": "Imaging Strong Localized Scatterers with Sparsity Promoting Optimization",
+      "subtitle": null,
+      "authors": [
+        "Chai, Anwei",
+        "Moscoso, Miguel",
+        "Papanicolaou, George"
+      ],
+      "year": 2014,
+      "issued_date_parts": [
+        2014,
+        1
+      ],
+      "published_print": [
+        2014,
+        1
+      ],
+      "published_online": [
+        2014,
+        6,
+        12
+      ],
+      "venue": "SIAM Journal on Imaging Sciences",
+      "volume": "7",
+      "issue": "2",
+      "page": "1358-1387",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+      "url": "https://doi.org/10.1137/130943200"
+    },
+    "doi:10.1088/0266-5611/31/2/025002": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1088/0266-5611/31/2/025002",
+      "query_url": "https://api.crossref.org/works/10.1088/0266-5611/31/2/025002",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1088/0266-5611/31/2/025002",
+      "canonical_doi": "10.1088/0266-5611/31/2/025002",
+      "title": "The factorization method for a defective region in an anisotropic material",
+      "subtitle": null,
+      "authors": [
+        "Cakoni, Fioralba",
+        "Harris, Isaac"
+      ],
+      "year": 2015,
+      "issued_date_parts": [
+        2015,
+        1,
+        21
+      ],
+      "published_print": [
+        2015,
+        2,
+        1
+      ],
+      "published_online": [
+        2015,
+        1,
+        21
+      ],
+      "venue": "Inverse Problems",
+      "volume": "31",
+      "issue": "2",
+      "page": "025002",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "IOP Publishing",
+      "url": "https://doi.org/10.1088/0266-5611/31/2/025002"
+    },
+    "doi:10.1002/9781119311997.ch7": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1002/9781119311997.ch7",
+      "query_url": "https://api.crossref.org/works/10.1002/9781119311997.ch7",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1002/9781119311997.ch7",
+      "canonical_doi": "10.1002/9781119311997.ch7",
+      "title": "Reconstructing Perfect Electric Conductors",
+      "subtitle": null,
+      "authors": [],
+      "year": 2018,
+      "issued_date_parts": [
+        2018,
+        5,
+        11
+      ],
+      "published_print": [
+        2018,
+        5,
+        29
+      ],
+      "published_online": [
+        2018,
+        5,
+        11
+      ],
+      "venue": "Computational Methods for Electromagnetic Inverse Scattering",
+      "volume": null,
+      "issue": null,
+      "page": "183-206",
+      "article_number": null,
+      "type": "other",
+      "publisher": "Wiley",
+      "url": "https://doi.org/10.1002/9781119311997.ch7"
+    },
+    "doi:10.1364/JOSAA.378665": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1364/JOSAA.378665",
+      "query_url": "https://api.crossref.org/works/10.1364/JOSAA.378665",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1364/JOSAA.378665",
+      "canonical_doi": "10.1364/josaa.378665",
+      "title": "Field-only surface integral equations: scattering from a perfect electric conductor",
+      "subtitle": null,
+      "authors": [
+        "Sun, Qiang",
+        "Klaseboer, Evert",
+        "Yuffa, Alex J.",
+        "Chan, Derek Y. C."
+      ],
+      "year": 2020,
+      "issued_date_parts": [
+        2020,
+        1,
+        24
+      ],
+      "published_print": [
+        2020,
+        2,
+        1
+      ],
+      "published_online": [
+        2020,
+        1,
+        24
+      ],
+      "venue": "Journal of the Optical Society of America A",
+      "volume": "37",
+      "issue": "2",
+      "page": "276",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Optica Publishing Group",
+      "url": "https://doi.org/10.1364/josaa.378665"
+    },
+    "url:https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf": {
+      "provider": "arXiv",
+      "identifier_type": "arxiv",
+      "identifier": "https://ntrs.nasa.gov/api/citations/20205006770/downloads/20205006765_vol%20II.pdf",
+      "query_url": "https://export.arxiv.org/api/query?id_list=https%3A%2F%2Fntrs.nasa.gov%2Fapi%2Fcitations%2F20205006770%2Fdownloads%2F20205006765_vol%2520II.pdf&max_results=1",
+      "ok": false,
+      "http_status": 400,
+      "error": "HTTP 400: Bad Request"
+    },
+    "url:https://typesafe.ai/blog/introducing-system-one-models-and-jev": {
+      "provider": "arXiv",
+      "identifier_type": "arxiv",
+      "identifier": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+      "query_url": "https://export.arxiv.org/api/query?id_list=https%3A%2F%2Ftypesafe.ai%2Fblog%2Fintroducing-system-one-models-and-jev&max_results=1",
+      "ok": false,
+      "http_status": 400,
+      "error": "HTTP 400: Bad Request"
+    },
+    "url:https://proceedings.mlr.press/v70/guo17a.html": {
+      "provider": "arXiv",
+      "identifier_type": "arxiv",
+      "identifier": "https://proceedings.mlr.press/v70/guo17a.html",
+      "query_url": "https://export.arxiv.org/api/query?id_list=https%3A%2F%2Fproceedings.mlr.press%2Fv70%2Fguo17a.html&max_results=1",
+      "ok": false,
+      "http_status": 400,
+      "error": "HTTP 400: Bad Request"
+    },
+    "doi:10.1137/24M1636265": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1137/24M1636265",
+      "query_url": "https://api.crossref.org/works/10.1137/24M1636265",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1137/24M1636265",
+      "canonical_doi": "10.1137/24m1636265",
+      "title": "Localization of Point Scatterers via Sparse Optimization on Measures",
+      "subtitle": null,
+      "authors": [
+        "Alberti, Giovanni S.",
+        "Petit, Romain",
+        "Santacesaria, Matteo"
+      ],
+      "year": 2024,
+      "issued_date_parts": [
+        2024,
+        7,
+        23
+      ],
+      "published_print": [
+        2024,
+        9,
+        30
+      ],
+      "published_online": [
+        2024,
+        7,
+        23
+      ],
+      "venue": "SIAM Journal on Imaging Sciences",
+      "volume": "17",
+      "issue": "3",
+      "page": "1619-1649",
+      "article_number": null,
+      "type": "journal-article",
+      "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
+      "url": "https://doi.org/10.1137/24m1636265"
+    },
+    "title:L17": {
+      "provider": "Crossref title search",
+      "identifier_type": "title",
+      "query_title": "Super-resolution in imaging high contrast targets from the perspective of scattering coefficients",
+      "query_url": "https://api.crossref.org/works?query.bibliographic=Super-resolution+in+imaging+high+contrast+targets+from+the+perspective+of+scattering+coefficients&rows=5",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works?query.bibliographic=Super-resolution+in+imaging+high+contrast+targets+from+the+perspective+of+scattering+coefficients&rows=5",
+      "results": [
+        {
+          "canonical_doi": "10.1016/j.matpur.2017.09.008",
+          "title": "Super-resolution in imaging high contrast targets from the perspective of scattering coefficients",
+          "authors": [
+            "Ammari, Habib",
+            "Chow, Yat Tin",
+            "Zou, Jun"
+          ],
+          "year": 2018,
+          "issued_date_parts": [
+            2018,
+            3
+          ],
+          "venue": "Journal de Mathématiques Pures et Appliquées",
+          "volume": "111",
+          "issue": null,
+          "page": "191-226",
+          "article_number": null,
+          "type": "journal-article",
+          "url": "https://doi.org/10.1016/j.matpur.2017.09.008",
+          "relevance_score": 54.7057
+        },
+        {
+          "canonical_doi": "10.1109/icmmt45702.2019.8992437",
+          "title": "Super-resolution microwave imaging for high contrast targets",
+          "authors": [
+            "Xu, Kuiwen",
+            "Chu, Yanqing"
+          ],
+          "year": 2019,
+          "issued_date_parts": [
+            2019,
+            5
+          ],
+          "venue": "2019 International Conference on Microwave and Millimeter Wave Technology (ICMMT)",
+          "volume": null,
+          "issue": null,
+          "page": "1-2",
+          "article_number": null,
+          "type": "proceedings-article",
+          "url": "https://doi.org/10.1109/icmmt45702.2019.8992437",
+          "relevance_score": 40.537933
+        },
+        {
+          "canonical_doi": "10.1201/9781439819319-9",
+          "title": "Multiframe Super-Resolution from a Bayesian Perspective",
+          "authors": [
+            "Pickup, Lyndsey",
+            "Roberts, Stephen",
+            "Zisserman, Andrew",
+            "Capel, David"
+          ],
+          "year": 2017,
+          "issued_date_parts": [
+            2017,
+            12,
+            19
+          ],
+          "venue": "Super-Resolution Imaging",
+          "volume": null,
+          "issue": null,
+          "page": "247-284",
+          "article_number": null,
+          "type": "book-chapter",
+          "url": "https://doi.org/10.1201/9781439819319-9",
+          "relevance_score": 35.76103
+        },
+        {
+          "canonical_doi": "10.1021/acsphotonics.4c02468.s001",
+          "title": "Replica-Assisted Super-Resolution Fluorescence Imaging in Scattering Media",
+          "authors": [],
+          "year": null,
+          "issued_date_parts": [
+            null
+          ],
+          "venue": null,
+          "volume": null,
+          "issue": null,
+          "page": null,
+          "article_number": null,
+          "type": "component",
+          "url": "https://doi.org/10.1021/acsphotonics.4c02468.s001",
+          "relevance_score": 35.55171
+        },
+        {
+          "canonical_doi": "10.1021/acs.nanolett.5c01083.s001",
+          "title": "Super-Resolution Raman Scattering Imaging Enabled by Rough Metal Films",
+          "authors": [],
+          "year": null,
+          "issued_date_parts": [
+            null
+          ],
+          "venue": null,
+          "volume": null,
+          "issue": null,
+          "page": null,
+          "article_number": null,
+          "type": "component",
+          "url": "https://doi.org/10.1021/acs.nanolett.5c01083.s001",
+          "relevance_score": 34.913834
+        }
+      ]
+    },
+    "doi:10.1002/9781119311997": {
+      "provider": "Crossref",
+      "identifier_type": "doi",
+      "identifier": "10.1002/9781119311997",
+      "query_url": "https://api.crossref.org/works/10.1002/9781119311997",
+      "ok": true,
+      "http_status": 200,
+      "source_url": "https://api.crossref.org/works/10.1002/9781119311997",
+      "canonical_doi": "10.1002/9781119311997",
+      "title": "Computational Methods for Electromagnetic Inverse Scattering",
+      "subtitle": null,
+      "authors": [
+        "Chen, Xudong"
+      ],
+      "year": 2018,
+      "issued_date_parts": [
+        2018,
+        5,
+        11
+      ],
+      "published_print": [
+        2018,
+        5,
+        29
+      ],
+      "published_online": [
+        2018,
+        5,
+        11
+      ],
+      "venue": null,
+      "volume": null,
+      "issue": null,
+      "page": null,
+      "article_number": null,
+      "type": "monograph",
+      "publisher": "Wiley",
+      "url": "https://doi.org/10.1002/9781119311997"
+    }
+  }
+}

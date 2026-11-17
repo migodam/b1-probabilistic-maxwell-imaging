@@ -1,0 +1,1 @@
+Superseded prototype: c-quotient count verified, but per-c recovery-rank proof was not yet recorded. Do not use v0 as final material-box certificate. All costs/results preserved. Parent Codex added interval recovery-rank and conjugate-box symmetry checks before final interpretation.
