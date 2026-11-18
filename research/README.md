@@ -1,3 +1,11 @@
+<!-- Z_ALG_R12_PUBLICATION -->
+## Z-ALG R12 · 换频率、换照射位置，能解开哪些材料歧义？
+
+给定已知局部分支，相对噪声和相对带宽可以预估错误极小留下的概率。两个带噪仿真验证了风险随带宽下降。另在 576 维仿真中，近场看到了原距离漏掉的材料差，低到高累计拟合同份宽频读数也改善了三例旧坏起点的材料恢复。
+
+[中文报告与图表](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r12/) · [ChatGPT 研究交接](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r12/handoff.html) · [交接原文](research_z_alg_r12/NEXT_PRO_HANDOFF.md)
+<!-- /Z_ALG_R12_PUBLICATION -->
+
 <!-- Z_ALG_R10_PUBLICATION -->
 ## Z-ALG R10 · 再照一次，排除一类材料解释
 

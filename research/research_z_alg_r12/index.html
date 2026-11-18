@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>换频率、换照射位置，能解开哪些材料歧义？ · Z-ALG R12</title>
+  <meta name="description" content="用等能量频率和近场补测检验二维 Maxwell 反演。报告六维局部折叠、带噪在线选频和 576 维材料恢复。">
+  <link rel="stylesheet" href="../research_z_alg_r7/report.css">
+</head>
+<body>
+<main class="wrap">
+  <nav class="nav" aria-label="项目导航">
+    <a href="../../">Maxwell 成像项目</a>
+    <a href="../">全部研究</a>
+    <a href="../research_z_alg_r10/">Z-ALG R10</a>
+    <a href="handoff.html">R12 交接</a>
+  </nav>
+
+  <header class="intro">
+    <p class="byline">Z-ALG R12 · 2026 年 11 月 19 日</p>
+    <h1>换频率、换照射位置，能解开哪些材料歧义？</h1>
+    <p class="lead">已有两份能解释旧读数的材料时，可以在补测之前，用相对噪声和相对带宽估算错误极小仍会留下的概率。两个二维仿真中，带宽刚超过无噪声临界值时，仍有约一半试验能找到旧错误极小。另在 576 维仿真中，把照明移近材料能拉开两份旧解释的读数，普通求解器也能利用这些新数据。</p>
+    <p>下文分别给出三个量。读数能拉开多少，算法最后走到哪份材料，最后的材料与生成它的真值有多接近。</p>
+  </header>
+
+  <nav class="page-nav" aria-label="报告目录">
+    <a href="#frequency">带宽和错误极小的风险</a>
+    <a href="#online">带噪时在线选频</a>
+    <a href="#high">576 维宽频恢复</a>
+    <a href="#sources">低对比近场补测</a>
+    <a href="#basins">高对比旧坏起点</a>
+    <a href="#artifacts">公式、代码与数据</a>
+  </nav>
+
+  <section class="report-section" id="frequency">
+    <h2>补测之前，估算错误极小仍会留下的概率</h2>
+    <p>在旧频率下，两份材料给出近乎相同的复回波，损失沿一个材料方向有两个谷。替换照明频率后，一个谷会和隔开两谷的鞍点相遇。验证这件事时，我们沿旧坏谷和鞍点分别追踪，直到曲率降到零，并用全波损失检验两条轨迹。</p>
+    <p>给定旧分支的局部几何，把噪声除以局部回波尺度，把新增半带宽除以无噪声临界半带宽。对称分配频率、接收增益已知时，这两个相对量给出错误损失谷的局部存活概率。在同一相对噪声下，用镜像例和另外一套六材料布局各做 40 次带噪数值实验。</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="相对带宽与错误极小的留存风险">
+      <table>
+        <thead><tr><th scope="col">实际半带宽 / 无噪临界半带宽</th><th scope="col" class="num">预测存活概率</th><th scope="col" class="num">镜像例</th><th scope="col" class="num">第七套六材料布局</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1.01 倍</th><td class="num">49.6%</td><td class="num">21/40</td><td class="num">20/40</td></tr>
+          <tr class="focus"><th scope="row">1.331 倍</th><td class="num">10%</td><td class="num">7/40</td><td class="num">2/40</td></tr>
+          <tr><th scope="row">2 倍</th><td class="num">约 0.0027%</td><td class="num">0/40</td><td class="num">0/40</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">分母是每种带宽的噪声试验数。这里数的是旧错误极小仍然存在的次数。概率需要已知的局部分支几何和相应噪声模型，适用于已跟踪的局部范围。</p>
+    <figure>
+      <img src="figures/noise_risk.png" alt="左图是错误极小仍存在的风险，右图是从旧错支开始拟合后更接近生成材料的次数。两图均比较三个相对带宽。" loading="lazy">
+      <figcaption>左图比较预测风险和实际存活次数。右图另计从旧错支开始拟合更靠近生成材料的次数。半带宽达到无噪临界值的两倍，两套仿真都达到 40/40。</figcaption>
+    </figure>
+    <p class="links"><a href="figures/noise_risk.pdf">风险曲线论文图</a> <a href="MATHEMATICAL_THEORY.md">条件概率推导</a> <a href="results/risk_design.json">风险预测与逐次驻点追踪</a></p>
+    <h3>把两次照射分到高低频，可以更早消除局部错误谷</h3>
+    <p>关键量是频偏的能量加权平均和平方平均。对称频偏抵消一阶平均，同时保留平方平均。这个变化会改变两个谷各自消失所需的带宽。对六套独立生成的物理布局，在各自找到局部折叠及一对旧解之后，让每个旧解轮流生成读数，共 12 次无噪声条件对照。</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="六套布局的无噪声条件实验">
+      <table>
+        <thead><tr><th scope="col">同总能量的新增频率</th><th scope="col" class="num">从旧坏起点恢复到生成分支</th></tr></thead>
+        <tbody>
+          <tr class="focus"><th scope="row">高低频各一次</th><td class="num">12/12</td></tr>
+          <tr><th scope="row">两次都在正频偏</th><td class="num">5/12</td></tr>
+          <tr><th scope="row">两次都在负频偏</th><td class="num">5/12</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">这 12 次以有一对局部旧解为条件。较早的 R10 自然例中，档案有 10 例提供两份旧解，本轮只在其中 2 例确认了正、负频偏的局部碰撞。</p>
+    <p>把两份已知材料直接拿新回波比对时，三种频率安排都能选对。上表体现的是同一个求解器从旧错支起步时，会不会被局部错误谷留住。</p>
+    <figure>
+      <img src="figures/spectral_moments.png" alt="改变频谱的一阶与二阶矩会移动坏极小和鞍点相撞的临界带宽，六套独立布局用于条件验证" loading="lazy">
+      <figcaption>频率向上或向下扫，临界带宽可以不同。高、低频各分一半新增能量，可在所检验的局部范围内减轻对频偏符号和生成分支的依赖。</figcaption>
+    </figure>
+    <p class="links"><a href="figures/spectral_moments.pdf">频谱矩论文图</a> <a href="figures/freq_signed_folds_zh.pdf">正负频偏驻点追踪</a> <a href="results/spectral_new_layouts.json">六套布局逐项结果</a> <a href="results/freq_natural.json">自然场景逐例结果</a></p>
+    <p>一个二维 TM 镜像例给出明确边界。六个单元只留两个镜像材料未知，用两组相干发射和三个接收位置。对称馈电下，交换左右材料在整段频带的回波一致。给馈电加相对延时后，用完整接收几何预测小分支碰撞阈值，最大误差小于 1%。省略接收空间的额外正交分量，误差可到 41%。在固定频率改变馈电相位也能拉开读数。</p>
+    <p class="links"><a href="figures/mirror_spectrum.png">镜像等响应、延时馈电与固定频率相位对照</a> <a href="results/mirror_spectrum.json">逐项响应和碰撞阈值</a></p>
+  </section>
+
+  <section class="report-section" id="online">
+    <h2>旧读数带噪时，自选频率没有比固定宽频更稳</h2>
+    <p>对每套布局的两个生成材料各加三次复噪声，模拟旧、新读数共用一个未知复增益。选频只看带噪旧读数。36 次里，只在 6 次重建出可信的局部折叠并据此缩窄带宽。其余 30 次回到固定 ±2% 的采集配置。</p>
+    <p>自选对称频率的结果中，普通三起点有 <strong>35/36</strong> 更靠近生成分支，使用旧根辅助起点有 <strong>36/36</strong>。固定 ±2% 在这两种求解方式下得到相同的分支计数。把误差从低到高排序，看接近最差十分之一的位置，自选配置的材料 RMSE 分别为 <strong>0.1119</strong> 和 <strong>0.0553</strong>，固定配置则为 <strong>0.0076</strong> 和 <strong>0.0056</strong>。旧根辅助还需要额外求根。</p>
+    <p class="links"><a href="results/spectral_online.json">36 次选频、读数和拟合</a> <a href="FREQUENCY_RESULTS.md">频率实验详述</a></p>
+  </section>
+
+  <section class="report-section" id="high">
+    <h2>在 576 维旧坏起点上，按频率累计拟合更有效</h2>
+    <p>环、壳、弯桥使用历史数据和起点。两次新增曝光在相对旧频率 −50% 和 −25% 处，各用一半新增能量。三个频率共用一份无色散材料。两法用同一套宽频回波和 7,200 个 Maxwell 复右端求解上限。一个同时拟合三个频率，另一个从最低频开始，每阶段保留已经加入的读数。</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="相同宽频观测下的 576 维材料误差">
+      <table>
+        <thead><tr><th scope="col">使用相同宽频读数</th><th scope="col" class="num">环</th><th scope="col" class="num">壳</th><th scope="col" class="num">弯桥</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">所有频率同时拟合</th><td class="num">0.657</td><td class="num">0.490</td><td class="num">0.707</td></tr>
+          <tr class="focus"><th scope="row">由低到高累计拟合</th><td class="num">0.231</td><td class="num">0.228</td><td class="num">0.173</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">表中是材料误差的二范数除以真值材料的二范数，越小越接近真值。冷启动时，累计拟合的环和弯桥是 0.205 和 0.188，壳是 1.219。另在 ±10% 和较低计算预算下，对称频偏也没有在三个对象上同时领先。</p>
+    <p>宽频累计后，环、壳、弯桥的目标区域重叠率 IoU 从 0.557、0.755、0.532 升到 0.773、0.821、0.809。</p>
+    <p class="links"><a href="FREQUENCY_RESULTS.md">宽频能量、预算与各初始化</a> <a href="results/freq_high/ring_wide_7200_scores.json">环数据</a> <a href="results/freq_high/shell_wide_7200_scores.json">壳数据</a> <a href="results/freq_high/bridge_wide_7200_scores.json">弯桥数据</a></p>
+  </section>
+
+  <section class="report-section" id="sources">
+    <h2>把照明移进近场，能看到远处照射漏掉的材料差</h2>
+    <p>用九个 GN–NN R4 历史低对比测试样本。每例都找到两份 576 维材料，完整正演均在旧噪声阈值内，材料间 RMSE 中位为 0.074。对同一份有限材料差，原距离增添新角度与原位重测给出的响应相近，近场照明能看到明显更大的响应。</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="近场、同半径和原位重复的响应差">
+      <table>
+        <thead><tr><th scope="col">四次新增照明</th><th scope="col" class="num">响应差 / 新噪声范数</th><th scope="col" class="num">旧源空间外的响应差 / 新噪声范数</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">原位重测</th><td class="num">0.251</td><td class="num">约 0</td></tr>
+          <tr><th scope="row">同半径新增角度</th><td class="num">0.283</td><td class="num">0.077</td></tr>
+          <tr class="focus"><th scope="row">近场，等发射能量</th><td class="num">1.761</td><td class="num">1.722</td></tr>
+          <tr><th scope="row">近场，等入射场强</th><td class="num">1.119</td><td class="num">1.093</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>近场的最近源点距材料单元边缘 0.0515 个波长。把近场源压到与同方位远场相同的网格平均入射强度，增益仍在。也可直接用角谱看这个差别。两份材料响应差在旧 12 个角度稳定覆盖之外的角阶 <i>|n|</i> ≥ 6，其功率占比中位在外圈为 2.8%，在近圈为 86.2%。</p>
+    <figure>
+      <img src="figures/weak_source_geometry.png" alt="原位重测、同半径新角度和近场补测的候选差，及其在旧源空间内外的分解" loading="lazy">
+      <figcaption>纵轴是两个候选的全波回波差除以新增噪声向量的范数。右图所示为一个测试样本，分开以旧源可合成部分和剩余入射场计算差异。总差是两份复差向量相加以后的长度。</figcaption>
+    </figure>
+    <p>四发近场补测使 5/9 的两份旧候选都退出新旧观测的噪声范围，另 4/9 只保留一份。普通冷启动正则 GN 的材料 RMSE 中位从 0.03159 降到 0.02652。从选中旧分支启动的结果为 0.03584。相同新数据下，原 R4 Voxel 和 J-full 经相同物理校正达到 0.02756、0.03109，均有 9/9 符合联合噪声阈值。</p>
+    <p>另做一次相干照明。在 24 个发射点、相同辐射功率及馈电系数范数上限为 4 的比较中，近圈响应差是单次噪声范数的 11.80 倍，外圈为 2.95 倍，均为九例中位数。使用这次补测后，旧 GN 起点的平均归一化材料误差在近圈为 0.188，外圈为 0.221。</p>
+    <p class="links"><a href="figures/weak_candidates.png">原材料、旧端点和两份有限候选</a> <a href="WEAK_RESULTS.md">一发、四发、强基线与复现</a> <a href="figures/angular_modes.png">角谱与等功率相干照明图</a> <a href="ANGULAR_RESULTS.md">角谱推导与结果</a> <a href="results/angular_gap.json">逐样本角谱</a></p>
+  </section>
+
+  <section class="report-section" id="basins">
+    <h2>从旧坏起点跳出去，还要用原观测检验</h2>
+    <p>在 11 个 576 维历史端点上，重新计算原目标的梯度和曲率，区分已经停在局部谷底附近与仍能下降的截停点。环和壳的局部曲率支持盆地解释，弯桥、桥网和多个连续材料的若干方向仍有负曲率。延长迭代可以压低四个截停点的残差，这四个案例的材料结果没有同步变好。</p>
+    <p>按弱方向的二次近似生成有限跳步，11 个端点都没有得到优于所比较控制的候选。分离块上，普通多起点把材料 NRMSE 从 0.305 降到 0.107。这个正例与频率延拓分开计数。</p>
+    <p>另用同一批旧读数做干预。先暂时提高某个相干源组合的权重，让贴着材料下界的某个格点可以离开下界，再恢复原权重继续拟合。壳的材料 NRMSE 从 0.515 降到 0.475，IoU 从 0.087 升到 0.340。再延长 500 步，拟合目标继续下降，NRMSE 却回到 0.511，IoU 降到 0.246。</p>
+    <p>环上也出现拟合和材料质量背离。另一个从材料盒中点出发的长跑，把原目标从 0.009385 降到 0.000291，材料 NRMSE 从旧端点的 0.423 升到 0.996。首个格点离开边界可以预测，恢复的材料仍取决于之后怎么走。</p>
+    <figure>
+      <img src="figures/basin_release.png" alt="环和壳首个材料下界释放的预测与实际值，以及恢复原权重后的损失和宽频对照" loading="lazy">
+      <figcaption>左图是首个材料坐标离开下界的预报和实际跟踪。右上是恢复原权重后的目标，右下对照另一项等预算宽频实验的材料误差。</figcaption>
+    </figure>
+    <p class="links"><a href="figures/basin_release.pdf">盆地与频率路径论文图</a> <a href="figures/high_materials.pdf">历史端点和替代材料图</a> <a href="HIGH_RESULTS.md">11 个端点、折叠提案和实际成本</a> <a href="results/basin_shell.json">壳的加权及恢复轨迹</a></p>
+  </section>
+
+  <section class="report-section" id="artifacts">
+    <h2>数据、推导和下一轮</h2>
+    <p>论文可以围绕已知局部分支的带宽和风险公式展开。要让这套公式自行决定成像时怎么补测，还须从带噪旧读数可靠地找出分支。实验使用二维标量 TM 体积分方程。吸收、色散、三维偏振和真实仪器失配留待新实验验证。</p>
+    <p class="actions">
+      <a class="button" href="handoff.html">ChatGPT 研究交接</a>
+      <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r12-20261119/research/research_z_alg_r12/RESEARCH_REPORT_ZH.md">完整中文报告</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/research-z-alg-r12-20261119/research/research_z_alg_r12">源码与数据</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r12-20261119/Z_ALG_R12_2026-11-19.zip">完整研究包</a>
+    </p>
+    <p class="links"><a href="MATHEMATICAL_THEORY.md">数学推导</a> <a href="EXPERIMENTAL_RESULTS.md">完整实验比较</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r12-20261119">Release</a></p>
+  </section>
+  <footer class="foot">
+    <p>Z-ALG R12 · 2026 年 11 月 19 日 · <a href="../">查看全部研究</a></p>
+  </footer>
+</main>
+</body>
+</html>
