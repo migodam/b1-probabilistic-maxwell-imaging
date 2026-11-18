@@ -1,3 +1,11 @@
+<!-- Z_ALG_R7_PUBLICATION -->
+## Z-ALG R7 · 三次照射估计指定区域的材料值
+
+在两套二维电磁仿真里，十个发射器配合照三次，就能估计指定方形区域的材料值。背景材料整体比模型高 1% 时，32 个样本中只有 14 个的估计范围还包含真值。两套布局各单测一次背景，再调整照射方式，32 个样本的范围都重新包含真值。
+
+[中文报告与图表](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r7/) · [下一轮理论交接](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r7/handoff.html) · [交接原文](research/research_z_alg_r7/NEXT_PRO_HANDOFF.md)
+<!-- /Z_ALG_R7_PUBLICATION -->
+
 <!-- MAX_STRUCT_R15_PUBLICATION -->
 ## MAX-STRUCT R15：twofold G19、观测分母与周期反射
 

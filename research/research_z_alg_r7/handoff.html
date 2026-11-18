@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z-ALG R7 · ChatGPT 研究交接</title>
+  <meta name="description" content="R7 的理论、全波数值结果、宿主标定与下一轮应检验的三个问题。">
+  <link rel="stylesheet" href="report.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" aria-label="研究导航">
+      <a href="../">研究总览</a>
+      <a href="./">R7 网页报告</a>
+      <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r7-20261118">发布版本及下载</a>
+    </nav>
+    <main>
+      <header class="intro">
+        <h1>Z-ALG R7 · ChatGPT 研究交接</h1>
+        <p class="lead">已知一个区域内的多个单元共享同一个材料参数。其余单元的材料都未知时，一台外部接收器能否用少量固定照明确定这个参数？</p>
+        <div class="actions">
+          <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/NEXT_PRO_HANDOFF.md">交接全文 Markdown</a>
+          <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/THEORY_DERIVATIONS.md">理论推导原文</a>
+        </div>
+      </header>
+
+      <section class="panel" aria-labelledby="evidence">
+        <header class="section-head"><h2 id="evidence">R7 得到了什么</h2></header>
+        <ol>
+          <li>
+            <p><strong>一组固定波形可以检验整个候选材料区间。</strong> 为每个候选材料值求一个聚焦场，把产生它所需的入射场写成关于材料值的多项式，再选出能合成其全部系数场的一组物理波形。发射这一组波形后，只需在计算时重新组合读数，就能检验各个候选值。</p>
+            <p>在两种二维全波仿真布局中，四单元方形都用三束。确认布局中，总能量同为 2、总噪声半径同为 2×10<sup>−4</sup> 时，各组使用同样的 TRF 拟合流程。目标参数绝对误差的中位数为 0.0183（协调三束）、0.1004（三个参考材料值各自优化）、2.505（随机三束）和 0.00919（全部十束）。三单元 L 形上，协调四束和四个参考材料值各自优化张成同一个波形空间。同一份 L 形带噪数据容许目标取 1.64787 或 6.65485，两者均经完整正演复核。</p>
+            <p class="links">
+              <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/RESULTS_PENCIL.md">全波对照</a>
+              <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/pencil_feasible_followup.json">可行材料与残差</a>
+            </p>
+          </li>
+          <li>
+            <p><strong>空载标定可以修正宿主的共同尺度偏差，剩余不确定性会降低分辨率。</strong> 两种布局的已知宿主材料统一提高 1% 后，原方案的真值覆盖由 32/32 降到 14/32。每种布局先模拟一次单位能量的空载照明，估计宿主材料的共同倍数，再按估计值重新设计三束加载波形。同一布局的 16 个对象共用这三束波形。区间重新覆盖全部真值，但五个样本的总读数偏差仍超出名义噪声半径。使用同一空载读数给剩余误差设上界后，区间宽度中位数由 0.1745 增至 1.665。</p>
+            <p class="links">
+              <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/geometry_mismatch.json">宿主失配原始结果</a>
+              <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/host_error_bound.json">计入标定误差后的逐样本区间</a>
+            </p>
+          </li>
+          <li>
+            <p><strong>连续介质允许另一处材料变化精确抵消小目标。</strong> 在二维均匀参考介质中，有限个独立外部线源照明、单点近场复接收时，只要某个与目标分离的开区域允许材料作足够小的正、负变化，就可在该区域内补偿一个预先指定的小目标，使所有读数严格相同。证明依赖两个出射场相乘产生的径向相位。在 +0.10 圆盘目标的 12 束数值实验中，独立的 2,640 点积分网格得到的剩余信号为未补偿信号的 0.0684%。定理给出局部存在性，数值实验给出有限幅度的近似结果。</p>
+            <p class="links">
+              <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/RESULTS_CONTINUUM.md">连续介质数值实验</a>
+              <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/continuum_mimic.json">补偿材料与跨网格结果</a>
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="panel" aria-labelledby="review">
+        <header class="section-head"><h2 id="review">请下一轮审查的三个问题</h2></header>
+        <ol>
+          <li><strong>第 8 节的曝光数下界。</strong> 检查左逆与 Vandermonde 论证所需的系数独立、张成和可见性条件。系数列相关或候选值落在秩变化点时，能否求出固定发射子空间的最小维数，或给出反例？当前下界针对一般候选值上的复干扰线性消除。</li>
+          <li><strong>第 10 节的标定误差界。</strong> 能否保留发送场与接收场的相关性，用同一批观测收紧区间，并保留在声明模型内的包含保证？逐样本观测到的系统误差投影最多约为当前上界的 3%。</li>
+          <li><strong>第 9 节的连续介质满秩定理。</strong> 与有限远场观测的不可见材料、点电极 EIT 的灵敏度独立性逐项比较。重点说明出射相位带来的近场满秩结论，以及源几何、收发距离和材料符号限制如何影响补偿幅度。</li>
+        </ol>
+        <p class="note">R7 所有观测均由模型数值生成。有限维结果针对已知位置的共享材料参数，连续介质定理针对二维均匀参考附近的局部变化。</p>
+        <p class="links">
+          <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/RESEARCH_REPORT_ZH.md">完整中文报告</a>
+          <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/LITERATURE.md">文献对照</a>
+          <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/EXPERIMENTAL_RESULTS.md">实验、费用与复现入口</a>
+        </p>
+      </section>
+    </main>
+    <footer class="foot">
+      <p>Z-ALG R7 · 2026 年 11 月 18 日 · <a href="./">返回 R7 网页报告</a></p>
+    </footer>
+  </div>
+</body>
+</html>

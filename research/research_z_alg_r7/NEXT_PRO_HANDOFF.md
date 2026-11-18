@@ -1,6 +1,16 @@
 # 给下一轮 GPT Pro 的交接：哪一种材料量可以用有限照明识别？
 
-这项工作已经完成了推导、实际算子求解、独立几何确认、近邻文献核读和失败后的标定修正。建议先读[中文报告](RESEARCH_REPORT_ZH.md)、[推导第 3、8、9、10 节](THEORY_DERIVATIONS.md)和[两种区域的全波对照](results/RESULTS_PENCIL.md)。全部数据来自物理模型计算，没有台架测量。
+R7 研究一个已知区域内由多个单元共享的实材料参数。在区外材料未知时，能否用少量固定的外部照明测出这个参数？研究完成了理论推导、全波数值实验、第二种收发几何的确认及宿主标定误差分析。全部观测由物理模型数值生成。建议依次阅读中文报告、推导第 3、8、9、10 节及全波对照。
+
+[R7 网页报告](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r7/) · [ChatGPT 交接网页](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r7/handoff.html) · [发布版本及下载](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r7-20261118)
+
+## 可直接读取的原始文件
+
+- [当前交接全文 Markdown](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/NEXT_PRO_HANDOFF.md)
+- [中文主报告](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/RESEARCH_REPORT_ZH.md) · [完整推导及定理](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/THEORY_DERIVATIONS.md) · [实验、计算费用和复现入口](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/EXPERIMENTAL_RESULTS.md) · [文献对照](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/LITERATURE.md)
+- [两种区域的全波对照](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/RESULTS_PENCIL.md) · [逐样本结果 CSV](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/pencil_individual.csv) · [复读数和发射波形 NPZ](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/pencil_observations.npz) · [全波可行材料和残差 JSON](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/pencil_feasible_followup.json)
+- [宿主失配 JSON](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/geometry_mismatch.json) · [空载标定和加载观测 JSON](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/geometry_calibrated.json) · [计入标定误差的逐样本界 JSON](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/host_error_bound.json)
+- [连续介质数值实验](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/RESULTS_CONTINUUM.md) · [环形补偿及独立积分网格结果 JSON](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r7-20261118/research/research_z_alg_r7/results/continuum_mimic.json)
 
 ## 可用于论文的三项结果
 
@@ -12,7 +22,7 @@
 
 **一，系数空间给出的 shot 最小性。** 请检查第 8 节的左逆/Vandermonde 论证是否需要比“在一般 $q$ 张成核＋所有系数列满秩”更强的假设，特别是秩跳跃、馈电零空间、可见性消失、不同模板次数与实数 $q$。更有价值的推广是系数列线性相关时，给出所有候选值都有非零聚焦方向的最小物理子空间维数，或给出这一推广的反例。请对照最小基干扰解耦、虚拟源实验和多源压缩；将滤波器的动态阶数直接等同于照明数会产生错误。
 
-**二，标定不确定性到底损失多少分辨率。** 全部已知宿主增加 1% 后，原测量的覆盖由 32/32 降至 14/32；一个额外的空载标定读数和重新设计波形恢复了样本覆盖。第 10 节随后用这同一标定读数、无耗散实材料的 $T$ 算子界和精确二点式，直接对所有活动材料给出模型误差外包，中位宽度由 0.174 增至 1.665。该界还是宽了；观测到的系统误差投影最大仅约为其上界的 3%。请优先研究保留发射方向和接收方向相关性的更紧界，例如受限负载 $T$ 算子双线性支持函数。目标是用同一批数据降低外包宽度并保留模型内包含性。扩成多维漂移时，要说明一束标定能约束哪些参数方向。[标定记录](results/geometry_calibrated.json) · [统一误差界](results/host_error_bound.json)
+**二，标定不确定性到底损失多少分辨率。** 已知宿主材料统一提高 1% 后，真值覆盖由 32/32 降至 14/32。每种布局增加一次空载标定，再按估计的宿主倍数重新设计波形，样本覆盖恢复至 32/32。第 10 节用同一次标定读数、无耗散实材料的 $T$ 算子界和精确二点式，推导出对所有允许的活动材料都成立的读数误差上界。计入这一项后，目标区间的中位宽度由 0.1745 增至 1.665。观测到的系统误差投影最大仅约为其上界的 3%。请优先研究保留发射方向和接收方向相关性的更紧界，例如受限负载 $T$ 算子双线性支持函数。目标是用同一批数据降低外包宽度并保留模型内包含性。扩成多维漂移时，要说明一束标定能约束哪些参数方向。[标定记录](results/geometry_calibrated.json) · [统一误差界](results/host_error_bound.json)
 
 **三，连续近场自动实满秩究竟推进了什么。** 请优先比对远场有限方向不可见材料构造和点电极 EIT 的局部灵敏度积独立性，它们已经提供了非线性校正与局部 Gram 对偶的证明框架。可争取的增量是近场点源自动满秩所用的出射相位，以及与实补偿代价的联系。应分析当接收/发射距离增大、源几何变坏，或干扰只许非负变化时，Gram 最小奇异值、补偿幅度和定理的有效半径如何变化。独立坐标的幅值约束与连续干扰允许的 $L^\infty$ 幅度也应分别陈述。[远场先例](https://arxiv.org/pdf/1410.8382) · [EIT 先例](https://arxiv.org/pdf/1412.6768)
 
