@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z-ALG R10 · 下一轮研究交接</title>
+  <meta name="description" content="分支搜索结果、同功率补测和有界误差材料排除的公式、数据、代码与下一轮研究问题。">
+  <link rel="stylesheet" href="../research_z_alg_r7/report.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav" aria-label="研究导航">
+    <a href="../">研究总览</a>
+    <a href="./">R10 网页报告</a>
+    <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r10-20261119">发布版本</a>
+  </nav>
+  <main>
+    <header class="intro">
+      <p class="byline">Z-ALG R10 · 2026 年 11 月 19 日</p>
+      <h1>Z-ALG R10 · 下一轮研究交接</h1>
+      <p class="lead">从同一复散射读数找相容材料，按物理可实现的等功率照明补一个读数，再用有界误差检验哪些材料区域必须退出。</p>
+      <div class="actions">
+        <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r10-20261119/research/research_z_alg_r10/NEXT_PRO_HANDOFF.md">交接原文 Markdown</a>
+        <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r10-20261119/research/research_z_alg_r10/RESEARCH_REPORT_ZH.md">完整中文报告</a>
+      </div>
+    </header>
+
+    <section class="panel" aria-labelledby="evidence">
+      <h2 id="evidence">从哪一份证据开始</h2>
+      <ol>
+        <li>
+          <p><strong>旧观测的多分支。</strong> 单接收器的响应行满足 <i>y</i> = <i>wB</i>。沿旧数据看不到的方向 <i>n</i> 写 <i>w</i> = <i>w</i><sub>*</sub> + <i>tn</i>。带入逐单元实材料条件得到 <i>a</i> Re <i>t</i> + <i>b</i> Im <i>t</i> + <i>c</i>|<i>t</i>|<sup>2</sup> = 0。对非零 <i>t</i> 做倒数换元可一次最小二乘消去复幅度。六单元 18 例中，普通弦、有界多起点、倒数投影和 20 路同伦参考均找到 34 个通过独立正演的材料。十二单元等 CPU 比较中，普通弦多找到 2 个额外材料；角度扰动诊断呈现较窄的倒数投影收敛范围。</p>
+          <p class="links"><a href="results/branch_notes.md">公式与对照</a> <a href="results/branch_summary.json">材料覆盖和计算成本</a> <a href="results/branch_diagnostics.json">方向扰动诊断</a> <a href="results/homotopy_control_12.json">十二单元同伦路径</a></p>
+        </li>
+        <li>
+          <p><strong>新增一次物理读数。</strong> 比较可实现的单位功率相干照明，最大化已发现候选之间的最差读数差。13 个自然留出多分支目标上，该间距中位数是 0.00533，固定随机是 0.000961。旧读数带噪时，用分支热启和普通重启选中的材料 RMS 误差中位数均为 2.595。留一分支和随机对照保留。</p>
+          <p class="links"><a href="FEEDBACK_NOTES.md">源功率、观测和拟合</a> <a href="results/feedback.json">全部模拟读数和评分</a> <a href="results/feedback_design.json">实际馈电与分离指标</a></p>
+        </li>
+        <li>
+          <p><strong>全部材料盒的坐标外包。</strong> 24 个独立材料的所设模型中，22 束旧数据有两份合法全波见证，第 23 个材料分别为 1.560 和 9.458。在每组加性误差尺度 0.0002、共同复增益误差尺度 1% 的椭球下，加一束后所有可行材料该坐标均在 [9.28, 9.66]。固定随机束和仅用入射几何的束也排除了远支。旧照明为歧义原型专门构造。</p>
+          <p>自然六单元 18 例有 16 份严格符合旧读数误差界的错误解释。把同一份四束读数用于全部 15 个坐标对的严格投影，按候选选束和固定随机均排除 16/16 个邻域，局部 Fisher 排除 15/16。</p>
+          <p>独立有限孔径复核共 8 例，旧孔径 177°，新增阵列孔径 220°。直接求带噪旧观测的中央等式得到 4 例单根、4 例无根，主动选束全部回退到 Fisher 或随机。有界误差下严格成立的两份错误旧解释中，一份被新增读数排除。另一份与真实材料都严格符合新旧读数，两者相距约 0.125 RMS。</p>
+          <p>同等证明的用时对照用旧数据固定四个样本的八块区域。两法共用的点检查证明四块有可行材料，余下四块均被坐标消元和直接六维 Bernstein 严格排除。含共用点检查，三个区域的直接六维 CPU 分别为消元的 47.1、48.4、38.8 倍。confirm6-05 首个投影漏掉排除，固定顺序的第三对坐标完成证明，排除步骤计入换图为 0.0391 对 0.2043 秒（5.23 倍）。样本量是四个目标、四块已严格排除的区域。</p>
+          <p class="links"><a href="figures/certified_regions.pdf">材料区域论文图</a> <a href="results/short_certificate.json">24 单元区间证书</a> <a href="results/natural_all_pairs.json">自然六单元全部坐标对</a> <a href="results/confirm_all_pairs.json">独立孔径全部坐标对</a> <a href="results/direct_box_unselected.json">同等证明及用时数据</a></p>
+        </li>
+        <li>
+          <p><strong>共同误差的判别。</strong> 同一份六材料解释，全部 20 条三单元关系逐条通过，任取两条组合的 190 种检验也全部通过；完整四个读数的最低共同误差分数却为 1.200，上限是 1。各坐标半宽 2<sup>−22</sup> 的整片材料域也有严格反例。多个虚拟读数的共同误差判据与正演的等价条件、有限分组的最坏放大率，见推导第 9、10 节。</p>
+          <p class="links"><a href="figures/proof_comparison.pdf">论文图</a> <a href="results/all_circuit_counterexample.json">反例的全部组合</a> <a href="MATHEMATICAL_THEORY.md">推导</a></p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="panel" aria-labelledby="review">
+      <h2 id="review">下一轮需要回答的问题</h2>
+      <ol>
+        <li>怎样选取少量共享误差的组合，在指定的完整材料范围上控制遗漏？目前已有全部两项组合都漏过的严格反例。</li>
+        <li>当候选样本漏了一支时，怎样选一束从整个剩余材料集合中最大限度排除指定位置的歧义？用同功率随机、局部灵敏度和几何补全作对照。</li>
+        <li>响应消元的区间外包在更宽的误差界、病态入射子空间和其他材料投影坐标下能收紧多少？报告保留下来的整片材料解释与已经严格排除的区域。</li>
+      </ol>
+      <p class="note">当前仿真求解二维全波体积分方程。分支发现是数值实验，严格坐标外包以保存的离散系数和声明的测量误差模型为准。</p>
+      <p class="links"><a href="RELATED_WORK.md">相关工作与公式出处</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/research-z-alg-r10-20261119/research/research_z_alg_r10">该版本全部代码与数据</a></p>
+    </section>
+  </main>
+  <footer class="foot"><p>Z-ALG R10 · 2026 年 11 月 19 日 · <a href="./">返回 R10 网页报告</a></p></footer>
+</div>
+</body>
+</html>

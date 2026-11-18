@@ -1,3 +1,11 @@
+<!-- Z_ALG_R10_PUBLICATION -->
+## Z-ALG R10 · 再照一次，排除一类材料解释
+
+二维全波仿真中，同一组 22 束旧读数容许 24 个独立未知材料的两份完整解释。新增一束后，第 23 个材料的所有可行值都落在 [9.28, 9.66]。同功率随机束和只按几何选的束也排除了远支。在四片六材料区域上，降维能以直接六维法约 1/5 到 1/48 的 CPU 时间给出相同的严格排除。另有一份错误材料能通过全部 190 个两项检验，只有共同使用整批读数才被识破。
+
+[中文报告与图表](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r10/) · [下一轮研究交接](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r10/handoff.html) · [交接原文](research/research_z_alg_r10/NEXT_PRO_HANDOFF.md)
+<!-- /Z_ALG_R10_PUBLICATION -->
+
 <!-- Z_ALG_R7_PUBLICATION -->
 ## Z-ALG R7 · 三次照射估计指定区域的材料值
 
