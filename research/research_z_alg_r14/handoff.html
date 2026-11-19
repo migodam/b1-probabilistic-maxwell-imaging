@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z-ALG R14 · ChatGPT 研究交接</title>
+  <meta name="description" content="Z-ALG R14 的 Markdown 原文链接、发布包、连续频带材料歧义、半能量早停和区域精修证据。">
+  <link rel="stylesheet" href="../research_z_alg_r7/report.css">
+  <style>
+    .handoff-copy { display: block; width: 100%; padding: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 7px; background: #f5f7f9; font: 14px/1.6 ui-monospace, monospace; resize: vertical; }
+    .handoff-copy:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    button.button { cursor: pointer; }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <nav class="nav" aria-label="项目导航">
+    <a href="../../">Maxwell 成像项目</a>
+    <a href="../">全部研究</a>
+    <a href="./">R14 中文报告</a>
+    <a href="../research_z_alg_r12/handoff.html">R12 交接</a>
+    <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r14-20261119">发布版本</a>
+  </nav>
+
+  <header class="intro">
+    <p class="byline">Z-ALG R14 · 2026 年 11 月 19 日</p>
+    <h1>ChatGPT 研究交接 · 材料歧义、半能量与区域恢复</h1>
+    <p class="lead">交接保留 62 案的带噪旧读数、半能量早停和连续频带反例。新的低噪配对明确展示了区域初始化能修复一个普通多起点错解，也记录了获得区域所需的实际计算。</p>
+    <p class="actions">
+      <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/NEXT_PRO_HANDOFF.md">交接原文 Markdown</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/research-z-alg-r14-20261119/research/research_z_alg_r14/RESEARCH_REPORT_ZH.md">完整中文报告</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r14-20261119/Z_ALG_R14_2026-11-19.zip">完整研究包 ZIP</a>
+    </p>
+  </header>
+
+  <nav class="page-nav" aria-label="交接目录">
+    <a href="#paste">贴给 ChatGPT</a>
+    <a href="#evidence">主要证据</a>
+    <a href="#limits">合同与适用范围</a>
+    <a href="#pack">下载与复现</a>
+    <a href="#next">下一轮研究</a>
+  </nav>
+
+  <section class="report-section" id="paste">
+    <h2>贴给 ChatGPT</h2>
+    <label for="handoff-text">交接指令和带版本的资料原文</label>
+    <textarea id="handoff-text" class="handoff-copy" rows="9" readonly>请先读 Z-ALG R14 交接原文，结合报告、数学推导和原始实验比较判断哪些结论可以继续研究。保留噪声合同、实际成本和负例。
+交接 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/NEXT_PRO_HANDOFF.md
+报告 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/RESEARCH_REPORT_ZH.md
+推导 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/MATHEMATICAL_THEORY.md
+实验 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/EXPERIMENTAL_RESULTS.md
+研究包 https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r14-20261119/Z_ALG_R14_2026-11-19.zip</textarea>
+    <p class="actions">
+      <button type="button" class="button" id="copy-handoff">复制交接资料</button>
+      <span id="copy-status" class="note" role="status"></span>
+    </p>
+  </section>
+
+  <section class="report-section" id="evidence">
+    <h2>主要证据</h2>
+    <ul>
+      <li><strong>事前选频与事后早停。</strong> 只看旧读数，62/62 回退固定 ±2%。收到 −2% 的半能量读数后，R12 条件组 33/36 案的材料集合直径已达到 0.5 RMS，另 3 案需补齐第二块。平均新增 1.083 个频块，每块各有三次独立发射，合计平均 3.25 次新发射。自然 18 案和有限孔径 8 案全部补齐且未达该直径目标。</li>
+      <li><strong>连续频带歧义。</strong> <code>fresh6-16</code> 的两份材料相距至少 11.568 RMS。在连续 ±2% 和原三端口任意相干馈电中，给定一个新增总辐射能量单位，两份材料可能共享整组旧新读数。把双方的增益都固定为已知的 1，另一对相距 7.9733 RMS 的材料仍有重合。552 个 Arb 区间覆盖全带。对这两份材料做等先验比较，独立圆复高斯未来噪声下的条件二元判错率理论下界约 1.01%，允许根据既有读数调整后续动作。</li>
+      <li><strong>新材料上的区域初始化。</strong> 八套独立几何与材料分别生成低、高两档配对噪声读数。首块达到 0.5 RMS 直径目标的分别为 7/8、0/8。低噪 <code>val6-06</code> 的半能量输出从 15.71 RMSE 降至 0.000904，恢复用量从 496 降至 8 次因子化。可靠半径 0.0727，输出符合共同增益合同。</li>
+    </ul>
+    <p class="links"><a href="figures/r14_overview.pdf">研究总览图</a> <a href="figures/continuous_band.pdf">连续频带证书图</a> <a href="results/continuous_band/fresh6-16_known_coherent.json">已知单位增益的完整区间证书</a> <a href="results/measure_region_refine_scores_validation.json">新材料精修逐案证据</a></p>
+  </section>
+
+  <section class="report-section" id="limits">
+    <h2>合同与适用范围</h2>
+    <p>本轮使用二维标量 TM 六材料离散模型。旧、新读数共用一个复增益。R12 条件组和 R10 自然组沿用各自的噪声合同，独立对照在同一材料、几何和增益下只改变接收噪声幅度。材料直径限制允许误差内的所有解释，精修输出也另行检验能否同时解释新旧读数。</p>
+    <p>区域精修的求解时间计算从已有盒开始。旧域和新增数据的区间筛选移入端到端时间后，成本仍高于普通多起点。自然组保留区域宽，误差尾部没有改善。</p>
+    <p class="links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/research-z-alg-r14-20261119/research/research_z_alg_r14/MATHEMATICAL_THEORY.md">数学推导</a> <a href="EXPERIMENT_MEASUREMENTS.md">噪声、能量和实际计算</a></p>
+  </section>
+
+  <section class="report-section" id="pack">
+    <h2>下载与复现</h2>
+    <p>发布包包含本轮推导、实验入口、原始观测、逐案结果与论文图。通过固定版本的源码目录可单独取得所需材料。</p>
+    <p class="links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r14-20261119/Z_ALG_R14_2026-11-19.zip">下载完整 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/research-z-alg-r14-20261119/research/research_z_alg_r14">本轮源码目录</a> <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/EXPERIMENTAL_RESULTS.md">实验总表原文</a></p>
+  </section>
+
+  <section class="report-section" id="next">
+    <h2>下一轮研究</h2>
+    <p>沿着连续频带反例检查哪些新增空间照射或接收几何可以突破原系统的材料歧义。将候选差、实际材料恢复和所需的额外测量成本分别检验。</p>
+    <p class="links"><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r14-20261119/research/research_z_alg_r14/NEXT_PRO_HANDOFF.md">下一轮任务原文</a></p>
+  </section>
+
+  <footer class="foot">
+    <p>Z-ALG R14 · 2026 年 11 月 19 日 · <a href="./">返回中文报告</a></p>
+  </footer>
+</main>
+<script>
+  const handoff = document.getElementById('handoff-text');
+  const copyStatus = document.getElementById('copy-status');
+  document.getElementById('copy-handoff').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(handoff.value);
+      copyStatus.textContent = '已复制。';
+    } catch {
+      handoff.focus();
+      handoff.select();
+      copyStatus.textContent = '交接文字已选中，使用系统复制快捷键。';
+    }
+  });
+</script>
+</body>
+</html>
