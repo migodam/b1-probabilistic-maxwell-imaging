@@ -1,3 +1,11 @@
+<!-- Z_ALG_R15_PUBLICATION -->
+## Z-ALG R15 · 多测几个频率，还是多换几个角度？
+
+2–30 GHz、576 个未知材料像素。相同的 64 个读数，增加发射角能降低整图误差，换频有时更能分开相邻缺陷。报告给出两种宽带 MIMO 优劣反转的材料、独立选频实验和 Fresnel 实测对照。
+
+[中文报告与图表](research_z_alg_r15/index.html) · [ChatGPT 研究交接](research_z_alg_r15/handoff.html)
+<!-- /Z_ALG_R15_PUBLICATION -->
+
 <!-- Z_ALG_R12_PUBLICATION -->
 ## Z-ALG R14 · 换频后还有多少份材料解释同一组读数？
 

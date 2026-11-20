@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z-ALG R15 · ChatGPT 研究交接</title>
+  <meta name="description" content="Z-ALG R15 的报告、理论、实验和固定版本研究包。">
+  <link rel="stylesheet" href="../research_z_alg_r7/report.css">
+  <style>
+    .handoff-copy { display: block; width: 100%; padding: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 7px; background: #f5f7f9; font: 14px/1.6 ui-monospace, monospace; resize: vertical; }
+    .handoff-copy:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    button.button { cursor: pointer; }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <nav class="nav" aria-label="项目导航">
+    <a href="../../">Maxwell 成像项目</a>
+    <a href="../">全部研究</a>
+    <a href="./">R15 中文报告</a>
+    <a href="../research_z_alg_r14/handoff.html">R14 研究交接</a>
+    <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r15-20261120">版本记录</a>
+  </nav>
+
+  <header class="intro">
+    <p class="byline">Z-ALG R15 · 2026 年 11 月 20 日</p>
+    <h1>ChatGPT 研究交接 · 频率、空间角度与材料恢复</h1>
+    <p class="lead">这一轮把三类问题分开求证。两份已知材料怎样用新读数分开，未知缺陷怎样定位和恢复介电偏差，模板已知的两个 Fresnel 实物怎样验证留出复场。</p>
+    <p class="actions">
+      <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r15-20261120/research/research_z_alg_r15/NEXT_PRO_HANDOFF.md">交接原文 Markdown</a>
+      <a class="button" href="RESEARCH_REPORT_ZH.md">完整中文报告</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r15-20261120/Z_ALG_R15_2026-11-20.zip">完整研究包 ZIP</a>
+    </p>
+  </header>
+
+  <nav class="page-nav" aria-label="交接目录">
+    <a href="#paste">贴给 ChatGPT</a>
+    <a href="#evidence">主要证据</a>
+    <a href="#scope">如何解释结果</a>
+    <a href="#files">原始资料</a>
+  </nav>
+
+  <section class="report-section" id="paste">
+    <h2>贴给 ChatGPT</h2>
+    <label for="handoff-text">交接指令与固定版本地址</label>
+    <textarea id="handoff-text" class="handoff-copy" rows="12" readonly>读完 Z-ALG R15 的交接、报告、公式和实验。分别判断已知候选判别、未知支撑定位、整图材料恢复和实测模板定位。保留等读数和等发射能量的条件、失败样例、材料误差和真实数据拟合的区别，以及未知色散的影响。
+交接 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r15-20261120/research/research_z_alg_r15/NEXT_PRO_HANDOFF.md
+报告 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r15-20261120/research/research_z_alg_r15/RESEARCH_REPORT_ZH.md
+推导 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r15-20261120/research/research_z_alg_r15/THEORY.md
+实验 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r15-20261120/research/research_z_alg_r15/EXPERIMENTAL_RESULTS.md
+研究包 https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r15-20261120/Z_ALG_R15_2026-11-20.zip</textarea>
+    <p class="actions"><button class="button" type="button" id="copy-handoff">复制交接指令</button><span class="note" id="copy-status" role="status"></span></p>
+  </section>
+
+  <section class="report-section" id="evidence">
+    <h2>主要证据</h2>
+    <ul>
+      <li>在 576 个独立材料像素的 24 网格离散模型上，两种同能宽带 MIMO 的最坏期望整图 RMSE 分别严格大于 0.0460 和 0.0642。两对材料的偏好排序在 48 和 72 网格也保持。 <a href="WITNESS_CERTIFICATE.md">全波离散证书</a></li>
+      <li>原三发、48 时隙的 R14 冻结材料对，可用 16 GHz 轮换八收或 22 GHz 原单收分开。在宽频上换成同读数的轮换八收反而变差。纯辐射最优的相干波形可能需要很强的端口激励。 <a href="PAIR_RESULTS.md">旧材料对</a></li>
+      <li>两组各 64 复读数的宽频设计对两个有限材料变化的判别排序相反。保持材料不变，在 48 和 72 网格全波复算时均成立。第一对较易方案的误判率约 13%，构造目标曾设为不高于 5%。 <a href="results/witness_transfer.json">72 网格全波复算</a></li>
+      <li>固定 64 个复数、8 发和总能量的三个盲测设计中，28/30 GHz 在两种材料模型下分开 2.885 mm 双孔。错误常数宿主也可以保留双峰，但材料对比度中位保留率降至 0.305。 <a href="INVERSION_RESULTS.md">反演、校准与盲测</a></li>
+      <li>两批独立 72 网格外验各含 8 个缺陷和 1 个空板。先导图的虚拟全波试扫在 15/16 个缺陷上选择补 12 GHz，另 1 个补 16 GHz 发射角。两批平均材料 RMSE 为 0.03772 / 0.03871，低于 Fisher 的 0.05332 / 0.05679，仍高于固定补发射角的 0.03481 / 0.03760。试扫法未分开两批近双孔，Fisher 与固定 16 + 24 GHz 均分开。选方案约需 141–142 毫秒，Fisher 约 1 毫秒。 <a href="PILOT_RISK.md">全波试扫对照</a></li>
+      <li>细网格全波修正可降低高频材料偏差。在独立 72 网格近双孔上，28/30 GHz 修正降低整图 RMSE，稀疏初图却更可靠地保留双峰。共用增益投影加噪声停步可进一步改善高频材料误差。 <a href="ROI_RESULTS.md">细网格修正和失败</a> · <a href="results/port_scores_holdout72.csv">噪声停步逐案数据</a></li>
+      <li>在 72 网格外验的等能量 64 读数扩展中，增加发射角的材料误差低于轮换接收角与并行增加接收通道。并行接收只需 4 发，其他扩展各用 8 发。 <a href="./#cost">材料误差与成本图</a> · <a href="results/nested_scores_holdout72.csv">64 读数扩展逐案分数</a></li>
+      <li>两个 Fresnel 实物中，等 576 复读数的 6 频 4 发和 3 频 8 发给出近似定位及留出场误差。材料与形状使用了公开模板先验。 <a href="FRESNEL_RESULTS.md">实测证据</a></li>
+    </ul>
+    <!-- R15_HANDOFF_FREQUENCY_SPACE_EVIDENCE -->
+    <p class="links"><a href="results/dof_trade.csv">频率与空间自由度</a><a href="results/material_weak_modes.json">材料对见证</a><a href="results/witness_transfer.json">更细网格的独立重算</a></p>
+    <!-- /R15_HANDOFF_FREQUENCY_SPACE_EVIDENCE -->
+  </section>
+
+  <section class="report-section" id="scope">
+    <h2>如何解释结果</h2>
+    <p>完整板的材料有 576 个实自由度。细网格增加的是电磁场自由度。材料图用符号 IoU、材料 RMSE、双峰定位、对比度和空板误报格分别评分。FFT-TSOM 的辅助电流拟合与输出材料重新求解的全波数据误差分别记录。空板样本数仅足以描述本次观察。</p>
+    <p>频率和收发角对局部材料方向的灵敏度，用已知有限介质板的雅可比估计。判断有限差异，还需要实际的非线性复场。实测 Fresnel 的模板定位只能为这两个圆柱提供外部参照。</p>
+  </section>
+
+  <section class="report-section" id="files">
+    <h2>原始资料</h2>
+    <ul>
+      <li><a href="NEXT_PRO_HANDOFF.md">逐项交接原文</a> · <a href="RESEARCH_REPORT_ZH.md">中文报告</a> · <a href="THEORY.md">公式</a> · <a href="EXPERIMENTAL_RESULTS.md">逐组实验</a></li>
+      <li><a href="HOLDOUT_DATA.md">配对盲测数据说明</a> · <a href="results/holdout_observations.npz">无损观测</a> · <a href="results/holdout_debye_observations.npz">Debye 观测</a> · <a href="results/holdout72_observations.npz">72 格外验观测</a></li>
+      <li><a href="run_inversion.py">反演、评分与绘图入口</a> · <a href="src/ndt.py">有限板算子</a> · <a href="https://www.ece.nus.edu.sg/stfpage/elechenx/Book.htm">FFT-TSOM 作者补充代码</a></li>
+    </ul>
+  </section>
+
+  <footer class="foot">Z-ALG R15 · B1 Maxwell 成像研究 · 2026-11-20</footer>
+</main>
+<script>
+  const copyButton = document.getElementById('copy-handoff');
+  const handoffText = document.getElementById('handoff-text');
+  const copyStatus = document.getElementById('copy-status');
+  copyButton.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(handoffText.value);
+      copyStatus.textContent = '已复制';
+    } catch {
+      handoffText.focus();
+      handoffText.select();
+      copyStatus.textContent = '已选中，可用键盘复制';
+    }
+  });
+</script>
+</body>
+</html>
