@@ -1,3 +1,11 @@
+<!-- Z_ALG_R16_PUBLICATION -->
+## Z-ALG R16 · 在电流域选方向，能否改善 576 格材料重建？
+
+用 FFT-TSOM 更新多源感应电流，每轮再独立更新 576 个材料格。报告给出电流空间可表示的材料方向，并用历史二维 Maxwell 观测检验这些方向是否改善材料恢复。
+
+[中文报告与图表](research/research_z_alg_r16/index.html) · [ChatGPT 研究交接](research/research_z_alg_r16/handoff.html)
+<!-- /Z_ALG_R16_PUBLICATION -->
+
 <!-- Z_ALG_R15_PUBLICATION -->
 ## Z-ALG R15 · 多测几个频率，还是多换几个角度？
 

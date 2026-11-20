@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z-ALG R16 · ChatGPT 研究交接</title>
+  <meta name="description" content="Z-ALG R16 的电流与全体素材料交替研究、历史强 CIE 对照和固定版本研究包。">
+  <link rel="stylesheet" href="../research_z_alg_r7/report.css">
+  <style>
+    .handoff-copy { display: block; width: 100%; padding: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 7px; background: #f5f7f9; font: 14px/1.6 ui-monospace, monospace; resize: vertical; }
+    .handoff-copy:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    button.button { cursor: pointer; }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <nav class="nav" aria-label="项目导航">
+    <a href="../../">Maxwell 成像项目</a>
+    <a href="../">全部研究</a>
+    <a href="./">R16 中文报告</a>
+    <a href="../research_z_alg_r15/handoff.html">R15 研究交接</a>
+    <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-z-alg-r16-20261120">版本记录</a>
+  </nav>
+
+  <header class="intro">
+    <p class="byline">Z-ALG R16 · 2026 年 11 月 20 日</p>
+    <h1>ChatGPT 研究交接 · 感应电流与材料交替</h1>
+    <p class="lead">用 FFT-TSOM 更新多源感应电流，再独立更新 576 个材料格。单个材料下降方向可以达到全部暗电流的理论表示上限。在历史先验与 180 次完整正演分解上限下，最优暗基有 9/96 个材料达标，固定 Fourier 交替有 11/96 个。</p>
+    <p class="actions">
+      <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/NEXT_PRO_HANDOFF.md">固定版本交接原文</a>
+      <a class="button" href="./">中文报告与图表</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r16-20261120/Z_ALG_R16_2026-11-20.zip">完整研究包 ZIP</a>
+    </p>
+  </header>
+
+  <nav class="page-nav" aria-label="交接目录">
+    <a href="#paste">贴给 ChatGPT</a>
+    <a href="#evidence">主要证据</a>
+    <a href="#scope">评分口径</a>
+    <a href="#files">原始资料</a>
+  </nav>
+
+  <section class="report-section" id="paste">
+    <h2>贴给 ChatGPT</h2>
+    <label for="handoff-text">交接指令与固定版本地址</label>
+    <textarea id="handoff-text" class="handoff-copy" rows="11" readonly>请读完 Z-ALG R16 的交接、原代码和逐案结果。核心是保留 576 个独立材料体素，在 FFT-TSOM 电流空间内交替更新多源电流与材料。请分别比较材料方向的可表示能量、辅助目标、输出材料重做全波后的数据残差、材料误差和计算量。保留旧难例和失败及同网格、跨网格和评分口径。
+交接 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/NEXT_PRO_HANDOFF.md
+研究页 https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_z_alg_r16/
+中文报告 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/RESEARCH_REPORT_ZH.md
+数学推导 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/MATHEMATICAL_THEORY.md
+实验设置与结果 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/EXPERIMENTAL_RESULTS.md
+逐案结果 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/results/current_cases.csv
+延长预算逐案 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/results/current_cases_180.csv
+历史先验逐案 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/results/current_cases_archive180.csv
+强 CIE https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/HISTORICAL_CIE.md
+数据 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/DATASETS.md
+二次交替 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/ALTERNATING.md
+宽带传递 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/BROADBAND_CURRENT.md
+状态消去 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/STATE_ROM.md
+研究包 https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/research-z-alg-r16-20261120/Z_ALG_R16_2026-11-20.zip</textarea>
+    <p class="actions"><button class="button" type="button" id="copy-handoff">复制交接指令</button><span class="note" id="copy-status" role="status"></span></p>
+  </section>
+
+  <section class="report-section" id="evidence">
+    <h2>主要证据</h2>
+    <ul>
+      <li>单频下各体素至少被一个源照亮时，把归一化局部材料方向投到 <i>r</i> 阶电流空间能表示的本构增量空间，实 Gram 矩阵满足 tr K = r。提高某个方向的可表示能量后，仍须单独检验完整正演和材料误差。 <a href="./#representation">公式与实验证据</a></li>
+      <!-- R16_PRIMARY_HANDOFF -->
+      <li>96 份同网格历史材料按 60 次完整正演分解上限比较。幅度 NRMSE 中位数从只做体素拟合的 0.3385 到用更新电流估计材料读数的 0.3129。材料达标 4/96 和 6/96，CPU 中位 0.371 与 0.397 秒。另八份细网格生成的观测各臂均未达标。 <a href="./#primary">主实验表</a> · <a href="results/current_cases.csv">逐案证据</a></li>
+      <li>在同一批 96 份材料上将上限提高到 180 次完整正演分解。全波体素、固定 Fourier 交替、用更新电流估计材料读数、最优暗基分别有 5、7、6、5 例达标，幅度 NRMSE 中位数为 0.3358、0.3167、0.3132、0.3264。八份跨网格观测上四臂仍均 0/8。 <a href="./#budget-extension">延长预算对照</a> · <a href="results/current_cases_180.csv">延长预算逐案数据</a></li>
+      <li>把四臂一起换回 MAX-STRUCT 的历史 TV 先验和数值尺度。60 次完整正演分解上限的达标数依次为 6、9、7、6。180 次上限为 8、11、9、9，逐案 CPU 中位数约 1.36–1.41 秒，跨网格仍均 0/8。 <a href="./#historical-scale">历史尺度对照表</a> · <a href="results/current_cases_archive180.csv">逐案证据</a></li>
+      <li>56 份原始观测的方向检验表明，均匀背景处固定 48 阶暗电流保存材料下降方向能量的中位数为 33.11%，全部接收暗方向上限为 33.48%。体素拟合后的 55 个非零方向上为 33.95% 和 78.96%。最优 48 阶暗基与理论上限的最大绝对差是 1.23×10<sup>−15</sup>，该暗基对应的材料达标为 5/96。放开强接收分量可专门容纳一个方向的 100% 能量，对应的材料达标也是 5/96。 <a href="MATHEMATICAL_THEORY.md">数学推导</a> · <a href="results/current_geometry.json">方向检验明细</a></li>
+      <!-- /R16_PRIMARY_HANDOFF -->
+      <li>普通二次交替在 48 份历史观测上测试。49 阶电流比固定电流改善 R10 的 22/24 例和 R12 的 23/24 例。两组的完整物理残差仍远高于噪声。 <a href="ALTERNATING.md">逐组结果</a></li>
+      <li>历史成熟 CIE 走源逐列的 Fourier 电流共轭梯度、全体素有理材料读出和共同物理目标校正。R10 的 0001/0016 是 CIE 数据拟合失败，0004/0022 是 G19 的失败对照。 <a href="HISTORICAL_CIE.md">更新公式、停止与失败</a></li>
+      <li>直接用历史 CIE 原生代码跑同一 200 步预算，缩频的 CPU 总时只少 3.2%，残差中位数从 2.84% 升到 14.32%。等维换入六个当前梯度方向后为 22.87%。保留原窄频模式并分别加六个 Fourier 或残差方向，残差为 12.79% 和 13.32%。 <a href="NATIVE_CURRENT.md">原生缩频、换模与加模</a></li>
+      <li>沿用 R15 的等能量 64 读数，在八个缺陷的无损和已知 Debye 配对观测上比较单频、两频和四频。全波 GN 在两频的材料 RMSE 中位数为 0.0568 / 0.0594，同一观测上的 49 阶电流交替是 0.1129 / 0.1132。电流交替在单频的带符号 IoU 中位数约 0.59，两个宽带分配均降至 0。 <a href="./#broadband">宽带材料表</a> · <a href="BROADBAND_CURRENT.md">详细实验</a></li>
+      <li>固定材料时消去低阶电流的对照在 96 份历史观测上实现约一个数量级的配对加速，中位材料误差基本持平。 <a href="STATE_ROM.md">公式、残差及计时</a></li>
+    </ul>
+  </section>
+
+  <section class="report-section" id="scope">
+    <h2>评分口径</h2>
+    <p>主数据档案有 130 份不同真值和 138 份原观测，包含 R11 的八个同网格与跨网格配对。MAX-STRUCT R3 弯条另有其原始收发几何。各批是历史仿真数据。新的预测先写入，再读取材料真值评分。</p>
+    <p>R10–R12 历史幅度 NRMSE 用真值的最大对比度减宿主值归一，固定支撑用 m&gt;1。普通二次交替的相对 L² 用真实材料范数归一。R3 弯条保留原固定分母 12 和预测的 Otsu 阈值。所有完整物理数据残差都用输出材料重新正演后与旧带噪读数比较。</p>
+    <p class="links"><a href="DATASETS.md">观测与历史口径</a><a href="results/baselines.csv">历史逐对象终点</a></p>
+  </section>
+
+  <section class="report-section" id="files">
+    <h2>原始资料</h2>
+    <ul>
+      <li><a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/research-z-alg-r16-20261120/research/research_z_alg_r16/NEXT_PRO_HANDOFF.md">交接原文 Markdown</a> · <a href="RESEARCH_REPORT_ZH.md">完整中文报告</a> · <a href="MATHEMATICAL_THEORY.md">数学推导</a> · <a href="EXPERIMENTAL_RESULTS.md">实验设置与结果</a> · <a href="HISTORICAL_CIE.md">成熟 CIE 的实际实现</a></li>
+      <li><a href="src/cohorts.py">历史观测接口</a> · <a href="src/score_materials.py">离线评分</a> · <a href="results/baseline_case_labels.csv">离线形状标签</a></li>
+      <li><a href="src/alternating_tsom.py">普通二次交替</a> · <a href="results/alternating_summary.json">交替对照统计</a> · <a href="results/state_summary.json">状态消去统计</a></li>
+    </ul>
+  </section>
+
+  <footer class="foot">Z-ALG R16 · B1 Maxwell 成像研究 · 2026-11-20</footer>
+</main>
+<script>
+  const copyButton = document.getElementById('copy-handoff');
+  const handoffText = document.getElementById('handoff-text');
+  const copyStatus = document.getElementById('copy-status');
+  copyButton.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(handoffText.value);
+      copyStatus.textContent = '已复制';
+    } catch {
+      handoffText.focus();
+      handoffText.select();
+      copyStatus.textContent = '已选中，可用键盘复制';
+    }
+  });
+</script>
+</body>
+</html>
