@@ -31,7 +31,7 @@ import numpy as np
 from scipy import linalg as la
 from scipy.fft import ifftn
 from scipy.optimize import minimize
-from scipy.sparse.linalg import LinearOperator, gmres
+from scipy.sparse.linalg import LinearOperator, eigsh, gmres
 
 OUT = Path(__file__).resolve().parent
 WORKSPACE = Path(os.environ.get('MAXWELL_KILLTEST_WORKSPACE', str(OUT.parents[1])))
@@ -43,12 +43,22 @@ sys.path.insert(0, str(R8_REPO))
 R14 = WORKTREES / 'r14_worktree/research/research_max_struct_r14'
 if not (R14 / 'src/dualmetric_core.py').is_file():
     R14 = WORKSPACE / 'research/research_max_struct_r14'
+if str(R14.parents[1]) not in sys.path:
+    sys.path.append(str(R14.parents[1]))
 A24 = Path(os.environ.get('MAXWELL_KILLTEST_A24', str(WORKSPACE / 'Gaussian/A26/a26-om-feedback-prior-completion')))
 A17 = WORKSPACE / 'Gaussian/A17'
 FRESNEL = WORKSPACE / 'research/delegated/a2_literature/data/2005_iop_21_6_S09'
 RUNTIME = OUT / '.runs'
 C0 = 299792458.0
 A_ARMS = ('paper_nie', 'cie_dual', 'block_cie_01_sw', 'block_cie_11_sw', 'dr_standalone')
+EXTENDED = {
+    'a_family': ('global_dual_pr', 'a_material_global', 'a_plus_mm_global', 'a_plus_arc_global'),
+    'green_family': ('full_g19', 'g19_s19', 'g19_u11', 'g19_u11_hop', 'g19_u11_routed_dr'),
+    'warm_starts': ('uniform_direct', 'nn_direct', 'nn_a_plus_arc', 'nn_full_g19', 'nn_dr'),
+}
+GREEN_ARMS = EXTENDED['green_family']
+WARM_PARENT = dict(nn_direct='uniform_direct', nn_a_plus_arc='a_plus_arc_global',
+                   nn_full_g19='full_g19', nn_dr='dr_standalone')
 B_ARMS = ('receiver_svd', 'projected_internal', 'a17_proj_fast', 'full_gradient_matched_time')
 A_BUDGETS = (15., 30.)
 LIGHT_SEEDS = (12., 24.)
@@ -468,6 +478,8 @@ class FourierCurrents:
         self.k = len(self.frequencies)
         self.ns = sum(len(ids) for ids,_ in groups)
         self.n = int(np.prod(shape))
+        self.factors = None
+        self.cost = cost
 
     def apply(self,coefficients):
         result = np.empty((self.n,self.ns),complex)
@@ -481,8 +493,24 @@ class FourierCurrents:
             result[:,ids] = op.adjoint(J[:,ids])
         return result
 
+    def project_coefficients(self, target):
+        """The R8/R15 affine-current injection, independently in each mask."""
+        if self.factors is None:
+            self.factors = []
+            for _,op in self.groups:
+                u,s,vh = la.svd(op.apply(np.eye(self.k,dtype=complex)),
+                                full_matrices=False,check_finite=False)
+                active = s>1e-12*s[0]
+                self.factors.append((u[:,active],s[active],vh[active]))
+                self.cost['Fourier_current_injection_SVD'] += 1
+        coefficients = np.zeros((self.k,self.ns),complex)
+        for (columns,_),(u,s,vh) in zip(self.groups,self.factors):
+            coefficients[:,columns] = vh.conj().T@((u.conj().T@target[:,columns])/s[:,None])
+        self.cost['Fourier_current_injection_RHS'] += self.ns
+        return coefficients
 
-def dpcs(model,Y,rank):
+
+def dpcs(model,Y,rank,sigma_relative=None):
     indices = model.ports.indices(model.ns)
     groups = {}
     for j,ids in enumerate(indices):
@@ -498,10 +526,12 @@ def dpcs(model,Y,rank):
         ids = np.asarray(ids)
         P = S[ids]
         H = gram[np.ix_(ids,ids)]
-        k = min(rank,len(ids))
+        k = len(ids) if sigma_relative is not None else min(rank,len(ids))
         values,u = la.eigh(H,subset_by_index=(len(ids)-k,len(ids)-1),check_finite=False)
         model.clock.counts['receiver_SVD'] += 1
         good = values>np.finfo(float).eps*max(P.shape)*max(values[-1],0.)
+        if sigma_relative is not None:
+            good = values>sigma_relative**2*max(values[-1],0.)
         sigma = np.sqrt(values[good][::-1]); u = u[:,good][:,::-1]
         v = (P.conj().T@u)/sigma
         JD[:,columns] = v@((u.conj().T@Y[:,columns])/sigma[:,None])
@@ -509,10 +539,108 @@ def dpcs(model,Y,rank):
     return JD,bases
 
 
-def cie_steps(model,Y,case,method,m):
+def leading_hermitian(geometry,action,count):
+    rng = np.random.default_rng(20261120)
+    v0 = rng.standard_normal(geometry.n)+1j*rng.standard_normal(geometry.n)
+    operator = LinearOperator((geometry.n,geometry.n),matvec=action,dtype=np.complex128)
+    geometry.clock.counts['feedback_Hermitian_eigensolves'] += 1
+    values,vectors = eigsh(operator,k=count,which='LA',v0=v0,tol=1e-10)
+    return values[::-1],vectors[:,::-1]
+
+
+def spectral_feedback(model,method):
+    """Original G19 and R15 conditional S/G spaces with masked acquisition."""
+    from research.research_max_struct_r10.src.lowrank_denominator import LowRankDenominator
+    start = model.clock.wall()
+    green = model.green
+    def gram_action(v):
+        model.clock.check()
+        return green.apply(green.apply(v[:,None]),adjoint=True)[:,0]
+
+    weak_modes = None
+    if method=='full_g19':
+        _,U = leading_hermitian(model,gram_action,19)
+        U,_ = la.qr(U,mode='economic',check_finite=False)
+    else:
+        # Mean S_s* S_s for source-dependent recorded receiver rows.
+        S = model.ports.S
+        if model.ports.mask is not None:
+            freq = np.bincount(model.ports.mask.ravel(),minlength=len(S))/model.ns
+            S = np.sqrt(freq[freq>0,None])*S[freq>0]
+        _,sig,vh = la.svd(S,full_matrices=False,check_finite=False)
+        model.clock.counts['receiver_SVD'] += 1
+        if method=='g19_s19':
+            U = vh[:19].conj().T
+        else:
+            scale,_ = leading_hermitian(model,gram_action,1)
+            cutoff = .01*scale[0]
+            strong = vh[sig>=.1*sig[0]].conj().T
+            Gs = green.apply(strong)
+            eig,V = la.eigh(Gs.conj().T@Gs,check_finite=False)
+            U = strong@V[:,eig>=cutoff]
+            if method=='g19_u11_routed_dr':
+                # Compute (I-Ps) G*G (I-Ps) directly. Only the upper part of
+                # its spectrum is needed; no completion of the weak frame.
+                gram = la.blas.zherk(1.,model.G,trans=2,lower=True)
+                gram += np.tril(gram,-1).conj().T
+                HV = green.apply(Gs,adjoint=True)
+                sh = strong.conj().T
+                gram -= HV@sh
+                gram -= strong@HV.conj().T
+                gram += strong@((sh@HV)@sh)
+                model.clock.counts['feedback_weak_dense_grams'] += 1
+                model.clock.check()
+                _,V = la.eigh(gram,subset_by_value=(np.nextafter(cutoff,-np.inf),np.inf),
+                              driver='evr',check_finite=False,overwrite_a=True)
+                weak_modes,_ = la.qr(V-strong@(sh@V),mode='economic',check_finite=False)
+                model.clock.counts['feedback_weak_dense_eigensolves'] += 1
+    model.clock.check()
+    if method in ('full_g19','g19_s19'):
+        denominator = LowRankDenominator(model.G,U,'galerkin',model.clock.counts)
+    else:
+        path = R14.parent/'research_max_struct_r15/src/twofold_denominator.py'
+        cls = module_at('killtest_twofold',path).TwofoldDenominator
+        denominator = cls(model.G,U,model.shape,one_hop=(method!='g19_u11'),cost=model.clock.counts)
+    model.clock.counts['feedback_rank'] = denominator.rank
+    if weak_modes is not None:
+        model.clock.counts['feedback_route_rank'] = weak_modes.shape[1]
+    model.clock.counts['feedback_setup_wall'] = model.clock.wall()-start
+    model.clock.check()
+    return denominator,weak_modes
+
+
+def neural_material(model,Y,case):
+    from research.research_max_struct_r8.src.warm_network import load_predictor
+    import torch
+    torch.set_num_threads(1)
+    start = model.clock.wall()
+    predict,_ = load_predictor(R8_REPO/'research/research_max_struct_r8/RESULTS/training/physics/weights.pt')
+    power_per_source = np.column_stack([np.sum(abs(model.ports.S[ids])**2,axis=0)
+                                       for ids in model.ports.indices(model.ns)])
+    energy = np.mean(abs(model.E)**2,axis=1)
+    diag = np.sum(power_per_source*abs(model.E)**2,axis=1)
+    born = np.sum(model.E.conj()*model.ports.adjoint(Y),axis=1)/np.maximum(diag,1e-300)
+    J,_ = dpcs(model,Y,None,sigma_relative=1e-3)
+    Q = model.E+model.green.apply(J)
+    read = np.sum(Q.conj()*J,axis=1)/np.maximum(np.sum(abs(Q)**2,axis=1),1e-20)
+    je = np.mean(abs(J)**2,axis=1)/np.maximum(energy,1e-20)
+    qe = np.mean(abs(Q)**2,axis=1)/np.maximum(energy,1e-20)
+    pos = grid(case['side'],case['width'])
+    aperture = .5 if case.get('aperture')=='half' else 1.
+    features = [np.arcsinh(born.real),np.arcsinh(born.imag),np.arcsinh(read.real),np.arcsinh(read.imag),
+                np.log1p(je),np.log(np.maximum(qe,1e-12)),np.full(model.n,aperture),
+                np.full(model.n,model.ns/12),pos[:,0]/.48,pos[:,1]/.48]
+    m = np.asarray(predict(np.stack(features).reshape(10,*model.shape).astype(np.float32))[0],float).ravel()
+    model.clock.counts['NN_inference_calls'] += 1
+    model.clock.counts['NN_feature_and_predict_wall'] = model.clock.wall()-start
+    model.clock.check()
+    return m
+
+
+def cie_steps(model,Y,case,method,m,warm_current=False,delta=None):
     """Common sourcewise R8 PR; literal NIE/00/01/11 material/current operators."""
     from research.research_max_struct_r2.src.cie_global import _baseline_readout
-    from research.research_max_struct_r4.src.cie_onehop import OneHopAbsorption
+    from research.research_max_struct_r4.src.cie_onehop import OneHopAbsorption, onehop_material_readout
     from research.research_max_struct_r7.src.aplus_readout import mobius_material_readout
     cost = model.clock.counts
     modes, betas, k = stage_table(case)
@@ -520,7 +648,11 @@ def cie_steps(model,Y,case,method,m):
     QD = model.E+model.green.apply(JD)
     nie = method=='paper_nie'
     block_current = method=='block_cie_11_sw'
-    block_material = method in ('block_cie_01_sw','block_cie_11_sw')
+    classic_onehop = method=='a_material_global'
+    block_material = classic_onehop or method in (
+        'block_cie_01_sw','block_cie_11_sw','a_plus_mm_global','a_plus_arc_global')
+    global_current = method in GREEN_ARMS or method in EXTENDED['a_family']
+    axis = None if global_current else 0
     blocks = OneHopAbsorption(model.G,model.shape,cost) if block_material else None
     wd = 1/np.maximum(np.sum(abs(Y)**2,axis=0),1e-300)
     ws = 1/np.maximum(np.sum(abs(model.E)**2,axis=0),1e-300)
@@ -531,6 +663,17 @@ def cie_steps(model,Y,case,method,m):
                aplus_inherited_gtol=True,material_inner_maxiter=60,
                material_inner_gtol=1e-8,material_inner_ftol=1e-12,
                cache_material_value_gradient=True)
+    if method=='a_plus_mm_global':
+        cfg.update(aplus_arc_candidates=False,aplus_inherited_gtol=False)
+    routing = method=='g19_u11_routed_dr'
+    if method in GREEN_ARMS:
+        from research.research_max_struct_r10.src.lowrank_denominator import matrix_material_readout
+        denominator,weak_modes = spectral_feedback(model,method)
+        cfg.update(matrix_denominator=denominator,matrix_inner_maxiter=8)
+    if routing:
+        projector = None
+        memory_x = np.zeros_like(model.E)
+        memory_q = np.zeros_like(model.E)
     coeff = {}
     count = 0
     for stage,(mf,bm) in enumerate(zip(modes,betas)):
@@ -539,6 +682,11 @@ def cie_steps(model,Y,case,method,m):
         U = FourierCurrents(model.shape,mf,groups,cost)
         frequencies = [tuple(f) for f in U.frequencies]
         A = np.array([coeff.get(f,np.zeros(model.ns,complex)) for f in frequencies])
+        if stage==0 and warm_current:
+            target = model.state(m)['j']-JD
+            A = U.project_coefficients(target)
+            cost['initial_current_projection_relative_loss'] = float(
+                np.linalg.norm(JD+U.apply(A)-model.state(m)['j'])/max(np.linalg.norm(model.state(m)['j']),1e-300))
         fluctuation = U.apply(A)
         J,Q = JD+fluctuation,QD+model.green.apply(fluctuation)
         old_g = old_direction = None
@@ -559,24 +707,34 @@ def cie_steps(model,Y,case,method,m):
             gradient = U.adjoint(model.ports.adjoint(D*wd)+v-model.green.adjoint(m[:,None]*v))
             direction = -gradient
             if old_g is not None:
-                pr = np.maximum(0.,np.sum((gradient.conj()*(gradient-old_g)).real,axis=0)/
-                                np.maximum(np.sum(abs(old_g)**2,axis=0),1e-300))
+                pr = np.maximum(0.,np.sum((gradient.conj()*(gradient-old_g)).real,axis=axis)/
+                                np.maximum(np.sum(abs(old_g)**2,axis=axis),1e-300))
                 direction += old_direction*pr
-                bad = np.sum((gradient.conj()*direction).real,axis=0)>=0
-                direction[:,bad] = -gradient[:,bad]
+                bad = np.sum((gradient.conj()*direction).real,axis=axis)>=0
+                if global_current:
+                    if bad:
+                        direction = -gradient
+                else:
+                    direction[:,bad] = -gradient[:,bad]
             dJ = U.apply(direction)
             dQ = model.green.apply(dJ)
             dd = model.ports.receive(dJ)
             dr = p_apply(dJ-m[:,None]*dQ)
             denom = wd*np.sum(abs(dd)**2,axis=0)+ws*np.sum(abs(dr)**2,axis=0)
-            alpha = -np.sum((gradient.conj()*direction).real,axis=0)/np.maximum(denom,1e-300)
+            if global_current:
+                denom = np.sum(denom)
+            alpha = -np.sum((gradient.conj()*direction).real,axis=axis)/np.maximum(denom,1e-300)
             change = direction*alpha
-            delta2 = float(np.mean(np.sum(abs(change)**2,axis=0)/np.maximum(np.sum(abs(A)**2,axis=0),1e-300)))
+            delta2 = float(np.mean(np.sum(abs(change)**2,axis=axis)/np.maximum(np.sum(abs(A)**2,axis=axis),1e-300)))
             A += change
             J += dJ*alpha
             Q += dQ*alpha
-            if block_material:
+            if classic_onehop:
+                m,_ = onehop_material_readout(blocks,J,Q,m,bm,Os,Ls,1.,box,reg,cfg,cost)
+            elif block_material:
                 m,_ = mobius_material_readout(blocks,J,Q,m,bm,Os,Ls,1.,box,reg,cfg,cost)
+            elif method in GREEN_ARMS:
+                m,_ = matrix_material_readout(None,J,Q,m,bm,Os,Ls,1.,box,reg,cfg,cost)
             elif nie:
                 B = Q+bm*J
                 z = bm*np.sum((B.conj()*J).real*ws,axis=1)/np.maximum(np.sum(abs(B)**2*ws,axis=1),1e-300)
@@ -588,8 +746,23 @@ def cie_steps(model,Y,case,method,m):
             count += 1
             cost['PR_CG_steps'] += 1
             end = step==499 or (step>=1 and delta2<(1e-4 if stage==0 else 1e-6))
+            cycle = routing and (count%16==0 or end)
+            if cycle:
+                if projector is None:
+                    projector = make_projector(model,Y,delta)
+                x,q = J/projector.scale+memory_x,Q+memory_q
+                cx,cq,_ = projector.material(x,q)
+                ax,aq = projector.affine_ball(2*cx-x,2*cq-q)
+                memory_x += weak_modes@(weak_modes.conj().T@(ax-cx))
+                memory_q += weak_modes@(weak_modes.conj().T@(aq-cq))
+                sx,_,m = projector.material(J/projector.scale+memory_x,Q+memory_q)
+                A = U.project_coefficients(projector.scale*sx-JD)
+                J = JD+U.apply(A)
+                Q = model.E+model.green.apply(J)
+                old_g = old_direction = None
+                cost['routed_DR_cycles'] += 1
             model.clock.check()
-            yield m,count,stage,end
+            yield m,count,stage,end or cycle
             if end:
                 break
         coeff = {f:a.copy() for f,a in zip(frequencies,A)}
@@ -686,7 +859,14 @@ def count_pack(counts):
                 H_cholesky=int(counts.get('H_cholesky',0)),H_rhs=int(counts.get('H_setup_rhs',0)+counts.get('H_iteration_rhs',0)),
                 reduced_cholesky=int(counts.get('small_cholesky',0)),
                 receiver_SVD=int(counts.get('receiver_SVD',0)),
-                DR_setup_wall=counts.get('DR_setup_wall'), DR_ball_floor_rel=counts.get('DR_ball_floor_rel'))
+                DR_setup_wall=counts.get('DR_setup_wall'), DR_ball_floor_rel=counts.get('DR_ball_floor_rel'),
+                feedback_rank=counts.get('feedback_rank'),feedback_route_rank=counts.get('feedback_route_rank'),
+                feedback_small_LU=counts.get('denominator_small_LU',0),
+                feedback_setup_wall=counts.get('feedback_setup_wall'),
+                routed_DR_cycles=counts.get('routed_DR_cycles',0),
+                neural_inference=counts.get('NN_inference_calls',0),
+                neural_feature_setup_wall=counts.get('NN_feature_and_predict_wall'),
+                warm_projection_loss=counts.get('initial_current_projection_relative_loss'))
 
 
 def snapshot(clock,m,pred,value,res,step,stage=0,wall_offset=0.,cpu_offset=0.,base_counts=None):
@@ -731,6 +911,18 @@ def run_light(model,Y,seed,used_wall,used_cpu,base_counts,budget):
                        overrun=max(0.,elapsed-budget),cost=Counter(base_counts)+clock.counts),points
 
 
+def direct_search(model,Y,initial,history):
+    def store(m):
+        model.clock.check()
+        v,r,p = model.objective(m,Y)
+        history.append(snapshot(model.clock,m,p,v,r,len(history),0))
+        model.clock.check()
+    result = minimize(lambda m:model.data_value_gradient(m,Y),initial,jac=True,
+                      method='L-BFGS-B',bounds=[(0.,20.)]*model.n,callback=store,
+                      options=dict(maxiter=3000,maxfun=10000,maxls=20,ftol=1e-12,gtol=1e-8))
+    return str(result.message)
+
+
 def solve_a_arm(public,case,arm):
     clock = Clock(30.)
     clock.watch(12.,15.,24.)
@@ -740,25 +932,38 @@ def solve_a_arm(public,case,arm):
     model = None
     status = 'SCHEDULE_COMPLETE'
     Y = public['Y']
+    method = WARM_PARENT.get(arm,arm)
+    direct = method=='uniform_direct'
     try:
         model = PaperModel(public,case,clock)
+        if arm in WARM_PARENT:
+            m = neural_material(model,Y,case)
         v,r,p = model.objective(m,Y)
         history.append(snapshot(clock,m,p,v,r,0,-1))
-        # Same audit time grid for all arms. Audits consume proposal budget.
-        due = time.perf_counter()
-        sequence = dr_steps(model,Y,public['delta'],m) if arm=='dr_standalone' else cie_steps(model,Y,case,arm,m)
-        for candidate,last_step,last_stage,end in sequence:
-            clock.check()
-            if time.perf_counter()>=due or end:
-                v,r,p = model.objective(candidate,Y)
-                history.append(snapshot(clock,candidate,p,v,r,last_step,last_stage))
-                due = time.perf_counter()+A_AUDIT_PERIOD
-            clock.check()
+        if direct:
+            status = direct_search(model,Y,m,history)
+        else:
+            # Same audit time grid. An explicit R15 reflection also pays an
+            # audit when it injects a new shadow into the Fourier state.
+            due = time.perf_counter()
+            if method=='dr_standalone':
+                sequence = dr_steps(model,Y,public['delta'],m)
+            else:
+                sequence = cie_steps(model,Y,case,method,m,warm_current=arm in WARM_PARENT,delta=public['delta'])
+            for candidate,last_step,last_stage,end in sequence:
+                clock.check()
+                if time.perf_counter()>=due or end:
+                    v,r,p = model.objective(candidate,Y)
+                    history.append(snapshot(clock,candidate,p,v,r,last_step,last_stage))
+                    due = time.perf_counter()+A_AUDIT_PERIOD
+                clock.check()
     except TimeLimit:
         status = 'WALL_LIMIT'
     except Exception as exc:
         status = f'FAILED: {type(exc).__name__}: {exc}'
     clock.capture()
+    if direct:
+        last_step,last_stage = max(0,len(history)-1),0
     raw_elapsed,raw_cpu,raw_counts = clock.wall(),clock.cpu(),dict(clock.counts)
     # Snapshot all prefix costs before taking either corrector branch.
     # If the proposal stops early, charge only its actual completed work.
@@ -772,7 +977,10 @@ def solve_a_arm(public,case,arm):
         rows.append((T,'raw',raw,dict(wall=used,CPU=cpu_spent,
                         status=status if raw_elapsed<=T or T==30. else 'PAID_PREFIX',iterations=last_step if T==30. else None,
                         overrun=max(0.,used-T),cost=raw_cost)))
-        if model is not None and seed is not None:
+        if direct:
+            best,rec = raw,dict(wall=used,CPU=cpu_spent,status='DIRECT_ONLY',iterations=raw['step'] if raw else 0,
+                                overrun=max(0.,used-T),cost=raw_cost)
+        elif model is not None and seed is not None:
             pref_wall,pref_cpu,pref_cost = spent[target]
             best,rec,_ = run_light(model,Y,seed,pref_wall,pref_cpu,pref_cost,T)
             rec.update(seed_wall=seed['available_wall'],seed_step=seed['step'],seed_phi=seed['phi'],
@@ -802,8 +1010,13 @@ def write_predictions(path, arrays, rows):
     temp.replace(path)
 
 
-def solve_a_case(case):
-    p = RUNTIME/'pred'/f'{case["case"]}.npz'
+def a_prediction_path(case,family):
+    directory = RUNTIME/'pred' if family is None else RUNTIME/'expanded'/family
+    return directory/f'{case["case"]}.npz'
+
+
+def solve_a_case(case,family=None):
+    p = a_prediction_path(case,family)
     if p.exists():
         return case['case']
     from research.research_max_struct_r8.src import paper_physics
@@ -819,7 +1032,14 @@ def solve_a_case(case):
     public = array_file(public_path(case))
     case = json.loads(str(public['case_json']))
     arrays,rows = {},[]
-    for arm in A_ARMS:
+    arms = A_ARMS if family is None else EXTENDED[family]
+    routing_retry = RUNTIME/'expanded'/'iterative_routing_attempt'/p.name
+    if family=='green_family' and routing_retry.is_file():
+        archived = array_file(routing_retry)
+        rows = [r for r in json.loads(str(archived.pop('rows_json'))) if r['method']!='g19_u11_routed_dr']
+        arrays = {key:value for key,value in archived.items() if not key.startswith('g19_u11_routed_dr_')}
+        arms = ('g19_u11_routed_dr',)
+    for arm in arms:
         result,history,report = solve_a_arm(public,case,arm)
         if history:
             arrays[f'{arm}_raw_audit_material'] = np.stack([v['m'] for v in history])
@@ -835,6 +1055,7 @@ def solve_a_case(case):
             rows.append(row)
         print(f'{case["case"]} {arm}: {report["status"]}, {report["iterations"]} proposal steps, '
               f'{report["wall"]:.2f}s',flush=True)
+    p.parent.mkdir(parents=True,exist_ok=True)
     write_predictions(p,arrays,rows)
     return case['case']
 
@@ -1194,10 +1415,11 @@ def solve_one(case):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('mode',nargs='?',default='all',choices=('all','prepare','solve','score'))
+    ap.add_argument('mode',nargs='?',default='all',choices=('all','prepare','solve','score','expand','expand-solve','expand-score'))
     ap.add_argument('--workers',type=int,default=4)
     ap.add_argument('--campaign',choices=('A','B','both'),default='both')
     ap.add_argument('--case',help='Execute only this case during prepare/solve')
+    ap.add_argument('--family',choices=tuple(EXTENDED),help='Run one extension family during expand-solve')
     args = ap.parse_args()
     ensure_dirs()
     case_list = [c for c in specs() if (not args.case or c['case']==args.case) and
@@ -1208,6 +1430,13 @@ def main():
         run_jobs(solve_one,[(c,) for c in case_list],args.workers)
     if args.mode in ('all','score'):
         score_all(args.workers)
+    if args.mode in ('expand','expand-solve'):
+        cohort = [c for c in case_list if c['suite']!='2A']
+        families = (args.family,) if args.family else tuple(EXTENDED)
+        run_jobs(prepare_one,[(c,) for c in cohort],args.workers)
+        run_jobs(solve_a_case,[(c,f) for c in cohort for f in families],args.workers)
+    if args.mode in ('expand','expand-score'):
+        score_expansion(args.workers)
 
 
 def coarse_truth(case,centers):
@@ -1251,13 +1480,13 @@ def errors(m,truth):
                 OtsuIoU=iou(otsu_support(m),mask),half_contrast_IoU=iou(m.real>level,mask))
 
 
-def score_case(case):
+def score_case(case,family=None):
     s = case['case']; name = s+'.npz'
     data = array_file(public_path(case))
     case = json.loads(str(data['case_json']))
-    a = array_file(RUNTIME/'pred'/name)
+    a = array_file(a_prediction_path(case,family))
     rows = json.loads(str(a.pop('rows_json')))
-    expected = 32 if case['suite']=='2A' else 20
+    expected = 32 if case['suite']=='2A' else 4*len(A_ARMS if family is None else EXTENDED[family])
     if len(rows)!=expected:
         raise ValueError(f'{s}: {len(rows)}/{expected} terminal rows')
     a['case_json'],a['centers'] = data['case_json'],data['centers']
@@ -1632,6 +1861,226 @@ def make_figures(rows,bundles):
         a.grid(color='#abb1b8',alpha=.24,lw=.7)
     fig.suptitle('Error versus paid time with physics-selected prefixes',fontweight='bold')
     save(fig,'time_error')
+
+
+DISPLAY_NAMES = dict(zip(A_ARMS,('NIE','Dual-CIE','Block 01 SW','Block 11 SW','DR')))
+DISPLAY_NAMES.update(
+    global_dual_pr='Global-Dual',a_material_global='A-material',
+    a_plus_mm_global='A+ MM global',a_plus_arc_global='A+ Arc global',
+    full_g19='Full G19',g19_s19='G19 S19',g19_u11='G19 U11',
+    g19_u11_hop='U11 + hop',g19_u11_routed_dr='U11 + routed DR',
+    uniform_direct='Air + direct',nn_direct='NN + direct',
+    nn_a_plus_arc='NN + A+ Arc',nn_full_g19='NN + G19',nn_dr='NN + DR')
+
+
+def expanded_summary(rows):
+    lookup = {(r['case'],r['method'],r['view'],float(r['budget'])):r for r in rows}
+    syn = [c['case'] for c in specs() if c['suite'] in ('1A','1B')]
+    fre = [c['case'] for c in specs() if c['suite']=='1C']
+    result = {}
+    extra = tuple(a for methods in EXTENDED.values() for a in methods)
+    for arm in A_ARMS+extra:
+        stats = {}
+        for T in A_BUDGETS:
+            for view in ('raw','light'):
+                mats = [lookup[c,arm,view,T] for c in syn]
+                base = np.array([min(float(lookup[c,b,view,T]['relativeL2']) for b in A_ARMS[:2]) for c in syn])
+                e = np.array([float(r.get('relativeL2') or np.inf) for r in mats])
+                rel = 1-e/base
+                fres = [lookup[c,arm,view,T] for c in fre]
+                stats[f'{int(T)}_{view}'] = dict(
+                    median_relative_l2=float(np.median(e)),
+                    median_relative_residual=float(np.median([float(r.get('relative_data_residual') or np.inf) for r in mats])),
+                    median_half_iou=float(np.median([float(r.get('half_contrast_IoU') or 0.) for r in mats])),
+                    wins=int(np.sum(rel>0)),median_paired_gain=float(np.median(rel)),
+                    gains_by_case=dict(zip(syn,rel.tolist())),
+                    relative_l2_by_case=dict(zip(syn,e.tolist())),
+                    synthetic_wall_median=float(np.median([float(r['wall_s']) for r in mats])),
+                    fresnel_wall_median=float(np.median([float(r['wall_s']) for r in fres])),
+                    heldout_by_case={r['case']:float(r.get('heldout_relative_complex_error') or np.inf) for r in fres})
+        raw,light = stats['30_raw'],stats['30_light']
+        both = [c for c in syn if min(raw['gains_by_case'][c],light['gains_by_case'][c])>0.]
+        stats['wins_both30'] = both
+        stats['initial_synth_comparison'] = len(both)>=6 and min(raw['median_paired_gain'],light['median_paired_gain'])>=.2
+        stats['initial_fresnel_comparison'] = all(
+            stats[f'30_{view}']['heldout_by_case'][c]
+            <= min(float(lookup[c,b,view,30.]['heldout_relative_complex_error']) for b in A_ARMS[:2])
+            for view in ('raw','light') for c in fre[:2]) and all(
+            stats[f'30_{view}']['heldout_by_case'][fre[1]]
+            < min(float(lookup[fre[1],b,view,30.]['heldout_relative_complex_error']) for b in A_ARMS[:2])
+            for view in ('raw','light'))
+        result[arm] = stats
+    return result
+
+
+def score_expansion(workers):
+    cases = [c for c in specs() if c['suite']!='2A']
+    jobs = [(c,f) for c in cases for f in EXTENDED]
+    absent = [f+'/'+c['case'] for c,f in jobs if not a_prediction_path(c,f).is_file()]
+    if absent:
+        raise RuntimeError('Complete the expanded predictions before scoring: '+', '.join(absent))
+    print(f'All {len(jobs)} extension prediction files sealed. Starting scoring.',flush=True)
+    scored = run_jobs(score_case,jobs,min(workers,4))
+    parent_rows = []
+    with (OUT/'metrics.csv').open(encoding='utf-8') as f:
+        parent_rows = [r for r in csv.DictReader(f) if r['suite']!='2A']
+    root = OUT/'max_struct_extended'
+    root.mkdir(exist_ok=True)
+    merged = {c['case']:{} for c in cases}
+    added = []
+    for case,rows,arrays in scored:
+        merged[case['case']].update(arrays)
+        added.extend(rows)
+    added.sort(key=lambda r:(r['case'],r['method'],r['budget'],r['view']))
+    summary = expanded_summary(parent_rows+added)
+    with (root/'metrics.csv').open('w',newline='',encoding='utf-8') as f:
+        fields = list(dict.fromkeys(k for r in added for k in r))
+        writer = csv.DictWriter(f,fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(added)
+    payload = {case+'__'+name:v for case,arr in merged.items() for name,v in arr.items()}
+    payload['expanded_summary_json'] = np.array(json.dumps(summary,ensure_ascii=False))
+    np.savez_compressed(root/'predictions.npz',**payload)
+    base = array_file(OUT/'predictions.npz')
+    for k,v in base.items():
+        case,sep,name = k.partition('__')
+        if sep and case in merged:
+            merged[case].setdefault(name,v)
+    print(f'Scored {len(added)} extension rows. Rendering family comparisons.',flush=True)
+    make_expanded_figures(root,parent_rows+added,merged)
+
+
+def make_expanded_figures(root,rows,bundles):
+    import matplotlib
+    matplotlib.use('Agg')
+    from matplotlib import pyplot as plt
+    from matplotlib.colors import PowerNorm
+
+    figures = root/'figures'
+    figures.mkdir(exist_ok=True)
+    lookup = {(r['case'],r['method'],r['view'],float(r['budget'])):r for r in rows}
+    cohorts = {
+        'synthetic':[c for c in specs() if c['suite'] in ('1A','1B')],
+        'fresnel':[c for c in specs() if c['suite']=='1C'],
+    }
+    reference_arms = {
+        'a_family':('cie_dual','block_cie_01_sw','block_cie_11_sw'),
+        'green_family':('cie_dual','dr_standalone'),
+        'warm_starts':('a_plus_arc_global','full_g19','dr_standalone'),
+    }
+    group_titles = {'a_family':'A-material and A+',
+                    'green_family':'G19 and twofold Green feedback',
+                    'warm_starts':'Frozen neural warm starts'}
+    fig_time,axs_time = plt.subplots(1,3,figsize=(14.4,4.),layout='constrained')
+    for panel,(family,methods) in enumerate(EXTENDED.items()):
+        arms = reference_arms[family]+methods
+        for cohort,cases in cohorts.items():
+            synthetic = cohort=='synthetic'
+            ncols = len(arms)+int(synthetic)
+            side = cases[0]['side']
+            norm = PowerNorm(.65 if synthetic else .55,0,20)
+            for view in ('raw','light'):
+                fig,axs = plt.subplots(len(cases),ncols,figsize=(1.36*ncols+1.6,1.34*len(cases)+1.3),
+                                       layout='constrained')
+                ex = None
+                for i,c in enumerate(cases):
+                    name = c['case']
+                    a = bundles[name]
+                    label = name.removeprefix('Foam').removeprefix('new_').replace('TM_','\n').replace('_',' ').replace('MHz ','MHz\n')
+                    axs[i,0].set_ylabel(label,rotation=0,ha='right',va='center',fontsize=7)
+                    records = [lookup[name,arm,view,30.] for arm in arms]
+                    parts = [(a.get(r['key']),r) for r in records]
+                    if synthetic:
+                        parts = [(a['truth_coarse'],None)]+parts
+                    for j,(m,r) in enumerate(parts):
+                        ax = axs[i,j]
+                        ax.set_xticks([])
+                        ax.set_yticks([])
+                        if m is None:
+                            ax.text(.5,.5,'Unavailable',ha='center',va='center',transform=ax.transAxes,fontsize=7)
+                            continue
+                        ex = ax.imshow(m.reshape(side,side),origin='lower',norm=norm,cmap='viridis',interpolation='nearest')
+                        if r is not None:
+                            if synthetic:
+                                pair = float(r['relativeL2']),float(r['relative_data_residual'])
+                            else:
+                                pair = float(r['relative_data_residual']),float(r['heldout_relative_complex_error'])
+                            ax.set_xlabel(f'{pair[0]:.3f} / {pair[1]:.3f}',fontsize=6.9)
+                titles = (['Reference'] if synthetic else [])+[DISPLAY_NAMES[x] for x in arms]
+                for ax,title in zip(axs[0],titles):
+                    ax.set_title(title,fontsize=8)
+                label = 'Material L2 / data residual' if synthetic else 'Training / held-source complex residual'
+                fig.suptitle(group_titles[family]+f' / 30 s {view}\n'+label,fontsize=11)
+                if ex is not None:
+                    fig.colorbar(ex,ax=axs.ravel().tolist(),label='Real contrast',fraction=.018,pad=.02)
+                fig.savefig(figures/f'{family}_{cohort}_{view}.png',dpi=150)
+                plt.close(fig)
+        ax = axs_time[panel]
+        for arm in arms:
+            x,y = [],[]
+            for T in A_BUDGETS:
+                r = [lookup[c['case'],arm,'raw',T] for c in cohorts['synthetic']]
+                x.append(float(np.median([float(z['wall_s']) for z in r])))
+                y.append(float(np.median([float(z.get('relativeL2') or np.nan) for z in r])))
+            line, = ax.plot(x,y,'o-',ms=4,label=DISPLAY_NAMES[arm])
+            for T in A_BUDGETS:
+                r = [lookup[c['case'],arm,'light',T] for c in cohorts['synthetic']]
+                ax.scatter(np.median([float(z['wall_s']) for z in r]),
+                           np.median([float(z.get('relativeL2') or np.nan) for z in r]),
+                           marker='D',s=17,color=line.get_color())
+        ax.set(title=group_titles[family],xlabel='Median paid wall (s)',ylabel='Median relative material L2')
+        ax.legend(fontsize=6.8,ncol=2)
+        ax.grid(alpha=.2)
+    fig_time.suptitle('Cross-grid follow-up with fixed caps at 15 and 30 s / circles raw, diamonds light')
+    fig_time.savefig(figures/'time_error.png',dpi=160)
+    plt.close(fig_time)
+
+    case = 'austria_eps3p5_400MHz_limited180'
+    a = bundles[case]
+    ref = a['truth_coarse']
+    arms = ('cie_dual','dr_standalone','full_g19','g19_u11_hop','g19_u11_routed_dr')
+    figure = plt.figure(figsize=(11.7,6.5),layout='constrained')
+    layout = figure.add_gridspec(3,6,height_ratios=[1.,1.,1.5])
+    norm = PowerNorm(.65,0,20)
+    axes = []
+    for i,view in enumerate(('raw','light')):
+        for j,arm in enumerate((None,)+arms):
+            ax = figure.add_subplot(layout[i,j])
+            axes.append(ax)
+            r = lookup[case,arm,view,30.] if arm else None
+            m = a[r['key']] if r else ref
+            ex = ax.imshow(m.reshape(32,32),origin='lower',cmap='viridis',norm=norm,interpolation='nearest')
+            ax.set_xticks([])
+            ax.set_yticks([])
+            if i==0:
+                ax.set_title(DISPLAY_NAMES[arm] if arm else 'Reference',fontsize=9)
+            if r:
+                ax.set_xlabel(f"L2 {float(r['relativeL2']):.3f} / IoU {float(r['half_contrast_IoU']):.3f}",fontsize=7)
+            else:
+                ax.set_ylabel(view.capitalize(),fontsize=9)
+    figure.colorbar(ex,ax=axes,label='Real contrast',fraction=.018,pad=.02)
+    error_axis = figure.add_subplot(layout[2,:3])
+    residual_axis = figure.add_subplot(layout[2,3:])
+    for arm in arms:
+        trace = a[arm+'_raw_audit']
+        material = a[arm+'_raw_audit_material']
+        within = trace[:,0]<=30.
+        trace,material = trace[within],material[within]
+        minimum = np.minimum.accumulate(trace[:,2])
+        incumbent = np.r_[True,minimum[1:]<minimum[:-1]]
+        t = np.r_[trace[incumbent,0],30.]
+        l2 = np.linalg.norm(material[incumbent]-ref,axis=1)/np.linalg.norm(ref)
+        data_error = trace[incumbent,3]
+        line, = error_axis.step(t,np.r_[l2,l2[-1]],where='post',label=DISPLAY_NAMES[arm])
+        residual_axis.step(t,np.r_[data_error,data_error[-1]],where='post',color=line.get_color())
+    for ax,ylabel in ((error_axis,'Relative material L2'),(residual_axis,'Training data residual')):
+        ax.set(xlabel='Paid wall (s)',ylabel=ylabel,xlim=(0,30))
+        ax.grid(alpha=.18)
+    error_axis.legend(fontsize=7,ncol=2)
+    figure.suptitle('Half-aperture Austria / 150 to 32 grid, 10% noise\n'
+                    'Paid raw trajectories use the lowest audited physics objective at each time',fontsize=11)
+    figure.savefig(figures/'half_aperture_austria.png',dpi=160)
+    plt.close(figure)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 # MAX-STRUCT 与 A17 顶刊裁决实验
 
+**MAX-STRUCT 方法扩展已完成。** A-material、两版 A+、Full G19、S19、U11、路由 DR 及 NN 组合在同一批设置补跑。最明显的新结果是半环 Austria 上 U11＋路由 DR 恢复两个圆盘和环体，30 s 轻校正 L2 为 .383、IoU .784。六源 Fresnel Twin 的最佳留出结果为 NN→A+-Arc。 [扩展报告、对照图与原始结果](max_struct_extended/MAX_STRUCT_METHODS_ZH.md)
+
 | 战役 | 裁决 | 决定性结果 |
 |---|---|---|
 | MAX-STRUCT | **KILL · NO-GO for TAP/TGRS** | 30 s 内 Block 01 在 raw 上赢两条基线的 6/10 题，配对中位降幅仅 0.40%。轻校正后赢 4/10，中位误差反增 0.40%。DR 只在双环上同时赢两条基线，在 Fresnel Twin 六源上有留出预测收益。 |
