@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>已知宿主中的材料折叠 · ChatGPT 研究交接</title>
+  <meta name="description" content="固定非均匀宿主的二维标量 TM 材料折叠、全材料盒根数与带噪证据。">
+  <link rel="stylesheet" href="../research_z_alg_r7/report.css">
+  <style>
+    .handoff-copy { display: block; width: 100%; padding: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 7px; background: #f5f7f9; font: 14px/1.6 ui-monospace, monospace; resize: vertical; }
+    .handoff-copy:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    button.button { cursor: pointer; }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <nav class="nav" aria-label="项目导航">
+    <a href="../../">Maxwell 成像项目</a>
+    <a href="../">全部研究</a>
+    <a href="./">本研究中文报告</a>
+    <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-host-fold-20261121">版本记录</a>
+  </nav>
+
+  <header class="intro">
+    <p class="byline">固定宿主折叠 · 2026 年 11 月 21 日</p>
+    <h1>ChatGPT 研究交接 · 已知宿主中的材料折叠</h1>
+    <p class="lead">在同一个已知非均匀宿主中，沿一段长度约 2×10<sup>−6</sup> 的三通道复读数直线，整个六维材料盒内的解数依次为两份、一份、零份。折叠处的完整 36 阶正演仍然可逆，最小奇异值严格大于 0.26124。整个噪声可行材料集合都满足 0.25260 的严格下界。</p>
+    <p class="actions">
+      <a class="button" href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/NEXT_PRO_HANDOFF.md">固定版本交接原文</a>
+      <a class="button" href="./">中文报告与图表</a>
+      <a class="button" href="manuscript.pdf">英文论文稿</a>
+      <a class="button" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-host-fold-20261121/Z_ALG_host_fold_2026-11-21.zip">研究包 ZIP</a>
+    </p>
+  </header>
+
+  <nav class="page-nav" aria-label="交接目录">
+    <a href="#paste">贴给 ChatGPT</a>
+    <a href="#evidence">已认证结果</a>
+    <a href="#noise">分支与带噪范围</a>
+    <a href="#context">文献与适用范围</a>
+    <a href="#files">可复核数据</a>
+  </nav>
+
+  <section class="report-section" id="paste">
+    <h2>贴给 ChatGPT</h2>
+    <label for="handoff-text">交接指令与固定版本地址</label>
+    <textarea id="handoff-text" class="handoff-copy" rows="12" readonly>请读完固定宿主折叠研究的证书。分别判断折叠处完整正演的可逆性、整个材料盒沿指定读数线的 2→1→0 根数、以及同一个噪声球内两份材料的距离与连接路径。保留同覆盖体积的耗时对照和图表留下的假阳性盒。讨论扩展时明确哪些结论依赖此固定几何与离散模型。
+交接 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/NEXT_PRO_HANDOFF.md
+报告 https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_host_fold/
+已有命题 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/PRECEDENTS.md
+折叠 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/results/fold_certificate.json
+全盒根数 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/results/point_homotopy_certificate.json
+整条直线 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/results/normal_section.json
+带噪覆盖 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/results/noisy_cover.json
+带噪两根的路径 https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-host-fold-20261121/research/z_alg_host_fold/results/noisy_diagnostics.json
+研究包 https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-host-fold-20261121/Z_ALG_host_fold_2026-11-21.zip</textarea>
+    <p class="actions"><button class="button" type="button" id="copy-handoff">复制交接指令</button><span class="note" id="copy-status" role="status"></span></p>
+  </section>
+
+  <section class="report-section" id="evidence">
+    <h2>已认证结果</h2>
+    <ul>
+      <li><strong>36 个状态单元，6 个未知材料。</strong> 固定二维标量 TM 圆盘脉冲模型。30 个非均匀宿主单元的材料已知。未知区位置固定，六个实对比度在 [0.5, 30] 内独立取值。三源一收提供三条复读数。 <a href="results/host_model.json">物理模型与坐标</a></li>
+      <li><strong>指定线段上存在普通 fold。</strong> 在折叠点的认证区间中，材料到读数的实雅可比恰少一秩，二阶折叠系数离开零，回读所需场量有严格非零余量。完整 36 阶正演在这段的最小奇异值下界大于 0.26124。全部 222 个噪声外包小盒的完整正演最小奇异值都大于 0.25260。整个六维材料盒另有正演可逆性证明。 <a href="results/host_noise_margin.json">全可行集余量</a> · <a href="results/fold_certificate.json">折叠证书</a> · <a href="results/host_state_certificate.json">全盒正演证书</a></li>
+      <li><strong>两个指定读数具有两个和零个合法材料解。</strong> 对保存的两个精确端点 y<sub>−</sub> 与 y<sub>+</sub> 分别认证整个材料盒，合法实根依次为 2 与 0。每端点的兼容多项式有 20 个经认证的复根。用同样系数跑 HomotopyContinuation.jl，两端均找到 20/20 个，物理回读得到相同分类。 <a href="results/point_homotopy_certificate.json">同伦及根数证书</a> · <a href="results/point_fibers.json">独立根数记录</a></li>
+    </ul>
+  </section>
+
+  <section class="report-section" id="noise">
+    <h2>分支与带噪范围</h2>
+    <!-- HOST_FOLD_HANDOFF_SCOPE -->
+    <p><strong>整条指定线上的全盒根数是 2 → 1 → 0。</strong> 从两个端点连出的复读数线长约 2×10<sup>−6</sup>。在整个 [0.5,30]<sup>6</sup> 上，临界读数前每一点恰有两个材料解，临界读数恰有一个，之后每一点均无解。55 段局部区间与强直接法外包的 222 个材料盒形成 1,306 个经认证交集，覆盖这些盒在该直线上的所有候选。 <a href="results/normal_section.json">全盒直线证书</a> · <a href="src/normal_section.py">区间计算</a></p>
+    <p><strong>同一噪声球内的两份材料相差 0.22922 RMS。</strong> 三条复读数合为半径 1.19209×10<sup>−6</sup> 的欧氏球。两份 y<sub>−</sub> 材料同属于这个球的逆像，所以对同一带噪读数给出单张材料图，最坏 RMS 至少为 0.11461。区间检验还证明能在球内沿连续材料路径连接这两份材料。 <a href="results/noisy_diagnostics.json">距离、连接路径及内盒</a></p>
+    <p>把同一个全盒外包压到相同保留体积分数 10<sup>−6</sup>，中心化直接法用 0.1237 秒，二次图用 0.0298 秒。时间包含各自覆盖准备，共享宿主预处理单列。达到相同最大细分深度时，两者分别留下 222 和 345 个盒。二次图的 15 项逐项测试接受了一个正体积小盒，而完整的联合噪声检验严格排除了整盒。 <a href="results/noisy_cover.json">比较支出和覆盖前沿</a> · <a href="results/noisy_diagnostics.json">严格排除的小盒</a></p>
+    <!-- /HOST_FOLD_HANDOFF_SCOPE -->
+    <p class="links"><a href="results/noisy_cover.json">带噪逐域覆盖</a><a href="results/noisy_cover_cells.npz">覆盖盒数组</a></p>
+  </section>
+
+  <section class="report-section" id="context">
+    <h2>文献与适用范围</h2>
+    <p>全阶传递矩阵、材料比值回读、普通 fold 增广、数值同伦、区间认证和 SIVIA 有各自的既有文献。这里按原文命题逐条核清，并将测试范围固定在一个已知宿主、一个几何和一套离散算子。认证范围是这个有限圆盘脉冲模型。连续 Maxwell 问题以及其他宿主参数需要独立论证。</p>
+    <p class="links"><a href="PRECEDENTS.md">原文公式、反例及文献边界</a></p>
+  </section>
+
+  <section class="report-section" id="files">
+    <h2>可复核数据</h2>
+    <p class="links"><a href="NEXT_PRO_HANDOFF.md">交接原文</a><a href="results/host_operators.npz">冻结算子与观测</a><a href="results/host_operators_interval.json">解析算子的区间包围</a><a href="results/noisy_cover.json">带噪覆盖记录</a><a href="src/host_model.py">模型与归约代码</a><a href="src/noisy_cover.cpp">覆盖代码</a></p>
+  </section>
+
+  <footer class="foot">固定宿主折叠 · B1 Maxwell 成像研究 · 2026-11-21</footer>
+</main>
+<script>
+  const copyButton = document.getElementById('copy-handoff');
+  const handoffText = document.getElementById('handoff-text');
+  const copyStatus = document.getElementById('copy-status');
+  copyButton.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(handoffText.value);
+      copyStatus.textContent = '已复制';
+    } catch {
+      handoffText.focus();
+      handoffText.select();
+      copyStatus.textContent = '已选中，可用键盘复制';
+    }
+  });
+</script>
+</body>
+</html>

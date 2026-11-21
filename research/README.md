@@ -1,3 +1,11 @@
+<!-- Z_ALG_HOST_FOLD_PUBLICATION -->
+## 已知非均匀宿主中的材料折叠
+
+一个固定二维标量 TM 模型，30 个已知宿主单元与 6 个未知材料单元。沿两组指定三通道复读数之间的直线，整个材料盒的合法解数依次为两份、一份、零份。报告展示折叠、全阶正演与带噪材料范围的证据。
+
+[中文报告与图表](z_alg_host_fold/index.html) · [ChatGPT 研究交接](z_alg_host_fold/handoff.html)
+<!-- /Z_ALG_HOST_FOLD_PUBLICATION -->
+
 <!-- Z_ALG_R16_PUBLICATION -->
 ## Z-ALG R16 · 在电流域选方向，能否改善 576 格材料重建？
 

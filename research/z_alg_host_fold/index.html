@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>正演稳定时，六个材料为什么会有两个解 · Z-ALG</title>
+<link rel="stylesheet" href="../research_z_alg_r7/report.css">
+<style>
+.wrap{max-width:1060px}.intro h1{max-width:18em}.lead{max-width:45em}.conclusion{border-left:4px solid #127578;background:#eef6f5;padding:12px 18px;margin:18px 0}.actions{display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap}.actions a:first-child{background:#174a60;color:white;text-decoration:none;padding:7px 15px;border-radius:5px}.fig{margin:18px 0 22px}.fig img{display:block;width:100%;height:auto}.fig figcaption{font-size:.86em;color:#435867;line-height:1.6;margin-top:6px}.phys img{max-width:610px;margin:auto}.table-scroll{overflow-x:auto}.table-scroll table{width:100%;border-collapse:collapse;text-align:left;font-variant-numeric:tabular-nums}.table-scroll td,.table-scroll th{padding:8px 10px;border-bottom:1px solid #dce4e9}.table-scroll th{background:#eff5f7}.table-scroll td:not(:first-child),.table-scroll th:not(:first-child){text-align:right}.links{font-size:.88em}.eq{padding:9px 14px;margin:12px 0;background:#f1f5f7;font-family:Georgia,serif;overflow-x:auto}.refs td:nth-child(n),.refs th:nth-child(n){text-align:left}.refs td:first-child{min-width:102px}section{padding:24px 0;border-top:1px solid #dce5e9}details{margin:12px 0}summary{font-weight:650;color:#174a60;cursor:pointer}.intro{border-top:0}.wrap>footer{border-top:1px solid #cfdce3;padding-top:18px}.compact{max-width:48em}
+</style></head>
+<body><main class="wrap"><nav class="nav" aria-label="站点导航"><a href="../../">项目首页</a><a href="../">研究目录</a><a href="../research_z_alg_r16/">电流与材料迭代</a><a href="handoff.html">ChatGPT 交接</a></nav>
+<header class="intro"><p class="byline">Z-ALG · 二维电磁逆散射 · 2026 年 11 月 21 日</p>
+<h1>正演稳定时，六个材料为什么会有两个解</h1>
+<p class="lead">三个发射位置、一个接收器，给六个待标定材料提供六个实读数。计算每份材料的电磁响应都很稳定，同样的读数却对应两份不同的材料。把读数沿一个方向移动约百万分之二，两个解合并，随后消失。</p>
+<div class="actions"><a href="manuscript.pdf">阅读英文论文稿 PDF</a><a href="handoff.html">交给 ChatGPT 复核</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-host-fold-20261121/Z_ALG_host_fold_2026-11-21.zip">下载代码、数据与图</a></div>
+</header>
+<section><h2>沿这一整条线，解数只变一次</h2>
+<p>下面左图的每个点都是经完整方程验证的材料。任取一个横坐标，竖着看曲线有几个交点，就是这份读数有几种合法材料解释。右图给出负侧同一读数下，六个位置分别可以怎样变化。</p>
+<figure class="fig"><img src="figures/material_branches.png" width="2100" alt="负侧读数竖线与材料曲线交于两点，临界处相切，正侧再无交点。两份材料的六个槽位均有变化。"><figcaption>横轴一个单位对应读数沿指定方向改变 10⁻⁶。折点附近的虚线来自二阶预测，实点来自已验证的分支。两份根在槽位 6 相差 0.403。</figcaption></figure>
+<div class="table-scroll"><table><thead><tr><th>同一份读数的两个解</th><th>槽 1</th><th>槽 2</th><th>槽 3</th><th>槽 4</th><th>槽 5</th><th>槽 6</th></tr></thead><tbody>
+<tr><td>槽 6 较低</td><td>19.121</td><td>7.738</td><td>4.187</td><td>2.584</td><td>19.330</td><td>25.771</td></tr>
+<tr><td>槽 6 较高</td><td>18.878</td><td>7.495</td><td>4.353</td><td>2.530</td><td>19.260</td><td>26.174</td></tr></tbody></table></div>
+<p>两组材料的均方根距离为 <strong>0.22922</strong>。对这条记录只报一份材料，无论用哪种算法，两种解释中至少有一种的均方根误差达到 <strong>0.11461</strong>。允许复读数有 1.19209×10⁻⁶ 的联合误差后，两根之间还存在一条沿途始终符合观测的材料路径。</p>
+<details><summary>怎样知道没有漏掉第三个材料</summary>
+<p>在两份端点读数上，商代数和成熟同伦各找齐 20 个复候选。负侧是 16 个非共轭、2 个材料超界和 2 个合法；正侧是 18 个非共轭、2 个超界和 0 个合法。每个候选都通过了带宿主计算误差的独立核验。</p>
+<p>两个端点之间，用第六个材料的变化量接出 55 段曲线，证明整段曲率同号。再对整个材料盒留下的 222 个小盒逐一比对。1,306 处相交均证明，同一个槽 6 数值不能藏有曲线外的另一份材料。因此 2 → 1 → 0 对整个材料范围、整条指定观测线成立。误差球其他方向上的完整拓扑仍未知。</p></details>
+<p class="links"><a href="results/normal_section.json">整条观测线</a> · <a href="results/point_fibers.json">两端所有根</a> · <a href="results/noisy_diagnostics.json">两根之间的可行路径</a></p></section>
+<section><h2>为什么能排除正演共振</h2>
+<p>几何中有 36 个电磁状态。外围 30 个圆盘的材料已知，六个内部槽位分别取 0.5 到 30 的实对比度。圆盘间的传播采用二维出射 Hankel 核，三次照射每次都解完整的多次散射。去掉外围材料，接收响应改变 0.07813。这个已知背景确实改变了标定条件。</p>
+<figure class="fig phys"><img src="figures/host_geometry.png" alt="二维圆盘阵列内六个未知位置、外围三十个已知介质和外部收发器" loading="lazy"></figure>
+<p>完整正演矩阵在折点的最小奇异值 <strong>大于 0.26124</strong>。把误差球中可能的材料全部算进去，仍然 <strong>大于 0.25260</strong>。六个接收因子在折点也都非零。保持同一宿主和收发器，只保留材料的一阶响应，六个参数可唯一回读；允许每个槽位自身非线性、关掉不同槽位间的反馈，临界材料处也恢复了满秩。完整耦合通过有限接收使两个材料变化相互抵消。</p>
+<details><summary>出射 Green 与材料折叠怎样联系起来</summary>
+<p>出射 Green 矩阵的 Hermitian 虚部是全角辐射功率的 Gram 矩阵。对于这里的等半径圆盘，它严格正定。消去任意已知实宿主，这一性质仍保留。</p><div class="eq">Im<sub>H</sub> H = U* (Im<sub>H</sub> G) U ≻ 0</div>
+<p>再把满足旧读数的接收响应写成 w = w₀ + cN。六个材料是实数，要求每个 wᵢ 都与 vᵢ = (R + wH)ᵢ 同相或反相，得到六个精确二次方程。非节点的合法图表中，它们的 Jacobian 与物理材料 Jacobian 同时奇异。</p><div class="eq">det D<sub>c</sub>C = (−1)<sup>s</sup> |det(I − D<sub>z</sub>H)|² det D<sub>z</sub>F / |det B<sub>I</sub>|²</div>
+<p>折点沿临界材料方向的位移与噪声的<strong>平方根</strong>成比例。10⁻⁶ 的读数扰动给出 0.28031 的二阶预测，实际两根投影为 −0.27254、+0.28894。</p></details>
+<p class="links"><a href="results/host_noise_margin.json">全部可行材料的正演余量</a> · <a href="results/host_mechanism.json">关闭不同传播项的结果</a></p></section>
+<section><h2>算得快和排得干净，哪种方法占优</h2>
+<p>同一台 Apple M4，用直接材料集合反演和 15 个四槽位余子式处理同一个观测误差球。每个保留下来的小盒都代表还有可能的材料。先比较两者留下同等体积需要多久，再比较细分到同一深度谁留下得更少。</p>
+<div class="table-scroll"><table><thead><tr><th>同一个六维材料域</th><th>直接材料法</th><th>接收余子式</th></tr></thead><tbody>
+<tr><td>留下相同体积，含判据准备</td><td>0.1237 秒</td><td>0.0298 秒</td></tr>
+<tr><td>再计入共用物理准备和上游认证</td><td>0.2073 秒</td><td>0.1134 秒</td></tr>
+<tr><td>相同深度下保留的小盒数</td><td>222</td><td>345</td></tr>
+<tr><td>这些盒中槽 6 的可能范围</td><td>[25.506, 26.543]</td><td>[24.469, 30.000]</td></tr></tbody></table></div>
+<p>在表中相同体积这一项，两者都留下原盒的 9.984×10⁻⁷。余子式适合快速排除；直接法同时要求三个复读数共用一份噪声，在全域最后留下的材料范围更紧。我们证出一小盒错误材料，它通过全部 15 个逐项检验，每项分数都低于 0.734；合起来检查所有读数，整盒分数超过 1.1676，许可上限只有 1。</p>
+<figure class="fig"><img src="figures/noisy_cover_frontiers.png" alt="同一噪声球下直接材料法和余子式的保留体积、运行时间及两材料的可行路径" loading="lazy"><figcaption>盒子占的体积可以非常小，同时沿某个材料方向仍然很长。因此报告同时给出各槽位的范围、可行材料见证和实际用时。</figcaption></figure>
+<p class="links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/z-alg-host-fold-20261121/research/z_alg_host_fold/NOISY_METHODS.md">完整对照和计时口径</a> · <a href="results/noisy_cover.json">运行数据</a> · <a href="results/hc_times.tsv">成熟同伦的端点对照</a></p></section>
+<section><h2>论文可以主张什么</h2>
+<p class="conclusion"><strong>值得按 <i>Inverse Problems</i> 的理论与计算论文投稿。</strong> 本例把原来两个读数点的证据，推进到了整条观测线、全材料盒和整个噪声可行集的正演余量。直接材料法和成熟同伦在证明中都起了关键作用。通用成像加速仍缺乏证据。</p>
+<p>已有文献给出了 Helmholtz 反问题多项式化、传递矩阵、商代数求根和一般折叠理论。这里可核查的新证据来自一个明确的介质宿主。它采用圆盘内常量电流的模拟，尚未定量包住从离散到连续圆柱的误差。R7 的连续体抵消定理、R14 的有限功率频带下界各有自己的几何和观测假设。</p>
+<p class="links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/z-alg-host-fold-20261121/research/z_alg_host_fold/PRECEDENTS.md">六篇关键先例的命题对照</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/z-alg-host-fold-20261121/research/z_alg_host_fold/RESEARCH_REPORT_ZH.md">完整中文报告</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/z-alg-host-fold-20261121/research/z_alg_host_fold/REPRODUCE.md">复算方法</a></p></section>
+<footer><a href="manuscript.pdf">英文论文稿</a> · <a href="handoff.html">ChatGPT 交接</a> · <a href="../">项目研究目录</a></footer></main></body></html>
