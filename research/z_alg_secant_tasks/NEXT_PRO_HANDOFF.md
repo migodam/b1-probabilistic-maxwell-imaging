@@ -1,6 +1,6 @@
 # 给下一轮 Pro 的交接：已测复场能迫使材料满足什么条件？
 
-从 576 像素环的 12 发、48 收复数据出发，本轮严格排除了整个 $[0,5]^{576}$ 材料盒。把每份照明独立检验，即使得到任意可达的复数读数，单一全局能量约束都能找到满足它的电流。要求这些照明对应同一件物体之后，保留下来的第五个独立差异就超过噪声。这里的结论是离散物理下至少有一处材料对比度大于 5，像素位置仍未知。建议把这条结果作为下一轮主问题。可将本页面或完整研究包直接交给 ChatGPT。[完整研究 ZIP](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip) · [本页纯文本](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-secants-20261122/research/z_alg_secant_tasks/NEXT_PRO_HANDOFF.md)
+从 576 像素环的 12 发、48 收复数据出发，本轮严格排除了整个 $[0,5]^{576}$ 材料盒。把每份照明独立检验，即使得到任意可达的复数读数，单一全局能量约束都能找到满足它的电流。要求这些照明对应同一件物体之后，保留下来的第五个独立差异就超过噪声。这里的结论是离散物理下至少有一处材料对比度大于 5，像素位置仍未知。建议把这条结果作为下一轮主问题。可将本页面或完整研究包直接交给 ChatGPT。[完整研究 ZIP](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip) · [本页纯文本](https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/main/research/z_alg_secant_tasks/NEXT_PRO_HANDOFF.md)
 
 ## 最值得先读的三个结果
 
@@ -30,6 +30,8 @@
 **另一个可写成独立数学问题的缺口**是用可核算的连续界面余项，把 30λ 分支的数值存在提升为连续 PDE 的定量证书。在历史 36 盘参数处，圆盘脉冲与连续圆柱得到的场差可比原根间端口差大几个数量级。论文不能把离散六槽的旧证书移到连续介质。参考组分离时也要报出总孔径、组件条件、完整读数范数和绝对噪声。
 
 ## 判断原创性时要对照的近邻
+
+Tian，arXiv:1301.2567，推论 4.5 的式 (4.38) 在 $A,B$ 取恒等、$C=0$ 时已包含本研究无噪声的惯性计数。请把它作为引理的直接来源，集中核查带噪残差下界、可认证的物理端口阈值和高维材料结论还能贡献什么。Shim 等的多照明共享结构约束同样应明确引用。[逐项代入与原文](PRIOR_ART.md)
 
 请从 Griesmaier–Schätzle 的散射路径、Everett 的正材料孤立解、Kuo–Novikov 的有限入射不可见点、Stiles 等的对称收发、Eckart–Young 的最佳秩一逼近，以及有限测量 Calderón 和任务恢复理论开始。乘积拓扑度、双点误差下界、秩一拟合和奇偶分解应作工具引用。较有希望的贡献是把它们落实成一条在完整物理、具体误差下对**整个声明材料域**生效的分辨结论。[命题级文献表](PRIOR_ART.md)
 
