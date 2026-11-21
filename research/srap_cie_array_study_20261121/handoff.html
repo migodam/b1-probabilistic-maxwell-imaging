@@ -1,0 +1,51 @@
+<!doctype html><html lang="zh-CN"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>SRAP-CIE 阵列研究交接 · 2026-11-21</title><style>
+*{box-sizing:border-box}body{font:16px/1.8 Inter,'PingFang SC','Noto Sans CJK SC',sans-serif;color:#14273b;background:#fff;margin:0}
+header{border-bottom:1px solid #d4dfdf;background:#f5f8f7} nav,main,footer{max-width:1120px;margin:auto;padding:18px 32px}
+nav{display:flex;flex-wrap:wrap;gap:12px 21px;align-items:center}nav b{letter-spacing:.03em;margin-right:auto}
+a{color:#145f78;text-underline-offset:3px}nav a{font-size:.88rem} main{padding-top:32px;padding-bottom:64px}
+h1,h2,h3{line-height:1.35;color:#132d41}h1{font-size:clamp(1.85rem,4.8vw,3.1rem);max-width:960px;margin:.45em 0}
+h2{font-size:1.5rem;border-top:1px solid #dbe4e6;padding-top:26px;margin-top:36px}
+p,li{max-width:88ch}p:has(img){max-width:none}img{max-width:100%;height:auto;display:block;margin:16px 0}
+pre{background:#f2f6f7;overflow-x:auto;padding:16px}code{font-family:ui-monospace,monospace;overflow-wrap:anywhere}
+.table{overflow:auto;margin:20px 0}table{width:max-content;max-width:none;border-collapse:collapse;font-size:.88rem}
+td,th{padding:6px 11px;border-bottom:1px solid #dce5e8;vertical-align:top;text-align:left;max-width:47ch}
+th{color:#154b5e;background:#edf4f4}tr:nth-child(even){background:#fafcfc}footer{border-top:1px solid #d4dfdf}
+@media(max-width:650px){main,nav,footer{padding-left:15px;padding-right:15px}td,th{max-width:34ch}nav b{width:100%}}
+</style><header><nav><b>MAX-STRUCT · SRAP-CIE</b><a href="index.html">研究报告</a><a href="visual.html">看重建图</a><a href="vector_results.html">三维阵列</a><a href="tables.html">逐阵列表</a><a href="paper.html">Paper</a><a href="handoff.html">交接</a></nav></header><main><h1>SRAP-CIE 阵列研究交接 · 2026-11-21</h1>
+<p><strong>可保留的是二维半环的背景伪影抑制、部分材料结构恢复、特定三维半球的有限收益，以及 60² 投影的延迟准备实现。</strong> 三种几何的机制和强反例，都可以从同对象原图复查。<a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/srap_cie_array_study_20261121/">在线报告</a> · <a href="visual.html">看图判读</a> · <a href="figures/confirmation_atlas_30s/index.html">全体材料图册</a></p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>现在有什么证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>旧半环亮点能否移植到 sourcewise Dual-CIE？</td>
+<td>24个新物体的标准180°，30秒raw为21胜1平2负，中位L2降39.1%，轻校正22胜2负、降31.9%。但是 raw 的21胜中18次目标内部误差上升。003、010、013、018 有可见的三体、双环或偏心核壳增益。</td>
+</tr>
+<tr>
+<td>对别的阵列是否成立？</td>
+<td>翻转接收半环的 raw 相对降幅14.9%；满环raw为12胜12负。120°和有限源同侧直线、同角弧的原秩多数退回空气。三种柱面源布阵都补了相同的 DPCS 截断；同侧直线/同角弧的 capped SRAP 各6胜18负。</td>
+</tr>
+<tr>
+<td>成功是由哪个部件带来的？</td>
+<td>四个同状态干预显示路由改变下一次材料方向，并且在完整 Fourier 回注时丢掉一部分变化。54.6%–66.7%的丢失能量位于 DPCS 锁定空间。首周期回注损失与最终材料收益的秩相关在满环/标准半环为−0.357/+0.277，未形成跨几何触发器。</td>
+</tr>
+<tr>
+<td>要怎样看失败？</td>
+<td>007 在满环的raw增益最大，在标准半环恶化最多。两臂第1步产生完全相同的过大对比度，1/4像素触及20。随后 SRAP 回到接近空气的材料，但在30秒内其物理目标未胜过第1步。另8个连续/窄桥对象里，Cx06 两处峰均真恢复，Cx04 只恢复桥端。</td>
+</tr>
+<tr>
+<td>三维呢？</td>
+<td>RTX 4060 实跑，24³→12³，12物体 × 两阵 × 两法。180秒轻校正半球9胜3负，配对L2绝对改善0.0113 [0.0024,0.0243]，IoU中位0.430→0.488；矩形面阵两臂IoU中位0，闭腔00漏检。60秒半球轻校正没有同等优势。两法实际raw中位用时6.81/39.96秒。</td>
+</tr>
+<tr>
+<td>Fresnel提速及材料预测？</td>
+<td>延迟端口准备将一个非活跃球的准备加投影17.49→1.45秒。8GHz交错Twin轻校正未见源误差，Dual 0.257、原 SRAP 0.823、延迟版0.798；未见接收 0.172/0.631/0.598。6GHz半发射轻校正有利于延迟版（0.141 对 Dual 0.162）。组内只有3件不同实物。</td>
+</tr>
+</tbody>
+</table></div>
+<p>代码入口为 <code>engine.py</code>、<code>run_study.py</code> 和 <code>vector/invert.py</code>。两台机器与三维 GPU 轨迹分别计时，二维742条含开发、重放、独立和附加诊断，独立主比较为336条，另144条柱面源截断对照。历史案例与独立确认分开。全部预测使用付费原物理目标选择；图册选择和材料误差拆分均在封存后完成。<a href="tables.html">全部配对误差</a> · <a href="vector_results.html">三维完整报告</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/srap_cie_array_study_20261121/engine_dev/REPORT_ZH.md">同状态干预</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/srap_cie_array_study_20261121/COST_LEDGER.md">费用</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/srap_cie_array_study_20261121/REPRODUCE.md">复现及数据出处</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/srap-cie-array-study-20261121">数组 Release</a></p>
+<p>下一轮最值得检验的公式是材料读出后的锁定分量 V*(Jtarget−J₀) 和剩余合法 Fourier 分量如何随照明变化。现有记录有同状态、同物体反例，可以先检查不同阶段和复噪声实现下，公开指标能否预测材料内部改善。连续 Maxwell 唯一性和通用全局收敛均未建立。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/srap_cie_array_study_20261121">代码与原始表</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/srap-cie-array-study-20261121">下载实验数组</a></footer></html>

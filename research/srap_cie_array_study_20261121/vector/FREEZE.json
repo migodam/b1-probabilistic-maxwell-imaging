@@ -1,0 +1,46 @@
+{
+  "grids": [
+    24,
+    12
+  ],
+  "width_lambda": 0.6,
+  "radii_lambda": "hemisphere .9, plane_grid variable, nearest .9",
+  "hemi": "Fibonacci hemispherical sampling at .9 lambda",
+  "port_pairing": "8 unit dipoles per polarization, two orthogonal unit receive components per 16 positions; equal minimum center distance and transmitted moment magnitude",
+  "noise": "10 percent complex Gaussian, exact Frobenius normalization; same standardized draw between arrays for each paired object, independent across objects",
+  "truth": "4^3 subvoxels on the 24 grid, averaged 2^3 for coarse scoring only",
+  "mf": [
+    2,
+    3,
+    4
+  ],
+  "beta_m": [
+    6,
+    3,
+    1
+  ],
+  "beta_j": [
+    6,
+    4,
+    3
+  ],
+  "shared_real_chi": [
+    0,
+    4
+  ],
+  "prior": "R0 inherited native vector baseline",
+  "initial_chi": 0.25,
+  "dpcs_sigma_rel": 0.1,
+  "PR": "sourcewise PR+, minimum 20, maximum 500/stage, coefficient relative RMS <.001",
+  "event": "16 complete global steps or stage end",
+  "route": "full eigendecomposition of P G*G P with cutoff .01 lambda_max(G*G), P=I-VsVs* at sigma>=.1 sigma_max(S)",
+  "graph": "CG on I+36G*G, common data ball using public .1 norm(Y)/sqrt(1.01), shared multiplier",
+  "corrector": "physical mean normalized per source original loss, box L-BFGS-B, maximum 20 accepted steps",
+  "deadline": "one genuinely cold branch per case/array/method; raw 60/180s prefixes of same trajectory; independently charged 12s/36s common correctors on paid 48s/144s seeds. Completed audits only. CUDA runtime/import startup separate from measured acquisition/operator/arm work; no per-arm operator cache reused.",
+  "case_order": "0..11 plane_grid/hemi Dual/SRAP; skip intact inherited hemisphere seals",
+  "cases_per_family": 3,
+  "version": "V2 before any cohort score",
+  "plane_grid": "2x4 Tx and 4x4 Rx genuine rectangular planes at z=sqrt(.9^2-2*.08^2) lambda. Unit dipoles in x,y. Tx x=.09[-3,-1,1,3], y=+-sqrt(.0128-.0081); Rx x,y=.08[-3,-1,1,3].",
+  "distance": "Min Euclidean port-to-ROI-center .9 lambda equals min standoff to enclosing sphere .9-.3sqrt(3). Report actual ranges to cube boundary and center.",
+  "v1": "Completed hemisphere arms retained. V1 coplanar circular ring data/arms preserved as unscored development under development_ring. GPU memory V2 reset per arm; inherited V1 cumulative highwater explicitly marked."
+}
