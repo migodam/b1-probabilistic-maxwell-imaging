@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>研究系列 · Maxwell 逆散射实验手册</title><link rel="stylesheet" href="handbook.css"></head>
+<body><header><a href="../">B1 Maxwell 研究</a><nav aria-label="手册章节"><a href="index.html">实验手册</a><a href="datasets.html">数据设计</a><a href="families.html" aria-current="page">研究系列</a><a href="operators.html">算子与设备</a><a href="design.html">运行与接续</a><a href="errata.html">基线错题本</a><a href="walkthroughs.html">实例与复算</a><a href="storage.html">磁盘管理</a><a href="handoff.html">交接</a><a href="catalog.html">查目录</a></nav></header>
+<main><h1 id="_1">整个研究项目从哪里进入</h1>
+<p>项目外置工作区 Inv_SLAM 包含多个独立仓库、工作树和早期交付。路径以下均以工作区为根；公开库链接单列。<strong>数据集登记表按可查到冻结对象和观测的位置建立</strong>。这里再给只有论文、协议、诊断包或专门训练材料的系列一个可追溯入口。名字相同的文件夹、打包时附带的实验副本和工作树数量均不能作为样本数。</p>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>研究问题或系列</th>
+<th>实际入口</th>
+<th>沿用价值及证据边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAX-STRUCT、FBG、A17-X、Z-ALG、Formula Atlas</td>
+<td>B1 的 <code>research/research_max_struct_r*/</code>、<code>research/research_fbg_r3_experiments/</code>、<code>research/maxwell_formula_atlas/</code>；工作区 <code>research/delegated/max_struct_r1/</code> 保留分轮冻结工作树</td>
+<td>按轮用相应代码、算子及观测；R16 后端中装载的早期资料分别登记原队列。Atlas 管公式的假设与来源，手册管具体实验</td>
+</tr>
+<tr>
+<td>初期 A 系列和论文资料</td>
+<td>工作区 <code>communication/A2_RESEARCH_REPORT_ZH.md</code>、<code>Gaussian/README.md</code>、<code>Gaussian/A6/deliverables/</code>、<code>Gaussian/A8/deliverables/A8_RESEARCH_REPORT_ZH.md</code>、<code>Gaussian/A9/A9_EXPERIMENT_REPORT_ZH.md</code>；<code>research/delegated/a2_literature/data/</code> 保存原始论文测量</td>
+<td>早期报告可用于找机制、原数据和失败证据。重新使用其中测量时登记具体文件、来源和采集合同</td>
+</tr>
+<tr>
+<td>A10–A18 的投影、TSOM、current 与交换</td>
+<td><code>Gaussian/A10/protocols/</code>、<code>A11/protocols/</code>、<code>A12/A12_FINAL_RESEARCH_REPORT_ZH.md</code>、<code>A13/A13_EXEC_FINAL_REPORT_ZH.md</code>、<code>A14/paired_tsom_research/</code>、<code>A15/DECISION_REPORT_ZH.md</code>、<code>A16/CURRENT_SELECTION_R1/</code>；在同一 Gaussian 下进入 <code>A17/DIGITS_2D_20261030/</code>、<code>A17/SHAPES_3D_BASELINES_20261030/</code>、<code>A18_C/a18-physics-native-current-proposal/</code></td>
+<td>A17 的端点电流秩、盒约束与全梯度等时结果要同时读取。A18 的 current 提议、闭环检查和训练材料应带上冻结版本；仅凭同名方案不能接到新的 GT 分母</td>
+</tr>
+<tr>
+<td>A19–A32 的反馈与风险</td>
+<td><code>Gaussian/A19/a19-task-adaptive-feedback/</code>、<code>A20/a20-r1-mechanism/</code>、<code>A21/a21-two-sided-anatomy/</code>、<code>A22/a22-r1-subspace-separation/</code>、<code>A23/A23_research/</code>、<code>A24/a24-source-anchored-om-feedback/</code>、<code>A27/a27-feedback-failure-attribution/</code>、<code>A32/a32-material-risk-directed-feedback/</code>，其余沿实际 A 目录查</td>
+<td>适合查条件电流、两侧子空间、材料风险、消融与已知负例。A24、A25 等目录还带后续打包子目录，应查实际父轮和冻结协议</td>
+</tr>
+<tr>
+<td>B1 的 P3L / GlobalDual / Z-ALG</td>
+<td><code>Gaussian/B1/b1-p3l-r11-stable-digits/</code>、<code>b1-p3l-r12-bilateral-fixedpoint/</code>；B1 的 <code>research/p3l_r11_stable_structure_digits/</code>、<code>p3l_r12_bilateral_fixedpoint/</code>、<code>research_z_alg_asymmetric_validation/</code>、<code>z_alg_host_fold/</code></td>
+<td>自由像素重建、条件材料图册、已知宿主折叠属于不同逆问题。材料非唯一性结论引用具体观测和允许材料类。数字的生成标签或文件名不能作为形状先验</td>
+</tr>
+<tr>
+<td>B1 的 GN/NN 与 wavelet</td>
+<td>B1 的 <code>research/research_gn_nn_completion_r3/</code>、<code>research_gn_nn_preservation_r4/</code>、<code>research_gn_nn_feedback_wavelet_r5/</code>，及该轮原始训练/验证资产</td>
+<td>R5 有 128 个训练 parent/256 视图、78 个验证 parent/156 视图；已选的 36 parent/72 视图 corrector 结果保留 VAL 选择身份。辅助场能量、原 Maxwell 残差、材料恢复分别核算</td>
+</tr>
+<tr>
+<td>B1 的 A/B/T/W 与 Q 系列</td>
+<td><code>Gaussian/Research_A/</code>、<code>Research_B/</code>、<code>Research_T/</code>、<code>Research_W/</code>；<code>research/q5_remaining_v1/</code>、<code>q6_selfcal_closure/</code>、<code>trispace_self_calibration/</code>、<code>agentic_input_trispace/</code></td>
+<td>背景、校准和 nuisance 未知时，观测含义及信息预算会变。公开通信、成像或标定结果以对应协议为准。Q6 的 Fresnel 资格单列于 <code>FRESNEL_PROTOCOL_STATUS.md</code></td>
+</tr>
+<tr>
+<td>生成式与 Flow Matching 项目</td>
+<td><code>Gaussian/C1/c1-physics-state-generative-imaging/</code>、<code>Gaussian/C1/c1-joint-p2/</code>、<code>Flow Matching/A13/</code>、<code>A14/</code>、<code>A15/START_HERE.md</code></td>
+<td>复用训练前需查对象划分、采样后验意义、权重和物理修正。Flow Matching A15 与 Gaussian A15 使用不同工作目录和任务合同</td>
+</tr>
+</tbody>
+</table></div>
+<p>公开资料从<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research">B1 研究索引</a>、<a href="https://github.com/migodam/a17-maxwell-certified-exchange">A17 原仓库</a>、<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/maxwell_formula_atlas">Formula Atlas</a>进入。需要找未逐对象登记的旧资产时，先沿表中原始报告、协议和生成器追到数据；实际纳入新比较时，为所用子集补一行来源和观测映射。这避免将只含论文建议的包误作已经运行的证据。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/PROJECT_FAMILIES_ZH.md">查看本页来源</a> ·
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/experiment_handbook">代码与原始登记</a></footer></body></html>

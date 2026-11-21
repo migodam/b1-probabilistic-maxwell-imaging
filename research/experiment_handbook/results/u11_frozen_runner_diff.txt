@@ -1,0 +1,22 @@
+--- Mac_20261120_runner.py
++++ XINAN_20261120_runner.py
+@@ -599,9 +599,7 @@
+ def stage_table(case):
+     if case['suite'] == 'LA_FRESNEL':
+         return (6, 10, 16), (6.0, 2.0, 0.5), 5
+-    if case['eps'] < 4.0:
+-        return (5, 7, 10), (6.0, 2.0, 0.5), 15
+-    return (5, 8, 10), (8.0, 2.0, 0.5), 15
++    return (3, 6, 10, 12), (3.0, 1.0, 0.3, 0.1), 5
+ 
+ 
+ def leading_hermitian(model, action, count):
+@@ -1214,7 +1212,7 @@
+                 f.result()
+         print(f"[solve] All {len(synth_jobs)} synthetic jobs finished in {time.perf_counter() - t0:.1f}s", flush=True)
+         t1 = time.perf_counter()
+-        with ProcessPoolExecutor(max_workers=min(args.workers, 4)) as ex:
++        with ProcessPoolExecutor(max_workers=min(args.workers, 8)) as ex:
+             for f in as_completed([ex.submit(solve_one_job, j) for j in fresnel_jobs]):
+                 f.result()
+         print(f"[solve] All {len(fresnel_jobs)} Fresnel jobs finished in {time.perf_counter() - t1:.1f}s", flush=True)

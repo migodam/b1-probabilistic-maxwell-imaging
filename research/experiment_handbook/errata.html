@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基线错题本 · Maxwell 逆散射实验手册</title><link rel="stylesheet" href="handbook.css"></head>
+<body><header><a href="../">B1 Maxwell 研究</a><nav aria-label="手册章节"><a href="index.html">实验手册</a><a href="datasets.html">数据设计</a><a href="families.html">研究系列</a><a href="operators.html">算子与设备</a><a href="design.html">运行与接续</a><a href="errata.html" aria-current="page">基线错题本</a><a href="walkthroughs.html">实例与复算</a><a href="storage.html">磁盘管理</a><a href="handoff.html">交接</a><a href="catalog.html">查目录</a></nav></header>
+<main><h1 id="_1">基线复现与错题实证</h1>
+<p><strong>最需要修正的原文误读是停机量：NIE2016 与 CIE2019 都对逐源相对系数变化平方的平均值开方。CIE2019 原文的门是开方后小于 10⁻³，对应平方量小于 10⁻⁶；历史 <code>PAPER_CONTRACTS.json</code> 把它写成平方量门 10⁻³，不能再称原文规则。</strong> 实际调用链却必须另查：R8 最终小型三维 Fourier-PR 对照固定执行 240 次更新，没有调用这个系数停机门，因而不能将它的材料误差归因于该误读。R8 二维 Foam 早期 v1/v2 的同类误用则已有明确修正，最终 v3 的阶段平方门为 10⁻⁴/10⁻⁶/10⁻⁶。</p>
+<p>本次逐案复算还确认：R13 后续 A+ 已补齐同一批 48 对象，平均及共同实际 CPU 前缀上的材料收益确实保留；旧 U11 的 Mac/XINAN 同名结果采用不同阶段和 DPCS 秩；SRAP 主半环的全图误差改善不能等同于目标内部或拓扑恢复。下面逐条给出主张、偏差方向、修正状态和下次可执行办法。历史数组、源码和回执均未覆盖，没有新增物理实验。</p>
+<h2 id="_2">核验方法与来源</h2>
+<p>状态分为 <strong>已实锤错误</strong>、<strong>已纠正错误</strong>、<strong>有意适配</strong>、<strong>证据不足</strong>、<strong>实证收益</strong>。这些状态针对具体主张，不给整个算法贴单一成败标签。源码决定程序算了什么，运行回执决定实际走了多久，封存后的材料和观测指标决定结果；报告摘要不能替代前两者。</p>
+<p>本文的来源简称对应当前实际目录，复现时应恢复这些冻结研究目录，不能只复制同名最新脚本：</p>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>简称</th>
+<th>实际来源根目录（相对于 Inv_SLAM）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R8</td>
+<td><code>research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8/</code></td>
+</tr>
+<tr>
+<td>R13</td>
+<td><code>research/delegated/max_struct_r1/r13_worktree/research/research_max_struct_r13/</code></td>
+</tr>
+<tr>
+<td>FBG-R3</td>
+<td><code>research/delegated/max_struct_r1/r9_worktree/research/research_fbg_r3_experiments/</code></td>
+</tr>
+<tr>
+<td>U11/SRAP</td>
+<td><code>research/srap_cie_array_study_20261121/</code>；历史旧主程序另保存在其 <code>engine_dev/hardware/</code></td>
+</tr>
+<tr>
+<td>P3L-R11</td>
+<td><code>Gaussian/B1/b1-p3l-r11-stable-digits/research/p3l_r11_stable_structure_digits/</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>本次只读表格复核见 <a href="results/baseline_record_checks.json">复核数值</a>、<a href="results/u11_frozen_runner_diff.txt">旧 U11 程序逐行差异</a>、<a href="results/three_dimensional_stop_audit.json">三维停机调用链审阅</a>。<code>check_baseline_records.py</code> 从逐案 CSV 重算 R13 的 48、同 16、补 32 均值及 U11 的 11 对象胜负，不重新计算 GT 数组；007 和 24 件主半环的独立数组评分由本手册另一条复核完成，本文引用其<a href="results/half24_replay.json">独立重放</a>与<a href="results/half24_pairs.csv">逐对象配对</a>，未重复评分。</p>
+<h2 id="e01-2019">E01　平方停机量与开方停机量：2019 原文误读</h2>
+<p><strong>主张。</strong> 令</p>
+<p><strong>q</strong> = (1/p) Σₛ ‖Δγₛ‖₂² / ‖γₛ,old‖₂²，<strong>δ</strong> = √q。</p>
+<p>NIE2016 式(15)与 CIE2019 式(16)都使用右侧开方量。2016 首阶段 δ&lt;.01、随后 δ&lt;.001，等价于 q&lt;10⁻⁴、10⁻⁶；2019 §3 的 δ&lt;.001 等价于 q&lt;10⁻⁶。直接核对了 <a href="https://www.researchgate.net/publication/296475773_A_New_Integral_Equation_Method_to_Solve_Highly_Nonlinear_Inverse_Scattering_Problems">NIE2016 作者全文</a> §III.D.4/式(15)/§IV，以及 <a href="https://www.mdpi.com/2313-433X/5/2/27">CIE2019 出版社原文</a> §3/式(16)。</p>
+<p><strong>潜在偏差方向。</strong> 若计算 q 却直接用 10⁻³ 截停，相当于允许 δ≈.03162，较原 .001 宽约 31.62 倍，可能提前结束当前阶段、改变 continuation 起点与费用。它可能让基线显得偏弱或偏快；没有配对结果时，不能指定材料误差一定变好或变坏。</p>
+<p><strong>修正状况：已实锤错误，历史未覆盖。</strong> R8 <code>delegated/paper_baselines/PAPER_CONTRACTS.json</code> 的 <code>CIE2019.coefficient_relative_change_squared_stop=.001</code> 与原文冲突；FBG-R3 基线审查中将平方量 <code>.001</code> 称原文类型的表述也须收紧。本次最初仅按冻结元数据理解该条，随后直接查原文发现并更正，当前复核 JSON 已同时保存“历史字段”和“原文正确转换”，不把旧字段作为原文证据。</p>
+<p><strong>实际影响范围。</strong> 已沿 <code>experiments/vector_pr240_fourier.py → src/vector_pr3d.py::optimize_pr</code> 核查 R8 <code>four_cubes</code> 的 <code>CIE_sourcewise</code> 与 <code>Dual_sourcewise</code>：固定 <code>range(outer=240)</code>，没有计算/比较系数 δ，也没有该循环的提前退出；两份原回执均有 cycle 0–239、每阶段 120 次及 <code>current_PR_steps=240</code>。其共同 corrector 均到 300 步上限，不是收敛证书。原 CIE 历史费用为 489 LU/47,460 物理 RHS，Dual 为 488 LU/47,340 RHS，本文只引用，没有再收费为新求解。较早 exact-current 16 次与 PR 48 次也属于固定 outer 的适配。SRAP 的 <code>vector/invert.py</code> 实际计算 <code>.mean().sqrt()</code> 并与 <code>.001</code> 比较，不受此元数据错误影响。</p>
+<p><strong>下次可执行办法。</strong> 标准化保存 <code>statistic=q或sqrt(q)</code>、逐源/全局聚合、分母时点、零分母保护、有效阈值和实际 stop reason。若要声称复现论文停机，再按同一输入/物理/预算/选择规则实现逐步 δ 和正确门、封存新旧 raw 后评分。现有 R8 三维路径没有逐步 γ 差值日志，不能事后推算何时过门；它也没有被错误门截停，因此本次不凭空制造“修正阈值改善成像”的实验。</p>
+<h2 id="e02-r8-foam-v1v2">E02　R8 Foam v1/v2 的停机误用已经修正</h2>
+<p><strong>主张。</strong> R8 <code>FRESNEL_REPORT.md</code> 明确记录 v1/v2 把 NIE 原文开方门直接用于平方量；最终 <code>experiments/fresnel_foam_invert.py</code> 和 <code>fresnel_foam_air0_correction.py</code> 的 stage 配置明确采用 <code>1e-4 if mf==6 else 1e-6</code>，由 <code>src/fresnel_cie_fft.py</code> 比较实际 q。二维 <code>experiments/paper_benchmark.py</code> 也显式使用 <code>(.01 if first else .001)**2</code>。</p>
+<p><strong>潜在偏差方向。</strong> 松门的早期输出不能当成成熟基线的充分终点；混入 v3 会混淆算法、费用和停止原因。外层仍留有 <code>.001</code> 默认值时，只看顶层配置会再次误判，实际 stage 覆盖值才有效。</p>
+<p><strong>修正状况：已纠正错误。</strong> v1/v2 partial 与失败费用保留、不入最终 v3 主表；记录说明修正决定早于这些分支的留出终点评估。修正没有让所有问题消失，最终仍有 corrector 达上限和材料尖峰。</p>
+<p><strong>下次可执行办法。</strong> 将每阶段 effective threshold 写入回执，不仅保存默认值；输出旧版到新版的配置差异和排除理由，禁止删除旧成本。若复用已有 v3，不为“验证阈值”重跑同一数据。</p>
+<h2 id="e03-dpcsfourier-pr">E03　DPCS/Fourier：同一空间不等于同一 PR 算法</h2>
+<p><strong>主张。</strong> 原结构为 <code>J=Jd+(I−VV*)Fγ</code>。DPCS 由接收谱/预定秩决定，Fourier 限制的是辅助电流，不是把材料变成数字 decoder。对 <code>(I−VV*)F</code> 做正交化而继续使用未经运输的欧氏系数 PR，会保留仿射族但改变系数度量、轨迹与系数停机量。依据 FBG-R3 <code>src/cie_tsom_baseline.py::fourier_apcs</code>、R8 <code>src/cie_fft.py</code>、<code>STATE_AND_COST_SEMANTICS.md</code> 与 <code>VECTOR3D_REPORT.md</code>。</p>
+<p><strong>潜在偏差方向。</strong> 把预条件后的路径当成原生 Fourier 路径，会错误归因恢复/速度变化；把 Fourier 列数直接当独立秩，会夸大自由度。固定 DPCS 在有限孔径还可能锁住被小奇异值放大的噪声，不能仅按同一秩号比较。</p>
+<p><strong>修正状况：有意适配与已披露修正。</strong> R8 初期三维使用正交 range；最终 240-cycle 对照保留 projected IDFT 原坐标。FBG 的小 4×4 校准里两级 Fourier 实际 APCS 都只有 4 维，不能说发生了容量扩张。需要区分完整 current 的复分量、冗余系数和独立实自由度。</p>
+<p><strong>下次可执行办法。</strong> 每阶段记录 DPCS 规则及实际秩、Fourier 列数、投影后秩/未知原因、坐标度量。改变截断时让两臂共用新截断，再评价材料，不能只给候选改善表示而继续用旧基线。</p>
+<h2 id="e04-prglobal-pr">E04　逐源 PR、global PR 与双 β 不可混名</h2>
+<p><strong>主张。</strong> 逐源 PR/线步按 source 列分别计算；global 只有一个 PR 系数和线步。相应停止量 <code>mean(||Δγ_s||²/||γ_s||²)</code> 与 <code>||ΔΓ||²/||Γ||²</code> 一般不同。双 β 的 current/material 更新对应不同状态度量，不是同一个标量目标的单调块下降。R8 <code>src/paper_cie_fft.py</code> 的 <code>sourcewise</code> 分支、R6 <code>src/benchmark_solver.py::arm_config</code> 和 R13 <code>BASELINE_AUDIT.md</code> 可直接核对。</p>
+<p><strong>潜在偏差方向。</strong> sourcewise→global 与材料 readout 同时变化，会把 current 耦合的收益全记给 readout；同数值门也不提供同停机语义。<code>global_dual</code> 是 global-PR Dual-CIE，<code>physical_globaldual</code> 才是另一条原物理目标路径。</p>
+<p><strong>修正状况：有意适配。</strong> R8/R13 已分列命名。R13 同 16 的 global-Dual 参考保留了 0045 仍错而 A+ 恢复的实际反例，说明该例不能仅用 global current 解释；控制仅 16 件，不能外推全 48 的独立因果比例。</p>
+<p><strong>下次可执行办法。</strong> method ID 包含 PR 耦合、βcurrent/βmaterial、坐标及重置规则；需要拆因果时只改其中一项，保持历史和共同 corrector。没有完整旧 PR 记忆时只能叫合法重启，不能称精确续接旧动力学。</p>
+<h2 id="e05-priors-prior">E05　PRIORS：共同 prior、可行域和训练先验分别记录</h2>
+<p><strong>主张。</strong> 二维常用目标为归一化数据损失加材料 smooth/TV，R8 <code>src/paper_physics.py::make_model</code> 明确：普通 CIE 族权重各 10⁻⁴，独立 <code>paper_nie/paper_lsie</code> 为零；对应 Regularizer 是差分能量均值与平滑 TV 均值，epsilon=.01。三维另用 smooth/L2；NN 训练分布又是额外先验。仅说“同 prior”不能抹掉这些合同差异。</p>
+<p><strong>潜在偏差方向。</strong> 普通点式 modified-contrast LS 不是加空间 prior 后完整材料子问题的最小点；对 r 加 ridge 又改变了对 m 的 prior。不同数据归一化、实/复材料、box、训练初值或多频平均都会改变有效 prior 比例。低范数 Gaussian latent 也不等于所有合法 decoder 真值具有典型先验概率。</p>
+<p><strong>修正状况：有意适配，须逐臂标注。</strong> FBG/R8 带 prior 的读出采用 bounded 内层优化；A+ 的有限候选/坐标更新比较实际完整辅助损失，不能称精确全局最小。R8 独立 NIE 无额外 prior，与带 prior 六臂不是单因素方程比较。NN 保留训练/验证生成与训练费用，不能称同测量就无额外信息。</p>
+<p><strong>下次可执行办法。</strong> 回执列出 data loss 系数、prior 函数/权重/网格差分归一化、实复范围与 box、初值来源、训练分布及费用。引用原论文结果时另给“论文合同”与“共同适配合同”两列，禁止跨列直接排名。</p>
+<h2 id="e06">E06　费用与充分运行：完成、截止、收敛分别判断</h2>
+<p><strong>主张。</strong> 阶段完成或 <code>COMPLETE</code> 不等于物理梯度收敛。真实 CPU、task wall、队列历时、固定投影三角解/FFT/小系统、材料内循环、审计和共同 corrector 都是费用。R13 <code>BASELINE_AUDIT.md</code>、R8 <code>STATE_AND_COST_SEMANTICS.md</code>、SRAP <code>COST_LEDGER.md</code> 给出明确边界。</p>
+<p><strong>潜在偏差方向。</strong> 只比步数/LU会漏掉昂贵辅助工作；把内层 setup 再加到外层会双计；把并发 task wall 之和称总历时会夸大等待时间；把未测启动/失败记零会低估费用。wall 截断的坏终点不是已证实的严格局部极小。</p>
+<p><strong>修正状况：已披露边界。</strong> R13 i9 主 48：CIE 46/48、Dual 48/48 完成原 3000 步，G19 仅 1/48；这支持固定 CPU 表现，不能称充分运行的性能上限。同 16 的 M4 长预算另列，不与 i9 秒数硬拼。SRAP 二维 742 条轨迹原停止为 322 schedule complete/420 wall limit；约 5.366 CPU 小时只是二维反演小计，启动、生成、评分、开发和三维另计。</p>
+<p><strong>下次可执行办法。</strong> 同对象同机配对，保存有效截止、迟到原子操作和候选资格；主费用优先取外层唯一计时，内层作为分解。给出预算性能和完整日程参考两种答案，金额、电费、未测 overhead 保留 null 与原因。</p>
+<h2 id="e07-r13-1648-a">E07　R13 的 16/48 对齐后，A+ 真收益不能再被旧结论抹掉</h2>
+<p><strong>主张。</strong> 初版 A+ 只覆盖预定 every-third 16；后续补 32 并与固定 Arc 版本配对，属于已公开对象后续研究。独立从 <code>supplement_aplus48/analysis/stack_comparison/FACTORIAL_SCORES.csv</code> 重算，每法恰好 48 个唯一对象，与原 summary 一致。</p>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">同16平均 NRMSE</th>
+<th style="text-align: right;">补32平均</th>
+<th style="text-align: right;">全48平均</th>
+<th style="text-align: right;">全48平均实际 CPU s</th>
+<th style="text-align: right;">六法共同已付费 CPU 前缀平均</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CIE</td>
+<td style="text-align: right;">.14920</td>
+<td style="text-align: right;">.21720</td>
+<td style="text-align: right;">.19454</td>
+<td style="text-align: right;">106.15</td>
+<td style="text-align: right;">.19468</td>
+</tr>
+<tr>
+<td>Dual-CIE</td>
+<td style="text-align: right;">.12786</td>
+<td style="text-align: right;">.20584</td>
+<td style="text-align: right;">.17985</td>
+<td style="text-align: right;">106.26</td>
+<td style="text-align: right;">.17978</td>
+</tr>
+<tr>
+<td>G19</td>
+<td style="text-align: right;">.15008</td>
+<td style="text-align: right;">.17634</td>
+<td style="text-align: right;">.16758</td>
+<td style="text-align: right;">119.08</td>
+<td style="text-align: right;">.18222</td>
+</tr>
+<tr>
+<td>DR</td>
+<td style="text-align: right;">.12313</td>
+<td style="text-align: right;">.20352</td>
+<td style="text-align: right;">.17672</td>
+<td style="text-align: right;">84.50</td>
+<td style="text-align: right;">.17672</td>
+</tr>
+<tr>
+<td>A+-MM/R13</td>
+<td style="text-align: right;">.10966</td>
+<td style="text-align: right;">.17332</td>
+<td style="text-align: right;">.15210</td>
+<td style="text-align: right;">119.37</td>
+<td style="text-align: right;">.15746</td>
+</tr>
+<tr>
+<td>A+-Arc/R7</td>
+<td style="text-align: right;">.10970</td>
+<td style="text-align: right;">.17336</td>
+<td style="text-align: right;">.15214</td>
+<td style="text-align: right;">113.22</td>
+<td style="text-align: right;">.15282</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>潜在偏差方向。</strong> 拿早期 A+16 的 .10966 对其他方法全48，夸大优势；继续引用“尚无超越 CIE 证据”，又会抹掉后来同48已实测的收益。同前缀是旧 paid-candidate 的截取，不是新测得部署 wall。</p>
+<p><strong>修正状况：实证收益。</strong> 全48及同实际 CPU 前缀仍支持 A+ 在该二维合同对 CIE/Dual 的平均材料增量。原文列出的 0017/0026/0045 有结构性正例；DR/G19 仍有 A+ 没救回的对象。A+-Arc 与 MM 最终均值只差约 .000041，Arc 平均 CPU 少约 5.1%，是恢复基本保留的效率增量，非全局定理或新盲测试。</p>
+<p><strong>下次可执行办法。</strong> 固定并列对象 ID、cohort、版本、PR和预算；后续新分布确认另立封存，原48保持 exposed 标记。不能从原16移除困难对象，也不能用“每例都胜”作为承认平均收益的额外门。</p>
+<h2 id="e08-a">E08　A+ 同名不同版本，版本差不能解释全部排名</h2>
+<p><strong>主张。</strong> R7/R8 最终读出打开 Arc candidates 和继承 gtol 保护；R13 默认为 quintic-MM/no-guard。R13 补充报告与 source/473 历史回执审查明确分列版本。</p>
+<p><strong>潜在偏差方向。</strong> 不区分版本会误称复现；反过来，仅发现选项不同就把所有排名变化归给它，也越过实证。</p>
+<p><strong>修正状况：已披露、有固定对照。</strong> 同48 MM/Arc 终点近似，主要差在早期速度和费用；该版本差不是本批最终排名变化的主要解释。还须核 cohort、采集/噪声/网格、current 初始化、PR、预算时钟、审计与选根。</p>
+<p><strong>下次可执行办法。</strong> 保存完整 options 的 effective 值，禁止“未填则默认”的跨版本迁移。先复用现有固定对照，再决定是否还缺一个会改变结论的单因素配对。</p>
+<h2 id="e09-u11-911-211">E09　旧 U11 同名异秩、异日程：9/11 与 2/11 都有真实来源</h2>
+<p><strong>主张。</strong> 对 11 个历史非暴露合成设置，旧统计参考是每例 NIE 与 Dual 材料误差的较低者。此次重新读原 CSV 逐案重算：Mac raw 9胜2平、中位降幅 30.245%，light 9胜2平、28.918%；XINAN raw 2胜9负、中位 −6.641%，light 6胜5负、+0.022%。</p>
+<p><strong>潜在偏差方向。</strong> 只按算法名拼表会把不同秩、阶段、机器、并发与截止可达性混为算法胜负；只保留旧 Mac 正例或旧 XINAN 负例都会偏。</p>
+<p><strong>修正状况：同名差异已实锤。</strong> 两份原脚本的实质 diff 已独立保存：Mac 合成 mf5/7/10 或5/8/10，β6/2/.5或8/2/.5，DPCS15；XINAN mf3/6/10/12，β3/1/.3/.1，DPCS5。Fresnel 参数相同，但并行上限4与8。原输入核验显示实测场逐元素相同、合成差为约4.79e−9尾差；不能从这些混杂条件估计纯硬件效应。原审阅 <code>engine_dev/HARDWARE.md</code> 另有同工作量耗时和当前线程记录。</p>
+<p><strong>下次可执行办法。</strong> 每个结果附实际 stage/rank/硬件/并发；用已经完成的同日程双机配对判断各机内得失，不再为了把历史胜率“修整齐”重复反演。U11 对核壳内核的正例也须保留，SRAP 只剩薄环不能称结构等价。</p>
+<h2 id="e10-r8">E10　R8 原论文二维对象：物理合同接近与完整复现有边界</h2>
+<p><strong>主张。</strong> R8 Austria 确实运行 150² 生成/32² 主反演，另有150²/64²；采用2m ROI、20平面波、40接收、3.75m半径及论文 β/mf。它比“把相似图案放进旧小算子”更接近原物理合同，但仍非作者成熟软件复现。依据 <code>PAPER_BENCHMARKS.md</code>、<code>PAPER_CONTRACTS.json</code>、<code>experiments/paper_benchmark.py</code> 及保存的64²快照。</p>
+<p><strong>潜在偏差方向。</strong> 32²误称64²、实 box+smooth/TV误称原复材料、有限 auxiliary/corrector cap误称充分优化，都会歪曲对成熟基线的判断。<code>relativeL2=||error||/||truth||</code> 与 <code>amplitudeNRMSE=RMSE/(eps−1)</code> 也不能只按 NRMSE 键名拼接。</p>
+<p><strong>修正状况：有意适配。</strong> 等面积圆盘积分 <code>h/√π</code>、固定范数10%复噪声实现、实材料、有限上限、共同物理修正器均已披露；独立 NIE/LSIE 无额外 prior另列，不能视作只有积分方程不同。150²→32²粗网真材料 residual 仍可达 .116–.301，不能将10%噪声当全部误差。</p>
+<p><strong>下次可执行办法。</strong> 分列 source fidelity、物理资格和优化充分性；先核 saved residual、阶段与 cap。要比较原生论文，恢复原尺寸/变量/正则/噪声/停止合同；若资源不允许，写清适配并报告实际恢复，不借原论文名称认证。</p>
+<h2 id="e11-mask">E11　实测：缺失 mask、照明校准与空气可行域</h2>
+<p><strong>主张。</strong> 每源真实观测是 <code>Ss=Ps S</code>，伴随必须 <code>S* Ps*</code>；缺失通道不能补成零测量。R8 <code>FRESNEL_REPORT.md</code>、<code>src/fresnel_adapter.py</code>、<code>src/fresnel_solver.py</code> 保留 source-specific 接收和空目标多极照明拟合；2001/2005 的收发合同不同。</p>
+<p><strong>潜在偏差方向。</strong> 忽略 mask 会引入虚假零约束；用目标/留出误差调照明会泄漏；把空场拟合小误差视为内部场或材料正确会过度认证。已知空气 ROI 却强制 m≥.02 还会产生背景偏差。</p>
+<p><strong>修正状况：有实证修复，也有未合格部分。</strong> 2001空场验证中位约 .025/.024，比旧柱面波 .391/.384改善；2005 Foam约 .115，不能移用2001数字。收发喇叭响应/绝对标定/噪声协方差仍未分离。固定锚点仅把box下界 .02→0，8GHz留出 .266→.136；随后原初值重跑 air0 Dual/A+ 均约 .137、材料接近、峰值仍约6.9。此为已曝光模型诊断，不能计作 A+ 新盲胜利或绝对材料精度。不同频率增加观测也不是同信息算法收益。</p>
+<p><strong>下次可执行办法。</strong> 从原始行号核相位、收发ID、训练/源留出/接收留出互斥；只用独立空目标数据做校准，预先固定合法背景范围，再封存候选。实测没有逐像素GT时报告留出复场和形态描述，不填材料NRMSE/IoU。SRAP等通道掩码的独立原始数据核对见本手册<a href="results/fresnel_replay.json">Fresnel重放</a>：4338条原始行、每源241个实际接收、两种布局各733训练通道、共同1205留出源/390留出接收通道，不能把打包矩阵的空槽计作测量。</p>
+<h2 id="e12">E12　真三维不等于原规模或连续精度合格</h2>
+<p><strong>主张。</strong> R8 使用真正三分量 dyadic DDA、三分量耦合和共享标量材料，是三维矢量反演；缩小到 .6λ、6³反演/8³生成不是2019的3λ、30³/60³原规模。最初 exact-current LS、正交range PR与最后原 Fourier PR又是不同算法合同。</p>
+<p><strong>潜在偏差方向。</strong> 只写“3D已跑”会掩盖电尺寸、内波长、离散和材料变量差异；一个球的 Mie误差不能认证不同网格全部图像；同 DDA 跨网格也不等于独立连续求解器。</p>
+<p><strong>修正状况：有意适配/资格有限。</strong> R8 <code>VECTOR3D_REPORT.md</code> 的四立方体8³→6³ clean mismatch约15.16%，有损层约4.46%；部分体素混合在另一个球网格的Mie误差下降不能移贴到这些成像。原3λ尝试确实进行16³/12³直接物理优化并保留截断，未完成原论文规模。复材料 A+ 未实现，不用实圆弧假冒复域。SRAP新三维的独立Mie与细网端口差属于其自身物理合同，不能反向认证 R8。</p>
+<p><strong>下次可执行办法。</strong> 分别记录真实矢量接线、独立前向参考、跨网误差、实际电尺寸、源/接收分量、全部体积指标与切片。先按模型误差限制解释材料结果，不能用更长优化掩盖不合格物理。</p>
+<h2 id="e13-p3l-3">E13　P3L 数字3：数值拟合通过，实际真值中横缺失</h2>
+<p><strong>主张。</strong> P3L-R11 <code>REPORT_QUALIFICATION_UPDATE.md</code> 和 <code>DIGIT_REPRESENTABILITY_AUDIT.md</code> 记载：原预定占比 MSE≤.025且IoU≥.75的数值门保持PASS；实际P3 MSE .018040/IoU .9322，但中横已经丢失。本次实际查看 <code>figures/DECODER_3_5_VISUAL_AUDIT.png</code>，P3更像右括号，P5上部填充失真但仍可读。</p>
+<p><strong>潜在偏差方向。</strong> 把相对于实际 decoder truth 的小误差称为恢复清晰3，会把真值构造问题归为算法成功；反过来，本次有限拟合失败也不能证明整个 Gaussian64 decoder 数学上无法表示3。合法latent范数约48–94，不等于典型Gaussian半径约8。</p>
+<p><strong>修正状况：已纠正报告资格。</strong> <code>DECODER_REPRESENTABILITY_FAIL_VISUAL_THIS_FIT</code> 保留；原GT、测量、72份预测、数值门和费用均未换。该轮资源超限资格也未被后续报告修订抹掉。</p>
+<p><strong>下次可执行办法。</strong> 在生成测量前先评实际真值的幅值、笔画/孔/连通和语义；固定所有对象，表示失败则如实降级，不能解封后换更好看GT。区分表示族能力、有限拟合优化和逆成像三层问题。</p>
+<h2 id="e14-srap-007-l2">E14　SRAP 的内外误差与007：改善全图 L2 的具体含义</h2>
+<p><strong>主张。</strong> 原研究在标准半环报告30秒 raw 21/24全图材料L2改善、light22/24；raw21胜中18例目标内部反而变差，仅3/24内外同时改善，19个胜例的高对比IoU没有提升。另一独立8材料组有内部中心恢复的真正正例，不能一并抹掉。依据 <code>RESEARCH_REPORT_ZH.md</code>、<code>results/spatial_balance_objects.csv</code> 和 <code>VISUAL_REVIEW_ZH.md</code>；本手册<a href="results/half24_replay.json">独立重放</a>实际读取48份封存预测文件、评分96行，四类材料指标与历史逐行最大差均为0，复现raw21/1/2和light22/0/2及中位降幅39.085%/31.902%。这确认数字来源，不提高其材料拓扑资格。</p>
+<p><strong>潜在偏差方向。</strong> 背景伪影减少或趋近空气就能让全图L2下降；把21/24叫21件拓扑恢复会夸大。共同corrector的Φ下降也不能证明材料更好，原记录24个SRAP种子均Φ降而L2为11降13升。</p>
+<p><strong>修正状况：已实锤的反例与正例并列。</strong> 007标准半环第一步两法材料逐像素相同、约四分之一像素触20上界；SRAP后来第16步L2由11.134降到1.001，原Φ却由.446升到.639，公开minimum-Φ规则仍选第一步。Dual进入后级并选第248步。满环同对象能见核与壳，不能把半环失败泛化成方法或对象永远不可恢复；第16步也没有恢复真材料。011有相似早期饱和。这里涉及搜索可达性、预算及目标选择，不能单凭相关性宣称唯一因果或严格坏盆地。</p>
+<p><strong>下次可执行办法。</strong> 同时给全图、目标内部、背景、幅值、IoU及实际结构，所有对象同色标。若要修改选根规则，先用公开可得量冻结，再用新对象确认；不能将GT-best后验替代公开选根，也不为讲故事重跑007。</p>
+<h2 id="e15-fbg-r3-e1">E15　FBG-R3 E1 真值预加载：未输出也属于已访问</h2>
+<p><strong>主张。</strong> 原独立评分器获准为已封存E2评分，但从旧mapping一次预加载全部12份truth，实际E2仅涉及3对象；当时E1预测未全部关闭。没有打印E1值或传给求解器不等于没有访问。依据 FBG-R3 <code>BLIND_PROTOCOL.md</code> 与 <code>audit/TRUTH_ACCESS_DEVIATION.md</code>。</p>
+<p><strong>潜在偏差方向。</strong> 把软件角色分离当作无人接触GT的严格盲测，会夸大确认资格；把同一形状的布局/噪声/起点当成新独立材料，也会夸大样本量。</p>
+<p><strong>修正状况：真实协议偏差已披露。</strong> 原E1改称受控开发/机制集；保留首次评分与成本，未重跑来修饰访问历史。评分器改为仅按已闭合batch ID建立truth读表。其后两个不同私有目录的新确认各自有冻结、预测封存和首次评分时序，未被旧预加载触及；后续正确流程也不能反向恢复E1的盲资格。</p>
+<p><strong>下次可执行办法。</strong> 在任何private读取前，校验整批预测关闭、授权及本批ID白名单；逐文件记录首次读取。对象、观测、起点、运行数分别计数。发生暴露就保留偏差、限制结论，不删除记录，也不为更好看的叙述重生成相同实验。</p>
+<h2 id="_3">本次成本、未决项与复现</h2>
+<p>新增计算仅为保存表/源码审阅：表格复核两遍合计墙钟 <strong>0.0803422509 s</strong>、CPU <strong>0.055107 s</strong>；第二遍修正直接查原文发现的2019停机元数据误读。三维调用链/旧回执审阅另为 <strong>0.00384945795 s</strong>墙钟、<strong>0.003226 s</strong> CPU。全部为 <strong>0新反演、0新 Maxwell LU、0新物理 RHS、0新GT数组读取</strong>。原研究费用在正文均标为历史引用，不再加入本次新数值费用。网页访问、目录检索、文稿和工具启动未完整计时，不能把上述约0.0842秒称为全部研究劳动成本；两次宽范围检索被中止且没有科学计算。</p>
+<p>复现上述只读检查，从完整 Inv_SLAM 根运行 <code>python research/experiment_handbook/check_baseline_records.py</code> 与 <code>python research/experiment_handbook/audit_3d_stop.py</code>。脚本不导入物理求解器；需要上述冻结目录和CSV/JSON恢复到位。若恢复目录结构不同，先显式调整来源映射，不能静默换同名版本。默认在当前目录的 <code>.artifacts/experiment_handbook_replay/</code> 生成派生审阅文件，可用 <code>--output</code> 指定本轮暂存目录，原研究文件保持只读；每次额外审阅也应保留费用。</p>
+<p>目前会改变历史材料排名的“修正2019停机后结果”没有证据。所核R8三维固定周期未使用该门，故本次没有必要新跑；在未来实现真正论文停机之前，该资格仍须写为固定日程适配。R13全48的实际收益、U11版本差、P3视觉失格与E1暴露则已有足够保存证据，无需再做重复反演。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/BASELINES_AND_ERRATA_ZH.md">查看本页来源</a> ·
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/experiment_handbook">代码与原始登记</a></footer></body></html>

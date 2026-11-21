@@ -1,5 +1,7 @@
 # Maxwell implementation references — consult when relevant
 
+See the [experiment handbook](experiment_handbook/OPERATORS_ZH.md) for callable entry points and hardware, plus [baseline errata](experiment_handbook/BASELINES_AND_ERRATA_ZH.md) for reproduced and adapted comparisons.
+
 These are pointers to existing implementations and measured workloads, not mandatory startup reading or universal hardware/algorithm choices. Historical source files and results remain the authority for their exact assumptions. Do not rerun their benchmarks merely to choose an implementation.
 
 | Relevant task | Existing source | Scope to preserve |

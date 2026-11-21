@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>实例与复算 · Maxwell 逆散射实验手册</title><link rel="stylesheet" href="handbook.css"></head>
+<body><header><a href="../">B1 Maxwell 研究</a><nav aria-label="手册章节"><a href="index.html">实验手册</a><a href="datasets.html">数据设计</a><a href="families.html">研究系列</a><a href="operators.html">算子与设备</a><a href="design.html">运行与接续</a><a href="errata.html">基线错题本</a><a href="walkthroughs.html" aria-current="page">实例与复算</a><a href="storage.html">磁盘管理</a><a href="handoff.html">交接</a><a href="catalog.html">查目录</a></nav></header>
+<main><h1 id="_1">四个实验怎样接入，怎样用封存数组验收</h1>
+<p>在已有工作区，从项目根运行下列一条命令就能验收四个场景，并重算二维主半环24例。此次读取了原始观测、已选材料、必要的已曝光真值和历史对照表，新增反演和 Maxwell 场求解均为零。最能说明复算价值的是二维半环。30秒共同校正后，SRAP 在24例中的22例降低总材料误差，但内部误差中位数从0.621升到0.799。背景误差下降解释了总误差的改善。<a href="results/half24_pairs.csv">逐物体复算 CSV</a></p>
+<pre><code class="language-bash">Gaussian/.venv_nn/bin/python -B research/experiment_handbook/replay_saved.py all
+</code></pre>
+<p>公开仓库从仓库根运行同一脚本，将前面的解释器换成有 NumPy、SciPy 的 <code>python</code>。可用子命令为 <code>r11</code>、<code>austria</code>、<code>fresnel</code>、<code>vector</code>、<code>half24</code>。单独运行 <code>half24</code> 只需 NumPy、SRAP 的二维合成数组和历史表。新进程验收五项共 <strong>1.260秒墙钟、0.564秒 CPU</strong>，其中半环指标和历史表核对用0.099秒墙钟。进程费含导入、读取、计算和输出。历史反演费用见各节。<a href="replay_saved.py">复算程序</a> · <a href="results/replay_process_cost.json">完整进程计时</a></p>
+<h3 id="_2">数据放在哪里</h3>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>下文别名</th>
+<th>本工作区从根开始的路径</th>
+<th>公开仓库从根开始的路径或还原来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>R12</code></td>
+<td><code>research/delegated/max_struct_r1/r12_worktree/research/research_max_struct_r12</code></td>
+<td><code>research/research_max_struct_r12</code>；补充实验位于 <code>supplement_paired/</code></td>
+</tr>
+<tr>
+<td><code>R10</code></td>
+<td><code>research/delegated/max_struct_r1/r10_worktree/research/research_max_struct_r10</code></td>
+<td><code>research/research_max_struct_r10</code>；可额外比对真实源预测</td>
+</tr>
+<tr>
+<td><code>R8</code></td>
+<td><code>research/delegated/max_struct_r1/r8_worktree/research/research_max_struct_r8</code></td>
+<td><code>research/research_max_struct_r8</code></td>
+</tr>
+<tr>
+<td><code>SRAP</code></td>
+<td><code>research/srap_cie_array_study_20261121</code></td>
+<td>相同路径；数组附件解压到本研究目录</td>
+</tr>
+<tr>
+<td><code>FRESNEL_2005_DIR</code></td>
+<td><code>research/delegated/a2_literature/data/2005_iop_21_6_S09</code></td>
+<td>取原始七列 <code>FoamTwinDielTM.exp</code> 所在目录</td>
+</tr>
+</tbody>
+</table></div>
+<p>复算器自动在公开目录和本地工作树之间查找。数组放在别处时，设置 <code>R8_DIR</code>、<code>R10_DIR</code>、<code>R12_DIR</code>、<code>SRAP_DIR</code>、<code>FRESNEL_2005_DIR</code>。需要读取兼容源码的 Fresnel 校准，<code>R8_DIR</code> 上两级应是检出仓库根，内含同版本 <code>research/</code> 依赖。默认写到当前目录的 <code>.artifacts/experiment_handbook_replay/</code>。可用 <code>--output</code> 指定本轮输出，保留本手册的冻结结果。以下各节的“历史入口”用于了解原求解合同，本次验收实际执行的是上面的只读命令。</p>
+<h2 id="1">1. 同一个真实坏终点，换哪一种后续算法</h2>
+<p><strong>入口是已保存的材料和同源测量。</strong> 取 <code>R12/supplement_paired/inputs/manifest.json</code> 的 A 组三行，从 <code>inputs/A__r10_twod_*.npz</code> 读 <code>m_init</code>、<code>E0</code>、<code>G</code>、<code>S</code>、<code>Y</code>、材料上下界及 CN99 噪声尺度。三例各有24×24个实材料未知量，12源、48接收，矩阵形状依次为 <code>E0(576,12)</code>、<code>G(576,576)</code>、<code>S(48,576)</code>、<code>Y(48,12)</code>。历史工作树的绝对路径可以按 <code>parent_task_id</code> 还原为 <code>R10/RESULTS/twod/&lt;parent_task_id&gt;/prediction.npz</code>。</p>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>R11中检查过的对象</th>
+<th>原预测的真实方法</th>
+<th>四个后续臂的实际起点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r10_twod_0001</code> 环</td>
+<td><code>cie_single</code></td>
+<td><code>prediction.npz/m</code></td>
+</tr>
+<tr>
+<td><code>r10_twod_0004</code> 开缝壳</td>
+<td><code>matrix_green19</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>r10_twod_0022</code> 桥</td>
+<td><code>matrix_green19</code></td>
+<td>同上；该终点缺乏严格局部极小资格</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收。</strong> 本机比对3个真实父预测、3个公共输入和12个方法起点，材料数组逐元素完全相等。对12个已选 <code>primary.npz</code> 独立检查 <code>Q = E0 + G @ j</code> 和 <code>Y_prediction = S @ j</code>，最大相对差分别为 1.73×10⁻¹⁵以下和2.19×10⁻¹⁵以下；重算的复数据残差与该候选的 <code>primary.json</code> 一致。此验收不读材料真值。<a href="results/r11_replay.json">12条验收记录</a></p>
+<p><strong>历史求解与评分。</strong> <code>prepare_inputs.py</code> 形成公共输入，<code>src/run_paired.py --root &lt;新实验副本&gt; --legacy-repo &lt;兼容工作树根&gt; --task-id A__r10_twod_0001__dr --cpu 0</code> 是历史单任务入口。G19 重启会把父材料的物理电流投回原 DPCS/Fourier 空间、重置 PR；AP、DR 保持同一起始物理场，direct 从同一材料优化原物理目标。各法公用 box [0.02,20] 和同一 smooth/TV；A组限制为每臂新增240个整进程 CPU 秒，带候选的三法分配144秒候选、96秒共同校正，direct 可用全额。在线主选择取截止前完整候选中原物理 Phi 最小者。全补充共44个实际子任务，使用 <code>ALL44_PREDICTIONS_SEALED.json</code> 封存后才运行 <code>src/score_and_plot.py</code>；比较成本读取 <code>RESULTS/offline_v2</code>。这三例属于已曝光困难起点，历史材料评分中 G19 重启赢环，DR 赢开缝壳和桥。换算法时应带上G19重启这个强对照。</p>
+<p><strong>还原。</strong> Release 的 <code>runtime_inputs.zip</code> 含公共输入；按附带 <code>ASSET_MANIFEST.json</code> 顺序拼接 <code>paired_results_full.zip.part001/.part002</code>，再解压。工作区有父预测时程序会验证原始数组；缺少另行归档的 R10 父预测时，验收记录会标 <code>original_parent_array_checked=false</code>，仍可核对四臂相同起点和实际物理场。<a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r12/supplement_paired/">R12补充报告</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r12-paired-20261112">运行包和完整结果</a></p>
+<h2 id="2-austria-1502322642">2. Austria 的150²观测能否直接用于32²和64²反演</h2>
+<p>能。两组历史求解都从 <code>R8/RESULTS/paper_benchmarks/austria_eps4_400MHz/PUBLIC_DATA.npz</code> 读取<strong>同一个</strong> <code>Y(40,20)</code>。本例固定400 MHz、物体介电常数4、2 m正方域、20个平面波和半径3.75 m的40个接收位置。原始 <code>DATA_RECEIPT.json</code> 记录150²细网正演和10%复噪声。32²是计算适配，64²使用更细的反演网格。比较要保留这两种网格分别对应的材料真值和求解费用。</p>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>已封存的逐源双β CIE</th>
+<th style="text-align: right;">材料向量</th>
+<th style="text-align: right;">输出复场</th>
+<th style="text-align: right;">本次从同一Y重算数据残差</th>
+<th style="text-align: right;">历史该臂CPU秒</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32²，<code>&lt;case&gt;/cie_dual/PREDICTION.npz</code></td>
+<td style="text-align: right;">1024</td>
+<td style="text-align: right;">40×20</td>
+<td style="text-align: right;">0.0980128943</td>
+<td style="text-align: right;">17.220</td>
+</tr>
+<tr>
+<td>64²，<code>original64/&lt;case&gt;/cie_dual/PREDICTION.npz</code></td>
+<td style="text-align: right;">4096</td>
+<td style="text-align: right;">40×20</td>
+<td style="text-align: right;">0.1005967768</td>
+<td style="text-align: right;">318.121</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>验收和历史入口。</strong> 表中 <code>&lt;case&gt;</code> 是 <code>austria_eps4_400MHz</code>，两个相对路径均起于 <code>R8/RESULTS/paper_benchmarks/</code>。直接读取 <code>m</code>、<code>Y_prediction</code> 和封存回执，数据残差为 <code>norm(Y_prediction − Y)/norm(Y)</code>，与两个 <code>RECEIPT.json</code> 完全相符。32²原程序位于 <code>experiments/paper_benchmark.py</code> 的 <code>solve</code>；64²为 <code>experiments/paper_compare64.py --arm cie_dual</code>，使用 <code>acquisition(64,...,dense=False)</code> 和 <code>MatrixFreeModel</code>。复用观测时可以跳过 <code>paper_benchmark.py build</code> 的细网求解。历史32²评分入口为 <code>paper_benchmark.py score</code> 与 <code>paper_report.py</code>，64²离线评分入口为 <code>paper_followup_report.py</code>；这些程序会读私有材料并写旧账本，应在新副本中使用。公开历史评分中的相对材料 L2 分别为0.8257和0.8143；两行沿用各自物理迭代与成本合同，以同一Y衡量的残差和材料排序可以不同。<a href="results/austria_replay.json">本次数据核验</a> · <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/research_max_struct_r8/">R8实验说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r8-20261106">R8归档的 paper_benchmarks 附件</a></p>
+<h2 id="3-fresnel-2005-twin">3. Fresnel 2005 Twin，先核对复数约定，再划训练与留出</h2>
+<p><strong>从原始七列文件开始。</strong> <code>R8/src/fresnel_adapter.py::load_file(path,8.)</code> 在 <code>FoamTwinDielTM.exp</code> 中选出8 GHz的4338行。18个源，每源241个实际接收位置，用 <code>(360,18)</code> 矩阵和缺失值容纳；原始编号从1开始，NumPy 索引从0开始。列序为源号、接收号、GHz、带物体总场实部/虚部、空场实部/虚部。项目对原始差场和空场一起取共轭，接到 outgoing Hankel-1 的 exp(−iωt) 实现。本次直接对4338个复数逐元素核对差场与空场转换。</p>
+<p><strong>空场校准只用移走物体的数据。</strong> 发射与接收半径均1.67 m；每源在与发射位置相对的接收方向±30°内，用五个柱波模式 m = −2,…,2 拟合空场。按角序每三个候选留一个验证，其余用于拟合；保留奇异值超过最大值 10⁻⁴ 的模态。本次重新调用 <code>incident_fit</code>，18源空场验证误差中位数0.114904，生成的训练入射 <code>E(3600,9)</code> 与保存数组的相对差为0。这个校准仍包含接收喇叭方向图带来的模型误差。</p>
+<p><strong>源依赖通道。</strong> <code>SRAP/data2d.py::fresnel_selection</code> 和 <code>run_fresnel</code> 生成两个布局，各用9个源和733个有效复通道。保存的 <code>S(360,3600)</code> 保留全部接收槽，<code>Y(121,9)</code> 含填充；第 s 列只取 <code>valid_mask[:,s]</code> 为真的位置，并通过 <code>rx_ids[s,:]</code> 查原始接收器。连续训练源（零基）为0至8，交错训练源为0,2,…,16。两布局共用5个完整未见源9,11,13,15,17的1205个通道，并在5个共同已见源0,2,4,6,8上另留出390个接收通道。复算逐源核对训练值、两个留出数组及不相交关系。原始散射值、空场拟合误差、未见源误差分别有自己的分母。实物没有可逐像素打分的材料真值。<a href="results/fresnel_replay.json">校准与遮罩验收</a></p>
+<p><strong>历史求解与评分。</strong> 在60²、0.2 m域中，<code>SRAP/run_study.py --cohort measured_extra --arms dual,srap</code> 载入经过校准的公开包。按源归一化的训练场目标选择15/30秒端点，共同校正从80%时间前的公开种子开始。完整预测后 <code>score_study.py --cohort measured_extra</code> 重算未见源和另一接收侧的相对复场残差。历史30秒校正时，Twin 连续阵未见源残差 Dual/SRAP 为1.0564/1.0593，交错阵为0.9128/0.9357。这是原已评分表，当前回放验证了原始相位、校准与评分分割。</p>
+<p>公开 SRAP 数组归档不含可替代原作者七列文件的完整测量输入包。有原件后，以下命令只生成 Twin 的公共包与留出包到新目录，不会生成合成训练集。按需设置 <code>FRESNEL_INPUTS</code> 让本手册复算器读取该目录。原件与代码的使用范围见原始数据来源。<a href="https://doi.org/10.1088/0266-5611/21/6/S09">原始实验与数据附件</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/srap_cie_array_study_20261121/REPRODUCE.md">发布实验的复现说明</a></p>
+<pre><code class="language-bash">export FRESNEL_INPUTS=&quot;$(mktemp -d)&quot;
+python -B research/srap_cie_array_study_20261121/data2d.py --cohort fresnel --output &quot;$FRESNEL_INPUTS&quot;
+python -B research/experiment_handbook/replay_saved.py fresnel
+</code></pre>
+<h2 id="4">4. 半球阵用的是三维矢量场，合成与反演各用哪张网格</h2>
+<p>在 <code>SRAP/vector/</code> 下，<code>generate.py</code> 以24³细网、每体元64个子采样点生成材料，<code>physics.py::Model</code> 构造全三维自由空间 dyadic Green、体元体积和辐射修正自项。8个不同发射点各有两支正交偶极，16个接收点各取两个正交分量，观测 <code>data/hemi_00.npz/Y</code> 为 <code>(32,16)</code>，含512个复数。12³反演网格有1728个实材料未知量，三个电流分量及全部发射共用每体素一个 χ。背景波长为单位，域宽0.6λ、半球半径0.9λ，观测为细网场加10%复噪声。正式另一布局是二维矩形面阵；早期共面圆环留在 <code>development_ring/</code>。</p>
+<p><strong>历史求解与评分。</strong> <code>invert.py::optimize("hemi",0,"Dual")</code> 或 <code>"SRAP"</code> 从同一 χ = 0.25 起步。两臂同用逐源双β及原物理目标，取60/180秒前缀；light 从48/144秒付费种子出发，用12/36秒做最多20个接受步。SRAP 的传播路由为5184维稠密谱分解，图投影用 FFT-CG，物理正演及伴随用 FFT-BiCGSTAB。冷启动费用包括每臂设置、路由和审计；两个预算前缀来自同一轨迹。三个分量的电流不是三种各自独立的材料。</p>
+<p><strong>验收。</strong> <code>score.py</code> 检查48臂完整后才打开 <code>sealed_truth/</code>。本次对已曝光 <code>hemi_00</code> 验证48个正式臂的封存清单、收发极化对正交性，以及24³真值按2×2×2求均值后与保存12³真值逐元素相等。直接从 <code>predictions/hemi_00_{Dual,SRAP}/materials.npz:light_180</code> 复得材料 L2 为 <strong>0.555770/0.535641</strong>，与 <code>objects.csv</code> 一致。该壳的非球形细化对照在半球阵从12³→24³的4.158%降至24³→36³的1.712%；独立 Mie 球复远场误差从7.946%降至6.152%。这些数衡量指定离散模型和尺度。<a href="results/vector_replay.json">半球单例与网格验收</a> · <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/srap_cie_array_study_20261121/vector_results.html">完整三维报告</a></p>
+<h2 id="_3">由材料数组独立复算二维主半环结论</h2>
+<p>只取 <code>data/cases.json</code> 里 <code>cohort=confirmation</code> 且 <code>array=PW180_10x20</code> 的24个不同物体。固定10个平面波、20个接收，96²细网观测、32²反演，400 MHz、10%噪声。程序先读取全部48个 <code>results/predictions/&lt;case&gt;__{dual,srap}.npz</code>，确认 <code>m_30_raw</code> 与 <code>m_30_light</code> 都完整，再打开这24个已曝光 <code>data/truth/&lt;case&gt;.npz/m</code>。这一步从端点材料重新计算，历史表只在复算完成后对照。</p>
+<p>误差向量取预测材料减真值，内部定义为真值大于零的体素，背景为真值等于零的体素。总误差、内部误差、背景误差均除以完整真值的 L2 范数；分子分别取全域、内部、背景上的误差 L2 范数。两种恢复均用真值峰值一半的共同阈值计算 IoU。每个物体的收益为 (L₂,Dual − L₂,SRAP) / L₂,Dual，以物体为单位对24个配对收益做1万次 bootstrap，随机种子20261121，取中位数的双侧百分位区间。以下数对均为 Dual / SRAP 的对象中位数。三维报告中的配对收益采用绝对 L2 差，不能直接与本表百分数拼接。</p>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>30秒端点</th>
+<th>总 L2</th>
+<th>内部 L2</th>
+<th>背景 L2</th>
+<th>IoU</th>
+<th>SRAP 胜/平/负</th>
+<th>配对收益中位数及95%区间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>raw</td>
+<td>1.849 / 1.000</td>
+<td>0.554 / 0.754</td>
+<td>1.768 / 0.523</td>
+<td>0.126 / 0.000</td>
+<td>21 / 1 / 2</td>
+<td>39.09% [27.18%, 47.35%]</td>
+</tr>
+<tr>
+<td>light</td>
+<td>1.882 / 1.120</td>
+<td>0.621 / 0.799</td>
+<td>1.779 / 0.838</td>
+<td>0.136 / 0.084</td>
+<td>22 / 0 / 2</td>
+<td>31.90% [23.45%, 37.91%]</td>
+</tr>
+</tbody>
+</table></div>
+<p>空气初值的相对 L2 为1。raw 优于空气的对象分别为0/24与8/24，light 为1/24与8/24。减少背景伪影、超过对照与正确重建物体内部是三个可以分别量化的结论。独立计算的96行 × 4项（总L2、内部、背景、IoU）与历史 <code>confirmation_metrics.csv</code> 的最大绝对差均为0，胜平负和配对区间也与 <code>paired_summary.json</code> 一致。新预算或新选择规则不能套用这些历史区间。<a href="results/half24_pairs.csv">逐物体配对</a> · <a href="results/half24_replay.json">数值验收</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/srap-cie-array-study-20261121">公开数组附件</a></p>
+<h3 id="_4">逐物体看半环的正反例</h3>
+<p>直接看图册第二行的同色标切片。有相同 GT 和预算的两种情况值得一起保留。</p>
+<ul>
+<li><strong>双环 <code>s2d_010</code>。</strong> SRAP raw 的背景已经干净，但两个环的内部几乎不可分，IoU 为 0。轻校正后两处暗孔均可见，L2 / IoU 为 0.472 / 0.619；Dual 轻校正仍有大块背景伪影，为 2.710 / 0.105。这里能看到校正将一个较好的空间位置转为可分辨结构。<a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/srap_cie_array_study_20261121/figures/confirmation_atlas_30s/s2d_010.png">完整 7 阵列原图</a></li>
+<li><strong>偏心壳核 <code>s2d_007</code>。</strong> 同一半环上，SRAP 形成宽而过亮的环，中心偏心材料没有按真值分开。轻校正 IoU 比 Dual 高（0.342 对 0.185），材料 L2 却是 11.050 对 2.013。同物体的全环轻校正反而给 SRAP 0.412 / 0.694。色标上限为 6；定量误差用原数组。孔径改变了这条路径上的结果。<a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/srap_cie_array_study_20261121/figures/confirmation_atlas_30s/s2d_007.png">完整 7 阵列原图</a></li>
+</ul></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/WALKTHROUGHS_ZH.md">查看本页来源</a> ·
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/experiment_handbook">代码与原始登记</a></footer></body></html>

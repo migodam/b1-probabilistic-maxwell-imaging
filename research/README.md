@@ -1,3 +1,7 @@
+## Maxwell 实验手册
+
+查已冻结的数据、观测身份、物理算子、设备选择、基线与错题，按同一口径接续和归档实验。[项目手册](experiment_handbook/README.md) · [数据与算子目录](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/experiment_handbook/catalog.html)
+
 <!-- Z_ALG_HOST_FOLD_PUBLICATION -->
 ## 已知非均匀宿主中的材料折叠
 

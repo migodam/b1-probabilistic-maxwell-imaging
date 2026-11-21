@@ -1,6 +1,6 @@
 # Maxwell formula atlas maintenance
 
-This directory is a living, source-traceable formula collection requested by the user.
+This directory is a living, source-traceable formula collection requested by the user. For experiment design, dataset identity, compute costs and reproduction errata, follow the [project experiment handbook](../experiment_handbook/README.md). The rules below are specific to formula maintenance.
 
 - Before proposing expensive research, express the mechanism using existing formula IDs, identify fixed and changing operators, and derive the intended simplification.
 - Each new formula needs dimensions/conventions, derivation or a precise primary source, assumptions, validity class, and computational consequence. Separate mathematical proof, implemented code, measured evidence and conjecture.
