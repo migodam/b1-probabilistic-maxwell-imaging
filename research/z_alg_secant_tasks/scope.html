@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>用户原任务与后续纠正 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="用户原任务与后续纠正">用户原任务与后续纠正</h1>
+<p>主问题始终是：固定 Green 的精确两点公式，能否在任意个材料参数下指出哪些信息可恢复、如何恢复、何时根本不能恢复？优先寻找有独立数学分量的 <em>Inverse Problems</em> 结果。有同测量、同计算成本的实际恢复优势，再考虑 SIAM JIS 或 IEEE TAP。</p>
+<p>本机同目录的 ORIGINAL_REQUEST.txt 是 11 月 21 日含两个 ZIP 路径的完整用户原文，从本次 Codex 对话的原始用户消息直接保存。它保留消息发送时的转义。两份 Pro 附件是研究输入。更早的 R5–R16 各轮是历史证据。网页上的这份摘要也随研究资料包提供。</p>
+<h2 id="接续时先核对这五件事">接续时先核对这五件事</h2>
+<ol>
+<li>区分精确材料割线、局部 Jacobian 和指定带噪读数的真实材料可行集。尝试计算与具体收发几何、材料先验、任务及误差有关的界。优先研究数值可算的结论。</li>
+<li>对任意材料像素数，解释可以结构降维的条件、建立表示的代价和反例。分别计一次正演、导数、分支发现、分支校正和全局证明。不能将单根、逐根列举、压缩描述的成本混在一起。</li>
+<li>从连续两材料、六槽折叠到 8/12/16 个真未知量，再使用 MAX-STRUCT、SRAP 的低/高对比及独立细网格观测。需要成像比较时给 GN、CIE、可用的电流子空间与普通等预算方法同一份数据。候选、任务和传感器选择时不读标签。</li>
+<li>验证新增空间角、收发通道、频率能否约束整个任务区间，留意相干抵消、信号强度、功率、标定和模型误差。继承 R14 自适应选频的失败及 R16 电流降阶无普遍恢复优势的负结果。已有实验仅做支持本轮推断所需的接口核查。</li>
+<li>交付可复现研究、数学证明和反例、命题级原文对照、实际机器数据、失败样本、费用、中文 HTML 和下一轮 Pro 交接。沿用原仓库和网页，所有发表判断与实际投稿状态分开。材料恢复、算法收敛、信息量和模型误差分别报告。</li>
+</ol>
+<h2 id="最新分工优先">最新分工优先</h2>
+<p>用户在 11 月 22 日明确指定，<strong>Neon 首先负责创意、算法指导和方向纠正，Astra 负责反方审稿、证明、关键实验和最终判断，Sol 实现与运算</strong>。Neon 亲自选择原文、源码、数据和复算方法。通过 CLI 在单独的 Antigravity 研究项目及资料副本中工作。保留研究者实际查到的证据、建议、Astra 的采用理由和分歧。用户日常使用的 Antigravity 项目与 Codex 发起的研究会话隔离；本研究关闭 Computer Use。</p>
+<p>本轮已完成的定理、实际结果和剩余问题见 <a href="index.html">主报告</a>、<a href="experiments.html">原始结果入口</a>与<a href="handoff.html">交接</a>。后续研究先读原文和最后的更正，再决定是否增加新的计算。</p>
+<p>本轮后段由 Neon 建议转向电流空间的材料上限，Astra 推导接收核和多个照明方向的计数。关键结果是同一份 576 像素旧读数严格排除材料上限 5，在该范围逐源全域能量检验已经必然无效。原定五份主网格未因不定矩阵新增排除；环的高门槛属于后续机制验证。镜像任务在 152 份合规视图上以 428 次代替 1,517 次发射；按隐藏电流补接收器未提高相对均匀补角的最高可证峰值。这三项结论关联不同的科学问题。<a href="multiple-illuminations.html">材料证书</a> · <a href="receiver-design.html">增测对照</a> · <a href="symmetry.html">停测回放</a></p>
+</article>
+    <footer><a href="TASK_RESUME.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

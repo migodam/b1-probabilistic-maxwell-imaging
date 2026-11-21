@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>多源惯性界在固定 Green 模型上的数值结果 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="多源惯性界在固定-green-模型上的数值结果">多源惯性界在固定 Green 模型上的数值结果</h1>
+<p><strong>严格结果。</strong> 对同一份已暴露的 R10 环形物体观测，材料盒 <span class="math-inline">\(0\le m_i\le5\)</span> 内的任何物理解都满足 <span class="math-inline">\(\|SJ-Y\|_F\ge 0.01469495661410\)</span>。归档观测球的半径为 <span class="math-inline">\(0.01051718321439\)</span>，因此该材料盒被排除。Arb 同时证明，对这份算子和上限 <span class="math-inline">\(u=5\)</span>，任意 <span class="math-inline">\(\mu&gt;0\)</span> 下的 <span class="math-inline">\(K=S^*S+\mu C\)</span> 都存在严格负方向。这里恢复的是对材料最大值的必要下界，空间支持和像素材料仍未知。</p>
+<p>原定五份观测和上限 <span class="math-inline">\(u\le4\)</span> 的网格没有新增噪声球排除。扩到 <span class="math-inline">\(u=5\)</span> 的严格结果来自同一旧观测的机制实验。两批结果单独保存。</p>
+<h2 id="实现的界">实现的界</h2>
+<p>在同一个实材料乘子 <span class="math-inline">\(D_m\)</span> 下，<span class="math-inline">\(J=D_m(B+GJ)\)</span> 也对任意照明线性组合成立。由 <span class="math-inline">\(m_i^2\le u m_i\)</span> 得</p>
+<div class="math-display" tabindex="0">\[Q(J)=J^*C J-\frac{u}{2}(J^*B+B^*J)\preceq0,\qquad
+C=I-u(G+G^*)/2 .\]</div>
+<p>形成 <span class="math-inline">\(K=S^*S+\mu C\)</span>、<span class="math-inline">\(L=S^*Y+\mu u B/2\)</span> 及 <span class="math-inline">\(H=Y^*Y-L^*K^{-1}L\)</span>。对可逆 Hermitian <span class="math-inline">\(K\)</span>，设 <span class="math-inline">\(\nu\)</span> 为它的负特征值个数。配方后的负半定项秩至多 <span class="math-inline">\(\nu\)</span>。除去该项的作用空间并用特征值交错，得到</p>
+<div class="math-display" tabindex="0">\[\|SJ-Y\|_F^2\ \ge\
+\sum_{j=\nu+1}^{s}\max\{\lambda_j(H),0\},\qquad
+\lambda_1(H)\ge\cdots\ge\lambda_s(H).\]</div>
+<p>当 <span class="math-inline">\(\nu=0\)</span> 时，使用同一个公式的完整正谱和作为正定对照。<span class="math-inline">\(\nu\ge s\)</span> 时没有可保留的源方向，界为零。本实现始终使用原始复场 <span class="math-inline">\(Y\)</span> 和原接收矩阵 <span class="math-inline">\(S\)</span>。采用归档二进制浮点数所定义的离散物理算子，计算没有读取材料真值。</p>
+<p><a href="highdim/observation_radii.json">观测误差半径</a>逐值保留前次使用的原合同数值。各案的 <code>frozen_observation_ball</code> 来自归档 <code>results/&lt;ID&gt;.json</code> 的 <code>archive_radius</code>。Austria 的 <code>original_R8_noise_ball</code> 来自 <code>results/OFFLINE_SCORE.json</code> 中同案再现的原 R8 半径 <code>original_r8_noise_absolute_radius_reconstructed_offline</code>。扫描和直接认证现在只读取独立半径表、存档 VIE 算子和对应复场 <code>Y_archive</code>。这些历史样本已经暴露。</p>
+<h2 id="固定五份观测的同网格对照">固定五份观测的同网格对照</h2>
+<p>上限 <span class="math-inline">\(u=0.1,0.5,1,2,3,4\)</span>，每个上限用 <span class="math-inline">\(\mu=10^{-4},10^{-3},10^{-2},10^{-1},1,10\)</span>。用相同噪声球比较各上限上的最大正定界和最大不定界。以下均为残差 Frobenius 范数。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>原观测</th>
+<th style="text-align:right">归档球半径</th>
+<th>不定界提高裕量的 <span class="math-inline">\((u,\mu,\nu)\)</span></th>
+<th style="text-align:right">该点同一上限的最佳正定界</th>
+<th style="text-align:right">最高不定界</th>
+<th style="text-align:right">新增排除</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10 环，48×12</td>
+<td style="text-align:right">.0105172</td>
+<td><span class="math-inline">\((4,.01,4)\)</span></td>
+<td style="text-align:right">.025093</td>
+<td style="text-align:right">.143735</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Austria，40×20</td>
+<td style="text-align:right">1.272477，原 R8 为 1.052892</td>
+<td><span class="math-inline">\((1,.001,13)\)</span></td>
+<td style="text-align:right">无正定点</td>
+<td style="text-align:right">.231486</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>SRAP 007/180，20×10</td>
+<td style="text-align:right">.587030</td>
+<td><span class="math-inline">\((.5,.0001,6)\)</span></td>
+<td style="text-align:right">无正定点</td>
+<td style="text-align:right">.051782</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>SRAP 007/360，20×10</td>
+<td style="text-align:right">.478205</td>
+<td>无</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>SRAP 010/180，20×10</td>
+<td style="text-align:right">.641857</td>
+<td>无</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>主网格 180 个参数点中，56 个点为正定，26 个点为不定且仍有未被负模占尽的源方向，98 个点有 <span class="math-inline">\(\nu\ge s\)</span>。对后者不求解 <span class="math-inline">\(K^{-1}L\)</span>。Austria 在 <span class="math-inline">\(u\ge2\)</span>、三个 SRAP 在 <span class="math-inline">\(u\ge1\)</span> 的所有乘子都属于后一类。扫描对最小绝对特征值设置了随矩阵尺度增长的双精度未决阈值，实际没有一行触发。所有主网格分类和裕量仍是数值比较。</p>
+<h2 id="同一-r10-环的上限扩展">同一 R10 环的上限扩展</h2>
+<p>原网格完成后，围绕已知约 <span class="math-inline">\(4.11465\)</span> 的暗模临界值，固定六个更高上限继续使用原乘子网格。这组实验使用同一个已暴露物体和同一次观测。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th style="text-align:right"><span class="math-inline">\(u\)</span></th>
+<th style="text-align:right">最强 <span class="math-inline">\(\mu\)</span></th>
+<th style="text-align:right"><span class="math-inline">\(\nu\)</span></th>
+<th style="text-align:right">最大不定界</th>
+<th>超过归档半径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">4.25</td>
+<td style="text-align:right">.001</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">.07161006</td>
+<td>严格</td>
+</tr>
+<tr>
+<td style="text-align:right">4.5</td>
+<td style="text-align:right">.001</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">.06654591</td>
+<td>双精度</td>
+</tr>
+<tr>
+<td style="text-align:right">4.75</td>
+<td style="text-align:right">.001</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">.05345275</td>
+<td>双精度</td>
+</tr>
+<tr>
+<td style="text-align:right">5</td>
+<td style="text-align:right">.001</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">.01469496</td>
+<td>严格</td>
+</tr>
+<tr>
+<td style="text-align:right">5.5</td>
+<td style="text-align:right">.0001</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">.00152840</td>
+<td>否</td>
+</tr>
+<tr>
+<td style="text-align:right">6</td>
+<td style="text-align:right">.0001</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">0</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>此扩展的 36 个参数点均为不定。扩展不提供新的独立材料样本，且保留了 <span class="math-inline">\(u=5.5,6\)</span> 的未排除。对整批 12 个照明，<span class="math-inline">\(u=5\)</span> 的余量为约 .00417777。</p>
+<h3 id="整数上限-u5-的严格证明量">整数上限 <span class="math-inline">\(u=5\)</span> 的严格证明量</h3>
+<ul>
+<li>用维度为 4 的负子空间构造正低秩修正。Arb 核对移位 Cholesky 剩余的范数，并用负子块 Gershgorin 界认证惯性 <span class="math-inline">\(\nu=4\)</span> 及谱隙下界 <span class="math-inline">\(3.232473555764\times10^{-5}\)</span>。</li>
+<li>设 <span class="math-inline">\(X\)</span> 为双精度近似解，<span class="math-inline">\(E=KX-L\)</span>。使用 <span class="math-inline">\(H_0=Y^*Y-L^*X-X^*L+X^*KX\)</span> 及 <span class="math-inline">\(H\succeq H_0-\|E\|_F^2 I/\operatorname{gap}(K)\)</span>，小源空间证得第五大特征值至少 <span class="math-inline">\(2.15941749890426\times10^{-4}\)</span>。修正上界为 <span class="math-inline">\(4.15\times10^{-26}\)</span>，由下界平方根得到残差 .01469495661410。</li>
+<li>接收矩阵最小奇异值的双精度提议约 <span class="math-inline">\(7.76\times10^{-10}\)</span>。用 256 bit Arb 验证 48 阶接收 Gram 的求解，将提议向量投影到精确 <span class="math-inline">\(\ker S\)</span>。这个非零暗向量满足 <span class="math-inline">\(v^*C v&lt;-0.21517\)</span>。它的暗模阈值 <span class="math-inline">\(\|v\|^2/\Re(v^*Gv)\)</span> 的上界是 <span class="math-inline">\(4.114650492764464\)</span>，足以证明所有 <span class="math-inline">\(\mu&gt;0\)</span> 的 <span class="math-inline">\(K\)</span> 在 <span class="math-inline">\(u=5\)</span> 都有负方向。没有将小接收奇异值视为零。</li>
+</ul>
+<p>如果每个照明各自使用同一标量二次配方，不定 <span class="math-inline">\(K\)</span> 至少有一个负方向时，截取公式已经没有剩余源方向。本例共享材料的 12 源矩阵仍保住第 5 个正特征值。这是对该物理盒的联合排除，目标或材料图没有由证书重建。</p>
+<h2 id="时间与复现">时间与复现</h2>
+<p>Apple M4 上，主网格为 132.38 墙钟秒、127.12 CPU 秒，实际 180 个 <span class="math-inline">\(K\)</span> 的稠密 Hermitian 特征分解、82 个源 Gram 特征分解及 1052 个复 RHS。环扩展为 4.70 墙钟秒、4.40 CPU 秒，36 个 <span class="math-inline">\(K\)</span> 分解和 432 个复 RHS。两个扫描均限定 BLAS 单线程。<span class="math-inline">\(u=5\)</span> 的严格计算为 1.65 墙钟秒、3.24 CPU 秒，Arb 设置 4 线程，全维度立方 Arb 乘积一次。<span class="math-inline">\(u=4.25\)</span> 的第一份严格计算为 1.70 墙钟秒、3.17 CPU 秒。未调用新物理正演。</p>
+<p>从本目录运行，双精度计算需要 NumPy、SciPy 和 threadpoolctl，严格计算另外需要 python-flint。</p>
+<pre><code class="language-sh">python scan.py
+python scan.py --case r10_twod_0001 --caps 4.25 4.5 4.75 5 5.5 6 --output ring_cap_extension.json
+python certify.py --case r10_twod_0001 --cap 5 --mu .001 --output certificate_u5.json
+</code></pre>
+<p><a href="highdim/sector_inertia/results.json">五份主网格结果</a> · <a href="highdim/sector_inertia/ring_cap_extension.json">环上限扩展</a> · <a href="highdim/sector_inertia/certificate_u5.json"><span class="math-inline">\(u=5\)</span> 证书</a> · <a href="highdim/sector_inertia/certificate.json"><span class="math-inline">\(u=4.25\)</span> 证书</a></p>
+</article>
+    <footer><a href="highdim/sector_inertia/README_ZH.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

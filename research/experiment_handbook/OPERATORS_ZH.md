@@ -1,6 +1,6 @@
 # 复用哪个算子，放到哪台机器
 
-**先选与材料、端口和边界一致的 forward，再选执行设备。** 查询命令同时给出实际函数、设备、工作区源码和计费边界。完整清单有 23 个入口；表中的 CPU/GPU 表示已有实现适用的位置。[算子登记表](OPERATORS.csv)
+**先选与材料、端口和边界一致的 forward，再选执行设备。** 查询命令同时给出实际函数、设备、工作区源码和计费边界。完整清单有 26 个入口；表中的 CPU/GPU 表示已有实现适用的位置。[算子登记表](OPERATORS.csv)
 
 ```bash
 python3 research/experiment_handbook/lookup.py --operator list
@@ -15,6 +15,8 @@ python3 research/experiment_handbook/lookup.py --operator srap_vector_ap
 |A+、G19、R14 双度量| `aplus` 是四格不重叠局部 Green 块、实盒条件读出；`g19` 用 `LowRankDenominator`；`stateful_dualmetric` 保存 PR 历史、阶段和辅助状态|记录实际构造基的内部 G 或观测 S、是否计入材料相关度量导数。current/material 两块度量、MM/Arc、current 初值各自可能改变轨迹|
 |R12 AP/DR、R13 事件| `dr_ap` 的 `DenseFieldCurrentProjectors` 与 `run_projection`；阈值和起跳用 `material_events`|DR/AP 用相同的物理双场和共享材料读出；预分解、投影 RHS、AP 准备、反射或加速、原物理验收都收费|
 |SRAP 二维半环、直线与 Fresnel| `srap_2d` 的 `route_basis/BallProjector/run_cie_arm`；实测 `measured_ports` 的空场拟合和每源接收算子|同端口数还要核对坐标、波型、缺失通道、掩码和 adjoint。跨源共用或逐源噪声球跟随具体程序。60² 时区分建立投影的费用、实际投影次数和到达阶段|
+|固定 Green 的多源材料峰值证书| `z_alg_sector_inertia` 用 `prove` 认证矩阵负特征值数和源空间谱界，并以 `certify_dark_obstruction` 核对严格暗向量|共享材料把标量不等式推广到照明组合。若二次型有 ν 个负方向，界只去掉至多 ν 个源方向；同网格与正定版本比较。旧环上限 5 时，逐源计算失去此界，12 源联合仍严格排除。[推导和复算](../z_alg_secant_tasks/multiple-illuminations.html)|
+|固定 Green 的端口对称性与逐组发射| `z_alg_orbit_exclusion` 核对收发闭合并回放区间判据；`z_alg_exposure_prefix` 以实际发射器为单位回放停止规则|按保存阵列的坐标和相位确定源组；使用预设误差上限，同时保留超合同发射费用及事后固定前缀对照。[复算入口](https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_secant_tasks/highdim/reflection/README_ZH.md)|
 |三维 Maxwell|R1 `tensor_dda` 检查小型各向异性、横向极化与 Mie。R8 `vector_paper` 用三维 Fourier PR；SRAP `srap_vector` 及 `srap_vector_ap` 用 dyadic FFT、CG 与端口投影|R1 张量自由度与 SRAP 标量 χ 乘三分量场不同；SRAP 三维观测的所有源共用一个 Frobenius 噪声球。分清发/收位置、极化通道与材料数，单列 GPU 显存、谱基、CG 残差及物理误差|
 |NN 初值与 A17 投影交换|R8 `nn_features` 配 `nn_material`；A17 修复版 `a17_projected` 配同秩基和等时全梯度|NN 材料要按求解器建立合法状态。把同一初值同时给 direct、AP/DR 和 CIE 并记录转换损失。A17 须比较实际盒投影后可行收益和终点材料|
 

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从已有带噪复场界定材料峰值 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="从已有带噪复场界定材料峰值">从已有带噪复场界定材料峰值</h1>
+<p>只用五份保存的带噪观测，就能排除某些过低的全域对比度上限。对 24² 环，至少有一格的实对比度必须大于 <strong>4</strong>；对 32² Austria 和 SRAP 壳核全环，至少有一格必须大于 <strong>0.5</strong>。这三项均通过区间认证。结论的条件是冻结二维离散模型、非负实材料，以及全波预测与保存观测的误差不超过原预算。推断仅约束峰值，位置和像素仍未知。 <a href="highdim/sector/results.json">扫描、未成功项与严格证书</a></p>
+<h2 id="物理和数据合同">物理和数据合同</h2>
+<p>直接使用高维复现包的两份冻结 Green 矩阵、逐观测入射场和接收矩阵。<span class="math-inline">\(B=E_0\)</span>，<span class="math-inline">\(G\)</span> 沿用保存的符号。<span class="math-inline">\(J\)</span> 的列是各入射源的电流，离散场方程为 <span class="math-inline">\(J=\operatorname{diag}(m)(B+GJ)\)</span>，端口读数为 <span class="math-inline">\(SJ\)</span>。测试只读旧观测 <code>Y_archive</code> 及保存的球半径，不使用候选材料或参考材料像素。环的原绝对半径为 .01051718，Austria 同时报原 R8 半径 1.05289187 及 R12 工作半径 1.27247658。三个 SRAP 半径见下表。实际材料数为四个，壳核的全环与半环属于同一材料的配对观测。细网生成而粗网复算的建模差未纳入下界。 <a href="highdim/REPLAY_ZH.md">高维复现包</a> · <a href="highdim/REPORT_ZH.md">算子、采集及历史输入</a></p>
+<h2 id="从材料上限到场距下界">从材料上限到场距下界</h2>
+<p>若所有格点满足 <span class="math-inline">\(0\le m_i\le u\)</span>，则各格点有 <span class="math-inline">\(m_i^2-u m_i\le0\)</span>。对全波电流和总场 <span class="math-inline">\(E=B+GJ\)</span>，这给出</p>
+<div class="math-display" tabindex="0">\[q(J)=\|J\|_F^2-u\operatorname{Re}\operatorname{tr}(J^*E)\le0.\]</div>
+<p>对观测距离平方加上 <span class="math-inline">\(\mu q(J)\)</span>，其中 <span class="math-inline">\(\mu\ge0\)</span>，再允许电流在整个复空间变化，可以得到所有合法材料共用的下界。设 <span class="math-inline">\(G_H=(G+G^*)/2\)</span>、<span class="math-inline">\(K=S^*S+\mu(I-uG_H)\)</span>、<span class="math-inline">\(L=S^*Y+\mu u B/2\)</span>。当 <span class="math-inline">\(K\)</span> 正定时，下界为 <span class="math-inline">\(\operatorname{tr}H\)</span>，其中 <span class="math-inline">\(H=Y^*Y-L^*K^{-1}L\)</span>。如果经验证的下界大于对应的噪声半径平方，则任何球内材料的峰值都大于 <span class="math-inline">\(u\)</span>。该推断也适用于资料中已有正材料下限的模型，因为这里检查的是放宽到从零开始的整盒。</p>
+<p>同一材料也满足任意复线性照明组合 <span class="math-inline">\(Ja\)</span>。令 <span class="math-inline">\(D=SJ-Y\)</span>，由此得到 <span class="math-inline">\(D^*D\succeq H\)</span> 以及 <span class="math-inline">\(D^*D\succeq0\)</span>。同一次 <span class="math-inline">\(K\)</span> 分解给出四种可比较的距离平方下界。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>端口方向处理</th>
+<th style="text-align:right">距离平方下界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原标量迹</td>
+<td style="text-align:right"><span class="math-inline">\(\max(0,\operatorname{tr}H)\)</span></td>
+</tr>
+<tr>
+<td>原发射坐标中只保留为正的列</td>
+<td style="text-align:right"><span class="math-inline">\(\sum_j\max(0,H_{jj})\)</span></td>
+</tr>
+<tr>
+<td>最强单个相干照明组合</td>
+<td style="text-align:right"><span class="math-inline">\(\max(0,\lambda_{\max}(H))\)</span></td>
+</tr>
+<tr>
+<td>累加正的相干方向</td>
+<td style="text-align:right"><span class="math-inline">\(\sum_j\max(0,\lambda_j(H))\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>相干方向是在已保存复场列上做复数线性组合，比较沿用原联合 Frobenius 噪声球。 <a href="highdim/sector/gram_matrices.npz">小 Gram 矩阵</a></p>
+<h2 id="固定网格结果与对照">固定网格结果与对照</h2>
+<p>所有臂均固定 <span class="math-inline">\(u=.1,.5,1,2,3,4\)</span> 与 <span class="math-inline">\(\mu=10^{-4},10^{-3},10^{-2},.1,1,10\)</span>。表中每列在同一网格选其最大值，单位为复场 Frobenius 距离。最后四列均在表中指定的 <span class="math-inline">\(u\)</span> 计算。三项扩展峰值均可用单个相干组合复制。保留正的原发射列在这三项均不足以越过噪声半径。累加相干方向增加了距离余量，本轮没有峰值需要累加才首度过线。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>旧观测</th>
+<th style="text-align:right">噪声半径</th>
+<th style="text-align:right">正谱法排除的最大已测 <span class="math-inline">\(u\)</span></th>
+<th style="text-align:right">迹</th>
+<th style="text-align:right">原发射正列</th>
+<th style="text-align:right">单一相干</th>
+<th style="text-align:right">正谱和</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>24² 环</td>
+<td style="text-align:right">.01051718</td>
+<td style="text-align:right"><strong>4，认证</strong></td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">.02394</td>
+<td style="text-align:right">.02509</td>
+</tr>
+<tr>
+<td>Austria</td>
+<td style="text-align:right">1.05289 / 1.27248</td>
+<td style="text-align:right"><strong>.5，认证</strong></td>
+<td style="text-align:right">.56310</td>
+<td style="text-align:right">.56310</td>
+<td style="text-align:right">1.65108</td>
+<td style="text-align:right">2.06842</td>
+</tr>
+<tr>
+<td>SRAP 壳核半环</td>
+<td style="text-align:right">.58703</td>
+<td style="text-align:right">.1，数值</td>
+<td style="text-align:right">3.79345</td>
+<td style="text-align:right">3.79345</td>
+<td style="text-align:right">2.98209</td>
+<td style="text-align:right">4.72666</td>
+</tr>
+<tr>
+<td>SRAP 壳核全环</td>
+<td style="text-align:right">.47820</td>
+<td style="text-align:right"><strong>.5，认证</strong></td>
+<td style="text-align:right">.08617</td>
+<td style="text-align:right">.15488</td>
+<td style="text-align:right">.69311</td>
+<td style="text-align:right">.93616</td>
+</tr>
+<tr>
+<td>SRAP 双环半环</td>
+<td style="text-align:right">.64186</td>
+<td style="text-align:right">.1，数值</td>
+<td style="text-align:right">3.19993</td>
+<td style="text-align:right">3.19993</td>
+<td style="text-align:right">2.76135</td>
+<td style="text-align:right">4.37393</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>两项预定标量迹证书分别为环 <span class="math-inline">\(u=2,\mu=.01\)</span> 的 <strong>.31798403</strong>，以及 Austria <span class="math-inline">\(u=.1,\mu=1\)</span> 的 <strong>6.87798826</strong>。环 <span class="math-inline">\(u=3\)</span> 的正谱数值下界为 .29515，严格排除已由 <span class="math-inline">\(u=4\)</span> 的包含关系覆盖。各项下界只说明通过的门槛，网格上未通过的更大 <span class="math-inline">\(u\)</span> 仍保留。</p>
+<p>传统小增益对照在 <span class="math-inline">\(u\|G\|_2&lt;1\)</span> 时使用 <span class="math-inline">\(\|SJ\|_F\le\|S\|_2u\|B\|_F/(1-u\|G\|_2)\)</span>，只以观测的总幅值作比较。这条对照仅在环 <span class="math-inline">\(u=.1\)</span> 过原球阈值。更强的幅值对照在 <span class="math-inline">\(C=I-uG_H\)</span> 正定时，将 <span class="math-inline">\(q(J)\le0\)</span> 完全配方为一个椭球，用一维乘子分别最大化放松电流幅值及它的接收场幅值。后者只用观测模长，在环排至 <span class="math-inline">\(u=.5\)</span>，在其他四份排至 <span class="math-inline">\(u=.1\)</span>。例如 Austria <span class="math-inline">\(u=.1\)</span> 该幅值对照的场距下界为 3.38406，方向感知迹界为 6.87799。幅值对照的数值结果及二次型不支持幅值上界的行均在回执中。 <a href="highdim/sector/results.json">180 条逐格回执</a></p>
+<h2 id="区间认证及费用">区间认证及费用</h2>
+<p>严格证书把保存的复二进制算子和任意浮点候选矩阵当作精确输入，再用 96 位 Arb 球算术重算。对浮点候选 Cholesky 因子 <span class="math-inline">\(C_0\)</span> 和正移位 κ，包住 <span class="math-inline">\(\|K-\kappa I-C_0C_0^*\|_F\)</span>。这给出可核查的严格正下界 <span class="math-inline">\(K\succeq\alpha I\)</span>。对环 <span class="math-inline">\(u=2\)</span>，α 至少 .00196660，矩阵余差至多 <span class="math-inline">\(1.967\times10^{-16}\)</span>。对 Austria <span class="math-inline">\(u=.1\)</span>，α 至少 .39153109。严格下界从任意近似解 <span class="math-inline">\(X\)</span> 处的二次值扣掉完整余差项 <span class="math-inline">\(\|KX-L\|_F^2/\alpha\)</span>。这样浮点分解和特征值只用于提议候选，证书不依赖它们的误差估计。</p>
+<p>正谱和与单一照明证书分别选取浮点提出的正空间和最强单位方向。用 Arb 单独验证投影矩阵 <span class="math-inline">\(V\)</span> 的范数上界 β，从而 <span class="math-inline">\(0\preceq VV^*/\beta\preceq I\)</span>。随后在 <span class="math-inline">\(XV\)</span> 上用同一余差公式认证 <span class="math-inline">\(\operatorname{tr}(V^*HV)/\beta\)</span> 的下界。无需验证全谱，也无需为单一方向再分解完整矩阵。三个严格正谱证书的距离下界约为 .02509299、2.06841945、.93616284。 <a href="highdim/sector/results.json">移位、残差与投影字段</a></p>
+<p>双精度五份总计 180 次 <span class="math-inline">\(K\)</span> Cholesky 尝试，56 次通过，使用 710 个源右端与 56 次最多 <span class="math-inline">\(20\times20\)</span> 的照明谱分解。失败 124 次均有记录。幅值对照为两份共享 Green 矩阵各做一次 SVD 和一次 Hermitian 谱分解，另有五个接收 SVD 及七个小接收谱分解。五个 Arb 审计各重建一次完整乘积 <span class="math-inline">\(C_0 C_0^*\)</span>，再验证电流残差。两个投影复用这一阶段。保存的一次单线程完整运行使用 44.0 CPU 秒、48.0 墙钟秒。费用按准备、逐格扫描、候选提议、Arb 矩阵运算及投影分列。 <a href="highdim/sector/results.json">费用与停机</a></p>
+<p>用安装了 NumPy、SciPy、threadpoolctl 和 python-flint 的 Python，从研究包根执行。只需重放网格可加 <code>--numerics-only</code>，可用 <code>--output</code> 将结果和对应 Gram 数组写入指定目录，保留原证书。</p>
+<pre><code class="language-sh">python highdim/sector/sector.py
+</code></pre>
+</article>
+    <footer><a href="highdim/sector/README_ZH.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

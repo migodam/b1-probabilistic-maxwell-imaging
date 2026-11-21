@@ -2,6 +2,14 @@
 
 查已冻结的数据、观测身份、物理算子、设备选择、基线与错题，按同一口径接续和归档实验。[项目手册](experiment_handbook/README.md) · [数据与算子目录](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/experiment_handbook/catalog.html)
 
+<!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
+## 固定 Green 下的材料峰值排除与镜像停测
+
+在冻结的二维离散物理模型下，旧环形观测排除了 576 个像素的介电对比度全都不超过 5 的情形。该材料范围内的最低预报误差下界约为 0.014695，超过原噪声半径 0.010517。无需重建整图即可断定至少一个像素超过 5，位置仍未知。另用镜像排除定理回放历史合成读数，152 份符合预设误差上限的 SRAP 视图中，逐组 428 次、全批 1,517 次和事后同布局最短固定前缀 926 次，均排除同一批 150 份视图的镜像歧义。
+
+[多源排除证书](z_alg_secant_tasks/multiple-illuminations.html) · [中文报告与图表](z_alg_secant_tasks/index.html) · [ChatGPT 研究交接](z_alg_secant_tasks/handoff.html)
+<!-- /Z_ALG_SECANT_TASKS_PUBLICATION -->
+
 <!-- Z_ALG_HOST_FOLD_PUBLICATION -->
 ## 已知非均匀宿主中的材料折叠
 

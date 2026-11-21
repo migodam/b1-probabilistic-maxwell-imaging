@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>放宽到逐端口复增益后，镜像排除还剩多少 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="放宽到逐端口复增益后镜像排除还剩多少">放宽到逐端口复增益后，镜像排除还剩多少</h1>
+<p><strong>SRAP 的 162 份可配对视图在原联合噪声预算下仍全部通过。</strong> 分别允许每个接收器独立选复增益或每个发射器独立选复增益后，最小证据余量下降。前瞻噪声预算内，两个放宽各使同一个视图失去证书，成功数由 150/152 变为 149/152。</p>
+<h2 id="同一数据上的三项比较">同一数据上的三项比较</h2>
+<p>原完整复数据为 Y，W 是把 Y 按物理镜像反变换后的读数。矩阵的行、列分别是接收器和发射器。逐接收对照允许每种材料解释为每行单独拟合一个复增益，行内所有发射保持相干。接受两份镜像材料意味着每对行向量都能接近同一条复直线。将各行的二列 Gram 最小特征值加总，得到</p>
+<div class="math-display" tabindex="0">\[D_{\rm rx}^{2}=\frac12\sum_r\lambda_{\min}([Y_r,W_r]^*[Y_r,W_r]).\]</div>
+<p>逐发射对照在列上计算同一公式，列内接收保持相干。共同标量对照把完整矩阵展成一个向量。对应 D&gt;δ 时，指定读数的全材料可行集合排除任何一对镜像材料。两个逐端口模型各自只放宽一个轴。收发两端同时自由选择各自增益属于另一模型。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>SRAP 主镜面</th>
+<th style="text-align:right">视图数</th>
+<th style="text-align:right">共同标量</th>
+<th style="text-align:right">逐接收独立</th>
+<th style="text-align:right">逐发射独立</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原联合 δ，完整闭合端口</td>
+<td style="text-align:right">162</td>
+<td style="text-align:right">162</td>
+<td style="text-align:right">162</td>
+<td style="text-align:right">162</td>
+</tr>
+<tr>
+<td>原联合 δ，最小 D/δ</td>
+<td style="text-align:right">162</td>
+<td style="text-align:right">1.272774</td>
+<td style="text-align:right">1.059302</td>
+<td style="text-align:right">1.083210</td>
+</tr>
+<tr>
+<td>前瞻 δ=0.05√M_full，事后合规</td>
+<td style="text-align:right">152</td>
+<td style="text-align:right">150</td>
+<td style="text-align:right">149</td>
+<td style="text-align:right">149</td>
+</tr>
+<tr>
+<td>原联合 δ，固定单源的闭合接收排</td>
+<td style="text-align:right">90</td>
+<td style="text-align:right">67</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">67</td>
+</tr>
+<tr>
+<td>前瞻 δ，固定单源的闭合接收排</td>
+<td style="text-align:right">90</td>
+<td style="text-align:right">23</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">23</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>沿用事前冻结 x 主镜面、闭合收发顺序和未裁剪整批噪声半径。204 份 SRAP 视图中，42 份缺非平凡镜面几何。前瞻预算下，162 份可配对视图中另有 10 份实际噪声超合同，均单列。相对于共同标量，两个放宽都丢掉了同一份合规视图 <strong>s2d_007__ls_line_same_10x20</strong>，该例三个 D/δ 分别为 1.143599、0.982476、0.973369。后两个值只说明这个检验未排除镜像对。原预算下逐接收、逐发射的最小绝对余量分别为 0.017863 和 0.026410（原复场单位）。</p>
+<p>只有一个发射时，每个接收器只有一个复样本，逐接收独立增益的每个 Gram 块秩都至多为一，D_rx 精确为零。此时逐发射增益只有一个，和整排接收共用复增益的对照相同。表中的单源仍读取镜面闭合的多个接收器。</p>
+<h2 id="其他归档及复算">其他归档及复算</h2>
+<p>Austria 的 x 主镜面对三项检验均未通过。y 镜面的三个原预算 D/δ 约为 4.894、4.795、4.876，均通过。R10 的 24 个原始布局缺网格镜面配对，另按已验证的 90°、180°、270°旋转分别复算，每个角在三项原预算下均为 24/24。把为 SRAP 预定的绝对 .05√M_full 作为其他归档的数值灵敏度对照时，R10 无一通过。各归档的端口量纲和标定沿用原合同，.05 的跨归档数值灵敏度不等同于共用仪器规格。</p>
+<p>从现有公开快照读取 <a href="highdim/reflection/results/SELECTION.json">几何选择</a> 和 <a href="highdim/reflection/results/complex_readouts.npz">复场与半径</a>，使用 NumPy、SciPy 和 python-flint 运行下列命令。所有数据块用 128 位 Arb 包围，并用独立的普通 SVD 复算。墙钟约 0.5 秒。新增正演次数和读入材料标签次数均为零。<a href="highdim/reflection/results/port_gains.json">逐视图判别与余量</a> · <a href="symmetry.html">原几何与两种噪声口径</a></p>
+<pre><code>python port_gains.py
+</code></pre>
+</article>
+    <footer><a href="highdim/reflection/PORT_GAINS_ZH.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

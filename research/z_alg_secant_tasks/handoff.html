@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>给下一轮 Pro 的交接：已测复场能迫使材料满足什么条件？ · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html" aria-current="page">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="给下一轮-pro-的交接已测复场能迫使材料满足什么条件">给下一轮 Pro 的交接：已测复场能迫使材料满足什么条件？</h1>
+<p>从 576 像素环的 12 发、48 收复数据出发，本轮严格排除了整个 <span class="math-inline">\([0,5]^{576}\)</span> 材料盒。把每份照明独立检验，即使得到任意可达的复数读数，单一全局能量约束都能找到满足它的电流。要求这些照明对应同一件物体之后，保留下来的第五个独立差异就超过噪声。这里的结论是离散物理下至少有一处材料对比度大于 5，像素位置仍未知。建议把这条结果作为下一轮主问题。可将本页面或完整研究包直接交给 ChatGPT。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">完整研究 ZIP</a> · <a href="https://raw.githubusercontent.com/migodam/b1-probabilistic-maxwell-imaging/z-alg-secants-20261122/research/z_alg_secant_tasks/NEXT_PRO_HANDOFF.md">本页纯文本</a></p>
+<h2 id="最值得先读的三个结果">最值得先读的三个结果</h2>
+<ol>
+<li>数学 §9–10 把同源区间条件保留为照明空间的半定矩阵，给出接收核的失效门槛、干扰电流至多抵消多少个独立照明差异，以及没有噪声时放松问题的精确惯性计数。环的 <span class="math-inline">\(u=5\)</span> 证书含 96 位算术的四个负方向和 256 位算术的精确接收核投影，距离下界 0.01469495661410 超过原半径 0.01051718321439。普通正定方法在这个门槛上对所有正乘子失效。<span class="math-inline">\(u=5.5,6\)</span> 未排除。<a href="theory.html">证明</a> · <a href="multiple-illuminations.html">证书与复现</a></li>
+<li>五份存档来自四种独立材料。多源谱计算也严格排除了 Austria 和 SRAP 全环中所有像素都不超过 0.5。两者的这一门槛可由一个相干组合复制。在共同的原网格上，不定矩阵方法只增加余量；<span class="math-inline">\(u=5\)</span> 是旧环上追加的机制试验。所有结论均限于冻结的离散物理，新数据、设备和连续模型误差仍待补。<a href="contrast.html">基线</a></li>
+<li>在固定发射及接收数下，依据隐藏电流选择新接收口，五份视图均提高了几何临界值，却没有一份胜过均匀补角的最高可排除门槛。另一个独立的镜像任务有真正的停测收益。它使用已经取得的数据，不能被解释成同等成本下已重建出更准确的材料图。<a href="receiver-design.html">同成本接收对照</a> · <a href="symmetry.html">逐次停测</a></li>
+</ol>
+<h2 id="可以直接接手的结果">可以直接接手的结果</h2>
+<ol>
+<li>
+<p><strong>材料解数有真实的最坏例。</strong> 对一个有两份内部正则材料解的组件，保留全部组件间散射，重复组件并取有限但充分大的间距，同组件收发数据至少有 <span class="math-inline">\(2^L\)</span> 个不同的正则实解释。局部读数须经历两次跨组件传播才受其他组件影响。证明在二维连续标量 TM 的一类无损介质也成立。它只限制逐根列举，孔径随组件数增长。<a href="theory.html">数学 §6–7</a> · <a href="multiplicity/README.md">根盒和数值成本</a></p>
+</li>
+<li>
+<p><strong>真正接通全部收发，噪声决定能否区分。</strong> 六槽组件在 40,000、200,000 个波长处的四根、八根分别可在约 0.00475%、0.00312% 的完整散射场联合误差内共存。两槽组件在 30 个波长处也得到四根和八根的离散证书。侧向布置下，三组件的八根在 10% 联合误差时两两分开；两组件最近的一对仍可共球。连续圆柱独立求解也给出四根和八根。缺少连续级数的严格尾界。<a href="multiplicity/full_ports/README.md">全端口证据</a> · <a href="multiplicity/continuum/README.md">连续界面</a></p>
+</li>
+<li>
+<p><strong>同一孔径，方位足以改变态势。</strong> 在连续圆柱中保持间距 30λ，将三组件的排列由横向改成纵向，能容纳全部八根的完整散射场相对半径从约 30% 降到约 0.25%。纵向布局的跨端口场范数反而更大。改变排列涉及两个不同装置；还单独固定材料和源、只移动接收器，并用多频轴上采集作对照。<a href="aperture.html">固定孔径的对照</a></p>
+</li>
+<li>
+<p><strong>已测复数能排除整类歧义。</strong> 背景与布设在变换 <span class="math-inline">\(g\)</span> 下协变，给出已知酉通道映射 <span class="math-inline">\(U_g\)</span>。若 <span class="math-inline">\(d_g(y)=[(\|y\|^2-|\langle y,U_g y\rangle|)/2]^{1/2}&gt;\delta\)</span>，则带噪可行域中不可能同时容纳 <span class="math-inline">\(m\)</span> 和 <span class="math-inline">\(gm\)</span>，即便两种解释各自拟合一个全通道共用的复增益。成立方向是全域排除；低于阈值只表明此检验给不出结论。实现复杂度取决于复读数数目，与材料网格像素数无关。它不回答无关形状间的歧义。<a href="theory.html">推导与模型失配界</a></p>
+</li>
+<li>
+<p><strong>区域均值的严格范围与失败。</strong> 六个预定低/高对比材料中心、四种采集和三种制造容差形成 72 个条件。在 69 个条件里，两份全波材料已证明均值跨度恰为先验全宽。只改目标区时 4 个条件显得能分开，外围补偿消除了这种优势。一例等能量角度/频率对比给出宽度上界 1.485 与全宽 1.500。该类上界会受共同复增益误差影响。<a href="faces/results.json">整盒数据</a> · <a href="bounds/gain_pressure.json">增益压力试验</a></p>
+</li>
+<li>
+<p><strong>高维恢复的边界。</strong> 24² 环与 150²→32² Austria 的旧带噪数据分别支持中央均值差 0.37646 和 0.08998 的材料对。Austria 原始噪声下，同成本任务约束 GN 找到的相容材料跨度更大。三份 96²→32² 视图没有回到实际数据球的材料对。未建立对 CIE、GN、FFT-TSOM 的普遍恢复优势。<a href="highdim/REPORT_ZH.md">实际观测与等预算基线</a></p>
+</li>
+<li>
+<p><strong>现成高维复场已经可以指导何时停测。</strong> SRAP 有 33 份材料、204 个细网格合成视图。在 162 个可作主镜面比较的布置中，全部可在各自归档的整批噪声半径下排除材料与它的镜像同时相容。另定一个开测前可用的共同误差预算，其中 152 份观测满足预算。读整批、同顺序事后最优固定前缀和逐次判断都能判定 150 份，分别用 1,517、926、428 次发射。余下 10 次尝试实际噪声超额，也花了 22 次发射。使用同样阈值的常规秩一拟合可以逐步完全复制。合成回放没有提供实物标定或图像恢复保证。<a href="symmetry.html">几何、原始复数和逐例回放</a></p>
+</li>
+</ol>
+<h2 id="最值得-pro-解决的命题">最值得 Pro 解决的命题</h2>
+<p><strong>首要问题。</strong> 对有限孔径及不确定的已知背景，能否给出可算、带误差余量的“可隐藏方向数”，从而对一个预先指定的缺陷区域给出与背景干扰分离的对比度下限？从 <span class="math-inline">\(Q(J)\preceq0\)</span> 出发，分析区域权重、频率共享和同一材料对不同源的约束。先检查是否能构造两种位置不同但都满足现有矩阵条件的介质。多区域乘子的成本、先验对外围上限的依赖、以及与 Trivedi、Molesky、Shim 等工作已知的交叉约束须同时核算。实际环上 <span class="math-inline">\(u=5\)</span> 只剩约 0.00418 的绝对场距余量。至少一种纳入模型误差后仍有余量的独立材料，是比继续在旧环上扫小数门槛更有价值的检验。</p>
+<p><strong>在不移动待测物的前提下，能否从现有口径保证一个新增接收位置能分开任务不同的所有剩余姿态？</strong> 对镜像分支，轴上的任意多频都可严格相同；近轴横移的首项是 <span class="math-inline">\(2h\,\partial_\nu u^s\)</span>。请从一个可测的场导数、背景对称误差以及合法材料先验出发，给出在有限位移、共同复增益与实际校准下仍为正的分离下界。只有定性解析性或“几乎处处非零”时，要明确还缺哪个量。全局平移/旋转对称导致的信号一般已有大量先例。</p>
+<p>先对一个固定已知外形的不确定介电材料族，或一个实际指定区域的有符号空间矩，说明能否得到与整图不同的误差界。再检查仍相容的材料中是否存在并非对称变换、却让同一任务翻号的一对。这样的反例会直接推翻“排除镜像即恢复朝向”的延伸。对于满收发矩阵，要检验单位通道的噪声、联合能量、增益共享范围、已知直达场扣除和重复通道的权重。</p>
+<p><strong>另一个可写成独立数学问题的缺口</strong>是用可核算的连续界面余项，把 30λ 分支的数值存在提升为连续 PDE 的定量证书。在历史 36 盘参数处，圆盘脉冲与连续圆柱得到的场差可比原根间端口差大几个数量级。论文不能把离散六槽的旧证书移到连续介质。参考组分离时也要报出总孔径、组件条件、完整读数范数和绝对噪声。</p>
+<h2 id="判断原创性时要对照的近邻">判断原创性时要对照的近邻</h2>
+<p>请从 Griesmaier–Schätzle 的散射路径、Everett 的正材料孤立解、Kuo–Novikov 的有限入射不可见点、Stiles 等的对称收发、Eckart–Young 的最佳秩一逼近，以及有限测量 Calderón 和任务恢复理论开始。乘积拓扑度、双点误差下界、秩一拟合和奇偶分解应作工具引用。较有希望的贡献是把它们落实成一条在完整物理、具体误差下对<strong>整个声明材料域</strong>生效的分辨结论。<a href="literature.html">命题级文献表</a></p>
+<p>入口包括<a href="index.html">研究报告</a>、<a href="experiments.html">实验与费用</a>、<a href="reproduce.html">复现命令</a>、<a href="scope.html">原任务摘要及最新分工</a>和<a href="review.html">独立意见与实际处理</a>。逐步推导、公开矩阵、候选与失败都在同一研究目录；逐像素私有真值不在公开包内。</p>
+</article>
+    <footer><a href="NEXT_PRO_HANDOFF.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

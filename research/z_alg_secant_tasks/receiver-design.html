@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>多加四个接收口，隐藏阈值能否指导材料峰值认证 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="多加四个接收口隐藏阈值能否指导材料峰值认证">多加四个接收口，隐藏阈值能否指导材料峰值认证</h1>
+<p><strong>隐藏电流引导法在五份归档上都提高了 <span class="math-inline">\(u_*\)</span>，却没有提高同一采样网格和噪声预算下可排除的最大材料上限。</strong> 环阵最清楚。引导法把几何阈值从均匀补角的 2.93123 提到 3.74024，仍只在 <span class="math-inline">\(u=2\)</span> 得到证书。同在 <span class="math-inline">\(u=2\)</span>，它的严格读数距离下界为 0.044773，均匀补角为 0.139865，两者都大于原整批噪声半径 0.010517。</p>
+<h2 id="测前冻结">测前冻结</h2>
+<p>每个实际布局取原顺序前 <span class="math-inline">\(\lfloor r/4\rfloor\)</span> 个接收器，再从余下候选分别补四个。A 把剩余物理角或线坐标区间四等分，各取最靠近中点的一口。B 取随后的四口。C 使用固定种子 20261122。D 对当前接收行空间的正交补求 <span class="math-inline">\(G_H\)</span> 的最高模态，依次补入 <span class="math-inline">\(|S_i v|/\|S_i(I-P_{\mathrm{row}})\|\)</span> 最大的一口。数值重根使用整个近重顶子空间上的均方可见性。近依赖的候选行跳过并记录。完整角度、候选分数、编号与阈值在读取任何 Y 前写出。<a href="highdim/sector_geometry/DESIGN_FREEZE.json">测前冻结清单</a></p>
+<p>发射波形、原始各项校准与接收总数均按原归档。每臂取相应行的真实复观测，沿用未裁剪的原联合绝对半径。Austria 同时保留原 R8 和 R12 两个归档半径。SRAP 壳核的两个孔径是同材料配对，五个视图共有四份不同材料。</p>
+<h2 id="几何阈值与实际数据">几何阈值与实际数据</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>归档</th>
+<th style="text-align:right">起始 <span class="math-inline">\(u_*\)</span></th>
+<th style="text-align:right">均匀 A</th>
+<th style="text-align:right">相邻 B</th>
+<th style="text-align:right">随机 C</th>
+<th style="text-align:right">引导 D</th>
+<th>同网格最大排除上限 A/B/C/D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10，24² 环</td>
+<td style="text-align:right">1.891854</td>
+<td style="text-align:right">2.931227</td>
+<td style="text-align:right">1.923618</td>
+<td style="text-align:right">3.635478</td>
+<td style="text-align:right">3.740240</td>
+<td>2 / 1 / 2 / 2</td>
+</tr>
+<tr>
+<td>Austria，32²</td>
+<td style="text-align:right">0.344975</td>
+<td style="text-align:right">0.351721</td>
+<td style="text-align:right">0.347669</td>
+<td style="text-align:right">0.354624</td>
+<td style="text-align:right">0.403143</td>
+<td>.1 / .1 / .1 / .1</td>
+</tr>
+<tr>
+<td>SRAP s007 半环，32²</td>
+<td style="text-align:right">0.342918</td>
+<td style="text-align:right">0.344503</td>
+<td style="text-align:right">0.344714</td>
+<td style="text-align:right">0.344746</td>
+<td style="text-align:right">0.345597</td>
+<td>.1 / .1 / .1 / .1</td>
+</tr>
+<tr>
+<td>SRAP s007 全环，32²</td>
+<td style="text-align:right">0.342996</td>
+<td style="text-align:right">0.350239</td>
+<td style="text-align:right">0.344205</td>
+<td style="text-align:right">0.346652</td>
+<td style="text-align:right">0.387408</td>
+<td>.1 / .1 / .1 / .1</td>
+</tr>
+<tr>
+<td>SRAP s010 半环，32²</td>
+<td style="text-align:right">0.342918</td>
+<td style="text-align:right">0.344503</td>
+<td style="text-align:right">0.344714</td>
+<td style="text-align:right">0.344746</td>
+<td style="text-align:right">0.345597</td>
+<td>.1 / .1 / .1 / .1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>几何阈值是投影特征问题的数值估计。表末列来自同一正谱 Gram 扫描。R10 和 Austria 中的 A、D 各自最大通过点另外经 96 位 Arb 严格复核，B、C 及三个 SRAP 视图的末列为双精度筛查。数据网格沿用 <span class="math-inline">\(u\in\{.1,.5,1,2,3,4\}\)</span> 与 <span class="math-inline">\(\mu\in\{10^{-4},10^{-3},10^{-2},.1,1,10\}\)</span>。</p>
+<p>R10 在 <span class="math-inline">\(u=3\)</span> 时，均匀布局的隐藏向量直接排除这六个正定矩阵。引导布局的几何阈值虽然超过 3，六个固定的 <span class="math-inline">\(\mu\)</span> 也全部有另算的负 Rayleigh 见证。六个经舍入保护的二次型上界都小于零，最接近零的是 −4.8200668×10⁻⁵。较小的 <span class="math-inline">\(\mu\)</span> 不在比较网格内。可认证性同时取决于当前数据与正定惩罚，<span class="math-inline">\(u_*\)</span> 仅定位隐藏方向这一几何障碍。</p>
+<p>在共同通过的最强采样点，以原噪声预算计算的最佳正谱距离下界如下。后三行是双精度值。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>归档与采样上限</th>
+<th style="text-align:right">均匀</th>
+<th style="text-align:right">引导</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10，<span class="math-inline">\(u=2\)</span>，Arb</td>
+<td style="text-align:right">0.139865</td>
+<td style="text-align:right">0.044773</td>
+</tr>
+<tr>
+<td>Austria，<span class="math-inline">\(u=.1\)</span>，Arb</td>
+<td style="text-align:right">4.163229</td>
+<td style="text-align:right">4.087680</td>
+</tr>
+<tr>
+<td>SRAP s007 半环，<span class="math-inline">\(u=.1\)</span></td>
+<td style="text-align:right">2.742170</td>
+<td style="text-align:right">2.550886</td>
+</tr>
+<tr>
+<td>SRAP s007 全环，<span class="math-inline">\(u=.1\)</span></td>
+<td style="text-align:right">2.264208</td>
+<td style="text-align:right">2.232758</td>
+</tr>
+<tr>
+<td>SRAP s010 半环，<span class="math-inline">\(u=.1\)</span></td>
+<td style="text-align:right">2.556476</td>
+<td style="text-align:right">2.346137</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>这里提高几何阈值并没有改善已有采样点的证据余量。D 的分数用的是当前最坏电流与候选行正交增量的重合，均匀布局保留的实际读数方向可能更有利。该对照未采集新设备数据。</p>
+<h2 id="复现与费用">复现与费用</h2>
+<p>在本目录使用 NumPy、SciPy、threadpoolctl、python-flint，执行 design.py。先用 --phase grid 可生成测前冻结清单和全部数值回放，再以 --phase audit 从已存扫描结果重做关键区间证明。<a href="contrast.html">受控正谱实现</a> · <a href="highdim/sector_geometry/design.json">所有选择、固定扫描和严格复核</a></p>
+<p>45 次接收 SVD 和投影特征计算约 1.26 秒墙钟，数据回放约 3.69 秒。720 个固定样点中，522 个由直接负 Rayleigh 上界判定不可用，26 个 Cholesky 未通过，172 个算出正谱距离。四个区间审核共约 19.61 秒墙钟（19.01 秒 CPU）。R10 的 <span class="math-inline">\(u=3\)</span> 六个非正定复核约 0.14 秒。新增 Maxwell 状态求解和材料真值读取均为零。</p>
+</article>
+    <footer><a href="highdim/sector_geometry/DESIGN_ZH.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

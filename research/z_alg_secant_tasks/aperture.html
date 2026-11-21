@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>阵列摆放与离轴测量的对照 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="阵列摆放与离轴测量的对照">阵列摆放与离轴测量的对照</h1>
+<p>相同的 30 个背景波长间距、相同的组件与本地读数，沿横轴摆放时，全端口容纳所有材料根至少需要约 26%–30% 的噪声半径。沿纵轴摆放时，约 0.20%–0.26% 就足够。纵轴的跨端口场反而更强。另在固定的纵轴阵列中，仅侧移一个接收器便能把镜面材料分开，但所需偏移取决于频率与噪声。两个对照分别改变组件布局和接收位置。 <a href="multiplicity/aperture/finite_aperture.png">综合图 PNG</a> · <a href="multiplicity/aperture/finite_aperture.pdf">矢量 PDF</a></p>
+<h2 id="摆放对照不同场景中的全端口">摆放对照：不同场景中的全端口</h2>
+<p>沿用两槽连续圆柱模型。半径为 <span class="math-inline">\(0.04\lambda_0\)</span>，每个组件内圆盘中心位于 <span class="math-inline">\(x=\pm0.18\lambda_0\)</span>，线源在 <span class="math-inline">\((0,-0.85)\lambda_0\)</span>，接收点在 <span class="math-inline">\((0.013,0.95)\lambda_0\)</span>，背景 <span class="math-inline">\(k_0=2\pi/\lambda_0\)</span>。横向、45°、纵向三组仅改变组件之间的平移方向。圆盘对、源和接收器本身的朝向不旋转。固定单组件 <span class="math-inline">\((2,8)\)</span> 的本地复场为共同目标，用交换初值找到另一材料根，再将两个种子按所有方式拼接。全波校正保留每个源到所有圆柱和接收器的物理路径，只在求根中挑出每个组件的本地读数。 <a href="multiplicity/continuum/README.md">连续圆柱合同</a></p>
+<p>令 <span class="math-inline">\(Y_i\)</span> 为各根的所有散射端口矩阵，按接收器行、发射器列排列。容纳所有根的最小球半径至少为最远根对距离的一半。给定一个可计算中心，取各根的最大到中心距离得到上界。中心使用共同的本地读数，跨端口用各根场的均值。最近对半距衡量最难分的一对。读数范数均为复数 Frobenius 范数。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>组件数、方向</th>
+<th style="text-align:right">不同根</th>
+<th style="text-align:right">全根球半径下界–上界</th>
+<th style="text-align:right">占本布局参考信号</th>
+<th style="text-align:right">最近对半距</th>
+<th style="text-align:right">跨端口参考信号范数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2，横轴</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">.006336–.006771</td>
+<td style="text-align:right">25.97%–27.75%</td>
+<td style="text-align:right">.001827</td>
+<td style="text-align:right">.003547</td>
+</tr>
+<tr>
+<td>2，45°</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">.003905–.003944</td>
+<td style="text-align:right">15.81%–15.97%</td>
+<td style="text-align:right">.001803</td>
+<td style="text-align:right">.005248</td>
+</tr>
+<tr>
+<td>2，纵轴</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">.00005004–.00005140</td>
+<td style="text-align:right">0.1968%–0.2021%</td>
+<td style="text-align:right">.00003415</td>
+<td style="text-align:right">.007999</td>
+</tr>
+<tr>
+<td>3，横轴</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">.009090–.009162</td>
+<td style="text-align:right">30.21%–30.44%</td>
+<td style="text-align:right">.003081</td>
+<td style="text-align:right">.005612</td>
+</tr>
+<tr>
+<td>3，45°</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">.005928–.006019</td>
+<td style="text-align:right">19.32%–19.62%</td>
+<td style="text-align:right">.002486</td>
+<td style="text-align:right">.008204</td>
+</tr>
+<tr>
+<td>3，纵轴</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">.00008074–.00008270</td>
+<td style="text-align:right">0.2491%–0.2551%</td>
+<td style="text-align:right">.00004028</td>
+<td style="text-align:right">.013285</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>统一用同组件数的横轴完整参考信号归一化，纵轴全根半径仍仅为 0.2051%–0.2107% 和 0.2683%–0.2748%。同一 10% 预算下，纵轴各自的一个球同时容纳所有根，三组件横轴的噪声球逐对分离。45° 两例都无法容纳全体，但仍有一对可以共球。表中的半径是有限组已找到材料的数值界，不能推出其他材料的根数或可辨性。<span class="math-inline">\(M=8,12\)</span> 全部 72 次多组件冷启动成功且无重复。在最高阶，最大本地残差 <span class="math-inline">\(2.74\times10^{-14}\)</span>，两阶匹配根的最大材料差 <span class="math-inline">\(1.04\times10^{-14}\)</span>，场的最大差 <span class="math-inline">\(3.10\times10^{-17}\)</span>。没有无限角阶误差尾界。 <a href="multiplicity/aperture/results.json">原始矩阵、种子与逐对半径</a> · <a href="multiplicity/aperture/materials_and_ports.npz">材料和场数组</a></p>
+<h2 id="固定纵轴阵列一处新接收器">固定纵轴阵列：一处新接收器</h2>
+<p>纵轴组件布局、材料位置和第一组件的轴上线源保持原位。其余组件的原轴上接收器继续读取同一线源，每次只比较其中一个新增接收位置 <span class="math-inline">\((x,0.95)\lambda_0\)</span>。对照为 <span class="math-inline">\(x=0\)</span> 及 <span class="math-inline">\(x=\pm h\)</span>，<span class="math-inline">\(h=0.01,0.02,0.04,0.10,0.20\)</span>。每个变体同一次发射、相同读数数目。镜对通过逐组件交换 <span class="math-inline">\((2,8)\)</span> 与 <span class="math-inline">\((8,2)\)</span> 构造，记录所有全局镜对，包含混合布局。没有用材料标签选接收位置。</p>
+<p>在四个频率 <span class="math-inline">\(k/k_0=0.5,1,2,4\)</span>，均直接重算圆柱内外传播与所有跨组件作用，实对比度固定为无色散。等长曝光下以 <span class="math-inline">\(a(k)=\sqrt{k/k_0}\)</span> 缩放出射线源幅度，使均匀背景功率与基频单位曝光相同。记录的是复散射场。频率点是归一化仿真条件，真实设备和加载功率未建模。每个频率的 10% 球均以该频率的轴上参考复场范数定标，侧移中保持不变。机器结果也给出统一采用基频固定绝对球半径的归一化结果。</p>
+<p>四个频率和所有镜对的联合轴上复场差至多 <span class="math-inline">\(2.97\times10^{-17}\)</span>。镜面反射固定轴上源收位置。它在任意满足镜像对称和正演唯一性的频率上交换材料而保持轴上复场。离轴后，首三个偏移的场差对偏移的双对数拟合斜率为 0.995–0.999。在基频，<span class="math-inline">\(h=.10\lambda_0\)</span> 时全体镜对的联合场差仅为 <span class="math-inline">\(2\delta\)</span> 的 0.807–0.849 倍，<span class="math-inline">\(h=.20\lambda_0\)</span> 为 1.568–1.649 倍。两阶间这部分全场最大变化 <span class="math-inline">\(4.23\times10^{-17}\)</span>。 <a href="multiplicity/aperture/results.json">四频原始场与逐镜对结果</a></p>
+<h2 id="固定纵轴阵列镜面对称的双接收器">固定纵轴阵列：镜面对称的双接收器</h2>
+<p>使用同一轴上线源、同一曝光，同时读取 <span class="math-inline">\((+h,0.95)\lambda_0\)</span> 和 <span class="math-inline">\((-h,0.95)\lambda_0\)</span>。令 <span class="math-inline">\(z=(F(+h),F(-h))\)</span>，<span class="math-inline">\(Q\)</span> 交换两通道。偶场 <span class="math-inline">\(z_e=(z+Qz)/2\)</span> 为两通道共同部分，奇场 <span class="math-inline">\(z_o=(z-Qz)/2\)</span> 为符号相反的差场。已标定时以 <span class="math-inline">\(\|z_o\|&gt;\delta\)</span> 排除一对镜面材料同时相容。允许每份材料解释分别选择一个复增益、同一解释的两通道共享增益时，检验 <span class="math-inline">\(\min(\|z_e\|,\|z_o\|)&gt;\delta\)</span>。该判据对应构造的干净中心 <span class="math-inline">\(z\)</span>，半径为 <span class="math-inline">\(\delta=0.10\|z\|\)</span>。同一个材料对的 <span class="math-inline">\(z\)</span>、偶奇复向量及幅值都保存，另列固定轴上参考半径 <span class="math-inline">\(0.10\sqrt{2}|F(0)|\)</span> 的验收值。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th><span class="math-inline">\(k/k_0\)</span></th>
+<th style="text-align:right">单侧移及双接收两项中，全镜对过各自阈值的最小已测 <span class="math-inline">\(h/\lambda_0\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.5</td>
+<td style="text-align:right">测到 0.20 仍未通过</td>
+</tr>
+<tr>
+<td>1</td>
+<td style="text-align:right">0.20</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align:right">0.10</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align:right">0.04</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>例如两组件基频的同向材料与其镜面，在 <span class="math-inline">\(h=0.10\lambda_0\)</span> 的偶、奇范数为 .024480、.002216，半径 .002458，余量为 −.000242。在 <span class="math-inline">\(h=0.20\lambda_0\)</span>，偶、奇范数变为 .023875、.004305，半径 .002426，余量为 +.001879。在 <span class="math-inline">\(4k_0, h=0.20\lambda_0\)</span> 的已测配置中，偶场是限制未知增益判据的较弱模式。所有更小偏移及阈值未过的行均有记录。过阈值排除的是镜面对同时相容，关于其他材料的可辨性还需独立证据。 <a href="multiplicity/aperture/results.json">复向量、余量和噪声阈值</a></p>
+<h2 id="费用与重放">费用与重放</h2>
+<p>两阶摆放共 616 次状态 LU、1,624 个源右端、908 个接收器转置右端和 270 次小实 Newton 解，CPU 约 0.31 秒。两阶四频镜面对照共 96 次状态 LU，每次只解原第一源，所有接收位置复用该状态，CPU 约 0.14 秒。采集合同仍按每个相互独立的接收位置方案计数。默认旧连续求解器调用方式在已有 <span class="math-inline">\(M=8,12,16\)</span> 的 36 份材料上重算，保存的复场逐元素完全一致。 <a href="multiplicity/aperture/results.json">机器结果</a></p>
+<p>在研究包根目录执行，依赖 NumPy、SciPy、threadpoolctl 与 Matplotlib。JSON 保留搜索停止、误差和费用。NPZ 含全部原始复端口及材料，键由 <code>layout_M&lt;阶&gt;_L&lt;组件&gt;_&lt;方向&gt;</code> 或 <code>mirror_M&lt;阶&gt;_L&lt;组件&gt;_k&lt;倍频&gt;</code> 起首。镜对数组前 <span class="math-inline">\(L-1\)</span> 列是固定轴上端口，随后为轴上新增位置、五个正偏移及五个负偏移。每一列对应匹配的一套物理采集。</p>
+<pre><code class="language-sh">python multiplicity/aperture/aperture.py
+python multiplicity/aperture/plot_aperture.py
+</code></pre>
+</article>
+    <footer><a href="multiplicity/aperture/README.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

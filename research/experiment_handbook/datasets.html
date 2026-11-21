@@ -3,7 +3,7 @@
 <title>数据设计 · Maxwell 逆散射实验手册</title><link rel="stylesheet" href="handbook.css"></head>
 <body><header><a href="../">B1 Maxwell 研究</a><nav aria-label="手册章节"><a href="index.html">实验手册</a><a href="datasets.html" aria-current="page">数据设计</a><a href="families.html">研究系列</a><a href="operators.html">算子与设备</a><a href="design.html">运行与接续</a><a href="errata.html">基线错题本</a><a href="walkthroughs.html">实例与复算</a><a href="storage.html">磁盘管理</a><a href="handoff.html">交接</a><a href="catalog.html">查目录</a></nav></header>
 <main><h1 id="_1">数据来源、材料身份与设计缺口</h1>
-<p><strong>研究中能否把两行当作两个独立样本，取决于它们是不是两件独立的材料。</strong> 目录有 2,494 条观测或索引记录，其中 1,536 条为 R8 训练材料、192 条为验证材料。其余还包含不同布阵、源数、网格和重启。同一文件可能保存整个 split。对跨数据族的材料，先追到 parent，再计算独立对象数。</p>
+<p><strong>研究中能否把两行当作两个独立样本，取决于它们是不是两件独立的材料。</strong> 目录有 2,728 条观测或索引记录，其中 1,536 条为 R8 训练材料、192 条为验证材料。其余还包含不同布阵、源数、网格和重启。同一文件可能保存整个 split。对跨数据族的材料，先追到 parent，再计算独立对象数。</p>
 <h2 id="_2">来源与首选用途</h2>
 <div class="wide"><table>
 <thead>
@@ -32,6 +32,18 @@
 <td>SRAP 独立 24×7 个二维视图；附加 8×4 个；12 件三维材料各用平面阵和半球阵</td>
 <td>ε、源类型及收发侧配置影响；同材料多阵列比较</td>
 <td>二维各主阵均为 10 发×20 收；平面波与线源有物理差别。三维 8 个源位置、16 个收位置，双极化产生 16 列和 32 行；24³ 生成、12³ 反演</td>
+</tr>
+<tr>
+<td>固定 Green 的材料峰值排除</td>
+<td><code>z_alg_secant_sector_inertia</code> 复用 R10 环、Austria 和 SRAP 的 5 份观测，涉及 4 份旧材料</td>
+<td>比较所有像素介电对比度不超过同一上限时的残差下界</td>
+<td>主扫描上限至 4，无新增排除。上限 5 的严格结果来自同一旧环的机制扩展，像素位置未知。<a href="../z_alg_secant_tasks/multiple-illuminations.html">数据与证书</a></td>
+</tr>
+<tr>
+<td>固定 Green 的镜像与旋转回放</td>
+<td><code>z_alg_secant_reflection</code> 汇集原 R10 24、Austria 1 和 SRAP 204 份视图，共 58 份材料</td>
+<td>比较镜像材料能否同时解释同一保存复场，以及发射组何时足以判定</td>
+<td>这些是历史合成观测的派生回放。按原材料和视图 ID 配对，保留几何闭合、预设误差和事后同布局前缀三类条件。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_secant_tasks/highdim/reflection/README_ZH.md">数据与复算</a></td>
 </tr>
 <tr>
 <td>外部论文设计，本项目独立实现及生成</td>

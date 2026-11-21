@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>全域单标量约束在哪些阵列会失去排除能力 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="全域单标量约束在哪些阵列会失去排除能力">全域单标量约束在哪些阵列会失去排除能力</h1>
+<p><strong>在已存的 SRAP 20 接收完整环中，当材料上限 u 超过约 0.724 时，接收器看不见的电流能使全域单标量约束接受任意可拟合读数。</strong> 用归档带噪场做的直接检验中，u=1、2、3、4 都有满足全域约束的电流，读数残差小于 1.50×10⁻¹⁴。与这些电流最接近的逐格共同实材料，仍留下电流范数 81.7%–92.1% 的本构误差。</p>
+<h2 id="只由测前算子确定的上限">只由测前算子确定的上限</h2>
+<p>令 <span class="math-inline">\(H=(G+G^*)/2\)</span>，<span class="math-inline">\(C=I-uH\)</span>。在接收算子 S 的零空间中最大化单位电流的 Rayleigh 商 <span class="math-inline">\(v^*Hv\)</span>，得到临界值 <span class="math-inline">\(u_*=1/\lambda_{\max}(H|_{\ker S})\)</span>。如果 <span class="math-inline">\(u&gt;u_*\)</span>，就存在满足 <span class="math-inline">\(Sv=0\)</span> 且 <span class="math-inline">\(v^*Cv&lt;0\)</span> 的方向。取任何拟合电流 J₀，在任意一份照明中沿该方向增长，读数不动，而单标量 q 最终严格为负。这个结论针对同一个全域松弛、同一个固定 G 和已选接收阵。</p>
+<p>以下第一列 <span class="math-inline">\(u_0\)</span> 允许所有电流方向。后三列按冻结阵列的原行序逐层增设接收。数值主口径从 SVD 取全部已测接收行张成的空间，再在其正交补求最大特征值。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>归档观测</th>
+<th style="text-align:right">不加接收限制 <span class="math-inline">\(u_0\)</span></th>
+<th style="text-align:right">第一个接收</th>
+<th style="text-align:right">前半接收</th>
+<th style="text-align:right">全部接收 <span class="math-inline">\(u_*\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10，24² 环</td>
+<td style="text-align:right">1.591882</td>
+<td style="text-align:right">1.668501</td>
+<td style="text-align:right">2.821234</td>
+<td style="text-align:right">4.114650</td>
+</tr>
+<tr>
+<td>Austria，32²</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.352068</td>
+<td style="text-align:right">0.750986</td>
+</tr>
+<tr>
+<td>SRAP s007，半环</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.344975</td>
+<td style="text-align:right">0.352068</td>
+</tr>
+<tr>
+<td>SRAP s007，全环</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.344500</td>
+<td style="text-align:right">0.723800</td>
+</tr>
+<tr>
+<td>SRAP s010，半环</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.341722</td>
+<td style="text-align:right">0.344975</td>
+<td style="text-align:right">0.352068</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>所有选中方向都有直接保存的 <span class="math-inline">\(v^*Hv\)</span>、<span class="math-inline">\(Sv\)</span> 范数和特征残差。全接收 R10 的最小奇异值约 7.76×10⁻¹⁰，机器尺度下的数值秩为 48，相对阈值 10⁻⁸ 时为 44。这两个截断口径下估计的 <span class="math-inline">\(u_*\)</span> 相差约 2×10⁻⁷。表中的最大特征值与秩为数值结果。小于所示临界值只说明这种隐藏方向尚未令约束失效。</p>
+<h2 id="一份完整环的直接复核">一份完整环的直接复核</h2>
+<p>在没有查看任何 Y 的情况下，从至少有一个测试 u 超过阈值的完整阵列中选取 <span class="math-inline">\(\sigma_{\min}/\sigma_{\max}\)</span> 最大者。SRAP s007 全环的该比值为 0.414114，完整接收最小奇异值约 0.154444。归档矩阵 Y 由普通 SVD 最小范数电流拟合，初始复场残差 1.2733×10⁻¹⁴。用可验证的 Gram 逆余量得到保守下界 <span class="math-inline">\(\sigma_{\min}\ge 0.083144\)</span>。所取数值方向有 <span class="math-inline">\(\|Sv\|=3.944\times10^{-17}\)</span>。其与精确核投影的距离至多约 2.482×10⁻¹⁰。对归档的二进制算子，得到精确核中的 Rayleigh 商下界 1.3815976565，对应保证负方向的 u 界约为 0.7237997223。</p>
+<p>在第一份照明里加入抽取方向的相位变体，使 q 展开的线性系数非正。步长使用 <span class="math-inline">\(t=\sqrt{\max(q(J_0),0)/(u v^*Hv-1)}\)</span>。0.1 和 0.5 未越过该阵列阈值，保留作未触发对照。四个触发点重新计算实际电流和全部复端口。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th style="text-align:right">u</th>
+<th style="text-align:right">直接重算的 q</th>
+<th style="text-align:right">实际读数残差</th>
+<th style="text-align:right">逐格扇形不等式违反数 / 1,024</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">−59.82508</td>
+<td style="text-align:right">1.4895×10⁻¹⁴</td>
+<td style="text-align:right">622</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">−72.82580</td>
+<td style="text-align:right">1.3597×10⁻¹⁴</td>
+<td style="text-align:right">652</td>
+</tr>
+<tr>
+<td style="text-align:right">3</td>
+<td style="text-align:right">−97.32663</td>
+<td style="text-align:right">1.3882×10⁻¹⁴</td>
+<td style="text-align:right">655</td>
+</tr>
+<tr>
+<td style="text-align:right">4</td>
+<td style="text-align:right">−123.02825</td>
+<td style="text-align:right">1.3614×10⁻¹⁴</td>
+<td style="text-align:right">660</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>含舍入和电流相加的保守读数三角界至多 4.652×10⁻⁹，归档联合半径约 0.47820456，最小余量 0.47820455。四点的 q 保守上界均仍为负。若同一个实材料 <span class="math-inline">\(m_i\in[0,u]\)</span> 在所有照明满足 <span class="math-inline">\(J_i=m_i(E_0+GJ)_i\)</span>，每格扇形都必须非正。把每格的最佳拟合材料投影至其合法区间后，直接得到上述 81.7%–92.1% 的剩余本构误差。此量用来判断放松电流是否接近原约束。</p>
+<p><a href="highdim/sector_geometry/results.json">逐层阈值、拟合、舍入界与费用</a> · <a href="highdim/REPLAY_ZH.md">归档算子与数据出处</a></p>
+<p>从任意工作目录执行本目录的 geometry.py，使用 NumPy、SciPy、threadpoolctl。脚本只读已有 public_vie_inputs.npz、公开 Y 和原半径。13 次投影特征问题和 10 次不同接收 SVD，约 0.44 秒墙钟、0.43 秒 CPU。新增 Maxwell 状态求解与材料真值读取均为零。</p>
+</article>
+    <footer><a href="highdim/sector_geometry/README_ZH.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

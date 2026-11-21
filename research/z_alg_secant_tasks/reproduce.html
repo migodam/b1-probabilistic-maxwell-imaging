@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>复现入口 · Z-ALG</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-secants-20261122/Z_ALG_Secants_2026-11-22.zip">本轮交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="literature.html">相关文献</a><a href="review.html">Neon 的建议</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="复现入口">复现入口</h1>
+<p>从本研究包根目录运行以下命令。首次查看可从各节链接直接读逐行结果和失败字段。全量重算建议在研究包副本中进行，因为部分入口会写回各自默认结果文件。历史大图的重放和候选重算命令另有输出目录。</p>
+<p>原区间实验用 Python 3.13、NumPy 2.5.3、SciPy 1.18.1、python-flint 0.9.0 和 threadpoolctl 3.7.0。NumPy、SciPy 负责双精度全波求解和候选搜索，python-flint 的 Arb 球算术用于把舍入误差包入实数或复数区间。Matplotlib 只用于画图。各实验目录的回执有本机实际版本、计时范围及物理调用计数。公开重放可使用 Python 3.10 或更高版本和兼容的 NumPy、SciPy。用新环境执行时，可按下列命令安装依赖。</p>
+<pre><code class="language-sh">python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install numpy scipy python-flint threadpoolctl matplotlib
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+</code></pre>
+<h2 id="历史带噪大图">历史带噪大图</h2>
+<p>第一条命令只用包内冻结的物理矩阵、候选和带噪读数，重放五份观测的 45 个材料对和两个等预算对照的 28 个候选。生成的 JSON 给出两端距原观测和参考场的实际距离、端点场差、材料任务差及原球和辅助球半径。随后两条从保存的历史中心重新生成弱方向、全波端点和同预算 GN。无需重新生成历史带噪场。</p>
+<pre><code class="language-sh">python highdim/replay.py --output replay.json
+HIGHDIM_USE_FROZEN=1 python highdim/run.py --output recomputed
+HIGHDIM_USE_FROZEN=1 python highdim/compare.py --output recomputed
+</code></pre>
+<p>复核从两个 CSV 开始。<code>PAIRS.csv</code> 有中心、方向、幅度和各球余量。<code>BASELINES.csv</code> 有保存的历史端点、原观测残差和离线参考差。对照 GN 的“旧球内跨度”按各条历史半径重新计算。缺少球内中心、无对称材料余量或更大步幅移出数据球，均保留在逐案例的 JSON。原参考像素评分需历史工作树授权和材料原件，使用 <code>highdim/score.py</code> 重做。公开包提供原有离线评分。<code>HIGHDIM_WORKSPACE</code>、R10/R8/SRAP 历史发布入口和每个原件见复现说明。 <a href="highdim/REPLAY_ZH.md">高维复现说明</a> · <a href="highdim/results/PAIRS.csv">逐候选 CSV</a> · <a href="highdim/results/BASELINES.csv">历史基线 CSV</a> · <a href="highdim/results/GN_BUDGET_COMPARISON.json">GN 费用与跨度</a></p>
+<h2 id="已知宿主同读数材料对及增测">已知宿主、同读数材料对及增测</h2>
+<p>按序生成六个设计中心的完整状态和端口算子、搜索有限幅度材料对并用区间法验证、在增测端口重算原分支。<code>--enhanced</code> 在 16 槽中心重新按各臂自己的物理 Jacobian 寻找见证。第一次和第二次 <code>finite_chord.py</code> 的输出各有独立文件名。保留默认输出位置时后续程序能找到冻结输入。<code>plot_material_pairs.py</code> 依赖前面已生成的数组，重画材料分布。</p>
+<pre><code class="language-sh">python array/array_secant.py
+python cert/finite_chord.py
+python cert/finite_chord.py --enhanced
+python cert/verify_augmented_ports.py
+python cert/plot_material_pairs.py
+</code></pre>
+<p>从 <a href="array/DESIGN_ZH.md">采集合同</a> 核对同能增测的源和端口。方向、幅度、端口差和公共场漂移在 <a href="array/results/pairs.csv">方向扫描 CSV</a>。双侧和单侧搜索的成功、合法盒回溯失败及区间认证边界在 <a href="cert/README.md">材料对说明</a> 和 <a href="cert/results/finite_chord.json">基线逐行回执</a>。<a href="cert/results/enhanced_counterexample.json">增测本身的反例</a> 与 <a href="cert/results/certified_pair_augmented_ports.json">增测审计的旧分支</a> 回答不同的可见性问题。</p>
+<h2 id="72-个规格盒与仪器增益">72 个规格盒与仪器增益</h2>
+<p>使用 <code>array/results/physical_arrays.npz</code> 冻结的二进制算子。全盒界先全局筛查，面见证则把左区固定到任务两极，逐端用完整复场球认证。极面初筛和细分搜索可排除正侧极薄层。增益压力测试再比较公共或各自的复增益能改变多少。</p>
+<pre><code class="language-sh">python bounds/box_modulus.py
+python faces/face_modulus.py
+python bounds/task_caps.py
+python bounds/refine_caps.py
+python bounds/gain_pressure.py
+</code></pre>
+<p>面见证说明如何精确重组 ROI。逐盒结果还保留三组失败、每次补充搜索和自由选择读数中心的检验，后者未新增合格端点对。细分预算另列未决盒、严格上界和可行下界。增益压力回执区分各自增益与公共增益。 <a href="faces/README.md">规格盒面见证</a> · <a href="faces/results.json">逐盒场距和余量</a> · <a href="bounds/REFINED_CAPS_ZH.md">规格盒界说明</a> · <a href="bounds/refined_caps.json">细分预算回执</a> · <a href="bounds/gain_pressure.json">增益压力回执</a></p>
+<h2 id="分离组件全端口和连续圆柱">分离组件、全端口和连续圆柱</h2>
+<p>前两条重算非对称六槽组件的主间距阶梯和 40,000λ、80,000λ 两组件补充阶梯。第三条将数值候选包进区间并验证根存在，另核对跨组端口差。30λ 两槽脚本有自己的种子、全耦合求解和严格证书。<code>full_port_radius.py</code> 读取两个区间证书，不重新求根，把全部端口下的最大与最小材料对场距、共同中心半径界重新计算。<code>cylinders.py</code> 独立使用连续圆柱解析展开和双精度耦合解，输出各角阶的局部与跨端口读数、材料差、边界连续性及成本。</p>
+<pre><code class="language-sh">python multiplicity/separated.py
+python multiplicity/separated.py --sizes 2 --spacings 40000 80000 --output multiplicity/results/intermediate
+python multiplicity/certify_separated.py
+python multiplicity/conditioning/conditioning.py
+python multiplicity/full_ports/full_port_radius.py
+python multiplicity/continuum/cylinders.py
+</code></pre>
+<p>包内的 <a href="multiplicity/historical_inputs.json">历史六槽小输入</a> 已含组件材料、几何、共同旧读数及初值。若需要从原档重新提取，<code>separated.py --historical &lt;目录&gt;</code> 可在 <code>--inputs</code> 的目标文件缺失时读取历史 <code>host_operators.npz</code> 和 <code>point_fibers.json</code>。同一原档可额外执行 <code>python history/check_pair.py &lt;目录&gt;</code> 复核原两根及奇偶公式。历史出处和报告见 <a href="multiplicity/README.md">分离组件说明</a>。</p>
+<ul>
+<li><a href="multiplicity/results/numeric_ladder.json">主间距阶梯</a> 与 <a href="multiplicity/results/intermediate/numeric_ladder.json">补充阶梯</a> 保留各距离的 Newton 停止和未收敛种子。<a href="multiplicity/results/krawczyk.json">根盒证书</a> 逐一给出根和跨端口差的区间。</li>
+<li><a href="multiplicity/conditioning/README.md">30λ 条件复核</a> 的 <a href="multiplicity/conditioning/results.json">逐间距结果</a> 包含近间距的失败。<a href="multiplicity/full_ports/README.md">全端口说明</a> 与 <a href="multiplicity/full_ports/results.json">共同球上下界和所有逐对场距</a> 明示参考范数和共同观测中心。</li>
+<li><a href="multiplicity/continuum/README.md">连续圆柱说明</a> 与 <a href="multiplicity/continuum/results.json">角阶、逐种子和边界回执</a> 给出 M=0 至 16 的谱收敛数值证据，以及离散脉冲近似和连续模型各自的读数代价。连续展开目前无严格无限阶误差尾界。</li>
+</ul>
+<h2 id="连续界面端口标定与镜像停测">连续界面、端口标定与镜像停测</h2>
+<p>单独复现固定孔径下的连续圆柱比较，以及用存档复数决定何时停止发射，可从公开包根目录执行下列命令。前两条重解连续界面并重画方位图；余下命令用归档的源、接收器、实际复数和联合误差上限重放 13 种布局、229 个视图。后者不需要历史材料标签。</p>
+<pre><code class="language-sh">python multiplicity/aperture/aperture.py
+python multiplicity/aperture/plot_aperture.py
+python highdim/reflection/replay_symmetry.py --stage frozen
+python highdim/reflection/exposure_prefix.py
+python highdim/reflection/port_gains.py
+python highdim/reflection/plot_replay.py
+</code></pre>
+<p>其中高维试验对照同一顺序下读整批、固定半批、事后最有利的每布局固定前缀以及逐次读到足够即停。10 份实际噪声超额的视图和所有不具备阵列镜像的布局都保留。<a href="symmetry.html">几何与发射组的定义</a> · <a href="aperture.html">连续圆柱的参数和失败记录</a></p>
+<h2 id="材料峰值与接收器选择">材料峰值与接收器选择</h2>
+<p>单独复算论文中最有区分力的一项严格结果，只需对预先保存的环形观测重新认证。输入为归档复场、独立的误差半径表、Green 及收发算子，乘子直接指定。该入口已经独立重放，所有证书数值与原记录相同。</p>
+<pre><code class="language-sh">python highdim/sector_inertia/certify.py --case r10_twod_0001 --cap 5 --mu 0.001 --output replay_u5.json
+</code></pre>
+<p>从头执行同算子下的基线、原定五份观测、追加的一个环形材料、隐藏电流对照和新增接收位置的比较，可用下列命令。初始几何单独保存后才读取新位置的数据。五份原观测对应四份不同材料。<a href="contrast.html">正定比较和依赖</a> · <a href="multiple-illuminations.html">不定矩阵扫描及严格认证</a> · <a href="receiver-design.html">配对接收设计</a></p>
+<pre><code class="language-sh">python highdim/sector/sector.py
+python highdim/sector_inertia/scan.py
+python highdim/sector_inertia/scan.py --case r10_twod_0001 --caps 4.25 4.5 4.75 5 5.5 6 --output highdim/sector_inertia/ring_cap_extension.json
+python highdim/sector_geometry/geometry.py
+python highdim/sector_geometry/design.py
+python figures/plot_peak_constraints.py
+</code></pre>
+<h2 id="重画综合图">重画综合图</h2>
+<pre><code class="language-sh">python figures/plot_research.py
+</code></pre>
+<p>程序仅从上述机器结果重画。输出包括 <a href="figures/multiplicity_scaling.png">分离组件 PNG</a>、<a href="figures/multiplicity_scaling.pdf">分离组件 PDF</a>、<a href="figures/specification_range.png">规格盒 PNG</a> 和 <a href="figures/specification_range.pdf">规格盒 PDF</a>。<a href="experiments.html">实验结果</a> 对照汇总各自的条件、实际失败与费用。</p>
+</article>
+    <footer><a href="REPRODUCE.md">原始 Markdown</a></footer>
+  </main>
+</body>
+</html>

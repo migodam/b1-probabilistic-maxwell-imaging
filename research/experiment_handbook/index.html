@@ -3,7 +3,7 @@
 <title>实验手册 · Maxwell 逆散射实验手册</title><link rel="stylesheet" href="handbook.css"></head>
 <body><header><a href="../">B1 Maxwell 研究</a><nav aria-label="手册章节"><a href="index.html" aria-current="page">实验手册</a><a href="datasets.html">数据设计</a><a href="families.html">研究系列</a><a href="operators.html">算子与设备</a><a href="design.html">运行与接续</a><a href="errata.html">基线错题本</a><a href="walkthroughs.html">实例与复算</a><a href="storage.html">磁盘管理</a><a href="handoff.html">交接</a><a href="catalog.html">查目录</a></nav></header>
 <main><h1 id="maxwell">Maxwell 逆散射实验手册</h1>
-<p><strong>下一轮比较 A+、G19、DR 或 CIE，先确定要解释哪一组材料上的差别，再取那一组已保存的观测。</strong> 本手册登记了 37 个数据集、子集及派生视图，逐项列出生成者、物理合同、训练或曝光史、观测文件和评分入口。另有 23 个可调用的算子入口，以及 15 条可追到原论文、代码和逐例结果的基线勘误。登记更新于 2026-11-21。</p>
+<p><strong>下一轮比较 A+、G19、DR 或 CIE，先确定要解释哪一组材料上的差别，再取那一组已保存的观测。</strong> 本手册登记了 39 个数据集、子集及派生视图，逐项列出生成者、物理合同、训练或曝光史、观测文件和评分入口。另有 26 个可调用的算子入口，以及 15 条可追到原论文、代码和逐例结果的基线勘误。登记更新于 2026-11-22。</p>
 <h2 id="_1">按研究问题取数据</h2>
 <div class="wide"><table>
 <thead>
@@ -38,6 +38,16 @@
 <td>训练一个低成本初值是否划算？</td>
 <td><code>r8_nn_train</code>、<code>r8_nn_validation</code>、<code>r8_warm42</code> 与冻结权重</td>
 <td>按材料家族和物理条件分层。把推理、状态转换、后续全波更新与训练摊销分别计费</td>
+</tr>
+<tr>
+<td>能否不重建整图，直接排除介电对比度全在某一上限内？</td>
+<td><code>z_alg_secant_sector_inertia</code> 的五份原有二维合成观测</td>
+<td>同上限、同乘子网格比较正定与不定残差下界。R10 旧环的 576 个像素若均不超过 5，严格误差下界约 0.014695，超过原噪声半径 0.010517。<a href="../z_alg_secant_tasks/multiple-illuminations.html">证书与对照</a></td>
+</tr>
+<tr>
+<td>能否用较少发射排除镜像材料？</td>
+<td><code>z_alg_secant_reflection</code> 中按真实端口闭合的已存带噪视图</td>
+<td>预先给定误差上限，按镜像发射组读前缀。152 份合规 SRAP 视图中，同样判定 150 份，逐组 428 次、全批 1,517 次、事后同布局固定前缀 926 次。<a href="../z_alg_secant_tasks/index.html">中文报告</a></td>
 </tr>
 </tbody>
 </table></div>
