@@ -26,6 +26,15 @@
 [中文验证报告](z_alg_optical_inertia/validation/index.html) · [修订英文稿 PDF](z_alg_optical_inertia/validation/manuscript_ip.pdf) · [复现与下载](z_alg_optical_inertia/validation/reproduce.html) · [研究交接](z_alg_optical_inertia/validation/handoff.html)
 <!-- /Z_ALG_OPTICAL_INERTIA_VALIDATION -->
 
+<!-- Z_ALG_DUAL_MULTIPLIER_PILOT -->
+## Maxwell 材料峰值认证：学习权重、连续权重范围与接收角度
+
+28 件留出材料检验神经提议的实际收益，另用独立材料和接收阵列对照，严格判断哪些权重还能提供信息。
+
+[中文结果](z_alg_neural_dual_pilot/index.html) · [权重与接收角度](z_alg_neural_dual_pilot/interpolation.html) · [ChatGPT 研究交接](z_alg_neural_dual_pilot/handoff.html) · [论文一英文定稿](z_alg_optical_inertia/ip_final/manuscript_ip.pdf)
+<!-- /Z_ALG_DUAL_MULTIPLIER_PILOT -->
+
+
 <!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
 ## 固定 Green 下的材料峰值排除与镜像停测
 

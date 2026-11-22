@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从电磁观测到可核验的峰值判断 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html" aria-current="page">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="从电磁观测到可核验的峰值判断">从电磁观测到可核验的峰值判断</h1>
+<p>这里的任务只有一个。设观测为复矩阵 <span class="math-inline">\(Y\)</span>，物理误差半径为 <span class="math-inline">\(r\)</span>。假如所有满足 <span class="math-inline">\(0\le m_i\le u\)</span> 的材料产生的观测与 <span class="math-inline">\(Y\)</span> 至少相距 <span class="math-inline">\(d&gt;r\)</span>，就能断定至少一个像素的介电对比度超过 <span class="math-inline">\(u\)</span>。这个结论针对给定频率、接收和照明、离散 Green 算子以及误差球。结论本身不给出超过上限的像素位置。</p>
+<h2 id="1-数据可用来挑乘子">1. 数据可用来挑乘子</h2>
+<p>对一个共同实材料，令十个照明下的电流组成矩阵 <span class="math-inline">\(J\)</span>，总场为 <span class="math-inline">\(E=B+GJ\)</span>，且 <span class="math-inline">\(J=D_m E\)</span>。令 <span class="math-inline">\(D_\mu\)</span> 为非负实对角矩阵，<span class="math-inline">\(D_\lambda\)</span> 为带符号实对角矩阵。于是</p>
+<div class="math-display" tabindex="0">\[J^*D_\mu J-u\operatorname{Re}_H(J^*D_\mu E)\preceq0,
+\qquad \operatorname{Im}_H(J^*D_\lambda E)=0 .\]</div>
+<p>第一个不等式逐格使用 <span class="math-inline">\(m_i(m_i-u)\le0\)</span>。第二个等式来自逐格的实材料本构关系。两者都对任意相干照明组合成立。</p>
+<p>记 <span class="math-inline">\(Z=(uD_\mu+iD_\lambda)/2\)</span>，<span class="math-inline">\(K=S^*S+D_\mu-ZG-G^*Z^*\)</span>，<span class="math-inline">\(L=S^*Y+ZB\)</span>。若 <span class="math-inline">\(K\)</span> 非奇异，普通 Hermitian 配方给出源空间矩阵 <span class="math-inline">\(H=Y^*Y-L^*K^{-1}L\)</span>。假设其特征值为 <span class="math-inline">\(h_1\ge\cdots\ge h_s\)</span>，且 <span class="math-inline">\(K\)</span> 有 <span class="math-inline">\(\nu\)</span> 个负方向。在残差 Gram 矩阵中，至多 <span class="math-inline">\(\nu\)</span> 个源方向能被状态负方向抵消，于是</p>
+<div class="math-display" tabindex="0">\[d^2=\sum_{j&gt;\nu}(h_j)_+ \le \|SJ-Y\|_F^2 .\]</div>
+<p>这是 Paper 1 的结果。它对每个 <span class="math-inline">\(Y\)</span> 及每组合法权重逐点成立。所以即便训练过程或在线搜索使用了同一份 <span class="math-inline">\(Y\)</span>，只要给定权重后严格重算 <span class="math-inline">\(d\)</span>，原来的充分性仍然成立。改变噪声球、模型或收发设置则需单独说明。训练中的浮点近似和梯度均不能代替这一步。<a href="../z_alg_optical_inertia/ip_final/manuscript_ip.pdf">原定理与物理假设</a></p>
+<h2 id="2-参数可微的范围">2. 参数可微的范围</h2>
+<p>写 <span class="math-inline">\(J_0=K^{-1}L\)</span>，<span class="math-inline">\(E_0=B+GJ_0\)</span>。在惯性固定、谱截断和零值均有间隔的开集，令 <span class="math-inline">\(P\)</span> 投影到保留的正源特征向量。若 <span class="math-inline">\(D_b\)</span> 是块指示矩阵，则</p>
+<div class="math-display" tabindex="0">\[\begin{aligned}
+\partial_{\mu_b}d^2 &amp;= \operatorname{tr} P\{J_0^*D_bJ_0-u\operatorname{Re}_H(J_0^*D_bE_0)\},\\
+\partial_{\lambda_b}d^2 &amp;= \operatorname{tr} P\operatorname{Im}_H(J_0^*D_bE_0).
+\end{aligned}\]</div>
+<p>这是对 <span class="math-inline">\(H\)</span> 求导所得。若重根完整落在一个谱簇内，投影给出的迹与该簇基底无关。若截断把一个重根分开，不能沿用这个普通导数。平滑正部仍保留惯性切换。特别地，当 <span class="math-inline">\(\nu\ge s\)</span> 时，严格目标为零。实现用 <span class="math-inline">\(K\)</span> 的第 <span class="math-inline">\(s\)</span> 小特征值引导提案移出该区，绝不将这个训练分数作为材料下界。普通梯度和网络共享相同求解器、参数化和修正规则。<a href="gradients.html">详细梯度、数值差分与步长</a></p>
+<h2 id="3-不解整个状态系统有时也能证明某个提案一定过不了线">3. 不解整个状态系统，有时也能证明某个提案一定过不了线</h2>
+<p>这里需要区分两种距离。实际带上限材料与观测的最小距离是未知量。指定乘子算出的 <span class="math-inline">\(d\)</span> 是它的一个下界。下面给的是<strong>这个下界自身的上界</strong>。当两者夹出 <span class="math-inline">\(d\le r\)</span> 时，可以排除使用这套乘子获证的可能。此时仍可能存在更好的乘子。</p>
+<p>令 <span class="math-inline">\(a\ge0\)</span>，引入带边 Hermitian 矩阵</p>
+<div class="math-display" tabindex="0">\[T(a)=\begin{pmatrix}K&amp;-L\\-L^*&amp;Y^*Y-aI_s\end{pmatrix},\qquad
+N(a)=[n_+(T(a))-n]_+ .\]</div>
+<p>对非奇异 <span class="math-inline">\(K\)</span>，Schur 合同分解表明 <span class="math-inline">\(N(a)=[n_+(H-aI_s)-\nu]_+\)</span>，故 <span class="math-inline">\(d^2=\int_0^\infty N(a)\,\mathrm da\)</span>。对奇异 <span class="math-inline">\(K\)</span>，带边计数直接定义 Paper 1 的延拓下界。理由是任一可行 <span class="math-inline">\(J\)</span> 的图子空间 <span class="math-inline">\(\operatorname{range}[J;I_s]\)</span> 至少保留 <span class="math-inline">\(N(a)\)</span> 个正方向，且其上的形式由残差 Gram 减 <span class="math-inline">\(aI_s\)</span> 控制。</p>
+<p><strong>有限试探空间的上界。</strong> 任取等距嵌入 <span class="math-inline">\(V\in\mathbb C^{n\times k}\)</span>，写 <span class="math-inline">\(T_V(a)=\operatorname{diag}(V,I_s)^*T(a)\operatorname{diag}(V,I_s)\)</span>。删去的维数为 <span class="math-inline">\(n-k\)</span>。交错定理给出</p>
+<div class="math-display" tabindex="0">\[N(a)\le [n_+(T_V(a))-k]_+ .\]</div>
+<p>若 <span class="math-inline">\(T_V(0)\)</span> 已找到 <span class="math-inline">\(m\le s\)</span> 个严格负方向，则 <span class="math-inline">\(N(0)\le q=s-m\)</span>。函数 <span class="math-inline">\(N(a)\)</span> 单调不增。如果在某个 <span class="math-inline">\(a&gt;0\)</span> 找到 <span class="math-inline">\(s\)</span> 个严格负方向，则 <span class="math-inline">\(N(a)=0\)</span>，积分立即给出 <span class="math-inline">\(d^2\le qa\)</span>。若在零处就找到 <span class="math-inline">\(s\)</span> 个，得到严格零值。证明为一侧计数，允许状态矩阵奇异。狭小的试探空间会遗漏不利方向，届时必须转入全维检验。</p>
+<p>本轮 <span class="math-inline">\(V\)</span> 是原生 96² 网格上 16×16 个归一化瓦片指示函数。它与 4×4、8×8 权重的边界完全吻合。用同一 192×192 补零 Fourier 符号而非 32² Green 计算 <span class="math-inline">\(V^*GV\)</span>，并以球算术验证候选负子空间的 Gram 矩阵。物理模型仍有 9,216 个独立材料参数。这条上界是标准交错与原论文矩阵的组合，工程作用在于提前结束注定无效的严格求证。五份未使用测试集的检查中，压缩上界与独立全维区间均相容，另有一个实际半径下压缩无法判败而全维检验可以的例子。<a href="native.html">原生区间验证</a> · <a href="results/native_restriction_training_check.json">独立压缩核验</a></p>
+<h2 id="4-下限求证不成功与信息极限">4. 下限、求证不成功与信息极限</h2>
+<p><span class="math-inline">\(d_{96,\mathrm{lo}}&gt;r\)</span> 证明峰值超过 <span class="math-inline">\(u\)</span>。<span class="math-inline">\(d_{96,\mathrm{hi}}\le r\)</span> 证明当前权重过不了线。若一个区间跨过半径，或者没有找到所需 Fourier 谱界，结论保留为未知。即使所有试过的权重都严格为零，也不足以说明所有权重的最优值为零；要将结论推进到材料本身，还需构造在原噪声球内真正可行的低峰材料，或给所有乘子的最优能力建立上界。</p>
+<p>32² 上的硬目标同样只用于选择。一个粗格对应九个细格。用电流密度作变量时，将 <span class="math-inline">\(D_\mu,D_\lambda\)</span> 同时除以九使块常数延拓保持逐格权重积分。细格的 Green 自作用、传播和新增的细尺度电流自由度仍会改变惯性和源谱。只有原生复核可以判断它们对结果的净效应。</p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="MATHEMATICAL_NOTES_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

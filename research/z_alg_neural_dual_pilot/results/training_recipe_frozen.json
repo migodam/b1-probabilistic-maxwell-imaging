@@ -1,0 +1,75 @@
+{
+  "recipe": {
+    "neural": {
+      "data_file": "data/synthetic_observations.npz",
+      "caps": [
+        0.5,
+        0.75,
+        1.0
+      ],
+      "block_sides": [
+        4,
+        8
+      ],
+      "epochs": 4,
+      "batch_size": 12,
+      "seed": 202611231991,
+      "optimizer": "Adam",
+      "learning_rate": 0.004,
+      "anchor_penalty": 0.001,
+      "sample_noise": "One input per training object per epoch, uniformly from five paired levels.",
+      "objective": "Mean smoothed retained-source d\u00b2 divided by observation energy, with chart anchor penalty. Source exhaustion uses the shared geometry-only signed state-spectrum guide.",
+      "gradient_description": "Analytic stable-branch gradient. Hard inertia. Source cutoff near-ties skipped, finite scaled per-observation gradient norm clipped.",
+      "source_cutoff_gap_relative": 1e-08,
+      "scaled_per_observation_gradient_clip": 0.35,
+      "validation_selector": "Largest object-mean hard d\u00b2/||Y||\u00b2 across validation noise, caps, and both heads. Ties retain the earliest epoch, including initialization.",
+      "validation_noise_levels": [
+        0.01,
+        0.02
+      ],
+      "feature_mode": "measured",
+      "chart": {
+        "ref_mu": 0.001,
+        "mu_floor_factor": 0.05,
+        "lambda_ref_ratio": 0.5,
+        "lambda_coord_scale": 2.0
+      }
+    },
+    "no_feature": {
+      "data_file": "data/synthetic_observations.npz",
+      "caps": [
+        0.5,
+        0.75,
+        1.0
+      ],
+      "block_sides": [
+        4,
+        8
+      ],
+      "epochs": 4,
+      "batch_size": 12,
+      "seed": 202611231991,
+      "optimizer": "Adam",
+      "learning_rate": 0.004,
+      "anchor_penalty": 0.001,
+      "sample_noise": "One input per training object per epoch, uniformly from five paired levels.",
+      "objective": "Mean smoothed retained-source d\u00b2 divided by observation energy, with chart anchor penalty. Source exhaustion uses the shared geometry-only signed state-spectrum guide.",
+      "gradient_description": "Analytic stable-branch gradient. Hard inertia. Source cutoff near-ties skipped, finite scaled per-observation gradient norm clipped.",
+      "source_cutoff_gap_relative": 1e-08,
+      "scaled_per_observation_gradient_clip": 0.35,
+      "validation_selector": "Largest object-mean hard d\u00b2/||Y||\u00b2 across validation noise, caps, and both heads. Ties retain the earliest epoch, including initialization.",
+      "validation_noise_levels": [
+        0.01,
+        0.02
+      ],
+      "feature_mode": "geometry_and_cap_only",
+      "chart": {
+        "ref_mu": 0.001,
+        "mu_floor_factor": 0.05,
+        "lambda_ref_ratio": 0.5,
+        "lambda_coord_scale": 2.0
+      }
+    }
+  },
+  "boundary": "Only new training/validation observations and Paper 1 operator geometry. Do not use test observations, tuned test profiles, or materials."
+}

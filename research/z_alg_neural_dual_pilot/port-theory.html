@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>两组已证权重之间，哪些增益可以直接从接收端算出来？ · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="两组已证权重之间哪些增益可以直接从接收端算出来">两组已证权重之间，哪些增益可以直接从接收端算出来？</h1>
+<p>同一份散射读数，在两组权重下分别有一个使二次式取最小值的电流。混合权重必须使用同一个电流。这一要求给混合权重增加了一项非负修正。若两个电流在接收天线上也有不同，这项修正至少有一部分可以用原先为两端做过的计算求出。</p>
+<h2 id="两个正定端点足够算出一项修正">两个正定端点足够算出一项修正</h2>
+<p>固定材料上限 <span class="math-inline">\(u\)</span>、照明 <span class="math-inline">\(B\)</span>、接收矩阵 <span class="math-inline">\(S\)</span>、传播 <span class="math-inline">\(G\)</span> 和数据 <span class="math-inline">\(Y\)</span>。对两组合法权重，设已严格证明 <span class="math-inline">\(K_j\succ0\)</span>，<span class="math-inline">\(L_j=S^*Y+Z_jB\)</span>，<span class="math-inline">\(H_j=Y^*Y-L_j^*K_j^{-1}L_j\)</span>，<span class="math-inline">\(J_j=K_j^{-1}L_j\)</span>，<span class="math-inline">\(j=0,1\)</span>。这些驻点电流服务于下界计算。它们未必对应某个合法材料。</p>
+<p>对 <span class="math-inline">\(t\in[0,1]\)</span> 混合两组权重，<span class="math-inline">\(K_t=(1-t)K_0+tK_1\)</span>、<span class="math-inline">\(L_t=(1-t)L_0+tL_1\)</span>，正谱间隙也有这两个端点间隙的凸组合下界。记 <span class="math-inline">\(H(t)=Y^*Y-L_t^*K_t^{-1}L_t\)</span>。对固定电流 <span class="math-inline">\(J\)</span>，未取驻点时的二次型关于 <span class="math-inline">\(t\)</span> 仿射。因此 <span class="math-inline">\(H(t)\)</span> 在 Loewner 意义下凹。两个端点的线性组合给出下界。但函数 <span class="math-inline">\(A\mapsto\operatorname{tr}(A)_+\)</span> 凸且单调，故仅对这一直线下界取正谱，无论选择什么 <span class="math-inline">\(t\)</span>，都无法超过两端证书中更强的一个。以下约定 <span class="math-inline">\(\operatorname{tr}(A)_+=\sum_j(\lambda_j(A))_+\)</span>。</p>
+<p>令 <span class="math-inline">\(D=J_1-J_0\)</span>。两个完整平方相加后取共同的最小值，得到对 <span class="math-inline">\(0&lt;t&lt;1\)</span> 的恒等式</p>
+<div class="math-display" tabindex="0">\[H(t)=(1-t)H_0+tH_1+
+D^*\left[((1-t)K_0)^{-1}+(tK_1)^{-1}\right]^{-1}D.\]</div>
+<p>证明可逐个照明组合 <span class="math-inline">\(a\)</span> 进行。把共同电流相对于 <span class="math-inline">\(J_0a\)</span> 的位移记作 <span class="math-inline">\(x\)</span>，待最小化项是 <span class="math-inline">\(x^*((1-t)K_0)x+(x-Da)^*(tK_1)(x-Da)\)</span>。完成平方得到矩阵并联和形式，再对所有 <span class="math-inline">\(a\)</span> 使用极化。为解释端点差而使用的矩阵并联和已有经典来源。<a href="https://www.sciencedirect.com/science/article/pii/0022247X69902005">Anderson 与 Duffin，1969</a></p>
+<p>对任意 <span class="math-inline">\(U\)</span>，限定变分公式中可用的测试电流方向为 <span class="math-inline">\(\operatorname{range}U\)</span>。取 <span class="math-inline">\(U=S^*\)</span>，定义</p>
+<div class="math-display" tabindex="0">\[E=SD,\qquad R_j=SK_j^{-1}S^*,\qquad A_t=tR_0+(1-t)R_1.\]</div>
+<p>若 <span class="math-inline">\(A_t\)</span> 可逆，就有可见电流差给出的修正下界 <span class="math-inline">\(t(1-t)E^*A_t^{-1}E\)</span>。不需要在正式证书中假定接收矩阵满行秩。对任意数值提议的 <span class="math-inline">\(X\)</span>，</p>
+<div class="math-display" tabindex="0">\[H(t)\succeq (1-t)H_0+tH_1+
+t(1-t)\big[E^*X+X^*E-X^*A_tX\big].\]</div>
+<p>这由正定并联和的对偶变分公式直接给出，最后一式也适用于退化接收阵列。右式在测试模式上可用球算术逐项验证。若 <span class="math-inline">\(SD=0\)</span>，可见修正为零，内部不可见电流仍可能使完整混合权重更强。一个代数反例是取 <span class="math-inline">\(K_0=K_1=I\)</span>、<span class="math-inline">\(S=(1,0)\)</span>，让 <span class="math-inline">\(D\)</span> 位于第二个坐标。此例只说明投影遗漏信息。</p>
+<h2 id="为什么每个新物体只需小矩阵运算">为什么每个新物体只需小矩阵运算</h2>
+<p>令 <span class="math-inline">\(T_j=[S^*,Z_jB]\)</span>、<span class="math-inline">\(\Xi=[Y;I_s]\)</span>，离线保存 <span class="math-inline">\(Q_j=T_j^*K_j^{-1}T_j\)</span> 的包围。对这个 20 收、10 发阵列，每个端点需要 30 个公共右端，<span class="math-inline">\(Q_j\)</span> 为 30 阶。则</p>
+<div class="math-display" tabindex="0">\[H_j=Y^*Y-\Xi^*Q_j\Xi,\quad R_j=Q_j[1:p,1:p],\quad
+E=(Q_1-Q_0)[1:p,:]\,\Xi .\]</div>
+<p>在本问题中，接收空间恰好是两个端点共有的前 <span class="math-inline">\(p\)</span> 列。计算修正不用额外求任何原生 9,216 阶线性系统。完整几何预处理取决于原生状态规模；新物体的计算取决于收发数、候选 <span class="math-inline">\(t\)</span> 数和数值精度。该离线/在线思路与经过认证的参数降阶已有密切关系。此处具体利用的是原有端点响应自带共同接收子块。<a href="https://doi.org/10.1051/cocv:2002041">Veroy、Rovas 与 Patera，2002</a></p>
+<h2 id="三个已证权重还能给整条连续线段的能力作上界">三个已证权重还能给整条连续线段的能力作上界</h2>
+<p>增加对真正中点 <span class="math-inline">\(t=1/2\)</span> 的一次原生公共准备。由矩阵凹性，对左半段，将中点写成 <span class="math-inline">\(t\)</span> 和右端点的凸组合，可得</p>
+<div class="math-display" tabindex="0">\[H(t)\preceq(2-2t)H(1/2)-(1-2t)H_1.\]</div>
+<p>对右半段，同理 <span class="math-inline">\(H(t)\preceq2tH(1/2)-(2t-1)H_0\)</span>。对上述两个仿射矩阵取正谱之和，其在各自区间上的最大值位于边界。因而</p>
+<div class="math-display" tabindex="0">\[\sup_{0\le t\le1}d(t)^2\le
+\max\left\{\operatorname{tr}(2H(1/2)-H_1)_+,\
+\operatorname{tr}H(1/2)_+,\
+\operatorname{tr}(2H(1/2)-H_0)_+\right\}.\]</div>
+<p>右侧使用包含端点求解误差的向外上界。若其平方根尚在物理噪声半径内，整条连续线段的任何权重都无法排除该峰值上限；即便以真值选 <span class="math-inline">\(t\)</span> 也无济于事。该结论超出只试若干离散权重，但所覆盖的集合仍只是一条已声明的乘子线段。它不会排除其余空间权重的作用，也不会证明实际材料缺乏可辨识性。</p>
+<p>计算均以无损离散受控多次散射为物理条件，并明确与训练样本、优化收敛和连续模型误差区分。凹性、谱函数与矩阵分式的基本结果见原教材。<a href="https://www.seas.ucla.edu/~vandenbe/cvxbook.html">Boyd 与 Vandenberghe，《Convex Optimization》</a></p>
+<h2 id="同一端口数据能回答改变接收角度的问题">同一端口数据能回答改变接收角度的问题</h2>
+<p>把 20 个接收端的全部复读数记作 <span class="math-inline">\(Y\)</span>。选择其中十个接收点、或对信号作被动线性组合，可用一个满足 <span class="math-inline">\(C^*C\preceq I\)</span> 的矩阵描述。保留原照明、材料阈值和乘子，且对正演与数据施加同一个 <span class="math-inline">\(C\)</span>。对于每个源谱阈值 <span class="math-inline">\(a\ge0\)</span>，消去电流前的 Hermitian 矩阵满足</p>
+<div class="math-display" tabindex="0">\[P_C(a)=P(a)-[S,-Y]^*(I-C^*C)[S,-Y]\preceq P(a).\]</div>
+<p>两者的状态维数均为 <span class="math-inline">\(n\)</span>。因此 <span class="math-inline">\( [n_+(P_C(a))-n]_+\le[n_+(P(a))-n]_+ \)</span>。对 <span class="math-inline">\(a\)</span> 积分即得 <span class="math-inline">\(d_C\le d\)</span>。这对不定或奇异状态矩阵也成立。它给出一个有物理意义的推论。全环上的某个乘子若有严格零证书，则同一采集的所有接收子集及被动组合都得到零；若全环在整条权重线段上为零，结论也在整段逐点成立。20 个接收器共有 <span class="math-inline">\(2^{20}\)</span> 个子集。对于非零上界，要把剩余端口的误差半径与该上界比较。主动改变发射、接入原阵列以外的接收点或重新标定能量，均需要另外计算。</p>
+<p>进一步能把删接收点后的状态负惯性化为一个很小的几何矩阵。设原生状态矩阵 <span class="math-inline">\(K\succ0\)</span>，<span class="math-inline">\(Q=T^*K^{-1}T\)</span>，<span class="math-inline">\(T=[S^*,ZB]\)</span>。以 <span class="math-inline">\(P,M\)</span> 分别挑出保留、删除的接收行，共删 <span class="math-inline">\(q\)</span> 行。记 <span class="math-inline">\(U=\operatorname{diag}(P^*,I_s)\)</span>、<span class="math-inline">\(W=[M^*;0]\)</span>、<span class="math-inline">\(D=I_q-W^*QW\)</span>。删行后的状态为 <span class="math-inline">\(K_P=K-(S^*M^*)(MS)\)</span>。对带有单位边框的块矩阵先后消去 <span class="math-inline">\(K\)</span> 和 <span class="math-inline">\(I_q\)</span>，得到</p>
+<div class="math-display" tabindex="0">\[n_-(K_P)=n_-(D),\qquad n_0(K_P)=n_0(D).\]</div>
+<p>当 <span class="math-inline">\(D\)</span> 可逆时，保留端口的公共响应为</p>
+<div class="math-display" tabindex="0">\[Q_P=U^*QU+U^*QW D^{-1}W^*QU .\]</div>
+<p>所以只有 <span class="math-inline">\(q\)</span> 阶状态惯性和剩余收发端口的矩阵随接收子集改变。原来的 9,216 维公共传播结果可逐子集复用。采用这两式须有原正定状态的证明，接收端保留原单位，删除行所对应的发射场 <span class="math-inline">\(B\)</span> 不变。这些公式使用经典合同、惯性加法以及有限秩逆更新。<a href="https://doi.org/10.1016/0024-3795(68)90050-5">Haynsworth，1968</a></p>
+<p>即使 <span class="math-inline">\(D\)</span> 奇异，较小的带边积分仍有意义。记 <span class="math-inline">\(Y_P=PY\)</span>、<span class="math-inline">\(X=U[Y_P;I_s]\)</span>。对下式消去 <span class="math-inline">\(K\)</span> 或 <span class="math-inline">\(I_q\)</span>，其中 <span class="math-inline">\(V=S^*M^*\)</span>、<span class="math-inline">\(L=TX\)</span>，</p>
+<div class="math-display" tabindex="0">\[\begin{pmatrix}K&amp;-L&amp;V\\-L^*&amp;Y_P^*Y_P-aI&amp;0\\V^*&amp;0&amp;I_q\end{pmatrix},\]</div>
+<p>可得</p>
+<div class="math-display" tabindex="0">\[n_+(P_P(a))-n=
+n_+\begin{pmatrix}
+D&amp;W^*QX\\
+X^*QW&amp;Y_P^*Y_P-X^*QX-aI_s
+\end{pmatrix}-q.\]</div>
+<p>这一等式在 <span class="math-inline">\(D\)</span> 的零特征值处仍成立。当前数值实验对分离开的谱使用前面的惯性加法。</p>
+<p>在两端权重均正定的整条线段上，删除行的右端保持固定。消去前对任意试探电流的二次型关于 <span class="math-inline">\(t\)</span> 仿射，故 <span class="math-inline">\(D(t)=I_q-MS K_t^{-1}S^*M^*\)</span> 为矩阵凹函数。为证明一个区间都有负方向，可在数值提出的同一子空间上验证该段仿射上包络的两端严格负定。为证明一个正方向，可使用来自相邻已证节点的弦下界，在同一向量上检查两端严格为正。若 <span class="math-inline">\(n_-(D(t))\ge s\)</span>，所有 <span class="math-inline">\(s\)</span> 个源方向都被扣除，任何旧数据 <span class="math-inline">\(Y_P\)</span> 在该处的乘子证书都严格为零。该断言比在若干材料上观察到零分数更强。接收器数目相同的不同阵列可以具有不同的惯性；还需要带噪端口读数才能判断剩余正源方向是否有实际辨识力。</p>
+<h2 id="用两个端点的电流直接给全段作上界">用两个端点的电流直接给全段作上界</h2>
+<p>顾问在读过三节点外推的失败案例后提出，用共同的试探电流空间包住精确驻点。对任意 <span class="math-inline">\(J\in\mathbb C^{n\times s}\)</span> 定义</p>
+<div class="math-display" tabindex="0">\[\Phi_t(J)=Y^*Y+J^*K_t J-J^*L_t-L_t^*J .\]</div>
+<p>这里 <span class="math-inline">\(K_t\succ0\)</span>，所以 <span class="math-inline">\(\Phi_t(J)-H(t)=(J-J_t)^*K_t(J-J_t)\succeq0\)</span>，其中 <span class="math-inline">\(J_t=K_t^{-1}L_t\)</span>。当 <span class="math-inline">\(J\)</span> 固定时，<span class="math-inline">\(\Phi_t(J)\)</span> 关于 <span class="math-inline">\(t\)</span> 仿射。这允许在每个小区间内只找一个试探电流，然后用该区间两端的 <span class="math-inline">\(\operatorname{tr}(\Phi_t(J))_+\)</span> 较大值覆盖整个区间。线性插值的范围与物理正定条件进入推导的地方均可检查。</p>
+<p>具体地，取两端约解得到的公共电流组成 <span class="math-inline">\(V\)</span>，使 <span class="math-inline">\(J=V C[Y;I_s]\)</span>。<span class="math-inline">\(V\)</span> 与观测无关。只需把 <span class="math-inline">\(V^*K_jV\)</span> 和 <span class="math-inline">\(V^*T_j\)</span> 在原生算子上各核验一次，之后任何浮点算法选择的小系数 <span class="math-inline">\(C\)</span> 都给出合法的严格上界，最终数值用区间代入 <span class="math-inline">\(\Phi_t\)</span>。完整 60 列电流及其积分代价必须计入准备。把连续整段压到半径内是上界证据。若原生试探空间漏掉关键电流，包围会过宽；证明严格过线仍需要经过核查的下界。这种 Galerkin 变分上包络使用经典降阶和凹函数支持上界，实际增量要看它相对九节点同任务的可用成本。<a href="https://doi.org/10.1051/cocv:2002041">经认证的参数降阶先例</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html" aria-current="page">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="followup/THEORY_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

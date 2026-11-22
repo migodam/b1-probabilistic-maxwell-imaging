@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>双乘子盲测的比较口径 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="双乘子盲测的比较口径">双乘子盲测的比较口径</h1>
+<p>要检验的工程假设是，单看复散射读数生成空间权重，能以更少的在线时间在原生网格排除同一峰值上限，或在原来未通过的上限取得严格排除。论文定稿已单独封存。所有试验输出写入本目录。初始设计于 2026-11-23 在训练权重生成和测试评分前记录。</p>
+<ul>
+<li>物理数据为无损、非负离散介质的同一 400 MHz 全环，20 接收乘 10 发射。独立生成 60 件训练、12 件验证物体。真材料只在模拟器本地用以产生读数，网络和纯数学提案均只得到观测、门槛及已知物理量。原生 6 件和独立档案 22 件对本轮模型留出，旧论文已公开这些物体与旧方法的总体结果。</li>
+<li>六件保持原生配对方向 1%、2%、10% 数据，对上限 0.50、0.75、1.00。二十二件沿用原来的 10% 全环数据及向上扩大的半径，对上限 0.50、0.75。共 28 件、40 份测量、98 个物体—读数—上限组合。原输入包对后二十二件只提供 10% 观测；主比较使用相同旧数据，避免用已知材料制造新的层级。分母按物体报告。</li>
+<li>两种块网格为 4×4、8×8。32² 格使用原粗算子，提案网格按几何边界映射到 96²。细格面积为粗格的九分之一，局部电流使用密度坐标，两种物理乘子皆除以九。每个细格是独立材料参数。</li>
+<li>每种网格分别比较均匀起步的谱梯度、零步网络、网络起步后三次更新。纯梯度保留 1 秒、5 秒两个前缀，记录实际耗时和评估次数。单独列出公开的全局和固定 16 区对照。历史 91.93–158.22 秒覆盖两件、搜索和证明；历史固定权重重复使用时有共同证明摊销。在线速度同时比较当轮分辨率相同的谱梯度，按对象的同一严格门槛配对。</li>
+<li>每份合法提案交给 96² 原生物理检验；诊断区分严格正下界、严格零、严格上界不足以过线、尚未得到有用包围以及粗网过线但细网未过。只有原生严格下端超过同一噪声球才算过线；下端为零或未知都不算成功。高门槛全为零不能解释为可行材料真的具有低峰。</li>
+<li>紧度目标为六件在 1%/2% 的 1.00，及二十二件在 10% 的 0.75；0.50 是有严格阳性的运行对照。速度以同等达标的从读数到严格结论的总时间为准，报告共享几何预处理、离线训练、检查失败和摊销。5× 结论须在多件未训练物体复现；单个观测偶然过线会按个例列出。</li>
+</ul>
+<p>在训练结果揭晓前，从原论文的带边矩阵又推出一个可验证的提前判败条件。将该矩阵限制在原生网格的一组分片常数电流方向上，用负惯性给原证书作上界。这个步骤同时适用于三种提案方法。只有上界已在原误差球内时才可跳过昂贵的正证书计算。几何准备单独计时，使用真正的 96² 傅里叶传播与向外舍入。另设同容量几何特征网络作消融，移除所有观测依赖通道。上限 1 的均匀起点可能耗尽全部十个源方向，所有方法这时共用第十小状态特征值提供的代理梯度，其值从不算作材料证书。</p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html" aria-current="page">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="PILOT_DESIGN.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

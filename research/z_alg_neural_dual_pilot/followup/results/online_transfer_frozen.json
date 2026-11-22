@@ -1,0 +1,28 @@
+{
+  "freeze_utc": "2026-11-22T18:12:13.966112+00:00",
+  "scope": "Retrospective choice of an unchanged pre-existing adaptive algorithm after internally known fixed-weight results; independent materials not involved in its original settings.",
+  "data": "data/transfer16.npz",
+  "objects": 16,
+  "views": 48,
+  "noise_pct": [
+    1,
+    2,
+    10
+  ],
+  "cap": 0.75,
+  "blocks": 64,
+  "optimizer": "src/coarse.py::Coarse.optimize, same hard objective, chart, rescue and tie break as src/propose.py gradient1",
+  "warm_start": null,
+  "time_limits": [
+    1.0
+  ],
+  "selection": "Select only completed evaluations at elapsed wall <=1s, pay any completed overrun; no data-dependent time extension or frequency/weight changes.",
+  "threads_per_worker": 1,
+  "physical_normalization": "Both 64 entries of the two coarse weight arrays mapped to native by binary64 /9, exact native 96\u00b2 operators",
+  "primary": "src/score_batch.py evaluate with 256-tile Arb upper screen and Native strict score, no coarse inertia hint",
+  "recovery": "src/recover_unknown.py eligible and examine, once on primary unresolved cases; retain all first and recovered receipts",
+  "control": "FIVE archived same-cap fixed profiles, already scored on exactly these data in transferred_weight_transfer16.json; compare using exact same Y/radius, no recomputation.",
+  "labels": "Optimizer and strict verifiers read only Y, radius and opaque IDs. Scalar cap labels only after all adaptive scores exist.",
+  "decision": "PASS iff lower > radius; verified below-or-equal when upper <= radius; otherwise UNKNOWN.",
+  "analysis": "Record paired changes and uncertainty by view/noise and by independent distinct objects. Record all task scopes and actual costs."
+}

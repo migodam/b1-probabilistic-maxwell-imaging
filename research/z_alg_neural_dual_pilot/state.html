@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>\(u=1\) 的原生状态负方向 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="u1-的原生状态负方向"><span class="math-inline">\(u=1\)</span> 的原生状态负方向</h1>
+<p>在六件 optfresh 材料的 180 份封存提案中，68 份可单靠 96² 状态矩阵 <span class="math-inline">\(K\)</span> 严格证明至少有 10 个负方向，因而证书距离严格为零。证书从第 <span class="math-inline">\(n_-(K)+1\)</span> 个源特征值开始计入正谱项，源矩阵的维度为 10。其余 112 份严格证明了 5–9 个负方向，状态是否足以耗尽 10 个源方向仍未定。同一材料的 1%、2%、10% 噪声和各搜索臂为配对条件。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>提案</th>
+<th>96² 负方向下界分布</th>
+<th style="text-align:right">96² 下界均值</th>
+<th style="text-align:right">32² 数值计数均值</th>
+<th style="text-align:right">96² 已证耗尽</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>神经直接提案</td>
+<td>36 份为 9</td>
+<td style="text-align:right">9.00</td>
+<td style="text-align:right">9.00</td>
+<td style="text-align:right">0/36</td>
+</tr>
+<tr>
+<td>固定特征对照</td>
+<td>36 份为 8</td>
+<td style="text-align:right">8.00</td>
+<td style="text-align:right">9.00</td>
+<td style="text-align:right">0/36</td>
+</tr>
+<tr>
+<td>神经初值加梯度</td>
+<td>17 份为 8，19 份为 9</td>
+<td style="text-align:right">8.53</td>
+<td style="text-align:right">9.00</td>
+<td style="text-align:right">0/36</td>
+</tr>
+<tr>
+<td>1 秒梯度</td>
+<td>18 份为 12，18 份为 14</td>
+<td style="text-align:right">13.00</td>
+<td style="text-align:right">13.00</td>
+<td style="text-align:right">36/36</td>
+</tr>
+<tr>
+<td>5 秒梯度</td>
+<td>1 份为 5、1 份为 7、2 份为 8、14 份为 10、18 份为 14</td>
+<td style="text-align:right">11.67</td>
+<td style="text-align:right">13.33</td>
+<td style="text-align:right">32/36</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>1 份为 5、1 份为 7、55 份为 8、55 份为 9、14 份为 10、18 份为 12、36 份为 14</td>
+<td style="text-align:right">10.04</td>
+<td style="text-align:right">10.67</td>
+<td style="text-align:right">68/180</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>16 区权重为 32/90，64 区权重为 36/90。32² 数值计数达到 10 的有 71 份，其中 68 份取得了 96² 严格证明，另外 3 份仍未定。首轮评分当时已落盘的 160 份 <span class="math-inline">\(u=1\)</span> 回执中，256 维方块指标的状态子空间见证为 2–8 个，均值 7.45，零份达到 10。首轮边框矩阵仍可直接证明零距离。本轮单独检验物理 <span class="math-inline">\(K\)</span> 的负方向，以确定状态惯性本身何时足以推出零距离。<a href="native.html">首轮验证口径</a></p>
+<h2 id="计算与证明">计算与证明</h2>
+<p>由均匀粗网种子 <span class="math-inline">\((\mu,\lambda)=(0.001,0.0005)/9\)</span> 的 14 个方向和归档两份原生 16 区 <span class="math-inline">\(u=1\)</span> 权重各 5 个方向构成共享基 <span class="math-inline">\(V\)</span>。参考权重和方向数在读取封存提案之前确定。两份归档权重继承论文一的历史，计算本轮基时只读取参考权重、传感算子与 Green 频谱。逐份证明读取封存的 16 或 64 区乘子，沿用评分入口的二进制浮点除九映射。整个计算只用算子和权重，不涉及观测 <span class="math-inline">\(Y\)</span> 或材料真值。</p>
+<p>设 <span class="math-inline">\(P_b\)</span> 为分区指示投影，<span class="math-inline">\(T_b=V^*P_bGV\)</span>。在归档原生算子上用 112 位 Arb 区间运算共同计算 <span class="math-inline">\(V^*S^*SV\)</span>、<span class="math-inline">\(V^*P_bV\)</span> 和各 <span class="math-inline">\(T_b\)</span>。每份提案重组</p>
+<div class="math-display" tabindex="0">\[V^* K V=V^*S^*SV+\sum_b\mu_b\bigl(V^*P_bV-u\operatorname{Re}_H T_b\bigr)
++\sum_b\lambda_b\operatorname{Im}_H T_b.\]</div>
+<p>64 区压缩复用同一次 24 列原生区间 FFT，16 区压缩用相邻四区求和。小矩阵数值特征向量只用于提出合同的旋转。严格负的 Gershgorin 上端才计数，合同负定即证明原生 <span class="math-inline">\(K\)</span> 至少有这么多个负方向。这个结论包含接收惩罚 <span class="math-inline">\(S^*S\)</span>，也适用于 <span class="math-inline">\(K\)</span> 奇异时的边框积分定义。结论的适用范围是封存权重和已证的严格负方向。</p>
+<h3 id="同基补记-u075">同基补记 <span class="math-inline">\(u=0.75\)</span></h3>
+<p>同一基在 180 份 <span class="math-inline">\(u=0.75\)</span> 提案上严格找到 0–4 个负方向，均值 1.87。32² 数值均值 1.89。这一组只记录试探空间找到的方向，其余原生状态与证书仍由各自的完整验证回执判定。</p>
+<h3 id="费用与复现">费用与复现</h3>
+<p>单线程原生基和几何准备耗时 14.83 秒墙钟、8.96 秒进程 CPU，包含 24 列原生区间 FFT。<span class="math-inline">\(u=1\)</span> 的 180 次区间压缩检验另耗 3.39 秒墙钟、2.58 秒 CPU，每份平均 18.82 毫秒墙钟。<span class="math-inline">\(u=0.75\)</span> 复用准备，共耗 3.12 秒墙钟、2.59 秒 CPU。整个进程含两组、文件读取和汇总共 21.48 秒墙钟、14.22 秒 CPU。32² 提案历史耗时另列，<span class="math-inline">\(u=1\)</span> 平均每份 1.37 秒墙钟，独立 32² 数值诊断的 72 份平均每份 65.36 毫秒墙钟。</p>
+<p>从本目录用现有科学 Python 环境运行 <code>python -B src/diagnose_inertia.py</code>。逐份回执保存物理权重、严格合同上端和下界、原 32² 数值计数、当时可读的首轮状态计数及计时。<a href="src/diagnose_inertia.py">复现脚本</a> · <a href="results/geometry_inertia.json">逐份数据及完整费用</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html" aria-current="page">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="GEOMETRY_INERTIA_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

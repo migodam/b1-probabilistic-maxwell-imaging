@@ -1,0 +1,46 @@
+{
+  "frozen_utc": "2026-11-22T17:54:08.281482+00:00",
+  "protocol": {
+    "cap": 0.75,
+    "anchor_indices": [
+      0,
+      2
+    ],
+    "partitions": [
+      4,
+      16,
+      64
+    ],
+    "native_cg": {
+      "rtol": 3e-13,
+      "maxiter": 700,
+      "rhs_per_endpoint": 30
+    },
+    "basis": "SVD of separately normalized endpoint trial columns, cutoff 1e-11 relative to largest",
+    "upper": "one center Galerkin trial per equal dyadic subinterval, reused at both edges; max of convex positive trace at edges",
+    "nesting": "min of the current raw piece upper and its already certified parent upper",
+    "lower": "maximum of the two previously paid strict endpoint lowers, without any interior node",
+    "verdicts": {
+      "PASS": "endpoint lower > radius",
+      "BELOW": "continuous upper < radius",
+      "UNRESOLVED": "otherwise"
+    },
+    "precision_bits": 112,
+    "arb_threads": 1,
+    "blas_threads": 1,
+    "validation_focus": [
+      "dualpilot_validation_000",
+      1.0
+    ],
+    "historical_focus": [
+      "s2d_004",
+      2.0
+    ],
+    "cohorts": {
+      "validation_comparator": "twelve validation objects at 2%",
+      "fresh": "all 32 objects, 96 views",
+      "external8": "all 8 objects, 24 views"
+    },
+    "comparison": "previous same-view 3/5/9 results; focus validation 1% replay uses saved matrices only"
+  }
+}

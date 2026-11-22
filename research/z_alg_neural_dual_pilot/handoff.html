@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>给下一轮 GPT Pro 的研究交接 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html" aria-current="page">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="给下一轮-gpt-pro-的研究交接">给下一轮 GPT Pro 的研究交接</h1>
+<p>从一个可核对的矛盾切入。同一物体、同一 400 MHz 阵列、同一 2% 含噪读数，可以严格证明两件事。第一，旧两组权重之间所有连续混合都无法证明峰值大于 0.75。第二，普通梯度在这个连续家族以外找到一组权重，确实证明了这个物理命题。矛盾消失在一处，限制来自权重家族。问题在于能否在看到新物体时，事先判断哪些家族值得使用。<a href="followup/results/galerkin_historical_focus.json">历史反例的严格区间</a> · <a href="transfer.html">跨材料的完整复验</a></p>
+<h2 id="已经可以引用的事实">已经可以引用的事实</h2>
+<ul>
+<li>
+<p>论文一的匿名稿已独立封存，25 页、34 条经核对的文献。该稿以全波守恒和惯性得到确定性材料峰值排除。完整全体全局标量单源与四区单源的能力分离有两个 9,216 维例子。十六区单源可以追平；实测部分给出条件误差余量。若讨论论文一本身，以此版本的物理与证书口径为准。<a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/manuscript_ip.pdf">英文稿</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/optical-inertia-ip-final/IP_Anonymous_LaTeX.zip">匿名 LaTeX 包</a></p>
+</li>
+<li>
+<p>论文二 Pilot 实际训练了读入观测与不读观测的两种同容量网络。60 件训练、12 件验证、28 件物理留出。16/64 块，三个噪声档，两档普通梯度及三步混合，共有 1,420 个原生物理提案。额外的候选距离和算法收益以 96² 严格证书判断。两个规定的突破门槛均未达到；双方都通过的独立冷启动对象上，直接网络和混合方法中位提速为 1.02、0.97 倍。主试验裁决为 <strong>NO-GO</strong>。<a href="index.html">研究报告</a> · <a href="tables.html">同预算数据及费用</a></p>
+</li>
+<li>
+<p>对一对共享几何的正定端点，原电流二次型给出源矩阵的连续上界。两端基配四段 Galerkin 检验在 216 份实际含噪仿真读数上得到 12 个端点严格通过和 204 个整段低于半径。九个精确节点外推仍留一份未定。四段法累计准备 120 个原生右端，整段在线中位 9.51 毫秒 CPU；九节点为 270 个和 70.54 毫秒。这些时间只衡量本项区间任务。<a href="port-theory.html">完整数学推导</a> · <a href="followup/results/galerkin_paired_summary.json">216 份同视图对照</a></p>
+</li>
+<li>
+<p>同一二十接收点阵列被动保留十个天线时，删行后的状态负惯性等于十阶矩阵 <span class="math-inline">\(D=I-S_M K^{-1}S_M^*\)</span> 的负惯性。对这条权重线，两个交错阵列在整个区间上负惯性皆为十，因此对任意读数零证书。两条连续弧在整个区间上负惯性均为九；实际 216 份观测逐一证得整段零。后者的量词是特定数据。<a href="receivers.html">接收阵列的几何证明</a> · <a href="arcs.html">连续弧的逐条证明</a></p>
+</li>
+<li>
+<p>在原物体上成功的那一组不定权重，在事先封存的 16 件新物体、三档噪声上 48/48 严格为零。五种既有光学权重仍在两个物体上通过。新物体的 12 份低峰对照均无错误排除。原历史物体上的单例成功，尚不足以建立可跨材料复用的权重字典。<a href="followup/results/transferred_weight_transfer16.json">独立观测回执</a></p>
+</li>
+<li>
+<p>在相同 16 件材料上逐件调整 64 区权重，1%、2%、10% 三档分别严格通过 6、4、0 件，五组固定权重为 2、0、0 件。四件新增材料和八份新增读数均由原生证明确认。梯度成功时每份含求证耗时中位 41.01 秒。普通梯度在低噪声下得到可重复的增益。固定权重的比较曾先行暴露，此次沿用既有算法的配对复验不提供全新盲选方法的证据。<a href="online.html">48 份严格结果</a></p>
+</li>
+</ul>
+<h2 id="两个值得证明或反驳的问题">两个值得证明或反驳的问题</h2>
+<ol>
+<li><strong>几何证据能否排除一个有面积的权重区域？</strong> 对已知公共正谱地板的参数区域，能否仅从端口和有限试探电流严格证明整个多维区域的源谱都不够强？一维线段已有实例。多维需要控制端口残差、凹上包络与覆盖单元数，应给出明确的总成本和查不到关键电流方向的反例。若要从正定区进入不定区，必须处理跨越零点和不同惯性，不可直接搬用矩阵凹性。</li>
+<li><strong>接收阵列能否在有物理意义的一类材料上预测有效证书，而不只预测必然失败？</strong> 交错接收的失败可以由几何单独证明。连续弧保留了一个方向，已测物体仍然全失败。必须给保留方向上真实合法材料激发出的源谱下界，或给出无法做到的反例。使用新输入作设计时，要对比原五个固定权重、等资源的普通空间阵列和物理误差；角位置减少的被动后处理与增加观测、提高发射能量、降低噪声半径应分别记账。</li>
+</ol>
+<p>矩阵分式的凹性、分区变分包围、Galerkin 降阶和惯性加法都有经典来源。本轮可据以提出的原创性问题是，有限孔径下能否把物理材料证书的<strong>全族有效范围</strong>压缩到端口维，并在预先可说明的复杂度下完成证明。已证范围只涉及上述冻结线段与阵列。材料真实可行集、连续介质误差、任意空间乘子的最优值和真实成像精度都需要单独证据。<a href="https://doi.org/10.1016/0024-3795(68)90050-5">经典矩阵结果</a> · <a href="https://doi.org/10.1051/cocv:2002041">认证降阶先例</a></p>
+<h2 id="从哪里复算">从哪里复算</h2>
+<p><a href="index.html">网页与结论</a> · <a href="reproduce.html">训练和区间复算</a> · <a href="interpolation.html">新物体与角度的所有对照</a> · <a href="advisor.html">Neon 的创意、原始问题和我们的回应</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">本轮完整复现 ZIP</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="NEXT_PRO_HANDOFF.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

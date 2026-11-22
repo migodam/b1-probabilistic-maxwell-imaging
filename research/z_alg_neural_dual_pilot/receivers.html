@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>固定权重线段的接收孔径复核 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="固定权重线段的接收孔径复核">固定权重线段的接收孔径复核</h1>
+<p>沿用 96² 原生算子、十束原照明、材料上限 0.75 及从 16 区权重 0 到 2 的固定线段。接收角位置按 <span class="math-inline">\(0^\circ,18^\circ,\dots,342^\circ\)</span> 排列。冻结原生 <span class="math-inline">\(S\)</span> 的每个条目与按这组坐标重建的双精度阵列一致。四个半量测试分别保留偶数位置、奇数位置、<span class="math-inline">\(0^\circ\)</span> 起连续十点和 <span class="math-inline">\(180^\circ\)</span> 起连续十点。实际评分只用保留行，全部沿用完整读数的绝对 Frobenius 噪声半径。</p>
+<h2 id="三种范围的证据">三种范围的证据</h2>
+<p><strong>节点上的直接核验。</strong> 令 <span class="math-inline">\(P\)</span> 和 <span class="math-inline">\(M\)</span> 分别提取保留与删除行。对整环已核定的 <span class="math-inline">\(Q(t)=T(t)^*K(t)^{-1}T(t)\)</span>，取 <span class="math-inline">\(U=\operatorname{diag}(P^*,I)\)</span>、<span class="math-inline">\(W=[M^*;0]\)</span>、<span class="math-inline">\(D=I-W^*QW\)</span>。原状态矩阵正定，块消元给出 <span class="math-inline">\(n_-(K_{\mathrm{keep}})=n_-(D)\)</span>，以及</p>
+<div class="math-display" tabindex="0">\[Q_{\mathrm{keep}}=U^*QU+U^*QW D^{-1}W^*QU .\]</div>
+<p>Arb 核对 <span class="math-inline">\(D\)</span> 的全部符号，在保留源矩阵的降序谱中丢弃前 <span class="math-inline">\(\nu\)</span> 项，再核对其余项的正部和。四种 10 接收配置各有 <span class="math-inline">\(216\times9=1,944\)</span> 个视图权重配对，证书全部严格为零。两个交错掩码的负惯性为 10，源方向全部丢弃。两个连续弧的负惯性为 9，最后一个方向仍存在，实际测量的保留源谱经过区间核验后为零。全部 1,944 个全环对照区间和原节点区间相交。全环仍在独立 32 件、外部 8 件、历史 28 件、验证 12 件的批次分别正向过线 4、0、5、3 个视图。同一物体的噪声和权重仍是配对条件。</p>
+<p><strong>固定掩码的几何结论。</strong> <span class="math-inline">\(D(t)=I-S_M K(t)^{-1}S_M^*\)</span> 为矩阵凹函数。用相邻外弦的 Loewner 上包络，在每个细分区间的两个端点验证共同负子空间。对两条连续弧，另在相邻真实节点的内弦下包络上验证共同正方向。由严格区间合同认证，对全部实数 <span class="math-inline">\(t\in[0,1]\)</span>，交错两种布局均恰有 10 个负方向，连续两弧均恰有 9 个。交错因而对这条线段上任意读数 <span class="math-inline">\(Y\)</span> 都丢尽源方向。其 <span class="math-inline">\(D\)</span> 的最小已证负向间隔分别为 0.024399 和 0.024585。连续弧分别保留一个源方向，线段上的惯性结论并不替代该方向的逐读数源谱核验。<span class="math-inline">\(0^\circ\)</span> 弧在每个原节点区间等分为 8 段后闭合，其余配置在等分为 4 段时已闭合。</p>
+<p><strong>任意被动接收后处理的传播结论。</strong> 对 <span class="math-inline">\(C^*C\preceq I\)</span>，把 <span class="math-inline">\((S,Y)\)</span> 替成 <span class="math-inline">\((CS,CY)\)</span>，在边框矩阵中减去</p>
+<div class="math-display" tabindex="0">\[[S,-Y]^*(I-C^*C)[S,-Y]\succeq0.\]</div>
+<p>正惯性计数不会增加。用其阈值积分定义证书时，保留侧状态即使奇异也有 <span class="math-inline">\(d_C(t)\le d_{\mathrm{full}}(t)\)</span>。因此全环已核定的整段上端可直接继承到全部 <span class="math-inline">\(2^{20}\)</span> 种删行及同一绝对半径的被动后处理。该上端按独立 32 件、外部 8 件、历史 28 件、验证 12 件的顺序，分别严格低于半径 92/96、24/24、78/84、9/12 个视图，其中整段上端恰为零的有 90、24、76、8 个。传播证据与上述四种固定几何的点位计算分别保存。</p>
+<h2 id="费用与直接核验">费用与直接核验</h2>
+<p>读取原九节点响应后，36 份压缩掩码几何和 9 份全环引用共用一次约 0.040 秒墙钟、0.029 秒进程 CPU 的准备。四批节点评分、<span class="math-inline">\(D(t)\)</span> 的连续符号证明以及任意被动处理的传播均使用 0 个新增原生右端。独立批次中，单个连续弧节点的中位 CPU 约 1.2 毫秒，交错掩码的固定惯性查验约 1 微秒。连续惯性核验证明耗时约 0.60 秒墙钟、0.28 秒 CPU。</p>
+<p>预先固定的三个 96² 直接检查使用独立批次编号最小的对象及其 1% 观测。对全环 <span class="math-inline">\(t=0\)</span>、偶位交错 <span class="math-inline">\(t=0.5\)</span>、<span class="math-inline">\(0^\circ\)</span> 弧 <span class="math-inline">\(t=0.5\)</span>，直接核查的惯性为 0、10、9，三个距离区间均与压缩值相交。交错用原生负子空间加秩上界验证。连续弧另用独立的删除行原生驻点核验给出两侧谱间隔，然后直接解保留行状态方程并以 Arb 复核缺陷。直接检查单独支付 30 个原生驻点右端，约 32.29 秒墙钟、26.07 秒 CPU。独立变量是整个配置，其连续性质限于这一条物理权重线段。</p>
+<p><code>results/masked_geometry.json</code> 保存接收角、节点惯性证明和计时。<code>results/masked_continuous_inertia.json</code> 保存连续符号、每个区间的余量及分段尝试。<code>results/masked_direct_checks.json</code> 保存三个原生核验。各批次的 <code>results/*_masked_ports.json</code> 分开给出点位证书和整段传播结果。</p>
+<pre><code class="language-bash">PYTHONDONTWRITEBYTECODE=1 .artifacts/z_alg_diag_python/bin/python -B \
+  research/z_alg_neural_dual_pilot/followup/masked_ports.py
+PYTHONDONTWRITEBYTECODE=1 .artifacts/z_alg_diag_python/bin/python -B \
+  research/z_alg_neural_dual_pilot/followup/masked_ports.py --continuous-only
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html" aria-current="page">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="followup/MASKED_PORTS_REPLAY.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

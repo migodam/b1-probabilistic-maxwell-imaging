@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>端点驻点空间能否给出更紧的线段上界 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="端点驻点空间能否给出更紧的线段上界">端点驻点空间能否给出更紧的线段上界</h1>
+<p>检验沿用 <span class="math-inline">\(u=0.75\)</span> 的两个正定 16 区锚点。状态维度为 9,216，全环观测有 20 个接收端和 10 个照明源。问题是只对两个端点做原生求解，再用一个共享小空间构造整段严格上界，能否较少使用原生右端并改善 3、5、9 点外推判定。使用冻结的带噪端口和同一个误差半径。<a href="followup/GALERKIN_FROZEN.json">冻结协议</a></p>
+<p>4 段覆盖把 216 个配对视图全部判定，其中 204 个严格低于半径，12 个由已存端点下界过线。旧 9 点外推的唯一未定视图是 <code>s2d_004</code> 的 2% 读数。该视图的 4 段区间为 <span class="math-inline">\([0.07035767,0.07815166]\)</span>，上端低于同一半径 0.07992644。16 段和 64 段的上端分别为 0.07092972 和 0.07039538。旧 9 点上端为 0.08493956。<a href="followup/results/galerkin_historical_focus.json">重点历史视图回执</a> · <a href="followup/results/galerkin_paired_summary.json">216 份配对汇总</a></p>
+<h2 id="配对结果">配对结果</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>数据组</th>
+<th style="text-align:right">视图</th>
+<th style="text-align:right">4 段 过线／低于／未定</th>
+<th style="text-align:right">旧 3 点</th>
+<th style="text-align:right">旧 5 点</th>
+<th style="text-align:right">旧 9 点</th>
+<th style="text-align:right">严格零证书 4／16／64 段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>验证材料 2%</td>
+<td style="text-align:right">12</td>
+<td style="text-align:right">3／9／0</td>
+<td style="text-align:right">3／0／9</td>
+<td style="text-align:right">3／9／0</td>
+<td style="text-align:right">3／9／0</td>
+<td style="text-align:right">8／8／8</td>
+</tr>
+<tr>
+<td>历史材料回放</td>
+<td style="text-align:right">84</td>
+<td style="text-align:right">5／79／0</td>
+<td style="text-align:right">5／0／79</td>
+<td style="text-align:right">5／78／1</td>
+<td style="text-align:right">5／78／1</td>
+<td style="text-align:right">76／76／76</td>
+</tr>
+<tr>
+<td>32 件后续材料</td>
+<td style="text-align:right">96</td>
+<td style="text-align:right">4／92／0</td>
+<td style="text-align:right">4／0／92</td>
+<td style="text-align:right">4／90／2</td>
+<td style="text-align:right">4／92／0</td>
+<td style="text-align:right">87／90／90</td>
+</tr>
+<tr>
+<td>8 件重新采集材料</td>
+<td style="text-align:right">24</td>
+<td style="text-align:right">0／24／0</td>
+<td style="text-align:right">0／0／24</td>
+<td style="text-align:right">0／24／0</td>
+<td style="text-align:right">0／24／0</td>
+<td style="text-align:right">24／24／24</td>
+</tr>
+<tr>
+<td>合计</td>
+<td style="text-align:right">216</td>
+<td style="text-align:right">12／204／0</td>
+<td style="text-align:right">12／0／204</td>
+<td style="text-align:right">12／201／3</td>
+<td style="text-align:right">12／203／1</td>
+<td style="text-align:right">195／198／198</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>4 段已判定 <code>ip_port_17</code> 的 1% 和 2% 视图低于半径，旧 5 点未定，旧 9 点已证严格零。16 段和 64 段继续收紧部分上界，判定总数与 4 段相同。各级严格区间与旧各级区间逐视图相交，共核对 1,944 对。视图数包含同一物体的配对噪声。所有批次均在既有方法的回执保存后重放，属于已曝光的机制核对。<a href="followup/results/galerkin_validation.json">验证 2%</a> · <a href="followup/results/galerkin_historical.json">历史回放</a> · <a href="followup/results/galerkin_fresh.json">32 件材料</a> · <a href="followup/results/galerkin_external8.json">8 件重新采集材料</a></p>
+<p>额外核查 <code>dualpilot_validation_000</code> 的 1% 读数，原半径为 0.03686932。4、16、64 段均严格证明证书沿整段恒为零。旧 3 点同视图上端为 1.12713693，旧 5、9 点也证明整段严格零。<a href="followup/results/galerkin_validation_focus.json">重点验证视图回执</a></p>
+<p>两个固定端点分别严格过线 4 和 8 个视图，取两端较大的已证下界合计覆盖全部 12 个过线视图。旧 9 点也只在这 12 个视图过线。整段严格低于半径的 204 个视图体现的是固定线段证书的能力范围。对材料的排除仍采用距离下端严格超过半径的原判据。</p>
+<h2 id="从驻点变分式得到整段上界">从驻点变分式得到整段上界</h2>
+<p>设 <span class="math-inline">\(K_j\)</span> 为端点状态矩阵，<span class="math-inline">\(T_j=[S^*,Z_jB]\)</span>，<span class="math-inline">\(\Xi=[Y;I]\)</span>。归档的原生正谱间隔随权重线性插值给出 <span class="math-inline">\(K_t\succ0\)</span>。两端各重新计算 30 列近似驻点 <span class="math-inline">\(X_j\approx K_j^{-1}T_j\)</span>，合并后用列归一化和 SVD 得到数值基 <span class="math-inline">\(V\)</span>。每个端点只需保存小矩阵 <span class="math-inline">\(V^*K_jV\)</span>、<span class="math-inline">\(V^*T_j\)</span>。对 <span class="math-inline">\(GV\)</span> 做一次区间传播，将每一列的结果同时供两端计算。</p>
+<p>把 <span class="math-inline">\([0,1]\)</span> 均分成 <span class="math-inline">\(M=4,16,64\)</span> 段。每段中心点 <span class="math-inline">\(m\)</span> 上，小系统提出试探系数 <span class="math-inline">\(C_m\approx (V^*K_mV)^{-1}V^*T_m\)</span>。固定 <span class="math-inline">\(J=VC_m\Xi\)</span> 后，原生源矩阵满足</p>
+<div class="math-display" tabindex="0">\[H(t)\preceq Y^*Y+\Xi^*Q_m(t)\Xi,\qquad
+Q_m(t)=C_m^*V^*K_tVC_m-C_m^*V^*T_t-(C_m^*V^*T_t)^* .\]</div>
+<p>误差项是 <span class="math-inline">\(J-J_*(t)\)</span> 在正定 <span class="math-inline">\(K_t\)</span> 下的 Gram 矩阵。<span class="math-inline">\(Q_m(t)\)</span> 对 <span class="math-inline">\(t\)</span> 仿射，两个边点的 <span class="math-inline">\(\operatorname{tr}(H_+)\)</span> 上界即可包住候选仿射形式在该段的最大值。共同区间的两级上端取较小值，再对所有段取最大值，就得到 <span class="math-inline">\(\max_t d(t)\)</span> 的上端。SVD 截断及浮点小系统只产生试探电流。证明照实际二进制 <span class="math-inline">\(V,C_m\)</span> 进行区间计算。下端只取此前已付费的两份端点证书的较大者。</p>
+<p>实现的严格边点矩阵以向外复区间编码保存，在线只需 <span class="math-inline">\(30\times 10\)</span> 端口合同和 <span class="math-inline">\(10\times10\)</span> 谱核验。缓存内的 <span class="math-inline">\(V^*K_jV\)</span>、<span class="math-inline">\(V^*T_j\)</span> 均按两端共同物理尺度归一化，供复算；边点 <span class="math-inline">\(Q_m(t)\)</span> 已换回原尺度。验证材料的目标 1% 读数，用既有 9 点缓存重放同半径对照。其他批次读取同视图已有的 3、5、9 点报告。<a href="followup/galerkin_cover.py">实现</a> · <a href="followup/results/galerkin_enclosures.json.gz">严格压缩矩阵与费用</a> · <a href="segment.html">已有节点覆盖方法</a></p>
+<h2 id="实际费用">实际费用</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>准备项目</th>
+<th style="text-align:right">原生右端</th>
+<th style="text-align:right">墙钟秒</th>
+<th style="text-align:right">进程 CPU 秒</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>已付费两端严格下界的共同响应</td>
+<td style="text-align:right">60</td>
+<td style="text-align:right">18.453</td>
+<td style="text-align:right">19.615</td>
+</tr>
+<tr>
+<td>新 Galerkin 准备至 4 段，含试探重算、压缩与小系统</td>
+<td style="text-align:right">60 新增</td>
+<td style="text-align:right">38.428</td>
+<td style="text-align:right">28.674</td>
+</tr>
+<tr>
+<td>4 段全部证据共同计费</td>
+<td style="text-align:right">120</td>
+<td style="text-align:right">56.882</td>
+<td style="text-align:right">48.289</td>
+</tr>
+<tr>
+<td>旧 9 点全部证据共同计费</td>
+<td style="text-align:right">270</td>
+<td style="text-align:right">197.534</td>
+<td style="text-align:right">141.870</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>两端 60 列试探 CG 共耗墙钟 10.802 秒，区间 Green 传播和压缩共 27.255 秒，4 个中心小系统和 8 份边点矩阵共 0.099 秒。完整 4／16／64 段共用 60 列原生 CG 和 60 列区间 Green 传播，准备总计墙钟 40.629 秒、CPU 30.431 秒。上表以原生计算及压缩准备为计时边界。重新读入压缩缓存耗墙钟 0.845 秒、CPU 0.706 秒。运行在单线程下，同时有其他作业使用同一机器。</p>
+<p>216 份配对视图的 4 段连续上界本身中位耗时为墙钟 8.127 毫秒、CPU 7.426 毫秒。加上端口预处理和两份严格下界合同后，中位为墙钟 10.373 毫秒、CPU 9.512 毫秒。旧 9 点的同任务历史计时为墙钟 163.260 毫秒、CPU 70.542 毫秒。32 件后续材料的子组中位 CPU 分别为 9.19 与 70.98 毫秒。16、64 段逐视图累计 CPU 中位为 39.35、157.58 毫秒。<a href="followup/results/galerkin_paired_summary.json">费用及逐组统计</a></p>
+<p>在本目录用项目的科学计算 Python 环境运行以下命令。<code>all</code> 运行冻结试验，<code>historical</code> 用同一缓存重放完整的历史 84 个视图，<code>paired_summary</code> 汇总 216 个配对视图。压缩缓存存在时，两种回放都只做端口合同和谱核验。</p>
+<pre><code class="language-bash">PYTHONDONTWRITEBYTECODE=1 python -B galerkin_cover.py all
+PYTHONDONTWRITEBYTECODE=1 python -B galerkin_cover.py historical
+PYTHONDONTWRITEBYTECODE=1 python -B galerkin_cover.py paired_summary
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html" aria-current="page">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="followup/GALERKIN_COVER_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

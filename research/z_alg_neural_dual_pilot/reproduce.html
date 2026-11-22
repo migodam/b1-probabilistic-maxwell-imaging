@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z-ALG 学习双乘子复现说明 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html" aria-current="page">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="z-alg-学习双乘子复现说明">Z-ALG 学习双乘子复现说明</h1>
+<p>本包保留可直接运行的研究路径。以解压目录为当前工作目录执行下列命令。打开 <code>research/z_alg_neural_dual_pilot/index.html</code> 可读研究结果，打开同目录的 <code>interpolation.html</code> 可读连续权重与接收孔径跟进。包中有 72 件训练或验证材料各自的五档配对噪声读数，以及主比较、低噪声补充和独立跟进的冻结复场。主比较用 32² 生成提议，以 96² 全维区间证书或已证明的 96² 限制上界作物理判定。</p>
+<h2 id="包内入口">包内入口</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>要核对的步骤</th>
+<th>入口与数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>样本与训练</td>
+<td><a href="training.html">训练方法</a>、<a href="data/synthetic_observations.npz">无标签输入</a>、<a href="data/generation_receipt.json">生成回执</a>、<a href="results/training_recipe_frozen.json">冻结方案</a></td>
+</tr>
+<tr>
+<td>两个模型</td>
+<td><a href="results/neural_dual_weights.pt">测量特征权重</a>及<a href="results/neural_dual_training.json">训练记录</a>、<a href="results/no_feature_weights.pt">固定特征权重</a>及<a href="results/no_feature_training.json">训练记录</a>、<a href="results/training_checkpoint_audit.json">独立验证输出变化</a></td>
+</tr>
+<tr>
+<td>主比较的 28 物体</td>
+<td>论文一 6 件原生材料的 18 个配对全环读数及半径，另含 SRAP 22 件的原始 10% 全环读数及半径。主比较共 40 个观测、98 个观测和上限组合。Y 的行、列分别是 20 个接收点和 10 个平面波。数据由 <a href="src/holdout.py">holdout.py</a> 读取。</td>
+</tr>
+<tr>
+<td>单列低噪声补充</td>
+<td>相同 22 个 SRAP 对象各新增 1% 和 2% 端口中心，在 <span class="math-inline">\(u=0.75\)</span> 评价。由 <a href="src/holdout.py">holdout.py</a> 的 supplement 路径读取。它们是同一材料的配对条件。<a href="data/srap_supplement.npz">冻结复读数</a> · <a href="data/srap_supplement.json">区间半径生成回执</a></td>
+</tr>
+<tr>
+<td>搜索及严格证书</td>
+<td><a href="src/propose.py">提议入口</a>、<a href="gradients.html">梯度方法</a>、<a href="native.html">原生证书说明</a>、<a href="src/score_batch.py">批量严格回放</a>、<a href="src/fixed_baselines.py">论文一固定对照</a></td>
+</tr>
+<tr>
+<td>数值导数和限制上界</td>
+<td><a href="results/coarse_gradient_check.json">32² 解析导数回执</a>、<a href="results/native_restriction_training_check.json">96² 独立方向检查回执</a></td>
+</tr>
+<tr>
+<td>状态负方向与冷启动</td>
+<td><a href="state.html">光谱诊断</a>、<a href="results/geometry_inertia.json">几何压缩回执</a>、<a href="results/cold_latency.json">独立冷启动回执</a></td>
+</tr>
+<tr>
+<td>连续权重和接收孔径</td>
+<td><a href="interpolation.html">跟进结果</a>、<a href="data/followup_observations.npz">独立 32 件冻结读数</a>、<a href="data/followup_external8.npz">外部 8 件冻结读数</a>、<a href="segment.html">权重线段</a>、<a href="receivers.html">接收孔径</a>、<a href="currents.html">Galerkin</a></td>
+</tr>
+<tr>
+<td>固定 64 区权重转移</td>
+<td><a href="data/transfer16.npz">独立 16 件冻结读数</a>、<a href="followup/transfer16_generation.json">生成回执</a>、<a href="followup/TRANSFERRED_WEIGHT_FROZEN.json">冻结独立比较</a>、<a href="followup/results/transferred_weight_transfer16.json">逐案严格结果</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>论文一的依赖来自本地保管的公开验证包，随附三份公共算子文件、原生证书与固定对照的源码及回执、18 份配对读数以及 SRAP 22 件的读数与半径。配对清单保留本试验用到的 1%、2%、10% 原行。原 SRAP 生成器、离线前向校验及 11 个快照依赖也随包提供，依照实际 Python 导入路径放置。包内运行直接使用已有依赖和公开读数。材料阵列、干净场和用户原请求留在原工作区。跟进的离线评分 JSON 只保留预先生成的标量标签。成员路径和体积见解压根下的 <code>PACKAGE_CONTENTS.json</code>。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-optical-inertia-validation-v1">论文一公开验证包</a></p>
+<h2 id="环境">环境</h2>
+<p>使用 Python 3.13，并安装 NumPy、SciPy、PyTorch、python-flint 和 threadpoolctl。训练环境的 NumPy 为 2.5.3、SciPy 为 1.18.1、PyTorch 为 2.14.0。区间核验使用 python-flint 0.9.0。重画图需要 Matplotlib，重编网页需要 markdown-it-py。历史轨迹保留原机付费墙钟和 CPU。优化器有时间上限，其他机器可取得不同的候选数和候选权重。</p>
+<pre><code class="language-bash">export PYTHONDONTWRITEBYTECODE=1
+export VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+PILOT=research/z_alg_neural_dual_pilot
+</code></pre>
+<h2 id="使用已封存证据">使用已封存证据</h2>
+<ul>
+<li>提议文件位于 results/proposals，逐对象 JSONL 包含乘子、诊断与独立计时。迭代详情保存在 results/optimization_traces 的压缩 JSONL。严格区间、上界、未知状态和各项费用位于 results/native。补充队列在 results/supplement 下保持同一布局。</li>
+<li>论文一固定权重回放在 <a href="results/fixed_baselines.csv">fixed_baselines.csv</a> 与 <a href="results/fixed_baselines.json">fixed_baselines.json</a>。固定对照沿用论文一的绝对权重和历史共享正定间隙。</li>
+<li>严格过线的判据是原生证书的下端点大于冻结观测半径。96² 限制矩阵的严格上界只用于判断某一套乘子无法过线。32² 硬分数或未决结果不产生排除结论。</li>
+</ul>
+<h2 id="如需重算">如需重算</h2>
+<p>用单独解压出的工作副本，可保留原包和原完整轨迹。默认训练和数学诊断会写入 results。重训可传入另一输出目录。若要用重训权重重跑盲评，应在工作副本中先保留发布权重，再将重训的两个选中权重放到 results 的同名路径。</p>
+<pre><code class="language-bash">python -B &quot;$PILOT/src/generate.py&quot; --workers 4
+python -B &quot;$PILOT/src/train.py&quot; --mode neural --out &quot;$PILOT/retrained&quot;
+python -B &quot;$PILOT/src/train.py&quot; --mode no_feature --out &quot;$PILOT/retrained&quot;
+python -B &quot;$PILOT/src/check_coarse_gradients.py&quot;
+python -B &quot;$PILOT/src/native_check.py&quot;
+python -B &quot;$PILOT/src/native_check.py&quot; --training
+python -B &quot;$PILOT/src/check_native_restriction.py&quot;
+python -B &quot;$PILOT/src/validation_swaps.py&quot;
+python -B &quot;$PILOT/src/recover_unknown.py&quot; --training
+</code></pre>
+<p>已完整的逐对象文件会被续跑入口跳过。若要从零重做搜索和严格证书，在工作副本中先将原轨迹和完成标记移到另一目录，保留 results/holdout_open.json。批量验证可在每个队列的提议生成完后运行。它也支持 --watch 模式追随提议的写入。以下命令分别运行主比较和补充比较，省略分片参数时处理本队列全部对象。</p>
+<pre><code class="language-bash">python -B &quot;$PILOT/src/propose.py&quot;
+python -B &quot;$PILOT/src/score_batch.py&quot;
+python -B &quot;$PILOT/src/propose.py&quot; --supplement
+python -B &quot;$PILOT/src/score_batch.py&quot; --supplement
+python -B &quot;$PILOT/src/fixed_baselines.py&quot;
+python -B &quot;$PILOT/src/fixed_baselines.py&quot; --supplement
+python -B &quot;$PILOT/src/recover_unknown.py&quot; --run
+python -B &quot;$PILOT/src/recover_unknown.py&quot; --run --supplement
+python -B &quot;$PILOT/src/diagnose_inertia.py&quot;
+python -B &quot;$PILOT/src/cold_latency.py&quot;
+</code></pre>
+<p>冷启动入口读取原比较已封存的提议，每行另建原生验证器。状态诊断以独立固定子空间核查状态负方向。主比较图读取完整的 <a href="results/cases.csv">逐例回执</a>，生成 <a href="figures/certified_outcomes.pdf">严格排除结果</a>、<a href="figures/compute_reliability.pdf">配对在线费用</a> 和 <a href="figures/coarse_native_outcomes.pdf">粗网筛选与原生判定</a>。费用曲线只对双方均严格通过的同物体、同噪声、同上限配对先求比值，再按物体汇总。</p>
+<pre><code class="language-bash">python -B &quot;$PILOT/src/summarize.py&quot;
+python -B &quot;$PILOT/src/paired_tables.py&quot;
+python -B &quot;$PILOT/src/figures.py&quot;
+</code></pre>
+<h2 id="权重线段掩码和-galerkin">权重线段、掩码和 Galerkin</h2>
+<p>以下命令读取冻结的独立 32 件、重新采集的外部 8 件、原验证 12 件及历史 28 件的读数。四组分别报告，配对噪声保留原半径。默认复用包中的 30×30 原生端口响应、九节点区间响应和 Galerkin 缓存。<code>jensen_port.py --prepare --rebuild</code> 重新支付 90 个原生驻点右端。先保留已有缓存，再移走 <code>segment_enclosures.json</code>，可用 <code>segment_cover.py prepare</code> 复算九点缓存，额外支付 180 个原生右端。<code>galerkin_cover.py freeze</code> 写入冻结规则，运行 <code>all</code> 或指定批次时会按需制备压缩表。若要对初次制备计价，先在工作副本中移走 <code>galerkin_enclosures.json.gz</code>。接收掩码的生产路径从九节点响应中复用几何。三个独立原生核查另计实际原生右端。</p>
+<pre><code class="language-bash">python -B &quot;$PILOT/followup/jensen_port.py&quot; --validation
+python -B &quot;$PILOT/followup/jensen_port.py&quot; --observations &quot;$PILOT/data/followup_observations.npz&quot;
+python -B &quot;$PILOT/followup/jensen_port.py&quot; --historical
+for cohort in validation fresh historical external8; do
+  python -B &quot;$PILOT/followup/segment_cover.py&quot; &quot;$cohort&quot;
+done
+python -B &quot;$PILOT/followup/masked_ports.py&quot;
+python -B &quot;$PILOT/followup/masked_ports.py&quot; --continuous-only
+python -B &quot;$PILOT/followup/masked_segment.py&quot;
+python -B &quot;$PILOT/followup/galerkin_cover.py&quot; all
+python -B &quot;$PILOT/followup/galerkin_cover.py&quot; historical
+python -B &quot;$PILOT/followup/galerkin_cover.py&quot; paired_summary
+python -B &quot;$PILOT/followup/plot_results.py&quot; --aperture --diagnostic
+python -B &quot;$PILOT/src/render_report.py&quot;
+</code></pre>
+<p>已冻结读数足以重复上述评分。下列离线入口可在另一工作副本重建低噪声补充及两个跟进批次。它们产生读数、区间半径和离线评分记录。网络提议和证书入口只读取公开读数与半径。</p>
+<pre><code class="language-bash">python -B &quot;$PILOT/src/generate_srap_bands.py&quot;
+python -B &quot;$PILOT/followup/generate_fields.py&quot;
+python -B &quot;$PILOT/followup/generate_fields.py&quot; --archived8
+</code></pre>
+<h2 id="固定提案跨材料转移">固定提案跨材料转移</h2>
+<p><a href="followup/TRANSFER16_DESIGN.json">转移方案</a>把一份既有的 64 区物理权重与归档固定权重统一放在 96² 全环的同一误差球中比较。独立 16 件材料各有三个配对噪声视图。逐案的接受只用读数和半径，适用的状态证明及端口响应共享。生成器可在另一副本重建读数和离线标量。复现已经冻结的比较时，直接执行下组评分命令即可。</p>
+<pre><code class="language-bash"># 独立的离线数据生成入口
+python -B &quot;$PILOT/followup/generate_transfer16.py&quot;
+
+# 只用已冻结读数及噪声半径
+python -B &quot;$PILOT/followup/transferred_weight.py&quot; transfer16
+python -B &quot;$PILOT/followup/transferred_weight.py&quot; retrospective
+</code></pre>
+<p><code>transferred_weight.py prepare</code> 单独准备共享原生响应。已有缓存时沿用共享证明。<code>all</code> 依次评分独立 16 件和各历史对照，分开记账。已有权重无需再训练。</p>
+<h2 id="逐份带噪数据重新优化的-16-件对照">逐份带噪数据重新优化的 16 件对照</h2>
+<p>四个单线程进程生成 48 份一秒梯度提议，全部完成后六个单线程进程核验。发布包已包含选中权重、全轨迹与严格区间。原机的墙钟截点会受硬件影响，跨机复核同一份候选应直接使用所附的冻结提议。下列命令适用于 Bash 或 Zsh。<a href="online.html">比较口径和费用</a></p>
+<pre><code class="language-bash">for i in 0 1 2 3; do python -B &quot;$PILOT/followup/online_transfer_propose.py&quot; --shard &quot;$i/4&quot; &amp; done
+wait
+for i in 0 1 2 3 4 5; do python -B &quot;$PILOT/followup/online_transfer_score.py&quot; --shard &quot;$i/6&quot; --proposal-workers 4 &amp; done
+wait
+python -B &quot;$PILOT/followup/online_transfer_score.py&quot; --assemble 6 --proposal-workers 4
+python -B &quot;$PILOT/followup/plot_online_transfer.py&quot;
+</code></pre>
+<h2 id="重打包">重打包</h2>
+<p><a href="package_release.py">重打包入口</a>从原工作树中的本地公开档案取依赖。已解压的交付包使用其中随附的依赖。先用 <code>--check-inputs</code> 检查最终文件清单，需要生成本地 ZIP 时再去掉该参数。</p>
+<pre><code class="language-bash">python -B &quot;$PILOT/package_release.py&quot; --check-inputs
+python -B &quot;$PILOT/package_release.py&quot; --output Z_ALG_Neural_Dual_Pilot.zip
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="REPRODUCE.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

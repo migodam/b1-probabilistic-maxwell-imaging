@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>两条连续接收弧的整段零证书 · Maxwell 材料峰值认证</title>
+  <link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_final/">已封存的英文投稿稿</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-neural-dual-pilot-v1/Z_ALG_Neural_Dual_Pilot.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究结果</a><a href="interpolation.html">连续权重与接收角度</a><a href="theory.html">数学依据</a><a href="reproduce.html">复现</a><a href="handoff.html">给下一轮研究的交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="两条连续接收弧的整段零证书">两条连续接收弧的整段零证书</h1>
+<p>在原 96² 有限模型、材料上限 0.75 和固定正定 16 区权重线段上，两条连续十接收弧分别对全部 216 个已保存视图证明了 <span class="math-inline">\(d_C(t)=0\)</span>，覆盖所有 <span class="math-inline">\(t\in[0,1]\)</span>。每条弧保留十束原照明及各视图的原绝对 Frobenius 噪声半径。结论适用于这批观测和这两条弧。两种交错掩码对任意观测均为零的结果见<a href="receivers.html">连续惯性复核</a>。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>批次</th>
+<th style="text-align:right">材料数</th>
+<th style="text-align:right">每弧视图数</th>
+<th style="text-align:right">继承全环严格零</th>
+<th style="text-align:right">新证整段严格零</th>
+<th style="text-align:right">未定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>独立跟进</td>
+<td style="text-align:right">32</td>
+<td style="text-align:right">96</td>
+<td style="text-align:right">90</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>外部形状</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">24</td>
+<td style="text-align:right">24</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>历史压力</td>
+<td style="text-align:right">28</td>
+<td style="text-align:right">84</td>
+<td style="text-align:right">76</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>开发验证</td>
+<td style="text-align:right">12</td>
+<td style="text-align:right">12</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>同一材料的噪声档是配对视图。18 个全环上界非零的视图在每条弧各核验一次，其余 198 个视图直接继承被动接收收缩下的全环整段零上界。保留全环原判定、原半径和弧的节点收据，可逐视图核对。</p>
+<p>记 <span class="math-inline">\(q=10\)</span> 为删除的接收位置数，<span class="math-inline">\(n\)</span> 为原状态维数，<span class="math-inline">\(W\)</span> 为将删除行嵌回全环响应的矩阵。令 <span class="math-inline">\(U\)</span> 将保留行及源单位块嵌回全环，<span class="math-inline">\(\Xi=[Y_C;I]\)</span>，其中 <span class="math-inline">\(Y_C\)</span> 是从原带噪复端口读数取出的保留行。把删行校正写成一个额外的单位块后，从含全环正定状态块 <span class="math-inline">\(K(t)\)</span> 的增广矩阵消元，得到</p>
+<div class="math-display" tabindex="0">\[F(t)=\operatorname{diag}(I_q,Y_C^*Y_C)
+- [W,-U\Xi]^*Q(t)[W,-U\Xi],
+\qquad n_+(P_C(0))-n=n_+(F(t))-q.\]</div>
+<p>若 <span class="math-inline">\(F(t)\)</span> 有一个严格负的十维子空间，则 <span class="math-inline">\(n_+(F(t))\le q\)</span>，排除证书的正计数为零。证书阈值从零增大时边框矩阵按 Loewner 序递减，所以其正计数的阈值积分也为零。<span class="math-inline">\(Q(t)=T(t)^*K(t)^{-1}T(t)\)</span>，其中 <span class="math-inline">\(T(t)=[S^*,Z(t)B]\)</span> 与 <span class="math-inline">\(K(t)\)</span> 都是仿射的。<span class="math-inline">\(Q(t)\)</span> 的二次型可写成关于状态变量的仿射函数族的上确界，故 <span class="math-inline">\(Q\)</span> 为矩阵凸函数，<span class="math-inline">\(F\)</span> 为矩阵凹函数。</p>
+<p>每个节点区间用相邻外弦作 Loewner 上界，冻结等分数为 4、8、16、32，只有未定区间继续二分。用浮点中点谱提出一个十维候选子空间，再用 Arb 验证同一个子空间在外弦的两个子区间端点上都严格负定。由仿射性，这个负性覆盖整个子区间。36 个实际核验组合均在 4 等分闭合，两个弧所有子区间的最小已证负向间隔分别为约 0.12316、0.14961，实际比较了 2,016 对外弦端点。未定区间名单为空。</p>
+<p>本轮复用九节点区间响应，新增 0 个原生右端，未读取真值。整轮主程序约 3.56 秒墙钟、3.78 秒进程 CPU，其中读响应缓存约 0.056 秒墙钟、0.046 秒 CPU。上游九节点准备的累计代价为 270 个原生右端、197.53 秒墙钟、141.87 秒 CPU。完整逐视图证明、子区间余量和费用见 <a href="followup/results/masked_segment.json">masked_segment.json</a>。</p>
+<pre><code class="language-bash">PYTHONDONTWRITEBYTECODE=1 .artifacts/z_alg_diag_python/bin/python -B \
+  research/z_alg_neural_dual_pilot/followup/masked_segment.py
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="tables.html">逐组数值与费用</a><a href="design.html">盲测设计</a><a href="supplement.html">配对噪声</a><a href="training.html">训练</a><a href="gradients.html">谱梯度与固定对照</a><a href="native.html">原生区间核验</a><a href="advisor.html">机制与创意讨论</a><a href="state.html">状态负方向</a><a href="port-theory.html">端口矩阵与接收孔径</a><a href="segment.html">权重区间覆盖</a><a href="receivers.html">接收角度</a><a href="currents.html">端点电流空间</a><a href="arcs.html" aria-current="page">连续接收弧</a><a href="transfer.html">权重跨材料检验</a><a href="online.html">逐件调整权重</a></nav>
+      <a class="source-link" href="followup/MASKED_SEGMENT.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>
