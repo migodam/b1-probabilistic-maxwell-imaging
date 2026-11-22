@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>换一根参考柱以后，材料结论还剩多少余量？ · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../submission/index.html">首版英文投稿稿</a><a href="manuscript_ip.pdf">修订稿 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_LaTeX.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_Validation.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">独立验证</a><a href="srap.html">SRAP 22 件</a><a href="maxstruct.html">MAX-STRUCT 7 件</a><a href="manitoba.html">Manitoba 实测</a><a href="endpoints.html">历史重建端点</a><a href="transfer.html" aria-current="page">校准转移</a><a href="reproduce.html">复现与下载</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="换一根参考柱以后材料结论还剩多少余量">换一根参考柱以后，材料结论还剩多少余量？</h1>
+<p>同一次测量，用两根不同的金属柱来校准，得到的介质散射场相差 <strong>17.78%–62.57%</strong>。用同一根柱，改用测量前或测量后的空场重新校准，相差 <strong>0.64%–5.94%</strong>。这里的百分数都相对该目标、该频率的主校准场。哪根参考柱代表加载介质时的天线响应，实验并未提供答案。四种固定处理方式足以量化结论对此选择的敏感度。 <a href="https://doi.org/10.1109/MAP.2011.6138442">原始采集论文</a> · <a href="transfer/four_calibrations.json">28 份误差记录</a></p>
+<h2 id="一个可实际计算的余量">一个可实际计算的余量</h2>
+<p>固定金属柱及空场得到四个复场 <span class="math-inline">\(Y_j\)</span>。用大柱和第一次空场得到主校准 <span class="math-inline">\(Y_0\)</span>。令 <span class="math-inline">\(\mathcal F_u\)</span> 为给定材料上限的全体离散预测场。前一节区间计算给出 <span class="math-inline">\(d_0\le \operatorname{dist}(Y_0,\mathcal F_u)\)</span>。只需用同一通道、同一单位计算</p>
+<div class="math-display" tabindex="0">\[R=\max_j\|Y_j-Y_0\|_F, \qquad b_{\mathrm{left}}=d_0-R .\]</div>
+<p>若真实可比较场落在这四个场的凸包之外至多 <span class="math-inline">\(b\)</span>，对任何材料预测 <span class="math-inline">\(F\in\mathcal F_u\)</span>，三角不等式给出残差下界 <span class="math-inline">\(d_0-R-b\)</span>。因此 <span class="math-inline">\(b&lt;b_{\mathrm{left}}\)</span> 足以排除上限。证明在整个凸包上成立，因为到 <span class="math-inline">\(Y_0\)</span> 的距离在凸组合上至多是四个端点距离的最大值。仅对四个端点各验一次不能控制它们之间的观测。所有 <span class="math-inline">\(R\)</span> 均针对数值模型保存的复场逐通道用向外舍入求上界；<span class="math-inline">\(d_0\)</span> 取已严格核对、在该材料合同下允许的最强结果。</p>
+<p>以被动材料允许的实部或非负光学乘子计算，四种校准的凸包上，在 0.25、0.50、0.75 和 1.00 四个材料上限分别有 <strong>20、5、3 和 1 份观测</strong>留下正余量。它们分别来自 4、3、1、1 件物体。若只算“换参考柱”及“空场漂移加留出金属残差”两个经验标尺，则会得到不同数字。这两项标尺和四校准凸包是不同的误差集合。 <a href="transfer/transfer_margins.csv">逐项余量</a> · <a href="transfer/summary.json">分子与分母</a> · <a href="manitoba.html">经验标尺对照</a></p>
+<p><a class="image-original" href="transfer/calibration_headroom.png"><img src="transfer/calibration_headroom.png" alt="四件实物七个频率可通过的最大扇区上限及其剩余误差" loading="lazy" decoding="async" /></a></p>
+<p>图中上行是四个已测试上限中可以排除的最大值。下行是仍可容纳的其他误差，占主校准场范数的比例。横线表示本次上限均未得到正余量。3.5 GHz 的 E 形体在上限 0.50 只留下 <strong>1.358%</strong>；4 GHz 的双尼龙柱只留下 <strong>0.0525%</strong>。对相同指标，大尼龙柱在 3 GHz 排除到上限 1 后还有 <strong>4.018%</strong>。在 5.5 GHz，四件均未留下正余量。 <a href="transfer/calibration_headroom.pdf">PDF 图</a></p>
+<h2 id="把收发互换能识别多少误差">把收发互换，能识别多少误差？</h2>
+<p>在接收与发射的物理模式采用互易归一化、端口集合允许转置时，任何互易散射场 <span class="math-inline">\(F\)</span> 满足 <span class="math-inline">\(F=F^T\)</span>。这里是普通转置，保留传播相位。对校准后的成对测量写 <span class="math-inline">\(Y_s=(Y+Y^T)/2\)</span>、<span class="math-inline">\(Y_a=(Y-Y^T)/2\)</span>。对称与反对称矩阵在 Frobenius 内积下正交，因此</p>
+<div class="math-display" tabindex="0">\[\|Y-F\|_F^2=\|Y_s-F\|_F^2+\|Y_a\|_F^2 .\]</div>
+<p><span class="math-inline">\(\|Y_a\|_F\)</span> 是同一份校准读数偏离任何互易端口场都必须付出的误差，完全不需要初始图像或介质名义值。一个宣称小于这项误差的总半径将使所有互易预测都不可行，不能据此推出物体一定含有高介电材料。互易的天线误差或三维散射差异仍可留在 <span class="math-inline">\(Y_s\)</span> 里。</p>
+<p>选定 288 个端口按收发互换成对保留。28 份读数的反对称分量占主场 <strong>0.619%–5.981%</strong>，其中 9 份大于同单位下两次空场的固定增益漂移，最大为其 1.77 倍。我们将 <span class="math-inline">\(Y_s\)</span> 直接送回同一个 40² 算子，用原来选中的乘子重新验证。每个校准端点也作相同的对称投影，再对四个端点的凸包核算。两次实验在全部四上限下留下正余量的具体目标和频率一致。这说明这些通过项目经得起去除反对称误差的检验。它不能校准仍满足互易性的模型差异。 <a href="transfer/symmetric_margins.csv">逐项对称场余量</a> · <a href="manitoba/reciprocal_verified.json">固定乘子独立回放</a></p>
+<h2 id="有损材料怎样解释峰值">有损材料怎样解释峰值</h2>
+<p>对无损实材料，上限 <span class="math-inline">\(u\)</span> 直接限制对比度 <span class="math-inline">\(\chi=\epsilon_r-1\)</span>。对有损的被动标量材料，设 <span class="math-inline">\(\chi=x+iy\)</span>、<span class="math-inline">\(x&gt;0\)</span>。实扇区假设是 <span class="math-inline">\(|\chi|^2\le ux\)</span>，限制 <span class="math-inline">\(x+y^2/x\)</span>；允许的非负光学乘子可以配合这条不等式。若另有独立证据表明所有非零材料满足 <span class="math-inline">\(|y|\le\kappa x\)</span>，就能将扇区峰值大于 <span class="math-inline">\(u\)</span> 换成实对比度峰值大于 <span class="math-inline">\(u/(1+\kappa^2)\)</span>。没有该条件时，小 <span class="math-inline">\(x\)</span> 与显著的 <span class="math-inline">\(y\)</span> 就可给出很大的扇区量。按介电常数定义的常规损耗角正切约束 <span class="math-inline">\(|y|\le t(1+x)\)</span> 本身也不控制 <span class="math-inline">\(|y|/x\)</span>，尤其是接近背景时。四校准余量以明示的材料合同为准。即使用完全无损的等式，4 GHz E 形体新增的通过项也还需要独立控制介质加载时的失配。 <a href="manitoba.html">实测参数和容许范围</a></p>
+<p>原始数据由 Manitoba 提供。原处理选项、符号和通道均沿用预先确定的规则。对称投影和四校准凸包属于针对实测结果做的敏感性检验。 <a href="transfer/calibration_hull.py">区间计算</a> · <a href="transfer/margins.py">余量计算</a> · <a href="transfer/plot.py">作图</a> · <a href="advisor/RESPONSE_ZH.md">研究顾问与作者回应</a></p>
+</article>
+    <footer>
+      
+      <a class="source-link" href="transfer/README_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

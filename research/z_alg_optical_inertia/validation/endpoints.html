@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>同一观测的历史重建终点对照 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../submission/index.html">首版英文投稿稿</a><a href="manuscript_ip.pdf">修订稿 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_LaTeX.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_Validation.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">独立验证</a><a href="srap.html">SRAP 22 件</a><a href="maxstruct.html">MAX-STRUCT 7 件</a><a href="manitoba.html">Manitoba 实测</a><a href="endpoints.html" aria-current="page">历史重建端点</a><a href="transfer.html">校准转移</a><a href="reproduce.html">复现与下载</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="同一观测的历史重建终点对照">同一观测的历史重建终点对照</h1>
+<p>读出 <strong>29 件材料、253 条历史终点</strong>。不重新运行求解器，未打开密封真值。发布字段只有原方法、峰值、残差、预算、已选阶段、网格及证书关系。 <a href="reconstructions/endpoints.csv">逐终点 CSV</a> · <a href="reconstructions/summary.json">逐件与逐方法汇总</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th style="text-align:right">独立材料</th>
+<th style="text-align:right">历史终点</th>
+<th style="text-align:right">归档预测文件</th>
+<th style="text-align:right">缺档</th>
+<th>网格关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SRAP 原 10% 全环</td>
+<td style="text-align:right">22</td>
+<td style="text-align:right">176</td>
+<td style="text-align:right">44</td>
+<td style="text-align:right">0</td>
+<td>32² 重建，96² 生成与证书</td>
+</tr>
+<tr>
+<td>MAX-STRUCT R14 同网格</td>
+<td style="text-align:right">7</td>
+<td style="text-align:right">77</td>
+<td style="text-align:right">77</td>
+<td style="text-align:right">0</td>
+<td>24² 重建、生成与证书</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>SRAP 保留 Dual-CIE、SRAP-CIE 在 15 秒与 30 秒的 raw 和 light。MAX-STRUCT 保留每对象 11 方法的历史公开选择 primary，包含 CIE、Dual-CIE、global-Dual、G19、DR、Direct L-BFGS-B 和五条度量配置。01 对应原 global A+-Arc 数学更新。Direct L-BFGS-B 按原名登记。分母是独立材料，预算、选取视图与方法终点是同物体条件。缺档统计以选定视图为准。R14 的 raw 与 corrected 有另外的历史标量，但未纳入此表的 primary 分母。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/srap-cie-array-study-20261121">SRAP 原数据与方法</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/research_max_struct_r14/BENCHMARKS.md">MAX-STRUCT 原合同</a></p>
+<h2 id="srap-的五张低峰值图">SRAP 的五张低峰值图</h2>
+<p>176 条粗网记录里，171 条峰值数值高于 96² 的 0.50 排除上限。5 条低峰值记录集中在 004 与 014，全部为 SRAP-CIE。逐条打开原保存数组，检查 1,024 格点均为非负实数，并检查最小值及最大值。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>时间与视图</th>
+<th style="text-align:right">32² 最小值</th>
+<th style="text-align:right">32² 最大值</th>
+<th style="text-align:right">历史 32² 相对场残差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>004</td>
+<td>15 秒 raw</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">100%</td>
+</tr>
+<tr>
+<td>004</td>
+<td>15 秒 light</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0.00569620</td>
+<td style="text-align:right">99.916%</td>
+</tr>
+<tr>
+<td>004</td>
+<td>30 秒 raw</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">100%</td>
+</tr>
+<tr>
+<td>014</td>
+<td>15 秒 raw</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">100%</td>
+</tr>
+<tr>
+<td>014</td>
+<td>30 秒 raw</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>相同 2 m 方域内，每个 32² 像素恰含 <span class="math-inline">\(3\times3\)</span> 个 96² 细胞。已核对归档的粗格中心和行列顺序，中心坐标差最大 <span class="math-inline">\(1.11\times10^{-16}\)</span> m。若将图像解释为每个粗像素内部的介电对比度恒定，把一个粗格值复制给 9 个子格会保留峰值。这五个<strong>具体的均匀细化候选</strong>都被 96² 证书严格排除。对 004，原生证书要求残差至少 1.20654，扩大球半径 0.399616。对 014，至少 1.11964，半径 0.373729。表中历史残差来自原粗网；这里不需要求取五张提升图的实际细网残差。若图像数值表示细材料的块平均，块内可以有更高峰值，0.50 峰值证书无法单独否定这些平均值。 <a href="reconstructions/srap_uniform_lift_audit.csv">逐图的均匀细化审计</a> · <a href="srap.html">96² 证书</a></p>
+<h2 id="max-struct-r14-的同网格对照">MAX-STRUCT R14 的同网格对照</h2>
+<p>七份历史观测和验证包的离散 <span class="math-inline">\(G,E_0,S,Y,\delta\)</span> 逐位一致，生成网格、历史反演网格和证书网格同为 24²。77 个历史 primary 峰值都高于本件已严格排除的最大联合上限。38 个历史原物理残差数值落在相同发布半径内，覆盖全部七件。残差来自原公开记录，按 <span class="math-inline">\(\|F(m)-Y\|_F/\|Y\|_F\)</span> 保存；绝对值用同一个完整 <span class="math-inline">\(Y\)</span> 转回，并与原半径比值核对。原方法的数值残差和证书的区间证明具有各自的精度口径。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th style="text-align:right">最大已排除上限</th>
+<th style="text-align:right">11 个历史峰值范围</th>
+<th style="text-align:right">历史数值残差在球内</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0003</td>
+<td style="text-align:right">5.00</td>
+<td style="text-align:right">16.666–20.000</td>
+<td style="text-align:right">9/11</td>
+</tr>
+<tr>
+<td>0006</td>
+<td style="text-align:right">5.00</td>
+<td style="text-align:right">18.858–20.000</td>
+<td style="text-align:right">7/11</td>
+</tr>
+<tr>
+<td>0009</td>
+<td style="text-align:right">3.00</td>
+<td style="text-align:right">18.427–20.000</td>
+<td style="text-align:right">2/11</td>
+</tr>
+<tr>
+<td>0012</td>
+<td style="text-align:right">5.00</td>
+<td style="text-align:right">17.047–20.000</td>
+<td style="text-align:right">4/11</td>
+</tr>
+<tr>
+<td>0015</td>
+<td style="text-align:right">5.00</td>
+<td style="text-align:right">17.940–20.000</td>
+<td style="text-align:right">4/11</td>
+</tr>
+<tr>
+<td>0018</td>
+<td style="text-align:right">1.25</td>
+<td style="text-align:right">3.677–3.900</td>
+<td style="text-align:right">11/11</td>
+</tr>
+<tr>
+<td>0021</td>
+<td style="text-align:right">5.00</td>
+<td style="text-align:right">20.000–20.000（四舍五入）</td>
+<td style="text-align:right">1/11</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>这个对照显示了下界和已运行重建共同允许的位置。超过已认证上限只能说明候选没有被这条峰值界排除，无法从该比较判断峰值误差或其他空间结构。 <a href="max_struct/paired_results.csv">R14 区间证书逐项表</a></p>
+<h2 id="复算">复算</h2>
+<p>在本目录从同一工作区执行 python -B compare_history.py。脚本从 SRAP 公开汇总提取 peak_contrast 和 residual，从 R14 公开汇总提取 primary 的 material_max 和 relative_residual，并保留原归档方法码。仅读取五张低峰值的历史预测以核对均匀细化，输出中没有地图。执行时可用 --srap 和 --r14 指定原归档位置。 <a href="reconstructions/compare_history.py">提取与关联脚本</a></p>
+</article>
+    <footer>
+      
+      <a class="source-link" href="reconstructions/README_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

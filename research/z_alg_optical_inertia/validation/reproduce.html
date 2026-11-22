@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>复算扩大验证 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../submission/index.html">首版英文投稿稿</a><a href="manuscript_ip.pdf">修订稿 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_LaTeX.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_Validation.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">独立验证</a><a href="srap.html">SRAP 22 件</a><a href="maxstruct.html">MAX-STRUCT 7 件</a><a href="manitoba.html">Manitoba 实测</a><a href="endpoints.html">历史重建端点</a><a href="transfer.html">校准转移</a><a href="reproduce.html" aria-current="page">复现与下载</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="复算扩大验证">复算扩大验证</h1>
+<p><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_Validation.zip">完整科研包</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_LaTeX.zip">英文 LaTeX 源包</a></p>
+<p>使用 Python、NumPy、SciPy、python-flint、threadpoolctl 和 Matplotlib。完整科研包中先前论文的几何算子、区间计算和源文件按原路径放置。下列入口位于 research/z_alg_optical_inertia/validation。机器数据记录实跑墙钟和 CPU 时间。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>可复算的内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SRAP，全环 22 件</td>
+<td>从 srap 目录执行 python -B online.py --public-bundle public_observations.npz。可从独立原 SRAP 归档复算真材料覆盖；本包内保留原次逐件评分。<a href="srap.html">数据来源与复算说明</a></td>
+</tr>
+<tr>
+<td>MAX-STRUCT，R14 七件</td>
+<td>从 max_struct 依次运行 scan.py、verify.py 和 summarize.py。原合成真材料受项目封存约定，公开文件包含可独立复算在线证书的全部复场及原次离线覆盖标量。<a href="max_struct/REPRODUCE.md">复算说明</a></td>
+</tr>
+<tr>
+<td>旧重建对照</td>
+<td>从已发布的两套历史结果读取 253 个终点的峰值和原残差。本包公开逐条数值与五个均匀细化的核对结果。<a href="endpoints.html">来源与命令</a></td>
+</tr>
+<tr>
+<td>Manitoba 实测</td>
+<td>从大学取得第 1 号层析原始 ZIP，保持原文件名。physical.py 先生成校准后的本地数据，scan.py 做有限网格搜索及选中乘子的区间核对，summarize.py 出表。<a href="manitoba.html">下载、参数及复算命令</a> · <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/mwt_data.html">官方数据</a></td>
+</tr>
+<tr>
+<td>四种校准和互易性</td>
+<td>从 transfer 运行 calibration_hull.py，参数 --raw 和 --prepared 可指向原 ZIP 和 physical.py 的本地输出。运行 manitoba/reciprocal_replay.py 回放互易投影，再从 transfer 执行 margins.py 和 plot.py。各选定通道的复读数只在本地处理，公开严格余量。<a href="transfer.html">模型假设与逐频表</a></td>
+</tr>
+<tr>
+<td>R14 连续单束对照的跟进</td>
+<td>从 max_struct_single 运行 global_witness.py。保留七个找不到符号见证的案例。<a href="max_struct_single/README.md">适用范围</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>英文修订稿沿用 IOP 期刊类。解开单层 LaTeX 源包，在其中用 tectonic -X compile manuscript_ip.tex 或 latexmk -pdf manuscript_ip.tex。公开报告沿用同一 B1 论文主页，原有六件实验和冻结版 PDF 可单独阅读。 <a href="../submission/index.html">旧稿</a></p>
+</article>
+    <footer>
+      
+      <a class="source-link" href="REPRODUCE.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

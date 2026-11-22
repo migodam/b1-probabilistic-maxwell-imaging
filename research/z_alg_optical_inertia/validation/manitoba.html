@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>University of Manitoba 实测交叉检验 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../submission/index.html">首版英文投稿稿</a><a href="manuscript_ip.pdf">修订稿 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_LaTeX.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_Validation.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">独立验证</a><a href="srap.html">SRAP 22 件</a><a href="maxstruct.html">MAX-STRUCT 7 件</a><a href="manitoba.html" aria-current="page">Manitoba 实测</a><a href="endpoints.html">历史重建端点</a><a href="transfer.html">校准转移</a><a href="reproduce.html">复现与下载</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="university-of-manitoba-实测交叉检验">University of Manitoba 实测交叉检验</h1>
+<p>独立的固定近场阵列给出了可复核的 <strong>40² 离散材料峰值证书</strong>。近无损聚乙烯 E 形体在 <strong>3.5 GHz</strong> 排除全图 <span class="math-inline">\(\chi\le0.5\)</span> 的实部、正光学和自由光学筛选中，严格残差下界分别为散射范数的 <strong>33.85%、32.90%、34.38%</strong>。三者都高于同一目标换金属校准物后读数变化的 <strong>32.49%</strong>，也高于两次空场漂移加独立金属留出残差的 <strong>28.96%</strong>。若要将结论外推至实际三维聚乙烯体，还需要对目标的有限高度、耦合、损耗和离散模型差给出统一硬上界。现有空场与校准物差值提供了敏感性标尺。</p>
+<p><a href="manitoba/FREEZE.md">冻结合同</a> · <a href="manitoba/calibration_margins.csv">逐案证书</a> · <a href="manitoba/summary.json">计数汇总</a> · <a href="manitoba/calibration_vs_certificate.png">英文图 PNG</a> · <a href="manitoba/calibration_vs_certificate.pdf">图 PDF</a></p>
+<h2 id="阵列和校准">阵列和校准</h2>
+<p>University of Manitoba EIGOR 的 2010 年采集包含 24 个共面 Vivaldi 天线。所有 7 个频率使用同一批尼龙大柱、尼龙小柱、尼龙双柱和聚乙烯 E 形体，合计 <strong>4 个介质构型、28 份配对观测</strong>。频率为 3 至 6 GHz、间隔 0.5 GHz。原始总场每频有 552 个相干复传输端口。报告的证书使用两组各 12 发、12 收的完整交错矩阵，保留 <strong>288/552</strong> 个通道及各案 <strong>32.79%–54.75%</strong> 的原始可用校准散射能量。两组发射互斥，残差下界平方可相加。归一化分母为保留的 288 个校准散射读数的范数。 <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/mwt_data.html">官方档案</a> · <a href="https://doi.org/10.1109/MAP.2011.6138442">采集论文</a></p>
+<p>读数以接收行为第一维、发射列为第二维。VNA 复数按冻结的时间约定取共轭，与二维外向 Hankel¹ 一致。发射和接收均取原文的 <strong>14.4 cm</strong> 等效半径。第一份空场用于减背景，3.5 英寸铝柱的二维 PEC 解析散射除以同端口复散射给出逐通道增益。留出的第二次空场和 2 英寸钢柱不回流到增益估计。金属留出残差相对它自身的散射场为 <strong>28.56%–61.52%</strong>。相反号的独立诊断给出 <strong>97.67%–131.66%</strong>，支持预先固定的共轭符号。 <a href="manitoba/physical_audit.json">采集、误差和归一化记录</a></p>
+<h2 id="离散下界和经验误差标尺">离散下界和经验误差标尺</h2>
+<p>下表每个分母都为 28 份观测。同一构型的不同频率按照配对观测统计。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th style="text-align:right">参考上限 <span class="math-inline">\(u\)</span></th>
+<th style="text-align:right">实扇区严格正值</th>
+<th style="text-align:right">正光学严格正值</th>
+<th style="text-align:right">自由光学严格正值</th>
+<th style="text-align:right">同时超过两种校准标尺，实部 / 正光学 / 自由光学</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0.25</td>
+<td style="text-align:right">28/28</td>
+<td style="text-align:right">28/28</td>
+<td style="text-align:right">28/28</td>
+<td style="text-align:right">15 / 15 / 15</td>
+</tr>
+<tr>
+<td style="text-align:right">0.50</td>
+<td style="text-align:right">20/28</td>
+<td style="text-align:right">24/28</td>
+<td style="text-align:right">26/28</td>
+<td style="text-align:right">5 / 4 / 6</td>
+</tr>
+<tr>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">14/28</td>
+<td style="text-align:right">16/28</td>
+<td style="text-align:right">16/28</td>
+<td style="text-align:right">3 / 3 / 3</td>
+</tr>
+<tr>
+<td style="text-align:right">1.00</td>
+<td style="text-align:right">7/28</td>
+<td style="text-align:right">10/28</td>
+<td style="text-align:right">10/28</td>
+<td style="text-align:right">1 / 1 / 1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>两种校准标尺分别为 <span class="math-inline">\(D_{AB}\)</span> 与空场漂移加金属留出残差。<span class="math-inline">\(D_{AB}\)</span> 是用两根金属柱各自校准后，在同一目标、同一掩码上得到的复散射之差。固定主增益时，空场漂移为目标散射范数的 <strong>0.72%–4.10%</strong>。保留主校准柱，分别用前后空场重新计算整条校准链，目标读数相差 <strong>0.64%–5.94%</strong>。换校准柱的 <span class="math-inline">\(D_{AB}\)</span> 为 <strong>17.78%–62.57%</strong>，绝对等效场范数为 <strong>0.06566–0.35816</strong>。在 5.5 GHz，两根柱的保留端口最小原始复散射幅度只有约 0.0051–0.0053，最大增益达到约 3.2–3.6。近零点的放大按原样保留。 <a href="manitoba/physical_audit.json">分频空场、校准、留出及增益量级</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>实物与频率</th>
+<th style="text-align:right">参考上限</th>
+<th style="text-align:right">实扇区下界</th>
+<th style="text-align:right">正光学下界</th>
+<th style="text-align:right">自由光学下界</th>
+<th style="text-align:right">换柱差</th>
+<th style="text-align:right">空场 + 留出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E 形体 3.5 GHz</td>
+<td style="text-align:right">0.5</td>
+<td style="text-align:right">33.85%</td>
+<td style="text-align:right">32.90%</td>
+<td style="text-align:right">34.38%</td>
+<td style="text-align:right">32.49%</td>
+<td style="text-align:right">28.96%</td>
+</tr>
+<tr>
+<td>E 形体 4 GHz</td>
+<td style="text-align:right">0.5</td>
+<td style="text-align:right">27.43%</td>
+<td style="text-align:right">26.38%</td>
+<td style="text-align:right">31.04%</td>
+<td style="text-align:right">27.98%</td>
+<td style="text-align:right">21.57%</td>
+</tr>
+<tr>
+<td>大尼龙柱 3 GHz</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">24.56%</td>
+<td style="text-align:right">23.28%</td>
+<td style="text-align:right">25.75%</td>
+<td style="text-align:right">20.28%</td>
+<td style="text-align:right">18.58%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>E 形体在 3.5 GHz 的自由光学证书扣除较大代理后仍有 <strong>1.89 个百分点</strong>余量。4 GHz 在同一上限处只有自由光学超过较大标尺，余量 <strong>3.06 个百分点</strong>。大尼龙柱在 3 GHz、<span class="math-inline">\(u=1\)</span> 的正光学证书留下 <strong>3.01 个百分点</strong>。这里的余量回答“在固定离散模型上换一套校准后还能否排除”。针对另一套已算出的读数，三角不等式的损失最多为 <span class="math-inline">\(D_{AB}\)</span>。理想未知读数距离任一校准的误差上界仍不由 <span class="math-inline">\(D_{AB}\)</span> 确定。 <a href="manitoba/calibration_margins.csv">可用误差余量与分支逐行记录</a></p>
+<h2 id="互易投影回放">互易投影回放</h2>
+<p>在相同主校准上，按相反的发收通道取普通转置平均 <span class="math-inline">\((Y+Y^\top)/2\)</span>，再使用同样的端口组。只复用每个组已经通过主区间复核的候选，整个回放没有重新搜索乘子。投影改变选定散射场的 <strong>0.62%–5.98%</strong>。按原场范数归一后，E 形体 3.5 GHz 的正光学下界从 <strong>32.900%</strong> 变为 <strong>32.883%</strong>，仍高于 <strong>32.493%</strong> 的较大标尺。4 GHz 的自由光学下界仍为 <strong>31.038%</strong>。上限 1 的小尼龙柱 4 GHz 在正光学与自由光学两臂失去原先很小的正值。其余严格正值计数保持。逐行比较同时超过两种主校准标尺的全部 <strong>72 行</strong>，集合完全相同。该对照针对投影读数，使用原存储离散算子与原经验标尺。严格复算用 <strong>81.06 秒</strong>。 <a href="manitoba/reciprocal_verified.json">互易投影区间回执</a></p>
+<h2 id="损耗名义正演和适用范围">损耗、名义正演和适用范围</h2>
+<p>自由光学乘子需要无损光学等式。正光学乘子在被动损耗下也可使用单侧光学不等式。尼龙在原文 3 GHz 给出 <span class="math-inline">\(\varepsilon_r\approx3.03+i0.03\)</span>，符号按本报告时间约定。对于被动复材料，实扇区约束对应 <span class="math-inline">\(|\chi|^2\le u\,\operatorname{Re}\chi\)</span>，所以大尼龙的正光学结果是此扇区的条件排除。聚乙烯目标在原文 5 GHz 给出近无损 <span class="math-inline">\(\varepsilon_r\approx2.3\)</span>。其它频率没有同一目标的实测无损上界。本轮没有将文献的材料值输入证书。 <a href="https://home.cc.umanitoba.ca/~lovetrij/Research/PDFs/Journals/JP50.pdf">材料说明</a></p>
+<p>另行将论文的尺寸、名义介电值和冻结姿态投到 40² 与 80² 网格，逐案完整正演。80² 的端口预测相对误差为大尼龙 <strong>16.1%–45.0%</strong>、小尼龙 <strong>18.8%–36.5%</strong>、双柱 <strong>68.6%–87.8%</strong>、E 形体 <strong>56.6%–93.4%</strong>。两网格的名义预测差占读数范数 <strong>0.88%–6.67%</strong>。双柱与 E 形体的绝对姿态取原文截面寸法和图示的一个固定名义位置。未用实测目标拟合增益或姿态。预测误差同时包含姿态、材料频散、天线和边界模型差，因而不能从差值单独归因。留出金属柱与两网格差均不提供任意材料的物理误差上界。 <a href="manitoba/physical_audit.json">名义正演与网格差</a></p>
+<h2 id="证明及复算费用">证明及复算费用</h2>
+<p>在边长 14 cm 方形上，用原项目的等面积圆盘算子和本次等效线源。区间复核以存储的 binary64 FFT 符号、<span class="math-inline">\(S,B,Y\)</span> 为准确有限模型。在补零傅里叶域逐项验证遗漏谱的 Loewner 地板，再对保留块做区间惯性与精确消元余差核查。任意 40² 电流都属于证明空间。最大的核是 <strong>441 阶</strong>。两个非交叠源组分别用精确的接收 Schur 矩阵和源谱下界，最后按平方和聚合。对应名义正演的输出只供诊断。 <a href="manitoba/verified_scan.json">区间回执</a> · <a href="manitoba/numeric_scan.json">冻结候选与未决分支</a></p>
+<p>本机一次准备含 56 个名义正演分解、1344 个物理源右端，用 <strong>7.16 秒</strong>。候选搜索用 <strong>22.66 秒</strong>。发布的混合区间回执用 <strong>182.60 秒</strong>，含 3 GHz 的直接 Arb 方案 112.93 秒，随后六频用外向二进制误差桥加 Arb 余差加速。共 109 份共享傅里叶证明、397 次区间接收组驻点复核。另付 22.36 秒用快速法交叉检查 3 GHz 的 48 行，与直接 Arb 下界最大差 <strong>2.21×10⁻¹¹</strong>。有一次启动后的重复筛选和切换证明方式时的首个中断前缀，未计入正式流水线的逐阶段用时。全波求解只出现在名义端口对照。 <a href="manitoba/interval_crosscheck.json">3 GHz 交叉复核</a></p>
+<p>从项目根运行。环境使用 NumPy、SciPy、python-flint、threadpoolctl 和 Matplotlib，并保留原研究 fine 与 core 目录。原始 ZIP 和完整复端口缓存只落项目外置实验目录。公开报告附每个源文件成员及观测标识。</p>
+<pre><code>mkdir -p .artifacts/z_alg_validation/manitoba
+curl -fL 'https://home.cc.umanitoba.ca/~lovetrij/EMILab/research/EIGOR/Tomographic_Dataset_1.zip' -o .artifacts/z_alg_validation/manitoba/Tomographic_Dataset_1.zip
+python -B research/z_alg_optical_inertia/validation/manitoba/physical.py
+python -B research/z_alg_optical_inertia/validation/manitoba/scan.py
+python -B research/z_alg_optical_inertia/validation/manitoba/scan.py --verify
+python -B research/z_alg_optical_inertia/validation/manitoba/summarize.py
+python -B research/z_alg_optical_inertia/validation/manitoba/reciprocal_replay.py
+</code></pre>
+</article>
+    <footer>
+      
+      <a class="source-link" href="manitoba/REPORT_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

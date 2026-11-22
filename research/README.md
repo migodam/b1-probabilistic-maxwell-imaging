@@ -18,6 +18,14 @@
 [中文定稿报告](z_alg_optical_inertia/submission/index.html) · [英文论文 PDF](z_alg_optical_inertia/submission/manuscript_ip.pdf) · [复现与下载](z_alg_optical_inertia/submission/reproduce.html) · [研究交接](z_alg_optical_inertia/submission/handoff.html)
 <!-- /Z_ALG_OPTICAL_INERTIA_SUBMISSION -->
 
+<!-- Z_ALG_OPTICAL_INERTIA_VALIDATION -->
+## Z-ALG 光学惯性 · 独立验证修订版
+
+既有 SRAP、MAX-STRUCT 材料迁移，Manitoba 实测误差、校准转移及各自适用范围。
+
+[中文验证报告](z_alg_optical_inertia/validation/index.html) · [修订英文稿 PDF](z_alg_optical_inertia/validation/manuscript_ip.pdf) · [复现与下载](z_alg_optical_inertia/validation/reproduce.html) · [研究交接](z_alg_optical_inertia/validation/handoff.html)
+<!-- /Z_ALG_OPTICAL_INERTIA_VALIDATION -->
+
 <!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
 ## 固定 Green 下的材料峰值排除与镜像停测
 
