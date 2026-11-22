@@ -197,19 +197,23 @@ def navigation_links(items, current_page):
     return "".join(links)
 
 
-def html_page(title, content, this_page, nav, detail_nav, source, zip_link):
+def html_page(title, content, this_page, nav, detail_nav, source, zip_link, *,
+              stylesheet="research.css", extra_links=(), english=False):
     nav_html = navigation_links(nav, this_page)
     details_html = navigation_links(detail_nav, this_page)
     details = (f'<nav class="detail-nav" aria-label="专题与复现">{details_html}</nav>'
                if details_html else "")
-    article_lang = ' lang="en"' if this_page == 'paper.html' else ""
+    article_lang = ' lang="en"' if english or this_page == 'paper.html' else ""
+    project_links = navigation_links(extra_links, this_page)
+    if project_links:
+        project_links = "\n        " + project_links
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)} · Z-ALG 光学惯性</title>
-  <link rel="stylesheet" href="research.css">
+  <link rel="stylesheet" href="{escape(stylesheet, quote=True)}">
   <script>
     window.MathJax = {{
       tex: {{inlineMath: [['\\\\(', '\\\\)']], displayMath: [['\\\\[', '\\\\]']]}},
@@ -224,7 +228,7 @@ def html_page(title, content, this_page, nav, detail_nav, source, zip_link):
     <div class="site-shell">
       <div class="project-links">
         <a href="{PROJECT}">B1 总项目</a>
-        <a href="{PROJECT}research/">研究主页</a>
+        <a href="{PROJECT}research/">研究主页</a>{project_links}
         <a class="download" href="{escape(zip_link, quote=True)}">交接 ZIP</a>
       </div>
       <nav aria-label="本轮研究页面">{nav_html}</nav>

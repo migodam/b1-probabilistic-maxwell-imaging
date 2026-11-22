@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>原生全环 96² 配对噪声曲线 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../index.html">上一轮光学惯性报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">定稿报告</a><a href="coherent_comparison.html">单源与联合对照</a><a href="noise_curve.html" aria-current="page">原生全环噪声曲线</a><a href="reproduce.html">复现导航</a><a href="handoff.html">交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="原生全环-96²-配对噪声曲线">原生全环 96² 配对噪声曲线</h1>
+<p>全环 20 个接收位置及 10 次照明下，6 件独立材料沿各自原 2% 噪声方向复测。严格排除峰值上限 0.75 的物体数在 0.5%、1%、2%、5%、10% 下依次为 <strong>3、3、2、0、0</strong>。全局权重对应 <strong>3、2、2、0、0</strong>。新增的一次空间乘子过线出现在月牙和板（04）1%。在 0.5 上限对照中，每个噪声级别均为 6/6。 <a href="curve/full_ring_noise.pdf">六件逐项图</a> · <a href="curve/noise_curve.csv">150 项逐行结果</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th style="text-align:right">名义噪声</th>
+<th style="text-align:right">全局权，0.75</th>
+<th style="text-align:right">2×2 调权，0.75</th>
+<th style="text-align:right">两套固定 4×4，0.75</th>
+<th style="text-align:right">三支并集</th>
+<th>并集对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0.5%</td>
+<td style="text-align:right">3/6</td>
+<td style="text-align:right">3/6</td>
+<td style="text-align:right">2/6</td>
+<td style="text-align:right">3/6</td>
+<td>01、04、05</td>
+</tr>
+<tr>
+<td style="text-align:right">1%</td>
+<td style="text-align:right">2/6</td>
+<td style="text-align:right">3/6</td>
+<td style="text-align:right">2/6</td>
+<td style="text-align:right">3/6</td>
+<td>01、04、05</td>
+</tr>
+<tr>
+<td style="text-align:right">2%</td>
+<td style="text-align:right">2/6</td>
+<td style="text-align:right">2/6</td>
+<td style="text-align:right">2/6</td>
+<td style="text-align:right">2/6</td>
+<td>01、05</td>
+</tr>
+<tr>
+<td style="text-align:right">5%</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+<td>无严格排除</td>
+</tr>
+<tr>
+<td style="text-align:right">10%</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+<td>无严格排除</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在 1、1.25、1.5 三个上限，逐格搜索所见全局最少负方向分别为 13、15、17，超过十束照明所能承受的数量。两套固定 4×4 权在这三个上限也各有至少十条原生严格负方向。关于全局权的曲线计数来自所试配置及该固定离散算子。 <a href="curve/fixed_blocks_higher_caps.json">高上限固定权区间见证</a></p>
+<h2 id="同一个月牙和板结果如何过线">同一个月牙和板结果如何过线</h2>
+<p>以下各数用同一组 20×10 复接收矩阵的 Frobenius 范数。上限固定为 0.75，各比较臂使用同一正演几何、同一噪声球。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>判据或乘子</th>
+<th style="text-align:right">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>加求解误差补量后的噪声半径</td>
+<td style="text-align:right">0.047867831991</td>
+</tr>
+<tr>
+<td>8,987 次全局数值筛选中最优提案的原生距离上界</td>
+<td style="text-align:right">0.036670322409</td>
+</tr>
+<tr>
+<td>取空间光学权的平均值作为全局光学权时的原生距离上界</td>
+<td style="text-align:right">0.036614140971</td>
+</tr>
+<tr>
+<td>四象限空间光学权的原生距离下界</td>
+<td style="text-align:right"><strong>0.050771021847</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>空间提案固定每个格点的实部乘子为 <span class="math-inline">\(10^{-4}\)</span>，四象限按从上到下、从左到右依次用 <span class="math-inline">\((4,16,16,16)\times10^{-6}\)</span> 的光学乘子。它含严格四个负状态方向，正谱离零至少 <span class="math-inline">\(0.015625\)</span>（对 <span class="math-inline">\(K/10^{-4}\)</span>）。剩余源谱中认证了一条正方向。排除余量至少 0.002903189856，比所用噪声半径多出约 6.1%。密集全局扫描及平均光学权用于比较有限测试中的数值表现。 <a href="curve/focus_global.json">两侧区间控制</a> · <a href="curve/local.75.json">空间提案证书</a></p>
+<h2 id="两套固定的-44-权如何迁移">两套固定的 4×4 权如何迁移</h2>
+<p>单源比较从旧 2% 的 01、05 两个公开观测优化出两套 4×4 权。每套权冻结后原样应用于六件材料和全部五个配对噪声。由单源比较复用已证明的 <span class="math-inline">\(K/\mu_0\succeq 2^{-10}I\)</span>，每套只对 30 列共同右端 <span class="math-inline">\([S^*/\mu_0,Z_0B]\)</span> 做一次正演格点上的线性求解与完整 Arb FFT，其中 <span class="math-inline">\(Z_0=\operatorname{diag}((uD_\mu+iD_\lambda)/(2\mu_0))\)</span>。每份观测的右端由拼接矩阵 <span class="math-inline">\([Y;I]\)</span> 从共同右端线性生成。驻点二次值与缺陷范数的 Gram 都可先压缩为共同的 30×30 矩阵，然后逐份公开观测代入。</p>
+<p>01 来源的权仅在 01 上于 0.5%、1%、2% 通过，05 来源的权仅在 05 上于同三级通过。两支共六次通过全部也由同权的单个最佳相干照明通过，六个案例均落在 2×2 支的成功集内。该比较沿用公开旧样本，支持的是固定乘子的交叉应用观察，独立对象数仍为六。 <a href="curve/fixed_blocks.75.json">60 条严格结果与同权单源上下界</a> · <a href="single/coherent_general_verified.json">单源原证明</a></p>
+<h2 id="观测来源与真材料可行性">观测来源与真材料可行性</h2>
+<p>对每件对象取已发布的 96² 全环干净场 <span class="math-inline">\(Y_c\)</span> 与原 2% 观测 <span class="math-inline">\(Y_2\)</span>。离线构造 <span class="math-inline">\(Y_p=Y_c+(p/2)(Y_2-Y_c)\)</span>，其中 <span class="math-inline">\(p=0.5,1,2,5,10\)</span> 按百分点计。2% 逐位复用原观测及原已审计半径。这个配对 10% 与原独立抽样的 10% 是两份不同数据。公开数组仅存复观测，公开清单存 Frobenius 半径及 <span class="math-inline">\(10^{-6}\|Y_p\|_F\)</span> 补量后的半径。每个球的真材料可行性用 <span class="math-inline">\(\|Y_p-Y_c\|_F\)</span> 的区间上界加原真正演与存档 <span class="math-inline">\(Y_c\)</span> 的误差上界核对。六件各按一个材料计数，五个噪声级别属于配对测量条件。 <a href="curve/observations/manifest.json">30 个公开输入</a> · <a href="curve/observation_audit.json">离线区间审计</a> · <a href="../results/theory/fine_feasibility.json">原真正演证书</a></p>
+<h2 id="搜索与原生证明">搜索与原生证明</h2>
+<p>先用原生 Green FFT 作用于低 Fourier 模式、<span class="math-inline">\(S^*\)</span>、<span class="math-inline">\(B\)</span> 及其 Green 像，构造候选子空间。每个上限扫 25 个全局光学比值与 33 个正实乘子，共 825 个全局状态配置。对每个公开观测分别取合法源尾部改进。2×2 象限以同样的步长同时比较仅实部、仅光学、两者联合的全局与分块梯度。主目标是保留的正特征值之和。它为零且仍有可用照明时，尝试提升第一条带符号保留特征值。在三个较高上限所有筛过的全局配置都耗尽照明，故此梯度起点缺少可保留的源尾部。相同 <span class="math-inline">\(\nu\)</span> 的几组过小实乘子提案遇到原生迭代停滞，用可稳定求解的公开全局种子和相同分块梯度做了回退。 <a href="curve/search.json">候选与成本</a> · <a href="curve/recover_global.75.json">全局回退</a> · <a href="curve/recover_local.75.json">空间回退</a></p>
+<p>正例由独立区间算术对全部 9,216 个材料坐标证明。令 <span class="math-inline">\(\mu_0\)</span> 是正归一化尺度，<span class="math-inline">\(m_j=(D_\mu)_{jj}/\mu_0\)</span>，<span class="math-inline">\(t\)</span> 为各块归一化光学权的均值，<span class="math-inline">\(z_j=(u(m_j-1)+i((D_\lambda)_{jj}/\mu_0-t))/2\)</span>。用 <span class="math-inline">\(Z=\operatorname{diag}(z)\)</span>、实数 <span class="math-inline">\(a,\sigma\)</span> 和 <span class="math-inline">\(\beta&gt;0\)</span> 表示两路 Fourier 场 <span class="math-inline">\(Fx\)</span> 与 <span class="math-inline">\(FZ^*x\)</span>。对每个模态 <span class="math-inline">\(g\)</span> 计算</p>
+<div class="math-display" tabindex="0">\[\mathcal C_g=\begin{bmatrix}
+1-u\operatorname{Re} g+t\operatorname{Im} g-a &amp; -\overline{(g-\sigma)}\\
+-(g-\sigma)&amp;\beta
+\end{bmatrix}.\]</div>
+<p>原生 <span class="math-inline">\(K/\mu_0\)</span> 等于上述二路符号、接收低秩项及对角
+<span class="math-inline">\(a+m_j-1-2\sigma\operatorname{Re} z_j-\beta|z_j|^2\)</span> 的和。未保留的 Fourier 模态满足 <span class="math-inline">\(\mathcal C_g\succeq0\)</span>，逐个用 Arb 检查其 Schur 补，故可给出 <span class="math-inline">\(K/\mu_0-\gamma I\succeq D+\Phi C\Phi^*\)</span>，其中 <span class="math-inline">\(D\)</span> 为严格正的对角项，<span class="math-inline">\(\Phi\)</span> 包括截取的 Fourier 列、同列乘 <span class="math-inline">\(Z\)</span> 及接收列。全局权简化成一路 Fourier 场。<span class="math-inline">\(C^{-1}+\Phi^*D^{-1}\Phi\)</span> 的严格负子空间经区间算术核对，从而界定 <span class="math-inline">\(K/\mu_0\)</span> 在 <span class="math-inline">\(\gamma\)</span> 以下的最多方向数。完整 Arb FFT 在试向量上独立核对相同数量的严格负方向，因此实际惯性和正谱间隔同时得到证明。</p>
+<p>在原 96² 方程上数值求驻点 <span class="math-inline">\(X\)</span>，然后对其缺陷 <span class="math-inline">\(R=(K/\mu_0)X-L/\mu_0\)</span> 使用 Arb FFT 复核。源矩阵下界由 <span class="math-inline">\(H_0-\mu_0\|R\|_F^2/\gamma\,I\)</span> 给出，<span class="math-inline">\(H_0\)</span> 以 <span class="math-inline">\(X\)</span> 处的二次值计算。只积加丢弃前 <span class="math-inline">\(\nu\)</span> 条后的正源谱下界。图中填实的标记表示严格跨过误差球，0 表示该复算的提案缺少正的保留谱下界。 <a href="curve/native.py">原生算子</a> · <a href="curve/envelope.py">独立区间验证</a></p>
+<h2 id="复算命令">复算命令</h2>
+<p>从本目录用同一套 NumPy、SciPy、python-flint、threadpoolctl 和 matplotlib 执行。先前的干净场与真材料只对第一条命令开放，后续证书计算均从公共数据重新载入。</p>
+<pre><code class="language-bash">python -B generate_observations.py
+python -B search.py --out search.json
+python -B verify.py --cap .5 --arm global --out global.5.json
+python -B verify.py --cap .75 --arm global --out global.75.json
+python -B verify.py --cap .75 --arm local --out local.75.json
+python -B verify.py --cap .75 --arm global --stable-recovery --object optfresh_02 --object optfresh_03 --object optfresh_06 --out recover_global.75.json
+python -B verify.py --cap .75 --arm local --stable-recovery --object optfresh_02 --object optfresh_03 --object optfresh_06 --out recover_local.75.json
+python -B focus_global.py
+python -B fixed_blocks.py
+python -B summarize.py
+</code></pre>
+<h2 id="实测计时">实测计时</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>过程</th>
+<th style="text-align:right">墙钟（秒）</th>
+<th style="text-align:right">进程 CPU（秒）</th>
+<th>计时边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>共享候选搜索</td>
+<td style="text-align:right">12.79</td>
+<td style="text-align:right">12.73</td>
+<td>包括共同子空间、五个上限的全局扫描及可用的分块梯度。仅 0.75 的增量为 5.26 / 5.23 秒</td>
+</tr>
+<tr>
+<td>0.50 全局对照</td>
+<td style="text-align:right">49.52</td>
+<td style="text-align:right">49.97</td>
+<td>30 份观测复算，共用一个状态配置的惯性证明</td>
+</tr>
+<tr>
+<td>0.75 全局初次复算</td>
+<td style="text-align:right">213.88</td>
+<td style="text-align:right">211.86</td>
+<td>15 份获得严格距离，另 15 份最优提案未核定，共 45 次失败尝试</td>
+</tr>
+<tr>
+<td>0.75 全局回退</td>
+<td style="text-align:right">20.20</td>
+<td style="text-align:right">19.98</td>
+<td>对未核定的 15 份改用稳定公共配置，全部获得严格距离结果</td>
+</tr>
+<tr>
+<td>0.75、2×2 初次复算</td>
+<td style="text-align:right">316.14</td>
+<td style="text-align:right">312.89</td>
+<td>15 份获得严格距离，另 15 份最优提案未核定，共 45 次失败尝试</td>
+</tr>
+<tr>
+<td>0.75、2×2 回退</td>
+<td style="text-align:right">42.40</td>
+<td style="text-align:right">42.50</td>
+<td>对未核定的 15 份从稳定公共种子重做同样的分块梯度，全部获得严格距离结果</td>
+</tr>
+<tr>
+<td>0.75、冻结 4×4 交叉复算</td>
+<td style="text-align:right">20.50</td>
+<td style="text-align:right">21.36</td>
+<td>两个配置各应用于 30 份观测，复用单源对照已证明的正谱间隔</td>
+</tr>
+<tr>
+<td>冻结 4×4 高上限惯性</td>
+<td style="text-align:right">14.59</td>
+<td style="text-align:right">14.88</td>
+<td>三个高上限各检查两个固定配置，按同一进程扣除前一阶段</td>
+</tr>
+<tr>
+<td>月牙和板 1% 的密集全局对照</td>
+<td style="text-align:right">59.53</td>
+<td style="text-align:right">58.62</td>
+<td>包括 7.61 / 7.55 秒的密集搜索，以及全局、等均值和空间提案的六次两侧区间复算</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>最初两支 0.75 复算的失败已计入各自的初次计时。按逐行的累计时钟作差，全局和 2×2 的未核定行分别占 146.75 / 144.81 秒和 207.80 / 203.53 秒，其中包含逐行记账。后续运行可以复用同一个配置的失败结果。冻结 4×4 复用的单源惯性证明在单源分支另行记账。表中各进程存在时间重叠，墙钟应逐行引用。若要加总已选工序的计算量，可用各自的进程 CPU 并声明工序范围。取得严格距离下界的观测仍须与该行半径比较，才能计作排除。 <a href="curve/noise_curve_summary.json">主曲线计时</a> · <a href="curve/focus_global.json">密集对照计时</a> · <a href="single/coherent_general_verified.json">复用的单源证明</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="diagnostic.html">Gauss–Newton 对照</a><a href="highcaps.html">高阈值证明</a><a href="typeset.html">排版与投稿要求</a></nav>
+      <a class="source-link" href="curve/README_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inverse Problems submission typesetting · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../index.html">上一轮光学惯性报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">定稿报告</a><a href="coherent_comparison.html">单源与联合对照</a><a href="noise_curve.html">原生全环噪声曲线</a><a href="reproduce.html">复现导航</a><a href="handoff.html">交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article lang="en"><h1 id="inverse-problems-submission-typesetting">Inverse Problems submission typesetting</h1>
+<p>The unmodified publisher class and its optional ORCID icon come from the July 2025 IOP template archive. The class is licensed under LPPL 1.3c or later. The publisher also accepts a standard LaTeX article layout. <a href="https://publishingsupport.iopscience.iop.org/wp-content/uploads/2025/07/ioplatextemplate.zip">Official IOP template archive</a> · <a href="https://publishingsupport.iopscience.iop.org/publishing-support/authors/authoring-for-journals/writing-journal-article/">IOP author instructions</a></p>
+<p>Tectonic 0.17.0 on the local Mac compiled both the official example and an anonymous class check. From the submission directory, with the manuscript source and the figures it names available, run</p>
+<pre><code class="language-sh">tectonic -X compile -Z search-path=typeset --keep-logs manuscript.tex
+pdfinfo manuscript.pdf
+pdftotext -layout manuscript.pdf -
+</code></pre>
+<p>Tectonic resolves standard TeX packages on first use. The same source can be built by latexmk or pdfLaTeX if the class and figure files are on the respective search paths. Use <code>\documentclass[12pt,anonymous]{iopjournal}</code> for double-anonymous review. The class changes <code>\title</code> into a typesetting command inside the document and uses class-provided <code>\author</code>, <code>\affil</code>, and <code>\email</code> commands in place of <code>\maketitle</code>. If you omit the template's journal issue placeholders, use <code>\pagestyle{plain}</code> and omit <code>\articletype</code>. The class loads hyperref and graphicx. Set the final review title and blank PDF author via <code>\hypersetup{pdftitle={...},pdfauthor={}}</code>.</p>
+<p>Inverse Problems lets authors choose single- or double-anonymous review. Initial submission requires the complete manuscript PDF with the figures and tables in the text, plus relevant supplements. For double-anonymous review, check the PDF properties, filenames, manuscript, justification letter, supplementary files, and any repository or data links for identifying information. Enter author and funding details in the submission system. A direct link to an author-named project discloses identity to reviewers. The anonymous class replaces its special acknowledgments, funding, authorship and data-availability sections with anonymous stubs, but it does not scan arbitrary text, external figures, supplementary files or links. The editor can add authorship details after the review as appropriate. <a href="https://publishingsupport.iopscience.iop.org/journals/inverse-problems/about-inverse-problems/">Inverse Problems peer review</a> · <a href="https://publishingsupport.iopscience.iop.org/questions/checklist-for-anonymising-your-manuscript/">IOP anonymisation checklist</a> · <a href="https://publishingsupport.iopscience.iop.org/submission-checklist/">IOP submission checklist</a></p>
+<p>IOP asks for a readable manuscript, suggests body text of at least 12 pt, and adds submission line numbers automatically. TeX source for later production should compile with class, graphics and bibliography in the same directory, using filenames containing only ASCII letters, digits, and underscores before the extensions. <a href="https://publishingsupport.iopscience.iop.org/publishing-support/authors/authoring-for-journals/writing-journal-article/">IOP author instructions</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="diagnostic.html">Gauss–Newton 对照</a><a href="highcaps.html">高阈值证明</a><a href="typeset.html" aria-current="page">排版与投稿要求</a></nav>
+      <a class="source-link" href="typeset/README.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

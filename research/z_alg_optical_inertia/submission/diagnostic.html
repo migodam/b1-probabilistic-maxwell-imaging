@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A data-only check on an underfitted reconstruction · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../index.html">上一轮光学惯性报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">定稿报告</a><a href="coherent_comparison.html">单源与联合对照</a><a href="noise_curve.html">原生全环噪声曲线</a><a href="reproduce.html">复现导航</a><a href="handoff.html">交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article lang="en"><h1 id="a-data-only-check-on-an-underfitted-reconstruction">A data-only check on an underfitted reconstruction</h1>
+<p>A peak certificate can reject a property of a reconstruction without reconstructing the material. We examined two previously exposed synthetic scalar-TM observations with existing interval-certified cap exclusions and ran the same ordinary nonnegative Tikhonov Gauss–Newton algorithm from the homogeneous background. The inversion minimized the full-wave least-squares objective with a fixed zero-reference ridge equal to one tenth of the largest squared singular value of the background Jacobian. Each step used the complete Jacobian and a full-wave acceptance test. The algorithm had no upper cap, and neither the stopping rule nor the penalty used the true material.</p>
+<p>On the matched <span class="math-inline">\(24^2\)</span> ring (12 illuminations, 48 receivers), the seventh update met the relative-objective stopping rule. Its maximum contrast was 4.75615, below the certified threshold 5. Using the same stored observation and forward model, an independent interval evaluation placed its residual at 0.93413739, well above the CN99 radius 0.01051718. Thus a single forward check already rejected this reconstruction. The pre-existing cap-wide bound, 0.01469496, was itself above the radius and rules out <strong>every</strong> nonnegative material with peak at most 5. It is this universal statement that the pointwise residual cannot supply. An offline check placed the generating material inside the ball and confirmed a peak of 12.</p>
+<p>For the native <span class="math-inline">\(96^2\)</span> half-aperture slotted block (10 illuminations, 20 receivers, 2% noise), updates one and two had peaks 0.22816 and 0.36992, with full-wave residuals 4.60773 and 4.24838. The third update crossed 0.5, and the prescribed 12-update terminal iterate reached 0.80150 with residual 3.46297. This run did not produce a below-cap terminal iterate. Its terminal residual remains outside the enlarged radius 0.10132681. The original native certificate sets a lower bound of 0.36886904 for every material with peak at most 0.5. The interval replay used the original stored Fourier operator. The experiment illustrates what a data-only exclusion establishes in addition to an ordinary residual check. It makes no claim of a more accurate reconstruction, a better data fit, or an advantage over a tuned optimization method.</p>
+<p><strong>Suggested figure caption.</strong> Data-only cap certification and conventional ridge–Gauss–Newton on two saved synthetic observations. (a,c) The independently scored generating material and terminal iterate share a colour scale within each observation. (b,d) Each blue circle is an accepted reconstruction update after full-wave evaluation, starting from the homogeneous model. The diamond marks the prescribed terminal iterate. The dashed horizontal line is the noise-ball boundary. The solid segment bounds from below the residual of every nonnegative material obeying the specified cap, shown by the vertical dotted line. Only the archived ring terminates below its tested cap. The native block passes through two below-cap updates and crosses the cap at its third update.</p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="diagnostic.html" aria-current="page">Gauss–Newton 对照</a><a href="highcaps.html">高阈值证明</a><a href="typeset.html">排版与投稿要求</a></nav>
+      <a class="source-link" href="diagnostic/RESULTS_EN.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

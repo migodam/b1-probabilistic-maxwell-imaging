@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quadrant multipliers at higher full-aperture caps · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../index.html">上一轮光学惯性报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">定稿报告</a><a href="coherent_comparison.html">单源与联合对照</a><a href="noise_curve.html">原生全环噪声曲线</a><a href="reproduce.html">复现导航</a><a href="handoff.html">交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article lang="en"><h1 id="quadrant-multipliers-at-higher-full-aperture-caps">Quadrant multipliers at higher full-aperture caps</h1>
+<p>On the native 96 × 96 full-aperture model, two continuous families of genuinely local quadrant multipliers have at least ten negative directions for every cap <span class="math-inline">\(1\le u\le1.5\)</span>. All six materials share this 20-receiver, ten-illumination operator. These parameter boxes therefore exhaust the retained spectrum for all six materials at any noise condition. The proof does not read a measurement or a reference material.</p>
+<p>Let <span class="math-inline">\(D_b\)</span> indicate the four disjoint 48 × 48 quadrants. Write <span class="math-inline">\(D_\mu=\mu\sum_b w_bD_b\)</span> and <span class="math-inline">\(D_\lambda=\mu\sum_b(t+\delta_b)D_b\)</span>, where <span class="math-inline">\(\mu&gt;0\)</span> and the four <span class="math-inline">\(w_b\)</span> and four <span class="math-inline">\(\delta_b\)</span> can vary independently within the specified boxes.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>Independent sector weights <span class="math-inline">\(w_b\)</span></th>
+<th>Optical centre <span class="math-inline">\(t\)</span></th>
+<th>Independent jitter <span class="math-inline">\(\lvert\delta_b\rvert\)</span></th>
+<th style="text-align:right">Vertices</th>
+<th style="text-align:right">Verified upper bound for largest eigenvalue of the projected <span class="math-inline">\(K/\mu\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math-inline">\([0.875,1.125]\)</span></td>
+<td><span class="math-inline">\([-4,16]\)</span></td>
+<td><span class="math-inline">\(\le0.125\)</span></td>
+<td style="text-align:right">1,024</td>
+<td style="text-align:right"><span class="math-inline">\(-0.039393812878198\)</span></td>
+</tr>
+<tr>
+<td><span class="math-inline">\([0.5,1.5]\)</span></td>
+<td><span class="math-inline">\(0\)</span></td>
+<td><span class="math-inline">\(\le0.06\)</span></td>
+<td style="text-align:right">512</td>
+<td style="text-align:right"><span class="math-inline">\(-0.03777103969586489\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>An eigensolve first proposes ten currents in the numerical receiver kernel for each of nine scalar centres. The interval verifier corrects the chosen basis <span class="math-inline">\(V_0\)</span> through</p>
+<div class="math-display" tabindex="0">\[V=V_0-S^*(SS^*)^{-1}SV_0.\]</div>
+<p>An interval solve with the saved binary64 receiver matrix validates the correction, and <span class="math-inline">\(SV=0\)</span> holds algebraically. The rounded Gram lower bounds exceed <span class="math-inline">\(0.99999999999998\)</span>; the interval norm of the computed receive defect is below <span class="math-inline">\(1.36\times10^{-48}\)</span>. Applying the full saved 192 × 192 Fourier multiplier to each projected column uses separable 160-bit Arb transforms, native padding and cropping. Define <span class="math-inline">\(A_b=V^*D_bV\)</span>, <span class="math-inline">\(H_b=\operatorname{Re}_H(V^*D_bGV)\)</span> and <span class="math-inline">\(R_b=\operatorname{Im}_H(V^*D_bGV)\)</span>. On this subspace the receive term vanishes and</p>
+<div class="math-display" tabindex="0">\[V^*(K/\mu)V=\sum_b\left[w_b(A_b-uH_b)+(t+\delta_b) R_b\right].\]</div>
+<p>The Hermitian matrix is affine in each scalar in isolation. Its values over the rectangle are convex combinations of vertex values, including the two cap endpoints. Independent interval congruences establish the displayed negative upper bounds at every vertex. The full-space inertia therefore satisfies <span class="math-inline">\(\nu\ge10\)</span>.</p>
+<p>The numerical box screen did not find a shared proof subspace in the wider <span class="math-inline">\(\lvert w_b-1\rvert\le0.25\)</span>, <span class="math-inline">\(\lvert\delta_b\rvert\le0.25\)</span>, <span class="math-inline">\(t\in[-4,16]\)</span> box. Its best proposed worst vertex was <span class="math-inline">\(+0.0672814\)</span>. This is an unresolved box, since a different subspace may work at that vertex or over smaller boxes. An additional native numerical check at <span class="math-inline">\(u=1\)</span>, <span class="math-inline">\(\mu=10^{-3}\)</span> examined six more skewed sector patterns at each of three constant optical ratios, <span class="math-inline">\(0,0.4,1\)</span>. All 18 tests returned at least 12 negative eigenvalues of <span class="math-inline">\(K\)</span>, with the largest returned eigenvalue of <span class="math-inline">\(K/\mu\)</span> at most <span class="math-inline">\(-0.0145648\)</span>. This is a numerical screen with discrete parameters and does not extend the interval result. More general spatial partitions and parameter ranges remain open.</p>
+<p><strong>Reproduction.</strong> From the project root, run <code>screen.py</code>, <code>verify.py</code>, then <code>skew.py</code> in this folder using Python with NumPy, SciPy, python-flint and threadpoolctl. The numerical screen takes 8.64 s wall / 8.56 s CPU and saves the two chosen proposal arrays. Interval verification takes 6.50 s wall / 6.44 s CPU. The optional skew check takes 15.32 s wall / 14.99 s CPU. These are measured on a single-threaded Apple M4. <a href="highcaps/screen.json">Numerical screen</a> · <a href="highcaps/certificates.json">Interval certificate</a> · <a href="highcaps/skew.json">Skewed weights</a> · <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/">Existing project and native geometry</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="diagnostic.html">Gauss–Newton 对照</a><a href="highcaps.html" aria-current="page">高阈值证明</a><a href="typeset.html">排版与投稿要求</a></nav>
+      <a class="source-link" href="highcaps/REPORT.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -6,6 +6,14 @@
 [多源排除证书](research/z_alg_secant_tasks/multiple-illuminations.html) · [中文报告与图表](research/z_alg_secant_tasks/index.html) · [ChatGPT 研究交接](research/z_alg_secant_tasks/handoff.html)
 <!-- /Z_ALG_SECANT_TASKS_PUBLICATION -->
 
+<!-- Z_ALG_OPTICAL_INERTIA_SUBMISSION -->
+## Z-ALG · 有限孔径散射数据的介电峰值认证
+
+英文投稿稿、原生 96² 分块对照、配对噪声曲线与严格证书，保留定位和实测的失败范围。
+
+[中文定稿报告](research/z_alg_optical_inertia/submission/index.html) · [英文论文 PDF](research/z_alg_optical_inertia/submission/manuscript_ip.pdf) · [复现与下载](research/z_alg_optical_inertia/submission/reproduce.html) · [研究交接](research/z_alg_optical_inertia/submission/handoff.html)
+<!-- /Z_ALG_OPTICAL_INERTIA_SUBMISSION -->
+
 <!-- Z_ALG_HOST_FOLD_PUBLICATION -->
 ## 已知非均匀宿主中的材料折叠
 

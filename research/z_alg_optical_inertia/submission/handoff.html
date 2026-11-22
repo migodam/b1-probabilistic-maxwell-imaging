@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>给 ChatGPT 的交接：Z-ALG 峰值论文已经封存 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../index.html">上一轮光学惯性报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">定稿报告</a><a href="coherent_comparison.html">单源与联合对照</a><a href="noise_curve.html">原生全环噪声曲线</a><a href="reproduce.html">复现导航</a><a href="handoff.html" aria-current="page">交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="给-chatgpt-的交接z-alg-峰值论文已经封存">给 ChatGPT 的交接：Z-ALG 峰值论文已经封存</h1>
+<p><strong>本次要交接的是一篇完整英文稿。实验线已结束，工作转入作者核稿与投稿。</strong> 论文研究有限孔径、多照明的二维 Maxwell 逆散射。给定带噪端口数据、已知背景和误差半径，它能对所有符合上限的像素配置一次给出严格的残差下界；若超过噪声，整个材料盒被排除。</p>
+<p><a href="manuscript_ip.pdf">英文 PDF</a> · <a href="index.html">中文总报告</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">可独立编译的 LaTeX 源包</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">完整数据与证明包</a></p>
+<h2 id="作者最值得保住的命题">作者最值得保住的命题</h2>
+<ol>
+<li><strong>十束用在一起，只有超过负方向数的正谱才构成材料证据。</strong> 对固定权重，<span class="math-inline">\(K=S^*S+D_\mu-ZG-G^*Z^*\)</span>、<span class="math-inline">\(L=S^*Y+ZB\)</span>，设 <span class="math-inline">\(h_j\)</span> 为 <span class="math-inline">\(Y^*Y-L^*K^{-1}L\)</span> 的降序特征值，则残差平方至少为 <span class="math-inline">\(\sum_{j&gt;\nu}(h_j)_+\)</span>，<span class="math-inline">\(\nu=n_-(K)\)</span>。这个界对释放了残差 Gram 和状态偏移的模型恰好可达。正文 §2 同时给出了奇异 <span class="math-inline">\(K\)</span> 的阈值惯性版本。代数已知先例是 Tian 的极端惯性公式；共享材料、接收核及具体噪声球赋予这个计算逆散射含义。</li>
+<li><strong>全域单束对照保留了两条独立约束。</strong> 设 <span class="math-inline">\(v\in\ker S\)</span>，其辐射功率 <span class="math-inline">\(p&gt;0\)</span>，扇区齐次量 <span class="math-inline">\(k+Tp&lt;0\)</span>。取严格拟合读数的 <span class="math-inline">\(x=Xa\)</span>，令 <span class="math-inline">\(c=-q_o(x)/p\)</span>。选复数幅度 <span class="math-inline">\(\sqrt c\)</span> 的相位消掉光学交叉项，再在两个相反的相位中选实部交叉项非正者。得到同一个满足全局光学等式、严格扇区和精确端口的电流。该电流依赖 <span class="math-inline">\(a\)</span>。正文 §3 还给出满足等式的正定矩 Slater 点。30 份读数中 25 份严格通过此前提；含 0.75 所有联合成功的读数。<a href="global/certificates.json">单束证明数值</a></li>
+<li><strong>强单束比较改变了原来论文能说的话。</strong> 同一 96² 全环、2% 的 01/05 上，四区单束矩 SDP 对所有单位相干组合的最优值严格为零，联合常权在两案都过线。十六区发现两份单束证书，距离至少 <strong>0.18967407、0.12452151</strong>，相应半径 <strong>0.09096764、0.08802506</strong>。匹配权重的联合源谱严格只有一个正方向，故确实追平。四区的零指矩 SDP，十六区成功指存在一组权重与相干方向，两者均使用原有 200 个复数。<a href="coherent_comparison.html">同口径表与费用</a></li>
+<li><strong>实际覆盖范围。</strong> 六件物体在全环 0.5%、1%、2%、5%、10% 下，峰值大于 0.75 的严格成功数为 <strong>3、3、2、0、0</strong>。0.5 每档均为 6/6，1、1.25、1.5 每档均为 0/6。月牙与板 1% 是第三件严格超出全局单束能力的不同物体。它在 2% 下仍不过线。十负方向证明覆盖论文写明的连续四区权重族，并对两套具体十六区权重在三个较高上限独立成立。<a href="noise_curve.html">配对结果</a> · <a href="highcaps.html">障碍的精确范围</a></li>
+</ol>
+<h2 id="核稿时最容易混淆的四点">核稿时最容易混淆的四点</h2>
+<ul>
+<li><strong>一束怎么来的。</strong> 为两件样品各选一个合成方向时可用全部十束的读数。这证明同数据处理方法的能力差异，没有证明只需采一束或节省曝光。</li>
+<li><strong>同一固定权重与所有权重。</strong> 十六区匹配结论有双边区间证明。两案全部可能十六区乘子的最优单束、最优联合数值都没有求得。1% 月牙案最优全局提案的上界只针对那个提案；“任意全局单束”由另一个定理证明。</li>
+<li><strong>材料性质与成像。</strong> 同一读数能否定所有低峰值材料。常规 GN 在旧环形样品终点峰值 4.756，低于认证的 5，当前图的残差本身已足以拒绝该点。原生 96² 案只在前两步低于认证阈值，终点为 0.802。均未证明改善重建精度。<a href="diagnostic.html">物理复核</a></li>
+<li><strong>仿真与实物。</strong> 96² 原生证书适用于冻结算子全部 9,216 个独立材料格点。区域定位原 0/112。Fresnel 保留增益、空场噪声和装入目标后失配的条件账本；论文没有给出暗室物体的无条件峰值下界。</li>
+</ul>
+<h2 id="建议的稿件定位">建议的稿件定位</h2>
+<p>题目为 <em>Certifying peak dielectric contrast from finite-aperture scattering data: optical power and negative inertia across illuminations</em>。优先按 <em>Inverse Problems</em> 逆推断论文审阅。局部功率法参照 Molesky 等，凸散射目标参照 Trivedi 等，多激励共同结构参照 Shim 等，惯性参照 Tian，连续 Maxwell 单调性参照 Albicker–Griesmaier。具体新意在于同一个带噪离散全波问题上，严格的全称失败证明、联合成功证书，以及细化空间约束后单束何时追平。连续传递、三维和装入实际目标后的模型误差上界均属稿件边界。保留作者核实名单、单位、利益冲突、资助及 AI 使用声明这一投稿步骤。<a href="typeset.html">论文排版说明</a> · <a href="ORIGINAL_REQUEST.txt">原始收官要求</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="diagnostic.html">Gauss–Newton 对照</a><a href="highcaps.html">高阈值证明</a><a href="typeset.html">排版与投稿要求</a></nav>
+      <a class="source-link" href="NEXT_PRO_HANDOFF.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

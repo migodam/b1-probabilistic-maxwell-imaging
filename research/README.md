@@ -10,6 +10,14 @@
 [中文报告与图表](z_alg_optical_inertia/index.html) · [数学论证](z_alg_optical_inertia/theory.html) · [Fresnel 实测](z_alg_optical_inertia/fresnel.html) · [ChatGPT 研究交接](z_alg_optical_inertia/handoff.html)
 <!-- /Z_ALG_OPTICAL_INERTIA_PUBLICATION -->
 
+<!-- Z_ALG_OPTICAL_INERTIA_SUBMISSION -->
+## Z-ALG · 有限孔径散射数据的介电峰值认证
+
+英文投稿稿、原生 96² 分块对照、配对噪声曲线与严格证书，保留定位和实测的失败范围。
+
+[中文定稿报告](z_alg_optical_inertia/submission/index.html) · [英文论文 PDF](z_alg_optical_inertia/submission/manuscript_ip.pdf) · [复现与下载](z_alg_optical_inertia/submission/reproduce.html) · [研究交接](z_alg_optical_inertia/submission/handoff.html)
+<!-- /Z_ALG_OPTICAL_INERTIA_SUBMISSION -->
+
 <!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
 ## 固定 Green 下的材料峰值排除与镜像停测
 

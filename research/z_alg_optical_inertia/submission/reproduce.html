@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>论文、数据与复现入口 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="../research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a href="../index.html">上一轮光学惯性报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">LaTeX 源包</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">定稿报告</a><a href="coherent_comparison.html">单源与联合对照</a><a href="noise_curve.html">原生全环噪声曲线</a><a href="reproduce.html" aria-current="page">复现导航</a><a href="handoff.html">交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="论文数据与复现入口">论文、数据与复现入口</h1>
+<p><a href="manuscript_ip.pdf">英文论文 PDF</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/manuscript_ip.pdf">发布页 PDF</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_LaTeX_2026-11-22.zip">同目录 LaTeX 源包</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">完整科研 ZIP</a> · <a href="../reproduce.html">上一轮复现说明</a></p>
+<p>完整包把论文、区间验证器、冻结复观测、误差球、结果和历史依赖放回原有的 <code>research/</code> 路径。另一个 ZIP 装的是单层目录 LaTeX 源。英文学术稿的 PDF 可直接阅读。使用 LaTeX 源时，从解压目录执行 <code>tectonic -X compile manuscript_ip.tex</code> 或 <code>latexmk -pdf manuscript_ip.tex</code>。 <a href="typeset.html">排版与审稿选项</a></p>
+<h2 id="从选定结果开始复算">从选定结果开始复算</h2>
+<p>在科研附件根安装 NumPy、SciPy、python-flint、threadpoolctl、matplotlib。进入 <code>research/z_alg_optical_inertia/submission</code> 后可分别运行下列命令。原始 JSON 记载原机费用。重算会更新部分同名回执，如需保留原始计时请使用一份独立解压目录。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>想核对的结果</th>
+<th>输入、输出与命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全局双约束单源 SDP 的严格可行性</td>
+<td><code>python -B global/verify_global.py</code>。输入是已存观测和原生 96² 几何，输出逐观测的严格余量。 <a href="global/certificates.json">区间回执</a></td>
+</tr>
+<tr>
+<td>2×2／4×4 空间分块下的单源和联合界</td>
+<td>从 <code>single/</code> 执行报告列出的冻结提案回放。四宫格逐一复核局部矩约束。十六宫格回放正谱及匹配联合结果。 <a href="coherent_comparison.html">中文对照与复现</a> · <a href="single/coherent_general_verified.json">严格正性与残差回执</a></td>
+</tr>
+<tr>
+<td>30 份配对全环观测与 150 个噪声／上限单元</td>
+<td>从 <code>curve/</code> 按报告运行。可从已封存的观察数组直接验证乘子。只有重生配对噪声与可行性审计时会读取原干净仿真场。 <a href="noise_curve.html">噪声曲线与命令</a> · <a href="curve/observations/manifest.json">观测清单</a> · <a href="curve/noise_curve.csv">逐项 CSV</a></td>
+</tr>
+<tr>
+<td>原生高阈值四宫格的负惯性障碍</td>
+<td>按顺序运行 <code>python -B highcaps/screen.py</code> 和 <code>python -B highcaps/verify.py</code>。几何本身给出严格结果，原始读数无需载入。数值扩展见 <code>highcaps/skew.py</code>。 <a href="highcaps.html">证明与适用范围</a> · <a href="highcaps/certificates.json">区间回执</a></td>
+</tr>
+<tr>
+<td>普通 Gauss–Newton 重建与材料峰值证书</td>
+<td>用 <code>diagnostic/run.py</code> 保存每次付费重建和复端口预测，再运行 <code>diagnostic/audit.py</code> 区间校核。两份终点和对应上限证书均可从公开输入复算。R10 真材料沿用封存约定，评分标量和已成图公开。 <a href="diagnostic/REPRODUCE.md">复现细节</a> · <a href="diagnostic.html">英文结果</a> · <a href="diagnostic/interval_and_offline.json">区间数据</a></td>
+</tr>
+<tr>
+<td>旧半环、区域定位、双频与 Fresnel</td>
+<td>这些模块沿用旧实验证据。完整附件包含旧合成算子、冻结观测和输出，以及 Fresnel 重算代码。原始 <code>.exp</code> 测量文件从采集团队提供的档案取回。 <a href="../reproduce.html">旧实验复现说明</a> · <a href="../fresnel.html">Fresnel 误差账本</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="重建研究网页与发布文件">重建研究网页与发布文件</h2>
+<p>网页从 Markdown 生成，沿用上一轮样式和 MathJax 排版。用以下命令只预览已经写入的页面。</p>
+<pre><code class="language-sh">uv run --with markdown-it-py==4.2.0 python -B research/z_alg_optical_inertia/submission/publish_pages.py --preview
+</code></pre>
+<p>在项目工作区中，使用定稿 PDF、上一轮完整附件与已有 B1 检出目录，可执行下列命令生成网页、两个 ZIP 和单独的论文 PDF 资产，并把网页和导航写入 B1 检出目录。命令不会发布 Git 提交。参数支持指定旧 ZIP、发布文件目录、B1 检出目录和 release tag。完整科研 ZIP 已包含复现实验所需的上轮输入，无需重新生成旧 ZIP。</p>
+<pre><code class="language-sh">uv run --with markdown-it-py==4.2.0 --with markdown==3.11.3 python -B research/z_alg_optical_inertia/submission/build_release.py
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="diagnostic.html">Gauss–Newton 对照</a><a href="highcaps.html">高阈值证明</a><a href="typeset.html">排版与投稿要求</a></nav>
+      <a class="source-link" href="REPRODUCE.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>
