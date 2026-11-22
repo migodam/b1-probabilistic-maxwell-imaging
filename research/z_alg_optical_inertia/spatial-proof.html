@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>原生 96² 网格的分块光学证书 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="原生-96²-网格的分块光学证书">原生 96² 网格的分块光学证书</h1>
+<p><strong>#03 半环、10% 噪声通过原生网格复核。</strong> 对 <strong>optfresh_03__pw180_10x20__n10</strong>，排除「全域 <span class="math-inline">\(0\le\chi\le0.5\)</span>」的残差下界为 <strong>0.622783219965</strong>。冻结噪声半径加 <span class="math-inline">\(10^{-6}\|Y\|_F\)</span> 后的上界为 <strong>0.594048781081</strong>，严格裕量至少 <strong>0.028734438885</strong>。该结论针对生成观测所用的离散 FFT Green 算子和端口，涉及全部 9216 个材料格点。</p>
+<h2 id="分块乘子与频域下界">分块乘子与频域下界</h2>
+<p>保留 32² 扫描选出的 <span class="math-inline">\(4\times4\)</span> 光学乘子，每块在 96² 网格上对应一个 <span class="math-inline">\(24\times24\)</span> 方区。<span class="math-inline">\(\mu\)</span> 和每块的 <span class="math-inline">\(\lambda\)</span> 均除以 9，对应每个粗格覆盖的细格数。材料上限 <span class="math-inline">\(u\)</span> 保持不变。#03 的两档 <span class="math-inline">\(\lambda/\mu\)</span> 约为 0.22 和 0.58。将其对角矩阵写成 <span class="math-inline">\(tI+dM\)</span>，其中 <span class="math-inline">\(t\)</span> 为两档中点、<span class="math-inline">\(d&gt;0\)</span> 为半差，<span class="math-inline">\(M\)</span> 为对角符号矩阵，逐格取 <span class="math-inline">\(-1,+1\)</span>。实对角权重与实材料乘法交换，因此按 <span class="math-inline">\(M\)</span> 加权的虚部矩阵等式仍成立。</p>
+<p>设 <span class="math-inline">\(T\)</span> 为从 96² 零填充到 192² 后进行单位化二维 DFT 的等距映射。生成算子为 <span class="math-inline">\(G=T^*\operatorname{diag}(g)T\)</span>，<span class="math-inline">\(S\)</span> 为接收算子，<span class="math-inline">\(B\)</span> 为入射场矩阵。记 <span class="math-inline">\(\operatorname{Herm}(G)=(G+G^*)/2\)</span>、<span class="math-inline">\(\operatorname{Im}_H(G)=(G-G^*)/(2i)\)</span>。矩阵 <span class="math-inline">\(A=K/\mu\)</span> 为</p>
+<div class="math-display" tabindex="0">\[A=I+S^*S/\mu-u\operatorname{Herm}(G)+t\operatorname{Im}_H(G)
++\tfrac{id}{2}(G^*M-MG).\]</div>
+<p>空间项中的 <span class="math-inline">\(G\)</span> 可替换为 <span class="math-inline">\(G-cI\)</span>，因为实常数 <span class="math-inline">\(c\)</span> 的贡献相消。令 <span class="math-inline">\(z=Tx,\ w=TMx\)</span>，则 <span class="math-inline">\(\|z\|_2=\|w\|_2=\|x\|_2\)</span>。记 <span class="math-inline">\(a_q=1-u\operatorname{Re}(g_q)+t\operatorname{Im}(g_q)\)</span>。以下 <span class="math-inline">\(2\times2\)</span> 块作用于 <span class="math-inline">\((z_q,w_q)\)</span>，其二次型求和等于 <span class="math-inline">\(x^*(A-\alpha I-S^*S/\mu)x\)</span>。</p>
+<div class="math-display" tabindex="0">\[C_q=
+\begin{pmatrix}
+a_q-\alpha-\beta d^2 &amp; \tfrac{id}{2}\overline{(g_q-c)}\\
+-\tfrac{id}{2}(g_q-c)&amp;\beta d^2
+\end{pmatrix}.\]</div>
+<p>两项 <span class="math-inline">\(\beta d^2\|z\|^2\)</span> 与 <span class="math-inline">\(\beta d^2\|w\|^2\)</span> 相消。取 <span class="math-inline">\(\beta=0.875\)</span>、<span class="math-inline">\(c=0.234375\)</span>、<span class="math-inline">\(\alpha=0.6875\)</span>，对方形频域集合 <span class="math-inline">\(Q=\{-10,\dots,10\}^2\)</span> 外的每一项，用 112 位 Arb 验证其 Schur 补</p>
+<div class="math-display" tabindex="0">\[a_q-\alpha-\beta d^2-\frac{|g_q-c|^2}{4\beta}&gt;0.\]</div>
+<p>最小严格裕量为 <span class="math-inline">\(8.7750\times10^{-4}\)</span>。保留 <span class="math-inline">\(Q\)</span> 内的 441 个频点，令 <span class="math-inline">\(U=T^*|_Q\)</span> 和 <span class="math-inline">\(F=[U,MU,S^*]\)</span>。把保留块装入 <span class="math-inline">\(C\)</span>，并加上接收对角块 <span class="math-inline">\(I/\mu\)</span>，得到</p>
+<div class="math-display" tabindex="0">\[A\succeq A_0=\alpha I+FCF^*.\]</div>
+<p>为了证明 <span class="math-inline">\(A\succeq\gamma I\)</span>，取 <span class="math-inline">\(\gamma=1/256\)</span>。由同一分块矩阵的两种 Schur 消元，
+<span class="math-inline">\(n_-(A_0-\gamma I)=n_+(C^{-1}+F^*F/(\alpha-\gamma))-n_+(C)\)</span>。
+用有限几何级数和区间 DFT 封住 <span class="math-inline">\(F^*F\)</span>，再用位移 Cholesky 残差和负子空间二次型严格复核 902 维矩阵的惯量。其正、负方向数为 649、253，正方向数等于 <span class="math-inline">\(n_+(C)\)</span>。该矩阵与 <span class="math-inline">\(C\)</span> 都已证非奇异，因此 <span class="math-inline">\(A_0-\gamma I\)</span> 为正定。</p>
+<h2 id="完整算子的驻点残差">完整算子的驻点残差</h2>
+<p>频域下界用于证明谱底 <span class="math-inline">\(\gamma\)</span>。数据界使用保留所有频点的原生算子。记 <span class="math-inline">\(L&#x27;=L/\mu=S^*Y/\mu+[uI+i(tI+dM)]B/2\)</span>。取候选解 <span class="math-inline">\(X\)</span>，令 <span class="math-inline">\(R=AX-L&#x27;\)</span>。有</p>
+<div class="math-display" tabindex="0">\[H=Y^*Y-\mu L&#x27;^*A^{-1}L&#x27;
+=Y^*Y+\mu(X^*AX-L&#x27;^*X-X^*L&#x27;)-\mu R^*A^{-1}R.\]</div>
+<p>沿候选 <span class="math-inline">\(H\)</span> 的前两个照明方向，用未截断的区间 FFT 重算两列驻点残差。由 <span class="math-inline">\(A\succeq\gamma I\)</span>，修正量上界为 <span class="math-inline">\(\mu\|R\|_F^2/\gamma\)</span>，在这两个方向所张的试探子空间上得到 <span class="math-inline">\(3.473\times10^{-17}\)</span>。对一维、二维试探子空间，分别用投影分子的 Gershgorin 下界及基 Gram 上界作 Rayleigh 复核。所证前两正特征值下界为 0.31884891284595 和 0.06901002622428。取两者之和开平方即得报告的残差下界。</p>
+<h2 id="配对结果与适用范围">配对结果与适用范围</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>原始观测与检验上限</th>
+<th style="text-align:right">冻结半径</th>
+<th style="text-align:right">原生分块下界</th>
+<th style="text-align:right">原生同预算标量下界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#03 半环，10%，<span class="math-inline">\(u=0.5\)</span></td>
+<td style="text-align:right">0.594042806767</td>
+<td style="text-align:right"><strong>≥0.622783219965（区间），<span class="math-inline">\(\nu=0\)</span></strong></td>
+<td style="text-align:right">0.544721500760（数值），<span class="math-inline">\(\nu=0\)</span></td>
+</tr>
+<tr>
+<td>#04 全环，2%，<span class="math-inline">\(u=0.75\)</span></td>
+<td style="text-align:right">0.095726084788</td>
+<td style="text-align:right">0.056036870114（数值），<span class="math-inline">\(\nu=4\)</span></td>
+<td style="text-align:right">0（数值），<span class="math-inline">\(\nu=4\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>标量对照使用粗网格同搜索预算中选定的冻结参数，按相同比例迁移，走相同的原生数值流程。#03 的分块和标量分别使用 1622、1636 次 Green FFT 卷积。#03 证实冻结分块剖面可跨过该半径，冻结标量在数值对照中低于半径。任意全局标量的最优性未由这组比较判定。#04 的分块数值界距半径尚差 0.039689214674，因此该剖面未进入区间复核。这个负结果适用于冻结剖面的迁移。</p>
+<p><a href="results/core/gradient_certificates.json">冻结粗网格候选及证书</a> · <a href="results/theory/fine_spatial_followup.json">两例原生数值回放</a> · <a href="results/theory/fine_spatial_verified.json">#03 严格复核记录</a> · <a href="fine/spatial_followup.py">复算源码</a></p>
+<p>在项目根目录使用具有 NumPy、SciPy、threadpoolctl 和 python-flint 的 Python 环境依次运行下列命令。</p>
+<pre><code class="language-sh">export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+python -B research/z_alg_optical_inertia/fine/spatial_followup.py
+python -B research/z_alg_optical_inertia/fine/spatial_followup.py --verify
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html" aria-current="page">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="fine/SPATIAL_PROOF_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

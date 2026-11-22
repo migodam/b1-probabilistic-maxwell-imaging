@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>全局峰值与分块光学乘子的复现实验 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="全局峰值与分块光学乘子的复现实验">全局峰值与分块光学乘子的复现实验</h1>
+<p>实验检验在冻结的端口算子和联合 Frobenius 观测球下，虚部等式是否减少惯性负方向，是否提高可排除的全局对比度上限。输入为 5 份已暴露存档和 6 件新材料的 24 份配对观测。每件新材料有全环、半环以及 2% 和 10% 两种带噪视图。数值提议只接收公开算子和复场。选定乘子后的代理误差比较会读取离线误差账本。</p>
+<h2 id="算子和评估量">算子和评估量</h2>
+<p>令 <code>U</code>、<code>Dmu</code>、<code>Dlambda</code> 分别为逐格上限、非负实部权、实数虚部等式权。代码用 <code>Z=(Dmu U+i Dlambda)/2</code>，计算 <code>K=S* S+Dmu−ZG−G*Z*</code> 和 <code>L=S*Y+ZB</code>。<code>G</code>、<code>S</code>、<code>B</code>、<code>Y</code> 均取原始二进制复数组。标量的 <code>lambda</code> 正号增加 <code>Im_H G</code>，<code>lambda_over_mu</code> 记为 <code>t</code>。原存档和新合成均匹配 <code>H1</code> 圆盘脉冲的虚部 <code>πka J1(ka) J0(kr)/2</code>。R10 的脉冲半径为 <code>.018</code>，400 MHz 网格使用 <code>h/√π</code>。阵列共享均匀脉冲尺寸，未额外乘网格面积。<code>dark_thresholds.json</code> 给出 <code>H1</code>、共轭 <code>H2</code> 的实际算子误差、暗子空间临界上限和接收奇异值。精确离散公式的虚部在浮点存档中有小负特征值。每个被采纳的严格证书独立处理 K 的符号。</p>
+<p>统一尺度为残差 <code>||SJ−Y||_F</code>。新材料的严格结果以同一个 32² 有限模型和选定球为条件。噪声加本案代理差距使用预存的 32² 面积平均材料代理误差。没有全盒的统一跨网格误差上界。基于同一套公开端口的暗向量和拟合电流可证明部分单源松弛的不可排除性，单源条件包括任意单位范数的照明组合。<code>single_source_obstruction.npz</code> 保存核投影前的提议向量与二进制拟合电流，配套 JSON 记录区间余量。</p>
+<h2 id="数值搜索与严格检查">数值搜索与严格检查</h2>
+<ul>
+<li><code>scan.py</code> 使用 22 个正、负、零 <code>t</code>，6 个 <code>μ</code>。先分解与接收无关的 <code>A</code>，再通过接收空间的低秩更新数惯性及求源空间余量。空间臂先测四种几何分割方向，再在最高数值通过点的下一档执行固定 4×4 分块坐标扫描。分块按物理位置从低 <code>y</code> 到高 <code>y</code>、每行从低 <code>x</code> 到高 <code>x</code>。</li>
+<li><code>refine.py</code> 对半环 <code>.5</code>，以及全环、半环 <code>.75</code> 和 <code>1</code> 加密成 43×31 的标量对照。优化对象是同一公开复场和观测半径。图中的分块族曲线在已有分块搜索点纳入较强的标量解。</li>
+<li><code>gradient_blocks.py</code> 从较强标量提议出发，在三个匹配步长上比较固定惯性的分块光学梯度与标量梯度。<code>gradient_controls.py</code> 复核数值新增排除，并进一步加密局部标量对照。</li>
+<li><code>certificate.py</code> 用向外舍入的 Arb 重新组装冻结矩阵。由移位 Cholesky 反算缺陷和负子空间证实 K 的惯性及谱隙，再由源空间 Rayleigh 界证明截去最大 <code>ν</code> 个特征值后的正谱和。只有区间下界严格大于相应半径时才登记排除。<code>certificates*.json</code> 保留实际墙钟、CPU、特征分解与严格乘积次数。</li>
+<li><code>dark_witness.py</code> 用高精度接收 Gram 求解的区间包络把提议投影到精确 <code>ker(S)</code>。<code>single_source.py</code> 同时对大光学比率构造公开数据拟合电流。</li>
+</ul>
+<h2 id="复现入口">复现入口</h2>
+<p>从项目根目录使用具有 NumPy、SciPy、threadpoolctl、matplotlib 和 python-flint 的 Python 环境。历史存档在同一仓库的 <code>z_alg_secant_tasks/highdim/</code>。令 <code>D=research/z_alg_optical_inertia</code>，依次运行以下命令。</p>
+<pre><code class="language-sh">D=research/z_alg_optical_inertia
+python -B &quot;$D/core/scan.py&quot; --quick --output &quot;$D/results/core/quick.json&quot;
+python -B &quot;$D/core/scan.py&quot; --output &quot;$D/results/core/scalar.json&quot;
+python -B &quot;$D/core/scan.py&quot; --spatial --cohort archive --scalar-input &quot;$D/results/core/scalar.json&quot; --output &quot;$D/results/core/spatial_archive.json&quot;
+python -B &quot;$D/core/scan.py&quot; --spatial --cohort synthetic --scalar-input &quot;$D/results/core/scalar.json&quot; --output &quot;$D/results/core/spatial_synthetic.json&quot;
+python -B &quot;$D/core/dark.py&quot;
+python -B &quot;$D/core/refine.py&quot;
+python -B &quot;$D/core/refine.py&quot; --caps 0.75 1 --array all --output &quot;$D/results/core/focused_upper.json&quot;
+python -B &quot;$D/core/verify.py&quot; --cohort archive --output &quot;$D/results/core/certificates_archive_scalar.json&quot;
+python -B &quot;$D/core/verify.py&quot; --spatial &quot;$D/results/core/spatial_archive.json&quot; --spatial &quot;$D/results/core/spatial_synthetic.json&quot; --focused &quot;$D/results/core/focused_scalar.json&quot; --prior &quot;$D/results/core/certificates_archive_scalar.json&quot;
+python -B &quot;$D/core/verify.py&quot; --case austria_eps4_400MHz --case optfresh_01__pw360_10x20__n02 --case optfresh_05__pw360_10x20__n02 --focused &quot;$D/results/core/focused_scalar.json&quot; --focused &quot;$D/results/core/focused_upper.json&quot; --prior &quot;$D/results/core/certificates.json&quot; --output &quot;$D/results/core/certificates_focused_upper.json&quot;
+python -B &quot;$D/core/dark_witness.py&quot;
+python -B &quot;$D/core/single_source.py&quot;
+python -B &quot;$D/core/single_source.py&quot; --case optfresh_04__pw360_10x20__n02 --output &quot;$D/results/core/single_source_obstruction_block_case.json&quot;
+python -B &quot;$D/core/gradient_blocks.py&quot;
+python -B &quot;$D/core/gradient_controls.py&quot; refine
+python -B &quot;$D/core/gradient_controls.py&quot; polish
+python -B &quot;$D/core/gradient_controls.py&quot; verify
+python -B &quot;$D/core/summarize.py&quot;
+</code></pre>
+<p><a href="results/core/summary.json">严格排除及费用索引</a> · <a href="results/core/scalar.json">全局标量网格</a> · <a href="results/core/gradient_blocks.json">固定惯性梯度</a> · <a href="results/core/single_source_obstruction.json">精确暗向量和大乘子阻断</a></p>
+<h2 id="上轮-98-个源方向耗尽点">上轮 98 个源方向耗尽点</h2>
+<p>运行 <code>python -B &quot;$D/core/legacy98.py&quot;</code>，可把上一轮 180 个参数点按原观测、对比度上限和实部乘子逐一对应。零虚部乘子的惯性在 180 点全部一致。在原来 98 个 <code>ν≥s</code> 的点中，扫描 11 档正虚部乘子后有 8 点恢复到 <code>ν&lt;s</code>，没有点得到正残差下界或超过相应旧噪声半径。Austria 和三个 SRAP 视图各恢复两点，原 R10 网格没有源方向耗尽点。三个 SRAP 视图恢复的点甚至可以达到 <code>ν=0</code>，源空间剩余正谱和仍为零。<a href="results/core/legacy98.json">逐点记录</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html" aria-current="page">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="core/README_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

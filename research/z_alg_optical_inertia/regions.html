@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>区域材料界在 Austria 与半环核壳上的实际边界 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="区域材料界在-austria-与半环核壳上的实际边界">区域材料界在 Austria 与半环核壳上的实际边界</h1>
+<p>6 件历史材料、7 份观测、每份 16 区，共 112 个区域。在历史盒上限 U=20 与条件盒上限 U=4 下，均有 <strong>0/112 区可排除为空，0/112 区得到正幅值下界</strong>。试验包含精确去掉区域电流的 u=0、局部上限 0.1、0.5、1、2。区间验证表明，两个盒合同都在比较残差或加噪球之前耗尽了源数可支撑的负惯性。这个裁决针对被审计的背景乘子范围和原有限模型，限制放松的方式仍有研究空间。</p>
+<p>区域图的参考材料、历史 Dual-CIE 和原物理 GN 全用相同色标。每块中央的破折号表示该块未得到排除。<code>u=0</code> 若能被排除，仅表示该块存在非零材料。只有排除正数 u 才能说该块至少一像素对比度大于 u；块均值是另一项材料指标。 <a href="figures/roi_archived_regions.png">逐区图</a> · <a href="figures/roi_negative_directions.png">惯性图</a> · <a href="results/roi/regions.csv">1120 条区域 × 阈值 × 材料盒记录</a></p>
+<h2 id="空间乘子在这里为何不够">空间乘子在这里为何不够</h2>
+<p>设 R 为被测区，O 为其余 960 格，背景对比度上限为 U。给定背景标量 μ、λ，区域内可改对比度上限和两种乘子。将所构造的 K 限制到 O 的主子阵，区域参数全消失。于是 K 的负方向数至少等于同一个背景主块的负方向数。这也适用于区域每像素分别选权，虚部权重作用于跨区项的贡献是 Hermitian 对称项，不能假定其半正定。u=0 可直接令该区域 J=0，只保留同一个背景主块。把其余 960 个像素保留在原盒约束，是把局部材料缺失和全局低对比度区分开的关键。</p>
+<p>对每个原始阵列，区间计算从存档二进制输入重建矩阵，验证同一子空间在 λ/μ=0 和 128 两个端点为严格负。固定 μ，内部比例由仿射性成立。对 μ≥最小预设 μ，将矩阵除以 μ，接收项 S* S / μ 仅沿半正定序下降，同一负子空间继续成立。最小 μ 是 3.68234×10⁻⁶（Austria 20×40）或约 1.84117×10⁻⁶（10×20）。这把试验从离散乘子格扩展到连续参数范围，并容许区域里任意对角权；若背景进一步分块或 λ/μ 超出验证区间，需要另行验证。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>盒上限</th>
+<th>20 源的 Austria</th>
+<th>10 源的各图</th>
+<th>数值试探</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20，历史原盒</td>
+<td>全部区域严格 ν≥116</td>
+<td>全部区域严格 ν≥106</td>
+<td>四套算子中全局数值最小 ν 为 399、401、404、401，删除 64 格仍过多</td>
+</tr>
+<tr>
+<td>4，另加独立材料规格的条件比较</td>
+<td>全部区域严格 ν≥24</td>
+<td>全部区域严格 ν≥14</td>
+<td>显式计算所得区域 ν 最低分别 64、66；其余乘子用主子阵下界筛除</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>U=20 的证明先验证完整 1024 格上共用的负子空间，然后利用去掉 64 个坐标的交错界。U=4 对四套阵列的 16 个背景分别验证，共 64 个背景子空间。两者均已在独立 Arb 96 bit 验证中成立，余量和 CPU 费用见归档。没有越过噪声球的正候选可提交验证。 <a href="results/roi/verified_U20.json">主盒区间证明</a> · <a href="results/roi/verified_U4.json">条件盒区间证明</a></p>
+<h2 id="真实端口拟合与材料的对照">真实端口拟合与材料的对照</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>原物理观测</th>
+<th style="text-align:right">Dual-CIE 端口残差</th>
+<th style="text-align:right">GN 端口残差</th>
+<th style="text-align:right">Dual-CIE → GN 全图材料相对 L2</th>
+<th style="text-align:right">粗网代理与细网干净场的差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R8 Austria 全环 20×40</td>
+<td style="text-align:right">9.8%</td>
+<td style="text-align:right">10.5%</td>
+<td style="text-align:right">0.826 → 0.827</td>
+<td style="text-align:right">20.6%</td>
+</tr>
+<tr>
+<td>SRAP 核壳半环</td>
+<td style="text-align:right">80.0%</td>
+<td style="text-align:right">14.8%</td>
+<td style="text-align:right">1.916 → 2.415</td>
+<td style="text-align:right">9.6%</td>
+</tr>
+<tr>
+<td>SRAP 核壳全环</td>
+<td style="text-align:right">68.3%</td>
+<td style="text-align:right">35.9%</td>
+<td style="text-align:right">2.819 → 2.779</td>
+<td style="text-align:right">10.9%</td>
+</tr>
+<tr>
+<td>SRAP 双环半环</td>
+<td style="text-align:right">80.7%</td>
+<td style="text-align:right">36.4%</td>
+<td style="text-align:right">2.718 → 2.877</td>
+<td style="text-align:right">6.8%</td>
+</tr>
+<tr>
+<td>遗留偏心壳半环</td>
+<td style="text-align:right">93.1%</td>
+<td style="text-align:right">98.9%</td>
+<td style="text-align:right">1.246 → 0.971</td>
+<td style="text-align:right">42.2%</td>
+</tr>
+<tr>
+<td>遗留核壳半环</td>
+<td style="text-align:right">70.6%</td>
+<td style="text-align:right">44.5%</td>
+<td style="text-align:right">1.675 → 1.931</td>
+<td style="text-align:right">9.7%</td>
+</tr>
+<tr>
+<td>遗留双环半环</td>
+<td style="text-align:right">62.2%</td>
+<td style="text-align:right">34.8%</td>
+<td style="text-align:right">1.999 → 2.228</td>
+<td style="text-align:right">8.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>端口残差为 <code>||Y_pred−Y||F/||Y||F</code>，最后一列的分母为细网干净场范数。R8 的 GN 是前轮已封存的带符号局部任务试验，按原端口残差选取两侧全步长中的较低者。其余六份 GN 是本轮从已归档的 30 秒 light 端点新做的投影阻尼 GN，最多六步，仅以原复端口残差接受。表中 Dual-CIE 列用原始 raw 终点；偏心壳的 GN 将其各自的 light 残差从 99.8% 降至 98.9%。核壳半环的 GN 降低残差时，目标内误差的整体归一化量从 0.505 变到 0.836，背景从 1.849 增到 2.266。原始 Austria Dual-CIE 是表中唯一低于原采样半径的对照；GN 在历史扩大球内，仍留有显著孔内伪影。所有区域均比较了同一观测和原离散算子。另用 GN 终点逐格置零并重算，112 个受限投影的数值残差中，无一达到原采样半径；其中 Austria 四格进入历史扩大球，六格进入条件模型差球。它们是具体数值候选，区间验证只用于材料下界的惯性环节。 <a href="results/roi/endpoint_arrays.npz">逐例复场与材料数组</a> · <a href="results/roi/endpoint_metrics.json">逐例内部与背景误差、完整端点出处</a></p>
+<p>粗网代理的误差为同一已知材料在两套网格中的数值差。上表用历史保存的粗网参考及细网噪声生成器回放；该差只能验证当前代理，真实材料结论需要覆盖合法材料候选的离散化误差上界。在本区间审计中，主问题先被 10 或 20 个源的惯性阈值卡住，研究得到的是松弛失效范围。要排查跨网格实物可辨识性，需进一步控制背景的模型自由度或增加可用的独立观测约束。</p>
+<h2 id="复现与费用">复现与费用</h2>
+<p>从 Inv_SLAM 根，使用有 NumPy、SciPy、matplotlib、python-flint 的同一 Python。下列程序自行启用单 BLAS 线程，区间库同用一个线程。</p>
+<pre><code class="language-bash">python research/z_alg_optical_inertia/roi/scan.py
+python research/z_alg_optical_inertia/roi/verify.py
+python research/z_alg_optical_inertia/roi/endpoints.py
+python research/z_alg_optical_inertia/roi/figures.py
+</code></pre>
+<p>主盒数值扫描墙钟/CPU 12.6/12.4 秒，192 次基矩阵 LDL 直接进入秩筛。条件盒扫描 162.8/154.9 秒，192 次基矩阵 LDL、76 个复用逆矩阵、27,904 次小矩阵更新。两盒的 Arb 证书依次 51.7/48.7 秒和 152.2/136.8 秒。对照复算 20.7/18.8 秒，含 218 次原物理前向、27 个完整物理 Jacobian、2,920 个复数右端。存档初始反演的费用随历史回执保存，当前计时不包含历史运行。视觉图例与表均由封存数值产生。 <a href="roi/FREEZE.md">冻结合同</a> · <a href="results/roi/scan_U20.json">主盒扫描</a> · <a href="results/roi/scan_U4.json">条件盒扫描</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html" aria-current="page">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="roi/REPORT_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

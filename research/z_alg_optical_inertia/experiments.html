@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>从五份存档到九组暗室测量 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html" aria-current="page">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="从五份存档到九组暗室测量">从五份存档到九组暗室测量</h1>
+<p>我们用同一套读数比较三种材料界。第一种只用材料对比度的实部约束。第二种再用无损光学定理，对全图统一加权。第三种允许按空间分块加权。每种牵涉的材料、源功率、阵列和误差球都相同。每个检验量的单位都是测得复场的联合 Frobenius 范数。记录中的 <span class="math-inline">\(u\)</span> 是被排除的材料上限；<span class="math-inline">\(d\)</span> 是在该上限下能达到的残差的严格下界；<span class="math-inline">\(d&gt;\delta_{\rm eff}\)</span> 才证明材料峰值大于 <span class="math-inline">\(u\)</span>。本文统一用 <span class="math-inline">\(\chi=\epsilon_r-1\)</span>。</p>
+<h2 id="1-历史物体光学定理改变了什么">1. 历史物体：光学定理改变了什么</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>完整离散观测</th>
+<th style="text-align:right">独立材料数</th>
+<th style="text-align:right">实部约束可严格排除的最大测试上限</th>
+<th style="text-align:right">加全局光学后</th>
+<th style="text-align:right">再允许分块后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10 环</td>
+<td style="text-align:right">576</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">5</td>
+</tr>
+<tr>
+<td>Austria，全环</td>
+<td style="text-align:right">1,024</td>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">0.75</td>
+<td style="text-align:right">0.75</td>
+</tr>
+<tr>
+<td>核壳，半环</td>
+<td style="text-align:right">1,024</td>
+<td style="text-align:right">0.25</td>
+<td style="text-align:right"><strong>0.5</strong></td>
+<td style="text-align:right">0.5</td>
+</tr>
+<tr>
+<td>同一核壳，全环</td>
+<td style="text-align:right">1,024</td>
+<td style="text-align:right">0.5</td>
+<td style="text-align:right">0.5</td>
+<td style="text-align:right">0.5</td>
+</tr>
+<tr>
+<td>双环，半环</td>
+<td style="text-align:right">1,024</td>
+<td style="text-align:right">0.25</td>
+<td style="text-align:right">0.25</td>
+<td style="text-align:right">0.25</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>表中使用历史冻结的观测球；Austria 还列有原 R8 较小的球，详细数值分别归档。阶段之间保留已成立的基线证书。这里的“最大”是在扫描的阈值中取得。Austria 的 0.75 在实部权重的较细网格里就已通过，不能把上一轮的 0.5 到 0.75 归给光学定理。核壳半环在 <span class="math-inline">\(u=0.5\)</span> 的联合 <span class="math-inline">\(d\ge1.05506\)</span>，半径 0.58703；同乘子一个相干源也能给出 0.82487。R10 在 <span class="math-inline">\(u=5\)</span> 的共享矩阵在四个负方向后仍留下正谱，标准实部约束已严格足够。<a href="results/core/summary.json">逐物逐约束的区间结果</a></p>
+<p><a class="image-original" href="figures/core_archive_envelopes.png"><img src="figures/core_archive_envelopes.png" alt="五份存档在给定材料上限下可达到的残差界" loading="lazy" decoding="async" /></a></p>
+<p>对原实验的 180 个参数点在 <span class="math-inline">\(\lambda=0\)</span> 精确对齐，惯性计数逐条一致。对其中 98 个 <span class="math-inline">\(\nu\ge s\)</span> 的点固定原 <span class="math-inline">\(u,\mu\)</span>，对照 11 个正的 <span class="math-inline">\(\lambda/\mu\)</span>。以下是每个原参数获救的数量；同一参数只计一次。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>观测</th>
+<th style="text-align:right">原 <span class="math-inline">\(\nu\ge s\)</span></th>
+<th style="text-align:right">加光学后至少一次 <span class="math-inline">\(\nu&lt;s\)</span></th>
+<th style="text-align:right">至少一次 <span class="math-inline">\(d&gt;0\)</span></th>
+<th style="text-align:right">超旧球</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10 环</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>Austria</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>核壳半环 / 全环</td>
+<td style="text-align:right">26 / 26</td>
+<td style="text-align:right">2 / 2</td>
+<td style="text-align:right">0 / 0</td>
+<td style="text-align:right">0 / 0</td>
+</tr>
+<tr>
+<td>双环半环</td>
+<td style="text-align:right">26</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>这八点分别在 <span class="math-inline">\(\mu=1,10\)</span>。Austria 的 <span class="math-inline">\(\nu\)</span> 从 21 降至 12；两种半环与一组全环的 SRAP 参数从 13 或 15 降至 0。保留谱仍无正值。在新调出的 <span class="math-inline">\(\mu\approx0.03162\)</span> 上，半环核壳的 <span class="math-inline">\(u=0.5\)</span> 才越过旧半径。这是对历史失效机制的直接检查。<a href="results/core/legacy98.json">180 点对照与 98 点明细</a></p>
+<p><a class="image-original" href="figures/core_dark_thresholds.png"><img src="figures/core_dark_thresholds.png" alt="只改变光学权时，接收器看不见的电流在哪些对比度开始破坏正定性" loading="lazy" decoding="async" /></a></p>
+<p>阈值曲线来自数值广义特征值。严格的物理结论另查具体核向量。R10 和 Austria 的隐藏辐射算子范数有很小的区间上界；20 接收的稀疏全环与半环的上界为 0.659 和 10.0，几何不同，不能从“全环”两字推断辐射约束已饱和。主标量扫描共 46,860 次评估，34,815 点因负方向过多而失去残差界。在可配对的 23,430 次正光学比较中，计算到的负方向数无一增加。后者是数值现象；精确正定性要求核的具体表示满足相应假设。<a href="results/theory/hidden_radiation.json">核的有界性及负 Rayleigh 商反例</a></p>
+<h2 id="2-六件新物体把粗网发现送回细网验证">2. 六件新物体：把粗网发现送回细网验证</h2>
+<p>六个形状在第一次求峰值前确定。400 MHz，二维方形成像区边长 2 m，接收半径 3.75 m，每种阵列均有 10 个单位入射平面波、20 个接收位置。用 96² 网格独立产生旧观测，32² 粗网只访问算子和带噪读数。同一组粗网端口中，六件物体的一阶 Born 场与完整多次散射场的差，分别为完整场范数的 6.86、6.01、5.81、5.96、6.24、4.06 倍。全、半环与两种噪声是配对条件，样本数始终为六件。下面各格写“严格残差下界 / 容许误差”，均在 96² 生成算子上独立验算。破折号表示没有获得越过误差的证书。<a href="synthetic/FREEZE.md">固定形状、随机种子与能量</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>物体与离线真峰值</th>
+<th style="text-align:right">半环，2%，检验 0.5</th>
+<th style="text-align:right">半环，10%，检验 0.5</th>
+<th style="text-align:right">全环，2%，检验 0.75</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 开槽块，3.632</td>
+<td style="text-align:right">0.36887 / 0.10133</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right"><strong>0.16833 / 0.09097</strong></td>
+</tr>
+<tr>
+<td>02 四叶交叠，3.384</td>
+<td style="text-align:right">0.35428 / 0.12690</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">—</td>
+</tr>
+<tr>
+<td>03 双折带，3.416</td>
+<td style="text-align:right">0.47943 / 0.11882</td>
+<td style="text-align:right"><strong>0.62278 / 0.59405</strong>（分块）</td>
+<td style="text-align:right">—</td>
+</tr>
+<tr>
+<td>04 月牙与板，3.437</td>
+<td style="text-align:right">0.83965 / 0.11602</td>
+<td style="text-align:right">0.89054 / 0.58009</td>
+<td style="text-align:right">—</td>
+</tr>
+<tr>
+<td>05 错列沟槽，3.408</td>
+<td style="text-align:right">0.67528 / 0.09937</td>
+<td style="text-align:right">0.68753 / 0.49681</td>
+<td style="text-align:right"><strong>0.11061 / 0.08803</strong></td>
+</tr>
+<tr>
+<td>06 梯度风车，3.346</td>
+<td style="text-align:right">0.52353 / 0.12360</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>全环在 <span class="math-inline">\(u=0.5\)</span> 时，两档噪声的六件材料都能用实部约束通过；提升到 0.75 后，10% 噪声下 0/6 通过。半环在 0.5 时，细网已扫描的纯实部权没有一个通过，统一正光学权在 2% 和 10% 下分别通过 6/6 与 2/6。表中的双折带是细网分块增加的一件。对于高噪声其余三件，严谨结论是未获该下界。<a href="results/theory/fine_scan.json">完整细网扫描</a> · <a href="results/theory/fine_verified.json">全局严格结果</a> · <a href="results/theory/fine_spatial_verified.json">双折带严格结果</a></p>
+<p><strong>证书对应的材料集合确实非空。</strong> 一次离线验证以严格全波解重新检查了所有真材料。原模拟用迭代容差生成精确长度的噪声，直接用这个半径时有 16/24 份真材料越界，最大为 <span class="math-inline">\(1.87\times10^{-11}\)</span> 个场单位。按统一的 <span class="math-inline">\(\delta+10^{-6}\|Y\|_F\)</span> 加入求解余量，24/24 份真材料均被严格包含。本节采用这个球。35 条全局区间证书（22 个不重复的观测×阈值组合）与额外 1 条空间证书都通过；全局证书中的最小严格余量为 0.02258。<a href="feasibility.html">真材料可行性与逐条余量</a></p>
+<p><strong>全源优势的强对照。</strong> 在 01 和 05 的全环 2% 读数上固定 <span class="math-inline">\(u=0.75\)</span>。对 <span class="math-inline">\(t=\lambda/\mu\le10^4\)</span>，同一个严格属于 <span class="math-inline">\(\ker S\)</span> 的电流使二次型为负；对 <span class="math-inline">\(t\ge10^4\)</span>，对两案分别找到使所有单位相干源都通过该松弛的拟合电流。后者的端口残差分别低于 <span class="math-inline">\(7.61\times10^{-14}\)</span> 和 <span class="math-inline">\(8.56\times10^{-14}\)</span>。两个连续区间覆盖了所有实数，排除了“再多试几个标量乘子也许能复制结果”的解释。仅限声明的单源松弛。第一版仅用粗块电流搜索负向量在 <span class="math-inline">\(t=10^4\)</span> 得到上界 +0.01256，未能做出证明；在细网原生电流中去掉主要辐射模式后找到上界 −0.02088。<a href="results/theory/fine_all_scalar.json">失败提议与完整单源证明</a> · <a href="results/theory/fine_long_ratio.json">严格核向量</a></p>
+<p><strong>分块与算量。</strong> 32² 下，双折带半环 10% 的分块下界为 0.65287，标量局部对照加密后为 0.59256，半径 0.59404。另一件月牙与板全环 2% 在 0.75 得到 0.10340，标量约 0.08590，半径 0.09573。两案各自的粗网面积平均材料代理误差加入半径后均不通过。因此我们对两案都回到细网检验，分别取得 <strong>0.62278 对 0.59405</strong>、<strong>0.05604 对 0.09573</strong>。粗网搜索给出候选；细网正证书覆盖该离散模型所有 9,216 个材料自由度。求乘子、区间复核、额外细网工作都计入费用，未建立分块比标量更快的结论。<a href="core.html">空间权选取、标量加密与费用</a> · <a href="spatial-proof.html">细网细节</a></p>
+<h2 id="3-能指出材料在哪一块吗">3. 能指出材料在哪一块吗？</h2>
+<p>对每个 4×4 区域先精确剔除该区电流，直接问整个区域能否为空；再试 0.1、0.5、1、2 的局部上限。背景保持完整变化，分别用原盒 20 和另加假设的 4。六件不同历史材料共七份视图，<strong>两种背景上限都为 0/112</strong>。对受检背景乘子，任意改变区内权重都无法消除已严格证明存在于区外的过多负方向。图中灰色或横杠表示当前约束无法回答，读者可以与同数据的材料重建和参考形状直接比对。<a href="regions.html">完整 1,120 条记录和假设范围</a></p>
+<p><a class="image-original" href="figures/roi_archived_regions.png"><img src="figures/roi_archived_regions.png" alt="相同色标下的参考材料、历史反演、GN 与各区结论" loading="lazy" decoding="async" /></a></p>
+<h2 id="4-三件实物和双频对照">4. 三件实物和双频对照</h2>
+<p>Fresnel 实验从原始总场和空场计算实际散射。三个目标在 4、6、8 GHz 均会因发射位置不同而缺失部分接收角。每次发射有 241 个接收位置，Int/Ext 有 8 次发射，Twin 有 18 次。计算按源分组取真正测到的交集。在 0.5 上，9 份均未过空场误差。Twin 的三个严格不定计算在所选测试上限处依次给出 0.454%、1.922%、3.409% 的下界，各自比分频空场误差小 8.43、35.32、45.07 个百分点。4 GHz、0.25 上限下，仅实部约束达到 28.515%，带入实测误差标尺仍给未知失配留出 6.98 个百分点。未将留出 RMS 假设为全域确定上界。<a href="fresnel.html">端口掩码与频率逐例</a> · <a href="fresnel-tables.html">全部误差账</a></p>
+<p><a class="image-original" href="figures/fresnel_margins.png"><img src="figures/fresnel_margins.png" alt="九份实测在同一个对比度上限下的余量" loading="lazy" decoding="async" /></a></p>
+<p>另对六件新物体实施了 400 与 500 MHz 同一半环的比较。频率各自重新生成 Green 和入射场，两臂都使用相同的完整两频数据。0.5 上限、2% 噪声时，分别求界再平方相加严格通过 3/6，跨频混合权重 0/6；10% 时两臂都为 0/6。加入各物体实测得的粗网代理场差后，两臂同为 0/6。独立判据可在每频各自扣除负方向，堆成一个大矩阵则可能丢弃本应保留的源方向。<a href="two-frequencies.html">双频的同预算配置、证明与失败记录</a></p>
+<h2 id="5-成本与可重复的范围">5. 成本与可重复的范围</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>工作</th>
+<th style="text-align:right">本次实测成本</th>
+<th>成本所覆盖的事</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32² 等主标量扫描 / 两个空间臂</td>
+<td style="text-align:right">133 s / 20 + 157 s 墙钟</td>
+<td>五份存档和 24 个新视图；另两次标量加密各 24、79 s，较细比较另记</td>
+</tr>
+<tr>
+<td>32² 严格证书</td>
+<td style="text-align:right">主批次 376 s 墙钟，较高阈值批次另 66 s</td>
+<td>共 67 个独立复核条目通过；各条的运算数与 CPU 在账本中</td>
+</tr>
+<tr>
+<td>96² 全局界</td>
+<td style="text-align:right">搜索 64.4 s，严格复核 81.0 s 墙钟</td>
+<td>2,832 条数值行，8 个共享谱剖面，35 条被选证书。状态维数 9,216，最大严格小系统 645 阶</td>
+</tr>
+<tr>
+<td>96² 分块及真材料验证</td>
+<td style="text-align:right">分块区间 15.45 s，离线六件真材料共 34.47 s 墙钟</td>
+<td>分块在全网格复核，矩阵 902 阶；真材料验证峰值约 830 MiB</td>
+</tr>
+<tr>
+<td>区域检验</td>
+<td style="text-align:right">两盒扫描 12.6 + 162.8 s，两组区间验证 51.7 + 152.2 s 墙钟</td>
+<td>另有 20.7 s 对照复算，涉及 218 次正演及 27 个完整材料 Jacobian</td>
+</tr>
+<tr>
+<td>Fresnel 三频</td>
+<td style="text-align:right">已完整计时的正式扫描及两种复核合计约 1,071 CPU s</td>
+<td>162 次 3,600 阶状态分解，18 次名义正演分解。早期失败与中断前缀另列</td>
+</tr>
+<tr>
+<td>400/500 MHz 配对</td>
+<td style="text-align:right">生成 7.53 s、数值 17.05 s、严格 40.95 s 墙钟</td>
+<td>使用共享频率算子、两臂同一读数，3 个跨过纯采样球的正例单独复核</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>各阶段有共享及并行计算，上表列阶段时间。Fresnel 的中断前缀未完整计时，不能从表中倒推出整个研究总墙钟。合成粗网与细网对同一已知材料的场差，半环为 12.4%–28.4%，全环为 14.2%–35.4%；这些实测差值说明跨网格消耗了多少余量，不能充当任一未知物体的误差上界。独立细网区间证书只使用公开算子、端口与读数，离线可行性另行读取真材料。所有未越过噪声球的结果与对应的搜索范围均保留。<a href="reproduce.html">复现与费用入口</a> · <a href="results/core/summary.json">逐案计算账</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="EXPERIMENTAL_RESULTS.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

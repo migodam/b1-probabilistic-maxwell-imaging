@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>细网证书的真材料可行性复核 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="细网证书的真材料可行性复核">细网证书的真材料可行性复核</h1>
+<p>六件新材料的 24 份观测，在扩大球 <code>δ + 10⁻⁶ ||Y||F</code> 中均有真材料严格可行。这里的 δ 是相对当初数值生成场保存的采样半径。直接拿原始 δ 当作严格细网物理半径时，真实材料在 8 份观测中在球内，16 份在球外。最大越界仅 1.8643×10⁻¹¹，来自有限容差生成场和严格有限算子前向结果的差异。扩大后，35 条细网区间排除全部保留，覆盖 22 个观测与对比度阈值组合，最小严格残差余量为 0.02258281959。应以扩大后的球使用细网证书。 <a href="results/theory/fine_feasibility.json">逐件真材料与证书余量</a></p>
+<p>复核只在细网数据方法与证书封存之后离线打开六件材料，未参与选择乘子。96² 有限算子以 <code>public/fine_geometry.npz</code> 的二进制 192² 傅里叶乘子为准确输入，采用相同补零和裁切。用 128 bit Arb 逆变换还原核，在每件真材料 1267–2131 个活跃像素上解方程；材料严格为零的格点满足 J=0。两阵共享为 15 个不同照明列与 30 个不同接收行，原观测均按相同顺序取子阵。此复核适用于保存的有限算子及其二进制 B、S、Y。</p>
+<p>设活跃区状态方程为 <code>AJ=MB</code>，其中 <code>A=I−MG</code>。对近似状态 X 和接收伴随近似 W，用区间算术计算 <code>D=MB−AX</code>、<code>E=S−WA</code>。精确端口为 <code>SX+WD+EA⁻¹D</code>。近似逆 R 满足 <code>||I−RA||₂&lt;1</code>，用四个实矩阵乘法及其 IEEE binary64 累计误差包络验证，并计入 Arb 核系数与二进制中心的逐项差。由此约束 <code>||A⁻¹||₂</code>，再用两个缺陷范数的乘积包围端口剩余误差。完整接收端口的最后剩余误差小于 2.84×10⁻²⁴。由早期生成器保存的 GMRES 干净复场与此严格细网前向场的最大观测差上界为 <code>3.9784×10⁻¹⁰</code>，至多 <code>8.7524×10⁻¹¹ ||Y||F</code>。逐例核对球边界时，所需最大相对补量上界为 <code>3.406×10⁻¹²</code>。</p>
+<p>扩大半径的二进制向上端点保存在 <code>inflated_radius</code> 字段。上述补量只处理相同 96² 离散物理模型内的求解误差。粗网面积均值代理或连续物理域所需的模型差界依据另列。复现时从研究目录用安装了 NumPy、SciPy 和 python-flint 的环境运行 <code>python synthetic/nonvacuity.py</code>。本次单线程实测为 34.47 秒墙钟、33.73 秒 CPU，峰值进程内存约 830 MiB。 <a href="synthetic/nonvacuity.py">复现程序</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html" aria-current="page">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="synthetic/FINE_FEASIBILITY_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

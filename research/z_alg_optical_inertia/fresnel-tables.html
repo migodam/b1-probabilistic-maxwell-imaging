@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fresnel 2005 误差和余量 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="fresnel-2005-误差和余量">Fresnel 2005 误差和余量</h1>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>观测</th>
+<th style="text-align:right">空场留出相对空场</th>
+<th style="text-align:right">空场留出相对同口散射</th>
+<th style="text-align:right">空场 RMS 转至全观测</th>
+<th style="text-align:right">名义模型留出发射 / 接收</th>
+<th style="text-align:right">60→120 网格差</th>
+<th style="text-align:right">数值通过的最大 χ</th>
+<th style="text-align:right">外向复核通过的最大 χ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FoamDielInt 4 GHz</td>
+<td style="text-align:right">2.60%</td>
+<td style="text-align:right">6.19%</td>
+<td style="text-align:right">10.38%</td>
+<td style="text-align:right">10.48% / 12.73%</td>
+<td style="text-align:right">0.79%</td>
+<td style="text-align:right">0.1 / 0.1 / 0.1</td>
+<td style="text-align:right">0.1 / 0.1 / 0.1</td>
+</tr>
+<tr>
+<td>FoamDielExt 4 GHz</td>
+<td style="text-align:right">2.59%</td>
+<td style="text-align:right">5.71%</td>
+<td style="text-align:right">9.97%</td>
+<td style="text-align:right">18.11% / 21.95%</td>
+<td style="text-align:right">1.02%</td>
+<td style="text-align:right">0.25 / 0.1 / 0.1</td>
+<td style="text-align:right">0.25 / 0.1 / 0.1</td>
+</tr>
+<tr>
+<td>FoamTwinDiel 4 GHz</td>
+<td style="text-align:right">2.58%</td>
+<td style="text-align:right">5.04%</td>
+<td style="text-align:right">8.88%</td>
+<td style="text-align:right">18.71% / 17.44%</td>
+<td style="text-align:right">1.23%</td>
+<td style="text-align:right">0.25 / 0.25 / 0.25</td>
+<td style="text-align:right">0.25 / 0.25 / 0.25</td>
+</tr>
+<tr>
+<td>FoamDielInt 6 GHz</td>
+<td style="text-align:right">10.90%</td>
+<td style="text-align:right">23.75%</td>
+<td style="text-align:right">41.05%</td>
+<td style="text-align:right">20.06% / 23.85%</td>
+<td style="text-align:right">2.34%</td>
+<td style="text-align:right">0.1 / 0.05 / 0.05</td>
+<td style="text-align:right">0.1 / 0.05 / 0.05</td>
+</tr>
+<tr>
+<td>FoamDielExt 6 GHz</td>
+<td style="text-align:right">10.90%</td>
+<td style="text-align:right">20.27%</td>
+<td style="text-align:right">36.89%</td>
+<td style="text-align:right">24.58% / 26.61%</td>
+<td style="text-align:right">1.98%</td>
+<td style="text-align:right">0.1 / 0.1 / 0.05</td>
+<td style="text-align:right">0.1 / 0.1 / 0.05</td>
+</tr>
+<tr>
+<td>FoamTwinDiel 6 GHz</td>
+<td style="text-align:right">10.84%</td>
+<td style="text-align:right">21.58%</td>
+<td style="text-align:right">37.24%</td>
+<td style="text-align:right">29.05% / 28.76%</td>
+<td style="text-align:right">2.98%</td>
+<td style="text-align:right">0.1 / 0.1 / 0.1</td>
+<td style="text-align:right">0.1 / 0.1 / 0.1</td>
+</tr>
+<tr>
+<td>FoamDielInt 8 GHz</td>
+<td style="text-align:right">11.39%</td>
+<td style="text-align:right">35.14%</td>
+<td style="text-align:right">56.09%</td>
+<td style="text-align:right">25.76% / 34.16%</td>
+<td style="text-align:right">5.73%</td>
+<td style="text-align:right">0.02 / 0.02 / 0.02</td>
+<td style="text-align:right">0.02 / 0.02 / 0.02</td>
+</tr>
+<tr>
+<td>FoamDielExt 8 GHz</td>
+<td style="text-align:right">11.38%</td>
+<td style="text-align:right">22.73%</td>
+<td style="text-align:right">41.80%</td>
+<td style="text-align:right">47.33% / 32.21%</td>
+<td style="text-align:right">3.83%</td>
+<td style="text-align:right">0.05 / 0.05 / 0.05</td>
+<td style="text-align:right">0.05 / 0.05 / 0.05</td>
+</tr>
+<tr>
+<td>FoamTwinDiel 8 GHz</td>
+<td style="text-align:right">11.34%</td>
+<td style="text-align:right">28.67%</td>
+<td style="text-align:right">48.48%</td>
+<td style="text-align:right">42.21% / 43.21%</td>
+<td style="text-align:right">6.45%</td>
+<td style="text-align:right">0.05 / 0.05 / 0.05</td>
+<td style="text-align:right">0.05 / 0.05 / 0.05</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>后两列依次为全局实扇区、全局非零光学、双区乘子。通过指下界超过空场 RMS 代理，模型与标定上界仍需单独给定。</p>
+<h2 id="九例统一检验-χ05">九例统一检验 χ≤0.5</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>观测</th>
+<th style="text-align:right">数值下界（实 / 光 / 双区）</th>
+<th style="text-align:right">空场后余量（实 / 光 / 双区）</th>
+<th style="text-align:right">空场加诊断增益后余量（实 / 光 / 双区）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FoamDielInt 4 GHz</td>
+<td style="text-align:right">0.00% / 2.66% / 0.00%</td>
+<td style="text-align:right">-10.38% / -7.71% / -10.38%</td>
+<td style="text-align:right">-21.19% / -18.52% / -21.19%</td>
+</tr>
+<tr>
+<td>FoamDielExt 4 GHz</td>
+<td style="text-align:right">0.00% / 2.72% / 0.00%</td>
+<td style="text-align:right">-9.97% / -7.25% / -9.97%</td>
+<td style="text-align:right">-22.58% / -19.86% / -22.58%</td>
+</tr>
+<tr>
+<td>FoamTwinDiel 4 GHz</td>
+<td style="text-align:right">0.00% / 2.34% / 0.73%</td>
+<td style="text-align:right">-8.88% / -6.55% / -8.15%</td>
+<td style="text-align:right">-21.53% / -19.20% / -20.80%</td>
+</tr>
+<tr>
+<td>FoamDielInt 6 GHz</td>
+<td style="text-align:right">0.00% / 0.00% / 0.00%</td>
+<td style="text-align:right">-41.05% / -41.05% / -41.05%</td>
+<td style="text-align:right">-71.81% / -71.81% / -71.81%</td>
+</tr>
+<tr>
+<td>FoamDielExt 6 GHz</td>
+<td style="text-align:right">0.00% / 0.00% / 0.00%</td>
+<td style="text-align:right">-36.89% / -36.89% / -36.89%</td>
+<td style="text-align:right">-62.13% / -62.13% / -62.13%</td>
+</tr>
+<tr>
+<td>FoamTwinDiel 6 GHz</td>
+<td style="text-align:right">0.00% / 0.00% / 0.00%</td>
+<td style="text-align:right">-37.24% / -37.24% / -37.24%</td>
+<td style="text-align:right">-65.93% / -65.93% / -65.93%</td>
+</tr>
+<tr>
+<td>FoamDielInt 8 GHz</td>
+<td style="text-align:right">0.00% / 0.00% / 0.00%</td>
+<td style="text-align:right">-56.09% / -56.09% / -56.09%</td>
+<td style="text-align:right">-97.59% / -97.59% / -97.59%</td>
+</tr>
+<tr>
+<td>FoamDielExt 8 GHz</td>
+<td style="text-align:right">0.00% / 0.00% / 0.00%</td>
+<td style="text-align:right">-41.80% / -41.80% / -41.80%</td>
+<td style="text-align:right">-69.76% / -69.76% / -69.76%</td>
+</tr>
+<tr>
+<td>FoamTwinDiel 8 GHz</td>
+<td style="text-align:right">0.00% / 0.00% / 0.00%</td>
+<td style="text-align:right">-48.48% / -48.48% / -48.48%</td>
+<td style="text-align:right">-94.55% / -94.55% / -94.55%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>以每例全部真实散射读数的 Frobenius 范数为分母。负值表示即使取模型误差 b=0，该敏感性场景也超出了算得的下界。</p>
+<h2 id="分组不定证书">分组不定证书</h2>
+<ul>
+<li>FoamTwinDielTM 4 GHz，χ≤0.5，逐组已证负方向 5 / 5 / 5，外向残差下界 0.45%，空场代理后余量 -8.43%。</li>
+<li>FoamTwinDielTM 6 GHz，χ≤0.25，逐组已证负方向 2 / 2 / 2，外向残差下界 1.92%，空场代理后余量 -35.32%。</li>
+<li>FoamTwinDielTM 8 GHz，χ≤0.25，逐组已证负方向 2 / 2 / 2，外向残差下界 3.41%，空场代理后余量 -45.07%。</li>
+</ul>
+<p><a href="results/fresnel/SENSITIVITY.csv">全部临界余量</a> · <a href="results/fresnel/ERROR_LEDGER.csv">逐例误差账本</a> · <a href="figures/fresnel_margins.png">九例图</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html" aria-current="page">Fresnel 误差表</a></nav>
+      <a class="source-link" href="results/fresnel/TABLES_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

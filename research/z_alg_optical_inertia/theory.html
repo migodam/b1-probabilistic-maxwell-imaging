@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>哪些电流能掩盖材料峰值 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html" aria-current="page">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="哪些电流能掩盖材料峰值">哪些电流能掩盖材料峰值</h1>
+<p>以下结论用于同频、线性响应、各照明共享同一行材料的二维离散 TM 体积分方程。多次散射全部进入总场。令 <span class="math-inline">\(B\)</span> 为入射场，<span class="math-inline">\(J\)</span> 为每列对应一次照明的电流，<span class="math-inline">\(E=B+GJ\)</span>，<span class="math-inline">\(J=ME\)</span>，<span class="math-inline">\(M=\operatorname{diag}(m_i)\)</span>。观测为 <span class="math-inline">\(SJ\)</span>。记 <span class="math-inline">\(H=(G+G^*)/2\)</span>，<span class="math-inline">\(R=(G-G^*)/(2i)\)</span>，星号表示共轭转置。噪声球为所有已测复数的联合 Frobenius 范数。下文的材料量是无量纲介电对比度 <span class="math-inline">\(\chi=\epsilon_r-1\)</span>。</p>
+<h2 id="1-两条材料约束怎样变为数据下界">1. 两条材料约束怎样变为数据下界</h2>
+<p>待检验上限矩阵为 <span class="math-inline">\(U=\operatorname{diag}(u_i)\)</span>。取任意非负实对角矩阵 <span class="math-inline">\(D_\mu\)</span>、任意实对角矩阵 <span class="math-inline">\(D_\lambda\)</span>。对每个满足 <span class="math-inline">\(0\le m_i\le u_i\)</span> 的材料都有</p>
+<div class="math-display" tabindex="0">\[Q_r=J^*D_\mu J-\operatorname{Re}_H(J^*D_\mu U E)
+=E^*D_\mu M(M-U)E\preceq0,\qquad
+Q_o=\operatorname{Im}_H(J^*D_\lambda E)=0 .\]</div>
+<p>这里的实、虚部都是 Hermitian 部分。任意相干照明组合仍经历同一个材料，因此这些是整个源矩阵的关系。对于 <span class="math-inline">\(D_\lambda=I\)</span>，第二式为 <span class="math-inline">\(J^*RJ+(J^*B-B^*J)/(2i)=0\)</span>。对于本文时间符号约定下的被动有损标量材料，<span class="math-inline">\(\operatorname{Im}_H(J^*D_\lambda E)=-E^*D_\lambda\operatorname{Im}(M)E\preceq0\)</span> 要求 <span class="math-inline">\(D_\lambda\succeq0\)</span>。要同时保留实部扇区，需逐点有 <span class="math-inline">\(|m_i|^2\le u_i\operatorname{Re}(m_i)\)</span>。只规定实部的上限和被动性不能推出这一点。</p>
+<p>定义 <span class="math-inline">\(Z=(D_\mu U+iD_\lambda)/2\)</span>，以及</p>
+<div class="math-display" tabindex="0">\[K=S^*S+D_\mu-ZG-G^*Z^*,\qquad L=S^*Y+ZB,\qquad H_Y=Y^*Y-L^*K^{-1}L .\]</div>
+<p>对全局标量有 <span class="math-inline">\(K=S^*S+\mu(I-uH)+\lambda R\)</span>。设 <span class="math-inline">\(K\)</span> 可逆，<span class="math-inline">\(\nu=n_-(K)\)</span>，<span class="math-inline">\(h_1\ge\cdots\ge h_s\)</span> 为 <span class="math-inline">\(H_Y\)</span> 的特征值。每个合法材料都满足</p>
+<div class="math-display" tabindex="0">\[\|SJ-Y\|_F^2\ \ge\ d^2=\sum_{j&gt;\nu}\max(0,h_j).\]</div>
+<p>证明。把 <span class="math-inline">\(Q_r+Q_o\)</span> 加到残差 Gram 后配方，得到 <span class="math-inline">\(H_Y+(J-K^{-1}L)^*K(J-K^{-1}L)\)</span>。该式低于真实残差 Gram。后一二次项的负部秩最多为 <span class="math-inline">\(\nu\)</span>。由秩交错和极小极大原理，残差 Gram 的第 <span class="math-inline">\(i\)</span> 大特征值至少为 <span class="math-inline">\(\max(0,h_{i+\nu})\)</span>；求和即得。这是给定乘子的可靠下界，最小物理失配可以更大。</p>
+<p>另一个表述适用于奇异 <span class="math-inline">\(K\)</span>。对 <span class="math-inline">\(P(a)=\left[\begin{smallmatrix}K&amp;-L\\-L^*&amp;Y^*Y-aI\end{smallmatrix}\right]\)</span>，若 <span class="math-inline">\(P(a)\)</span> 有 <span class="math-inline">\(n+q\)</span> 个正特征值，把二次型限制在 <span class="math-inline">\([J;I]\)</span> 的 <span class="math-inline">\(s\)</span> 维列空间，至少留下 <span class="math-inline">\(q\)</span> 个正方向。因此残差 Gram 至少有 <span class="math-inline">\(q\)</span> 个特征值超过 <span class="math-inline">\(a\)</span>。在若干阈值积分也能给出迹下界。单纯的惯性消元和无噪最小正惯性公式都有直接矩阵先例。<a href="https://arxiv.org/pdf/1301.2567">Tian，推论 4.5 式 (4.38)</a></p>
+<h2 id="2-光学定理何时真能移走隐藏电流">2. 光学定理何时真能移走隐藏电流</h2>
+<p>设 <span class="math-inline">\(V\)</span> 列正交且张成 <span class="math-inline">\(\ker S\)</span>，<span class="math-inline">\(H_0=V^*HV\)</span>，<span class="math-inline">\(R_0=V^*RV\)</span>，<span class="math-inline">\(t=\lambda/\mu\)</span>。当 <span class="math-inline">\(I+tR_0\succ0\)</span> 且存在正反应能方向时，隐藏二次项第一次失去正定的上限为</p>
+<div class="math-display" tabindex="0">\[u_*(t)=\min_{x^*H_0x&gt;0}\frac{\|x\|^2+t x^*R_0 x}{x^*H_0 x}.\]</div>
+<p>若无正方向，临界上限为 <span class="math-inline">\(+\infty\)</span>。若 <span class="math-inline">\(R_0\succeq0\)</span>，此阈值是 <span class="math-inline">\(t\)</span> 的非减凹函数。若 <span class="math-inline">\(R_0\succeq rI\)</span> 且 <span class="math-inline">\(r&gt;0\)</span>，每增长 <span class="math-inline">\(\Delta t&gt;0\)</span> 至少提高 <span class="math-inline">\(r\Delta t/\lambda_{\max}(H_0)\)</span>。这是每个商斜率的共同下界；一个实际隐藏向量即可给出一条仿射上界。这里随光学权变化的阈值固定了实部权，比较的参数是 <span class="math-inline">\(t=\lambda/\mu\)</span>。在整个状态空间 <span class="math-inline">\(R\succeq0\)</span> 时，<span class="math-inline">\(K\)</span> 的每个排序特征值随 <span class="math-inline">\(\lambda\)</span> 非减，负惯性只在穿过零时下降。即使 <span class="math-inline">\(R\succ0\)</span>，两个很接近的乘子也可给出同一个整数计数。仅 <span class="math-inline">\(R_0\succeq0\)</span> 控制隐藏块；全矩阵的单调性需要相应的全空间条件。</p>
+<p>等面积脉冲的解析 Hankel 核在本研究尺度有 <span class="math-inline">\(R_{ij}=cJ_0(k|x_i-x_j|)\)</span>，<span class="math-inline">\(c=\pi kaJ_1(ka)/2&gt;0\)</span>。这是所有平面波方向的 Gram。有限个不同的点、非零系数无法产生处处为零的远场，否则 Rellich 唯一性、外域解析延拓和每个独立点源奇性给出矛盾。它在理想有限点模型中正定，不能给出有用的一致最小特征值。连续体积源可取 <span class="math-inline">\((\Delta+k^2)\phi\)</span>（光滑紧支撑）构造严格非辐射方向。存档浮点算子也要单独检查。32² 存档中一组具体整数系数给出经 Arb 验证的负 Rayleigh 商，上界 <span class="math-inline">\(-3.05\times10^{-18}\)</span>。这已经推翻了对这份存储矩阵无条件正定的推断；原材料等式从逐点本构推得，仍然成立。<a href="results/theory/hidden_radiation.json">整数见证与实际几何</a></p>
+<p>对分块乘子，光学二次项是 <span class="math-inline">\(\operatorname{Im}_H(D_\lambda G)\)</span>。它含 <span class="math-inline">\((D_\lambda H-HD_\lambda)/(2i)\)</span>，不会继承全局辐射矩阵的正性。例如 <span class="math-inline">\(R=I_2\)</span>，<span class="math-inline">\(H_{12}=H_{21}=3\)</span>、对角为零，<span class="math-inline">\(D_\lambda=\operatorname{diag}(1,0)\)</span>，则该二次项的行列式为 <span class="math-inline">\(-9/4\)</span>。计算块乘子时须重新计算惯性。</p>
+<h2 id="3-一次性排除所有全局标量乘子">3. 一次性排除所有全局标量乘子</h2>
+<p>任取矩阵 <span class="math-inline">\(X\)</span>。由于 <span class="math-inline">\(SV=0\)</span>，</p>
+<div class="math-display" tabindex="0">\[\|R_0\|_2\le\|R-S^*X-X^*S\|_F.\]</div>
+<p>若右边为 <span class="math-inline">\(e\)</span> 且 <span class="math-inline">\(|t|e&lt;1\)</span>，则 <span class="math-inline">\((1-|t|e)u_*(0)\le u_*(t)\le(1+|t|e)u_*(0)\)</span>。这个由接收器与辐射核给出的可计算上界解释了为什么接收密集的全环几乎没有可用的光学提升。R10 环的严格上界为 <span class="math-inline">\(7.56\times10^{-15}\)</span>，Austria 的为 <span class="math-inline">\(3.03\times10^{-10}\)</span>。稀疏 20 接收全环给出的上界为 0.659；同样 20 个接收缩到半环，上界放宽到 10.0。上界变大本身不能证明有用，还要看实际电流与数据。</p>
+<p><strong>双见证命题。</strong> 记 <span class="math-inline">\(Q_r^u,Q_o\)</span> 为未乘权的全局扇区和光学矩阵，<span class="math-inline">\(S\)</span> 满行秩。若存在 <span class="math-inline">\(v\in\ker S\)</span> 使 <span class="math-inline">\(v^*(I-uH+tR)v&lt;0\)</span> 对所有 <span class="math-inline">\(t&lt;T_1\)</span> 成立，又有任意电流矩阵 <span class="math-inline">\(X\)</span> 满足</p>
+<div class="math-display" tabindex="0">\[\|SX-Y\|_F\le\delta,\quad -Q_o(X)\succeq0,\quad Q_r^u(X)+T_2Q_o(X)\preceq0,\quad T_2&lt;T_1,\]</div>
+<p>则使用一条全局标量组合的单源松弛，对任何 <span class="math-inline">\(\mu&gt;0,\lambda\in\mathbb R\)</span> 都不能排除该上限。对 <span class="math-inline">\(t&lt;T_1\)</span>，从任一精确端口拟合电流沿 <span class="math-inline">\(v\)</span> 加足够大幅度，标量约束以负的二次项占优。对 <span class="math-inline">\(t\ge T_2\)</span>，<span class="math-inline">\(X\)</span> 是该组合松弛的数据相容见证；任意单位相干源都可取 <span class="math-inline">\(Xa\)</span>。若各物理源分别选组合，低 <span class="math-inline">\(t\)</span> 的列可精确拟合，高 <span class="math-inline">\(t\)</span> 列的残差总和仍在同一联合球内。命题只涉及逐源松弛。<span class="math-inline">\(X\)</span> 可以不满足无损本构，不能据此宣称发现另一份真实材料。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>原读数与待排上限</th>
+<th style="text-align:right">隐藏负方向保持到 <span class="math-inline">\(T_1\)</span>（保守）</th>
+<th style="text-align:right">后半区见证起点 <span class="math-inline">\(T_2\)</span></th>
+<th style="text-align:right">见证残差上界 / 实验半径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R10 环，<span class="math-inline">\(u=5\)</span></td>
+<td style="text-align:right"><span class="math-inline">\(4.8759\times10^{15}\)</span></td>
+<td style="text-align:right">53,839,282</td>
+<td style="text-align:right">0.009626 / 0.010517</td>
+</tr>
+<tr>
+<td>Austria，<span class="math-inline">\(u=1\)</span></td>
+<td style="text-align:right"><span class="math-inline">\(3.1040\times10^{15}\)</span></td>
+<td style="text-align:right">22,960,916</td>
+<td style="text-align:right">1.039328 / 1.052892</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>见证由已有公开优化终点提出，给全部像素加 <span class="math-inline">\(10^{-6}i\)</span> 生成候选电流；随后直接验证该电流的矩阵不等式与实际读数。这个步骤用于反证单源松弛，线上峰值认证只需 <span class="math-inline">\(G,S,B,Y\)</span>。在 R10 环，共享材料的全源矩阵可排除 <span class="math-inline">\(u=5\)</span>，构成与所有上述单源乘子的严格区分。<a href="results/theory/all_scalar_multipliers.json">全乘子证书</a> · <a href="../z_alg_secant_tasks/highdim/sector_inertia/certificate_u5.json">多照明旧证书</a></p>
+<h2 id="4-怎样限制某一块材料">4. 怎样限制某一块材料</h2>
+<p>令区内 <span class="math-inline">\(U_{ii}=u_{\rm sub}\)</span>，区外 <span class="math-inline">\(U_{ii}=U_{\max}\)</span>，对这个不均匀材料盒应用第一节。如果 <span class="math-inline">\(d\)</span> 超过误差半径，则每个相容材料在该块至少有一格超过 <span class="math-inline">\(u_{\rm sub}\)</span>。不要求先恢复材料图。对于区内上限 0，还可以直接消去该块电流，按剩余全部材料重算。成立的前提是区外的材料上限确有依据。</p>
+<p>反过来，不论怎样改变区内乘子，固定背景块是 <span class="math-inline">\(K\)</span> 的同一个主子矩阵。一旦区外存在 <span class="math-inline">\(s\)</span> 个严格负方向，交错定理保证全域至少有 <span class="math-inline">\(s\)</span> 个负方向，第一节的迹下界恒为零。实验在整个连续参数范围验证了这个障碍，说明某些零结果不会因把区内权重调得更精细而改善。区外同时自由分块的更一般方法不在此不可能性证明内。<a href="regions.html">区域实验与证据</a></p>
+<h2 id="5-直接检查-96²-个独立材料避免给跨网格误差猜一个数">5. 直接检查 96² 个独立材料，避免给跨网格误差猜一个数</h2>
+<p>使用产生合成观测的细网公开传播算子。其零填充 FFT 谱为 <span class="math-inline">\(g_j\)</span>，<span class="math-inline">\(P\)</span> 把细网嵌入较大周期网格，<span class="math-inline">\(V=\mathcal F P\)</span>，<span class="math-inline">\(V^*V=I\)</span>。全局组合的物理二次项等于 <span class="math-inline">\(\mu V^*\operatorname{diag}(a_j)V\)</span>，<span class="math-inline">\(a_j=1-u\operatorname{Re}g_j+t\operatorname{Im}g_j\)</span>。选择频率索引集 <span class="math-inline">\(L\)</span>，独立向下验证 <span class="math-inline">\(c&gt;0\)</span> 满足 <span class="math-inline">\(c\le\min_{j\notin L}a_j\)</span>。于是</p>
+<div class="math-display" tabindex="0">\[K\succeq\widetilde K=\mu c I+S^*S+\mu\sum_{j\in L}(a_j-c)v_jv_j^*,\qquad v_j=V^*e_j .\]</div>
+<p>这是单侧矩阵界。所有 9,216 个材料坐标仍可独立变化。用较小的 <span class="math-inline">\(\widetilde K\)</span> 代入下界推导只会减弱必要条件。写 <span class="math-inline">\(\widetilde K=\alpha I+WDW^*\)</span>，<span class="math-inline">\(\alpha=\mu c\)</span>，其中 <span class="math-inline">\(W\)</span> 含保留的 Fourier 列与 <span class="math-inline">\(S^*\)</span>，并去掉零权重。令 <span class="math-inline">\(M=D^{-1}+W^*W/\alpha\)</span>，对可逆 <span class="math-inline">\(M\)</span>，块惯性消元给出</p>
+<div class="math-display" tabindex="0">\[n_-(\widetilde K)=n_+(M)-n_+(D^{-1}),\qquad
+L^*\widetilde K^{-1}L=L^*L/\alpha-(W^*L)^*M^{-1}(W^*L)/\alpha^2.\]</div>
+<p>本次保留至多 <span class="math-inline">\(25^2\)</span> 个 Fourier 系数，小矩阵含 20 个接收方向，共 645 阶。用精确周期相位的 Arb 区间计算 Fourier Gram，对所有未保留系数逐一验证下界；小系统再以 Cholesky 残差、负子空间和求解残差向外包围。完整细网 <span class="math-inline">\(K\)</span> 与较小模型的惯性并不必相等。另从精确 <span class="math-inline">\(\ker S\)</span> 取向量，用全 Fourier 谱计算二次型，在声称超出单源能力的点单独证明真实 <span class="math-inline">\(K\)</span> 有负方向。完整传播谱仍要构造和读取；证明成本取决于保留的模数与接收数，不能由两组网格断言对任意频率或空间乘子都廉价。<a href="fine/fourier_bound.py">细网源码</a> · <a href="fine/verify_fourier.py">严格计算</a> · <a href="results/theory/fine_hidden.json">细网暗电流</a></p>
+<h2 id="6-误差直接决定材料声明的范围">6. 误差直接决定材料声明的范围</h2>
+<p>设 <span class="math-inline">\(Y=(I+T)(F_h(m)+e_b)+e_n\)</span>，其中 <span class="math-inline">\(\|e_b\|_F\le b\)</span>、<span class="math-inline">\(\|e_n\|_F\le\delta\)</span>、<span class="math-inline">\(\|T\|\le\eta&lt;1\)</span>。<span class="math-inline">\(T\)</span> 可以是共同复增益误差，也可以是逐端口复增益误差（取最大模）。对形状适配的向量化数据同样适用。求逆或移项得</p>
+<div class="math-display" tabindex="0">\[\|F_h(m)-Y\|_F\le b+\frac{\delta+\eta\|Y\|_F}{1-\eta}.\]</div>
+<p>当严格下界 <span class="math-inline">\(d\)</span> 超过右端时排除成立。固定 <span class="math-inline">\(b\)</span> 时容许的增益误差为 <span class="math-inline">\(\eta&lt;(d-b-\delta)/(\|Y\|_F+d-b)\)</span>，须分子为正。若各通道有各自的乘法/加法误差，可逐通道包围后取平方和；若增益共同，则一个统一的复数作用于所有数据，不得给同一接收随意增加独立拟合自由度。多源掩码采用同组接收交集，各组不重复计入源列，子集平方下界可相加。归一化一律使用实际比较的端口及物理单位。</p>
+<p>一个已知细网物体与其粗网面积平均代理之间的场差只能评价这对材料。它不能保证未知物理对象的所有候选。细网证书直接作用于相应的冻结模拟算子，因而不需要假定粗细网的统一 <span class="math-inline">\(b\)</span>；从细网到连续介质仍需另计。实测空场留出提供可观察的误差尺度，不能独自给出任意目标的天线响应、材料损耗和三维失配的硬上界。</p>
+<h2 id="7-共享无色散材料的跨频形式">7. 共享无色散材料的跨频形式</h2>
+<p>各频率有自己的 <span class="math-inline">\(G_f,B_f,S_f\)</span>，可用块对角堆叠。在扩展空间，材料 <span class="math-inline">\(I_F\otimes M\)</span> 在同一像素的多个频率上相同。每个像素允许 <span class="math-inline">\(F\times F\)</span> Hermitian 权重，实部权重半正定；这些权重与复制材料及材料上限可交换。因此第一节的矩阵证明逐字适用。非对角频率项来自共享本构关系。实际不同频率的发射能量按独立实验计量。若用频率对角权，可分别求证书，再将平方下界相加。误差预算也按约定的多频联合球或逐频球计算。<a href="two-frequencies.html">双频实验</a></p>
+<h2 id="8-两个-9216-维例子上的严格能力差">8. 两个 9,216 维例子上的严格能力差</h2>
+<p>把第 3 节的两个见证放回产生读数的 96² 全环算子。取 <span class="math-inline">\(u=0.75\)</span>。一个端口完全不可见的电流 <span class="math-inline">\(v\)</span> 满足</p>
+<div class="math-display" tabindex="0">\[v^*(I-uH+10^4R)v\le-0.02088395,\qquad v^*Rv\ge5.3275\times10^{-7}.\]</div>
+<p>因此同一向量覆盖所有 <span class="math-inline">\(t\le10^4\)</span>，包括所有负光学乘子。对开槽块和错列沟槽的两份读数，分别构造拟合电流 <span class="math-inline">\(X\)</span>。以 <span class="math-inline">\(T=-Q_o(X)\)</span> 表示，验证 <span class="math-inline">\(T\succ0\)</span> 与 <span class="math-inline">\(10^4T-Q_r^u(X)\succ0\)</span>，且数据残差上界依次为 <span class="math-inline">\(7.603\times10^{-14}\)</span> 和 <span class="math-inline">\(8.553\times10^{-14}\)</span>。由第 3 节覆盖所有 <span class="math-inline">\(t\ge10^4\)</span>。这里两个闭区间在端点相交已足够。全部见证来自已知算子和读数。找见证时可以限制辅助电流的形状，因为在子空间找到的反例也是全空间的反例；验证峰值时全部材料像素自由。<a href="results/theory/fine_long_ratio.json">负方向</a> · <a href="results/theory/fine_all_scalar.json">后半区与原始失败提议</a></p>
+<p>对相同两份读数，第 5 节的联合源方法分别给出 <span class="math-inline">\(d\ge0.16832983\)</span>、<span class="math-inline">\(d\ge0.11060787\)</span>，都超过含生成求解误差的半径 <span class="math-inline">\(0.090968\)</span>、<span class="math-inline">\(0.088026\)</span>。用于计算下界的较小矩阵均有四个负方向。两个真材料都严格在相应数据球内。这是对同一个有限逆问题的能力区分，且跨越一切标量乘子和任意一个单位相干照明。直接在单源物理本构上优化、同时保留多个二次约束的更强单源松弛，不在这个分离命题的比较类内。<a href="results/theory/fine_verified.json">细网正例</a> · <a href="feasibility.html">非空性</a></p>
+<h2 id="9-分块光学约束为何能在负方向数不变时提高残差界">9. 分块光学约束为何能在负方向数不变时提高残差界</h2>
+<p>固定非奇异 <span class="math-inline">\(K\)</span>，取 <span class="math-inline">\(J_0=K^{-1}L\)</span>、<span class="math-inline">\(E_0=B+GJ_0\)</span>。设 <span class="math-inline">\(\nu\)</span> 局部不变，源空间中第 <span class="math-inline">\(\nu\)</span>、第 <span class="math-inline">\(\nu+1\)</span> 个特征值之间有谱隙（当 <span class="math-inline">\(\nu=0\)</span> 不需这个条件），保留谱与零也分开。令 <span class="math-inline">\(P\)</span> 为保留的正特征空间的谱投影。将第 <span class="math-inline">\(b\)</span> 块的光学权重增加 <span class="math-inline">\(\delta\lambda_b\)</span>，则</p>
+<div class="math-display" tabindex="0">\[\partial_{\lambda_b}d^2=\operatorname{tr}\big[P\,\operatorname{Im}_H(J_0^*D_b E_0)\big],\]</div>
+<p>其中 <span class="math-inline">\(D_b\)</span> 取该块的 0/1 对角指示。证明是对已配方的驻值求导。<span class="math-inline">\(J_0\)</span> 满足 <span class="math-inline">\(KJ_0=L\)</span>，含 <span class="math-inline">\(\partial J_0\)</span> 的一阶项相消，剩余即局部光学式；对保留的特征值和求导得到谱投影的迹。不定点的“驻值”只需代数求逆条件。跨负惯性变化或谱交叉时，程序重新计算实际界。若不同块的导数异号，全域一个参数会在一阶产生抵消；按块使用相反增量有机会抬高保留谱。每次提议都重新评价，不从导数的符号断定材料下界。第 4 节的定位检验则需要改变区内材料上限；两种操作回答不同问题。</p>
+<p>在双折带的 96² 半环算子取 <span class="math-inline">\(u=0.5\)</span>，使用粗网数据提出的两值分块光学权。从严格的 <span class="math-inline">\(K/\mu\succeq I/256\)</span> 和全算子驻点残差得到 <span class="math-inline">\(d\ge0.622783219965\)</span>，比扩大后的 10% 球多出 <span class="math-inline">\(0.028734438885\)</span>。相同细网、相同 <span class="math-inline">\(\mu\)</span> 的全局权给出数值界约 0.545。另一件月牙与板在 32² 上的全环通过点传到 96² 后低于半径。这两个结果检验了仅在粗网抬升目标函数是否就足以支持实际结论。<a href="spatial-proof.html">分块证明</a> · <a href="results/theory/fine_spatial_followup.json">两份细网复核</a></p>
+<h2 id="10-单个乘子能给出的最佳谱界">10. 单个乘子能给出的最佳谱界</h2>
+<p>若只保留 <span class="math-inline">\(Z_0\succeq0\)</span> 与 <span class="math-inline">\(Z_0\succeq H_Y+X^*KX\)</span>，把残差 Gram <span class="math-inline">\(Z_0\)</span> 和状态偏移 <span class="math-inline">\(X\)</span> 当作自由变量，那么 <span class="math-inline">\(\min\operatorname{tr} Z_0\)</span> 恰等于第 1 节的 <span class="math-inline">\(d^2\)</span>。下界由交错已证。取 <span class="math-inline">\(K\)</span> 的负子空间，缩放一个基使其 Gram 为 <span class="math-inline">\(-I_\nu\)</span>。沿 <span class="math-inline">\(H_Y\)</span> 最大的前 <span class="math-inline">\(\nu\)</span> 个正特征向量构造 <span class="math-inline">\(X\)</span>，使 <span class="math-inline">\(X^*KX\)</span> 恰好抵消这些特征值；取剩余矩阵的正部为 <span class="math-inline">\(Z_0\)</span> 即达下界。若正特征值少于 <span class="math-inline">\(\nu\)</span>，抵消全部即可。物理电流必须对同一个 <span class="math-inline">\(J\)</span> 同时满足材料和端口关系，因此原逆问题的最小失配可以更大。提高这个界需要额外物理约束、多个证书或更好的乘子；对同一已知 <span class="math-inline">\(K,H_Y\)</span> 更换求特征值的算法不会加强它。</p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="MATHEMATICAL_THEORY.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

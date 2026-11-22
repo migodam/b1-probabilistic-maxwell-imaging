@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>十次照明能给材料峰值作证吗？ · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html" aria-current="page">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="十次照明能给材料峰值作证吗">十次照明能给材料峰值作证吗？</h1>
+<p><strong>可以。</strong> 在开槽块和错列沟槽两件不同的无损介质上，10 次照明的联合读数都证明，9,216 个可独立变化的材料格点中，至少一格的介电对比度超过 <strong>0.75</strong>。如果将照明逐一处理，甚至允许挑选任意一个相干照明组合，并把两条物理约束的标量权重优化到任意值，这一类单源方法在两件物体上都无法得出同一结论。两件真材料都严格处于所用 2% 噪声球内。这里的对比度为 <span class="math-inline">\(\chi=\epsilon_r-1\)</span>，因此 0.75 表示相对介电常数超过 1.75。<a href="theory.html">能力差的证明</a> · <a href="results/theory/fine_all_scalar.json">两份单源反例</a></p>
+<p>只在半环布置天线时，光学定理能补上一部分接收不到的信息。对六件预先确定的物体，2% 噪声下六件都证明峰值超过 <strong>0.5</strong>；10% 噪声下，统一的光学权重证明两件，允许不同区域取不同权重后多证明一件，共 <strong>3/6</strong>。这些数都在产生数据的 96² 全波离散模型上严格成立。六件材料的实际峰值为 3.35–3.63，仍高出这些下界很多。<a href="experiments.html">逐件结果</a> · <a href="feasibility.html">细网可行性</a></p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>科研问题</th>
+<th>这轮数据给出的答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>整件物体是否必有高于指定上限的介质？</td>
+<td>两种阵列都有正例；全环的两例还证明全部全局标量单源乘子无能为力。</td>
+</tr>
+<tr>
+<td>能指出具体位置吗？</td>
+<td>Austria、核壳、双环等 7 份视图各切 16 块，<strong>0/112</strong> 块得到可认证的位置。</td>
+</tr>
+<tr>
+<td>对真实暗室测量也成立吗？</td>
+<td>3 件 Fresnel 实物、4/6/8 GHz 共 9 份读数，在 <span class="math-inline">\(\chi=0.5\)</span> 都未越过空场误差。4 GHz 双介质柱在 <span class="math-inline">\(\chi=0.25\)</span> 得到一个可检验的模型误差条件。</td>
+</tr>
+<tr>
+<td>值得怎样写论文？</td>
+<td><strong>CONDITIONAL GO，面向 Inverse Problems。</strong> 可以写有限孔径、多照明与误差下的材料峰值理论。支持严格多源优势的两个试件来自同一离散采集体系，定位和实物的无条件峰值仍待证明。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="两条物理规律怎样约束峰值">两条物理规律怎样约束峰值</h2>
+<p>天线只记录了散射电流投影到接收端的部分。对一束照明，数值上可以给内部电流叠加一种天线完全看不到的分量，保持同一份读数。这种电流未必来自某份真实材料。我们利用无损介质必须满足的两条规律来排除它。第一条来自有限材料对比度，第二条来自入射波做功和辐射功率之间的平衡，即光学定理。同一物体经历十束照明时，同一个实数材料要同时解释十组电流，以及这些照明之间的交叉项。</p>
+<p>实际算法只读入射场、接收几何、Green 算子、复数读数和误差半径。对于“所有像素都不超过 <span class="math-inline">\(u\)</span>”的假设，计算任何合法电流都无法低于的残差 <span class="math-inline">\(d\)</span>。一旦 <span class="math-inline">\(d\)</span> 超过误差半径，便证明至少一格超过 <span class="math-inline">\(u\)</span>。负特征值计数 <span class="math-inline">\(\nu\)</span> 表示在这次二次估计中，隐藏电流至多能抵消多少个源方向。若还剩下正的源方向，可以把剩余特征值累加起来与整份数据的噪声作比较。该过程无须材料初值或恢复图像。<a href="theory.html">公式、证明、带损耗条件</a></p>
+<p><a class="image-original" href="figures/fine_peaks.png"><img src="figures/fine_peaks.png" alt="六个全新材料在半环与全环下的认证余量" loading="lazy" decoding="async" /></a></p>
+<p>图中横轴为残差下界除以误差半径。大于 1 才能排除给定的材料上限。左图检验半环的 0.5，右图检验全环的 0.75。空心标记保留了没有通过的案例。<a href="figures/fine_peaks.pdf">论文用 PDF</a></p>
+<h2 id="负方向减少之后数据还剩下多少判别力">负方向减少之后，数据还剩下多少判别力？</h2>
+<p>在旧半环阵列中，把光学权与实部权之比从 0 增至 10，接收不到的电流首次破坏正定性的对比度从 <strong>0.3521 增到 0.7298</strong>；该权比取一万时为 <strong>0.7490</strong>。全环 R10 与 Austria 几乎没有这种收益。对这两个阵列，接收不到的电流能够辐射的功率有严格上界，分别小于 <span class="math-inline">\(7.56\times10^{-15}\)</span> 与 <span class="math-inline">\(3.03\times10^{-10}\)</span>（本文算子单位）。几何决定了增加同一个光学权重到底能限制哪些电流。<a href="core.html">阈值曲线与物理算子</a></p>
+<p>用原实验的同一材料上限和实部权重逐点复查了过去失效的 <strong>98</strong> 组参数。加入正光学权后，有 <strong>8</strong> 组把负方向数降到照明数以下，但这 8 组的残差下界仍为零。半环核壳在另一实部权重上从排除 0.25 升至 0.5；该点用一个合适的相干照明已经足够。半环的改善单独支持“补回遗漏的辐射信息”。全环开槽块、错列沟槽才支持更强的“必须利用不同照明的共同材料”主张。<a href="results/core/legacy98.json">98 组逐一对照</a> · <a href="figures/core_inertia_curves.png">负方向随光学权的变化</a></p>
+<h2 id="为什么保留空间分块">为什么保留空间分块</h2>
+<p>分区使用光学定理有两个不同的用途。其一是改进<strong>全图峰值</strong>。当两个区域给出的局部功率失配符号相反，相加可能掩盖两边的问题。按区赋权可以单独利用它们。对双折带，32² 粗网选出的权重转到 96² 细网后，在 10% 噪声下得到严格下界 <strong>0.62278</strong>，数据半径为 <strong>0.59405</strong>。全局权采用相同实部权重时，细网上只得到数值界 <strong>0.54472</strong>。另一件月牙与板在粗网中也获益，但转入细网后，0.75 上限的下界跌到约 <strong>0.0560</strong>，低于 <strong>0.09573</strong> 的误差。这一对成功与失败共同说明了直接在细网验证的重要性。<a href="spatial-proof.html">空间分块细网证明</a></p>
+<p>其二是问<strong>哪一块</strong>必须有高对比度材料。此时必须允许区外材料继续变化。逐块审查时，剩下的 960 个背景像素已产生太多能够抵消源信息的方向。即使额外把背景上限从 20 收紧到 4，在检验的整段背景乘子内，20 源的 Austria 仍有至少 24 个负方向，10 源的案例至少有 14 个。每块都只能回答“目前的观测和这组约束无法确定”。对核壳半环，GN 将端口残差由历史 Dual-CIE 的 80.0% 降至 14.8%，材料相对误差却由 1.916 上升到 2.415。本方法也未能独立指定哪一块遗漏了高对比介质。<a href="regions.html">同色标参考图、GN 与区域结果</a></p>
+<h2 id="实测给出了多大的误差余量">实测给出了多大的误差余量？</h2>
+<p>FoamDielInt、FoamDielExt、FoamTwinDiel 的收发掩码随源而变。我们按每组照明真实共有的接收位置计算，只累计互不重复的数据。FoamTwinDiel 在 4 GHz、<span class="math-inline">\(\chi\le0.5\)</span> 下产生了真正的不定证书，每组 6 个源有 5 个负方向，仍剩下一个源方向可用。严格残差下界为数据范数的 <strong>0.454%</strong>，该频率空场留出误差折算为 <strong>8.884%</strong>，相差 <strong>8.43 个百分点</strong>。这是真实测量中联合约束留下的信号，也是它离材料声明还有多远的直接量化。<a href="fresnel.html">九份实测结果</a></p>
+<p>同一实物改检 <span class="math-inline">\(\chi\le0.25\)</span>，仅实部约束就给出 <strong>28.515%</strong> 的严格离散残差下界。若空场折算误差确实不超过 8.884%，且复增益偏差不超过 10.41%，还可容纳约 <strong>6.98 个百分点</strong>的目标到模型误差。仪器留出和名义几何差异提供了误差尺度，现有数据没有给出覆盖所有合法实物的硬上限。因此报告给出验收所需精度，不宣称暗室对象已有无条件下界。<a href="fresnel-tables.html">逐频逐物误差账</a></p>
+<h2 id="论文判断">论文判断</h2>
+<p>共用实部和虚部功率约束、在空间分区加权，以及共享结构产生不同照明间的相关约束，都已有光子设计文献。矩阵二次式的最小惯性可以追溯到 Tian。这里值得写进主定理的是，在明确的有限端口逆问题里，把可见与不可见的辐射分开，给出在不定区仍然可计算的<strong>带噪材料下界</strong>，并用两组数值严格的证据证明全体标量单源方法和共享多源方法之间存在能力差。另一个有价值的结论是背景负惯性给区域定位设下的障碍。<a href="literature.html">命题级文献对照</a> · <a href="paper.html">英文论文草稿</a></p>
+<p>目前最关键的缺口是把矩阵界推进到独立模型或实物上。96² 证明消除了把粗网代理差当统一误差的漏洞。它没有给出真实天线、连续介质和三维散射对这套二维模型的统一偏差。六个中低噪声正例共用一个频率和两个阵列，峰值下界也远低于真峰值。凭这些证据可提交一篇范围清楚的逆问题理论与计算稿；定位、成像精度或实测高对比度认证需要各自的证据。<a href="handoff.html">下一轮理论交接</a> · <a href="reproduce.html">复现入口</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="RESEARCH_REPORT_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

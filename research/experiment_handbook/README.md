@@ -12,6 +12,7 @@
 |能否复现已有论文，能否预测真实测量？| `r8_austria`、`r8_paper_vector`、`fresnel_2005` 及冻结训练/留出掩码|文献仿真查尺寸、频率、源数与停机；实测查复场校准，按未见源、未见接收分别评分|
 |训练一个低成本初值是否划算？| `r8_nn_train`、`r8_nn_validation`、`r8_warm42` 与冻结权重|按材料家族和物理条件分层。把推理、状态转换、后续全波更新与训练摊销分别计费|
 |能否不重建整图，直接排除介电对比度全在某一上限内？| `z_alg_secant_sector_inertia` 的五份原有二维合成观测|同上限、同乘子网格比较正定与不定残差下界。R10 旧环的 576 个像素若均不超过 5，严格误差下界约 0.014695，超过原噪声半径 0.010517。[证书与对照](../z_alg_secant_tasks/multiple-illuminations.html)|
+|光学定理能否从有限孔径读数约束材料峰值？|[六件新强散射材料，24 份配对观测](../z_alg_optical_inertia/synthetic/public/manifest.json)|同一材料比较全环、半环及 2% / 10% 噪声。先复核 96² 有限模型数据球，再比较实部、光学定理和空间乘子。[实验与复算](../z_alg_optical_inertia/experiments.html)|
 |能否用较少发射排除镜像材料？| `z_alg_secant_reflection` 中按真实端口闭合的已存带噪视图|预先给定误差上限，按镜像发射组读前缀。152 份合规 SRAP 视图中，同样判定 150 份，逐组 428 次、全批 1,517 次、事后同布局固定前缀 926 次。[中文报告](../z_alg_secant_tasks/index.html)|
 
 [数据集与覆盖缺口](DATASETS_ZH.md) · [其他研究系列及其用途](PROJECT_FAMILIES_ZH.md) · [算子与设备](OPERATORS_ZH.md)

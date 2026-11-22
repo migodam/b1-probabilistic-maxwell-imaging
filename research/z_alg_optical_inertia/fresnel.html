@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fresnel 2005 实测介电对比度界 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html" aria-current="page">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="fresnel-2005-实测介电对比度界">Fresnel 2005 实测介电对比度界</h1>
+<p>本实验检验真实微波暗室读数能否排除指定介电对比度上限。数据来自 Institut Fresnel 的三个实物，FoamDielInt、FoamDielExt、FoamTwinDiel。每件物体使用 4、6、8 GHz 三份配对 TM 观测。扫描的材料变量为 60² 方格上的实数 χ=εᵣ−1，成像边长 0.20 m，没有初值、材料图、迭代反演或训练先验。检验比较全局实扇区、全局非零光学等式和双区乘子。两个空间权区是中心边长 0.10 m 方区与其余格点，检验全图统一 χ 上限。</p>
+<p>九份观测在 χ≤0.5 的共同上限处都未通过实测空场误差的敏感性检验。4 GHz 三例加入全局光学项后，有 2.34%–2.72% 的离散残差下界。6 和 8 GHz 的六例在这个上限下均为零。4 GHz Twin 的实扇区可严格闭合 χ≤0.25 的离散残差 28.515%。把空场 RMS 当作 δ=8.884%、把名义场拟合的复增益偏离当作 η=10.41%，该证书还能容纳约 6.98 个百分点的离散和物理模型误差。该模型误差缺少适用于全材料盒的硬上界，实物的绝对 χ 下界仍未闭合。</p>
+<p><a href="fresnel-tables.html">九例误差与余量</a> · <a href="results/fresnel/SENSITIVITY.csv">逐阈值与乘子比较</a> · <a href="figures/fresnel_margins.png">九例同纵坐标图</a></p>
+<h2 id="端口校准与归一化">端口、校准与归一化</h2>
+<ul>
+<li>Int 和 Ext 每例 8 源，相隔 45°。Twin 每例 18 源，相隔 20°。真实端口掩码是相对每源的 60°–300°，每源 241 个读数，发射和接收半径均为 1.67 m。代码逐例核对原始文件的索引和缺口。历史 R8 加载器的 18 列只是最大尺寸，占位列先按实际源索引去掉，之后才赋坐标。<a href="https://doi.org/10.1088/0266-5611/21/6/S09">Institut Fresnel 采集论文</a></li>
+<li>原始总场减去空场后取共轭，与向外传播的 Hankel₀⁽¹⁾ 及历史等面积圆盘 Green 函数一致。用每源对向 ±30° 的实测空场拟合五个柱波分量，每三个按角度排序的点留一验证。相同频率和实物的入射场与散射数据都除以该例全部散射读数的范数。接收算子仍是离散模型的有限距离点采样，空场没有分离发射和接收喇叭响应。</li>
+<li>每例所有发射之间没有共同的接收点。逐源矩阵保留所有 1928 或 4338 个读数。相邻二源组分别每组共用 196 或 221 个接收点，总保留 1568/1928 或 3978/4338。相邻四/六源组每组分别共享 106/141 点，总保留 848/1928 或 2538/4338。每个组选用对应的真实读数，组间发射互斥，因此各组残差下界平方可相加。用完整观测范数和完整数据球半径，缺口从未作零读数。</li>
+</ul>
+<h2 id="误差账本">误差账本</h2>
+<p>设归一化加性测量误差上界为 δ，真实物理场到指定离散模型的场误差上界为 b，测量端公共或逐通道复增益偏离单位的算子范数上界为 η&lt;1。以实测数据范数为一，残差球半径可取 b+(δ+η)/(1−η)，所以一个已验证的下界 D 能容纳的最大模型误差为 b_crit=D−(δ+η)/(1−η)。空场留出误差分别对空场和同端口散射归一化，也按实测样本数把留出 RMS 转移至全部散射端口用于敏感性。转移假设 RMS 可比。相应覆盖概率与确定性误差上界未知。</p>
+<p>6 和 8 GHz 的留出误差相当于实测入射场的 10.84%–11.39%，相当于同端口散射场的 20.27%–35.14%。按 RMS 转移到全部散射端口后，敏感性尺度为 36.89%–56.09%。原始空场跨实物采集的同端口直接比对也已复算。Int/Ext 之间差异为空场的 0.60%–0.79%，涉及 Twin 的同端口差异为 1.75%–4.14%。空场拟合留出误差包含天线和角度模型，数据中两个量的规模不同。<a href="results/fresnel/REPEATED_EMPTY_PORTS.csv">同端口空场对比</a></p>
+<p>名义几何正演使用已发表泡沫 εᵣ=1.45、塑料 εᵣ=3 和历史 R8 图示位置，泡沫半径 40 mm，塑料半径 15.5 mm，中心相对位置取 −5 mm 与 −60 mm。它是固定参照场，和乘子扫描独立。分别在 60² 和 120² 做全波直接解，记录两分辨率投影至相同真实端口后的差值。留出每四个发射的一个和训练发射中每五个接收的一个，另在剩余端口估计一个诊断复增益，再到两类留出上评分。名义场偏差同时包含几何、材料、喇叭、有限柱长和噪声。网格差和拟合增益均为敏感性标尺。所有实物保持未知的统一连续到离散模型误差上界。</p>
+<h2 id="离散数值复核">离散数值复核</h2>
+<p>对固定上限与乘子形式，将矩阵写为 K=μA+S* S。对一个频率共用一次 3600 状态的 Hermitian LDL 分解，并将源和接收右端批量求解。每个源组只访问相应接收 Schur 子阵 U=μI+S A⁻¹ S*。不定惯性为 ν(K)=ν(A)−ν(U)。令 P 是 ZB，X₀=A⁻¹P，D=Y−SX₀，则源 Schur 矩阵为 H=μ[D<em>U⁻¹D−P</em>A⁻¹P]。保留越过 ν(K) 后所有正特征值的和，以其开方给出下界。源组不足时下界为零。</p>
+<p>固定 χ≤0.25，三个频率的实扇区基底 A 分别有 0、7、27 个负方向。光学项取 λ/μ=u 时分别降为 0、0、4。取 λ/μ=4u 时三组均降到零。χ≤0.5 时，4 GHz 的基底从 15 个负方向降到零，6 和 8 GHz 即使用较强项仍有 9 和 29 个。基底 A 的惯量与加入实际接收的 K 分开记。每条曲线使用各自扫描到的实际下界，非零光学或双区乘子的曲线可以低于零光学基线。</p>
+<p>离散外向复核把已表示的 binary64 输入 G、S、B、Y 当作精确数据。使用 Gershgorin 或带余差界的 Cholesky 证正定，或对子空间和低秩稳定化分别证负/正惯性。通过驻点残差给出源 Schur 下界，维数只在源数或保留接收数。χ=0 的预测为零，归一化全观测距离为 1，且无需物体前向模型。该离散结论与物理误差的可用性通过上面的半径合同连接。</p>
+<p>三次不定外向复核来自同一件 Twin 实物。4 GHz、χ≤0.5、双区乘子的每个 6 源组均保留一个可用方向（ν=5），下界为 0.45358%。6 GHz、χ≤0.25、双区乘子的每组 ν=2，下界为 1.92179%。8 GHz、χ≤0.25、全局光学项的每组 ν=2，下界为 3.40884%。每次均保留 2538/4338 个读数。相对该频率空场代理的余量分别为 −8.430、−35.322、−45.068 个百分点。</p>
+<h2 id="实际用时">实际用时</h2>
+<p>Mac16,10，单线程 BLAS。扫描含原始文件读取、空场拟合、60² 与 120² 名义正演、候选计算及逐行输出准备。三频独立产出存在并行重叠。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>频率</th>
+<th style="text-align:right">扫描 CPU / 墙钟 s</th>
+<th style="text-align:right">正定外向复核 CPU / 墙钟 s</th>
+<th style="text-align:right">不定外向复核 CPU / 墙钟 s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 GHz</td>
+<td style="text-align:right">249.04 / 258.72</td>
+<td style="text-align:right">35.13 / 38.15</td>
+<td style="text-align:right">26.82 / 31.48</td>
+</tr>
+<tr>
+<td>6 GHz</td>
+<td style="text-align:right">344.64 / 393.41</td>
+<td style="text-align:right">32.23 / 35.16</td>
+<td style="text-align:right">19.37 / 20.38</td>
+</tr>
+<tr>
+<td>8 GHz</td>
+<td style="text-align:right">332.85 / 378.51</td>
+<td style="text-align:right">23.88 / 24.62</td>
+<td style="text-align:right">7.39 / 7.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>正式扫描执行 162 次状态 LDL、85,104 个实右端和 21,276 个复右端求解、6,804 次接收 Schur 特征分解、80,878 次源特征分解。名义正演 18 次直接分解，合计 204 个物理解右端。开发阶段有一次 4 GHz 不定复核因全空间误差放大未闭合，耗费 28.55 CPU 秒和 44.90 墙钟秒。8 GHz 两次诊断尝试共计 6.73 CPU 秒和 7.07 墙钟秒，剥离 Cholesky 存储的非用三角后通过。首个批次在 6 GHz 完成后开始了重复的 8 GHz 阶段，独立 8 GHz 任务接管后中断，重复前缀没有完整计时。<a href="results/fresnel/scan.log">阶段日志</a></p>
+<h2 id="复算">复算</h2>
+<p>从工作区根目录执行下列命令。原始数据按采集论文官方附档或历史资料镜像取回，存放在脚本所列的 A2 原始测量目录。原始端口只留在本地审计文件。公开复算需要历史 R8 的空场拟合实现和原始实验文件。</p>
+<pre><code class="language-sh">export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+Gaussian/.venv_nn/bin/python -B research/z_alg_optical_inertia/fresnel/scan.py
+Gaussian/.venv_nn/bin/python -B research/z_alg_optical_inertia/fresnel/verify.py
+Gaussian/.venv_nn/bin/python -B research/z_alg_optical_inertia/fresnel/indefinite.py
+Gaussian/.venv_nn/bin/python -B research/z_alg_optical_inertia/fresnel/summarize.py
+</code></pre>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="fresnel/REPORT_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

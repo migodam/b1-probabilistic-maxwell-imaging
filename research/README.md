@@ -2,6 +2,14 @@
 
 查已冻结的数据、观测身份、物理算子、设备选择、基线与错题，按同一口径接续和归档实验。[项目手册](experiment_handbook/README.md) · [数据与算子目录](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/experiment_handbook/catalog.html)
 
+<!-- Z_ALG_OPTICAL_INERTIA_PUBLICATION -->
+## Z-ALG · 光学定理与材料对比度下界
+
+在 96² 有限模型中，用实部和光学定理约束检验六件新强散射材料。2% 噪声时六件均有严格排除，10% 时有三件，两件显示严格多源优势。报告也给出 4×4 区域检验和 Fresnel 实测的适用边界。
+
+[中文报告与图表](z_alg_optical_inertia/index.html) · [数学论证](z_alg_optical_inertia/theory.html) · [Fresnel 实测](z_alg_optical_inertia/fresnel.html) · [ChatGPT 研究交接](z_alg_optical_inertia/handoff.html)
+<!-- /Z_ALG_OPTICAL_INERTIA_PUBLICATION -->
+
 <!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
 ## 固定 Green 下的材料峰值排除与镜像停测
 

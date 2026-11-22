@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>哪些定理已经有先例，本文还剩什么 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html" aria-current="page">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="哪些定理已经有先例本文还剩什么">哪些定理已经有先例，本文还剩什么</h1>
+<p>把场的凸目标取成“与一份实测数据的距离”，已有光子设计界就能给出一种逆问题检验。因此，仅仅把问题从设计改称反演，不能构成本文的原创性。下面直接对照用到的数学命题。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>原始工作</th>
+<th>论文实际建立的结构</th>
+<th>对本研究的约束与可区分的结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trivedi、Angeris、Su、Boyd、Fan、Vučković（2020）</td>
+<td>在无吸收结构中对散射场的凸性能指标建立下界，并研究限制内部场的条件。</td>
+<td>材料范围、凸场目标、下界检验都有先例。这里的明确区分是同一读数上逐源全标量乘子失败而共享多源不定证书成功，并给出反例覆盖到无穷大的乘子。<a href="https://doi.org/10.1103/PhysRevApplied.14.014025">Phys. Rev. Applied 正文</a></td>
+</tr>
+<tr>
+<td>Molesky、Chao、Jin、Rodriguez（2020）</td>
+<td>从散射 T 算子的实功率与无功功率守恒同时约束场，给出散射与吸收指标的物理界。</td>
+<td>同时用 Hermitian 实、虚部和光学定理有直接先例。本文额外刻画接收核中的阈值，求在带噪端口上排除给定材料盒所需的余量。<a href="https://doi.org/10.1103/PhysRevResearch.2.033172">全局功率约束论文</a></td>
+</tr>
+<tr>
+<td>Molesky、Chao、Rodriguez（2020）</td>
+<td>通过空间分区构建多层局部均场约束，收紧近场辐射界。</td>
+<td>空间乘子及“分块后更紧”已有明确先例。本研究检验其在不定逆问题上究竟抬升了哪些源方向，给出一个细网正例，并证明区域外的背景负方向能让一整族定位检验失效。<a href="https://arxiv.org/pdf/2008.08168">区域约束论文</a></td>
+</tr>
+<tr>
+<td>Shim、Kuang、Lin、Miller（2024）</td>
+<td>通过不同情形的极化场之间的交叉等式，确保同一结构同时实现多项功能。</td>
+<td>同一材料在多源或多频下产生交叉约束已有先例。本文给出逐源与联合检验之间可验证的能力差，并在同数据上测试多频交叉约束，后一项在本组材料上失利。<a href="https://millergroup.yale.edu/sites/default/files/files/2024_1-Shim.pdf">原文第 2 节</a></td>
+</tr>
+<tr>
+<td>Tian（2013），推论 4.5，式 (4.38)</td>
+<td>对 Hermitian 矩阵二次函数求极端惯性。可通过增广块矩阵计算最小正、负惯性。</td>
+<td>配方、块惯性及用负秩截断正谱属于已有矩阵理论。这里把残差 Gram 的不同阈值连起来，得到有测量单位的联合 Frobenius 下界，再与真实误差球比较。迹形式也可由其惯性思路与标准秩交错得到。<a href="https://arxiv.org/pdf/1301.2567">原文式 (4.38)</a></td>
+</tr>
+<tr>
+<td>Albicker、Griesmaier（2023）</td>
+<td>以三维 Maxwell 远场算子的单调关系和局域波列建立散射体支撑刻画，允许有限维例外方向。</td>
+<td>“少量负方向仍可获得逆信息”已有重要连续理论。本文处理固定有限多源复端口与逐格幅值上限，计数发生在当前残差所对应的状态二次型上。这里没有其连续形状辨识定理。<a href="https://www.aimsciences.org/article/doi/10.3934/ipi.2022032">Maxwell 单调性论文</a></td>
+</tr>
+<tr>
+<td>Geffrin、Sabouroux、Eyraud（2005）</td>
+<td>采集并公开有限孔径多源微波实测读数，说明测量安排和目标。</td>
+<td>目标形状信息仅供离线比较。用真实掩码估计的误差余量给出了实验归一化与理想定理之间的距离。<a href="https://doi.org/10.1088/0266-5611/21/6/S09">Institut Fresnel 采集论文</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>可以主张的贡献。</strong> 给定接收器矩阵，估计光学定理在不可见电流上还有多少辐射信息；在不定情形给出可独立验证的材料排除证书；在完整 96² 离散全波逆问题上，给出覆盖全部标量权重的逐源失败见证与严格成功的联合证书。三件事落在同一个算子、同一份带噪数据上。对两个独立物体，这个比较未使用材料真值来选源或选乘子。<a href="theory.html">证明与能复算的反例</a></p>
+<p><strong>原创性仍有边界。</strong> 两种构造性见证与区域背景主阵的连续参数障碍是可以送审的具体命题。Fourier 小矩阵计算的核心是谱下界与低秩更新，分块导数来自驻值求导，单个工具都有通用来源。原文献核对没有建立全领域优先权。公平的扩展比较是保留逐格多个共同约束的成熟凸松弛；本轮严格优于的对象是一条全局标量约束构成的全部单源检验。</p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="PRIOR_ART.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>400／500 MHz 同一材料的双频检验 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="400500-mhz-同一材料的双频检验">400／500 MHz 同一材料的双频检验</h1>
+<p>在六件新材料固定半环阵上，实部／虚部跨频乘子没有提高 u=0.5 的残差下界。每个频率分别求界再取平方和开方，在 2% 纯采样噪声下严格验证 3/6 越过半径，在 10% 下 0/6。全部联合臂在两个噪声级均为 0/6。加入每件的粗网代理离散差后，两类方法均为 0/6。六件独立材料的两频与两级噪声均为配对条件。 <a href="results/multifrequency/numerical.json">数值结果</a> · <a href="results/multifrequency/matched_parameters.json">等乘子对照</a> · <a href="results/multifrequency/proxy_only.json">代理误差</a> · <a href="results/multifrequency/independent_audit.json">独立界区间审计</a></p>
+<h2 id="双频模型">双频模型</h2>
+<p>同一细网材料分别在 400 与 500 MHz 建立相应 Green 函数和入射/接收场。接收位置、入射角与 96²→32² 网格合同一致。块对角的 G、S、B、Y 代表频率独立照明和接收，在合成中假设介质无色散且线性时不变。两个频率组之间的零项是理论物理约束，由频率不转换给出。联合松弛维数 2048、20 个照明列，允许额外的不可测跨频电流，因此联合证书可弱于分别处理两频所得的界。</p>
+<p>在两个频率复制材料矩阵 M=diag(m,m)，只在同一像素的两个频率之间放入非对角乘子。给定实对比度 0≤m≤u，这种权重与 M 对易，实部约束可写为 <code>Q*Dμ M(M−uI)Q ⪯ 0</code>，虚部为 <code>Im_H(Q*M Dλ Q) = 0</code>。其中 Dμ 的 2×2 像素块半正定，Dλ 允许任意 Hermitian 块。本试验实权跨频比例 0.45 保持半正定；虚权比例取 ±0.45，以量化两种符号的实际惯性。两个跨频比例同时换号相当于对第二频率状态和第二批源同时作酉符号翻转，数值回放保持相同 ν=11 与相同下界。</p>
+<p>对于固定 μ 与 λ/μ 的无耦合联合对照，联合残差界最多等于两频独立平方和界。联合剪去合并谱最前面的 ν₁+ν₂ 个方向，肯定比在每频分别剪 ν₁ 与 ν₂ 个剪去的总正量大或相同。对实际跨频乘子没有这条直接排序，但在固定的 8 个公共参数点、12 份配对观测中，每臂各 96 个比较均无数值增益。</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="表格，可横向滚动">
+<table>
+<thead>
+<tr>
+<th>联合设置</th>
+<th style="text-align:right">计算的 K 负方向数范围</th>
+<th style="text-align:right">2% 穿过采样球</th>
+<th style="text-align:right">10% 穿过采样球</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无交叉</td>
+<td style="text-align:right">2–12</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+</tr>
+<tr>
+<td>实部、虚部同号</td>
+<td style="text-align:right">11–19</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+</tr>
+<tr>
+<td>实部、虚部反号</td>
+<td style="text-align:right">10–17</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+</tr>
+<tr>
+<td>仅虚部跨频</td>
+<td style="text-align:right">9–17</td>
+<td style="text-align:right">0/6</td>
+<td style="text-align:right">0/6</td>
+</tr>
+<tr>
+<td>每频独立选乘子后平方和</td>
+<td style="text-align:right">两频各自计数</td>
+<td style="text-align:right">3/6</td>
+<td style="text-align:right">0/6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>3 个纯采样噪声区间验证正例为 <code>optfresh_04</code>、<code>optfresh_05</code>、<code>optfresh_06</code>，独立平方和界比分别为 0.4370／0.1728、0.2946／0.1487、0.2761／0.1820。500 MHz 的细粗模型差为细网干净场范数的 21.4–38.9%，这些数对应各自粗网代理。真实双频外推需要单独取得覆盖允许材料的模型差及校准界。</p>
+<h2 id="复现与费用">复现与费用</h2>
+<p>依次运行 <code>multifrequency/generate.py</code>、<code>multifrequency/scan.py</code>、<code>multifrequency/audit.py</code>。三者沿用单线程 NumPy/SciPy，区间审计同时使用 python-flint。500 MHz 新细网场、粗网代理和噪声生成共 7.53 秒墙钟、6.00 秒 CPU。数值扫描 17.05 秒墙钟、16.36 秒 CPU，共 32 次 1024 格和 33 次 2048 格 LDL 分解，包含符号回放。每波长矩阵分解跨材料和噪声级复用。三个正例由原两频矩阵各自独立验证，再用 Arb 比较两频平方和，额外墙钟/CPU 40.95/40.34 秒。 <a href="multifrequency/FREEZE.md">冻结设计</a> · <a href="multifrequency/data/public/manifest.json">500 MHz 公开观测</a> · <a href="multifrequency/data/evaluation/cost.json">生成费用</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html" aria-current="page">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="multifrequency/REPORT_ZH.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

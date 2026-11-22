@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>复现指南 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="复现指南">复现指南</h1>
+<p>从实验目录运行下列命令。使用同一套装有 NumPy、SciPy、threadpoolctl、matplotlib 和 python-flint 的 Python。保存的复数数组和 FFT 乘子按原二进制值读入。归档内保留了逐项验证所用的原始输入。</p>
+<h2 id="96²-细网主结果">96² 细网主结果</h2>
+<p>交接 ZIP 中的合成观测、细网算子、离线合成材料和冻结候选足以复算本节。保留 <code>synthetic/public/</code>、<code>synthetic/evaluation/</code> 和 <code>results/</code> 的相对路径。复算前可另存原结果目录，因为脚本会写入同名回执。</p>
+<pre><code class="language-sh">python -B fine/verify_fourier.py
+python -B fine/long_ratio.py
+python -B fine/all_scalar.py
+python -B fine/spatial_followup.py --verify
+python -B synthetic/nonvacuity.py
+python -B fine/plot.py
+</code></pre>
+<ul>
+<li><code>verify_fourier.py</code> 从 <code>results/theory/fine_scan.json</code> 选取已存候选，用 <code>synthetic/public/fine_geometry.npz</code> 和公开 Y 证明标量多源下界。物理变量仍是 9216 格。若要重跑标量数值搜索，先执行 <code>python -B fine/fourier_bound.py</code>。</li>
+<li><code>long_ratio.py</code> 严格验证 96² 接收核内的暗电流；随后 <code>all_scalar.py</code> 构造大正虚部乘子下的拟合反例。两者合并覆盖所列全环案例中任意全局实标量虚部乘子、正实部乘子和单位范数单照明组合。</li>
+<li><code>spatial_followup.py --verify</code> 使用 <code>results/theory/fine_spatial_followup.json</code> 封存的分块提议，复算第 03 件半环 10% 的细网严格排除。若要先重做两件分块提议的细网数值预筛，运行 <code>python -B fine/spatial_followup.py</code>，它读取 <code>results/core/gradient_certificates.json</code> 中的粗网提议。</li>
+<li><code>nonvacuity.py</code> 离线读取 <code>synthetic/evaluation/optfresh_01.npz</code> 到 <code>optfresh_06.npz</code> 中的真材料。用原 96² 算子验证真材料进入膨胀球，并重新检查标量证书余量。细网空间证书自己核对同一生成误差补量。主图以 <code>fine_feasibility.json</code> 的 <code>inflated_radius</code> 为分母，重写 <code>figures/fine_peaks.png</code> 和 <code>figures/fine_peaks.pdf</code>。 <a href="feasibility.html">真材料可行性与误差账本</a></li>
+</ul>
+<h2 id="32²-对比局域试验与历史输入">32² 对比、局域试验与历史输入</h2>
+<ul>
+<li>新合成 32² 数值扫描可用 <code>python -B core/scan.py --cohort synthetic --output results/core/scalar_synthetic_replay.json</code>，直接读取包内 <code>synthetic/public/manifest.json</code>、对应 Y、(S,B) 和 <code>coarse_green.npz</code>。全局扫描、固定惯性分块梯度和独立区间验证的完整顺序见<a href="core.html">粗网复现说明</a>。</li>
+<li>交接 ZIP 按原路径带有五份旧观测和上一轮 180 点，解压后可直接进行配对复算。历史输入位于同级 <code>research/z_alg_secant_tasks/highdim/</code>。需要 <code>replay.py</code>、<code>public_vie_inputs.npz</code>、<code>observation_radii.json</code> 及 <code>results/&lt;观测 ID&gt;.npz</code> 和 <code>.json</code>。逐点配对另读 <code>sector_inertia/results.json</code>。五个 ID 为 <code>r10_twod_0001</code>、<code>austria_eps4_400MHz</code>、<code>s2d_007__pw180_10x20</code>、<code>s2d_007__pw360_10x20</code>、<code>s2d_010__pw180_10x20</code>。</li>
+<li>若要从种子重新生成六件合成材料的观测，<code>synthetic/generate.py</code> 调用历史 <code>research/srap_cie_array_study_20261121/data2d.py</code> 和 R8 <code>src/paper_physics.py</code>。交接 ZIP 的 <code>research/</code> 树含所需 SRAP 与 R8 源码，包含原项目的 <code>research/delegated/max_struct_r1/r8_worktree/</code> 路径。再生成不属于上面的冻结输入证书复算。 <a href="synthetic/README.md">合成数据及生成合同</a></li>
+<li>区域扫描还使用 <code>research/limited_aperture_routed_dr_20261120/.runs/public/</code> 的三份旧观测。历史端点和离线材料的逐案出处在 <code>results/roi/endpoint_metrics.json</code> 及端点评估脚本中。 <a href="regions.html">区域审计和先前端点复现</a> · <a href="two-frequencies.html">双频复现</a></li>
+</ul>
+<h2 id="fresnel-实测">Fresnel 实测</h2>
+<p>附件根目录的 <code>DEPENDENCIES.md</code> 列出可离线运行的各项。交接 ZIP 保留敏感性表、图、证书摘要与复算代码。原始 Fresnel 测量和逐端口审计文件不转存。完整重跑需要从原采集附档或历史镜像取回 <code>FoamDielIntTM.exp</code>、<code>FoamDielExtTM.exp</code> 和 <code>FoamTwinDielTM.exp</code>，放入项目的 <code>research/delegated/a2_literature/data/2005_iop_21_6_S09/</code>，对应的历史 R8 <code>src/fresnel_adapter.py</code> 已随 ZIP 提供。 <a href="fresnel.html">实测输入、掩码和复算命令</a></p>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html" aria-current="page">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="REPRODUCE.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>

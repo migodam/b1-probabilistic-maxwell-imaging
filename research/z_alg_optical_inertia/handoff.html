@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>给下一轮 GPT Pro 的交接 · Z-ALG 光学惯性</title>
+  <link rel="stylesheet" href="research.css">
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']]},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-shell">
+      <div class="project-links">
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">B1 总项目</a>
+        <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究主页</a>
+        <a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">交接 ZIP</a>
+      </div>
+      <nav aria-label="本轮研究页面"><a href="index.html">研究报告</a><a href="theory.html">数学论证</a><a href="experiments.html">实验结果</a><a href="fresnel.html">Fresnel 实测</a><a href="literature.html">相关文献</a><a href="handoff.html" aria-current="page">研究交接</a></nav>
+    </div>
+  </header>
+  <main class="site-shell" id="content">
+    <article><h1 id="给下一轮-gpt-pro-的交接">给下一轮 GPT Pro 的交接</h1>
+<p>要判断的主张已经缩小到一个可证伪的问题：<strong>有限孔径下，能否用同一材料在多束照明间的相容性，证明逐束功率约束无法证明的材料峰值？</strong> 在两个 96² 离散物体、同一组完整复观测及其真实可行的噪声球上，答案已有严格正例。下一轮最有价值的是判断这条能力差能否在受模型扰动的物理算子族上保持。另起成像算法会偏离这条证据链。<a href="index.html">本轮中文报告</a> · <a href="theory.html">数学证明</a> · <a href="paper.html">英文论文章节</a></p>
+<h2 id="已经闭合的结果">已经闭合的结果</h2>
+<ol>
+<li>完整离散无损本构同时给出多源实部扇区与光学矩阵等式。逐格分区后的等式仍成立，非均匀光学乘子的二次项可不定。负状态方向数 <span class="math-inline">\(\nu\)</span> 从源特征值中扣除，剩余正谱之和给出物理残差平方下界。分别说明理想有限点辐射 Gram、存储的浮点核和连续非辐射体积源。</li>
+<li>全环开槽块、错列沟槽均在 2% 误差下排除 <span class="math-inline">\(\chi\le0.75\)</span>。数据构造的两个见证覆盖 <span class="math-inline">\(\lambda/\mu\)</span> 的整个实轴，任何单源及任意单位相干照明在全局标量松弛中都无法作出这一排除。两份真材料均严格可行。<a href="results/theory/fine_all_scalar.json">所有乘子</a> · <a href="results/theory/fine_long_ratio.json">原生负方向</a> · <a href="feasibility.html">真材料可行性</a></li>
+<li>新六件物体的半环阵在 2% 噪声全部排除 0.5，10% 下 3/6。双折带的分块增益得到细网证明，月牙与板的另一粗网增益在细网失效。单一空间二次型的正性可以用两个 Fourier 场的联合遗漏项控制，不必把材料参数压成少数块。<a href="spatial-proof.html">分块严格证明</a></li>
+<li>区域定位 0/112。背景主子阵在审计的连续乘子范围内给出过多严格负方向，给区内任意对角权都无用。实测 0.5 为 0/9，4 GHz 双介质柱 0.25 的误差剩余量为 6.98 个百分点，绝对实物界仍取决于噪声、增益和目标模型差的硬上界。双频交叉权在原半环对照中未超逐频平方和。<a href="regions.html">定位</a> · <a href="fresnel.html">实测</a> · <a href="two-frequencies.html">双频</a></li>
+</ol>
+<h2 id="希望-pro-集中回答的三个问题">希望 Pro 集中回答的三个问题</h2>
+<p><strong>一，两个见证能否抵抗模型扰动？</strong> 负见证位于精确 <span class="math-inline">\(\ker S\)</span>，接收器略微移动即可使原向量可见；两个拟合见证和联合不定证书有显式有限余量。请给出 <span class="math-inline">\(G,S,B,Y\)</span> 同时扰动时对核向量再投影、源矩阵解和大 <span class="math-inline">\(t\)</span> 极限的一个共同估计。尤其要考虑近重复接收行、增益、模型离散误差与无损假设；响应时区分逐个 <span class="math-inline">\(t\)</span> 的邻域与覆盖整个实轴的统一邻域。若可用投影核的最小非零奇异值与严格谱隙得到有效半径，请判断实测几何中它是否非平凡；若不能，请构造反例。</p>
+<p><strong>二，哪些更强的单源方法能复制多源结论？</strong> 现有反例覆盖每次只保留一个全局加权标量式的全部权重。它没有共同满足全部光学与扇区条件的单源物理拟合见证。请核查复二次值域、带等式的 S 引理与空间投影约束中，哪些可使该单源松弛变精确；再判断两个正例在这些额外约束下是否仍能区分。这里要明确测量次数、相干合成权与统一噪声球。<a href="literature.html">最接近的设计界与 Tian 的公式</a></p>
+<p><strong>三，区外限制是否有物理可验证的来源？</strong> 保持指定区域以外材料可变，寻找比逐点宽盒更真实且可从实验得到的背景信息，判断能否压低区外负惯性到源数之下。原失败证明只覆盖背景统一的权重及给定比例区间；允许背景也分块时，是否仍有能由天线数或传播长度给出的必要条件？若引入已知背景的边界先验，需列明数据来源和对比问题的变化。</p>
+<h2 id="直接入口">直接入口</h2>
+<ul>
+<li><a href="experiments.html">逐件数据、失败和计算时间</a> · <a href="reproduce.html">源数据与复算命令</a> · <a href="ORIGINAL_REQUEST.txt">原始用户任务</a></li>
+<li><a href="results/theory/fine_verified.json">标量细网证书</a> · <a href="results/theory/fine_spatial_verified.json">双折带细网证书</a> · <a href="fresnel-tables.html">Fresnel 模型误差账</a></li>
+<li><a href="neon.html">Neon 查看原文件后的建议与落实</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">带代码、观测及证据的 ZIP</a></li>
+</ul>
+</article>
+    <footer>
+      <nav class="detail-nav" aria-label="专题与复现"><a href="regions.html">4×4 区域检验</a><a href="two-frequencies.html">双频检验</a><a href="neon.html">Neon 的建议</a><a href="core.html">计算与证书实现</a><a href="reproduce.html">复现命令</a><a href="paper.html">英文论文草稿</a><a href="feasibility.html">细网数据球复核</a><a href="spatial-proof.html">细网空间乘子证书</a><a href="fresnel-tables.html">Fresnel 误差表</a></nav>
+      <a class="source-link" href="NEXT_PRO_HANDOFF.md">原始 Markdown</a>
+    </footer>
+  </main>
+</body>
+</html>
