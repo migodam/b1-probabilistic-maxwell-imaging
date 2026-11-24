@@ -36,3 +36,13 @@
 ### 物理重构的配对观测
 
 `zalg_phys_array6` 登记六件已曝光的 optfresh 原生材料，共 96 个阵列和噪声条件，其中 12 个沿用旧的 10×20 数据与半径。四档发射数共用相同总入射能流，1%/2% 按同方向配对。另有 `zalg_phys_compact1` 的一件电紧凑物体和四个噪声球，以及 `zalg_phys_born_weak2` 的两件弱反差材料和六个读数。对应暗室表复用 Fresnel 与 Manitoba 的原始采集，逐频条件不增记实物。 [观测及获取方法](../z_alg_optical_inertia/physical_revision/REPRODUCE.md) · [登记表](OBSERVATIONS.csv)
+
+## 固定损耗角的有损方法对照
+
+| 登记项 | 独立材料与配对 | 原始读数取法 |
+|---|---|---|
+| zalg_unified_loss_finite4 | 12² 新四件，0.6 m 与 1.25 m 各两件。另有两个取同组第一件实部 \(1/8\) 的配对低峰控制。三个损耗角合计 18 份读数。 | finite_0_inputs.npz 和 finite_1_inputs.npz 内按完整观测 ID 取 Y，同名 JSON 给半径。 |
+| zalg_unified_loss_native6 | 原生 96² 的六件 optfresh 已曝光实部，另有 optfresh_01 的 \(1/8\) 低峰控制。三个损耗角合计 21 份读数。 | native_inputs.npz 内按完整观测 ID 取 Y，native.json 给半径，收发和 Green 沿用 v3。 |
+| zalg_unified_disk_control1 | 一个独立无损低峰盘体，一份 2% 观测，另存同一观察的名义干净中心。 | 同名 NPZ 的 Y 为带噪读数，Y_clean 与材料、候选电流供离线核验。 |
+
+损耗角、噪声方向和测试上限都在配对层。每个非零损耗角重新生成真实离散全波复读数，旧无损读数只用于确认材料与几何沿革。缩放控制属于其原独立形状簇，不增加独立材料数。新数据验证二维离散方法，未设置成像、定位、跨网格或实测泛化测试。[冻结方法](../z_alg_optical_inertia/ip_unified/numerics/loss/FREEZE.md) · [复现与数组](../z_alg_optical_inertia/ip_unified/REPRODUCE.md)

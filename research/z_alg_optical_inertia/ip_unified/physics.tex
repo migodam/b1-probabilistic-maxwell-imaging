@@ -1,0 +1,95 @@
+\section{Which current directions matter?}\label{sec:physics}
+
+\subsection{Power outside the aperture}
+
+The receiver-null space and the negative space of the quadratic model answer different physical questions. A current $z$ in $\ker S$ is invisible at the recorded ports. Its total radiated power can nevertheless be positive. In the disk-cell model the identity
+\begin{equation}
+ z^*Rz=\frac{c_q}{2\pi}\int_0^{2\pi}
+ \left|\sum_i z_i\exp(-\mathrm ik\widehat d_\theta\cdot x_i)\right|^2\,\mathrm d\theta
+ \label{eq:rad}
+\end{equation}
+follows from the angular representation of the Bessel function. For an orthonormal basis $V_0$ of $\ker S$, the largest unobserved radiated power per unit current energy is $\|R_0\|_2$, where $R_0=V_0^*RV_0$. For constant real and optical weights with ratio $t_o=\lambda/\mu\ge0$, a normalized invisible current first loses positive energy at the cap
+\begin{equation}
+ u_*(t_o)=\inf_{\substack{z\in\ker S,\ \|z\|=1\\z^*\Herm(G)z>0}}
+ \frac{1+t_o z^*Rz}{z^*\Herm(G)z}.
+ \label{eq:dark}
+\end{equation}
+The infimum of an empty set is infinity. This function is nondecreasing and concave wherever finite, since each current gives an affine upper bound. A strictly positive floor for $R_0$ gives a slope of at least $\lambda_{\min}(R_0)/\|\Herm G\|_2$. A positive upper norm alone gives no lower slope. When the receivers leave a strongly radiating current unseen, conservation can limit its amplitude. When the entire unobserved space radiates very weakly, the same optical weight has little leverage. Spatial weights require their own forms since $\Imag(DG)$ need not be positive for a varying diagonal $D$.
+
+A finite number of evenly spaced angles samples a field with rapidly decaying, generally nonzero, angular harmonics \cite{bucci87,bucci89}. For sources in a disk of radius $a$, the Jacobi--Anger coefficients contain $J_\ell(kr)$, $r\le a$. At fixed $ka$ their large-order bound decays factorially. This accounts for about $2ka$ appreciable angular orders up to a tolerance-dependent transition. It does not impose finite rank on either the nonlinear data or the current operator. Increasing the number of nearly redundant illuminations can leave the experimentally accessible source spectrum essentially unchanged.
+
+\subsection{A material limit on compensating a negative direction}
+
+An inertia count allows an arbitrary multiple of each negative mode. A physical material would have to realize that current and the positive current it induces at the same cells. The following converse bounds how much of the negative space the local inequalities can ever recover. It uses the physical operator and the chosen material interval before fitting any distribution.
+
+\begin{proposition}[An obstruction for local material balances]\label{th:obstruction}
+Suppose \eqref{eq:frame} holds. Let $\bar\omega_i$ bound every allowable individual weight. Let $V:\C^d\to\C^\nu$ be an isometry. For one admissible choice $x^-$ define $b_i=\bar\omega_i\|a_i(x^-_i)V\|_2^2$. If the sum of the $k$ largest $b_i$ is less than one, any choice of at most $k$ pixels in \eqref{eq:comp} has $c\le\nu-d$. More generally a verified upper bound $\beta$ on the trace of the compression $V^*T_{x^-}^*T_{x^-}V$ gives $c\le\nu-d+\lfloor\beta\rfloor$.
+
+Let $c\le c_0$, put $m=\nu-c_0<s$, and let $Q$ span the bottom $s-m$ eigenvectors of $H$. For any other admissible choice $x^0$, every bound of Theorem~\ref{th:comp} on such a support satisfies
+\begin{equation}
+ d_{\rm mix}^2\ \le\ \Tail_m(H)+
+ \sum_{\text{largest }k}\bar\omega_i\,\|d_i(x^0_i)Q\|_2^2 .
+ \label{eq:signed_obstruction}
+\end{equation}
+This upper bound applies to either sign of $M_Y$.
+\end{proposition}
+\begin{proof}
+The upper-left block of \eqref{eq:comp} requires gain at least one on each controlled direction. The intersection of that space with $\ran V$ has dimension at least $c+d-\nu$. A positive operator with trace at most $\beta$ on $\ran V$ can supply that gain on at most $\lfloor\beta\rfloor$ such directions. At $x^0$ the bottom block gives $-M_Y\preceq D_{x^0}^*D_{x^0}$. Interlacing with the compression to $Q$ bounds the bottom $s-m$ eigenvalues of $H-M_Y$ from above. Adding a positive matrix raises the sum of positive eigenvalues by at most its trace. Taking the largest $k$ coordinate contributions gives \eqref{eq:signed_obstruction}.
+\end{proof}
+In particular $\omega_i\le1/\|f_i(0)\|_2^2$, with infinity allowed for a vanishing row. Writing $\Pi_+=V_+V_+^*$, Cauchy--Schwarz also gives the computable estimate
+\[
+ \|f_i(0)\|_2^2=e_i^*K_+^\dagger e_i
+ \ \ge\ \frac{(e_i^*\Pi_+e_i)^2}{e_i^*K_+e_i}.
+\]
+Thus a few inexpensive enclosure calculations for low-lying modes can disqualify \emph{every} pixel selection up to a given cardinality. Additional trial currents in the positive space give linear inequalities on all the weights. A nonnegative combination of these inequalities bounds $\beta$ without optimizing over material images. The two test materials $x^-$ and $x^0$ are permitted to differ because the frame and the block inequality are required throughout the box.
+For a fixed support one can also test the joint rows $A_I=(I-XG)_{I,:}$. At an admissible $X$ for which $A_I K^{-1}A_I^*\succ0$, the positive row Gram strictly dominates the negative row Gram. Every positive semidefinite row metric with a positive-space gain at most one then has negative-space gain strictly below one. This obstruction allows coupled row weights. It refers only to the tested support. This fixed-material test survives retaining some positive modes explicitly. To see this, write the positive row Gram as $F_1F_1^*+F_2F_2^*$ and apply a positive row metric $W$ with $F_2^*WF_2\preceq I$. Minimizing $\|v\|^2+\|W^{1/2}(z-F_1v)\|^2$ over the retained coordinates $v$ gives $z^*W_{\rm eff}z$, where $W_{\rm eff}=W^{1/2}(I+W^{1/2}F_1F_1^*W^{1/2})^{-1}W^{1/2}$. This metric is contractive on the full positive row map. Strict dominance of the negative row Gram by the positive one excludes a unit gain there as well.
+
+\subsection{How much current in the negative space would a fit require?}\label{sec:necessary}
+
+A small lower bound on material distance can coexist with a positive statement about every possible fit. Let $J_-=V_-^*J$ be the coordinates of the \emph{actual} current in the negative eigenspace. Its norm equals $\|V_-V_-^*J\|_F$ before any translation to $J_0$. Complete only the positive square in \eqref{eq:quadratic} and put $H_+=Y^*Y-L^*K_+^\dagger L$ and $L_-=V_-^*L$. Then
+\[
+ \mathsf D\succeq H_+-2\Herm(J_-^*L_-)-J_-^*\Lambda_- J_- .
+\]
+For any Hermitian source weight $0\preceq Z\preceq I$, let $h=\tr(ZH_+)$, $b=\|L_-Z\|_F$ and $a=\|\Lambda_-\|_2$. If a medium in the tested class fits the error ball, $\tr(Z\mathsf D)\le r^2$. Cauchy--Schwarz and the quadratic formula therefore imply, whenever $h>r^2$,
+\begin{equation}
+ \|J_-\|_F\ \ge\
+ \frac{h-r^2}{b+\sqrt{b^2+a(h-r^2)}} .                   \label{eq:required}
+\end{equation}
+The right side uses only the data and the class being tested. This necessary condition on a fit retains an observable point of reference, zero physical current. It does not treat a null receiver reading as zero current and it does not assert the existence of a fit. It can be used to test current-subspace restrictions imposed by a reconstruction.
+
+\subsection{A second use of the material center}\label{sec:defect}
+
+The preceding bounds can fail to control a single negative direction. The center may still be far from satisfying the real material equation. A way to use all cells avoids computing any positive eigenvectors. For a trial $\widehat J$, write $A_X=I-XG$, $\widehat E=B+G\widehat J$, $D_X=X\widehat E-\widehat J$, and $T=J-\widehat J$. The exact law gives $A_XT=D_X$. For $\eta>0$, define
+\begin{equation}
+ H_\eta=Y^*Y+\widehat J^*K\widehat J-2\Herm(\widehat J^*L)
+             -\eta^{-1}(K\widehat J-L)^*(K\widehat J-L).
+ \label{eq:trial}
+\end{equation}
+Let $\omega\ge0$. If $n_-(K-\eta I-\omega A_X^*A_X)\le q_0$ uniformly over the box, then
+\begin{equation}
+ n_-(\mathsf D-H_\eta-\omega D_X^*D_X)\le q_0 .
+ \label{eq:full_def}
+\end{equation}
+Indeed, opening the quadratic in $T$ and bounding the cross term below by $-\eta T^*T-\eta^{-1}(K\widehat J-L)^*(K\widehat J-L)$ leaves the stated state form. Restriction to the columns of $T$ cannot increase its negative index. Hence the whole-domain constitutive defect can replenish source eigenvalues while paying a possibly larger inertia cost.
+
+To compute a uniform lower endpoint, diagonalize $H_\eta$ with eigenvectors $a_j$ and eigenvalues $h_j$ in decreasing order. Each
+\[
+ m_j=\sum_i\min_{0\le x\le u}|(\widehat J a_j)_i-x(\widehat E a_j)_i|^2
+\]
+requires only the projections of complex numbers on real segments. Coordinatewise minimization is exact here because the task is one coherent direction at a time. For simultaneous directions the minimizing materials may differ. On $\mathrm{span}\{a_1,\ldots,a_j\}$, take a trial threshold $t_0<h_{j-1}$ and $Q=[a_1,\ldots,a_{j-1}]$. If
+\begin{align}
+ \rho&\ge\sup_X\omega\|D_XQ\,\diag[(h_i-t_0)^{-1/2}]_{i<j}\|_2^2,\nonumber\\
+ h_j+\frac{\omega m_j}{1+\rho}&>t_0,
+ \label{eq:filling}
+\end{align}
+then $\lambda_j(H_\eta+\omega D_X^*D_X)>t_0$ for all $X$. This follows by taking the Schur complement of the first $j-1$ directions. The remaining quadratic term equals $\omega (D_X a_j)^*(I+LL^*)^{-1}D_Xa_j$, with $L=\sqrt{\omega}D_XQ\,\diag[(h_i-t_0)^{-1/2}]$. Endpoints of each real segment bound $\rho$ from above. The noise radius never enters this proof. Increasing $\omega$ may increase $q_0$ before it refills the weak source spectrum.
+
+\subsection{Contrast and the number of interior modes}
+
+There is a distinct continuum asymptotic which accounts for growth with dielectric contrast. Let $\Omega\subset\R^2$ be a fixed bounded domain with boundary of area zero, $k>0$ fixed, and $H_G$ the real Hermitian part of the outgoing volume potential $k^2\Phi_k$ on $L^2(\Omega)$. For a fixed compact selfadjoint $C$,
+\begin{equation}
+ n_-(I-uH_G+C)\ \sim\ \frac{k^2|\Omega|}{4\pi}\,u,\qquad u\to\infty .
+ \label{eq:weyl}
+\end{equation}
+Here $G$ includes $k^2$ and the principal part of $H_G$ is positive. The conclusion is a specialization of the negative-order Weyl law \cite{ponge}. To see the constant, localize the real kernel near the diagonal. Its leading term is $-k^2(2\pi)^{-1}\log|x-y|$ and its high-frequency principal symbol is $k^2|\xi|^{-2}$. The phase-space area where this symbol exceeds $\varepsilon$ gives $k^2|\Omega|/(4\pi\varepsilon)$. Appendix~\ref{app:tech} explains the domain cutoff and the compact perturbation. This argument has fixed $k$ and fixed $\Omega$. A mesh has only finitely many negative modes. Measurements in which frequency or geometry varies also change the operator and require their own comparison. In particular, neither \eqref{eq:weyl} nor $2ka$ alone predicts whether a given measured spectrum will clear its error radius.
+

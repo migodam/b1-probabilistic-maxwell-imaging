@@ -208,3 +208,11 @@ NIE2016 式(15)与 CIE2019 式(16)都使用右侧开方量。2016 首阶段 δ<.
 ### 光学惯性排除的三个不同上限
 
 固定原生离散模型时，状态负惯性超过发射数会耗尽源谱。发射数超过负惯性只提供可用位置，剩下的正特征值仍需使距离超过实际半径。在 optfresh 的六件全环材料上，24 发和 32 发达到同样的 0.75 排除集合，32 发 32 收在上限 1 的最强筛选提案仅达到半径的 0.301 倍。此处的 \(2ka\approx23.7\) 描述角向带宽，32 列实际仍满秩。有限权重的距离上界不能充当某个低峰材料的可行见证。相同数据的非负 Born 模型、峰值受限的全波模型和门控后的具体反演程序需分别验收。 [阵列配对数据](../z_alg_optical_inertia/physical_revision/array/ARRAY_SCAN_ZH.md) · [Born 对照](../z_alg_optical_inertia/physical_revision/born/REPORT.md) · [反演对照](../z_alg_optical_inertia/physical_revision/inversion/RESULTS_ZH.md)
+
+### 有损合同比较与负方向矩阵帽
+
+**物理合同。** 固定损耗角正切时，只有活动材料 \(\chi=(1+\mathrm{i}t)x\)、\(0<x\le u\) 提供耗散比下界 \(\operatorname{Im}\chi/|\chi|^2\ge t/[(1+t^2)u]\)。真空仍允许。允许活动像素无损的合同缺少这个严格正下界，不能搬用有损椭球。18 个原生高峰读数沿用六件 optfresh 已曝光实部和几何，三个损耗角各用新的有损全波响应；四件有限网格新生成材料与这些对象分开计。[冻结材料和噪声合同](../z_alg_optical_inertia/ip_unified/numerics/loss/FREEZE.md)
+
+**等信息比较。** 在 0.6 m 的二维 TM 例中，一件固定有损材料在 \(t=0.2,u=1\) 的接收椭球下界大于 \(1.17917r\)，同一耗散预算下所有共同非负标量乘子的上界小于 \(0.99873r\)。给相干源方向分别选乘子后，两个独立对象的严格下界均可超过半径。保留实部扇区再移位的对照额外用了扇区约束。只用一个共同参数控制部分负方向的矩阵帽，由同参数完整耗散移位支配。这个支配结论不适用于任意数据选定的多个源乘子。[同合同证据、完整移位支配证明与复算](../z_alg_optical_inertia/ip_unified/numerics/loss/REPORT_ZH.md)
+
+**原生限制。** 原生 96² 的六个高峰材料在最紧试验上限 \(u=.75\) 时，严格接收椭球距离上端都低于 \(0.395r\)，更宽盒的接收椭球同样不能排除。此上端见证属于接收松弛。真正的低峰材料可行性由完整原生正演及其单侧误差界另判。无损的独立低峰盘只在它自己的观测球中核验，不能替代六件冻结对象。大域低上限拟合所需的负空间电流正下界对六件均成立，其前提是对应上限盒内存在符合该观测球的物理解。[原生接收区间](../z_alg_optical_inertia/ip_unified/numerics/loss/native_verified.json) · [真实电流与盘体对照](../z_alg_optical_inertia/ip_unified/numerics/feasibility/hidden_current.md) · [条件性必要下界](../z_alg_optical_inertia/ip_unified/numerics/native/required_currents.json)

@@ -1,0 +1,61 @@
+\documentclass[anonymous,12pt]{iopjournal}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,microtype,graphicx,placeins}
+\graphicspath{{figures/}}
+\hypersetup{hidelinks,pdftitle={Material contrast bounds from finite-aperture electromagnetic scattering data},pdfauthor={},pdfsubject={Electromagnetic inverse scattering}}
+\fancyhead[L]{\small\sffamily Inverse Problems\quad Research paper}
+\fancyhead[R]{\small Material contrast from scattering}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\C}{\mathbb C}\newcommand{\R}{\mathbb R}
+\newcommand{\Herm}{\operatorname{Re}_{H}}\newcommand{\Imag}{\operatorname{Im}_{H}}
+\newcommand{\tr}{\operatorname{tr}}\newcommand{\diag}{\operatorname{diag}}\newcommand{\Tail}{\mathcal T}
+\newcommand{\rank}{\operatorname{rank}}\newcommand{\ran}{\operatorname{ran}}\newcommand{\norm}[1]{\left\|#1\right\|}
+\numberwithin{equation}{section}
+\setlength{\headheight}{17pt}\setlength{\emergencystretch}{1.7em}
+\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}
+\renewcommand{\topfraction}{.92}\renewcommand{\textfraction}{.06}
+\begin{document}
+\noindent{\sffamily\small RESEARCH PAPER}\par\vspace{1.8ex}
+\title{Material contrast bounds from finite-aperture electromagnetic scattering data}
+\author{}
+\begin{abstract}
+Can finite-aperture scattering measurements establish that a dielectric exceeds a given contrast somewhere in the search region? We bound the distance from the measured complex fields to all responses attainable with a proposed upper limit on dielectric contrast. Completing the current quadratic leaves a matrix on illuminations. Its leading eigenvalues can be lost to negative current directions. The local material equation specifies the positive current that must accompany such a direction and retains the illumination-dependent center of the quadratic. This gives a partial compensation bound and a converse for spatially sparse sets of constitutive rows. On six lossless targets with 9,216 independent contrasts, at a cap of one and 2\% noise, no choice of up to 59 separately weighted constitutive rows can exclude the cap for the fixed current operator. For each target the data also give a positive lower bound on the norm of the physical current in the span of the thirteen negative modes. Discarding that space precludes a fit. For materials with known loss angle, dissipated power instead bounds a matrix ellipsoid of receiver fields. On a compact scatterer at two loss angles, separate multipliers for coherent illuminations exclude a cap which every common multiplier misses using the same dissipative information. The receiver ellipsoid remains too broad on the larger domain. The results identify when an array can rule out a material class before reconstruction, and when the obstruction lies in the available current bounds.
+\end{abstract}
+\keywords{inverse electromagnetic scattering, dielectric contrast, finite aperture, optical theorem, multiple illumination, dissipation, uncertainty bounds}
+
+\section{Introduction}
+
+A microwave measurement can discredit an image in two different ways. The predicted field of that image may miss the measured field. More decisively, every dielectric limited to the image's peak contrast may miss it, however the material is rearranged. The latter conclusion would tell an investigator to relax the contrast range before running another inversion. Establishing it calls for a lower bound in measured field units over all allowed distributions, including those a reconstruction method has never visited. We consider this question for nonlinear transverse-magnetic scattering from a bounded object, with finite aperture, a prescribed error radius and several illuminations.
+
+A measured field determines only the part of the contrast current visible to the receivers. Subspace optimization and its twofold and Fourier implementations distinguish these currents in order to reconstruct an image \cite{chen,zhong,ffttsom}. Contrast-source and contraction integral equations impose the field and material relations during the iteration \cite{csi,nie,cie}. A receiver-null current may still carry power out of the measured aperture. Equally important, the currents driven by different incident fields must all give the same dielectric at each point. These requirements constrain the unmeasured currents even when the support and the image are entirely unknown. A reduction of the current space must preserve the data-dependent stationary response as well as the count of exceptional modes, a distinction that can be tested in the full array.
+
+Conservation-based bounds in photonics have a close mathematical connection. Quadratic wave-equation constraints underlie computational limits for scattering and design \cite{angeris19,trivedi,angeris}. Global and spatially resolved power balances limit the response of a scatterer \cite{moleskyglobal,moleskylocal,kuang}, including its response to multiple excitations \cite{shim}. Absorptive response is controlled by the material factor $|\chi|^2/\Im\chi$ \cite{miller}. Our inverse question fixes a measured complex receiver matrix and allows every dielectric in a specified class. In optimizing a distance to those data, a negative quadratic form can remove only a limited number of independent eigenvalues from that particular matrix. A relaxation that averages quadratic moments can miss this pointwise rank restriction \cite{tian}. An optical equality and a sector inequality are useful on either side of the design--inverse distinction.
+
+Finite-measurement stability and uniqueness of coefficient reconstruction require assumptions on the admissible coefficients and data \cite{alberti19,alberti21}. Monotonicity methods compare scattering operators up to finite-dimensional subspaces to localize material inhomogeneities \cite{griesmaier_harrach,griesmaier_harrach_erratum,albicker}. Here all voxel values can vary independently and the observable is a lower bound on a peak. A positive distance to a material class is compatible with poor image recovery. It also differs from enumerating roots in a small parameter model or constructing a complete set inversion \cite{everett96,vasco,sivia}, and from recovery with localized scatterers or scattered-field completion \cite{chai,levinson}.
+
+Our analysis follows the fate of a single matrix of illumination residuals. First, the number of negative directions of a weighted current operator determines how many source eigenvalues may be lost. Enforcing the local constitutive equation restricts some of these directions and charges the illumination-dependent cost of doing so. This gives both a distance bound and an upper limit on what sparse, separately weighted constitutive rows can establish at fixed state weights. Completing just the positive square also bounds the amount of physical current in the negative modes required by any fit to the measured data. Second, a positive material loss floor restricts the same currents to an ellipsoid. Its projection onto the measured ports allows each coherent illumination to carry its own penalty. A calculation on the same data and the same material class distinguishes that choice from every common dissipative penalty. Finally, by comparing lower bounds with forward evaluations of candidate media, we distinguish failure of a relaxation from evidence that a low-contrast material actually exists.
+
+\input{model}
+\input{contrast}
+\input{physics}
+\input{experiments}
+\section{Discussion and conclusion}\label{sec:discussion}
+
+A lower bound on peak contrast can be useful at a stage where estimating its location or its actual value remains difficult. To rule out a real cap, the receiver data must leave a positive source spectrum after accounting for the admissible hidden currents. On a limited aperture the optical balance can suppress radiating currents missed by the array. With denser reception the remaining current modes may radiate weakly, and sharing their dimension across illuminations becomes more useful. Adding illuminations eventually repeats angular information. None of these phenomena can be read from the clean field norm alone.
+
+The central limitation of a sparse local correction has a physical interpretation. A chosen cell can always sustain some accompanying positive current. For a correction to restrict a negative mode throughout an unknown dielectric, the same row weights must charge that mode more than they charge every possible positive current. The operator often allows many weak directions to avoid those cells. Bounding this possibility over all choices of the cells gives a stronger diagnosis than reporting a failed semidefinite solve. The diagnosis is conditional on a particular quadratic form and a specified representation of the local rows. It still permits tighter joint constraints, different physical weights and material laws. Even zero negative inertia does not convexify the actual set of physical currents. For $G=\mathrm i$, $S=B=1$ and $x\in[0,1]$, the midpoint between $J(0)$ and $J(1)$ would require $x=2/5+\mathrm i/5$.
+
+When the dissipative coefficient is bounded away from zero, an independent restriction survives projection onto the ports. On a compact object, two loss angles give strict separations for the same dissipative information. A fixed coherent basis captures much of the gain. Assigning different orthogonal source blocks to the sector and to dissipation further sharpens an attained distance bound, with no change to the highest excluded contrast in those trials. The larger examples delimit that result. Even an exact computation of distance to the dissipative ellipsoid cannot distinguish the measured data from the relaxed cap there. A smaller numerical step or an improved ellipsoid solver cannot remove the physical information discarded by that projection. The fixed-loss-angle examples also should not be used to strengthen a lossless contrast conclusion.
+
+For laboratory use the most consequential missing quantity is a reliable bound on loaded-scene model discrepancy. An independently measured receiver drift constrains part of this error. It cannot by itself control imperfect incident fields in the loaded chamber, three-dimensional coupling or uncertain target properties. At fixed frequency the continuum mode asymptotic explains why contrast makes the current restriction harder. Transfer of a computed finite-grid distance to an unknown continuum coefficient would additionally require a uniform forward approximation bound on its whole admissible class. In inversion an observation may therefore rule out an entire material hypothesis while the remaining image, its peak location and an optimizer's route to it remain separate questions.
+
+\appendix
+\input{appendix}
+\section*{Data availability}
+The synthetic data, discrete operators, plotting sources and numerical enclosures accompany the article. References \cite{fresnel,manitoba} describe the measured data. Public project identifiers are provided separately for double-anonymous review.
+\section*{Acknowledgments}
+\textit{Use of generative AI.} OpenAI Codex (GPT-6.2 Astra and Sol) assisted with the analysis, software, experiments and writing. Google Gemini Neon provided independent pre-submission mathematical and experimental critiques. Exact algebraic controls, independent forward computations and outward-rounded spectral calculations were used to check the reported numerical results. The research supplement documents these checks and their limits.
+\input{references}
+\end{document}
+

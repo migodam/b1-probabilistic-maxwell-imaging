@@ -19,6 +19,7 @@ python3 research/experiment_handbook/lookup.py --operator srap_vector_ap
 |固定 Green 的端口对称性与逐组发射| `z_alg_orbit_exclusion` 核对收发闭合并回放区间判据；`z_alg_exposure_prefix` 以实际发射器为单位回放停止规则|按保存阵列的坐标和相位确定源组；使用预设误差上限，同时保留超合同发射费用及事后固定前缀对照。[复算入口](https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_secant_tasks/highdim/reflection/README_ZH.md)|
 |三维 Maxwell|R1 `tensor_dda` 检查小型各向异性、横向极化与 Mie。R8 `vector_paper` 用三维 Fourier PR；SRAP `srap_vector` 及 `srap_vector_ap` 用 dyadic FFT、CG 与端口投影|R1 张量自由度与 SRAP 标量 χ 乘三分量场不同；SRAP 三维观测的所有源共用一个 Frobenius 噪声球。分清发/收位置、极化通道与材料数，单列 GPU 显存、谱基、CG 残差及物理误差|
 |NN 初值与 A17 投影交换|R8 `nn_features` 配 `nn_material`；A17 修复版 `a17_projected` 配同秩基和等时全梯度|NN 材料要按求解器建立合法状态。把同一初值同时给 direct、AP/DR 和 CIE 并记录转换损失。A17 须比较实际盒投影后可行收益和终点材料|
+|二维固定损耗 TM 与接收椭球|CPU/Arb 的 zalg_unified_lossy_receiver 提供原正演球、公共耗散 Gram 及逐读数接收端区间。|确认耗散比来自相同材料合同。共同标量与各源独立乘子的比较须共用物理信息和半径，公共解的费用另列。|
 
 ### 怎样在已有队列上运行
 

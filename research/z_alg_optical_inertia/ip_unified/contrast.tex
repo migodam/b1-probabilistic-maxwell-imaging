@@ -1,0 +1,93 @@
+\section{How much of the illumination response must remain?}\label{sec:bound}
+
+For an $s\times s$ Hermitian $H$ order its eigenvalues downwards and write
+$\Tail_m(H)=\sum_{j=m+1}^{s}(\lambda_j(H))_+$, with the empty sum equal to zero. If $\mathsf D\succeq0$ and $n_-(\mathsf D-H)\le m$, interlacing gives
+$\lambda_i(\mathsf D)\ge\lambda_{i+m}(H)$ for $i+m\le s$ \cite{fan,tian}. Diagonalizing $H$ shows that $\Tail_m(H)$ is the sharp lower bound on $\tr\mathsf D$ given just these two restrictions. Different valid bounds on the same ordered eigenvalue can be maximized before the eigenvalues are added.
+
+Write $K=V_+\Lambda_+ V_+^*-V_-\Lambda_- V_-^*$, with both diagonal matrices positive, and $\nu=n_-(K)$. Let $N=V_-\Lambda_-^{-1/2}$ and $P=V_+\Lambda_+^{-1/2}$. Completing the square and writing $J=J_0+NC+PU$ gives
+\begin{equation}
+ \mathsf D\succeq H+U^*U-C^*C . \label{eq:started}
+\end{equation}
+Without another restriction on the negative term, $\delta^2\ge\Tail_{\nu}(H)$. This result binds together all columns of the residual. Treating each illumination separately can spend the same $\nu$ current directions many times.
+
+\subsection{What a current supported on the negative directions must drive}
+
+At cell $i$ the constitutive law with real contrast $x_i$ requires
+\begin{align}
+ f_i(x_i)U&=d_i(x_i)-a_i(x_i)C,\qquad d_i(x)=x(E_0)_{i,:}-(J_0)_{i,:},\nonumber\\
+ (a_i(x),f_i(x))&=e_i^\top(I-xG)[N,P]. \label{eq:rows}
+\end{align}
+where $e_i$ denotes a cell coordinate vector. For fixed $x$ and $C$, stack any rows in the form $F_+U=Z_c$. There is a solution only when $F_+F_+^\dagger Z_c=Z_c$. Among these solutions the least possible $U^*U$ in the matrix order is $Z_c^*(F_+F_+^*)^\dagger Z_c$. Indeed $U=F_+^\dagger Z_c+U_\perp$ and $F_+U_\perp=0$, so the two Gram matrices add. This is exact elimination for these rows at the specified material values. Minimizing the resulting physical outer problem over all allowable values and discarding the other rows gives a lower bound. Its remaining joint variables can still be numerous.
+
+A uniform version uses nonnegative weights $\omega_i$ on a selected set $I$. Assume
+\begin{equation}
+ \sum_{i\in I}\omega_i f_i(x_i)^*f_i(x_i)\preceq I_{n-\nu}
+ \quad \text{for every }x\in[0,u]^I .                     \label{eq:frame}
+\end{equation}
+Stack $\sqrt{\omega_i}a_i(x_i)$ as $T_x$ and $\sqrt{\omega_i}d_i(x_i)$ as $D_x$. A physically realizable negative current now requires $U^*U\succeq(T_x C-D_x)^*(T_x C-D_x)$.
+
+\begin{theorem}[Partial compensation of negative current directions]\label{th:comp}
+Let $V_c:\C^c\to\C^\nu$ be an isometry. If a fixed Hermitian source matrix $M_Y$ satisfies
+\begin{equation}
+ \begin{pmatrix}
+ V_c^*(T_x^*T_x-I)V_c &-V_c^*T_x^*D_x\\
+ -D_x^*T_x V_c & D_x^*D_x+M_Y
+ \end{pmatrix}\succeq0\qquad(x\in[0,u]^I),                    \label{eq:comp}
+\end{equation}
+then $\delta(u;Y)^2\ge\Tail_{\nu-c}(H-M_Y)$. The matrix $M_Y$ may have either sign.
+\end{theorem}
+\begin{proof}
+In \eqref{eq:comp} replace $V_c$ by $I_\nu$ to define an unrestricted Hermitian form on $\C^\nu\oplus\C^s$. Its restriction to $\ran V_c\oplus\C^s$ is nonnegative. Consequently its negative index is at most $\nu-c$. Pulling it back by the graph $[C;I_s]$ and using \eqref{eq:rows}--\eqref{eq:frame} bounds $\mathsf D-H+M_Y$ from below by a form with this index. Interlacing proves the result. In particular, no common orientation is required of the remaining negative directions as $x$ varies.
+\end{proof}
+
+Taking no rows, $c=0$ and $M_Y=0$ recovers the rank bound. With $c=\nu$, the full positive source trace remains after the center correction. A sufficient but coarser choice follows if $V_c^*T_x^*T_xV_c\succeq\kappa^2 I$, $\kappa>1$, and $D_x^*D_x\preceq D_0$. Completing a scalar square gives $M_Y=D_0/(\kappa^2-1)$. Its two separate extrema can occur at quite different material values. For the reciprocal two-cell algebraic network in Appendix~\ref{app:tech}, this choice gives zero, as does the rank bound, whereas \eqref{eq:comp} gives $\delta^2\ge127/48$. The distinction comes from the off-diagonal center term.
+
+\subsection{Dissipation constrains the same currents}
+
+For passive complex material the optical balance is
+\[
+ J^*(R+A_\chi)J=\Imag(B^*J),\qquad
+ (A_\chi)_{ii}=\Im\chi_i/|\chi_i|^2\quad(\chi_i\ne0).
+\]
+Vacuum carries zero current. The reciprocal of this coefficient is the material response factor used in optical absorption bounds \cite{miller}. A declared positive lower bound $\alpha$ on the active cells and $M=R+\alpha I\succ0$ imply
+\begin{equation}
+ (J-J_c)^*M(J-J_c)\preceq C_B,\qquad
+ J_c=\tfrac{\mathrm i}{2}M^{-1}B,\qquad C_B=\tfrac14 B^*M^{-1}B .
+ \label{eq:loss}
+\end{equation}
+For a fixed tangent $t>0$ and real peak $u$, $\alpha=t/[(1+t^2)u]$. A material class allowing a lossless active cell has no such positive floor in general. All lossy experiments recompute the forward fields for the declared complex material.
+
+For any observation map $W$ the image of the current ellipsoid under $W(J-J_0)$ is exactly
+\begin{equation}
+ W(J_c-J_0)+(WM^{-1}W^*)^{1/2} V C_B^{1/2},\qquad \|V\|_2\le1.
+ \label{eq:ell}
+\end{equation}
+Indeed the least energy at a fixed projected value $z=W(J-J_c)$ is $z^*(WM^{-1}W^*)^\dagger z$, on the range of $W$. Factorization of a contraction gives \eqref{eq:ell}, including singular source Gram matrices \cite{douglas}. This projection is exact for \eqref{eq:loss}. The latter remains an outer approximation to the constitutive equations.
+
+If $W$ extracts $c$ negative-energy coordinates in \eqref{eq:started}, any uniform upper bound $\mathcal B$ on their Gram yields $\Tail_{\nu-c}(H-\mathcal B)$, since the remaining subtraction has rank at most $\nu-c$. For example, set $\Gamma=WM^{-1}W^*$, $Z_0=W(J_c-J_0)$. For $\tau>\lambda_{\max}(\Gamma)$ one may take
+$\mathcal B_\tau=\tau C_B+\tau Z_0^*(\tau I-\Gamma)^{-1}Z_0$.
+This follows by maximizing the quadratic over the norm ball in \eqref{eq:ell} with a multiplier $\tau$. The direction and the two distinct current centers enter explicitly. Appendix~\ref{app:tech} explains why applying the same scalar to the \emph{whole} dissipation constraint can do at least as well.
+
+The most useful choice of $W$ in the experiments is the physical receiver $S$ itself. Put $R_S=SM^{-1}S^*$, $F_c=SJ_c$, and $Z_Y=Y-F_c$. The distance $d_{\rm abs}$ to the receiver ellipsoid is a lower bound for \eqref{eq:dist}. Any $\|Z\|_F\le1$ gives
+\begin{equation}
+ d_{\rm abs}\ \ge\ \Re\tr Z^*Z_Y-\|R_S^{1/2} Z C_B^{1/2}\|_* .
+ \label{eq:support}
+\end{equation}
+The maximum equals the distance by the support function of the contraction ball. A single verified test direction therefore suffices to establish exclusion.
+
+\begin{proposition}[Independent penalties for coherent illuminations]\label{th:prices}
+Suppose $R_S$ and $C_B$ are positive definite. Define
+$H(\tau)=\tau[Z_Y^*(R_S+\tau I)^{-1}Z_Y-C_B]$ for $\tau\ge0$.
+The squared receiver distance satisfies
+\begin{equation}
+ d_{\rm abs}^2=\max_{\{a_j\}\ {\rm orthonormal}}\ 
+                    \sum_{j=1}^s\ \max_{\tau_j\ge0} a_j^*H(\tau_j)a_j .
+ \label{eq:prices}
+\end{equation}
+The best bound using a common positive penalty on any source subspace is
+$\sup_{\tau\ge0}\tr[H(\tau)]_+$.
+\end{proposition}
+\begin{proof}
+Translate the receiver field by $F_c$ and minimize $\|Z_Y-Z'\|_F^2$ over $Z'^*R_S^{-1}Z'\preceq C_B$. The interior point $Z'=0$ gives strong Lagrange duality \cite{boyd}. Diagonalize its source multiplier as $\Lambda=\sum_j\tau_j a_ja_j^*\succeq0$. The free columns $Z'a_j$ minimize separate quadratic functions, with minimized values $a_j^*H(\tau_j)a_j$. Maximizing over all such $\Lambda$ gives \eqref{eq:prices}. Restricting $\Lambda$ to $\tau$ times an orthogonal projector and choosing the positive eigenspace of $H(\tau)$ gives the second assertion.
+\end{proof}
+For a fixed physical or data-selected basis each one-dimensional objective is concave. In a receiver eigenbasis $R_S b_\ell=\rho_\ell b_\ell$, its derivative is $\sum_\ell \rho_\ell|b_\ell^*Z_Ya_j|^2/(\rho_\ell+\tau)^2-a_j^*C_Ba_j$. Thus individual penalties require only scalar solves after two port Gram matrices have been assembled. Formula~\eqref{eq:support} also covers singular Grams without an artificial regularization. For $R_S=\rho I$ and $C_B=bI$, \eqref{eq:prices} gives $\sum_j(\sigma_j(Z_Y)-\sqrt{\rho b})_+^2$. Two unequal singular values above the threshold have distinct strictly optimal penalties. No one scalar attains this sum. These source-wise comparisons combine with the indefinite bound. Take any unitary source basis $[A,Q]$. For columns $a_j$ of $A$, let $b_j^2$ be valid separate squared residual bounds, obtained for example with different dissipative penalties. Since $\|SJ-Y\|_F^2$ is the sum of the squared column norms in this basis, a simultaneous bound is $\sum_j b_j^2+\Tail_{\nu}(Q^*HQ)$. The rank cost is paid once on the joint block. Taking either block empty recovers the corresponding separate calculation. Section~\ref{sec:experiments} compares the two endpoints and a nonempty split on the same full-wave data.
