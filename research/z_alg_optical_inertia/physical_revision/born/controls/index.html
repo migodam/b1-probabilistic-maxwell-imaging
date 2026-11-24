@@ -1,0 +1,49 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>弱散射对照 · 有限孔径电磁散射</title><link rel="stylesheet" href="../../../research.css"><style>article img{height:auto;max-width:100%}figure{margin-block:1.3rem}article table{font-variant-numeric:tabular-nums} .table-scroll{overflow-x:auto}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body><a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links"><a href="../../../../../index.html">B1 总项目</a><a href="../../../index.html">电磁材料下界研究</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/optical-inertia-ip-v3">下载论文和数据</a></div><nav aria-label="本轮论文与数据"><a href="../../../ip_submission_v3/index.html">研究报告</a><a href="../../../ip_submission_v3/manuscript_ip.pdf">英文论文 PDF</a><a href="../../../ip_submission_v3/handoff.html">ChatGPT 交接</a><a href="../../reproduce.html">复现与数据</a><a href="../../../ip_submission_v3/revision.html">修订记录</a><a href="../../../ip_submission_v3/cover.html">投稿信</a></nav></div></header><main class="site-shell" id="content"><article><h1>Weak-scattering controls for the Born data test</h1>
+<p>A material with peak contrast 0.04 produced full-wave data outside the entire nonnegative first-Born cone at both 1% and 2% noise. The exactly Born-generated readings on that same shape and the full-wave readings on an ultraweak ellipse both admit explicit Born fits. All six readings use the original 96², ten-illumination, twenty-receiver Green and port maps. The comparison contains two independent shapes, with two noise levels per arm. The exact Born arm reuses the two-disk shape and has its own prespecified noise draw. <a href="FROZEN_DESIGN.md">Frozen design</a></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>Generator</th>
+<th style="text-align: right;">True peak</th>
+<th style="text-align: right;">Clean generator vs. same-material Born relative error</th>
+<th style="text-align: right;">Proved cone lower distance / \(r\), 1% / 2%</th>
+<th style="text-align: right;">Explicit Born fit upper residual / \(r\), 1% / 2%</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ultraweak ellipse, full VIE</td>
+<td style="text-align: right;">\(9.992\times10^{-7}\)</td>
+<td style="text-align: right;">\(8.862\times10^{-7}\)</td>
+<td style="text-align: right;">0 / 0</td>
+<td style="text-align: right;">0.999879 / 0.999924</td>
+<td>Explicit Born fit in both balls</td>
+</tr>
+<tr>
+<td>Modest paired disks, full VIE</td>
+<td style="text-align: right;">0.040</td>
+<td style="text-align: right;">0.060105</td>
+<td style="text-align: right;">5.348457 / 2.748230</td>
+<td style="text-align: right;">6.073441 / 3.154508</td>
+<td>Every nonnegative Born image excluded</td>
+</tr>
+<tr>
+<td>Modest paired disks, exact Born</td>
+<td style="text-align: right;">0.040</td>
+<td style="text-align: right;">0 by construction</td>
+<td style="text-align: right;">0 / 0</td>
+<td style="text-align: right;">0.998794 / 0.998844</td>
+<td>Explicit Born fit in both balls</td>
+</tr>
+</tbody>
+</table></div>
+<p>Here \(r\) is the rounded-up realized noise norm plus \(10^{-6}\|Y\|_F\). The explicit fit scales the offline reference shape by one nonnegative real coefficient, chosen by closed-form least squares and checked by interval arithmetic. A fit in the ball proves compatibility. An upper residual outside the ball pertains only to its displayed shape and coefficient. For the modest full-wave disks the lower bound provides the exclusion. The direct \([0,4]\) search returned a zero lower bound on those readings. The cone result also excludes that box because its Born data are a subset of the cone.</p>
+<p>For both VIE controls, the original material's full-wave prediction lies in both stated balls. The interval calculation bounded \(\|\operatorname{diag}(\chi)G\|_2\) by \(1.0551\times10^{-5}\) for the ellipse and 0.422341 for the disks, using the embedding Fourier symbol. It then propagated the checked current defect through the inverse and receiver map. This gave upper bounds \(3.49\times10^{-18}\) and \(1.305\times10^{-11}\) for the clean simulated data's errors, in absolute field units. The same disk material has a clean full-wave/Born field discrepancy of 6.01%. The controls show that the gate responds to a mismatch between the measured field, the data tolerance and the Born model. A small peak alone does not settle that mismatch. The results apply to these two materials and the stated acquisition.</p>
+<h2>中文摘要</h2>
+<p>超弱椭圆的原生全波观测在 1% 和 2% 的误差球内都有 Born 拟合。峰值仅 0.04 的双圆盘在同一原生离散算子上，干净全波与同材料 Born 场相差 6.01%。其带噪全波观测距整个非负 Born 数据锥的严格下界分别为半径的 5.348 和 2.748 倍。在同一双圆盘材料上改用 Born 生成为对照，两档读数亦都有可逐项核验的 Born 拟合。这个对照支持直接检验测量精度下的模型相容性。不能只按峰值判断 Born 是否够用，也没有在两件材料上估计总体通过率。</p>
+<h2>Reproduction</h2>
+<p>From the project root, run the following with NumPy, SciPy, python-flint and threadpoolctl.</p>
+<pre><code class="language-sh">python -B research/z_alg_optical_inertia/physical_revision/born/controls/replay.py
+</code></pre>
+<p>The run reuses the unchanged Born test in <a href="../run.py">run.py</a>, the native FFT current replay in <a href="../../modes/analyze.py">analyze.py</a>, and that script's existing <a href="../../../submission/curve/native.py">curve operators</a> and <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/optical-inertia-ip-v3/physical_revision_evidence.zip">96² geometry</a>. The completed single-threaded run took 7.55 s wall / 7.28 s CPU including geometry, all generators, interval forward checks, twelve direct data bounds, explicit upper fits and array writes. An earlier run computed the bounds and arrays before hitting a JSON boolean serialization error. The completed run corrected serialization and records the implied box exclusion. <a href="results.json">Results and phase timings</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/optical-inertia-ip-v3/physical_revision_evidence.zip">Saved arrays</a></p></article></main></body></html>

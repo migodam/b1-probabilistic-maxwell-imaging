@@ -1,0 +1,273 @@
+\documentclass[anonymous,12pt]{iopjournal}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,microtype,graphicx,placeins}
+\graphicspath{{figures/}}
+\hypersetup{hidelinks,pdftitle={Lower bounds on peak dielectric contrast from finite-aperture scattering data},pdfauthor={},pdfsubject={Inverse electromagnetic scattering}}
+\fancyhead[L]{\small\sffamily Inverse Problems\quad Research paper}
+\fancyhead[R]{\small Peak contrast from scattering data}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\C}{\mathbb C}\newcommand{\R}{\mathbb R}
+\newcommand{\Herm}{\operatorname{Re}_{H}}\newcommand{\Imag}{\operatorname{Im}_{H}}
+\newcommand{\tr}{\operatorname{tr}}\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\dist}{\operatorname{dist}}\newcommand{\rank}{\operatorname{rank}}\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\norm}[1]{\left\|#1\right\|}\newcommand{\dd}{\mathrm d}
+\newcommand{\Dpos}{D_{\mu}}\newcommand{\Dopt}{D_{\lambda}}
+\numberwithin{equation}{section}
+\setlength{\headheight}{17pt}\setlength{\emergencystretch}{1.7em}
+\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}
+\renewcommand{\topfraction}{.91}\renewcommand{\textfraction}{.07}
+\begin{document}
+\noindent{\sffamily\small RESEARCH PAPER}\par\vspace{1.8ex}
+\title{Lower bounds on peak dielectric contrast from finite-aperture scattering data}
+\author{}
+\begin{abstract}
+Can a microwave array establish that a dielectric exceeds a given contrast somewhere, before forming an image? An unobserved current may carry power away from a partial aperture. Different incident fields, however, must drive currents in the same material. We combine these restrictions to bound the distance from the complex measurements to every medium below a given peak. The number of negative directions of a weighted current operator determines how many eigenvalues can be lost from a measured illumination spectrum. We construct examples in which each coherent illumination admits an exact receiver fit under four regional power balances and a physical current-energy bound, yet the joint data rule out the contrast range. Sixteen regional balances recover the same exclusion for a single coherent combination. In a 9,216-cell transverse-magnetic model at 400 MHz and 2\% noise, increasing the number of incident directions from ten to twenty-four at fixed total fluence establishes peak contrast above 0.75 on five of six objects, up from two. Moving to thirty-two directions changes none of these outcomes. Their negative current directions are almost entirely invisible to the receivers and have large outgoing wave-equation defects in the uniform capped medium. A separate port weighting rules out every nonnegative first-Born image on the same six objects. A near-noise reconstruction and measurements from two microwave chambers delimit what the bounds establish about material recovery and model error.
+\end{abstract}
+\keywords{electromagnetic inverse scattering, optical theorem, dielectric contrast, illumination diversity, finite aperture, uncertainty bounds}
+
+\section{Introduction}
+A smooth, low-contrast image may predict a measured scattered field within a few noise radii. Is the small discrepancy a consequence of a misplaced inclusion, or would \emph{every} arrangement of material at that contrast miss the data? These alternatives suggest different actions. The first calls for refining the image. The second gives a reason to increase the permitted contrast before spending another forward solve. We study this second question at one frequency, with an arbitrary nonnegative contrast at every cell in a two-dimensional dielectric.
+
+A receiver measures only a projection of the contrast current. The remaining current is precisely the difficulty exploited by the subspace optimization methods of Chen and of Zhong and Chen \cite{chen,zhong,ffttsom}. An array restricted to half a circle can miss currents that radiate substantial power in other directions. Conversely, a sufficiently dense full circle can account for nearly all radiated power and still leave many interior currents unobserved. A second physical restriction survives either layout. Although the currents change with the illumination, their ratio to the total electric field at each point must describe the same dielectric. This relation couples illuminations even when each individual reading admits a current consistent with conservation of power.
+
+Our main result gives a lower bound in the units measured by the array. For a proposed peak contrast, form a Hermitian matrix on currents and a much smaller matrix on illuminations. If the former has four negative directions, at most the first four eigenvalues of the latter can be lost. A positive remainder above the squared noise radius excludes the entire contrast range. We exhibit two observations for which a single usable coherent combination exists for a sufficiently fine spatial partition, whereas every single coherent test with four regions attains zero residual, even with a physical current-energy limit. All comparisons use the same array and the same noise ball. The difference is in which restrictions on a common set of currents can be enforced.
+
+The approach builds on several results with different inverse or design objectives. Bounds on photonic design performance and on scattered fields follow from the wave equation and power conservation \cite{angeris19,trivedi,angeris}. Real and reactive power constraints, their spatial subdivisions and cross-excitation terms have been used for electromagnetic design \cite{moleskyglobal,moleskylocal,kuang,shim}. Tian gives extremal-inertia formulas for matrix quadratics \cite{tian}. Continuous inverse scattering also uses operator inequalities modulo finitely many negative directions to obtain support information \cite{griesmaier_harrach,griesmaier_harrach_erratum,albicker}. Here the two conclusions are obtained for the same incomplete data: feasibility of each coherent receiver reading under explicit regional relaxations, and a positive distance from the \emph{joint} reading to all physical media below a stated peak. Neither conclusion requires an initial reconstruction.
+
+The implications for imaging depend on the angular information actually present. Following the spatial-bandwidth analysis of Bucci and Franceschetti \cite{bucci87,bucci89}, we vary both arrays at fixed incident fluence and compare independently computed angular responses. We also test the linear first-Born model directly. Ruling out a low peak in the nonlinear equations alone does not answer the Born question, because a linear inversion is free to use a larger contrast. Finally, we compare the material images obtained when the contrast range is enlarged under different stopping rules.
+
+\section{A lower bound from the current and the measured field}\label{sec:joint}
+
+\subsection{Outgoing transverse-magnetic scattering}
+Take the time dependence $\exp(-\mathrm i\omega t)$, a nonmagnetic medium invariant in the axial direction, and an axial electric field. In a homogeneous background of wavenumber $k$ let $\chi$ be the relative dielectric contrast and $\Omega$ the part of the transverse plane in which it may vary. Put $j=\chi E$, where $E$ denotes the total electric field. The outgoing Green function is $\Phi_k(x)=\mathrm i H_0^{(1)}(k|x|)/4$. For one incident field $b$,
+\begin{equation}
+ (\Delta+k^2)E=-k^2j,\qquad
+ E(x)=b(x)+k^2\int_\Omega\Phi_k(x-x')j(x')\,\dd x'. \label{eq:wave}
+\end{equation}
+The measured scattered field is the integral term evaluated at the receivers. This is the volume-integral formulation of dielectric scattering \cite{colton,chenbook}.
+
+On a square pulse grid of side $h$, the principal synthetic experiment integrates each source cell as an equal-area disk of radius $\rho=h/\sqrt{\pi}$ and collocates at the cell centres $x_i$ \cite{richmond}. With $q=k\rho$ and $c_q=\pi qJ_1(q)/2$, the resulting entries are
+\begin{equation}
+ G_{ij}=\mathrm i c_qH_0^{(1)}(k|x_i-x_j|)\quad(i\ne j),
+ \qquad G_{ii}=\mathrm i\pi q H_1^{(1)}(q)/2-1. \label{eq:disk}
+\end{equation}
+Replacing the observation centre in the off-diagonal formula by an exterior receiver gives $S_{\ell j}$. The incident columns for the full-ring experiment are
+$B_{ij}=\sqrt{10/s}\,\exp(\mathrm ik\,\widehat d_j\cdot x_i)$.
+Each receive row carries the factor $\sqrt{20/p}$ for angular quadrature. Ten unit-amplitude shots and the denser arrays therefore have the same total incident fluence per unit reference aperture. The angular comparison has no implicit assumption about absolute transmitter watts. Cylindrical transmitters use the outgoing Hankel field and the stated chamber calibration. Table~\ref{tab:electrical-acquisitions} gives the physical dimensions and port counts for each experiment.
+
+Collect $s$ incident fields in $B$, $s$ total fields in $E$ and the corresponding currents in $J$. If $X=\diag(\chi_i)$, the full and linear data maps are respectively
+\begin{equation}
+ E=B+GJ,\quad J=XE,\quad F(\chi)=SJ,\qquad F_{\rm B}(\chi)=SXB .
+ \label{eq:vie}
+\end{equation}
+For a complex square matrix $T$ write $\Herm T=(T+T^*)/2$, $\Imag T=(T-T^*)/(2\mathrm i)$. The Hermitian radiation part $R=\Imag G$ has entries $c_q J_0(k|x_i-x_j|)$, including the diagonal. Their plane-wave angular integral gives
+\begin{equation}
+ j^*Rj=\frac{c_q}{2\pi}\int_0^{2\pi}
+ \left|\sum_i j_i\exp(-\mathrm i k\widehat d_\theta\cdot x_i)\right|^2\dd\theta .
+ \label{eq:power}
+\end{equation}
+The outgoing sign and the positive $c_q$ for the cell sizes used here give nonnegative radiated power. The continuous kernel has the analogous Gram representation. A stored rounded matrix is treated in its own arithmetic when a strict inequality is asserted. The physical forward map includes all orders of multiple scattering on its declared grid.
+
+\subsection{Common material and the residual left across illuminations}
+Let $Y$ denote the measured complex field and $r$ its joint error radius. We test all $0\le X\le U=\diag(u_i)$. For nonnegative real diagonal $D_\mu$ and real diagonal $D_\lambda$, each physical current satisfies
+\begin{align}
+ Q_{\rm r}&=J^*D_\mu J-\Herm(J^*D_\mu U E)
+       =E^*D_\mu X(X-U)E\preceq0,\nonumber\\
+ Q_{\rm o}&=\Imag(J^*D_\lambda E)=0 .\label{eq:balance}
+\end{align}
+Each diagonal entry involves a single incident field. The off-diagonal entries impose the same law on every coherent linear combination of incident fields. For passive complex contrast, the same argument gives $Q_{\rm o}\preceq0$ when $D_\lambda\succeq0$, and $Q_{\rm r}\preceq0$ when $|\chi_i|^2\le u_i\Re\chi_i$. This disk in the complex contrast plane specifies the loss convention used below.
+
+\begin{proposition}[Shared material at one cell]\label{prop:pixel}
+For actual currents, enforcing both balances separately at each cell is equivalent to the existence of a common real $0\le X\le U$ satisfying \eqref{eq:vie}.
+\end{proposition}
+\begin{proof}
+Write $j_i,e_i$ for the rows of $J,E$. On $\ker e_i$ the sector inequality reduces to $|j_i a|^2\le0$. Thus $j_i$ vanishes when $e_i=0$. Otherwise $j_i=\alpha_i e_i$ for some complex $\alpha_i$. The optical equality makes $\alpha_i$ real and the sector inequality gives $\alpha_i(\alpha_i-u_i)\le0$. The converse follows by substitution. Summing cell inequalities yields the regional laws, and summing children gives the law of a parent region. The first assertion applies to rank-one current moments when a lift is used.
+\end{proof}
+
+Set $Z=(D_\mu U+\mathrm iD_\lambda)/2$ and define
+\begin{align}
+ K&=S^*S+D_\mu-ZG-G^*Z^*,\qquad L=S^*Y+ZB,\nonumber\\
+ H_Y&=Y^*Y-L^*K^{-1}L .\label{eq:operators}
+\end{align}
+The current matrix $K$ depends on the array, propagation and material hypothesis. The source matrix $H_Y$ additionally depends on the actual measured field.
+
+\begin{theorem}[A joint lower distance]\label{th:bound}
+Suppose $K$ is nonsingular and let $\nu=n_-(K)$. Write $h_1\ge\cdots\ge h_s$ for the eigenvalues of $H_Y$. For every physical current obeying \eqref{eq:balance},
+\begin{equation}
+ \norm{SJ-Y}_F^2\ \ge\ d^2=\sum_{j=\nu+1}^s(h_j)_+,\qquad
+ (x)_+=\max(x,0).\label{eq:bound}
+\end{equation}
+If $d>r$ and $U=uI$, every material compatible with the readings has peak contrast exceeding $u$. The weights may be chosen from the data.
+\end{theorem}
+\begin{proof}
+Put $D=(SJ-Y)^*(SJ-Y)\succeq0$. Add \eqref{eq:balance} to obtain
+\begin{equation}
+ D\succeq H_Y+(J-K^{-1}L)^*K(J-K^{-1}L).\label{eq:completion}
+\end{equation}
+The negative part of the last quadratic has rank at most $\nu$. Rank interlacing gives $\lambda_i(D)\ge h_{i+\nu}$ for $i+\nu\le s$. Taking the nonnegative part and summing proves the result. The value is sharp if the only remaining information is $D\succeq0$ and $D\succeq H_Y+T^*KT$ with $T$ free: $\nu$ rescaled negative directions of $K$ cancel up to the first $\nu$ positive eigenvalues. This statement of sharpness pertains to the relaxed trace problem.
+\end{proof}
+
+A singular $K$ can also give a bound. For $\alpha\ge0$ set
+$\mathcal P_\alpha=\left(\begin{smallmatrix}K&-L\\-L^*&Y^*Y-\alpha I_s\end{smallmatrix}\right)$.
+If $\mathcal P_\alpha$ has $n+b$ positive eigenvalues, its restriction to the $s$-dimensional graph $[J;I_s]$ has at least $b$ positive directions by dimension counting. Since $D-\alpha I_s$ bounds this restriction from above, at least $b$ eigenvalues of $D$ exceed $\alpha$. Integrating the resulting count in $\alpha$ bounds $\tr D$, as can a finite lower sum. Related extremal-inertia identities are given in \cite{tian}.
+
+For incomplete acquisition, disjoint source groups may retain their respective common receiver rows. Distances $d_g$ then combine in quadrature across disjoint entries. For a unit coherent vector $a$, the same joint ball implies $\|(Y-F)a\|\le r$. These are comparisons of the same exposures. To transfer an ideal-model result, suppose
+$Y=(I+T)(F(\chi)+b_{\rm mod})+n_{\rm add}$, with
+$\norm{T}\le\eta<1$, $\norm{b_{\rm mod}}_F\le b$ and $\norm{n_{\rm add}}_F\le\delta$. A sufficient radius, in the measured units, is
+\begin{equation}
+ r_{\rm eff}=b+\frac{\delta+\eta\norm{Y}_F}{1-\eta}.
+ \label{eq:budget}
+\end{equation}
+This follows by inverting $I+T$ in the vectorized measurement space. Repeated use of the same gain must respect its common value. A calibration residual gives an empirical scale, whereas a physical material inference requires an error budget that covers the loaded target.
+
+\section{Radiated power, coherent illumination and electrical size}\label{sec:single}
+
+\subsection{Power outside the measured aperture}
+Let $\Pi_0$ project orthogonally onto $\ker S$, put $H=\Herm G$ and let $R_0=\Pi_0R\Pi_0$. For spatially constant weights $D_\mu=\mu I$, $D_\lambda=\mu tI$ and a uniform hypothetical cap $u$, every receiver-invisible current $w$ satisfies
+\begin{equation}
+ w^*(K/\mu)w=\|w\|^2-u\,w^*Hw+t\,w^*Rw .\label{eq:dark}
+\end{equation}
+On a half circle a current can have $Sw=0$ while radiating strongly outside the measured arc. Increasing $t$ then increases its cost. If $R_0$ is very small even a large optical weight can have little effect. The first hidden loss of positivity for $t\ge0$, when $R_0\succeq0$, is
+\begin{equation}
+ u_*(t)=\inf_{\substack{Sw=0\\w^*Hw>0}}
+    \frac{\|w\|^2+t\,w^*Rw}{w^*Hw}.
+\end{equation}
+It is nondecreasing and concave on its finite domain as an infimum of affine functions. A positive lower eigenvalue $\alpha$ of $R$ restricted to the receiver kernel gives a slope at least $\alpha/\|H\|_2$. There need be no useful uniform lower slope on refining the grid. A practical upper estimate of hidden radiated power follows from
+\begin{equation}
+ \|R_0\|_2\le\|R-S^*T-T^*S\|_F\qquad\text{for every }T\in\C^{p\times n}.
+ \label{eq:radupper}
+\end{equation}
+Compression to $\ker S$ removes the last two terms. A positive Rayleigh quotient of an actual hidden current supplies the complementary lower estimate.
+
+\subsection{The same physical measurements as one coherent input}
+For unit $a\in\C^s$, set $b=Ba$ and $y_a=Ya$. The global sector and optical balances for a single current read
+\[
+ q_r(j)=j^*(I-uH)j-u\Re(j^*b),\qquad
+ q_o(j)=j^*Rj+\Im(j^*b).
+\]
+A coherent fit requires $Sj=y_a$, $q_r(j)\le0$ and $q_o(j)=0$. It allows a distinct fit for each choice of incident field. A common physical material must satisfy the matrix balances for a single current matrix across all fields.
+
+\begin{theorem}[Separate coherent fits and joint exclusion]\label{th:two}
+Suppose $w\in\ker S$ has $\rho_w=w^*Rw>0$ and
+$w^*(I-uH)w+t_0\rho_w<0$. Suppose a matrix $C_0$ with $SC_0=Y$ has, for every unit $a$ and $x=C_0a$,
+$q_o(x)<0$ and $q_r(x)+t_0q_o(x)<0$.
+Each coherent input admits a current $j_a$ attaining zero receiver residual and both global constraints with strict sector slack. If \eqref{eq:bound} exceeds the noise level, the joint data exclude the same peak hypothesis.
+\end{theorem}
+\begin{proof}
+Choose $|\beta|^2=-q_o(x)/\rho_w$. The cross term in $q_o(x+\beta w)$ is a real linear function of the phase coordinates of $\beta$ and can be made zero. Either sign of that phase then yields $q_o=0$. Select the sign giving a nonpositive sector cross term. The sector value is at most
+$q_r(x)+t_0 q_o(x)+|\beta|^2w^*(I-uH+t_0R)w<0$. Since $Sw=0$, the receivers see $y_a$ in each case.
+\end{proof}
+The lifted single-source problem minimizes squared receiver residual subject to positive semidefinite moments, the two global balances and unit homogeneous coordinate. These same hypotheses give a strict Slater point relative to the optical equality. Keep mean $x$ and assign current covariance
+$\varepsilon I+c_\varepsilon ww^*$ with
+$c_\varepsilon=(-q_o(x)-\varepsilon\tr R)/\rho_w$.
+For small $\varepsilon>0$ the covariance is positive definite, the optical equality holds, and the sector remains negative by continuity. The residual is $\varepsilon\|S\|_F^2$. The exact rank-one fit already attains zero. Thus the primal and dual optima are zero under simultaneous global constraints, including the limiting dual weights \cite{boyd,beck}.
+
+For a partition with cell indicators $D_b$, take receiver-invisible vectors $w_j$ and set
+\[
+ k_{bj}=w_j^*D_bw_j-u\Re(w_j^*D_bGw_j),\quad
+ l_{bj}=\Im(w_j^*D_bGw_j).
+\]
+Let $Q_{r,b}(C_0),Q_{o,b}(C_0)$ be the two source balances on a region for the receiver fit $C_0$. Sufficient conditions for zero optimal lifted distance, for \emph{all} unit $a$, are the existence of $P_j\succeq0$ with
+\begin{equation}
+ Q_{r,b}(C_0)+\sum_j k_{bj}P_j\preceq0,\qquad
+ Q_{o,b}(C_0)+\sum_j l_{bj}P_j=0 .\label{eq:regionalmoment}
+\end{equation}
+Indeed the mean $C_0a$ and covariance $\sum_j(a^*P_j a)w_jw_j^*$ have exactly these moments and zero receiver variance. They also satisfy a physical energy cap $\mathcal P$ whenever
+$C_0^*C_0+\sum_j\|w_j\|^2P_j\preceq\mathcal P I_s$.
+For the opposite comparison, when $K\succ0$, the best single coherent input for the given weights has squared lower bound $(h_1)_+$. It equals the joint bound whenever only one source eigenvalue is positive. These two constructions permit an exact comparison with spatially resolved single-source models.
+
+\subsection{Increasing the angular sampling}
+The receiver geometry affects $\nu$, while the incident angular bandwidth affects the field left after the first $\nu$ terms have been removed. For scalar weights let $A_t=I+tR+S^*S/\mu$. If $A_t\succ0$ and $u>0$, then
+\[
+ n_-(K)=\#\{\lambda(A_t^{-1/2}H A_t^{-1/2})>1/u\}.
+\]
+Adding the positive receiver term can remove at most $\rank S$ negative directions at fixed $t$. For comparison, a periodic Helmholtz convolution away from a lattice pole has reactive symbol $k^2/(|\xi|^2-k^2)$. The annulus $k<|\xi|<k\sqrt{1+u}$ then contributes negative directions of $I-uH$ and has an area corresponding to roughly $|\Omega|k^2u/(4\pi)$ lattice points. This comparison motivates an electrical-area scale. For the open, bounded scatterer we calculate the actual inertia. A negative direction of $K$ need not solve a homogeneous Maxwell equation.
+
+The incident direction has its own scale. Let $A$ be the active cells of a particular medium, $a_A$ the radius of a disk containing them, and $T_A=(I-X_A G_{AA})^{-1}X_A$ on a regular forward solution. At fixed material the measured response is linear in the incident plane wave restricted to $A$. Its angular Fourier coefficient $f_\ell$ obeys
+\begin{equation}
+ \|f_\ell\|_2\le
+ \|S_AT_A\|_2\Big(\sum_{i\in A}|J_\ell(k|x_i|)|^2\Big)^{1/2}.
+ \label{eq:bandwidth}
+\end{equation}
+Here the transmit amplitude is one and the origin is taken at the enclosing disk centre. Equation~\eqref{eq:bandwidth} follows by the Jacobi--Anger expansion at each cell and includes all orders of multiple scattering in $T_A$. The Bessel tail decays rapidly beyond $ka_A$. The usual angular count of order $2ka$ is therefore tolerance dependent \cite{bucci87,bucci89}. The search domain has a known enclosing radius before inversion. The actual supports, used only to interpret measured interpolation errors, can be much smaller.
+
+There is an exact limiting control. If a right multiplication by $V$ with $VV^*=I_s$ duplicates or mixes the columns of both $B$ and $Y$, the new source form is $V^*H_YV$ and the total incident fluence is preserved. Its positive eigenvalues and the bound are unchanged. For approximate redundancy, for any source-space orthogonal projection $P$ of codimension at most $\nu$, interlacing under compression gives
+\begin{equation}
+ d^2\le\tr[(PH_YP)_+]\le
+ \|YP\|_F^2+\|(-K^{-1})_+^{1/2}LP\|_F^2 .\label{eq:tail}
+\end{equation}
+For the second inequality drop the nonpositive contribution from the positive spectral space of $K^{-1}$, leaving a positive semidefinite upper matrix. This shows explicitly why $s>\nu$ gives an opportunity for exclusion and still permits a vanishing or very small bound.
+
+\section{Evaluation on the full material grid}\label{sec:fourier}
+
+\subsection{A one-sided Fourier bound}
+Zero padding and the unitary discrete Fourier transform define an isometry $V_F$. On a rectangular grid the stored volume operator has the form $G=V_F^*\diag(g_q)V_F$. For spatially uniform weights let $\sigma_q=1-u\Re g_q+t\Im g_q$. Choose a subset $\mathcal I$ of frequencies and a floor $f\le\min_{q\notin\mathcal I}\sigma_q$. Then
+\begin{equation}
+ K\succeq S^*S+\mu f I+
+     \mu\sum_{q\in\mathcal I}(\sigma_q-f)\,v_qv_q^*,\qquad v_q=V_F^*e_q .
+ \label{eq:floor}
+\end{equation}
+The omitted terms are bounded on \emph{all} cell currents. A positive diagonal floor plus a signed low-rank update reduces the inertia calculation. For $A_0+WCW^*$ with $A_0\succ0$, $C$ Hermitian invertible and its reduced Schur complement nonsingular, block elimination gives
+\[
+ n_-(A_0+WCW^*)=n_+(C^{-1}+W^*A_0^{-1}W)-n_+(C^{-1}).
+\]
+For $25^2$ selected modes and 20 receivers the reduced order is 645, while all 9,216 cell values remain independent. Regional weights require both $V_F j$ and the Fourier transform of a spatially weighted current, as detailed in Appendix~\ref{app:replay}. Trial subspace construction, evaluation of neglected modes and unsuccessful gap searches contribute to the actual computation.
+
+To evaluate the source form on the original grid, put $A_K=K/\mu$, $L_K=L/\mu$ and let $C_1$ approximate $A_K^{-1}L_K$. With $\Delta=A_K C_1-L_K$,
+\begin{equation}
+ H_Y=Y^*Y+\mu(C_1^*A_KC_1-C_1^*L_K-L_K^*C_1)-\mu\Delta^*A_K^{-1}\Delta .
+ \label{eq:native}
+\end{equation}
+A lower bound $g>0$ on every positive eigenvalue of $A_K$ makes the correction bounded from below by $-\mu\|\Delta\|_2^2 I/g$. The negative index is checked separately. Positive regions of the remaining source spectrum give a distance in the same field units as the observations. A new data matrix on a fixed array reuses the state calculation.
+
+For a spatial indicator $D_b$ and uniform cap $u$, put $J_0=K^{-1}L$ and $E_0=B+GJ_0$. On a smooth interval of weights with fixed $\nu$, let $P_+$ project onto the retained positive source eigenvalues. The derivatives of $d^2$ are the traces against $P_+$ of $J_0^*D_bJ_0-u\Herm(J_0^*D_b E_0)$ and $\Imag(J_0^*D_b E_0)$ for sector and optical weights respectively. Stationarity cancels the derivative of $J_0$. Only clusters separated at zero and at the removal index admit this expression. Regional searches can use the derivatives and then evaluate \eqref{eq:native} at the chosen weights.
+
+\subsection{A direct test of the first-Born model}
+The nonlinear box in Theorem~\ref{th:bound} and the linear model $F_{\rm B}$ in \eqref{eq:vie} have different feasible fields. Let $\langle A,B\rangle_F=\tr(A^*B)$. For any array weight $Z_{\rm B}\ne0$, put $g_i=\Re\langle Z_{\rm B},S_{\cdot i}B_{i\cdot}\rangle_F$. Convex separation and Cauchy--Schwarz give
+\begin{equation}
+ \dist_{\rm B}(Y,[0,U])\ \ge\
+ \frac{\big(\Re\langle Z_{\rm B},Y\rangle_F-\sum_i u_i(g_i)_+\big)_+}{\|Z_{\rm B}\|_F}.
+ \label{eq:born}
+\end{equation}
+Here $\dist_{\rm B}$ is the distance to all corresponding Born fields. When $g_i\le0$ throughout, the sum vanishes, even for the entire unbounded nonnegative material cone.
+
+A useful direction comes directly from extinction. Fit $S^*C\approx B$ by truncated least squares and set $q_i=\sum_j(S^*C)_{ij}\overline{B_{ij}}$. If all real parts are positive, take
+$\eta_{\rm B}\ge\max(0,\max_i-\Im q_i/\Re q_i)$ and $Z_{\rm B}=(\mathrm i-\eta_{\rm B})C$.
+Then $g_i=-\Im q_i-\eta_{\rm B}\Re q_i\le0$. If the receiver can match $S^*C=B$ exactly and $\eta_{\rm B}=0$, the signed reading on physical currents is
+$\Im\tr(B^*J)=\tr(J^*RJ)$ by the lossless optical identity. For a real Born current it vanishes. For a finite, masked array the inequality uses the signs of the actual cell pairings. The fit need only produce the required signs. With different masks by source, each column uses its actual receivers and its cell pairing contributes to the same real sum. This specialization of ordinary cone separation needs only one complex inner product for a new target on the same array.
+
+\paragraph{Implementation and validation.}
+Codex (OpenAI) was used to develop and execute the Fourier, full-wave and bounded-inversion calculations. Gemini (Google) was used to examine the acquisition operators and to suggest controls for angular sampling and illumination redundancy. The numerical checks compare full-wave fields at independently sampled angles, enclose the state and source spectra on the original grid, and evaluate reconstructed maps on withheld ports. Generating materials are used for simulation, feasibility checks and offline scoring. They are withheld from the bounds and inversion routines. All physical figures are drawn from the saved arrays.
+
+\input{experiments}
+
+\section{Discussion}\label{sec:discuss}
+
+\subsection{Which material information reaches the receivers?}
+Peak contrast and angular resolution enter in different places. Increasing the trial cap makes it easier for unobserved currents to offset the sector bound. Adding independent incident fields can expose the shared material through cross-illumination terms. Additional shots achieve little once the incident field on the active scatterer, propagated to the receivers, is well interpolated from the shots already used. The $2ka$ scale describes that angular dependence. It fixes neither the index of a particular weighted current matrix nor the last positive eigenvalue of the measured source form. In the six-object test, both mechanisms can be observed on the same physical grid. The drop in the distance at larger contrast persists on a ring with 32 receivers and 32 illuminations.
+
+The negative eigenvectors reveal another distinction. A current can be nearly invisible at the receivers and still have a large defect in the homogeneous outgoing equation for a proposed uniform material. Only a small fraction of the reference currents in the six heterogeneous objects lies in the four negative directions studied here. Inserting these four vectors as putative resonant modes of a reconstruction would require separate evidence of overlap with the material-induced currents. Their directly established role is to limit the measured illumination spectrum available to a contrast bound.
+
+Even a valid peak statement can carry little spatial information. For a tested region $A$ and fixed exterior weights, the quadratic restricted to currents in $A^c$ is completely independent of the multipliers inside $A$. The min--max principle gives $\nu\ge n_-(K_{A^c,A^c})$. When this exterior count reaches $s$, \eqref{eq:bound} vanishes for all choices of the interior weights. On the spatial tests in the appendix, this explains why a positive global lower bound could coexist with no localized lower peaks. Likewise, stacking two frequencies can incur a joint index penalty while separate frequency bounds retain positive terms. Neither the frequency nor the geometry of a receiver by itself orders the information content of two measured fields.
+
+\subsection{What a reconstruction can use}
+A bounded-error inverse can also be studied by following nonlinear solution branches \cite{everett96,everett26,vasco} or subdividing parameter space \cite{sivia}. Strong localized scatterer reconstructions use location and sparsity assumptions \cite{chai}, and interaction-matrix completion imposes consistency with the scattering operator \cite{levinson}. Finite-measurement uniqueness results impose explicit restrictions on coefficients or on the class of scatterers \cite{alberti19,alberti21,kuo_novikov}. The peak bound instead applies to every arrangement in the stated cell box, including objects with unknown support. It need not identify a branch or a spatial image. A null space at a finite receiver array is also compatible with radiated fields elsewhere. Transmission eigenvalues and non-scattering waves concern a different condition on the whole exterior field \cite{cakoni_book,cakoni_vogelius}.
+
+For a method that updates the contrast and current together \cite{csi}, or that changes the integral equation to handle stronger scattering \cite{nie,cie}, there are two immediate data decisions. A positive Born distance above $r$ rules out using the linear model with any nonnegative image. A positive full-wave distance above $r$ rules out retaining the proposed contrast range even with a nonlinear solver. The compact example shows why further guidance is needed to recover an image. A gradual increase in permissible contrast improved the material fit. A small full-wave residual alone drove the unconstrained range beyond the true peak. Ordinary discrepancy continuation obtained exactly the same final image as the bound-guided continuation. In this experiment the additional result is global information about the discarded class. We found no improvement in reconstruction over an equally informed stopping rule.
+
+\subsection{Physical range of the result}
+In the computations, strict peak inequalities apply to the full stated discrete scalar model and a noise ball containing the synthetic generator. Coarser and finer fields for the same material can differ by tens of per cent. A waveguide or microwave chamber also introduces antenna coupling, calibration, loss and out-of-plane structure. In particular the two empirical calibration comparisons in the Manitoba experiment do not provide an upper bound on the model discrepancy of a loaded target. Reporting the remaining margin gives a physical criterion against which an independently measured uncertainty could be compared. Extending the bounds to a continuous dielectric or a three-dimensional tensor material requires control of the corresponding forward error and the appropriate local constitutive law.
+
+\subsection*{Data and code availability}
+The accompanying numerical material contains the synthetic port fields, hypotheses, lower distances, angular interpolation errors, current and source spectra, and inputs for the figures. It records flat and inconclusive outcomes. The measured fields are available from the Institut Fresnel and University of Manitoba repositories described in \cite{fresnel,manitoba}. The numerical material documents their masks, calibration procedures and derived margins.
+
+\section*{Acknowledgements}
+\paragraph{Use of generative AI.} OpenAI Codex and Google Gemini assisted with mathematical development, scientific programming, comparison with the literature and preparation of the manuscript. Section~\ref{sec:fourier} specifies their roles in the numerical work. Forward residuals, spectral margins and measured-data comparisons were checked against the stored physical operators as described in Appendix~\ref{app:replay}. The authors take responsibility for the analysis, the interpretation and the manuscript.
+
+\input{appendix}
+\FloatBarrier
+\begingroup\small
+\input{references}
+\endgroup
+\end{document}

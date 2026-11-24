@@ -1,0 +1,91 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>计算复现 · 有限孔径电磁散射</title><link rel="stylesheet" href="../research.css"><style>article img{height:auto;max-width:100%}figure{margin-block:1.3rem}article table{font-variant-numeric:tabular-nums} .table-scroll{overflow-x:auto}</style><script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body><a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links"><a href="../../../index.html">B1 总项目</a><a href="../index.html">电磁材料下界研究</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/optical-inertia-ip-v3">下载论文和数据</a></div><nav aria-label="本轮论文与数据"><a href="../ip_submission_v3/index.html">研究报告</a><a href="../ip_submission_v3/manuscript_ip.pdf">英文论文 PDF</a><a href="../ip_submission_v3/handoff.html">ChatGPT 交接</a><a aria-current="page" href="reproduce.html">复现与数据</a><a href="../ip_submission_v3/revision.html">修订记录</a><a href="../ip_submission_v3/cover.html">投稿信</a></nav></div></header><main class="site-shell" id="content"><article><h1>复算与数据获取</h1>
+<p>本轮证据包解压后直接保留 <code>research/</code> 层级。以下命令在解压目录根执行。合成观测、原生 \(96^2\) Fourier 核、六件参考材料、预先选择的乘子、源代码和结果均在包内。完整复算需要 Python 3.13、NumPy、SciPy、python-flint、threadpoolctl 和 Matplotlib。英文图使用 Matplotlib 自带字体，中文电尺寸和反演图另需系统安装 CJK 字体，例如 Noto Sans CJK。用一份解压副本运行会写入结果与图件。</p>
+<pre><code class="language-sh">export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+rev=research/z_alg_optical_inertia/physical_revision
+</code></pre>
+<h2>合成数据与图</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>研究任务</th>
+<th>已有输入和输出</th>
+<th>复算入口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>阵列扫描</td>
+<td>96 份复场和半径，四档发射数与两档接收数，480 条逐例结果，有符号源谱与区间</td>
+<td><a href="array/index.html#能量噪声与复算">逐条命令</a></td>
+</tr>
+<tr>
+<td>负状态方向和暗电流</td>
+<td>同一原生 96² 参考材料与旧全环读数，原生四模、FFT-TSOM 子空间、坐标数组</td>
+<td><a href="modes/index.html">取数与独立核对</a></td>
+</tr>
+<tr>
+<td>Born 模型范围</td>
+<td>全环原始强散射与三个弱对照，两类 Born 限制和固定权重</td>
+<td><a href="born/index.html">主结果</a> · <a href="born/controls/index.html">弱对照及数组</a></td>
+</tr>
+<tr>
+<td>反演影响</td>
+<td>原阵列 18 份观测，八个有资格的拟合比较，另一个电紧凑物体及四个噪声球</td>
+<td><a href="inversion/PROTOCOL.md">冻结规则</a> · <a href="inversion/index.html">结果与代价</a></td>
+</tr>
+<tr>
+<td>电尺寸、角向采样和暗室</td>
+<td>频率与阵列统计、已发表对照、派生最短距离和经验校准量</td>
+<td><a href="electrical/FIGURE_NOTES.md">图表解释</a> · <a href="#暗室数据的本地复算">暗室复算</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>只重画已有图件时，可直接运行下列命令。原生阵列、模式和反演的数值结果已经随包提供。</p>
+<pre><code class="language-sh">python -B &quot;$rev/array/summarize.py&quot;
+python -B &quot;$rev/modes/plot.py&quot;
+python -B &quot;$rev/inversion/plot.py&quot;
+python -B &quot;$rev/electrical/plot_electrical.py&quot;
+</code></pre>
+<p>下列命令重放各原生模型。阵列分支先使用包内固定数据，也可按其复算说明先从六件参考材料重新生成新阵列读数。附加合成反演用正常入口，离线评估只在预测产生后读参考图和留出端口。</p>
+<pre><code class="language-sh">python -B &quot;$rev/modes/analyze.py&quot;
+python -B &quot;$rev/born/run.py&quot;
+python -B &quot;$rev/born/extinction.py&quot;
+python -B &quot;$rev/born/controls/replay.py&quot;
+python -B &quot;$rev/electrical/angular.py&quot;
+python -B &quot;$rev/inversion/gate.py&quot;
+python -B &quot;$rev/inversion/fit.py&quot; --out &quot;$rev/inversion/replayed_fits&quot;
+python -B &quot;$rev/inversion/score_original.py&quot; --input &quot;$rev/inversion/replayed_fits&quot;
+python -B &quot;$rev/inversion/compact.py&quot;
+python -B &quot;$rev/inversion/compact_followup.py&quot;
+</code></pre>
+<h2>来源与历史入口</h2>
+<ul>
+<li>六件材料的原始对象、公开观测与评分真值位于 <code>research/z_alg_optical_inertia/synthetic/{public,evaluation}/</code>。新阵列、负状态模态和原件反演引用的是同一批材料。本包带齐合成输入与原生 Green 乘子。重做原始数据生成另见先前交接中的依赖和数据生成入口。Annular inclusion、Austria 的固定仿真算子位于 <code>research/z_alg_secant_tasks/highdim/public_vie_inputs.npz</code>。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-20261122/Z_ALG_Optical_Inertia_2026-11-22.zip">最初光学惯性证据包</a></li>
+<li>原始全环噪声曲线、外向距离、4×4 权重和校准容差出自既有发布。需要的 冻结 FFT 算子、原始 Y、区间工具与权重依据保存在 <code>results/theory/</code>、<code>submission/curve/</code>、<code>submission/single/</code>、<code>core/</code> 和 <code>validation/srap/online.py</code>。Fresnel 适配器的公开 R8 源码保留在 <code>research/delegated/max_struct_r1/r8_worktree/</code>，早期 FFT-TSOM 基函数在 R14 冻结源代码路径。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-submission-20261122/Z_ALG_Optical_Inertia_Submission_2026-11-22.zip">原全环噪声曲线和权重出处</a></li>
+<li>跨实验暗室表保留原先发表的校准误差标尺、选定的残差界与资料出处。旧 4 区/16 区单源对照完整材料继续沿用第二版投稿页。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-optical-inertia-validation-v1/Z_ALG_Optical_Inertia_Validation.zip">实测校准与历史结果</a> · <a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/ip_submission_v2/">原单源和分区证据</a></li>
+</ul>
+<h2>暗室数据的本地复算</h2>
+<p>已发布的标量表、图和结果用于离线重画。完整实测复算需要从采集方获取复读数，采用原数据使用条件，并在本地生成校准依赖。两种实测均比较经验误差尺度，完整结果仍受采集和模型误差合同制约。</p>
+<ol>
+<li><strong>University of Manitoba.</strong> 将官方 EIGOR <code>Tomographic_Dataset_1.zip</code> 放到 <code>.artifacts/z_alg_validation/manitoba/</code>。以包内的 <code>validation/manitoba/physical.py</code> 重做原校准并输出本地 <code>prepared_private.npz</code>。 <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/mwt_data.html">采集方数据页</a> · <a href="https://doi.org/10.1109/MAP.2011.6138442">采集论文</a></li>
+<li><strong>Institut Fresnel.</strong> 从 2005 年 S09 论文的 <code>supp.zip</code> 提取 <code>FoamDielIntTM.exp</code>、<code>FoamDielExtTM.exp</code> 和 <code>FoamTwinDielTM.exp</code>。保存至 <code>research/delegated/a2_literature/data/2005_iop_21_6_S09/</code>。以下命令经随包提供的原 R8 加载器生成本地 <code>mask</code> 和 <code>raw_scattered</code> 文件。 <a href="https://doi.org/10.1088/0266-5611/21/6/S09">采集论文</a> · <a href="https://beta.iopscience.iop.org/article/10.1088/0266-5611/21/6/S09/data">出版社补充数据</a></li>
+</ol>
+<pre><code class="language-sh">study=research/z_alg_optical_inertia
+python -B &quot;$study/validation/manitoba/physical.py&quot;
+python -B - &lt;&lt;'PY'
+import numpy as np
+from research.z_alg_optical_inertia.fresnel import physical
+for frequency in physical.FREQUENCIES:
+    for name in physical.NAMES:
+        rows, measured, _ = physical.load_file(physical.RAW / (name + &quot;.exp&quot;), frequency)
+        transmitters = np.unique(rows[:, 0]).astype(int) - 1
+        field = measured[:, transmitters]
+        np.savez_compressed(
+            physical.RESULTS / f&quot;{name}_{frequency}GHz_ports.npz&quot;,
+            mask=np.isfinite(field), raw_scattered=field,
+        )
+PY
+python -B &quot;$rev/electrical/scale.py&quot;
+python -B &quot;$rev/born/ports/replay.py&quot;
+</code></pre>
+<p>公开 ZIP 的逐项路径在 <a href="package_release.py">归档入口</a>。实测原始文件、本地校准的端口缓存，以及从实测空场拟合得到的复权重留在本地。可以读取包内的 <code>born/ports/results.json</code> 重查经验标尺比较。</p></article></main></body></html>

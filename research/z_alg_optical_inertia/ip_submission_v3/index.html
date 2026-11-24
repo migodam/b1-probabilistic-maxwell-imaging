@@ -1,0 +1,64 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>中文研究报告 · 有限孔径电磁散射</title><link rel="stylesheet" href="../research.css"><style>article img{height:auto;max-width:100%}figure{margin-block:1.3rem}article table{font-variant-numeric:tabular-nums} .table-scroll{overflow-x:auto}</style></head><body><a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links"><a href="../../../index.html">B1 总项目</a><a href="../index.html">电磁材料下界研究</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/optical-inertia-ip-v3">下载论文和数据</a></div><nav aria-label="本轮论文与数据"><a aria-current="page" href="index.html">研究报告</a><a href="manuscript_ip.pdf">英文论文 PDF</a><a href="handoff.html">ChatGPT 交接</a><a href="../physical_revision/reproduce.html">复现与数据</a><a href="revision.html">修订记录</a><a href="cover.html">投稿信</a></nav></div></header><main class="site-shell" id="content"><article><h1>微波读数能告诉我们，物体内部的介电对比度至少有多高？</h1>
+<p>在 400 MHz、2 米见方的成像区域里，六件形状不同的物体都有 9,216 个可以独立变化的材料格点。我们只给算法天线位置、带噪复电场和允许的测量误差，然后问一个具体问题：<strong>有没有可能把材料随意重新摆放，让每个格点的对比度都不超过 0.75，同时仍然解释这些读数？</strong> 在相同的总入射能量和 2% 噪声下，用 10 个入射角和 20 个接收位置，可以对两件物体回答“没有”。用 24 个入射角，可以对五件回答“没有”。这里的对比度是相对介电常数减一，因此整个物体中必有一处的相对介电常数超过 1.75。这个结论在开始成像之前就成立。 <a href="manuscript_ip.pdf">英文论文</a></p>
+<h2>哪些物体能判定，哪些仍然不知道</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>同一组六件材料</th>
+<th style="text-align: right;">10 个入射角</th>
+<th style="text-align: right;">16 个</th>
+<th style="text-align: right;">24 个</th>
+<th style="text-align: right;">32 个</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20 收，1% 噪声</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>20 收，2% 噪声</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>32 收，1% 噪声</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>32 收，2% 噪声</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>开槽块、四叶体、双折线、月牙与平板、错列沟槽</strong>在 24 个角度时都能判定。第六件<strong>渐变风车</strong>在所有布阵下都悬而未决。10 发 20 收、2% 噪声时，只有开槽块和错列沟槽通过。将门槛提高到 <strong>1.0</strong>，增到 32 发 32 收也没能排除任何一件。这里一共是六件独立材料、96 份配对观测。六件物体的参考材料都在对应误差球里，真实峰值在 3.35–3.63。这个差距说明目前能可靠给出的下界仍然偏低。 <a href="../physical_revision/array/array_scan.csv">逐件结果</a> · <a href="../physical_revision/array/index.html">完整阵列比较</a></p>
+<p><img alt="六件散射体在相同空间范围与色标下的真实对比度" src="../physical_revision/modes/native_contrast_maps.png" /></p>
+<h2>为什么照明加到一定程度就没什么用了</h2>
+<p><strong>第一件事是角度够不够。</strong> 物体对入射角的响应是平滑变化的。用 16 个方向算出的全波响应，预测 32 个方向的独立全波计算，误差为 2.63%–13.42%。用 24 个方向做同一件事，误差只剩 <strong>0.0082%–0.1423%</strong>，小于本实验的噪声。整个成像区域的电尺寸给出约 24 个有效角向自由度的估计。六件散射体各自占据的范围更小。这里的 24 是对当前尺寸、孔径和精度有意义的尺度，改变这些条件需要重新计算。 <a href="../physical_revision/electrical/angular_interpolation.csv">角向误差逐件表</a></p>
+<p><strong>第二件事是已有角度还剩多少材料信息。</strong> 有些内部电流在天线上几乎看不到，却能抵消由某几束照明提供的约束。我们用一个由 Green 算子与接收阵列组成的矩阵数出这样的负方向，再看其余照明中有多少场差确实留了下来。在 32 发 32 收、峰值门槛 1 的一个最强候选上，只有 13 个负方向，扣除它们以后仍有七个正的照明方向，但总的距离下界只有误差半径的 <strong>0.301 倍</strong>。仅靠“发射数大于负方向数”就预测成功，会在这里判断错误。 <a href="../physical_revision/array/source_spectra.csv">为每个条件保存的照明谱</a></p>
+<p><img alt="左图为六物体的角向预测误差，右图为实测布局中随频率增加的接收盲区负方向数" src="../physical_revision/electrical/electrical_scaling_zh.png" /></p>
+<p>对四个负方向进一步检查，其电流能量各有 <strong>99.9931%–99.9943%</strong> 落在接收器的零空间里。把这个四维空间里的任意单位电流代回均匀介质的无源方程，残差仍大于 1.084。六件仿真物体的全波电流落在该空间中的能量也只有 0.23%–1.60%。所以它们很好地解释了下界为什么变弱。把它们用作强散射体固有共振模式，目前缺少物理依据。 <a href="../physical_revision/modes/index.html">电流幅相、辐射功率及与 FFT-TSOM 的比较</a></p>
+<h2>哪种改进真的是多束照明带来的</h2>
+<p>在开槽块与错列沟槽上，同一组 10 发 20 收读数、同样的 2% 误差，允许自由组合成一束相干照明，再在四个区域分别施加两条守恒律。即便加上对整类物理材料都必须成立的电流能量上限，这个单束松弛模型仍可做到<strong>零残差</strong>。保留多束照明共享同一材料的矩阵关系，得到的严格下界分别为 <strong>0.16070 和 0.11061</strong>，超过各自误差半径 <strong>0.09097 和 0.08803</strong>。将单束方法的空间约束细化到 16 区，两例又都能判定。这个对照界定了多源关系真正有用的范围，也解释了为什么把更多天线或更细分区当成单向度的优越性指标会出错。 <a href="manuscript_ip.pdf">英文论文第 3、5.2 节</a></p>
+<h2>什么情况下值得放弃线性成像</h2>
+<p>另一个实际决策是是否还值得尝试一阶 Born 近似。我们专门检验了<strong>任意强度、任意布局的非负 Born 材料</strong>。做法是先按天线位置给各个复读数定一组权重。如果任一像素放入正材料都只能把加权读数向一侧推动，实测读数却越过另一侧的全部误差，就能排除这一整类线性图像。</p>
+<p>六件强散射物体的 <strong>96/96 份</strong>配对读数都排除了该线性模型，严格距离至少是实测场范数的 <strong>40.23%–61.56%</strong>。每种阵列事先用 0.2–0.82 秒获得权重，每份新数据的读数约 0.5 毫秒。峰值约百万分之一的弱椭圆则确有 Born 图像能进入噪声球。另一个峰值只有 0.04 的双圆盘，固定权重没有给出判断，按这份数据重新选择权重后，1% 和 2% 噪声下的距离下界分别达到 <strong>5.35 和 2.75 个误差半径</strong>。是否需要多次散射，应当连同电尺寸、仪器和噪声一起判断。 <a href="../physical_revision/born/controls/index.html">不同生成方式的对照</a></p>
+<h2>这能让成像更准吗</h2>
+<p>在八个有机会出现“残差接近噪声”的大物体条件上，我们用原生 96² 全波正演和伴随计算优化低峰材料。固定低峰的最小实得残差仍有噪声半径的 6.78–82.48 倍。普通残差就足以发现这些图像有问题，因此论文没有用它们演示算法优势。 <a href="../physical_revision/inversion/index.html">原始反演与运行费用</a></p>
+<p>我们另外事先设计了一个边长为波长六分之一的材料区，物体真峰值为 0.879，四个噪声水平代表同一件物体。把重建峰值限在 0.5 时，最接近读数的实得图像有 <strong>1.49–2.48 个误差半径</strong>的残差。在允许误差附近观察，它很容易被当成一个还可以继续修形状的解。这里能证明，即使把所有像素重新排列，整类峰值不超过 0.5 的图像仍至少有 <strong>1.44–2.42 个误差半径</strong>的差距。</p>
+<p>接下来怎么扩大材料范围，决定了成像质量。直接放宽到 2，未参与反演的天线预测误差从 <strong>27.50%</strong> 降到了 <strong>1.32%–2.52%</strong>，材料相对误差却从 <strong>0.462 升到 0.721–0.943</strong>。逐步放宽，首次进入噪声球时停在 0.75，材料误差降到 <strong>0.322–0.355</strong>。用全类下界可以跳过第一个上限，少算三次目标函数。但普通的严格残差续算得到了<strong>逐像素完全相同</strong>的图像，冷启动的下界计算也抵消了省下的时间。新能力是判断“改形状是否还有机会”，尚未表现为独立的重建精度或速度优势。 <a href="../physical_revision/inversion/index.html">同色标材料图与逐项指标</a></p>
+<p><img alt="同一物体不同放宽方式下的重建图" src="../physical_revision/inversion/figures/compact_material_maps_zh.png" /></p>
+<h2>真实仪器和论文判断</h2>
+<p>加拿大 Manitoba 暗室，在 0.14 米视野内由 3 GHz 升至 6 GHz，归一化到同一规则的接收组在峰值门槛 1 时，负方向从 <strong>0 增至 20</strong>。该组只有 12 束照明。大尼龙柱在 3 GHz 仍能为额外的模型偏差留下 4.018% 的实测场余量。Fresnel 的三个物体、三个频率则都无法在既有空场误差标尺下排除全波峰值上限 0.5。两所实验室的非负 Born 比较在 25/28 与 3/9 个配对条件下超过各自两种经验误差尺度。未知物体装入仪器后的完整二维模型误差尚无统一上界，尼龙也有损耗，因此这些余量只能在声明的模型下解释。 <a href="../physical_revision/born/ports/index.html">实际端口和逐个例外</a></p>
+<p><strong>论文定位是有限孔径 Maxwell 逆问题的材料下界。</strong> 最有分量的是在同一次物理采集上，同时证明联合照明能排除整个材料类、而受能量限制的四分区单束模型仍可精确拟合，以及给出该结论在 16 分区失去优势的反例。真实采样角度和噪声决定它的可用范围。该结果适合按理论与计算稿交由 <em>Inverse Problems</em> 评审。实验提供了预先判断模型的办法，尚未给出优于成熟反演的材料图像。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/optical-inertia-ip-v3/IP_Anonymous_LaTeX.zip">匿名 LaTeX</a> · <a href="handoff.html">给 ChatGPT 的研究交接</a> · <a href="../physical_revision/reproduce.html">计算复现入口</a></p></article></main></body></html>

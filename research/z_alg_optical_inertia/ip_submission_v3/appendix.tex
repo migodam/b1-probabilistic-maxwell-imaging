@@ -1,0 +1,71 @@
+\appendix
+\section{Numerical bounds and uncertainty}\label{app:replay}
+
+\paragraph{Retained Fourier modes.}
+For regional weights in \eqref{eq:floor}, put $w_i=(D_\mu)_{ii}/\mu$, $t_i=(D_\lambda)_{ii}/\mu$ and $z_i=\{u(w_i-1)+\mathrm i(t_i-t)\}/2$. The cross term couples $V_Fj$ with $V_F\diag(\bar z_i)j$. For a real $c$ and $\beta>0$, each omitted two-variable form is positive semidefinite when $\sigma_q-f\ge |g_q-c|^2/\beta$. Summing gives the cellwise floor $f+w_i-1-2c\Re z_i-\beta|z_i|^2$, with signed updates of rank at most two per retained mode. The compact constant-weight system had order at most 645. Both nonuniform sixteen-region systems had order 1,478.
+
+\paragraph{Native stationary defect.}
+The $192^2$ padded symbol gives the full-grid defect $\Delta$ in \eqref{eq:native}. With $g$ a positive spectral floor, we subtract $\mu\norm{\Delta}_F^2/g$ from the trial source form to bound $H_Y$ in \eqref{eq:operators}. The shifted Fourier form bounds the negative index above and a native negative subspace bounds it below. Complex ball arithmetic encloses the resulting source Rayleigh quotients \cite{arb}. Theorem~\ref{th:bound} applies when the outward lower endpoint exceeds the radius. An absolute spectral gap also permits an upper endpoint for a given weight profile.
+
+\paragraph{Error radii.}
+We use the deterministic radius $r=\delta+10^{-6}\norm{Y}_F$. The sampled norm $\delta$ alone missed 16 of 24 reference fields by up to $1.87\times10^{-11}$ field units. The pad covers numerical generation error for all 24 fields and all 30 paired full-ring views. For the same materials, the coarse and fine fields differ by 12.4--28.4\% in half aperture and 14.2--35.4\% in full aperture. Grid and chamber transfers require a separate uncertainty term in \eqref{eq:budget}.
+
+\paragraph{Energy-constrained four-region moments.}
+For $K-\tau I\succ0$, completing \eqref{eq:completion} gives $\norm{Sj-Ya}^2\ge\tau\norm{j}^2+a^*H_\tau a$, where $H_\tau=Y^*Y-L^*(K-\tau I)^{-1}L$. If $\lambda_{\min}(H_\tau)\ge\ell_\tau$, then $\norm{j}^2\le (r^2-\ell_\tau)/\tau$ for every coherent input in its error ball. To bound the energy without data, 64 plane-wave columns give $S^*S\preceq\gamma R+\eta I$, with $\gamma=1/128$ and $\eta<5.14\times10^{-10}$. The floor $K/\mu\succeq(3/256)I$ gives $K_{\rm pow}=K-S^*S+\gamma R\succ0$. A second completion at $K_{\rm pow}-\tau I$, with coefficient $(Z+\mathrm i\gamma I/2)B$, bounds the energy by $2{,}340{,}476$ throughout the box. The separate error-ball caps are $4{,}982{,}633$ and $1{,}035{,}001$.
+
+For the two full-ring 2\% examples at $u=0.75$, eight receiver-null directions and a receiver-exact mean satisfy \eqref{eq:regionalmoment}. The lifted moments have rank at most nine and their current traces are below $8{,}500$ and $7{,}000$ uniformly over unit input. A physical material in the box attains energy above $8{,}886.62$ for a fixed unit input. Thus the four-region optimum is exactly zero under every uniform energy cap valid on the box and under the stated separate caps. For the artificial cap 100, the receiver-only lower distances are 0.9730 and 1.0280. The energy where the four-region optimum first becomes positive is open.
+
+Theorem~\ref{th:two} yields a simultaneous coherent fit and strict lifted feasibility on 25 of 30 paired views, including every view excluded at $u=0.75$. The other five 10\% views remain undecided by that construction. At the sixteen-region weights each of the two 2\% examples has one positive source eigenvalue. The leading coherent direction therefore gives the full fixed-weight distance in \eqref{eq:bound}.
+
+\begin{table}[!tb]
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Replay and comparison costs on Apple M4. Times are wall and process CPU seconds. Dashes denote an unavailable or nonadditive timing. The first global and four-region $u=0.75$ batches each include 45 inconclusive evaluations. Refinement of the 15 affected views is charged separately.}
+\label{tab:replay}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.39\linewidth}
+ >{\raggedleft\arraybackslash}p{.145\linewidth}
+ >{\raggedleft\arraybackslash}p{.145\linewidth}
+ >{\raggedright\arraybackslash}p{.24\linewidth}@{}}
+\toprule
+Calculation & Wall & CPU & Scope\\ \midrule
+Paired full-ring proposal search & 12.79 & 12.73 & Shared across five caps\\
+Constant weights, $u=0.50$ & 49.52 & 49.97 & Native replay\\
+Constant weights, $u=0.75$ & 213.88 & 211.86 & First batch\\
+Constant-weight refinement & 20.20 & 19.98 & 15 views\\
+Four regions, $u=0.75$ & 316.14 & 312.89 & First batch\\
+Four-region refinement & 42.40 & 42.50 & 15 views\\
+Sixteen-region symmetric search & 66.29 & --- & 84 trials, one case missed\\
+Nonuniform search and native ranking & 22.49 & --- & Both cases\\
+Sixteen-region coherent proof & 69.44 & --- & Both cases\\
+Joint reuse & 6.09 & --- & Existing state proofs\\
+30-view cross-application & 20.50 & 21.36 & Existing state proofs\\
+Three higher caps, same fixed profiles & 14.59 & 14.88 & Native checks\\
+Crescent and plate, dense scalar control & 59.53 & 58.62 & Search included\\
+Energy caps, gap and error-ball proofs & 283.57 & 509.99 & Both cases, concurrent work\\
+Energy-capped moments & 10.58 & 10.55 & Final construction and proof\\
+Energy-capped moments, exploratory subtotal & --- & 54.42 & Measured costs including final path\\
+Regional localization, $U_{\max}=20$ & 12.6/51.7 & 12.4/48.7 & Search and interval check\\
+Regional localization, $U_{\max}=4$ & 162.8/152.2 & 154.9/136.8 & Search and interval check\\
+Two-frequency comparison & 17.05/40.95 & 16.36/40.34 & Search and positive-point checks\\
+Fixed profiles, 22-object transfer & 63.20 & 67.10 & Shared responses included\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The nonuniform path cost 91.93~s or 158.22~s including the symmetric trials. The full-box energy proof adds 4.30~s after the gap proof and the independent physical current check adds 1.19~s. The 54.42~s CPU subtotal includes rejected numerical proposals with receiver leakage. Ten other exploratory records lack separate timings. One rejected interval check had already applied the Green operator to four dark and ten fitted columns. High-cap subspace proposals and their outward evaluation took 8.64 and 6.50~s, respectively.
+
+\section{Regional, frequency and transfer controls}\label{app:controls}
+
+\paragraph{Regional localization.}
+Six $32^2$ materials contributed seven views and sixteen regions per view. At both exterior caps $U_{\max}=20$ and $4$, the result was 0/112 for excluding an empty region and 0/112 for a positive local peak lower bound. The exterior principal block alone has at least 116 and 106 negative directions at $U_{\max}=20$ for the twenty- and ten-source layouts, and at least 24 and 14 at $U_{\max}=4$. The result holds over $0\le\lambda/\mu\le128$ and for sector scales at least their tested minimum, irrespective of interior weights. Each search used 192 base $LDL^*$ factorizations. The tighter box reused 76 inverses in 27,904 compact updates before interval checks.
+
+\paragraph{Two frequencies.}
+The same six nondispersive materials and half ring were used at 400 and 500 MHz. Weights may mix frequency components at a pixel because $I_2\otimes X$ repeats the material there. At cap 0.50 and 2\% noise, independent frequency distances in quadrature exceeded the nominal radius in 3/6 cases. Mixed weights gave 0/6, and both approaches gave 0/6 at 10\%. Adding each coarse reference discrepancy gave 0/6 under both approaches at both noise levels. Separate treatment pays the negative-index penalty per frequency. The screen used 32 factorizations of order 1,024 and 33 of order 2,048. The three positive points were checked separately on the inverse grid.
+
+\paragraph{Transfer.}
+Unchanged profiles gave 22/22 joint and 20/22 coherent exclusions of cap 0.50 on additional full-ring $96^2$ materials at 10\% noise. Both gave 0/22 at cap 0.75. Across the 110 latter profile evaluations, the largest upper endpoint was $0.1682r$. On the separate $24^2$ ring with 12 inputs, 48 receivers and 1\% noise, the fixed real-sector profile had four negative directions. The joint result at cap 5 was 5/7, at distance ratios 5.12--10.77, versus 0/7 with the tested coherent profiles. One undecided material had peak 16.25. The other had peak 4.28, supplying a feasible medium under cap 5. The reference media for both acquisitions satisfied their respective padded or original error balls.
+
+\paragraph{Measured-channel controls.}
+For three Fresnel targets at 4, 6 and 8 GHz, source groups use common measured rows among the 241 valid receivers per source \cite{fresnel}. At cap 0.50 none of nine views exceeded its held-out empirical calibration scale. In Manitoba the antisymmetric field component is 0.62--5.98\% of the primary norm. Projecting all four calibrations onto their reciprocal parts preserved the same positive-margin views. The loaded-scene discrepancy in \eqref{eq:budget} remains unknown.
+
+\FloatBarrier

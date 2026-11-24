@@ -204,3 +204,7 @@ NIE2016 式(15)与 CIE2019 式(16)都使用右侧开方量。2016 首阶段 δ<.
 ## 支持区剪枝的互易传递对照
 
 支持区、材料上限和收发合同固定。在弱端口界未排除而主动区状态严格排除的 49 个已曝光配对中，39 个有一般有界传递拟合，38 个有复对称有界传递拟合。拟合使用原半径并经过区间核查；它只证明对应端口松弛可行。剩余配对中的搜索失败保持未决。 [条件、机器回执与复现](../z_alg_xudong_cie/pruning/RECIPROCITY.md)
+
+### 光学惯性排除的三个不同上限
+
+固定原生离散模型时，状态负惯性超过发射数会耗尽源谱。发射数超过负惯性只提供可用位置，剩下的正特征值仍需使距离超过实际半径。在 optfresh 的六件全环材料上，24 发和 32 发达到同样的 0.75 排除集合，32 发 32 收在上限 1 的最强筛选提案仅达到半径的 0.301 倍。此处的 \(2ka\approx23.7\) 描述角向带宽，32 列实际仍满秩。有限权重的距离上界不能充当某个低峰材料的可行见证。相同数据的非负 Born 模型、峰值受限的全波模型和门控后的具体反演程序需分别验收。 [阵列配对数据](../z_alg_optical_inertia/physical_revision/array/ARRAY_SCAN_ZH.md) · [Born 对照](../z_alg_optical_inertia/physical_revision/born/REPORT.md) · [反演对照](../z_alg_optical_inertia/physical_revision/inversion/RESULTS_ZH.md)
