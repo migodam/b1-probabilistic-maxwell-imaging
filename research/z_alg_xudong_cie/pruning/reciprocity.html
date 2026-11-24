@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>能量与互易性反例 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">给弱端口松弛补上互易条件</h1>
+<p>原能量松弛允许一般传递矩阵。加入复对称后，主动区状态证明排除的 49 个暴露配对中仍有 <strong>38 个</strong>获得严格误差球内的传递矩阵，原一般传递的数字为 <strong>39 个</strong>。因此只靠互易性仍无法复现本次主动区物理排除。每个配对的判断由原读数、原半径与原 $C$ 形成，未读取材料或站点标签。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>固定比较</th>
+<th style="text-align: right;">一般传递已证拟合</th>
+<th style="text-align: right;">复对称传递已证拟合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全部 65 个弱端口未过线配对</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">54</td>
+</tr>
+<tr>
+<td>其中主动区已严格排除的 49 个配对</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">38</td>
+</tr>
+</tbody>
+</table></div>
+<p>对每个支持块，令 $Q$ 为 $S_H^*$ 和 $\overline{B_H}$ 的合并列空间基，构造</p>
+<p>$$
+T=CQXQ^{\mathsf T},\qquad X=X^{\mathsf T},\qquad \|Q\|_2^2\|X\|_2\le1.
+$$</p>
+<p>理想正交基令 $P=QQ^*$，于是 $S_HP=S_H$ 与 $P^{\mathsf T}B_H=B_H$。这个压缩保留两侧端口作用。数值提案在至多 30 维的基上计算。复对称坐标由对角单位阵及带 $1/\sqrt{2}$ 的成对非对角单位阵组成，观测矩阵为 200×351 至 200×435。用其经济型 SVD 构造误差球投影，随后在误差球与复对称谱范数球之间进行最多 100 次 Douglas–Rachford 更新。</p>
+<p>对保存的每个 $X$，逐位检查其与转置相同。128 位 Arb 重新包住 $\|Q\|_2^2\|X\|_2$ 与 $\|Y-C(S_HQ)X(Q^{\mathsf T}B_H)\|_F$。在主动区已排除却仍获得复对称拟合的 38 项中，两项的最大比值分别为 0.999949821 和 0.999224258。30 个可复用观测分解与全部 65 项的搜索和区间核查用 4.77 秒墙钟、3.73 秒 CPU。</p>
+<p>本次少找到的一项是 <code>b3site_0003__pw360_10x20__n10</code> 的零基块 <code>[2,1]</code>；100 次后仍未取得该项的复对称可行见证，其可行性未决。其余未获得见证的项同样未决。这些 $T$ 是一般线性传递矩阵。构造没有声明任何 $m$，也不施加 $T=(I-MG_H)^{-1}M$ 的点态共享材料律。材料的 Maxwell 可行性仍由独立的主动区条件判断。</p>
+<p>从本目录执行 <code>python -B reciprocal_control.py</code>。输入为原 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/contraction_control.json">一般有界传递回执</a> 及归档的站点实验公开数据。输出 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/reciprocal_control.json">逐项区间和费用</a> 与 <code>pruning/reciprocal_witnesses.npz</code> 中的压缩基和对称见证。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载含见证的复现包</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

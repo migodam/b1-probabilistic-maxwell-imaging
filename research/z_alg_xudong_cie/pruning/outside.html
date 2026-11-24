@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>区外材料 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">排除“区域外全是空气”以后，能证明外面有多少材料吗？</h1>
+<p>对四个被原生数据排除的小区假设，试着允许其余位置有未知背景。已知候选区 $H$ 内的对比度处处不超过 4；区外 $C$ 有任意非负材料，和全部发射共用。只要 $H$ 内的同一个光学算子满足严格正谱条件，就能给出区外电流和材料的下界。这个结论沿用实际读数与原噪声半径，没有假设区外为空。</p>
+<p>记 $c_H=\sqrt{1+t^2}/\gamma$，$g\ge\|G\|_2$。由支撑证明在 $H$ 上的同一能量不等式，把 $G_{HC}J_CW$ 作为附加入射场，得到</p>
+<p>$$
+\|J_HW\|_F\le c_H(\|B_HW\|_F+g\|J_CW\|_F).
+$$</p>
+<p>选取发射组合 $W$ 和接收组合 $V$，将 $V^* SJW=V^*S_HJ_HW+V^*S_CJ_CW$ 代入已知误差球。写 $s_H=\|V^*S_H\|_F,s_C=\|V^*S_C\|_F,b_H=\|B_HW\|_F,b_C=\|B_CW\|_F$。若分母正，则</p>
+<p>$$
+x:=\|J_CW\|_F\ge L=
+\frac{(\|V^*YW\|_F-\|V\|_2\|W\|_2r-s_Hc_Hb_H)_+}
+{s_C+s_Hc_Hg}.
+$$</p>
+<p>再用 $J_C=M_C E_C$，可得
+$$
+x\le \|m_C\|_\infty [a+bx],\qquad
+a=b_C+gc_Hb_H,\quad b=g+g^2c_H .
+$$
+当 $a&gt;0$ 时，$x/(a+bx)$ 单调递增，从而 $\|m_C\|_\infty\ge L/(a+bL)$。这个代数步骤对任意实际区外峰值成立，无需先把区外对比度限定在某个收敛半径内。有限卷积算子的谱范数可由其原生 Fourier 频谱的最大模严格上包。下面四行均以球算术复核。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>训练观测</th>
+<th>允许高材料的候选小区</th>
+<th style="text-align: right;">区外组合电流范数至少</th>
+<th style="text-align: right;">区外材料峰值至少</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开槽块，半环 2%</td>
+<td>按前 64 次更新选取</td>
+<td style="text-align: right;">0.45228</td>
+<td style="text-align: right;">0.0000021521</td>
+</tr>
+<tr>
+<td>开槽块，半环 2%</td>
+<td>水平移动后的小区</td>
+<td style="text-align: right;">0.28460</td>
+<td style="text-align: right;">0.0000023377</td>
+</tr>
+<tr>
+<td>复杂壳，半环 10%</td>
+<td>按前 64 次更新选取</td>
+<td style="text-align: right;">2.51407</td>
+<td style="text-align: right;">0.0000024459</td>
+</tr>
+<tr>
+<td>复杂壳，半环 10%</td>
+<td>水平移动后的小区</td>
+<td style="text-align: right;">0.02889</td>
+<td style="text-align: right;">0.0000014224</td>
+</tr>
+</tbody>
+</table></div>
+<p>材料列向下截断。电流随发射组合归一化而变，不能拿来充当材料的峰值。尽管真实读数明确要求区外存在电流，在这里套用统一的场放大上限后，便宜的材料保证仅在百万分之一量级。对开槽块移动小区，计算代价较高的全域背景证书能直接排除区外不超过 0.05，说明这个数量级由所用的不等式决定。另三个正背景检验保留未决。空间定位结论必须同时交代区外允许放多少材料。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/outside_contrast.json">原生区间数组</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/outside_contrast.py">复算</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/development_uniform_soft_one.json">允许 0.05 背景的独立证书</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

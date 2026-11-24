@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>候选材料位置 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">原生有限格的候选区域剪枝</h1>
+<p>用同一材料盒内的所有共享电流作比较，证明某个区域假设不可能拟合观测。两份已公开开发观测各构造两个候选区域，前缀只读第 64 步 Dual-CIE 的材料和电流。候选选定后，在原生 96²、20 收 10 发的同一有限卷积模型上评分。每个正式轻型区域假设允许 4×4 分块中的一个方块有对比度 0–4，方块外为精确空气。规则还保留一个全域上限 20 的候选和一个全域上限 0.50 的对照。剪枝与未剪枝的算法必须执行同样的盒约束。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/frozen_development.json">阈值与配对开发回执</a></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>观测及区域</th>
+<th style="text-align: right;">声明半径</th>
+<th style="text-align: right;">接收单侧严格下界</th>
+<th style="text-align: right;">照明单侧严格下界</th>
+<th style="text-align: right;">双侧严格下界</th>
+<th style="text-align: right;">全状态复核下界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 半环 2%，按前缀排序</td>
+<td style="text-align: right;">0.101327</td>
+<td style="text-align: right;">0.527500</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>1.388934</strong></td>
+<td style="text-align: right;">3.003645</td>
+</tr>
+<tr>
+<td>01 半环 2%，平移竞争者</td>
+<td style="text-align: right;">0.101327</td>
+<td style="text-align: right;">1.630877</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>2.563958</strong></td>
+<td style="text-align: right;">3.612082</td>
+</tr>
+<tr>
+<td>004 半环 10%，按前缀排序</td>
+<td style="text-align: right;">0.495069</td>
+<td style="text-align: right;">2.217760</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>2.673584</strong></td>
+<td style="text-align: right;">3.728513</td>
+</tr>
+<tr>
+<td>004 半环 10%，平移竞争者</td>
+<td style="text-align: right;">0.495069</td>
+<td style="text-align: right;">0.284157</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><strong>0.993714</strong></td>
+<td style="text-align: right;">3.052030</td>
+</tr>
+</tbody>
+</table></div>
+<p>两侧同时取弱方向时，四个区域假设均越过半径。只取接收弱方向时，004 的平移区域仍待判。只取照明弱方向时，四个下界都为零。全状态直接复核用同一原生子块及冻结乘子，给出更强下界，成本也更高。四区轻包络的开发负例仍保留。将四个方块内的上限设到 4，外部设为零或 .05，尝试的近似都耗尽可用照明。单块的 .05 背景容许 01 的平移分支得到一次严格排除，下界 .1499588，另三条未严格排除。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/ablation_development.json">单侧消融</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/development.json">完整四块对照</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/development_uniform_soft_one.json">正背景对照</a></p>
+<p>每个相干照明都受同一个局部能量上界。合并实扇区和光学式后，在一个 24² 原生方块上证明 \(A\succeq 0.008999999999975347 I\)。所有 16 个同尺寸平移方块复用同一 Green 子块。对给定方块，入射弱方向的 \(B_HW\) 限制可激发电流，接收弱方向的 \(V^*S_H\) 限制这些电流进入数据的量级，最后保留实测的 \(V^*YW\)。用原生矩阵与正误差上端复核两个方向的范数。对半径外的严格证书才调用 <code>PRUNE</code>。 <a href="support-theory.html">公式、模型扰动与误差半径</a></p>
+<h2 id="_2">可复算费用</h2>
+<p>重复回放里，全部 16 个平移位置共用的原生 Green 与 Cholesky 间隔首次约 1.1–1.7 秒，单块方向评分约 0.010–0.019 秒。冻住的直接复核用时约 1.49–1.55 秒每块。Paper 1 的全域 .50 控制使用一个已归档的有符号傅里叶型，半环冷启动墙钟 5.76 或 8.93 秒，重复数据评分约 0.8–1.1 毫秒。并行负载下的实际差异保留在两次回执中。四块试验的每条筛选约用 2.8–3 秒，全部保留。正背景 01 平移严格证明用了 13.97 秒。首次双侧试算已成功验收四条区间值，末尾 JSON 存储遇到 NumPy 整数格式错误，随后重新回放并完整存档。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">初次回执</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/fast_development.json">区间回执</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/frozen_development.json">冷与复用口径</a></p>
+<p>在含 NumPy、SciPy、python-flint 和 threadpoolctl 的工程目录环境中，从本目录运行。所有命令使用公开已存观测和前缀。</p>
+<pre><code class="language-sh">python -B frozen_replay.py
+python -B fast_replay.py
+python -B ablation.py
+</code></pre>
+<p>中央 8×8 网格内取中央 6×6 个块的预定广域控制，在 48 个新公开观测上全部保留。全环与半环的受测傅里叶型最少负方向数分别为 49、54，超出十束照明的预算，所以每个同几何的剩余读数沿用这份与数据无关的筛选结果。18.24 CPU 秒包含两个几何的筛选与所有公开数据读取。后续真材料覆盖比例从单独的封存后评分得出。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/holdout_public_broad.json">纯公开广域对照</a></p>
+<p>全套公开方向消融也已完成。12 件材料的 48 份配对读数，每份评分同一前缀提议的两个单块盒。表内只计各个弱方向证书直接跨过原半径的次数。全状态后备、全域 .50 与全域候选不在这张表内。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/holdout_public_ablation.json">配对公开消融</a></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>数据划分</th>
+<th style="text-align: right;">被检候选盒</th>
+<th style="text-align: right;">接收单侧严格排除</th>
+<th style="text-align: right;">照明单侧严格排除</th>
+<th style="text-align: right;">双侧严格排除</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全部</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">89</td>
+</tr>
+<tr>
+<td>全环</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr>
+<td>半环</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">48</td>
+</tr>
+<tr>
+<td>2%</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">48</td>
+</tr>
+<tr>
+<td>10%</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">41</td>
+</tr>
+</tbody>
+</table></div>
+<p>三臂实际评分合计约 9.19 CPU 秒。分别为双侧 5.88、接收单侧 1.59、照明单侧 1.72 秒。双侧臂计入两次首次区间间隔验证。整批 CPU 共 10.07 秒，完整挂起墙钟另含等待各在线盒记录陆续生成的时间。此处的严格结论针对候选材料类及登记的离散噪声球，生成材料是否在某个盒内另由封存后证据核对。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/holdout_public_ablation.json">公开费用与每条候选盒</a></p>
+<h2 id="_3">封存后的材料类覆盖与误剪</h2>
+<p>全部在线候选封存后，用独立原生真材料入球审计和实际材料盒逐格对照。下表的“误剪”只计真材料严格在噪声球且属于该盒的情形。表中前四行是限时冷启动的实际决策，另两行是独立可用性对照。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/benchmark/ONLINE_SEAL.json">全批在线封存</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">安全性核对</a></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>材料盒</th>
+<th style="text-align: right;">读数</th>
+<th style="text-align: right;">真实包含读数</th>
+<th style="text-align: right;">真实包含独立材料</th>
+<th style="text-align: right;">实际剪除</th>
+<th style="text-align: right;">误剪</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全域上限 .50</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0/12</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>按前缀排序的单块</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0/12</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>平移单块</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0/12</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>全域上限 20</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">12/12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>预定中央宽盒</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">11/12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>封存后由真支撑构造的块覆盖</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">12/12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table></div>
+<p>复杂物体的两条单块分支都没有真实覆盖。按前缀排序的单块有 36 条因打开分支或证书预算耗尽而保留，平移单块有 47 条。不限时公开方向消融的 89 条解释的是证书能力，冷启动时真正执行的两类单块排除合计只有 2 条。宽盒和真支撑覆盖都保留了可行的非平凡材料类，也未提供实际剪枝。48 条真支撑块覆盖仅在同批在线结果封存后生成。它们的完整离线安全性核对实际用时 96.791 CPU 秒、97.437 秒墙钟。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">逐盒预算与区间记录</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

@@ -1,0 +1,119 @@
+{
+  "scope": "Independent predeclared one-variable passive-free numerical mechanism ablation",
+  "frozen_utc": "2026-11-24T04:53:26.958605+00:00",
+  "source_contract": "benchmark/FREEZE.json; cross_cie/cross_engine.py (unchanged); same per-arm time and native selection",
+  "objects": [
+    "mech_m0001",
+    "mech_m0002",
+    "mech_m0003",
+    "mech_m0004"
+  ],
+  "material_recipe": [
+    "independent SRAP eccentric shell",
+    "independent SRAP layered core",
+    "independent three-window panel",
+    "independent connected perforated pair"
+  ],
+  "seeds": {
+    "srap": 20261124071,
+    "perforated": 20261124072,
+    "amplitude": 20261124073,
+    "permutation": 20261124074,
+    "noise": 20261124075,
+    "numerical_check": 20261124076
+  },
+  "shapes": "Reuse analytic recipe code only, new parameter/pose draws and blind permutation. Native 96² truth within [0,4] with positive values [2.5,4].",
+  "frequency_hz": 400000000,
+  "inverse_side": 32,
+  "native_side": 96,
+  "apertures": [
+    "PW360_10x20",
+    "PW180_10x20"
+  ],
+  "relative_noise": [
+    0.02
+  ],
+  "native_radius_relative_padding": 1e-06,
+  "hidden_tx_deg": [
+    9,
+    45,
+    81,
+    117,
+    153,
+    189,
+    225,
+    261,
+    297,
+    333
+  ],
+  "hidden_rx_deg": [
+    4.5,
+    22.5,
+    40.5,
+    58.5,
+    76.5,
+    94.5,
+    112.5,
+    130.5,
+    148.5,
+    166.5,
+    184.5,
+    202.5,
+    220.5,
+    238.5,
+    256.5,
+    274.5,
+    292.5,
+    310.5,
+    328.5,
+    346.5
+  ],
+  "methods": {
+    "pixel": {
+      "strength": 0.25,
+      "sector_strength": 0.0,
+      "stationary_stages": true,
+      "unconditional_pr_reset": true,
+      "trust": 0.08,
+      "cadence": 16
+    },
+    "profile": {
+      "strength": 0.25,
+      "sector_strength": 0.0,
+      "stationary_stages": true,
+      "unconditional_pr_reset": true,
+      "trust": 0.08,
+      "cadence": 16
+    },
+    "reset": {
+      "cadence": 16
+    }
+  },
+  "formula": {
+    "a": "sum |J*w|² by cell",
+    "b": "sum |E*w|² by cell",
+    "c": "sum conj(J*w)*(E*w) by cell",
+    "pixel": "(a*b-Re(c²))/(2*(b+delta))",
+    "profile": "(a*b-(Re(c))²)/(2*(b+delta)) = b/(2*(b+delta))*min_{eta real} ||j-eta e||² when b>0",
+    "difference": "(Im c)²/(2*(b+delta))",
+    "gradient_j": "(b*j-Re(c)*e)/(b+delta)",
+    "gradient_e": "(a*e-Re(c)*j)/(b+delta) - (a*b-(Re(c))²)*e/(b+delta)²",
+    "delta": "Same frozen PixelLaw dark-row regularization and incident-column weights",
+    "box": "Original CIE material update remains within [0,20]; profiled scalar in the auxiliary law is unconstrained real"
+  },
+  "online": {
+    "wall_seconds": 30.0,
+    "native_audit_reservation_seconds": 8.0,
+    "shortlist": 3,
+    "workers": 4,
+    "selection": "Air eligible from time zero. Full Maxwell on inversion grid at step 1,64, multiples of 192, and end of each stage. Three lowest distinct scored candidates sent to original native operator; choose smallest audited relative residual squared over two plus smooth=TV=1e-4, alongside air. Lab uses same native training objective. Selected winner must finish inside elapsed budget. No held field, mask or GT used.",
+    "cg_stopping": "frozen original per-stage coefficient stopping",
+    "method_order": "rotate [pixel, profile, reset] by observation index"
+  },
+  "scoring": {
+    "seal": "Open truth and held responses only after all 24 method/view outputs seal",
+    "figures": "Same reference half-peak for candidate and truth; common material colors",
+    "metrics": "96² relative L2, inside/background contribution divided by whole-field truth norm, half-peak IoU, true complex hidden ports, and actual charged updates and wall/CPU; 32² material metrics secondary",
+    "statistics": "Four independent materials with aperture pairing. Retain every run and do not tune."
+  }
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatGPT 交接 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../..">B1 总项目</a><a href="../experiment_handbook">实验手册</a>
+<a href="../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="index.html">中文报告</a> <a href="results.html">逐件结果</a> <a href="reproduce.html">复算</a> <a href="handoff.html" aria-current="page">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="chatgpt">交接给 ChatGPT：哪些电流能来自同一种材料？</h1>
+<p><strong>可以直接使用的主张。</strong> 对已知一件缺陷完全位于 16 个候选方块之一、区外为空气、区内共享无损对比度在 0–4 内的原生 96² TM 模型，四件独立物体、十发二十收、全环或半环、2% 或 10% 噪声的交叉实验，全部 16 组读数只剩正确方块。所有 240 个错误支撑均有全材料盒的排除证据。普通 Born 模板也在 16 组把正确位置排第一。论文主张宜放在<strong>有限数据下证明一个位置中任何合法材料都无法拟合</strong>，位置命中率双方持平。<a href="index.html">完整科研报告</a> · <a href="pruning/site_control/index.html">支撑图及对象级结果</a></p>
+<p><strong>原论文独立封存。</strong> 四分区单源 SDP 即使有盒上统一物理电流帽，在开槽块和错列槽两份 96² 原生读数上的最优残差也严格为零；相同读数的十源界严格超过噪声。全体单位相干照明包括在单源对照内。逐像素两条未松弛的 Gram 约束与共享实材料律严格等价。定稿为 26 页英文稿，提交信和盲审源码均在原项目站点。<a href="../z_alg_optical_inertia/ip_submission_v2/">Paper 1 匿名稿、提交信与证据</a></p>
+<h2 id="_1">最值得继续证明的一个问题</h2>
+<p>单一电流能量上限 $\|T\|\le C$ 丢失了多少“同一份材料”的信息？我们已经将这件事做成了可重放的反例。49 个需要较强原生算子才能严格排除的错误位置中，39 个有显式能量合格且拟合数据的传递算子。38 个甚至可以要求 $T=T^\top$。每份传递矩阵的对称性、范数及拟合误差均有单独证据。对每份已构造电流逐格取最佳实材料，其相对本构误差仍然在七成左右或更高。已完成数据暴露后的方向性消融和一次求解未决，均在原始记录里。<a href="pruning/reciprocity.html">非物理传递见证</a> · <a href="pruning/constitutive.html">对全体端口相容电流的本构下界</a></p>
+<p>若要推进这项结果，适合先研究一个局部材料可实现性条件。对区内任意入射 $b$，物理传递 $T_M=(I-MG)^{-1}M$ 应满足
+$$
+ T_M=M(I+GT_M),\qquad M=\mathrm{diag}(m_i),\quad 0\le m_i\le 4 .
+$$
+实测只给出 $ST_MB$ 的带噪观测。是否存在<strong>可以仅用这两个已知端口因子算出</strong>的必要条件，比“互易且有界”更紧，又无需为每个支撑分解完整状态矩阵？逐行共享材料、其消去后的交叉乘积关系和有限端口限制都要保留。可直接把已构造的 38 个显式反例作为反证集。对某个具体见证发现约束违背，仅能排除该传递；对整个位置作保证，必须排除所有其他容许的传递。一个可能的审稿检验，是将任何提议与已有 T 算子二次功率约束及有限维插值理论逐项对照。<a href="pruning/support-theory.html">支撑定理与先例</a> · <a href="sources.html">物理限制文献</a></p>
+<p><strong>第二个值得量化的边界是背景误差。</strong> 全域背景严格为零时，平移复用很有效。允许其余位置为未知低对比度后，旧证书并不直接适用。已证明区外电流必需量可以变为区外材料峰值下界，四个开发例一般仅到百万分之一量级；其中一个较重的全域证明能排除区外峰值 $\le0.05$。应判断这个差距由内部传播的哪些源模态造成，是否可在同一 $H$ 和同一观测球上给出严格而紧的加权界。若无法处理任意弱背景，陈述应限定已知支撑格和有限离散模型。<a href="pruning/outside.html">区外材料定量界</a></p>
+<h2 id="_2">对成像的交代</h2>
+<p>完整跨源电流修正相对成熟 Dual-CIE，半环的目标内误差配对中位数增加 0.076，背景降低 0.230，未见复场增加 0.106。两件 Fresnel 的独立端口从 13.65%/14.82% 变为 19.38%/18.95%。复用几何的剪枝把合成正演右端从 12,480 减为 6,570；在半环相对普通三初值，12 件没有一件内外同时改善。一个局部正例是全环逐像素修正相对单独重启，10/12 内外同好。三初值、仅重启、第一条保留成熟解的组合和同盒全算均有逐件时间、原生端口与图像评分。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/benchmark/paired_differences.csv">完整配对</a> · <a href="results.html">全部 558 个输出</a></p>
+<p>为解释这个正例，另冻四件新材料、两类孔径的 2% 读数，只比较等强度的逐像素光学损失与去掉额外相位项的共享实材料拟合。两臂相对仅重启均在 8/8 份数据改善未见复场；额外相位的边际作用随孔径改变符号。建议保留解析等式和独立实验证据，现有证据无法给额外相位项独立的成像功劳。<a href="mechanism/index.html">机制对照与复算</a></p>
+<p>逐像素损失和最优共享实材料的残差在明场像素可精确比较。四个开发病例的跨源守恒违背跟训练复场误差同向，却与合成图像误差反向。对真实 Twin，单独改变共轭梯度重启节奏就能令未见端口误差从 26.30% 增至 51.71%。这是任何希望再把守恒项加进 CIE 的工作都应解释的现象。计分不能只看辅助电流拟合；每次必须从选中的同一张材料图重算物理端口。<a href="cross_cie/index.html">开发数据和物理梯度</a></p>
+<p>峰值夹逼也可以单独使用。96² 六件物体的十二个读数中，五个从在线找到严格可行材料，并在两件 2% 条件下显示比生成峰值低约 5% 的可行材料。24² 七件存档全部找到了严格降峰材料。给一个局部反演更长时间可能收紧上界；它无法消除已经展示的两份物理解。面积的单次秩计数最多受独立照明数限制。<a href="peak-theory.html">峰值与面积</a></p>
+<p>另有一个对算法失败的直接证据。12 件真材料在 32² 块常数空间的严格相对 L2 表示误差下限为约 25%–41%。对固定的 0001 半环 10% 例，参考投影本身的原生残差 0.93687 超出半径 0.68302；从该投影离线作一次原生切向更新，得到 32² 材料的严格残差上界 0.61092，再直接截到生成上限 4 仍有严格上界 0.67326，证实同一表示和较紧材料盒内均存在数据可行解。初值用了参考图，仅为存在性对照。<a href="holdout/projection/index.html">表示与求解失败的区分</a></p>
+<h2 id="_3">复核入口</h2>
+<ul>
+<li><a href="results.html">全部逐件、逐噪声和暗室结果</a> · <a href="archive.html">含选图用时和失败的原始研究包</a></li>
+<li><a href="reproduce.html">实验如何复算</a> · <a href="holdout/index.html">独立材料和端口合同</a> · <a href="chambers/index.html">两室校准和留出</a></li>
+<li><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/benchmark/FREEZE.json">最初冻结设置</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/benchmark/PORTFOLIO_FREEZE.json">第二初值的独立配对设置</a> · <a href="guidance.html">外部算法建议及回应</a></li>
+</ul>
+<p>两次盲测现已成为已暴露数据，后续改算法可用它们查机制。若作新的泛化主张，需另取独立材料；旧的 48 和 16 份观测仍分别只代表 12 和 4 件材料。</p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

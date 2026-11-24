@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>逐像素光学相位的独立试验 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">逐格相位罚的独立消融</h1>
+<p>去掉独立相位罚后，<strong>Profile 保留了 Pixel 相对仅重启对照的主要数值表现</strong>。两者相对 Reset 都在全部八个配对观测上降低了独立端口误差。全环上，Profile 的留出误差在四件上都更小，中位差为 −0.00267。半环上，Profile 在四件上均降低了内部材料误差，但留出误差仅在一件上更小，中位差为 +0.00211。全环和半环的内外同时改善数对两种修正相同，分别为 2/4 与 1/4。当前结果支持把共同的逐格共享实标量一致性作为解释保留。它们没有给出跨阵列一致的相位专属优势。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/FREEZE.json">冻结协议</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/scores.json">完整评分</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/metrics.csv">逐案表</a></p>
+<h2 id="_2">唯一改动</h2>
+<p>设一格的加权行向量为 \(j,e\)，\(a=\|j\|^2\)、\(b=\|e\|^2\)、\(c=j^*e\)。每次校正的源权和 \(\delta\) 沿用 PixelLaw，在对应线搜索内保持冻结。两个损失满足
+\[
+ L_{\rm pixel}=\frac{ab-\operatorname{Re}(c^2)}{2(b+\delta)},\qquad
+ L_{\rm profile}=\frac{ab-(\operatorname{Re}c)^2}{2(b+\delta)} .
+\]
+当 \(b&gt;0\)，Profile 等于 \(\frac{b}{2(b+\delta)}\min_{\eta\in\mathbb R}\|j-\eta e\|^2\)，消元解为 \(\operatorname{Re}(c)/b\)。当 \(b=0\)，正则化表达式取零。两个损失之差精确为 \((\operatorname{Im}c)^2/[2(b+\delta)]\)。辅助消元的实标量不受盒限制，实际 CIE 材料读出仍沿用原来的 \([0,20]\)。</p>
+<p>Profile 继承原 PixelLaw 的加权行和线上的二次系数，仅替换计算分子与对应 \(J,E\) 梯度。Fourier 电流增量、步长及验收、0.25 强度、0.08 信赖尺度、16 次更新周期、重启规则、原始逐阶段停止和原生选图均直接运行原冻结代码。Reset 是同机仅重启对照。独立复数中心差分分别检查了 \(J\)、\(E\) 和沿 \(E=B+GJ\) 的合梯度，最大相对误差 \(2.07\times10^{-11}\)。显式实标量最小二乘与 Profile 值的误差为零，分解闭合误差 \(2.78\times10^{-16}\)。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/profile_law.py">Profile 实现</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/gradient_check.json">数值差分</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/run.py">运行器</a></p>
+<h2 id="_3">四件新数据上的配对结果</h2>
+<p>四件材料由冻结的独立参数与姿态种子生成，包含两种 SRAP 原形状的全新实现及两种穿孔形状的新实现。每件用全环和半环各 10 发 20 收，在 400 MHz 上生成两份 2% 观测。拟合 32²，物理评分由分块等值延拓至 96²。留出源角 \(9^\circ+36^\circ k\) 与留出接收角 \(4.5^\circ+18^\circ k\) 都避开拟合角。三臂的 24 份候选从同一训练轴封存后才读取真值与留出端口。参考材料 <strong>8/8</strong> 用 Arb 验证落入原生误差球，最小严格余量 \(4.15060\times10^{-6}\)。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/design.py">独立数据生成</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">公开观测清单</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/truth_feasibility.json">区间验收</a></p>
+<p>下表每行汇总四件独立材料。数字为左臂减右臂的配对中位数，误差列越低越好，IoU 越高越好。材料内外误差同除整个真材料的范数。IoU 在两幅图上使用同一个真值半峰阈值。留出误差是 96² 原生预测到隐藏复端口读数的相对 Frobenius 距离。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>阵列</th>
+<th>配对</th>
+<th style="text-align: right;">内部误差</th>
+<th style="text-align: right;">空气背景误差</th>
+<th style="text-align: right;">全图 L2</th>
+<th style="text-align: right;">IoU</th>
+<th style="text-align: right;">隐藏复场误差</th>
+<th style="text-align: right;">内外同好</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全环</td>
+<td>Profile − Pixel</td>
+<td style="text-align: right;">+0.00061</td>
+<td style="text-align: right;">+0.00017</td>
+<td style="text-align: right;">+0.00052</td>
+<td style="text-align: right;">0.00000</td>
+<td style="text-align: right;">−0.00267</td>
+<td style="text-align: right;">1/4</td>
+</tr>
+<tr>
+<td>半环</td>
+<td>Profile − Pixel</td>
+<td style="text-align: right;">−0.00086</td>
+<td style="text-align: right;">+0.00285</td>
+<td style="text-align: right;">+0.00156</td>
+<td style="text-align: right;">+0.00020</td>
+<td style="text-align: right;">+0.00211</td>
+<td style="text-align: right;">1/4</td>
+</tr>
+<tr>
+<td>全环</td>
+<td>Pixel − Reset</td>
+<td style="text-align: right;">−0.00998</td>
+<td style="text-align: right;">−0.00333</td>
+<td style="text-align: right;">−0.01037</td>
+<td style="text-align: right;">+0.01806</td>
+<td style="text-align: right;">−0.01370</td>
+<td style="text-align: right;">2/4</td>
+</tr>
+<tr>
+<td>全环</td>
+<td>Profile − Reset</td>
+<td style="text-align: right;">−0.00992</td>
+<td style="text-align: right;">−0.00319</td>
+<td style="text-align: right;">−0.00985</td>
+<td style="text-align: right;">+0.01956</td>
+<td style="text-align: right;">−0.01696</td>
+<td style="text-align: right;">2/4</td>
+</tr>
+<tr>
+<td>半环</td>
+<td>Pixel − Reset</td>
+<td style="text-align: right;">+0.00299</td>
+<td style="text-align: right;">−0.02820</td>
+<td style="text-align: right;">−0.02031</td>
+<td style="text-align: right;">+0.00876</td>
+<td style="text-align: right;">−0.01041</td>
+<td style="text-align: right;">1/4</td>
+</tr>
+<tr>
+<td>半环</td>
+<td>Profile − Reset</td>
+<td style="text-align: right;">+0.00226</td>
+<td style="text-align: right;">−0.02535</td>
+<td style="text-align: right;">−0.01876</td>
+<td style="text-align: right;">+0.00851</td>
+<td style="text-align: right;">−0.00712</td>
+<td style="text-align: right;">1/4</td>
+</tr>
+</tbody>
+</table></div>
+<p>Profile 与 Pixel 的逐案绝对差最大值为内部 0.00320、背景 0.00870、IoU 0.01574、隐藏复场 0.00419。半环两种修正的内外联合收益只出现在一件上。所有候选的实际原生拟合相对误差为 42.51% 到 75.14%，24 份均在原 2% 误差球之外。这里的观测是冻结短程重建之间的材料与端口差异。 <a href="paired_mechanism.pdf">逐案配对图</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/scores.json">原生拟合与状态回执</a></p>
+<h2 id="_4">同合同的实际收费</h2>
+<p>每次上限为 30 秒，留 8 秒用于原生候选验证，四个进程按观察轮换方法顺序。24 次均按原阶段停止规则完成，包括系数容差和阶段更新上限，均未触及墙钟上限。每臂八次拟合的实际墙钟总和、各次墙钟和更新数如下；墙钟总和按各自计时累加。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">每次墙钟中位数（秒）</th>
+<th style="text-align: right;">八次墙钟 / CPU（秒）</th>
+<th style="text-align: right;">更新数中位数（范围）</th>
+<th style="text-align: right;">粗网复 RHS</th>
+<th style="text-align: right;">原生复 RHS</th>
+<th style="text-align: right;">原生 FFT 卷积列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pixel</td>
+<td style="text-align: right;">6.50</td>
+<td style="text-align: right;">56.22 / 54.72</td>
+<td style="text-align: right;">275.5（193–613）</td>
+<td style="text-align: right;">520</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">26,205</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td style="text-align: right;">6.26</td>
+<td style="text-align: right;">56.70 / 55.48</td>
+<td style="text-align: right;">250.5（193–625）</td>
+<td style="text-align: right;">520</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">26,183</td>
+</tr>
+<tr>
+<td>Reset</td>
+<td style="text-align: right;">6.13</td>
+<td style="text-align: right;">48.75 / 47.35</td>
+<td style="text-align: right;">177（145–241）</td>
+<td style="text-align: right;">420</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">27,364</td>
+</tr>
+</tbody>
+</table></div>
+<p>离线候选评分另用 480 个原生右端、25,301 个 FFT 卷积列，耗时 21.53 秒墙钟 / 21.29 秒 CPU，24 次均评分完成。新数据生成用 100 个原生右端、4,348 个卷积列，耗时 4.30 秒。独立真值区间复核耗时 11.84 秒。新合成材料、隐藏端口与测量、24 个冻结的材料预测随本目录保留，在线读取训练清单。</p>
+<h2 id="_5">重放</h2>
+<p>从项目根运行。前两条与原冻结代码只读联动；第三条有训练资产后才运行。最后两条从封存预测计算评分和图。</p>
+<pre><code class="language-sh">python -B research/z_alg_xudong_cie/mechanism/check_gradient.py
+python -B research/z_alg_xudong_cie/mechanism/design.py --list
+python -B research/z_alg_xudong_cie/mechanism/run.py
+python -B research/z_alg_xudong_cie/mechanism/score_experiment.py --verify-truth
+python -B research/z_alg_xudong_cie/mechanism/figure.py
+</code></pre>
+<p>若没有随包附带的 <code>acquisition/</code>，从同一 <code>FREEZE.json</code> 运行不带 <code>--list</code> 的 <code>design.py</code> 重建。保留冻结数据根时运行器复用已有封存的预测。</p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

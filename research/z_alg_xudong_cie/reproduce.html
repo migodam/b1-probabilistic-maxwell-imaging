@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>复算说明 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../..">B1 总项目</a><a href="../experiment_handbook">实验手册</a>
+<a href="../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="index.html">中文报告</a> <a href="results.html">逐件结果</a> <a href="reproduce.html" aria-current="page">复算</a> <a href="handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">复算入口</h1>
+<p>论文和新的成像实验各有独立目录。Paper 1 的 LaTeX 包可独立编译。Track B 的 Python 实验沿用同一 B1 项目的历史算子、数据文件和研究目录。项目根执行以下命令，设置 NumPy/SciPy BLAS 为单线程。需要 NumPy、SciPy、python-flint、threadpoolctl、Matplotlib。在线反演入口只加载源、接收器、传播核、训练读数、噪声半径和固定参数。离线目录含真值与保留端口。分发包内的已保存场、材料、计时与证书允许直接查看原结果。</p>
+<ul>
+<li><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/minpeak_native/REPRODUCE_ZH.md">B1 原生 96² 峰值区间</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/minpeak_maxstruct/REPRODUCE.md">七件 MAX-STRUCT</a> · <a href="area/index.html">超阈值像素数</a></li>
+<li><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/diagnosis/REPRODUCE.md">四件开发病例原始电流轨迹</a> · <a href="chambers/index.html">两个实验室的测量与校准</a> · <a href="holdout/index.html">新合成数据与原生验收</a></li>
+<li><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/benchmark/FREEZE.json">冻结的方法、参数与代价</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/benchmark/PORTFOLIO_FREEZE.json">根据开发病例补充的双初值对照</a> · <a href="pruning/support-theory.html">有限支撑的物理推导</a></li>
+</ul>
+<h2 id="_2">新合成数据和两种实测</h2>
+<p>若使用随包提供的合成公开数据，直接从训练开始。重新生成时，在空的任务数据目录运行 generation.py；它将观测和离线参考分别存储。原 Fresnel 与 Manitoba 的实验室采集须使用各自来源的测量与校准文件。测试使用原有效通道；实物图上的几何和材料只作标称参考。</p>
+<pre><code class="language-sh">export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+study=research/z_alg_xudong_cie
+python &quot;$study/holdout/generation.py&quot; --freeze-record &quot;$study/benchmark/FREEZE.json&quot;
+python &quot;$study/benchmark/run.py&quot; --workers 4
+python &quot;$study/benchmark/reuse.py&quot;
+python &quot;$study/benchmark/run.py&quot; --config &quot;$study/benchmark/PORTFOLIO_FREEZE.json&quot; --workers 2
+</code></pre>
+<p>每次候选使用原端口评分，只有在预算内完成的材料才能入选。合成 32² 候选按原像素边界复制为 96²，在原传播核上再解 Maxwell 方程。误差排名和实测留出均在选图封存后计算。若要重新计时，应使用新的输出目录，记录并行任务和线程设置。冻结数据与代码决定物理问题；按墙钟截断的迭代数会随硬件和并发负载改变。</p>
+<pre><code class="language-sh">python &quot;$study/holdout/verify_truth.py&quot; --freeze-record &quot;$study/benchmark/FREEZE.json&quot;
+</code></pre>
+<p>详细评分命令、逐种输出及可下载包见本轮交接。比较中在线搜索、正演选图、证书、失败尝试和复用几何的分摊时间分别列出。离线生成、证明生成材料在球内及揭盲评分另计。</p>
+<p>完整的盲评分和表格在全部方法输出后运行。方法按物体分开读取训练数据和离线参考。直接阅读压缩包内的表图可以跳过重算。重新运行合成或实验室程序前，应将包放在新的目录，以保留原有付费回执。</p>
+<pre><code class="language-sh">python -B &quot;$study/holdout/offline_score.py&quot; --wait
+python -B &quot;$study/benchmark/compare.py&quot;
+python -B &quot;$study/chambers/confirmation.py&quot; --scores &quot;$study/benchmark/chamber_scores.json&quot; --plot &quot;$study/benchmark/chamber_comparison&quot;
+</code></pre>
+<p>定位试验中的 16 候选区全部使用同一批原始带噪观测。给出具体可行传递矩阵后，可用下列命令重放能量、互易性和材料之间的差距。它们读取实际保存的材料盒排除证明和传递见证。</p>
+<pre><code class="language-sh">python -B &quot;$study/pruning/contraction_control.py&quot;
+python -B &quot;$study/pruning/reciprocal_control.py&quot;
+python -B &quot;$study/pruning/constitutive_margin.py&quot;
+</code></pre>
+<p><a href="archive.html">压缩包结构、依赖项及原始暗室文件入口</a> · <a href="pruning/site_control/index.html">16 个候选位置的冻结实验</a></p>
+<p>追加四件的单变量比较、原生采集、同预算控制和赛后评分使用独立目录。<a href="mechanism/index.html">四件材料的复算顺序</a></p>
+<p>32² 表示误差与原生数据可行性的对照在全部在线结果封存后运行。<a href="holdout/projection/index.html">最优块平均、固定 0001 的可行见证及区间正演</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

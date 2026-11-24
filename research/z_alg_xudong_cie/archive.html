@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>研究包和原始实测 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../..">B1 总项目</a><a href="../experiment_handbook">实验手册</a>
+<a href="../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="index.html">中文报告</a> <a href="results.html">逐件结果</a> <a href="reproduce.html">复算</a> <a href="handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="track-b">Track B 归档与复跑</h1>
+<p>复现包按仓库根路径展开，包含 Track B 源码、报告、算子、合成观测、预测、计时和相关历史依赖。先取同一 B1 研究仓库，在仓库根展开发布附件 <code>Z_ALG_Xudong_CIE_Research.zip</code>。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging">项目仓库</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">本轮发布</a></p>
+<pre><code class="language-sh">unzip /path/to/Z_ALG_Xudong_CIE_Research.zip -d .
+python -m pip install numpy scipy threadpoolctl python-flint matplotlib
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+study=research/z_alg_xudong_cie
+</code></pre>
+<h2 id="_1">包中各类输入</h2>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>目录及边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B3 合成训练与原生复核</td>
+<td><code>.artifacts/z_alg_xudong_cie/b3_holdout/public/</code> 含原 32²、96² 传播频谱和端口、48 份成对训练观测及半径。离线参考材料和隐藏观测放在同任务的 <code>offline/</code>，训练加载器只读 <code>public/</code>。</td>
+</tr>
+<tr>
+<td>网格可表示性</td>
+<td><code>holdout/projection/</code> 含全部真材块平均及其原生复场、固定算例恢复到噪声球内的 32² 材料数组与区间复核；这些数据只在评分后打开。</td>
+</tr>
+<tr>
+<td>追加逐格相位检验</td>
+<td><code>mechanism/acquisition/public/</code> 与同级 <code>offline/</code> 保存四件全新材料、两种孔径和 2% 噪声的读数及原生参考；24 组输出在 <code>mechanism/predictions/</code>。</td>
+</tr>
+<tr>
+<td>支持域剪枝对照</td>
+<td><code>.artifacts/z_alg_xudong_cie/site_control/public/</code> 与 <code>offline/</code> 保存对应的冻结训练与评价数组。上限、分支、端口掩码和试验计时见 <code>pruning/</code>。</td>
+</tr>
+<tr>
+<td>B2 开发</td>
+<td>包含三件合成的原训练数组、全部逐步指标与电流快照。实测部分保留作者产生的材料图、标量结果、端口来源与掩码定义。实测原读数、校准后的复数据及可反推复数据的电流/场快照应在本地复建。</td>
+</tr>
+<tr>
+<td>B1 原生与面积</td>
+<td>六件原生材料的匹配全环读数、几何、公开区间证书，以及用于 R10 面积证书的原保存算子和读数。历史出厂参考的覆盖和面积可直接查阅本包所存区间计分标量。</td>
+</tr>
+<tr>
+<td>B1 七件 MAX-STRUCT</td>
+<td>包含对应 24² 公开算子、七份重复合同核对所需的原观测、候选重建材料和精简历史计费回执。已有真值评分以区间标量保留。</td>
+</tr>
+<tr>
+<td>历史 Python 依赖</td>
+<td>原 SRAP 的 <code>engine.py</code>、<code>legacy_la.py</code> 及实际调用的 R2/R6/R8/R10 物理与读出代码保留在原相对路径。Python 依赖从常用发布源安装。</td>
+</tr>
+</tbody>
+</table></div>
+<p>机器可读文件清单 <code>research/z_alg_xudong_cie/archive_dependencies.json</code> 随 ZIP 生成。通过结果、未通过结果和真实计算费用保存在对应目录。使用历史档案时沿用其作者署名和许可。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-optical-inertia-validation-v1">光学惯性验证包</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-secants-20261122">固定 Green 原公开算子</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/srap-cie-array-study-20261121">SRAP 归档</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r8-20261106">R8</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/research-max-struct-r14-dualmetric-20261115">R14</a></p>
+<h2 id="_2">从官方档案复建暗室输入</h2>
+<p>Fresnel 从 Geffrin、Sabouroux 与 Eyraud 的 2005 论文补充材料获取原 <code>supp.zip</code>，或将其中 <code>FoamTwinDielTM.exp</code>、<code>FoamDielIntTM.exp</code> 与 <code>FoamDielExtTM.exp</code> 解到同一目录。IOP 页面可能要求在浏览器完成正常下载流程。只需这三个 TM 文件。复建采用原空场拟合和发射留出掩码。 <a href="https://doi.org/10.1088/0266-5611/21/6/S09">Fresnel 采集论文</a> · <a href="https://iopscience.iop.org/article/10.1088/0266-5611/21/6/S09/data">IOP 补充数据</a> · <a href="https://www.fresnel.fr/3Ddatabase/">Institut Fresnel 数据说明</a></p>
+<p>Manitoba 从 University of Manitoba 官方档案取得第 1 号原始 ZIP。输入第一次空场和大金属柱进行端口标定，第二次空场和小柱仅给出单独校验。复建不改变训练、留出或有效通道。 <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/mwt_data.html">University of Manitoba 数据页</a> · <a href="https://doi.org/10.1109/MAP.2011.6138442">采集论文</a></p>
+<pre><code class="language-sh">mkdir -p .artifacts/z_alg_validation/manitoba
+curl -fL 'https://home.cc.umanitoba.ca/~lovetrij/EMILab/research/EIGOR/Tomographic_Dataset_1.zip' \
+  -o .artifacts/z_alg_validation/manitoba/Tomographic_Dataset_1.zip
+python -B &quot;$study/rehydrate_chambers.py&quot; --fresnel /path/to/supp.zip \
+  --manitoba .artifacts/z_alg_validation/manitoba/Tomographic_Dataset_1.zip
+</code></pre>
+<p>脚本将 Fresnel 训练与留出视图展开到历史 <code>.runs</code> 路径，Manitoba 的复数缓存留在本地 <code>.artifacts</code>。只复跑一间暗室时，单独传相应输入。脚本优先复用已有输入。 <a href="chambers/index.html">本轮实测拆分和评分</a></p>
+<h2 id="_3">实际程序入口</h2>
+<p>只用合成输入即可执行单观测验证。以下命令写到该例的新目录。</p>
+<pre><code class="language-sh">python -B &quot;$study/benchmark/run.py&quot; --case b3m_0001__pw180_10x20__n02 \
+  --method dual --output &quot;$study/benchmark/replay_example&quot; --workers 1
+</code></pre>
+<p>全部实验顺序、重新出图方法及离线评分见 <a href="reproduce.html">B 复现说明</a>。B1 可分别从 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/minpeak_native/REPRODUCE_ZH.md">原生 96²</a>、<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/minpeak_maxstruct/REPRODUCE.md">七件 R14</a> 和 <a href="area/index.html">面积证书</a> 开始。B2 可从 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/diagnosis/REPRODUCE.md">电流诊断</a> 与 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/cross_cie/THEORY_AND_REPRODUCE.md">光学修正的公式及开发对照</a> 开始。剪枝可从<a href="pruning/support-theory.html">支撑区条件</a>和<a href="pruning/reciprocity.html">弱端口互易对照</a>开始。复对称压缩基与见证数组随 ZIP 分发。归档阅读页是静态 HTML，生成阶段不需要 Chrome。</p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

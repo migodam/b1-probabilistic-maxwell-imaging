@@ -1,0 +1,14 @@
+{
+  "scope": "Freeze after the three exposed synthetic diagnoses and before independent synthetic or chamber scoring.",
+  "source": "cross_engine.py:iterate",
+  "selection": "Same timed physical objective as the mature arm; chamber reference is scored on held illuminations only after selection.",
+  "assumptions": {"cadence": 16, "trust": 0.08, "material_upper_default": 20.0, "lossless_synthetic": true, "passive_measured": true},
+  "arms": {
+    "dual": {"method": "dual"},
+    "reset": {"method": "reset", "cadence": 16},
+    "diagonal": {"method": "diag", "strength": 16.0, "cadence": 16, "trust": 0.08, "stationary_stages": true, "unconditional_pr_reset": true},
+    "global_joint": {"method": "full", "strength": 16.0, "sector_strength": 1.0, "cadence": 16, "trust": 0.08, "stationary_stages": true, "unconditional_pr_reset": true},
+    "pixel": {"method": "pixel", "strength": 0.25, "cadence": 16, "trust": 0.08, "stationary_stages": true, "unconditional_pr_reset": true}
+  },
+  "development_arm_labels": {"dual": "dual", "reset": "reset", "diagonal": "diag16_guard", "global_joint": "full16_guard", "pixel": "pixel025_guard"}
+}

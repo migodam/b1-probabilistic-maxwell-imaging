@@ -1,4 +1,10 @@
 <!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
+<!-- Z_ALG_XUDONG_CIE_20261124 -->
+## Maxwell 电流守恒与材料歧义
+
+[中文报告](research/z_alg_xudong_cie/index.html) · [ChatGPT 交接](research/z_alg_xudong_cie/handoff.html) · [归档与复算](research/z_alg_xudong_cie/archive.html) · [完整研究复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip)
+<!-- /Z_ALG_XUDONG_CIE_20261124 -->
+
 ## 有限孔径材料峰值认证 · 英文投稿修订稿
 
 [英文 PDF](research/z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf) · [修订和能量对照](research/z_alg_optical_inertia/ip_submission_v2/index.html) · [四分区同口径复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/optical-inertia-ip-v2/Energy_SDP_Evidence.zip)

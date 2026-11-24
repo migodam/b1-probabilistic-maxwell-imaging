@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>电流与材料 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../..">B1 总项目</a><a href="../experiment_handbook">实验手册</a>
+<a href="../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="index.html">中文报告</a> <a href="results.html">逐件结果</a> <a href="reproduce.html">复算</a> <a href="handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">在电流上施加守恒，究竟约束了什么</h1>
+<p>令所有发射共享同一个实材料矩阵 $M=\operatorname{diag}(m_i)$。接收数据为 $Y=SJ+e$，总场为 $E=B+GJ$。对真实无损材料，$J=ME$。以下结论都针对原有限端口的离散二维 TM 模型。</p>
+<h2 id="_2">任一材料的真实电流都满足光学定理</h2>
+<p>定义 $\operatorname{Im}_H T=(T-T^*)/(2\mathrm i)$，取任意实对角估计 $\widehat M$ 和任意非负对角空间权 $P$。直接消去 Hermitian 项得到</p>
+<p>$$
+ Q_P(J)=\operatorname{Im}_H(J^*PE)
+       =\operatorname{Im}_H[(J-\widehat M E)^*PE].
+$$</p>
+<p>把 $E=B+GJ$ 代回得到守恒式。把收缩场写成 $\widetilde E=\beta E+J$，则 $\operatorname{Im}_H(J^*P\widetilde E)=\beta Q_P(J)$。若 $0\le m\le u$，取 $R=\beta m/(\beta+m)$，则收缩模型 $\beta J=R\widetilde E$ 的实部扇区等于原扇区乘以正数 $\beta^3/(\beta+u)$。式中的 $\beta$ 为历史代码参数 $b$ 的倒数。扇区和守恒可直接利用原电流计算。材料已知有吸收且符号取 $\Im m\ge0$ 时，$Q_P=-E^*P\Im(M)E\preceq0$。因此实测修正只惩罚其正谱。对实验室的实材料反演，模型与实际吸收之间仍可能存在误差。</p>
+<p>这些等式解释了一个限制。每张材料图都有自己的完整物理电流，该电流使守恒损失为零。把守恒用于材料图之间的直接排名，所有自洽材料都会并列。CIE 的作用点是交替迭代中暂时脱离本构关系的辅助电流。判断某个改动是否改善成像，仍须用输出材料重新计算独立端口并检查材料误差。</p>
+<h2 id="_3">跨源一致性与空间抵消</h2>
+<p>在单元 $i$，设 $j,e$ 为源行向量，$a=\|j\|^2, b=\|e\|^2, c=\sum_s\overline{j_s}e_s$。像素光学矩阵 $Q_i=\operatorname{Im}_H(j^*e)$ 的秩至多二。其非零谱包含于</p>
+<p>$$
+ (\Im c\pm\sqrt{ab-(\Re c)^2})/2.
+$$
+当 $b&gt;0$，令 $\widehat m=\Re c/b$。展开平方后，
+$$
+ \frac{\|Q_i\|_F^2}{b}
+  =\tfrac12\|j-\widehat m e\|^2+\frac{(\Im c)^2}{2b}.
+$$
+因此逐格光学罚与解析消去无限制实材料后的本构平方残差，在该格上相差至多两倍。该结论有明确的暗场边界：若 $e=0$，光学矩阵恒零，实部扇区仍要求 $j=0$。若最优实材料超出给定区间，盒约束本身也提供额外信息。$\sum_i\|Q_i\|^2/(b_i+\delta)$ 的分子是 $(a_i b_i-\Re(c_i^2))/2$，在有限 $\delta$ 下应按原式求导。</p>
+<p>不同位置的矩阵可相消。例取两个像素、两个源，各像素的场行均为 $(1,1)$，电流行依次为 $(a,b),(b,a)$，其中 $a,b\in\mathbb R$ 且 $a\ne b$。全局 $Q_1+Q_2=0$，两格都不存在共享材料。这个反例说明端口动力学上的全局守恒只能消除部分辅助电流误差。报告中的四个完整 Maxwell 病例测量了迭代器实际经过的空间抵消。</p>
+<h2 id="_4">可实现的梯度</h2>
+<p>在加权列 $J_w=JW,E_w=EW$ 上求导，$W_{ss}=1/\|B_{:s}\|$。对区域 $P_b$ 和归一化常数，冻结这个修正步的尺度。令 $Q_b=\operatorname{Im}_H(J_w^*P_b E_w)$，实 Frobenius 内积下，$\frac12\sum_b\|Q_b\|^2$ 的梯度为
+$$
+ [\sum_b(P_bE_w)Q_b-G^*\sum_b(P_bJ_w)Q_b]W/\mathrm i .
+$$
+对角单源消融将 $Q_b$ 替为其对角矩阵；被动介质将其替为正部。对实部扇区正谱平方，令 $T_b=[J_w^*P_bJ_w-u\operatorname{Re}_H(J_w^*P_bE_w)]_+$，相应梯度为
+$$
+ \big[\sum_b(2P_bJ_w-uP_bE_w) T_b
+   -uG^*\sum_b(P_bJ_w)T_b\big]W.
+$$
+多块贡献可以在调用 $G^*$ 以前相加。空间梯度再投到成熟 CIE 允许的 Fourier 电流子空间。线搜索始终以同一冻结尺度计算真实组合损失。变分投影、Gram 矩阵、共轭梯度及正谱投影是已有数学。当前可检验的主张是这些方向能否改善同端口、同预算的成像。</p>
+<h2 id="_5">限制一个支撑能省掉哪些计算</h2>
+<p>对一个具体候选分支，在每一次材料读出中强制 $0\le m_i\le U_i$。若原生端口下已严格证明
+$$
+ \inf_{0\le m\le U}\|F(m)-Y\|_F&gt;r ,
+$$
+则这个分支中没有能解释当前误差球的材料。改变初值而允许后续越过材料盒，无法据此丢弃该初值。本研究同时运行完全相同材料盒的无剪枝对照、完全开放的多起点及开放回退。即便所有重建都在误差球外，某个已排除的支撑仍可能产生较接近真图的近似解。严格剪枝和较小材料误差是两个独立检验。</p>
+<p>若背景严格为空气，$J_{H^c}=0$，可在指定支撑 $H$ 上精确消元，使用 $G_{HH},S_H,B_H$ 建立低维不定惯性证书。若允许非零背景，同一个消元一般失效。不同支撑共享 Green 平移结构，但接收孔径和照明必须按实际位置计算。四区、十六区或更高分辨率的收益不能从单一区域证书的存在直接推出。</p>
+<h2 id="_6">从全环的局部收益导出单变量对照</h2>
+<p>把同一明场行的非负量 $a=\|j\|^2,b=\|e\|^2$、相关量 $c=\sum_s\overline{j_s}e_s$ 代入。固定暗场正则 $\delta$，归一化逐像素光学损失和共享实材料拟合损失只差一项
+$$
+L_{\mathrm{opt}}-L_{\mathrm{fit}}
+=\frac{(\Im c)^2}{2(b+\delta)},\qquad
+L_{\mathrm{fit}}=\frac{ab-(\Re c)^2}{2(b+\delta)}.
+$$
+后式等于 $b\min_{m\in\mathbb R}\|j-me\|^2/[2(b+\delta)]$，暗场通过原式连续计算。这里被消去的实标量只用于生成更新方向，最终材料仍遵守原盒约束。在有限照明下，两个项采用相同局域总场、相同传感器和相同傅里叶空间。增量相位项在行层面等价于加重共享拟合误差中由整体虚部相位差导致的部分。它本身并不改变两个损失共同的零集（明场上都是实比例关系）。</p>
+<p>这样的对照将“多做一次电流校正”、“带暗场正则的材料拟合”和“光学相位的额外权重”分开。四件追加材料的方法、种子、两种收发孔径和同墙钟预算均在生成之前冻结。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/mechanism/FREEZE.json">四件确认的冻结设置</a> · <a href="sources.html">解析消元的原始文献</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

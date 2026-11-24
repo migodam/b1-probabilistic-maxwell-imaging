@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四个开发病例 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="dual-cie">四条原 Dual-CIE 轨迹的电流诊断</h1>
+<p>三个合成实例的辅助电流可以把端口残差维持在 1.0%–5.0%，而由同一步材料完整求解的终点端口残差为 53.6%–84.4%。Fresnel Twin 的辅助残差为 5.71%，实际重算训练端口为25.19%，未用的九个入射源为 26.30%。这两个残差由各自的实测有效通道计算。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>对象</th>
+<th style="text-align: right;">真实更新数</th>
+<th style="text-align: right;">跨源/对角原始矩阵范数中位比</th>
+<th style="text-align: right;">每元素成对归一 RMS 中位比</th>
+<th style="text-align: right;">物理训练残差</th>
+<th style="text-align: right;">未用入射残差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Austria</td>
+<td style="text-align: right;">1068</td>
+<td style="text-align: right;">2.630</td>
+<td style="text-align: right;">0.986</td>
+<td style="text-align: right;">0.67681</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>Slotted block</td>
+<td style="text-align: right;">661</td>
+<td style="text-align: right;">2.267</td>
+<td style="text-align: right;">0.749</td>
+<td style="text-align: right;">0.53620</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>SRAP 004</td>
+<td style="text-align: right;">913</td>
+<td style="text-align: right;">2.376</td>
+<td style="text-align: right;">0.856</td>
+<td style="text-align: right;">0.84414</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr>
+<td>Fresnel Twin</td>
+<td style="text-align: right;">533</td>
+<td style="text-align: right;">0.484</td>
+<td style="text-align: right;">0.168</td>
+<td style="text-align: right;">0.25195</td>
+<td style="text-align: right;">0.26301</td>
+</tr>
+</tbody>
+</table></div>
+<p>合成场的非对角元素共有 90 项，对角有 10 项。把平方和摊到每个元素，并按照两列电流与总场的能量归一，合成非对角强度与对角接近，实测中则明显更低。原始范数反映全矩阵中累计违背的强度；两个比值分别回答不同问题。</p>
+<p><img alt="逐步电流与实际端口" src="dual_cie_trajectories.png" /></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>合成对象</th>
+<th style="text-align: right;">终点全图相对 L2</th>
+<th style="text-align: right;">目标内相对 L2</th>
+<th style="text-align: right;">背景 RMSE</th>
+<th style="text-align: right;">半峰 IoU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Austria</td>
+<td style="text-align: right;">1.311</td>
+<td style="text-align: right;">0.628</td>
+<td style="text-align: right;">1.784</td>
+<td style="text-align: right;">0.310</td>
+</tr>
+<tr>
+<td>Slotted block</td>
+<td style="text-align: right;">0.988</td>
+<td style="text-align: right;">0.613</td>
+<td style="text-align: right;">1.211</td>
+<td style="text-align: right;">0.163</td>
+</tr>
+<tr>
+<td>SRAP 004</td>
+<td style="text-align: right;">1.385</td>
+<td style="text-align: right;">0.814</td>
+<td style="text-align: right;">1.632</td>
+<td style="text-align: right;">0.067</td>
+</tr>
+</tbody>
+</table></div>
+<p>非对角成对归一 RMS 对全图材料误差的 Spearman 相关依次为 -0.635、-0.247、-0.680。它与实际训练端口残差的相关则为 +0.955、+0.825、+0.903、+0.974。各轨迹共审计了 18、15、16、14 个非初值步骤。同一物体内的更新彼此相关，材料与端口结果的方向差异限制了这些统计量的单独解释。</p>
+<p><img alt="共用色标的材料图" src="dual_cie_materials.png" /></p>
+<p><img alt="逐格原始功率" src="dual_cie_power_maps.png" /></p>
+<h2 id="_1">模型、复核和费用</h2>
+<p>Austria 对应 150→32 交叉网格观测，开槽和 004 对应不同的 96→32 带噪读数。所有合成正演审计使用各自原反演网格与同一端口。Fresnel 在 60² 离散模型上使用各源原有效接收索引，另以原保存的九个保留入射源和 2,169 个有限复数读数评分。生成参考仅在所有线上轨迹封存后打开。</p>
+<p>测量用成熟源逐束更新，保持各自 DPCS、Fourier 模式和材料读出。每步从不改写的生成器读取实时 J、E、材料和阶段，记录带符号的逐源光学对角、Gram 光谱、局部和全局扇区的正部、辅助电流端口残差与本构缺陷。原合同的 b 取倒数得到公式中的 β；当前 PR 用首阶段的 b，材料读出使用各阶段的 b。终点的归一光学矩阵在四案分别有 10、10、10、9 个非零方向。完整物理电流的归一非对角光学违背最大为合成 3.23e−16、实测 4.26e−9。</p>
+<p>实际更新耗时与指标计算、快照保存和全波审计分开。四案成熟引擎墙钟分别为 4.12、2.53、3.96、17.55 秒。每案的 receipt.json 给出模型装载、本机总费用、复右端与 Green 作用次数。所有三段均走完。光学矩阵的每个元素和空间功率可用快照直接复算。早期历史迭代交叉核对见回执；跨机末段轨迹仍可能积累小的数值差异。</p>
+<p><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/diagnosis/scores.json">逐案机器可读评分</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/diagnosis/online_seal.json">在线封存</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">轨迹、快照和费用</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/diagnosis/REPRODUCE.md">复算入口</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

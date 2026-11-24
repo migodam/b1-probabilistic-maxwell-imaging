@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>暗室数据 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">暗室观测输入和独立评分</h1>
+<p>开发使用 Fresnel Twin 8 GHz 原 <code>half180_tx</code>。确认保留另外两个 Fresnel 实物的 6 GHz 观测，以及 Manitoba E 型聚乙烯件的 3.5 GHz 观测。每个接收端口的坐标沿用旧模型，训练与测试的<strong>发射源和发收对</strong>不重叠。每个训练源使用原档案中该源的全部实测接收端口，因此这四个固定拆分没有独立的仅接收端留出。以下为一基端口号。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/chambers/training_receipt.json">训练布局回执</a></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>观测</th>
+<th>用途</th>
+<th style="text-align: right;">网格</th>
+<th>训练发射端</th>
+<th>留出发射端</th>
+<th style="text-align: right;">训练 / 留出复读数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fresnel_twin_8GHz_half180_tx</code></td>
+<td>B2 开发</td>
+<td style="text-align: right;">60²</td>
+<td>1–9</td>
+<td>10–18</td>
+<td style="text-align: right;">2,169 / 2,169</td>
+</tr>
+<tr>
+<td><code>fresnel_int_6GHz_half180_tx</code></td>
+<td>B3 确认</td>
+<td style="text-align: right;">60²</td>
+<td>1–4</td>
+<td>5–8</td>
+<td style="text-align: right;">964 / 964</td>
+</tr>
+<tr>
+<td><code>fresnel_ext_6GHz_half180_tx</code></td>
+<td>B3 确认</td>
+<td style="text-align: right;">60²</td>
+<td>1–4</td>
+<td>5–8</td>
+<td style="text-align: right;">964 / 964</td>
+</tr>
+<tr>
+<td><code>manitoba_e_3p5GHz_even_tx</code></td>
+<td>B3 确认</td>
+<td style="text-align: right;">40²</td>
+<td>偶数 2–24</td>
+<td>奇数 1–23</td>
+<td style="text-align: right;">276 / 276</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">训练输入</h2>
+<p><code>training.load_training(case_id)</code> 返回公开训练阵列 <code>E/B/E0</code>（同一阵列）、<code>Y</code>、全接收几何算子 <code>S</code>、逐源零基 <code>rx_ids</code>、<code>training_rx_mask</code>、<code>valid_mask</code>、<code>centers</code>、<code>grid_shape</code>、物理波数 <code>k</code>、等面积脉冲圆盘半径 <code>radius</code>、经验残差尺度 <code>delta</code> 和 <code>fft_geometry</code>。<code>Y</code> 为接收行 × 源列，<code>rx_ids</code> 为源 × 各自的接收行。<code>training.make_model(bundle)</code> 装配历史 R8 逐源接收的矩阵自由完整 VIE，成熟 Dual-CIE 直接使用这里的 <code>model</code>、<code>Y</code> 与 <code>fft_geometry</code>。Manitoba 在物理正演使用原保存 FFT 符号，Fresnel 使用旧 60² 等面积圆盘几何。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/chambers/training.py">训练 API</a></p>
+<p>Fresnel 重用旧训练与留出档案中的空场圆柱谐波拟合和原 <code>half180_tx</code> 掩码。校准不看目标散射。<code>delta=0.15 ‖Y_train‖_F</code> 沿用旧经验合同，未验证为硬误差上界。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">原训练拆分</a> · <a href="https://doi.org/10.1088/0266-5611/21/6/S09">Fresnel 采集论文</a></p>
+<p>Manitoba 使用第一次空场和 3.5 英寸金属标定柱。逐端口复增益为该柱的 PEC 解析散射除以测量散射。只在训练掩码复算校准，按原始增益式回算的 E 型训练读数与本地存档逐元素一致。<code>delta</code> 取第二次空场漂移范数 0.01178485 加留出 2 英寸钢柱残差范数 0.18548350，约占训练散射场范数的 26.95%。这是经验敏感性量。介质目标三维转移误差、真实标定误差和二维近似误差未得到统一上界。金属留出本身也没有参与标定增益拟合。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-optical-inertia-validation-v1">存档标定与算子</a> · <a href="https://doi.org/10.1109/MAP.2011.6138442">Manitoba 采集论文</a></p>
+<p>打包程序在项目外置盘的数据目录读原始及既有校准输入，只写出偶数源的训练 NPZ。成熟引擎的 <code>load_training</code> 只读这些训练文件，不加载留出目标或名义材料。原始读数、私有完整标定包、本地训练包与残差数组沿用原数据授权，发布只带代码、统计及图。</p>
+<h2 id="_3">独立评分</h2>
+<p><code>score.score_material(case_id, material, freeze_record=…)</code> 接受冻结的原生材料，独立完成完整 VIE，再报告训练复场、未见发射端复场的绝对和相对 Frobenius 误差及每源误差。用原始掩码排除未采集通道，预测禁止增益重拟。计入实际正演费用和线性状态缺陷。确认评分入口需要记录已冻结算法的文件。独立确认的三件实测使用相同评分器。逐例训练及留出复场见本轮的<a href="../results.html">逐件结果</a>。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/chambers/score.py">评分 API</a></p>
+<p>名义评价只使用离线的公开尺寸参考。Fresnel 沿用历史 R8 图解坐标、论文 Figure 5 的泡沫和塑料圆柱，名义对比度 0.45 与 2。Manitoba 沿用存档 Figure 6b 的 E 型截面，名义对比度 1.3 取自论文在 5 GHz 的期待值。两室均无与复场坐标注册的逐格材料真值。内部取固定名义支撑，背景取名义零对比度格，IoU 对预测与名义支撑应用同一个固定对比度阈值（Fresnel 0.225，Manitoba 0.65）。这些数用于同一参考下的几何诊断；实测横向比较以留出复场为准。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-optical-inertia-validation-v1">Fresnel 名义构造</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-optical-inertia-validation-v1">Manitoba 名义构造</a></p>
+<h2 id="twin-8-ghz">Twin 8 GHz 开发终点</h2>
+<p>冻结的成熟 Dual-CIE 第 533 次更新用全部 18 个源重新正演。训练相对误差为 <strong>25.19%</strong>，独立源误差为 <strong>26.30%</strong>。相应绝对误差分别为 0.322106 和 0.334111。训练误差超过 0.191771 的经验半径。与同一未注册名义参考比，内部相对误差 28.57%，名义空气 RMSE 0.08006，支撑 IoU 0.8240。终点正演花 0.36 秒，18 个源右端，状态相对缺陷 \(8.29\times10^{-10}\)。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/chambers/dev_twin_terminal.json">终点评分</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/chambers/dev_twin_stage_scores.json">阶段评分</a> · <a href="dev_twin_terminal_map.pdf">稀疏残差与材料图 PDF</a></p>
+<h2 id="_4">重放</h2>
+<p>从项目根执行。需要 NumPy、SciPy、threadpoolctl，重画图另需 Matplotlib。Manitoba 原包和校准引用位于本地 <code>.artifacts</code>。Fresnel 的原始维护者和授权见项目原档案。以下命令只整理训练视图及重放开发评分。</p>
+<pre><code class="language-sh">python -B research/z_alg_xudong_cie/chambers/training.py
+python -B research/z_alg_xudong_cie/chambers/development.py \
+  --local-terminal-map .artifacts/z_alg_xudong_cie/chambers/dev_twin_terminal_local.npz
+python -B research/z_alg_xudong_cie/chambers/figure.py
+</code></pre></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

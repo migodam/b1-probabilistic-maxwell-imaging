@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>辅助电流的最小本构误差 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">被排除的位置上，拟合读数的电流至少违反多少材料本构关系？</h1>
+<p>在一个固定原生方块 $H$ 上，令 $B,G,S$ 表示限制后的发射、内部传播和接收算子。对所有 $0\le m_i\le4$ 的物理材料，已有严格证书 $\|F(M)-Y\|_F\ge d&gt;r$。假如一个迭代器依然给出了满足 $\|SJ-Y\|_F\le r$ 的辅助电流，可以仅从公开读数，定量约束它与任何合法材料的差距。</p>
+<p>设 $C$ 是已验证的区内电流相对于任意入射场的放大上限，$g\ge\|G\|_2$，$s\ge\|S\|_2&gt;0$。对任一允许的对角材料 $M$ 写 $D=J-M(B+GJ)$。对于齐次入射场，原正谱地板证明物理解只能为零，故有限方阵 $I-MG$ 可逆。同一证明对任意入射向量成立，$T_M=(I-MG)^{-1}M$ 满足 $\|T_M\|_2\le C$。物理电流 $J_M=T_M B$ 和辅助电流的差服从
+$$
+J-J_M=(I-MG)^{-1}D=(I+T_MG)D.
+$$
+由三角不等式，
+$$
+\min_{0\le M\le4I\,\mathrm{diagonal}}\|J-M(B+GJ)\|_F
+\ \ge\ \frac{d-r}{s(1+Cg)}.
+$$
+这是给指定错误支撑上<strong>每一个</strong>噪声球内电流的绝对下界。它也适用于还没有运行的求解器。证明使用标准预解式，非平凡输入是已经独立验证的 $d-r$ 及对全材料盒有效的能量界。若迭代器的实际端口残差为 $r_J$，可用 $r_J$ 代替 $r$，只保留正部。</p>
+<p>在位置实验的 240 项严格排除中，该下界从 $3.38\times10^{-7}$ 到 $6.90\times10^{-4}$，中位约 $3.01\times10^{-4}$，各项取值见原生区间收据。上式使用全域卷积范数及方块接收矩阵的 Frobenius 范数，绝对保证数值保守。</p>
+<p>对于已经找到的 38 个互易、能量有界、能拟合读数的传递矩阵，还能明确找出它们各自最接近哪种材料。在每一格取 $m_i=\mathrm{clip}_{[0,4]}\{\Re(e_i^*j_i)/\|e_i\|^2\}$（内积对源求和，暗场取零）。用原生卷积计算，这 38 份电流的最优本构残差除以电流范数分别落在 <strong>69.69%–87.08%</strong>，中位 <strong>80.28%</strong>。这是针对构造出的具体电流的浮点诊断。它与上段的全称严格下界是两种不同证据。整个计算用时 0.91 秒墙钟、0.87 秒 CPU。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/constitutive_margin.json">全部 240 条严格界和 38 个具体电流</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/constitutive_margin.py">复算代码</a> · <a href="reciprocity.html">互易传递的独立区间验收</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

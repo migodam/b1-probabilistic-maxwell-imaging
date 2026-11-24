@@ -1,0 +1,85 @@
+{
+  "methods": [
+    "dual_then_restart",
+    "dual_then_pixel"
+  ],
+  "extra_synthetic_method": "pruned_reuse",
+  "synthetic_seconds": 30.0,
+  "synthetic_audit_seconds": 8.0,
+  "lab_seconds": 48.0,
+  "lab_audit_seconds": 0.0,
+  "shortlist": 3,
+  "prefix_steps": 64,
+  "proof_fraction": 0.67,
+  "method_settings": {
+    "reset": {
+      "cadence": 16
+    },
+    "diag": {
+      "strength": 16.0,
+      "sector_strength": 1.0,
+      "stationary_stages": true,
+      "unconditional_pr_reset": true,
+      "trust": 0.08,
+      "cadence": 16
+    },
+    "full": {
+      "strength": 16.0,
+      "sector_strength": 1.0,
+      "stationary_stages": true,
+      "unconditional_pr_reset": true,
+      "trust": 0.08,
+      "cadence": 16
+    },
+    "pixel": {
+      "strength": 0.25,
+      "sector_strength": 0.0,
+      "stationary_stages": true,
+      "unconditional_pr_reset": true,
+      "trust": 0.08,
+      "cadence": 16
+    }
+  },
+  "branches": {
+    "tile_side": 4,
+    "tile_count": 1,
+    "foreground": 4.0,
+    "background": 0.0
+  },
+  "confirmation": {
+    "n_materials": 12,
+    "public_object_ids": "b3m_0001 through b3m_0012",
+    "array": [
+      "PW360_10x20",
+      "PW180_10x20"
+    ],
+    "noise": [
+      0.02,
+      0.1
+    ],
+    "lab": [
+      "fresnel_int_6GHz_half180_tx",
+      "fresnel_ext_6GHz_half180_tx",
+      "manitoba_e_3p5GHz_even_tx"
+    ],
+    "generation_seeds": [
+      20261124031,
+      20261124032,
+      20261124033,
+      20261124034,
+      20261124035
+    ]
+  },
+  "certificate": {
+    "uniform": "frozen Paper 1 profiles; cold per observation in primary",
+    "one_tile": "optical t=32; strictly verify positive floor proposed at 0.009; data-based choice of source and receiver subspaces verified outward. Fallback fixed active t=8 and alpha=2^-14.",
+    "reuse": "one physically timed preparation per array over 24 planned paired observations; charge 1/24 of its wall and CPU to each, plus online wall. Independent unshared separately reported.",
+    "lab": "two hard supports on at most 16 common training receivers, with empirical full-observation radius; diagnostics only; both branches retained."
+  },
+  "selection": "Air eligible from time zero. Full Maxwell on inversion grid at step 1,64, multiples of 192, and end of each stage. Three lowest distinct scored candidates sent to original native operator; choose smallest audited relative residual squared over two plus smooth=TV=1e-4, alongside air. Lab uses same native training objective. Selected winner must finish inside elapsed budget. No held field, mask or GT used.",
+  "assessment": "Separate fine material L2, inside and air-background contributions, fixed half-peak IoU, hidden original complex fields, wall/CPU, full solves. Report all objects. Pool two noise conditions within independent material before inference; never count them as independent. Imaging go requires concurrent interior/background benefit and no laboratory held-port regression. Pruning go requires sound prunes, actual eliminated wrong boxes and a cost or accuracy win against unrestricted multistart, with matched boxed control. Absolute chamber certification pending physical model error.",
+  "frozen_utc": "2026-11-24T04:23:32.244449+00:00",
+  "extension_frozen_utc": "2026-11-24T04:25:23.828057+00:00",
+  "trigger": "Exposed real chamber Twin 8GHz: 0 accepted diagonal updates yet mandatory PR resets worsened held error 0.26301 to 0.51706. No confirmation scores consulted.",
+  "supplement": "Same 50/50 search-time split, hold native shortlist of one best eligible material from each completed branch first, fill up to 3 distinct. First arm mature Dual from air. Control second ordinary Dual from 0.65, competing second pixel optical 0.25 from air with no unconditional resets, original stage stopping, trust .08 every 16. Only training objective selects. Identical native ranking and cold elapsed limits. Interpret separately from original frozen primary."
+}

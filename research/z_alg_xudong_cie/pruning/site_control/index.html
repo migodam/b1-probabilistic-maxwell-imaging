@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四个缺陷的位置盲测 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../../..">B1 总项目</a><a href="../../../experiment_handbook">实验手册</a>
+<a href="../../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../../index.html">中文报告</a> <a href="../../results.html">逐件结果</a> <a href="../../reproduce.html">复算</a> <a href="../../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">已知对象位于单块的独立位置试验</h1>
+<p>四个未见紧凑物体及其全环、半环和 2%、10% 配对观测，共 16 个读数。评分前只知道物体完全位于某一个 4×4 网格方块内，该块对比度上限为 4，相邻方块为精确空气。逐一对 16 个方块求证书。全部 256 条候选决策和 Born 排名在开启四个位置标签之前封存。独立的原生区间正演已证实 16 份生成材料全部在各自噪声球中，最小正余量为 \(3.1318743\times10^{-6}\)。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/site_control/ACQUISITION_RECEIPT.json">采集验收</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">封存的在线结果</a></p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>方法</th>
+<th style="text-align: right;">16 个读数中保留唯一正确块</th>
+<th style="text-align: right;">错误块的判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>双侧弱端口证书，必要时用原生子块复核</td>
+<td style="text-align: right;">16/16</td>
+<td style="text-align: right;">严格排除 240/240</td>
+</tr>
+<tr>
+<td>仅接收弱方向</td>
+<td style="text-align: right;">0/16</td>
+<td style="text-align: right;">严格排除 164/240</td>
+</tr>
+<tr>
+<td>仅照明弱方向</td>
+<td style="text-align: right;">0/16</td>
+<td style="text-align: right;">严格排除 0/240</td>
+</tr>
+<tr>
+<td>普通一阶 Born 匹配</td>
+<td style="text-align: right;">正确块排第一 16/16</td>
+<td style="text-align: right;">逐块排名</td>
+</tr>
+</tbody>
+</table></div>
+<p>全部正确方块都保留。191 条错误方块由双侧端口证书直接排除，另 49 条由冻结的原生子块证书排除。Born 对每个方块的单位均匀一阶散射模板优化一个公共复比例。它的首选与全部严格唯一块重合。此试验确认的是候选类的严格排除，以及位置唯一性是否有证书。普通 Born 首选的位置准确率在这四件材料上相同。结论的空间粒度为一个方块，不涉及块内形状恢复或宽区域假设的唯一性。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/site_scored.json">封存后标签评分</a> · <a href="../site_maps.png">十六张同口径位置图</a></p>
+<p>两种孔径的训练矩阵各用 20 收 10 发。每个独立材料的四个配对观测均保留同一正确位置。四个独立对象的单块坐标依次为 (3,1)、(0,0)、(3,2)、(0,3)，从 0 开始计数，行在前。视图和错误块计数各是配对重复，材料数仍为四。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/site_scored.json">完整评分表</a></p>
+<p>全部 256 次严格评分计 166.47 进程 CPU 秒，含两种孔径各自支付的首轮间隔验证和所有直接备选；两单侧消融另计 8.81 秒。普通 Born 模板共同建立约 .0021 进程 CPU 秒，16 条数据的完整二维排序约 .0020 秒。带公开收据写入、并行竞争在内的整轮墙钟约 240.35 秒、CPU 175.46 秒。严格算法的用途由证书而非首选准确率决定，报告保留两种成本。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/site_scored.json">全部运行费用</a></p>
+<h2 id="_2">同批已曝光观测上的低成本补验</h2>
+<p>把接收与照明的完整弱方向矩阵逐元素求界，直接排除 196 个错误方块，保留了原矩形选区的 191 个排除并多排除 5 个。30×30 正半定块的残差下界又多排除 1 个。实际仍执行 59 次原生状态筛选，严格排除剩余 43 个错误方块并保留全部 16 条正确方块。这个后续试验在第一次封存评分后实验，原盲测裁决沿用原算法。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/entrywise_exposed.json">补验回执</a> · <a href="../support-theory.html">两个附加下界</a></p>
+<p>两种孔径共准备 32 个方块的区间端口范数，5.307 秒 CPU。256 个逐元素评分、60 个正半定块评分分别花 .149 秒和 .571 秒 CPU。实际状态筛选 132.538 秒 CPU，完整补验 138.694 秒 CPU、176.92 秒墙钟。一次早期尝试因区间上端转出需要加一向外舍入而停在准备阶段，另付 19.07 秒 CPU。 <a href="../entrywise_stopped_rounding.txt">停止记录</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/entrywise_exposed.json">补验回执</a></p>
+<p>原先需要状态复核才能排除的 49 个错误方块中，有 39 个能用一个一般转移矩阵严格进入数据球，同时满足已证的总电流增益上限。给转移再加精确普通转置对称后，仍有 38 个错误方块严格进入数据球。两种试验都在全部 16 条正确方块找到了可行见证。错误方块分别有 10 条、11 条未找到松弛可行见证，逐条提案及区间状态公开。两种试验实付 1.819／3.733 秒进程 CPU，墙钟 2.676／4.769 秒。对这 38 个错误方块，原生共享材料和状态约束提供了共同增益与精确互易性之外的排除证据。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/contraction_control.json">一般转移试验</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/pruning/reciprocal_control.json">互易转移试验</a> · <a href="../support-theory.html">其成立的模型条件</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>

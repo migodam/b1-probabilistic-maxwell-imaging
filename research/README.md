@@ -1,3 +1,9 @@
+<!-- Z_ALG_XUDONG_CIE_20261124 -->
+## Maxwell 电流守恒与材料歧义
+
+[中文报告](z_alg_xudong_cie/index.html) · [ChatGPT 交接](z_alg_xudong_cie/handoff.html) · [归档与复算](z_alg_xudong_cie/archive.html) · [完整研究复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip)
+<!-- /Z_ALG_XUDONG_CIE_20261124 -->
+
 ## Maxwell 实验手册
 
 查已冻结的数据、观测身份、物理算子、设备选择、基线与错题，按同一口径接续和归档实验。[项目手册](experiment_handbook/README.md) · [数据与算子目录](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/experiment_handbook/catalog.html)

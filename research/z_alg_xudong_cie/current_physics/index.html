@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>守恒相消 · Maxwell 逆散射研究</title><link rel="stylesheet" href="../../z_alg_optical_inertia/research.css">
+<style>details{margin:1.1rem 0}summary{cursor:pointer;color:var(--accent);font-weight:650}.math-display{overflow-x:auto}figure img,article img{max-width:100%;height:auto}details table{font-variant-numeric:tabular-nums}.table-scroll{overflow:auto}</style>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script></head><body>
+<a class="skip-link" href="#content">跳到正文</a><header class="site-header"><div class="site-shell"><div class="project-links">
+<a href="../../..">B1 总项目</a><a href="../../experiment_handbook">实验手册</a>
+<a href="../../z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf">Paper 1 英文稿</a><a class="download" href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-xudong-cie-20261124/Z_ALG_Xudong_CIE_Research.zip">下载本轮研究包</a></div><nav><a href="../index.html">中文报告</a> <a href="../results.html">逐件结果</a> <a href="../reproduce.html">复算</a> <a href="../handoff.html">ChatGPT 交接</a></nav></div></header>
+<main class="site-shell" id="content"><article><h1 id="_1">电流误差为什么会在全物体上抵消</h1>
+<p>对任意实对角材料估计 ĤM，令 C=J−ĤME，E=B+GJ。由于 E*ĤME 是 Hermitian 矩阵，有</p>
+<p>$$Q_o=\operatorname{Im}_H(J^*E)=\operatorname{Im}_H(C^*E).$$</p>
+<p>因此任何材料的<strong>精确正演电流</strong>都令 Qₒ=0，即使这张材料图是错的。把光学项加在每次精确正演后的材料目标上，沿材料空间恒等于零。它可以起作用的地方，是 CIE 正在调整、尚未与同一份材料相容的辅助电流。</p>
+<p>总量还会在空间求和中抵消。例如两格各有两束照明，局域总场两行都取 (1,1)，电流两行分别为 (a,b) 和 (b,a)，其中 a≠b 为正实数。每格都不能由共享材料生成这些电流，但两格局域光学矩阵之和严格为零。这个反例仅用于说明约束的代数信息损失。实际几何中的损失要从计算的电流观察。</p>
+<h3 id="cie-64">原生 CIE 在第 64 次更新的空间抵消</h3>
+<p>每束照明按入射场的均方根归一，计算每格光学矩阵 Qᵢ=Im_H(jᵢ*eᵢ)。下表的「全域」是 ‖ΣQᵢ‖F/Σ‖Qᵢ‖F，「16 区」先在等面积 4×4 个区域内求和，再将区域矩阵的范数相加。最后一列先对每格拟合一个共享的实对比度，再对每束照明分别拟合实对比度，报告两次平方残差的差额占共享残差的比例。两种拟合均遵循 [0,20]。这些量用于解释辅助电流，并不声称存在相应的合法全波材料。</p>
+<div class="table-scroll"><table>
+<thead>
+<tr>
+<th>物体</th>
+<th style="text-align: right;">全域</th>
+<th style="text-align: right;">4 区</th>
+<th style="text-align: right;">16 区</th>
+<th style="text-align: right;">共享材料附加误差占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Austria 半环</td>
+<td style="text-align: right;">13.2%</td>
+<td style="text-align: right;">23.8%</td>
+<td style="text-align: right;">38.2%</td>
+<td style="text-align: right;">44.0%</td>
+</tr>
+<tr>
+<td>开槽块半环</td>
+<td style="text-align: right;">11.1%</td>
+<td style="text-align: right;">25.7%</td>
+<td style="text-align: right;">39.8%</td>
+<td style="text-align: right;">45.8%</td>
+</tr>
+<tr>
+<td>档案 004 半环</td>
+<td style="text-align: right;">10.6%</td>
+<td style="text-align: right;">20.6%</td>
+<td style="text-align: right;">37.4%</td>
+<td style="text-align: right;">46.6%</td>
+</tr>
+<tr>
+<td>Fresnel 双柱 8 GHz</td>
+<td style="text-align: right;">12.3%</td>
+<td style="text-align: right;">28.3%</td>
+<td style="text-align: right;">37.4%</td>
+<td style="text-align: right;">43.6%</td>
+</tr>
+</tbody>
+</table></div>
+<p>单格范数可直接由行向量内积计算。代码用随机矩阵与逐格显式 Gram 矩阵核对了该恒等式。梯度对已有傅里叶电流空间的投影与当前 CIE 方向之间的夹角，也随四个时刻保存。计算所有物理量的时间与操作数见逐例文件。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/current_physics/early_directions.json">四个时刻的原始数值</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/z_alg_xudong_cie/current_physics/early_directions.py">复现入口</a></p></article><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_xudong_cie">源码与数据说明</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-xudong-cie-20261124">版本与附件</a></footer></main></body></html>
