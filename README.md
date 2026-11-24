@@ -1,4 +1,8 @@
 <!-- Z_ALG_SECANT_TASKS_PUBLICATION -->
+## 有限孔径材料峰值认证 · 英文投稿修订稿
+
+[英文 PDF](research/z_alg_optical_inertia/ip_submission_v2/manuscript_ip.pdf) · [修订和能量对照](research/z_alg_optical_inertia/ip_submission_v2/index.html) · [四分区同口径复现包](https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/optical-inertia-ip-v2/Energy_SDP_Evidence.zip)
+
 ## 固定 Green 下的材料峰值排除与镜像停测
 
 在冻结的二维离散物理模型下，旧环形观测排除了 576 个像素的介电对比度全都不超过 5 的情形。该材料范围内的最低预报误差下界约为 0.014695，超过原噪声半径 0.010517。无需重建整图即可断定至少一个像素超过 5，位置仍未知。另用镜像排除定理回放历史合成读数，152 份符合预设误差上限的 SRAP 视图中，逐组 428 次、全批 1,517 次和事后同布局最短固定前缀 926 次，均排除同一批 150 份视图的镜像歧义。
