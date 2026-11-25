@@ -1,0 +1,58 @@
+\documentclass[anonymous,12pt]{iopjournal}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,microtype,graphicx,placeins}
+\graphicspath{{figures/}}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.09}
+\renewcommand{\floatpagefraction}{0.8}
+\hypersetup{hidelinks,pdftitle={Which material distributions can finite-aperture scattering data rule out?},pdfauthor={},pdfsubject={Electromagnetic inverse scattering}}
+\fancyhead[L]{\small\sffamily Inverse Problems\quad Research paper}
+\fancyhead[R]{\small Material bounds from finite-aperture data}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\C}{\mathbb C}\newcommand{\R}{\mathbb R}
+\newcommand{\Herm}{\operatorname{Re}_{H}}\newcommand{\Imag}{\operatorname{Im}_{H}}
+\newcommand{\diag}{\operatorname{diag}}\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Tail}{\mathcal T}\newcommand{\nn}{n_{-}}\newcommand{\np}{n_{+}}
+\setlength{\headheight}{17pt}\setlength{\emergencystretch}{1.8em}
+\numberwithin{equation}{section}
+\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}\renewcommand{\topfraction}{.94}\renewcommand{\textfraction}{.06}
+\begin{document}
+\noindent{\sffamily\small RESEARCH PAPER}\par\vspace{1.8ex}
+\title{Which material distributions can finite-aperture scattering data rule out?}
+\author{}
+\begin{abstract}
+A poor fit at one dielectric distribution gives little information about neighbouring distributions in a strongly scattering medium. We bound the distance from finite, noisy, multi-illumination measurements to the responses of every dielectric in a prescribed spatially varying interval. The shared local material equation gives a quadratic inequality on the illumination currents about an arbitrary background. At a specified error tolerance, an inertia count on a bordered matrix tests the entire interval, including when the current block is singular. Nested material hypotheses admit explicit transport of the spatial weights. On a 9,216-cell transverse-magnetic model, a disk of peak contrast 0.625 fits the data. On the same support, every member of a tapered class centred at peak four with nominal half-width 2.50 and a nonnegative lower cutoff misses the error ball. Its distance exceeds 1.72 times the radius with seven negative current modes. The verified width exceeds the usual norm-contraction cutoff by a factor of 5.14, and an admissible perturbation has spectral radius greater than one. The calculation also permits uncertainty at every background cell. On eight prospective targets the method eliminates 98 of 128 candidate boxes with no loss of a box containing the material; point-ranked full-wave refinement reaches a fit faster. Across 28 large-domain targets the data exclude every nonnegative first-Born fit, yet the Born image sometimes improves nonlinear initialization. These distinctions delimit what the measurements imply about a material class and about reconstruction.
+\end{abstract}
+\keywords{electromagnetic inverse scattering, finite aperture, contrast source, dielectric bounds, multiple illuminations, set inversion}
+\section{Introduction}
+
+A microwave inversion often returns several plausible images. At issue may be a particular physical claim: a strongly polarizable inclusion occupies this part of the specimen, with a specified allowance for variation within the inclusion and in its surroundings. A forward calculation tests one image. Ruling out the claim requires a bound valid for all images with those local allowances. This distinction matters when the total field inside an inclusion is very different from the incident field, and when a limited receiver aperture leaves a large space of currents unobserved.
+
+Subspace methods separate visible and ambiguous currents and optimize the latter \cite{chen,zhong,ffttsom}. Contrast-source, new integral-equation and contraction integral-equation formulations couple those currents to a common material \cite{csi,nie,cie,chenbook}. Updating the propagation about an inhomogeneous background is classical in distorted-Born inversion \cite{dbim}. These methods supply reconstructions. We use the same background and receiver geometry to ask which entire classes of reconstructions remain possible. The observable is a lower bound in units of measured field, with an explicit error threshold. A region of material space can be excluded even when iterative recovery is poor.
+
+The quadratic form of the field equations is well established in photonic design. Material duality, local conservation of power and their multi-excitation extensions bound responses under prescribed design restrictions \cite{angeris19,trivedi,angeris,moleskyglobal,moleskylocal,kuang,shim,miller}. Sector multipliers and integral quadratic constraints are standard tools for uncertain systems \cite{iqc,boyd,beck}. In the present inverse problem the complex port readings and the noise ball are fixed, and a scalar material at every cell is shared by all illuminations. A negative current subspace may change only a limited number of eigenvalues of the residual matrix. This pointwise rank restriction is lost if the lifted moments of many currents are averaged. The general matrix tools are inertia additivity, compression and eigenvalue interlacing \cite{haynsworth,tian,fan}. We identify the physical quadratic to which they apply for an arbitrary spatial interval and evaluate the resulting distance against a strong alternative.
+
+Finite-measurement uniqueness and stability theorems ask whether data distinguish all coefficients under suitable prior restrictions \cite{alberti19,alberti21}. Monotonicity methods detect inclusions through an operator ordering with finitely many exceptional directions \cite{griesmaier_harrach,griesmaier_harrach_erratum,albicker}. Set inversion instead builds an enclosure of preimages of noisy data \cite{sivia}. Our calculation answers a user-specified membership question for the attainable \emph{data}, using the complete nonlinear scattering equations. It does not enumerate all feasible materials. Nonuniqueness can persist even for a small finite parameterization \cite{everett96,vasco}; a finite candidate list, whether produced by optimization or sampling, need not include the generating material.
+
+We obtain three consequences from one current inequality. A test at the actual noise radius avoids tracking a spectrum through singular inverses. Exclusions can be inherited by nested intervals even when their midpoints move. With a common weak background, localized changes of interval endpoints require a matrix update whose order depends on the number of changed cells. Experiments ask separately whether the intervals can be distinguished beyond perturbative convergence, whether whole classes can be eliminated at useful cost, and whether the same tests improve a full-wave inversion. The third question requires comparison with a method that ranks individual samples by their exact scattered fields. Its answer differs from the first two.
+\input{theory}
+\input{results}
+\section{Discussion}
+
+The distinction between a peak hypothesis and a branch hypothesis is observable in the same experiment. Data exhausted the attainable bound on a blind contrast cap near 0.84 in a large domain. Yet a spatial class with peak between 1.5 and 6.5 could be rejected on the same type of array, even though the permitted variation extended well beyond convergence of a background perturbation series. The additional information is the explicit set of spatial alternatives. Each exclusion is conditional on its support, box widths, constitutive law, ports and error allowance. Declaring the complement of a proposed inclusion weak can provide much of the information. A comparison against the identical support with its lower endpoints removed is therefore indispensable.
+
+A small number of negative propagating-current directions has a specific use. It limits the number of source combinations which an unobserved current can cancel simultaneously. It places no comparable bound on the number of unknown pixels, candidate branches or local minima. Born inconsistency, a lower bound on the peak and a necessary norm in a mode subspace each answer different physical questions. They can identify an impossible terminal state or an invalid restriction. They supply little evidence that a particular initialization, Fourier truncation or continuation step will finish sooner.
+
+The remaining practical issue is how the candidate intervals are obtained. Structured priors gave informative boxes at modest cost on known compact support. Particles from a learned flow on its own geometry gave boxes that omitted the exact generating distributions and still admitted widely different materials within the data tolerance. A collection of overlapping boxes has no automatic posterior coverage, probability interpretation or claim to exhaustive topology. In particular, survival of only one proposed box would not establish unique recovery. Nor can a local exclusion justify abandoning an unconstrained optimization trajectory that can move outside it.
+
+Transfer to a continuum or to a laboratory would require a common upper bound on the modelling error for the whole candidate class. A held-out empty-chamber calibration measures only part of that error. The most directly supported use is to test a specified material claim on a calibrated finite array before investing in all of its reconstructions. For a user who needs only one compatible image, the point-ranked alternative is sufficiently inexpensive that the broader answer currently costs extra.
+\appendix
+\input{technical}
+\section*{Data availability}
+The finite operators, observation identifiers, decision arrays, comparison timings, and scripts used for the figures are supplied with the research data. The two laboratory data sources are described in \cite{fresnel,manitoba}. Identifying repository links are provided separately for anonymous review.
+\section*{Acknowledgments}
+OpenAI Codex assisted with mathematical analysis, numerical experiments and preparation of the manuscript. Google Gemini assisted with independent analysis and review. The authors take responsibility for the content.
+\input{references}
+\end{document}

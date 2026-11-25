@@ -46,3 +46,7 @@ Gaussian/.venv_nn/bin/python research/srap_cie_array_study_20261121/run_study.py
 [旧 U11 机器与版本对照](https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/srap_cie_array_study_20261121/engine_dev/HARDWARE.md) · [源代码与停机量勘误](BASELINES_AND_ERRATA_ZH.md)
 
 遇到新物理类别时，先用现有参照验证最可能改变结论的环节。二维近场的源依赖 mask 不可交给任意矩形 Y 的“全端口”模型。三维可复用球的 Mie 或一次有必要的细化检查；已有鉴定只覆盖原网格、电尺寸、材料和误差预算。没有任务相关差异时，直接复用现有回执。
+
+### 有限孔径的整类材料假设
+
+[带边矩阵阈值测试与原生传播复用](../z_alg_optical_inertia/ip_guided_v4/REPRODUCE.md)提供源和接收矩阵的同合同接口，支持非均匀空间实区间、已知损耗角、独立正演见证。每份读数的在线时间与必要的阵列及物理区间复算时间单列。

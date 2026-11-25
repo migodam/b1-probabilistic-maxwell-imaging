@@ -62,6 +62,11 @@ python3 research/experiment_handbook/lookup.py --operator srap_vector_ap
 <td>R8 <code>nn_features</code> 配 <code>nn_material</code>；A17 修复版 <code>a17_projected</code> 配同秩基和等时全梯度</td>
 <td>NN 材料要按求解器建立合法状态。把同一初值同时给 direct、AP/DR 和 CIE 并记录转换损失。A17 须比较实际盒投影后可行收益和终点材料</td>
 </tr>
+<tr>
+<td>二维固定损耗 TM 与接收椭球</td>
+<td>CPU/Arb 的 zalg_unified_lossy_receiver 提供原正演球、公共耗散 Gram 及逐读数接收端区间。</td>
+<td>确认耗散比来自相同材料合同。共同标量与各源独立乘子的比较须共用物理信息和半径，公共解的费用另列。</td>
+</tr>
 </tbody>
 </table></div>
 <h3 id="_2">怎样在已有队列上运行</h3>
@@ -106,5 +111,7 @@ Gaussian/.venv_nn/bin/python research/srap_cie_array_study_20261121/run_study.py
 </tbody>
 </table></div>
 <p><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/srap_cie_array_study_20261121/engine_dev/HARDWARE.md">旧 U11 机器与版本对照</a> · <a href="errata.html">源代码与停机量勘误</a></p>
-<p>遇到新物理类别时，先用现有参照验证最可能改变结论的环节。二维近场的源依赖 mask 不可交给任意矩形 Y 的“全端口”模型。三维可复用球的 Mie 或一次有必要的细化检查；已有鉴定只覆盖原网格、电尺寸、材料和误差预算。没有任务相关差异时，直接复用现有回执。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/OPERATORS_ZH.md">查看本页来源</a> ·
+<p>遇到新物理类别时，先用现有参照验证最可能改变结论的环节。二维近场的源依赖 mask 不可交给任意矩形 Y 的“全端口”模型。三维可复用球的 Mie 或一次有必要的细化检查；已有鉴定只覆盖原网格、电尺寸、材料和误差预算。没有任务相关差异时，直接复用现有回执。</p>
+<h3 id="_3">有限孔径的整类材料假设</h3>
+<p><a href="../z_alg_optical_inertia/ip_guided_v4/REPRODUCE.md">带边矩阵阈值测试与原生传播复用</a>提供源和接收矩阵的同合同接口，支持非均匀空间实区间、已知损耗角、独立正演见证。每份读数的在线时间与必要的阵列及物理区间复算时间单列。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/OPERATORS_ZH.md">查看本页来源</a> ·
 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/experiment_handbook">代码与原始登记</a></footer></body></html>

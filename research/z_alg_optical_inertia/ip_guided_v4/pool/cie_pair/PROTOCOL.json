@@ -1,0 +1,23 @@
+{
+  "question": "Does box exclusion reduce execution cost of a common CIE current-domain refiner while retaining feasible material and original-wave out-of-sample predictions?",
+  "objects": "Four previously studied structured_pool seeds and eight separately frozen confirmation seeds; all previously exposed to non-CIE fitting research. This CIE comparison is retrospective on those inputs.",
+  "fixed_geometry": "Exact stored 24x24 TM operator with common 7x7 support, 16 of 32 receivers and 4 of 12 plane waves for fit.",
+  "physical_initialization": "First existing point of each proposal component for all four arms; auditable full-wave current is projected into the initial inherited Fourier APCS around fixed DPCS. No reference material is accessed.",
+  "dpcs_rank": 4,
+  "fourier_orders": [1, 2, 3],
+  "beta_current": 8.0,
+  "beta_material": [8.0, 2.0, 0.5],
+  "stage_cycles": [192, 192, 192],
+  "relative_coefficients_squared_tolerance": [0.0001, 0.000001, 0.000001],
+  "minimum_stage_cycles": 16,
+  "audit_cadence": 16,
+  "material_prior": "Zero additional penalty; support and inherited per-pixel closed box endpoints enforced in the current-domain material readout.",
+  "optimization": "Sourcewise nonnegative PR and exact quadratic step, followed by inherited projected material readout. Native point check at initialization, every 16 cycles, and stage boundaries. First in-radius point must pass Arb and stops that branch. Final output is lowest true port residual among checked points.",
+  "arms": ["all_cluster", "point_to_fit", "neumann_directional", "shifted_threshold"],
+  "neumann": "Previously used strengthened directional Neumann certificate in box_certificates.py. Unverified decisions are retained.",
+  "shifted": "Bordered source-threshold certificate used for frozen confirmation. Weights [1/32,1/128] in training receiver spectral units and source index j=1. Binary64 one-sided computation on line, independent Arb checks off line for all exclusions.",
+  "point_to_fit": "Full-wave evaluation of all 64 proposal points. Rank by best residual in each box; same first proposal point initializes the CIE refiner across arms. First strictly feasible box stops traversal; if all attempts fail select lowest observed residual.",
+  "selection": "Other arms choose the smallest original-physics training residual among all visited branch outputs; no held-out channels or materials.",
+  "reference_evaluation": "Verify selected original full-wave endpoint with Arb and score original held-out receivers, held-out sources, inside and background after online predictions are sealed.",
+  "timing": "Independently execute every arm in per-object order permuted with seed 610419. Include proposal regeneration, screening, CIE, physical audits, and final Arb check. Geometry and Fourier/DPCS setup reusable across arms measured separately; each arm initializes every visited branch separately."
+}

@@ -82,5 +82,37 @@
 <h2 id="_4">取数和扩充</h2>
 <p>先在数据族内挑选<strong>完整观测 ID</strong>。例如，<code>r12_paired_restart / A__r10_twod_0001</code> 定位历史环的公共重启包，<code>srap_vector12 / hemi_00</code> 和 <code>plane_grid_00</code> 共享物体但测量不同。父运行的封存材料也是输入的一部分。NN 实验需另外登记 weights、特征算子、训练家族以及是否重建合法电流。缺文件时按登记的 Release 或数据持有方取回到外置盘；变量名和末四位相同不足以拼接两个对象。</p>
 <p>有的早期“public”包同时存有 <code>clean_Y</code> 或生成元数据。在线入口只提取该轮约定的带噪 <code>Y</code>、几何、合法输入和先验，按字段传给求解器。训练标签留在训练加载器，实测留出列在求解器之外，预测封存后再加载评分字段。R8 三维和 R15 已知宿主历史包尤其需要查明 actual key。<a href="errata.html">基线错题 E11、E15</a></p>
-<p>确需新数据时，先写出已有库缺的因素、要改变的一个或几个独立轴、配对与聚类方式。将算法、种子或种子生成规则、在线选择和预算冻结后生成确认测量；登记对象、观测、继承或新生成关系以及冻结路径。已看过的确认结果在下一轮可用于诊断和定方法，后续检验其推广能力需要独立材料。数据规模由要区分的效应和变异决定。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/DATASETS_ZH.md">查看本页来源</a> ·
+<p>确需新数据时，先写出已有库缺的因素、要改变的一个或几个独立轴、配对与聚类方式。将算法、种子或种子生成规则、在线选择和预算冻结后生成确认测量；登记对象、观测、继承或新生成关系以及冻结路径。已看过的确认结果在下一轮可用于诊断和定方法，后续检验其推广能力需要独立材料。数据规模由要区分的效应和变异决定。</p>
+<h3 id="_5">物理重构的配对观测</h3>
+<p><code>zalg_phys_array6</code> 登记六件已曝光的 optfresh 原生材料，共 96 个阵列和噪声条件，其中 12 个沿用旧的 10×20 数据与半径。四档发射数共用相同总入射能流，1%/2% 按同方向配对。另有 <code>zalg_phys_compact1</code> 的一件电紧凑物体和四个噪声球，以及 <code>zalg_phys_born_weak2</code> 的两件弱反差材料和六个读数。对应暗室表复用 Fresnel 与 Manitoba 的原始采集，逐频条件不增记实物。 <a href="../z_alg_optical_inertia/physical_revision/REPRODUCE.md">观测及获取方法</a> · <a href="OBSERVATIONS.csv">登记表</a></p>
+<h2 id="_6">固定损耗角的有损方法对照</h2>
+<div class="wide"><table>
+<thead>
+<tr>
+<th>登记项</th>
+<th>独立材料与配对</th>
+<th>原始读数取法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>zalg_unified_loss_finite4</td>
+<td>12² 新四件，0.6 m 与 1.25 m 各两件。另有两个取同组第一件实部 (1/8) 的配对低峰控制。三个损耗角合计 18 份读数。</td>
+<td>finite_0_inputs.npz 和 finite_1_inputs.npz 内按完整观测 ID 取 Y，同名 JSON 给半径。</td>
+</tr>
+<tr>
+<td>zalg_unified_loss_native6</td>
+<td>原生 96² 的六件 optfresh 已曝光实部，另有 optfresh_01 的 (1/8) 低峰控制。三个损耗角合计 21 份读数。</td>
+<td>native_inputs.npz 内按完整观测 ID 取 Y，native.json 给半径，收发和 Green 沿用 v3。</td>
+</tr>
+<tr>
+<td>zalg_unified_disk_control1</td>
+<td>一个独立无损低峰盘体，一份 2% 观测，另存同一观察的名义干净中心。</td>
+<td>同名 NPZ 的 Y 为带噪读数，Y_clean 与材料、候选电流供离线核验。</td>
+</tr>
+</tbody>
+</table></div>
+<p>损耗角、噪声方向和测试上限都在配对层。每个非零损耗角重新生成真实离散全波复读数，旧无损读数只用于确认材料与几何沿革。缩放控制属于其原独立形状簇，不增加独立材料数。新数据验证二维离散方法，未设置成像、定位、跨网格或实测泛化测试。<a href="../z_alg_optical_inertia/ip_unified/numerics/loss/FREEZE.md">冻结方法</a> · <a href="../z_alg_optical_inertia/ip_unified/REPRODUCE.md">复现与数组</a></p>
+<h2 id="_7">真实分支盒、同支撑盘体与有符号生成池</h2>
+<p>新登记含四件开发、八件专门留出、四件弱中等几何、两个原生位置和一个 32² 对照。历史三件学习模型测试材料以原算子重放，使用 1% 容差的干净场。两次幅度复用与 37 个暗室频率视图按原物体计数。所有观测 ID 以及哪些候选含有真实材料，见<a href="../z_alg_optical_inertia/ip_guided_v4/benchmark/objects.csv">材料与观测总登记</a>。</p></main><footer><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/experiment_handbook/DATASETS_ZH.md">查看本页来源</a> ·
 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/experiment_handbook">代码与原始登记</a></footer></body></html>
