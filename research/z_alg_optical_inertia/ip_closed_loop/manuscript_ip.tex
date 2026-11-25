@@ -1,0 +1,53 @@
+\RequirePackage{fix-cm}
+\documentclass[anonymous,12pt]{iopjournal}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,graphicx,placeins}
+\graphicspath{{figures/}}
+\hypersetup{hidelinks,pdftitle={Locating dielectric inclusions and choosing a new illumination from finite-aperture scattering data},pdfauthor={}}
+\fancyhead[L]{\small\sffamily Inverse Problems\quad Research paper}
+\fancyhead[R]{\small Dielectric inclusion tests}
+\setlength{\headheight}{17pt}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\topfraction}{.93}
+\renewcommand{\bottomfraction}{.9}
+\renewcommand{\textfraction}{.06}
+\newtheorem{theorem}{Theorem}[section]
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\G}{\mathcal G}
+\newcommand{\Bd}{\mathcal B}
+\newcommand{\F}{\mathcal F}
+\newcommand{\A}{\mathcal A}
+\newcommand{\T}{\mathcal T}
+\newcommand{\HH}{^{\ast}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\nplus}{n_{+}}
+\newcommand{\nminus}{n_{-}}
+\numberwithin{equation}{section}
+\begin{document}
+\noindent{\sffamily\small RESEARCH PAPER}\par\vspace{1.6ex}
+\title{Locating dielectric inclusions and choosing a new illumination from finite-aperture scattering data}
+\author{}
+\input{abstract}
+\par\smallskip
+\keywords{inverse medium scattering, limited aperture, multiple scattering, set inversion, coherent illumination, uncertainty}
+\section{Introduction}\label{sec:intro}
+A fixed microwave array interrogates a dielectric component. The manufacturing drawing gives a range of possible inclusion sizes and contrasts. The surrounding material is imperfectly known. From noisy complex fields, an inspector wants to know where the inclusion can still be, whether any proposed location has a physically consistent explanation, and whether another exposure would settle a remaining ambiguity. A limit on the error of one fitted image need not answer these questions. They involve all media in a proposed class.
+
+Location and acquisition are linked by the same interior currents. Moving the proposed inclusion changes the local relation between the current and the total electric field. The propagator and the receiving array stay fixed. Changing the transmitted wave changes the current, but the relation between current and field is still imposed by the same dielectric at every illumination. We exploit both facts. A calculation shared across positions supplies an outer cover for the position. For two surviving material hypotheses a second calculation predicts a pair of sets of possible readings. Their distance determines how much incident energy suffices to resolve them under a prescribed error bound. The measured field then updates the surviving classes.
+
+Current-space reconstruction methods separate the component seen by the receivers from a part to be determined by the integral equation \cite{chen,zhong,ffttsom}. Direct and orthogonality sampling methods can estimate a location at low cost \cite{potthast}. Guo and Liu obtain quantitative contrast estimates from multi-frequency backscattering using a Born representation \cite{guoliu}. Our finite-aperture experiment uses a single frequency and retains multiple scattering. Monotonicity methods compare probe domains with far-field operators, in some cases up to a finite number of exceptional modes \cite{griesmaier_harrach,griesmaier_harrach_erratum,albicker}. Our unknown is a spatial class of dielectric coefficients in a specified finite data model. Independent cell values in an inclusion, in a transition layer and in a weakly scattering background form a single hypothesis. Multiple scattering by the background contributes to every reading. We seek a computable outer cover and, where possible, individual full-wave media inside the data ball. This is the exclusion and existence distinction of bounded-error set inversion \cite{sivia}.
+
+Local electromagnetic power laws bound responses in scattering and design \cite{kuang,trivedi,moleskylocal}. Cross-field constraints retain compatibility across incident waves \cite{shim}. We express the material interval as a quadratic form in each current and field row and combine it with the receiver residual. A negative current direction can offset one positive source direction in this relaxation. When the number of exceptional directions is small, the remaining incident fields can still exclude an entire class. In performing many such tests, the quantities to retain are the local current and total-field traces that change when a material hypothesis changes. Related elimination of unchanging variables occurs in static condensation \cite{huynh} and is governed here by Hermitian inertia additivity \cite{haynsworth}.
+
+Illumination for distinguishing two known scattering matrices has a classical solution, the leading incident eigenmode of their squared difference \cite{bouchet}. Selecting inputs that separate set-valued outputs is also familiar from fault diagnosis \cite{scott}. Here the scattering matrix inside a material class is unknown, and old noisy readings constrain the outputs of the same medium on a new illumination. We obtain a two-weight test for the separation of two conditional quadratic response sets. Under stated regularity assumptions the dual gives their exact distance. Exactness concerns these outer sets. Their relation to the physical experiment can be assessed in both directions using full-wave material witnesses and the subsequently measured field.
+
+Sections~\ref{sec:model} and \ref{sec:algorithm} derive the material and acquisition tests and describe their implementation. Section~\ref{sec:exp} examines a limited aperture spanning a $2.67$-wavelength domain, including a weak background that varies independently in every exterior cell. We measure both the size of the location cover and the change produced by a new exposure. A separate two-class experiment compares the energy required by coherent and individual illuminations. Section~\ref{sec:lab} uses scattering data from two laboratories to test how well a beam selected on one receiving arc transfers to another.
+\input{theory}
+\input{algorithm}
+\input{experiments}
+\input{laboratory}
+\input{discussion}
+\input{technical}
+\input{references}
+\end{document}

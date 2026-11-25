@@ -1,0 +1,62 @@
+{
+  "design_id": "IPCL-FOV-F1",
+  "status": "frozen before synthesis",
+  "scientific_claim": "Full-wave observations can exclude specified translated material classes over every discrete centre under independent per-cell weak exterior uncertainty. Class localization, contrast intervals, and unrestricted one-cell peaks are distinct queries.",
+  "model": {
+    "polarization": "2D scalar TM, exp(-i omega t), pulse-cell equal-area disk",
+    "side_m": 2.0,
+    "frequency_hz": 400000000,
+    "host_speed_m_per_s": 300000000,
+    "noise_fraction": 0.03,
+    "noise_radius_arithmetic_slack_fraction": 0.000002,
+    "background_upper": 0.03125,
+    "solid_shape": "disk",
+    "ring_shape": "annulus",
+    "double_shape": "two horizontally separated disks",
+    "austria_shape": "an annulus and two elevated disks",
+    "centre_contract": "Every integer raster centre. Shift the declared pixel-centred pattern and truncate it to the in-domain cells. No minimum retained support fraction. Each pattern has nonempty in-domain support at every centre. Coordinates are zero-indexed x,y."
+  },
+  "aperture": {
+    "tx_indices": [26, 28, 30, 0, 2, 4, 6],
+    "rx_indices": [25, 27, 28, 30, 0, 2, 4, 5, 6],
+    "archive": "fixed_operator_paper/experiments/B/public/native_geometry.npz",
+    "tx_angles_degrees": [-67.5,-45,-22.5,0,22.5,45,67.5],
+    "rx_angles_degrees": [-78.75,-56.25,-45,-22.5,0,22.5,45,56.25,67.5],
+    "sensor_radius_m": 3.75,
+    "transmitter_amplitude": 0.5590169943749475
+  },
+  "material_classes": {
+    "shape_profile": "One material coordinate per cell, independently variable; profile-weighted intervals on all nonzero footprint cells. A margin shell has weight 0.50. Exterior, including holes, is independently bounded by the declared b.",
+    "primary_core_range": [3.75, 4.25],
+    "class_partition": [[2.0, 3.0], [3.0, 3.75], [3.75, 4.25], [4.25, 5.0], [5.0, 6.0]],
+    "core_outer_range": [3.0, 5.0],
+    "core_outer_shell": [0.0, 5.0],
+    "independent_peak_threshold": 4.0,
+    "independent_peak_global_cap": 6.0,
+    "witness_proposals_per_map": 8
+  },
+  "truth": {
+    "footprint_microtexture_halfwidth": 0.0625,
+    "positive_background_generator": "At every exterior cell, iid uniform [0,b] with seeds fixed below. Observations use the same fixed 3% relative complex noise law in each arm.",
+    "objects": [
+      ["M32-D01",32,"solid",[5,6],3.9375,610101],
+      ["M32-D02",32,"solid",[21,10],4.0625,610102],
+      ["M32-D03",32,"solid",[0,21],4.125,610103],
+      ["M32-D04",32,"solid",[26,27],3.875,610104],
+      ["M32-R01",32,"ring",[7,14],4.0625,610105],
+      ["M32-R02",32,"ring",[17,6],3.875,610106],
+      ["M32-R03",32,"ring",[30,22],4.125,610107],
+      ["M32-R04",32,"ring",[13,27],3.9375,610108],
+      ["M32-P01",32,"double",[7,23],4.125,610109],
+      ["M32-P02",32,"double",[23,8],3.875,610110],
+      ["M32-P03",32,"double",[31,15],4.0625,610111],
+      ["M32-P04",32,"double",[16,29],3.9375,610112],
+      ["M32-A01",32,"austria",[9,8],3.875,610113],
+      ["M32-A02",32,"austria",[23,22],4.125,610114],
+      ["M32-A03",32,"austria",[3,30],3.9375,610115],
+      ["M32-A04",32,"austria",[30,4],4.0625,610116],
+      ["M96-R01",96,"ring",[29,66],4.0625,610201],
+      ["M96-P01",96,"double",[94,33],3.9375,610202]
+    ]
+  }
+}

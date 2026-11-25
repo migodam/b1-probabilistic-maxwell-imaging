@@ -1,0 +1,80 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>复现实验</title><link rel="stylesheet" href="report.css"></head>
+<body><nav aria-label="研究导航"><a href="../../../index.html">Maxwell 逆散射研究</a><a href="index.html">本研究</a><a href="report.html">中文报告</a><a href="manuscript_ip.pdf">英文论文</a><a href="handoff.html">研究交接</a></nav>
+<main><h1>Reproduce the fixed-operator closed-loop study</h1>
+<p>Use the repository root or extract the reproduction ZIP into an empty directory and work from that directory. Both layouts preserve the original <code>research/</code> paths. The ZIP contains the synthetic acquisitions and offline scoring arrays, proposed actions, numerical and interval receipts, and manuscript sources and figures. <code>RESEARCH_ARCHIVE_MANIFEST.json</code> at the archive root gives each inherited file’s original path and role. The measured-port section includes the processing code and derived scalars. The <a href="RUN_MANIFEST.json">run manifest</a> indexes each cohort and its original result arrays. Facility downloads are needed only for a fresh measured-port calculation.</p>
+<h2>Setup and original-scale replay</h2>
+<p>The study used Python 3.13, with dependency versions in <a href="requirements.txt">requirements.txt</a>. A fresh environment can be prepared from either root.</p>
+<pre><code class="language-sh">P=research/z_alg_optical_inertia/ip_closed_loop
+python3.13 -m venv .repro-venv
+. .repro-venv/bin/activate
+python -m pip install -r &quot;$P/requirements.txt&quot;
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+python -B &quot;$P/maps/replay.py&quot; 96 ring M96-R01 broad
+</code></pre>
+<p>The last command reconstructs the trace and source–receiver blocks in Arb from the stored native 96² Fourier symbol. It reads the original weak-background observation, one saved candidate and its weights, then computes the strict margin anew. Look in <code>maps/results/arb_M96-R01_broad.json</code> for the resulting receipt. This is one candidate from the original wide-box map. Use <code>--interior</code> to check a complete in-domain footprint instead of the clipped one. These commands write receipts to the current tree, so use an extracted copy for independent work.</p>
+<p>The isolated archive replay returned a strict margin of 1.0433876168 at centre <code>(0, 0)</code> with 120 footprint cells and two negative state directions. Two runs on a single-threaded Apple M4 took 5.66–6.55 s wall and 5.56–6.45 s CPU. The extracted code also loaded the native 16-transmitter, 16-receiver beam geometry and both laboratory readers from paths inside the archive. These checks used the installed environment with no network requests.</p>
+<h2>Synthetic results</h2>
+<ul>
+<li>For the 32² and native 96² full-field runs, follow the commands in <a href="maps/README.md">maps/README.md</a>. Public observations are already present. <code>maps/prepare.py</code> regenerates both data and offline truth. The online map and interval replay operate on the public data. Scoring, witness validation, and model transfer have their own entry points and receipts.</li>
+<li>The frozen coherent-beam study is described in <a href="beams/README_ZH.md">beams/README_ZH.md</a>. Its inherited operator files are listed in <a href="beams/dependencies.txt">beams/dependencies.txt</a>. The finite-angle and paired-energy comparison below reads saved old and future observations. The forecast-only form independently verifies one native case using only its saved old reading and proposal.</li>
+<li><a href="adaptive/experiment.md">adaptive/experiment.md</a> describes the separate spatial feedback experiment. The saved updates and witness counterchecks can be regenerated with the <code>read</code> and <code>updated_witnesses/recheck.py</code> entry points. Starting new synthetic acquisitions requires a fresh project copy and preserves the design-before-acquisition order described in each experiment.</li>
+<li><a href="reduction/README.md">reduction/README.md</a> covers the full 100/1,000-box direct comparison, its exact-singular regression and the matched controls. The <a href="reduction/psd_maps/README.md">map PSD documentation</a> covers the continuous control and the exact receiver-null trials. Dense original comparator runs take substantially longer than a single replay.</li>
+</ul>
+<pre><code class="language-sh">python -B &quot;$P/beams/paired_replay.py&quot; power_96 401 --forecast-only --suffix _archive
+python -B &quot;$P/beams/paired_replay.py&quot; power_32
+python -B &quot;$P/beams/paired_replay.py&quot; power_96
+python -B &quot;$P/beams/angle_bound.py&quot; power_96
+python -B &quot;$P/beams/secant_remainder_check.py&quot;
+python -B &quot;$P/maps/nominal_control.py&quot;
+python -B &quot;$P/beams/sparse_ports.py&quot; 96
+python -B &quot;$P/beams/sparse_physical.py&quot; 96
+python -B &quot;$P/beams/summarize.py&quot;
+python -B &quot;$P/adaptive/loop.py&quot; read 96
+python -B &quot;$P/adaptive/updated_witnesses/recheck.py&quot; 96 --fit
+python -B &quot;$P/reduction/pivot_regression.py&quot;
+python -B &quot;$P/reduction/psd_maps/dark_cone.py&quot; --replay-full32
+python -B &quot;$P/reduction/summarize.py&quot;
+</code></pre>
+<p>To rebuild the main figures and paper from included evidence, use the following commands. The LaTeX builder uses <code>pdflatex</code> and <code>tectonic</code> when available. It generates a separate anonymous source ZIP on demand from the included manuscript sources.</p>
+<pre><code class="language-sh">python -B &quot;$P/src/figures.py&quot;
+python -B &quot;$P/src/phase_figure.py&quot;
+python -B &quot;$P/src/package_manuscript.py&quot;
+</code></pre>
+<h2>Optional laboratory replay</h2>
+<p>The reported held-receiver ratios can be read directly in <a href="lab/held_ports.csv">lab/held_ports.csv</a> and <a href="lab/results.json">lab/results.json</a>. The original facility readings and caches containing complex laboratory ports remain local to the reader. Use the facilities’ original usage conditions and retain the filenames below.</p>
+<ol>
+<li>Download EIGOR Tomographic Dataset 1 from the University of Manitoba. Place the ZIP, still named <code>Tomographic_Dataset_1.zip</code>, in <code>.artifacts/z_alg_validation/manitoba/</code> at the extracted or repository root. <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/mwt_data.html">Facility data page</a> · <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/research/EIGOR/Tomographic_Dataset_1.zip">Original Dataset 1 ZIP</a></li>
+<li>Open the Fresnel 2005 article’s supplementary-data page and obtain <code>supp.zip</code> under the publisher’s terms. The page provides the current archive link. Extract <code>FoamDielIntTM.exp</code>, <code>FoamDielExtTM.exp</code>, and <code>FoamTwinDielTM.exp</code> to <code>research/delegated/a2_literature/data/2005_iop_21_6_S09/</code>. <a href="https://beta.iopscience.iop.org/article/10.1088/0266-5611/21/6/S09/data">Publisher’s supplementary data</a> · <a href="https://doi.org/10.1088/0266-5611/21/6/S09">Original article</a></li>
+</ol>
+<p>Prepare the nine Fresnel reading caches and rerun the held-receiver comparison from the root. The original loader supplies the measured scattered and empty fields with their actual missing channels. The matching source coordinates are 0° and 180°. <code>lab/measured.py</code> reads the Manitoba ZIP directly and applies the four reported reference combinations. The companion Manitoba calibration code is also included, though the held-receiver comparison uses its loader and analytic metal response directly.</p>
+<pre><code class="language-sh">python -B - &lt;&lt;'PY'
+import numpy as np
+from research.z_alg_optical_inertia.fresnel import physical
+
+physical.RESULTS.mkdir(parents=True, exist_ok=True)
+for frequency in physical.FREQUENCIES:
+    for name in physical.NAMES:
+        rows, scattered, empty = physical.load_file(physical.RAW / f&quot;{name}.exp&quot;, frequency)
+        sources = np.unique(rows[:, 0]).astype(int) - 1
+        count = physical.SOURCES[name]
+        if not np.array_equal(sources, np.arange(count)):
+            raise ValueError(f&quot;Unexpected recorded source indices for {name}&quot;)
+        field = scattered[:, sources]
+        np.savez_compressed(
+            physical.RESULTS / f&quot;{name}_{frequency}GHz_ports.npz&quot;,
+            raw_scattered=field,
+            raw_empty=empty[:, sources],
+            mask=np.isfinite(field),
+            source_degrees=np.arange(count) * (360 // count),
+        )
+PY
+python -B &quot;$P/lab/measured.py&quot;
+</code></pre>
+<p>The original Fresnel data-access page uses publisher-managed download links. The synthetic and manuscript programs require no access to either facility.</p>
+<h2>Build the reproduction archive</h2>
+<p>Run from the original project tree or from an extracted copy. The archive contains relative paths, with the case code and evidence under <code>research/z_alg_optical_inertia/ip_closed_loop/</code> and the inherited files beside it in their original locations.</p>
+<pre><code class="language-sh">python -B &quot;$P/src/package_research.py&quot; --inventory
+python -B &quot;$P/src/package_research.py&quot;
+</code></pre>
+<p>The additional full-field hierarchical comparison is documented in <a href="adaptive/multiscale/README_ZH.md">adaptive/multiscale/README_ZH.md</a>. It includes a fresh original-data leaf sweep for every adaptive branch and every flat control at both resolutions. New fields on returned centres were verified against two separate noise balls in <a href="adaptive/updated_witnesses/README_ZH.md">adaptive/updated_witnesses/README_ZH.md</a>.</p>
+<p>The independent <a href="maps/template_control/summary.json">two-parameter full-wave template control</a> ranks candidates using the original data, saves material choices, replays them at the original resolution and then scores the centres. Follow <a href="maps/template_control/README.md">its commands</a>.</p><p class="actions"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-closed-loop-20261126/closed_loop_reproduction.zip">下载完整代码与数据</a><a href="IP_Anonymous_LaTeX.zip">下载匿名投稿源码</a></p></main><footer>固定阵列中的介电缺陷定位与照明选择 · 2026 年 11 月</footer></body></html>

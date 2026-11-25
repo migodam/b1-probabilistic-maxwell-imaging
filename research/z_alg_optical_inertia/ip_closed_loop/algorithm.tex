@@ -1,0 +1,52 @@
+\section{From receiver data to a revised material cover}\label{sec:algorithm}
+
+\begin{figure}[htb]\centering
+\setlength{\fboxsep}{5pt}\small
+\fbox{\begin{minipage}{.91\linewidth}\centering
+Noisy complex responses, a bounded measurement error and a material specification\\
+$\downarrow$\\
+Apply the common constitutive law across every available illumination\\
+$\downarrow$\\
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.41\linewidth}@{\hspace{.035\linewidth}}>{\raggedright\arraybackslash}p{.43\linewidth}@{}}
+\textbf{Position inspection} & \textbf{Two material specifications}\\
+Remove impossible centres. Fit a physical material at selected surviving centres and bound its full data residual.
+& When both specifications fit the old reading, compare their predicted new fields. Compute necessary and sufficient incident energies.\\[2pt]
+Select an additional wave if there is more than one centre. & If the energy permits separation, store the complex weights before transmission.\\
+\end{tabular}\\
+$\downarrow$\\
+Transmit, receive the new complex field, retest the old survivors and report the revised cover or the surviving specification.
+\end{minipage}}
+\caption{How a new measurement enters the answer. The position inspection uses seven initial waves. The controlled binary experiment starts directly from two specifications and one old wave. Candidate selection can be approximate; removing a material class requires an original-operator lower bound outside the receiver error ball.}\label{fig:workflow}
+\end{figure}
+
+\subsection{Searching a field of possible inclusion centres}
+Fix a material specification. A candidate centre $c$ translates the prescribed inner core and its boundary layer. Clipping the translated sets at the edge of the field of view includes defects that cross the boundary. For the basic specification a known profile $p_i(c)$ takes values one on the core and one half on the layer. Every occupied cell has its own contrast within $p_i(c)[\ell,u]$. Every exterior cell, including the hole of an annulus, has its own value in $[0,b]$. A second specification allows independent values in $[0,5]$ throughout the boundary layer. A third query allows any one of several named profiles. Its excluded centres are the intersection of the excluded sets for the individual profiles. Centre uncertainty and the area occupied by material are different outputs.
+
+A coarse spatial query can dispose of several centres at once. For a tile of centres $C$ the interval $\ell_i(C)=\min_{c\in C}\ell_i(c)$, $u_i(C)=\max_{c\in C}u_i(c)$ contains the union of their material classes in every cell. If the larger class fails the measurement, remove the whole tile. Otherwise split it, ultimately testing the individual centres with their own narrower intervals. Oversized parent solves can be skipped by passing every descendant to the next level. This property permits early exit from a coarse test without losing coverage. For the fresh comparison we evaluated the remaining leaves directly from the noisy field and included the cost of the parent tests.
+
+For each centre and each material interval, apply Theorem~\ref{thm:set} to the stored complex observation. Retain every outcome for which the distance lower bound is at most the error radius. On retained positions try specific legal full-wave materials and verify their residual with the original Green operator. This gives three possible outcomes for a position: all its materials have been excluded, one compatible material has been found, or its status remains unresolved. For an amplitude query the union of all surviving amplitude bins is an outer bound within the declared material family. Rejecting a translated core does not put a pointwise upper bound on the permittivity at that pixel in every conceivable geometry.
+
+The calculation is practical because the background is common to the whole view. Embed the physical current by zero extension on a doubled Fourier grid and let $\widehat G$ be the stored circulant Green symbol. The same sector inequality holds in the added cells because their physical current is zero and their background interval has lower endpoint zero. Allowing additional currents in the calculation enlarges the relaxation in the safe direction. With unit background weight the material state operator is
+\begin{equation}
+ K_b=I-b(G+G\HH)/2,\qquad
+ \widehat {K_b^{-1}}(\xi)=[1-b\,\operatorname{Re}\widehat G(\xi)]^{-1}.
+                                                               \label{eq:pad}
+\end{equation}
+A positive lower bound on the denominator permits simultaneous calculation of the covariances of current evaluation, interior scattered field evaluation, receivers and incident fields. Translating a local cell pattern reuses the same covariances. Centres that clip differently at the boundary have separate patterns. An interior positive pivot in \eqref{eq:pad} does not force the modified material state or the state after adding receivers to be positive.
+
+For example, with local trace matrix $T$ the update to the state is $T\HH D T$. On a nonsingular active update, the only new material matrix to solve has the form $D^{-1}+TK_b^{-1}T\HH$. Its order is at most twice the number of modified cells. Singular row updates use \eqref{eq:augment}. At each positive scalar residual weight, receiver elimination introduces a matrix of order $p$. The final eigenproblem has order $s$. Its positive spectrum after the inertia penalty gives \eqref{eq:tail}. Adding a further illumination preserves the array and moving cell traces. Only their incident-field and source covariances change. The receive-space implementation and its error control are given in the appendix.
+
+For a truly indefinite common state, precompute its solves against a bank of moving traces and the sources. For $h$ retained nonpivot state coordinates, $q$ active signed trace rows and $s$ sources, each new inertia test then has order $h+q+s$. Dense precomputation with $m$ precomputed trace rows costs order $n^3+n^2m+nm^2$, in addition to storing the Gram blocks. An unrestricted family with $m$ proportional to the whole grid has a substantial offline cost. The localized patterns and the Fourier translation above are two ways to amortize this work. We time both the first search and a repeated search. The small-matrix cost does not include finding the initial material specification.
+
+\subsection{Reinterrogating an ambiguous cover}
+The online procedure is described below. A single conclusive outcome is meaningful even if no image is reconstructed. The separate witness search also detects a competing class to which the data really are compatible.
+
+\begin{enumerate}
+\item Form the cover from the original noisy measurements. Report verified material witnesses. Stop if the declared task is already resolved.
+\item Specify the allowed new source commands and incident power. For a comparison of two classes compute old-conditioned response forms using \eqref{eq:cond}. If there are two old-compatible material witnesses, use \eqref{eq:witness} to test whether the available energy is insufficient to guarantee a decision. Evaluate candidate powers and directions with \eqref{eq:dual}. Record the chosen command, power, noise radius and decision rule before evaluating the unknown material on that command.
+\item Take the new reading. For each class minimize its necessary quadratic form over the measurement's receiver noise ball. A strictly positive lower bound excludes that class. Try specific material witnesses against both readings. For a spatial cover, apply the joint old and new current test at every remaining centre. Keep every old exclusion.
+\end{enumerate}
+
+For many retained centres, computing pairwise conditional forms at every location can dominate the search. We examine a cheaper design rule in the location experiment. Select up to twenty representative centres using evenly spaced ranks in raster order. Compute the full-wave transfer at the nominal core contrast and a legal vacuum background for each. Among individual angles and the coherent eigenmodes of each representative pair, choose the command that maximizes the smallest nominal separation across those pairs. Representatives affect source proposals only. Every centre in the original cover is tested after the new measurement. The comparison includes the best single angle chosen by the same score. This matters when the array already has an individual transmitter near an effective coherent mode.
+
+For two material classes the search for multipliers uses actual old readings and a public model for each allowed box. In distorted-current coordinates $h=J-ME$, where $M$ is the diagonal midpoint material, the exact future field is affine in $h$. The necessary sector reads $\|h a\|^2\leq\|W_h E a\|^2$ for every source vector, where $W_h$ contains the spatial half-widths. Concentrating an additional signed optical weight on a cell changes the state by at most two rows. We screen state weights with the clean projected separation in the direction joining the two nominal responses. Two nonnegative weights then optimize \eqref{eq:dual} in the source subspace, using the actual incident-power Gram. The resulting eigenvector and dual weights are proposals. Strict separation requires an independent, one-sided evaluation on the original operator. A positive-state fit, single-beam choices and the known-pair coherent optimum use the same powers and receiver error. This comparison measures which part of any gain comes from coherent illumination and which part comes from controlling material uncertainty.

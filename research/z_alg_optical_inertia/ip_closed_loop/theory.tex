@@ -1,0 +1,105 @@
+\section{A fixed Green operator and two material tests}\label{sec:model}
+\subsection{The physical quantities}
+Use time dependence $\exp(-{\rm i}\omega t)$ and out-of-plane electric polarization. In a homogeneous nonmagnetic background, the two-dimensional outgoing potential for a polarization current in our normalization has kernel ${\rm i}k^2H_0^{(1)}(k|x-x'|)/4$. The contrast $\chi$ is the excess relative permittivity. Pulse discretization and collocation give the interior Green matrix $G$, the receiver map $S$ and a matrix $\Bd$ of available incident fields \cite{colton,richmond}. For a cell of equal-area disk radius $d$, the self interaction is ${\rm i}\pi kd H_1^{(1)}(kd)/2-1$. The source command matrix $V$ gives $B=\Bd V$. With a real diagonal material $X$ the governing relations are
+\begin{equation}
+ E=B+GJ,\qquad J=XE,\qquad F_X V=SJ,\qquad
+ F_X=S(I-XG)^{-1}X\Bd .                                    \label{eq:tm}
+\end{equation}
+There are $n$ material cells, $p$ receivers and $s$ measured illuminations. Each column of $J$ is a physical current and each row shares a material value across sources. A material class $\mathcal C$ prescribes $\ell_i\leq \chi_i\leq u_i$, including individual fixed cells. The receiver error has stated bounds in the units of $Y$. For a joint Frobenius radius $r$, a position can be removed if every allowed $X$ has $\|F_X V-Y\|_F>r$. A particular $X$ whose upper residual bound lies within $r$ establishes that the position is possible. Any remaining position must be retained. Statements below about transfer operators assume the forward problem is well posed on the material being considered.
+
+Let $T_i$ extract the two state rows $({\bf e}_i^\top,{\bf e}_i^\top G)$ and let $E_i$ add the incident field to the second row. Thus $z_i=(j_i,e_i)^\top=T_iJ+E_i Z$ with $Z=\binom{V}{Y}$. In this notation $j_i$ and $e_i$ each denote a row over all illuminations. The rank-one material law gives
+\begin{align}
+ D_i&=\begin{bmatrix}
+ w_i &-w_i m_i-{\rm i}\lambda_i/2\\
+ -w_i m_i+{\rm i}\lambda_i/2&w_i\ell_i u_i
+ \end{bmatrix},
+ \qquad m_i=(\ell_i+u_i)/2, \notag\\
+ z_i\HH D_i z_i&=w_i(\chi_i-\ell_i)(\chi_i-u_i)e_i\HH e_i\preceq0 .
+                                                               \label{eq:cell}
+\end{align}
+Here $w_i\geq0$ and $\lambda_i$ is real. The latter multiplies the lossless optical equality. The full source matrix in \eqref{eq:cell} retains the interference of the different illuminations at each cell. An unmeasured current can obey one power balance while failing these cross-source conditions.
+
+Add these local forms to the squared receiver residual and write
+\begin{equation}
+ \A=[S,0,-I]\HH[S,0,-I]+
+       \sum_i [T_i,E_i]\HH D_i[T_i,E_i]
+   =\begin{bmatrix}K&L\\ L\HH&C\end{bmatrix}.                \label{eq:state}
+\end{equation}
+On physical currents its compression by $\binom{J}{Z}$ is bounded above by the residual Gram matrix. Define $\A_Z=\diag(I_n,Z)\HH\A\diag(I_n,Z)$ and $\Pi=\diag(0_n,I_s)$. The number of strictly positive or negative eigenvalues is denoted by $\nplus$ or $\nminus$.
+
+\begin{theorem}[Exclusion and reuse of the current states]\label{thm:set}
+If $t\geq0$, $jt\geq r^2$, $1\leq j\leq s$ and
+\begin{equation}
+             \nplus(\A_Z-t\Pi)\geq n+j,                     \label{eq:border}
+\end{equation}
+the material class misses the noise ball. For nonsingular $K$, let
+$Q=C-L\HH K^{-1}L$, $H=Z\HH QZ$ and $\nu=\nminus(K)$. A squared distance lower bound is
+\begin{equation}
+                 \T_\nu(H)=\sum_{k=\nu+1}^{s}
+                      \max\{\lambda_k^\downarrow(H),0\}.       \label{eq:tail}
+\end{equation}
+For a family changing selected local traces, write
+$\A_Z^\theta-t\Pi=A_b+U\HH D U$ at a fixed threshold, and factor
+the nonzero part of $D$ as $D=C_D\HH\Sigma C_D$ with $\Sigma$ nonsingular and Hermitian. Both counts are obtained from the fixed augmented matrix construction
+\begin{equation}
+ \mathcal M=\begin{bmatrix}A_b&(C_DU)\HH\\ C_DU&-\Sigma^{-1}\end{bmatrix}.
+ \qquad
+ n_\pm(A_b+U\HH D U)=n_\pm(\mathcal M)-n_\pm(-\Sigma^{-1}).
+                                                               \label{eq:augment}
+\end{equation}
+Any verified nonsingular common state pivot can be eliminated first in $\mathcal M$. Its inertia is added back. All other state coordinates stay in the small problem.
+\end{theorem}
+\begin{proof}
+The graph with columns $\binom{J}{I_s}$ has dimension $s$. Its intersection with any positive space in \eqref{eq:border} has dimension at least $j$. Compression to that subspace shows that at least $j$ eigenvalues of the residual Gram are strictly greater than $t$. For nonsingular $K$, completing the square writes the compressed form as $H+P\HH P-N\HH N$ with at most $\nu$ rows in $N$. Interlacing and nonnegativity of the residual Gram give \eqref{eq:tail}. This is sharp for the retained rank information. In the eigenbasis of $H$, choose $N\HH N$ to remove the largest $\min(\nu,\nplus(H))$ positive eigenvalues and take the positive part of what remains. Finally, eliminating $-\Sigma^{-1}$ in \eqref{eq:augment} recovers the updated matrix. Eliminating a common nonsingular state pivot first is another congruence of the same quadratic form \cite{haynsworth,tian,fan}. This argument permits coupled zero modes of the full base or of the update.
+\end{proof}
+
+The word ``fixed'' applies to the Green operator and available traces, not to a low-dimensional approximation of every material current. At fixed interval midpoint, narrowing a half-width changes the local quadratic form by a nonnegative multiple of $e_i\HH e_i$. Its update has rank one. A midpoint change can give one positive and one negative auxiliary direction. For a nested interval with a different centre one can also transfer a parent's exclusion by simple set inclusion. A comparison with direct state factorization is meaningful on nonnested intervals whose answer was unknown at the parent.
+
+\subsection{An illumination for two surviving material classes}
+For one class let $Q$ be as above. Suppose the matrix of old errors satisfies $D_o\preceq\Omega$. A joint Frobenius bound gives $\Omega=r_o^2 I$. For one old beam this is the scalar $r_o^2$. With several independent column bounds the diagonal of their squared radii does not in general dominate their error Gram. For the old data $Z_o$, put $P_o=Z_o\HH QZ_o-\Omega$. Append a \emph{clean} hypothetical reading $y$ for a command $a$. Its error row and column vanish. The compression proof above implies that
+\[
+ \nplus\begin{pmatrix}P_o&Z_o\HH Qz\\z\HH QZ_o&z\HH Qz\end{pmatrix}
+ \leq\nu,\qquad z=\binom a y .
+\]
+If $P_o$ is invertible and $\nplus(P_o)=\nu$, the old data already use every available positive exception. The conditional future response satisfies
+\begin{equation}
+ q(a,y)=z\HH Q_o z\leq0,\qquad
+ Q_o=Q-QZ_oP_o^{-1}Z_o\HH Q.                                \label{eq:cond}
+\end{equation}
+With fewer than $\nu$ positive directions, a single new column can add at most one. The corresponding count alone cannot resolve a larger deficit. Even at saturation the receiving block of $Q_o$ may be indefinite. Counting its bounded directions is not a measure of the separation of two material classes.
+
+For classes $i=1,2$ write $Q_{o,i}=\left[\begin{smallmatrix} A_i&L_i\HH\\ L_i&R_i\end{smallmatrix}\right]$ and let $\mathcal Y_i(a)=\{y:q_i(a,y)\leq0\}$. The distance between these two sets is the smallest difference a clean pair of predicted readings can have in this relaxation. Commands lie in an available subspace with positive power Gram $W$. Its normalization specifies what equal energy means.
+
+\begin{theorem}[Conditional distance and incident energy]\label{thm:power}
+For each material class assume that the state $K_i$ and old block $P_{o,i}$ are invertible, $D_o\preceq\Omega$, and $\nplus(P_{o,i})=\nu_i$. With the resulting conditional forms \eqref{eq:cond}, for nonnegative $\alpha_1,\alpha_2$ form
+\begin{align}
+ D_\alpha&=\begin{bmatrix} I+\alpha_1R_1&-I\\-I&I+\alpha_2R_2\end{bmatrix},
+ &B_\alpha&=\binom{\alpha_1 L_1}{\alpha_2 L_2},\notag\\
+ H_\alpha&=\alpha_1 A_1+\alpha_2 A_2-B_\alpha\HH D_\alpha^{-1}B_\alpha .
+                                                               \label{eq:dual}
+\end{align}
+Whenever $D_\alpha\succ0$, the squared distance between $\mathcal Y_1(a)$ and $\mathcal Y_2(a)$ is at least $a\HH H_\alpha a$. An incident command with $a\HH H_\alpha a>4r_a^2$ separates the two physical classes for every future receiver error of norm at most $r_a$. At power $E$ the best such bound for fixed $\alpha$ is $E\lambda_{\max}(H_\alpha,W)$ on the allowed subspace.
+
+If both quadratic fibres have strictly feasible points for a fixed command and some choice of weights yields $D_\alpha\succ0$, the supremum of \eqref{eq:dual} is the exact squared distance between these two outer sets. If these conditions hold for all allowed nonzero commands, their optimal one-shot squared separation per unit energy equals $\sup_\alpha\lambda_{\max}(H_\alpha,W)$. For strictly positive finite gain the infimum of sufficient energy for these outer sets is $4r_a^2$ divided by that gain.
+\end{theorem}
+\begin{proof}
+Set $v=\binom{y_1}{y_2}$. Adding $\alpha_i q_i(a,y_i)$ to $\|y_1-y_2\|^2$ and minimizing over $v$ gives \eqref{eq:dual} by completion of squares. The two radius-$r_a$ error balls around any clean pair are disjoint if the squared distance exceeds $4r_a^2$. The energy statement for a trial pair follows by the Rayleigh principle.
+
+For exactness lift $\binom{v}{1}\binom{v}{1}^{\!*}$ to a positive semidefinite complex Hermitian matrix. Its final diagonal entry is one. There are two additional real affine inequalities. Strictly feasible points of the two quadrics yield a strictly feasible lift after a sufficiently small positive perturbation of the top-left block. A positive definite dual state block bounds the trace of the top-left block on every feasible objective sublevel set by completion of squares. The normalized sublevel set is consequently compact. An optimal extreme point of the lifted feasible set exists. If its rank is $h$, a Hermitian perturbation restricted to its range has $h^2$ real degrees of freedom. The at most three active real constraints imply $h^2\leq3$, hence $h=1$ \cite{huang}. Strong duality gives the claimed equality. A dual optimum with singular state can be approached by mixing with a strictly feasible dual point. Finally both optimizations are suprema, and the clean quadratic forms are homogeneous in the pair $(a,y)$. The stated threshold assumes an absolute error radius independent of power.
+\end{proof}
+
+There is a converse with physical rather than relaxed content. If actual materials in the two classes fit the old data, with transfer matrices $F_1,F_2$, then for any incident energy $E$ their clean responses differ by at most
+\begin{equation}
+       \sqrt E\,\|(F_1-F_2)W^{-1/2}\|_2 .                    \label{eq:witness}
+\end{equation}
+If this is at most $2r_a$ their midpoint is an admissible common new reading for every command at that energy. This limits a worst-case guarantee, while a particular instrument reading may still be decisive. For exact individual transfer matrices the maximizing wave in \eqref{eq:witness} is the known binary discrimination eigenmode \cite{bouchet}. The uncertainty calculation adds a sufficient energy for entire material classes and an experiment capable of testing that prediction. An old-data saturation count alone gives neither endpoint.
+
+\paragraph{One transmitter at a time and coherent hardware.}
+A useful lower bound on hardware capability survives adaptive acquisition. Normalize each permitted elementary wave to unit incident power. Suppose the \emph{same} two old-compatible materials admit a common reading $m_j$ on each elementary wave $j$, with errors at most $\kappa_j$. In an adaptive sequence, respond to the selected wave $t_h e_{j_h}$ by $t_h m_{j_h}$. Both materials then produce the same history for the controller. For either one, the squared error of the whole new transcript is at most
+\begin{equation}
+   \sum_h |t_h|^2\kappa_{j_h}^2
+      \leq E\max_j\kappa_j^2,\qquad \sum_h|t_h|^2\leq E.     \label{eq:transcript}
+\end{equation}
+This proves indistinguishability at a fixed joint absolute error radius whenever $\sqrt E\max_j\kappa_j\leq r_a$. The argument holds for each realization of the controller's random choices. It uses linearity in the illumination of a fixed multiple-scattering medium. Independent stochastic receiver noise that averages down with repeated exposures defines a different experiment.
+
+More generally, for a subset $I$ of simultaneous elementary waves, restrict both $W$ and $H_\alpha$ to their principal submatrices on $I$. A positive lower separation tests sufficiency of that set of transmitters. For the same two physical material witnesses, the largest generalized eigenvalue of $((F_1-F_2)_I\HH(F_1-F_2)_I,W_{II})$ gives a necessary power bound. Taking the largest such gain over the allowed subsets in \eqref{eq:transcript} also covers causal time sharing among sparse coherent commands. The upper and lower tests can therefore bracket the required number of simultaneously controlled transmitters. Enumerating all subsets of size $h$ costs $\binom{m}{h}$ small source problems. The field solve is shared between these problems.

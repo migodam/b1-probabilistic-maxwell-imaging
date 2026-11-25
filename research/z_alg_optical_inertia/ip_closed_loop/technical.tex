@@ -1,0 +1,41 @@
+\appendix
+\section{One-sided evaluation on the discrete operator}\label{sec:implementation}
+The stored receiver and incident matrices and the stored Fourier symbol define the discrete numerical contract. At 96 points per side, the Green interaction at physical cell separation $(i,j)$ is an entry of the inverse discrete Fourier transform of that symbol. We enclose the transform and the required convolution tables in 128-bit complex balls. This retains uncertainty in the individual entries when the same entries appear in different submatrices. Direct dense inversion of a 9216 by 9216 matrix is unnecessary. In areas known to be exact vacuum, the polarization current is identically zero, while propagation through that area remains in the Green operator. With unconstrained exterior cells the full padded operator in \eqref{eq:pad} is used.
+
+Write the material part of \eqref{eq:state} before the receiver term as $J\HH K_mJ-J\HH U B-B\HH U\HH J+B\HH C_mB$, where the square notation denotes its application to all the source columns. For a nonsingular $K_m$ define the stationary current $J_m=K_m^{-1}UB$, the corresponding receiver field $Y_m=SJ_m$ and
+\[
+ P=SK_m^{-1}S\HH,\qquad
+ T=B\HH(U\HH K_m^{-1}U-C_m)B.
+\]
+The scalar $\gamma>0$ multiplying the entire material form can be varied without recomputing these three arrays. After adding the receiver residual and eliminating the state, the required matrices and count are
+\begin{align}
+ U_p&=I+P/\gamma,\qquad
+ H=(Y-Y_m)\HH U_p^{-1}(Y-Y_m)-\gamma T,\\
+ \nu&=\nminus(K_m)-\nminus(U_p).                             \label{eq:receiver}
+\end{align}
+The sign follows by comparing the two Schur complements of the state--receiver block with receiver pivot $-I$. If either pivot cannot be separated from zero, this computation contributes no strict decision. Retaining the uneliminated variables in \eqref{eq:augment} covers exact singular updates. In particular, a null current that couples to a source cannot simply be removed.
+
+Small changes in a computed inverse need not have a comparable effect on the physically excited traces. To bound the relevant action, let $A=A\HH$ be invertible, $V$ be a block of ports or local traces, $X$ a numerical solution to $AX=V$ and $R=V-AX$. Then
+\begin{equation}
+ V\HH A^{-1}V=V\HH X+X\HH V-X\HH AX+R\HH A^{-1}R.           \label{eq:second}
+\end{equation}
+An upper bound on $\|A^{-1}\|_2\|R\|_2^2$ encloses the final term even when $A$ is indefinite. The same polarization identity bounds the off-diagonal block for two different right-hand sides by the product of their two defect norms. This evaluation was important close to a boundary of the spatial map. Bounding the whole inverse error linearly gave too little information about the actual array fields.
+
+The batched implementation uses verified Fourier lag tables and explicit enclosures for dot products, Schur residuals and eigenvector orthogonality. Eigenvectors proposed by binary64 arithmetic provide a trial congruence, and positive lower endpoints after subtracting matrix error prove the number of strict signs used in \eqref{eq:border}. The receiver calculation uses normwise perturbation of Hermitian eigenvalues. Independent original-operator calculations use complex ball arithmetic \cite{arb}; a residual-corrected thin solve bounds the quadratic action of the native state. For singular reference examples an independent exact rational congruence checks zero modes and source coupling. Physical witnesses are checked using their original constitutive defects and an inverse bound for that material. A forward solver reporting convergence is insufficient for this step.
+
+For a fixed trial pair of conditional forms and a transmitted vector, the one-sided proof of \eqref{eq:dual} uses only a receiving matrix of order $2p$. Equivalently, positivity of its border with the constant term decreased by $4r_a^2$ proves prospective separation. After observing $y_m$, write $v=(a^\top,y_m^\top)^\top$, $b=L_i a+R_i y_m$. For any $\eta\geq0$ with $R_i+\eta I\succ0$,
+\begin{equation}
+ \min_{\|e\|\leq r_a} q_i(a,y_m+e)
+ \geq v\HH Q_{o,i}v-\eta r_a^2-b\HH(R_i+\eta I)^{-1}b.     \label{eq:trust}
+\end{equation}
+We verify a positive lower endpoint on this expression independently of the choice of $\eta$. The physical witness check uses the same incident power and the individual old and new noise balls. The existence of a feasible test vector or an attained optimum of the numerical multiplier search is unnecessary for weak duality. Nonempty old-compatible material classes were established explicitly in the binary comparisons.
+
+\paragraph{Checking a borderline pair of transmitters.}
+One can also test a proposed command using the real width of each contrast interval. At the interval centre $X_c$ write $E_c$ and $Y_c$ for the operators taking a source command to the total field and to the clean received field, $D_c=S(I-X_cG)^{-1}$, $T_c=G(I-X_cG)^{-1}$ and $W_c=\diag((u_i-\ell_i)/2)$. For a real diagonal matrix $\Xi$ with $\|\Xi\|\leq1$, the contrast perturbation is $W_c\Xi$. If $\eta\geq\|T_c W_c\|_2$ is less than one, a unit receiver projection $w$ gives
+\begin{align}
+ \left|{\rm Re}\, w\HH (F_X a-Y_c a)\right|
+ &\leq \sum_i\left|{\rm Re}\{(w\HH D_cW_c)_i(E_c a)_i\}\right|\notag\\
+ &\quad+\|w\HH D_c W_c\|_2\,\frac{\eta}{1-\eta}\,\|E_c a\|_2 .
+ \label{eq:realwidth}
+\end{align}
+Indeed, the first perturbation is $D_cW_c\Xi E_ca$. Its real projection is bounded coordinate by coordinate using that the material is real. The remaining series contains at least one factor $T_c W_c\Xi$, yielding the second term. This uses a contracting uncertainty interval about a potentially strongly scattering background. It cannot replace the indefinite position comparison on intervals with admissible spectral radius above one. Two centred intervals on the real receiver axis, separated by more than $2r_a$, prove full complex receiver separation. We apply this calculation only to prospective sparse waves left unresolved by the quadratic test. The finite search for $a,w$ proposes the directions; the endpoint arithmetic determines whether they work.
