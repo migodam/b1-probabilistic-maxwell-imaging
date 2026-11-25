@@ -1,0 +1,1002 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fixed-operator normalized record vocabulary",
+  "description": "Array references describe persisted arrays, not a claim every historical file uses this flat layout.",
+  "$defs": {
+    "ArrayRef": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shape": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "dtype": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "file",
+        "key",
+        "shape",
+        "dtype"
+      ]
+    },
+    "ModelContract": {
+      "type": "object",
+      "properties": {
+        "G": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "S": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "Bdict": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "grid": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "units": {
+          "type": "string",
+          "minLength": 1
+        },
+        "time_convention": {
+          "enum": [
+            "exp(-i omega t)"
+          ]
+        },
+        "model_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operator": {
+          "enum": [
+            "EXACT_STORED_FLOAT",
+            "INTERVAL_DISCRETIZATION",
+            "SAMPLE_MODEL_ERROR"
+          ]
+        }
+      },
+      "required": [
+        "G",
+        "S",
+        "Bdict",
+        "grid",
+        "units",
+        "time_convention",
+        "model_hash",
+        "operator"
+      ]
+    },
+    "MaterialContract": {
+      "type": "object",
+      "properties": {
+        "ell": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "u": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "material_type": {
+          "enum": [
+            "real",
+            "complex"
+          ]
+        },
+        "known_rows": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "background": {
+          "type": "object"
+        },
+        "task_prior": {
+          "type": "object"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "ell",
+        "u",
+        "material_type",
+        "known_rows",
+        "background",
+        "task_prior",
+        "version"
+      ]
+    },
+    "NoiseContract": {
+      "type": "object",
+      "properties": {
+        "r": {
+          "type": "number",
+          "minimum": 0
+        },
+        "omega": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArrayRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "omega_proof_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "frobenius_proof_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "per_column_r": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "r",
+        "frobenius_proof_source"
+      ],
+      "dependentRequired": {
+        "omega": [
+          "omega_proof_source"
+        ]
+      }
+    },
+    "Acquisition": {
+      "type": "object",
+      "properties": {
+        "V": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "Y": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "receiving_basis_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "whitening_transform": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArrayRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "power_gram": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArrayRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "energies": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "old_noise": {
+          "$ref": "#/$defs/NoiseContract"
+        },
+        "new_noise": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NoiseContract"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "block_hashes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "V",
+        "Y",
+        "receiving_basis_id",
+        "energies",
+        "old_noise",
+        "model_hash",
+        "data_hash"
+      ]
+    },
+    "MaterialNode": {
+      "type": "object",
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contract_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ell": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "u": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "coordinates": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "candidate_centers": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "region_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "box_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "EXCLUDED",
+            "WITNESS_FOUND",
+            "UNRESOLVED"
+          ]
+        }
+      },
+      "required": [
+        "node_id",
+        "parent_id",
+        "contract_id",
+        "ell",
+        "u",
+        "coordinates",
+        "candidate_centers",
+        "children",
+        "region_label",
+        "box_hash",
+        "status"
+      ]
+    },
+    "FixedKernel": {
+      "type": "object",
+      "properties": {
+        "common_K": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "common_L": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "common_C": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "retained_pairs": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "trace_nullspace_proof": {
+          "type": "string",
+          "minLength": 1
+        },
+        "positive_complement_lower": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transform_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retained_state_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "eliminated_state_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "joint_trace_gram": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArrayRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "common_K",
+        "common_L",
+        "common_C",
+        "retained_pairs",
+        "trace_nullspace_proof",
+        "transform_version",
+        "retained_state_count",
+        "eliminated_state_count"
+      ]
+    },
+    "CertificateRecord": {
+      "type": "object",
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "box_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weights_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weights": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "t": {
+          "type": "number",
+          "minimum": 0
+        },
+        "j": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "state_dimension": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "proposal_positive": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "proposal_negative": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verified_positive_at_least": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verified_negative_at_least": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "residual_lower": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "positive_gap_lower": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "negative_gap_lower": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "positive_frame_gram_lower": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "negative_frame_gram_lower": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "positive_frame": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArrayRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "negative_frame": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArrayRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "algorithm_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operator_setup_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "interval_check_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "precision_bits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "peak_rss_bytes": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failure_reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "EXCLUDED",
+            "WITNESS_FOUND",
+            "UNRESOLVED"
+          ]
+        }
+      },
+      "required": [
+        "node_id",
+        "model_hash",
+        "data_hash",
+        "weights_hash",
+        "radius",
+        "t",
+        "j",
+        "state_dimension",
+        "precision_bits",
+        "status"
+      ]
+    },
+    "WitnessRecord": {
+      "type": "object",
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material": {
+          "$ref": "#/$defs/ArrayRef"
+        },
+        "material_in_box": {
+          "type": "boolean"
+        },
+        "verified_original_square_solve": {
+          "type": "boolean"
+        },
+        "residual_upper": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "box_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "EXCLUDED",
+            "WITNESS_FOUND",
+            "UNRESOLVED"
+          ]
+        }
+      },
+      "required": [
+        "material",
+        "material_in_box",
+        "radius",
+        "model_hash",
+        "data_hash",
+        "status"
+      ]
+    },
+    "Proposal": {
+      "type": "object",
+      "properties": {
+        "old_data_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "public_candidate_cover": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_indices": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "scores": {
+          "type": "object"
+        },
+        "physical_energy": {
+          "type": "number",
+          "minimum": 0
+        },
+        "old_noise": {
+          "$ref": "#/$defs/NoiseContract"
+        },
+        "new_noise": {
+          "$ref": "#/$defs/NoiseContract"
+        },
+        "guarantee": {
+          "type": "string",
+          "minLength": 1
+        },
+        "wall_time_unix": {
+          "type": "number"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "old_data_hash",
+        "public_candidate_cover",
+        "policy",
+        "source_indices",
+        "scores",
+        "physical_energy",
+        "old_noise",
+        "new_noise",
+        "guarantee",
+        "wall_time_unix",
+        "scope"
+      ]
+    },
+    "ExperimentRow": {
+      "type": "object",
+      "properties": {
+        "target_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pair_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "condition_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "EXCLUDED",
+            "WITNESS_FOUND",
+            "UNRESOLVED"
+          ]
+        },
+        "model_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_hash": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "target_id",
+        "material_hash",
+        "pair_id",
+        "condition_id"
+      ]
+    },
+    "NodeStatus": {
+      "enum": [
+        "EXCLUDED",
+        "WITNESS_FOUND",
+        "UNRESOLVED"
+      ]
+    }
+  },
+  "x-protocol-field-map": {
+    "9": {
+      "schema": "ModelContract",
+      "status": "mapped",
+      "sources": [
+        "A/results/acquisition.npz:G,S,B,xy; A/PREREGISTRATION.json",
+        "B/public/{small,native}_geometry.npz:G or spectrum,S,B; B/public/acquisition.json",
+        "C/public_model.npz:{layout}__G,__S,__Bdict; C/registration.json:time_convention,scenes.model_hash"
+      ],
+      "boundary": "Numerical arrays, grid and units are split across model and receipt. C analytic reconstruction uses rational geometry, not the saved midpoint model."
+    },
+    "10": {
+      "schema": "ModelContract",
+      "status": "scope_limited",
+      "sources": [
+        "A stored binary64 arrays; B/run.py:geometry_receipt",
+        "C/registration.json:model; C/model.py:geometry",
+        "native/contract.json:operator_contract"
+      ],
+      "boundary": "EXACT_STORED_FLOAT and INTERVAL_DISCRETIZATION paths are executed. SAMPLE_MODEL_ERROR names an error scope; no generic model-error inflation or continuum guarantee."
+    },
+    "11": {
+      "schema": "MaterialContract",
+      "status": "scope_limited",
+      "sources": [
+        "A/results/acquisition.npz:boxes; A/PREREGISTRATION.json",
+        "B/freeze.json; B/run.py:Contract,encode_box",
+        "C/registration.json; C/public_model.npz:__lo,__hi"
+      ],
+      "boundary": "Closed real per-cell intervals. Complex material and arbitrary continuous task priors are outside these adapters."
+    },
+    "12": {
+      "schema": "MaterialContract",
+      "status": "mapped",
+      "sources": [
+        "A/bounds.py:Acquisition.strict_witness",
+        "A/compressed.py:exact_chart",
+        "B/certify.py:strict_witness",
+        "C/model.py:exact_forward"
+      ],
+      "boundary": "Whole physical forward solve includes fixed rows. B may eliminate exact vacuum rows because their currents vanish. A chart enforces only its selected shared rows; whole physical witness solve is independent."
+    },
+    "13": {
+      "schema": "Acquisition",
+      "status": "partial",
+      "sources": [
+        "A/results/acquisition.npz:V,Y,radii; A/results/ACQUISITION_SEAL.json",
+        "B/public/acquisition.json:Y_hash,radius; B/public/{grid}_geometry.npz",
+        "C/proposal.json:old_data_hash,energy_contract,batches.actions; C/acquired/acquisition.json"
+      ],
+      "boundary": "Identity or preapplied receiver basis is recorded by the experiment; C has exact per-beam energy and unit-plane-wave definitions. General whitening covariance and a full serialized incident Gram are not present on every historical suite. Adapter accepts an explicit source Gram.",
+      "retrospective": {
+        "recoverable": [
+          "Saved V/Y columns and raw model arrays",
+          "C analytic per-beam energies and applied receiver normalization",
+          "a source Gram induced by a documented stored power metric"
+        ],
+        "unrecoverable": [
+          "Measured receiver whitening/covariance calibration or power telemetry that was never recorded",
+          "a calibrated physical power Gram when the original metric is absent"
+        ]
+      }
+    },
+    "14": {
+      "schema": "NoiseContract",
+      "status": "mapped",
+      "sources": [
+        "A/results/acquisition.npz:radii",
+        "B/public/acquisition.json:radius",
+        "C/registration.json:noise_contract; C/proposal.json:matrix_noise_upper",
+        "native/contract.json:noise_upper"
+      ],
+      "boundary": "The T^*T error Gram uses the scalar r² I outer bound when needed; proof uses ||T||_2 ≤ ||T||_F."
+    },
+    "15": {
+      "schema": "NoiseContract",
+      "status": "mapped",
+      "sources": [
+        "C/design.py:envelope",
+        "api.py:NoiseContract.omega,append_observation"
+      ],
+      "boundary": "No diagonal of individual column bounds is promoted to a Gram bound. Disjoint Frobenius column groups compose through summed squared radii."
+    },
+    "16": {
+      "schema": "MaterialNode",
+      "status": "mapped",
+      "sources": [
+        "B/results/{case}.json:center_trees,amplitude_trees,arbitrary_high; B/run.py:Contract,encode_box",
+        "A/results/raw/pair_01.json:rows.box_positions"
+      ],
+      "boundary": "B provides the hierarchy, relation IDs and finite center sets; A is a frozen finite box list, C is a frozen two-box cover."
+    },
+    "17": {
+      "schema": "MaterialNode",
+      "status": "mapped",
+      "sources": [
+        "A/results/acquisition.npz:xy,boxes",
+        "B/run.py:encode_box,decode_box",
+        "C/public_model.npz:__lo,__hi; C/model.py:geometry"
+      ],
+      "boundary": "B sparse serial form stores both defaults and exact exceptions and verifies the decoded box hash. Grid indexing reconstructs full physical coordinates."
+    },
+    "18": {
+      "schema": "FixedKernel",
+      "status": "scope_limited",
+      "sources": [
+        "src/fixed_trace.py:FixedKernel,build_fixed_kernel",
+        "A/compressed.py:TraceBank.base,verification",
+        "B/certify.py:FixedKernel.prepare_arb"
+      ],
+      "boundary": "Exact trace-null and positive-complement evidence from the pivot path; B uses a separately valid auxiliary congruence. Some historical cache objects are rebuilt from the original arrays rather than serialized."
+    },
+    "19": {
+      "schema": "CertificateRecord",
+      "status": "mapped",
+      "sources": [
+        "A/results/raw/pair_01.json:rows.methods",
+        "B/results/{case}.json:center_trees",
+        "C/interval_readback.json:joint_update"
+      ],
+      "boundary": "Some observation/model hashes are inherited via parent receipt rather than repeated per node; C uses the stated source-tail bound rather than a single t,j."
+    },
+    "20": {
+      "schema": "CertificateRecord",
+      "status": "partial",
+      "sources": [
+        "A/bounds.py:verify_inertia; A/results/raw/pair_01.json; A/results/raw/pair_01_arrays.npz",
+        "B/certify.py:interval_inertia; B/results/independent_replay_frames.npz",
+        "C/design.py:form_border,report_support"
+      ],
+      "boundary": "Recorded positive-frame Gram evidence and bounds. Negative counts can be unresolved; historical positive-only design and C spectral verification use different proof representations.",
+      "retrospective": {
+        "recoverable": [
+          "Saved proposal or verified frames and margins where present",
+          "new independently verified negative counts or margins recomputed from original inputs"
+        ],
+        "unrecoverable": [
+          "The actual original floating frame, exact trial order and rounding history for unsaved solver proposals"
+        ]
+      }
+    },
+    "21": {
+      "schema": "CertificateRecord",
+      "status": "partial",
+      "sources": [
+        "A/results/raw/pair_01.json:elapsed_wall_seconds,shared_trace_preprocess,peak_resident_memory_bytes",
+        "B/results/{case}.json:common_kernel_setups,total_online,peak_resident_bytes",
+        "C/proposal.json; C/interval_readback.json; C/results.json"
+      ],
+      "boundary": "Timing and precision retained; C lacks per-call peak RSS. Historic development attempts do not all have complete individual timelines.",
+      "retrospective": {
+        "recoverable": [
+          "Recorded per-suite and per-stage wall/CPU time, precision and any stored memory peaks"
+        ],
+        "unrecoverable": [
+          "Original per-call RSS peaks, partitioned CPU and wall times, temporary solver memory and abandoned-attempt chronology that were not logged"
+        ]
+      }
+    },
+    "22": {
+      "schema": "WitnessRecord",
+      "status": "mapped",
+      "sources": [
+        "A/run.py:make_witness; A/bounds.py:Acquisition.strict_witness",
+        "B/certify.py:strict_witness; B/replay.py:replay",
+        "C/acquired/acquisition.json; C/interval_readback.json; C/old_box_witnesses.json"
+      ],
+      "boundary": "Original material arrays and identity links may live in a separate permitted instrument/offline file; old-both witnesses and new true witness are distinct."
+    },
+    "23": {
+      "schema": "NodeStatus",
+      "status": "mapped",
+      "sources": [
+        "A/score.py:status_record",
+        "B/run.py:STATUS",
+        "C/readout.py:class_state"
+      ],
+      "boundary": "Node outcome is one of three states. Checked strict edge, bounded envelope and acquisition receipt statuses are separate types."
+    },
+    "24": {
+      "schema": "Proposal",
+      "status": "mapped",
+      "sources": [
+        "C/proposal.json:source_rows,batches.actions,numerical_scores",
+        "C/acquired/acquisition.json:frozen_proposal_hash",
+        "C/full_menu_replay.json"
+      ],
+      "boundary": "Freeze includes concrete source combinations, noise and physical fluence, then acquisition records the exact file used. Scope is conditional on the registered two-box cover."
+    },
+    "25": {
+      "schema": "ExperimentRow",
+      "status": "partial",
+      "sources": [
+        "A/score.py:summary; A/results/raw/pair_01.json:rows.target_id,pair_id,condition_id",
+        "B/results/{case}.json:id,object_id",
+        "C/outcomes.csv:target_id,material_hash,pair_id,condition_id"
+      ],
+      "boundary": "C emits all four per path. In A/B, material identity is joined at authorized offline scoring; B object ID is the count unit and the node/geometry rows are paired conditions.",
+      "retrospective": {
+        "recoverable": [
+          "A/B physical material hash and linking IDs from retained arrays plus the frozen/offline mapping, only in the permitted offline scoring stage",
+          "all four fields directly from C outcomes"
+        ],
+        "unrecoverable": [
+          "Whether an older online row had its absent identifier actually bound at acquisition time cannot be reconstructed from a later offline join"
+        ]
+      }
+    }
+  }
+}

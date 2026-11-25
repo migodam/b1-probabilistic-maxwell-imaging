@@ -1,0 +1,37 @@
+\section{Which spatial questions admit a map?}\label{sec:space}
+\subsection{A cover of core centres}
+A physically high value in one cell and an inclusion with a finite core are different observations about a material. For a region $D$, the assertion $\max_{i\in D}\chi_i\ge t$ is a union over cells. Excluding one cell from this union establishes that a peak cannot lie in that cell. To conclude $\max_{i\in D}\chi_i<t$ one must exclude every member. Conversely, excluding the single box $\chi_i\le t$ throughout $D$ establishes that a peak above $t$ exists somewhere in $D$. It does not locate the peak. A specified shape with uncertain amplitude defines a third query, with a separate interval at every cell of the prescribed profile.
+
+Consider a class with unknown centre $c$, an inner set $I_c$ guaranteed to have contrast at least $u$, an outer set $O_c$ within which contrast can reach $U$, and background $[0,b]$ elsewhere, $0\le b<u\le U$. No proportionality is required between neighbouring cells. The annular and paired-inclusion versions use translated annular and paired templates. For a square of centre labels $C$ form
+\begin{equation}
+ I_C=\bigcap_{c\in C} I_c,\qquad O_C=\bigcup_{c\in C} O_c .
+ \label{eq:map}
+\end{equation}
+The single box with mandatory core $I_C$, allowed outer region $O_C$ and background cap $b$ contains every material attached to every $c\in C$. This follows directly by testing each coordinate against the least lower endpoint and largest upper endpoint. Excluding this box excludes the whole square of centres. Otherwise subdivide the centre labels or keep every label at the current resolution. A witness is assigned only to centres for which its material satisfies the bounds. An unresolved centre denotes an outer possibility. This remains true when a parent has empty common core.
+
+The number of centre labels is two-dimensional even though the individual material values inside the boxes are independent. For the single fixed subspace of theorem~\ref{th:fixed}, its dimension depends on the union of cells that change between tests. When the common state block is positive definite, a moving-support implementation can instead store and query the trace Gram of a larger library. It can be large near the root of the tree. Subdivision at such a node preserves coverage without running a costly test there. For a discrete centre grid the coverage stops at the stated labels. Continuous centres require conservative coverage of the variation within each centre tile as well.
+
+\subsection{Loss of a bound and loss of information}
+In a fixed material test, enlarging the outer background from $[0,b_0]$ to $[0,b_0+\delta]$ changes the original sector form affinely. In the notation of proposition~\ref{prop:count}, write the threshold matrix as $A_0-\delta T_O$. If a positive test frame $Q_+$ gives $G_0=Q_+^*A_0Q_+\succ0$, it stays positive precisely while
+\begin{equation}
+ I-\delta\,G_0^{-1/2}Q_+^*T_OQ_+G_0^{-1/2}\succ0 .
+ \label{eq:toler}
+\end{equation}
+A positive largest eigenvalue gives a limiting expansion equal to its reciprocal. A nonpositive largest eigenvalue permits arbitrary positive expansion of this frame, subject to the declared model. We hold the weights, basis and noise event fixed here. The calculation measures the range of one proof. It cannot establish that two different materials produce the same fields.
+
+There is a separate physical mechanism for indistinguishability. Let $f(\theta,z)$ be the independent real and imaginary measurements after removing exact redundancies. Here $\theta$ describes a task and $z$ the unknown background. At a regular interior material the derivative in a real material direction $d$ is the real representation of
+\begin{equation}
+ S(I-XG)^{-1}\diag(d)(I-GX)^{-1}B .
+ \label{eq:deriv}
+\end{equation}
+If $A_b=D_zf$ has full row rank, choose a right inverse $R_b$ and set $z=z_0+R_b v$. The implicit function theorem applied to $f(\theta,z_0+R_bv)-f(\theta_0,z_0)$ produces a background adjustment that preserves the complete nonlinear data for sufficiently small task changes. Interior slack keeps it legal. Quantitatively, if $\phi(v)=f(\theta,z_0+R_bv)-f(\theta_0,z_0)$ satisfies $\|D_v\phi-I\|\le\eta<1$, and the initial defect is at most $a$, mapping a ball of radius $a/(1-\eta)$ into itself gives a background cost at most $\|R_b\|_{2\to\infty}a/(1-\eta)$. An interval proof must verify the derivative bound, the domain of that ball and the material slack. When $A_b$ lacks full row rank, projection orthogonal to its range detects an uncompensated first-order effect; vanishing of this projection alone gives no nonlinear ambiguity.
+
+A three-cell example illustrates the size of the adjustment. At one complex reading, shifting the task contrast from 0.70 to 0.74 can be offset by moving the two background values from $(0.0625,0.0625)$ to approximately $(0.03723,0.08443)$. The background derivative has full real rank two. For the stored discrete operator a real resultant has a sign-changing rational bracket, and a uniform resolvent bound keeps the denominator nonzero. Thus equality of the complex reading in this example is exact.
+
+An isolated peak illustrates the remaining limitation. Around $X_0$ define $T_0=(I-GX_0)^{-1}G$, $P_0=S(I-X_0G)^{-1}$ and $E_0=(I-GX_0)^{-1}B$. Increasing cell $i$ by $d$ produces exactly
+\begin{equation}
+ \Delta Y=\frac{d}{1-d(T_0)_{ii}}\,
+          (P_0 q_i)(q_i^\top E_0).
+ \label{eq:spike}
+\end{equation}
+The single-cell total-field equation gives the denominator and the exterior propagation supplies the two field factors. For a regular update the signal can fall below a prescribed noise radius despite large $d$. For example, with bounded fields and denominator bounded away from zero, refining a distant cell reduces its radiating area. A minimum core size specifies precisely the additional physical information used in \eqref{eq:map}.

@@ -1,0 +1,38 @@
+\appendix
+\section{One-sided computations for the discrete model}\label{app:bound}
+\subsection{Assembly in physical coordinates}
+For clarity the same quadratic form can be assembled without selecting rows individually. Let $M=\diag(m_i)$, $W_d=\diag(w_i)$, $\Lambda=\diag(\lambda_i)$, $A_h=\diag(w_i h_i^2)$ and $U_0=I-MG$. The material term is
+\begin{equation}
+ (J-ME)^*W_d(J-ME)-E^*A_h E+\ImH(J^*\Lambda E).
+\end{equation}
+In the notation of \eqref{eq:sourceform} its three coefficients are
+\begin{align}
+ K_{\rm mat}&=U_0^*W_dU_0-G^*A_hG+\ImH(\Lambda G),\notag\\
+ N&=U_0^*W_dM\Bd+G^*A_h\Bd+\tfrac{\mathrm i}{2}\Lambda\Bd,\notag\\
+ C_{\mathcal B}&=\Bd^*(M W_d M-A_h)\Bd .
+ \label{eq:assemble}
+\end{align}
+Here $\ImH(J^*\Lambda E)$ is a source matrix. These formulas follow by collecting the current--source cross terms with sign $-N$. In the singleton vacuum case all allowed currents on that cell vanish identically. Prior elimination of these currents is valid for every source and every multiplier. Cells with interval $[0,b]$, $b>0$, retain their entire role in the forward solve.
+
+\subsection{Spectral counts and the error in a reduced form}
+If a computed matrix $A$ encloses the Hermitian threshold form and $Q$ is a precisely specified matrix of trial columns, $Q^* A Q\succ0$ proves at least $\operatorname{cols}(Q)$ positive directions. Negative directions follow by reversal of sign. Eigenvectors obtained at machine precision propose frames; the reported signs are obtained from interval products and a strictly positive lower endpoint on each compressed form. When the two verified counts fill the dimension they also certify the inertia is exhaustive. When a zero is structural we quotient an exactly proved, uncoupled kernel or count with the original border. No numerical zero threshold decides a sign.
+
+An alternative reduced computation may disregard a small trace component. Denote its actual blocks by $C_\theta,B_\theta,D_\theta$ in the eliminated/retained coordinates, and use $\widetilde B,\widetilde D,C_0$ to form the nominal Schur complement. If $C_\theta,C_0\succeq\gamma I$ for $\gamma>0$, and errors in these three blocks have norm bounds $\epsilon_C,\epsilon_B,\epsilon_D$, then
+\begin{align}
+ \|D_\theta-B_\theta^*C_\theta^{-1}B_\theta-
+ (\widetilde D-\widetilde B^*C_0^{-1}\widetilde B)\|
+ &\le \epsilon_D+\frac{(2\|\widetilde B\|+\epsilon_B)\epsilon_B}{\gamma}
+       +\frac{\|\widetilde B\|^2\epsilon_C}{\gamma^2}.
+ \label{eq:trunc}
+\end{align}
+Subtracting the right side times the identity gives a one-sided test. The middle term follows by changing the coupling at fixed $C_\theta$ and the last by the resolvent identity. On port substitution the error bound must be multiplied by $\|\diag(I,Z)\|^2$ if it was derived before this substitution. Our common-complement tests used verified trace kernels. A numerically truncated current SVD without a bound such as \eqref{eq:trunc} would not preserve validity.
+
+For a specified material witness we solve $(I-XG)J=X\Bd V$ and enclose the original receiver residual. For a box exclusion we form the bounds on the full intervals of the free materials. Frozen numerical coefficients may be treated as exact binary numbers; analytic discrete coefficients may instead enclose the Hankel and quadrature evaluations from the start. We used real and complex ball arithmetic \cite{arb}. For the native padded Fourier operator, inverse transformation of its stored spectrum on the exact vacuum-restricted indices gives an enclosure of that discrete kernel. This specification does not estimate the error of replacing a continuous target by cells.
+
+\subsection{The comparison with a perturbation estimate}
+For a known centre $M$ define $G_M=(I-GM)^{-1}G$, $P_M=S(I-MG)^{-1}$, $E_M=(I-GM)^{-1}B$, and $\Delta=X-M$. Then
+\begin{equation}
+ F(X)-F(M)=P_M\Delta(I-G_M\Delta)^{-1}E_M .
+ \label{eq:neumann}
+\end{equation}
+A norm of the scaled feedback strictly below one provides a convergent remainder, also after an invertible diagonal similarity. Directional support of the linear term can be bounded using the independent real interval coefficients; the rest is enclosed by a geometric tail. We tested receiving residual, singular-vector and coordinate directions and diagonal and Perron-type scalings. A failed norm bound leaves this comparison unresolved. A diverging series for a particular legal perturbation is a stronger statement: for a finite square matrix $T$ of order $d$, $\rho(T)\ge(|\tr(T^k)|/d)^{1/k}$. An outward lower endpoint above one proves divergence there. The direct full-wave response may remain regular. This use of a distorted background is a standard resolvent change of variables \cite{dbim}.

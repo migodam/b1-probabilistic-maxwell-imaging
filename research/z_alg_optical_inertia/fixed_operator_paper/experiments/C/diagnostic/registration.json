@@ -1,0 +1,306 @@
+{
+  "phase": "predeclared_paired_followup_no_diagnostic_read_yet",
+  "experiment": "prospective active TM design",
+  "model": "INTERVAL_DISCRETIZATION, outgoing 16 cell pulse disk",
+  "frequency_hz": 400000000.0,
+  "wavelength_m": "0.75",
+  "width_wavelengths": "0.70",
+  "side": 4,
+  "time_convention": "exp(-i omega t)",
+  "port_coordinates": "angle degrees and radius rational in wavelengths",
+  "arrays": {
+    "asymmetric": [
+      [
+        17,
+        3,
+        2
+      ],
+      [
+        123,
+        2,
+        1
+      ],
+      [
+        239,
+        9,
+        5
+      ]
+    ],
+    "half": [
+      [
+        -65,
+        2,
+        1
+      ],
+      [
+        0,
+        2,
+        1
+      ],
+      [
+        65,
+        2,
+        1
+      ]
+    ],
+    "occluded": [
+      [
+        30,
+        2,
+        1
+      ],
+      [
+        60,
+        2,
+        1
+      ],
+      [
+        240,
+        2,
+        1
+      ]
+    ]
+  },
+  "old_source_indices": [
+    0,
+    6
+  ],
+  "candidate_angles_degrees": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+  ],
+  "allowed_batch_sizes": [
+    1,
+    2,
+    4
+  ],
+  "same_paired_candidates": true,
+  "policies": [
+    "random",
+    "uniform_gap",
+    "fisher_nuisance",
+    "conditional_ellipsoid"
+  ],
+  "energy_contracts": [
+    "added",
+    "fixed_total"
+  ],
+  "energy_units": "Integral over one unit time of area-average incident |B|^2 on the test square per plane wave.",
+  "energy_rule": {
+    "added": "2 old beams energy 1 each plus 1 per future beam",
+    "fixed_total": "independently measured two old beams energy 1/2 each, new energy totals 1"
+  },
+  "noise_contract": {
+    "bound_per_normalized_receiver_column": "see noise_radius_by_scene; same absolute radius across both physical energy contracts",
+    "realization": "independent new diagnostic per scene and angle, shared across diagnostic policies at each physical setting",
+    "joint_radius": "sqrt(sum disjoint column noise squares); Omega_old = r_old^2 I_source"
+  },
+  "weights": [
+    0.0078125,
+    0.03125,
+    0.125,
+    0.5,
+    2.0,
+    8.0,
+    32.0,
+    128.0
+  ],
+  "broad_indefinite_diagnostic_box": [
+    0,
+    3
+  ],
+  "scenes": {
+    "asymmetric_01": {
+      "layout": "asymmetric",
+      "classes": [
+        "box_a",
+        "box_b"
+      ],
+      "nominal_fibre_design": {
+        "anchor_cell": 3,
+        "public_anchor_change": 0.23,
+        "public_old_sensitivity_rank": 12,
+        "public_old_nominal_residual": 5.676300515002181e-06,
+        "optimizer_calls": 300,
+        "stopped": "The maximum number of function evaluations is exceeded.",
+        "wall_seconds": 0.07804862502962351,
+        "cpu_seconds": 0.07233699999999998
+      },
+      "material_hash_scheme": "BLAKE2b of shape, dtype and contiguous arrays",
+      "coverage": "exact two-box union task prior, independent per-cell intervals",
+      "model_hash": "1843892caccd3380389d91663b6bcd382707630d",
+      "box_pair_hash": "7f57cb63e18f1567815a53525e79410e2ba1f6a1",
+      "material_halfwidth": 0.0032
+    },
+    "asymmetric_02": {
+      "layout": "asymmetric",
+      "classes": [
+        "box_a",
+        "box_b"
+      ],
+      "nominal_fibre_design": {
+        "anchor_cell": 7,
+        "public_anchor_change": 0.23,
+        "public_old_sensitivity_rank": 12,
+        "public_old_nominal_residual": 0.0001129995162075508,
+        "optimizer_calls": 300,
+        "stopped": "The maximum number of function evaluations is exceeded.",
+        "wall_seconds": 0.06157104205340147,
+        "cpu_seconds": 0.06039899999999998
+      },
+      "material_hash_scheme": "BLAKE2b of shape, dtype and contiguous arrays",
+      "coverage": "exact two-box union task prior, independent per-cell intervals",
+      "model_hash": "1843892caccd3380389d91663b6bcd382707630d",
+      "box_pair_hash": "ae98c55340736e0621f18f18943f5c816a4b88bd",
+      "material_halfwidth": 0.0032
+    },
+    "half_01": {
+      "layout": "half",
+      "classes": [
+        "box_a",
+        "box_b"
+      ],
+      "nominal_fibre_design": {
+        "anchor_cell": 9,
+        "public_anchor_change": 0.23,
+        "public_old_sensitivity_rank": 12,
+        "public_old_nominal_residual": 4.565109714239017e-05,
+        "optimizer_calls": 300,
+        "stopped": "The maximum number of function evaluations is exceeded.",
+        "wall_seconds": 0.062031375244259834,
+        "cpu_seconds": 0.06153299999999995
+      },
+      "material_hash_scheme": "BLAKE2b of shape, dtype and contiguous arrays",
+      "coverage": "exact two-box union task prior, independent per-cell intervals",
+      "model_hash": "f476fbe38e261a5c01e80ee64ff5ae67ca95194d",
+      "box_pair_hash": "1d3f987e31dbc5f224ed53b35811b1f62a016e0e",
+      "material_halfwidth": 0.0032
+    },
+    "half_02": {
+      "layout": "half",
+      "classes": [
+        "box_a",
+        "box_b"
+      ],
+      "nominal_fibre_design": {
+        "anchor_cell": 0,
+        "public_anchor_change": 0.23,
+        "public_old_sensitivity_rank": 12,
+        "public_old_nominal_residual": 1.1742679650293265e-11,
+        "optimizer_calls": 104,
+        "stopped": "`gtol` termination condition is satisfied.",
+        "wall_seconds": 0.020296040922403336,
+        "cpu_seconds": 0.02001300000000006
+      },
+      "material_hash_scheme": "BLAKE2b of shape, dtype and contiguous arrays",
+      "coverage": "exact two-box union task prior, independent per-cell intervals",
+      "model_hash": "f476fbe38e261a5c01e80ee64ff5ae67ca95194d",
+      "box_pair_hash": "842986260ddb9c8eb629241439c84e29d7f74f99",
+      "material_halfwidth": 0.0032
+    },
+    "occluded_01": {
+      "layout": "occluded",
+      "classes": [
+        "box_a",
+        "box_b"
+      ],
+      "nominal_fibre_design": {
+        "anchor_cell": 14,
+        "public_anchor_change": 0.23,
+        "public_old_sensitivity_rank": 12,
+        "public_old_nominal_residual": 6.559779252903214e-05,
+        "optimizer_calls": 300,
+        "stopped": "The maximum number of function evaluations is exceeded.",
+        "wall_seconds": 0.0681093754246831,
+        "cpu_seconds": 0.06770599999999993
+      },
+      "material_hash_scheme": "BLAKE2b of shape, dtype and contiguous arrays",
+      "coverage": "exact two-box union task prior, independent per-cell intervals",
+      "model_hash": "0381d4d1337d5dbc4a80bbda2988a71f0c5948eb",
+      "box_pair_hash": "d10159beec66cb05980e218d42271b764645b75d",
+      "material_halfwidth": 0.0032
+    },
+    "occluded_02": {
+      "layout": "occluded",
+      "classes": [
+        "box_a",
+        "box_b"
+      ],
+      "nominal_fibre_design": {
+        "anchor_cell": 0,
+        "public_anchor_change": 0.23,
+        "public_old_sensitivity_rank": 12,
+        "public_old_nominal_residual": 1.826796345547784e-05,
+        "optimizer_calls": 300,
+        "stopped": "The maximum number of function evaluations is exceeded.",
+        "wall_seconds": 0.06180362496525049,
+        "cpu_seconds": 0.06104200000000004
+      },
+      "material_hash_scheme": "BLAKE2b of shape, dtype and contiguous arrays",
+      "coverage": "exact two-box union task prior, independent per-cell intervals",
+      "model_hash": "0381d4d1337d5dbc4a80bbda2988a71f0c5948eb",
+      "box_pair_hash": "1453c424339aa8c87f1d92ea7fffcae02a5155e3",
+      "material_halfwidth": 0.0032
+    }
+  },
+  "no_adaptive_budget_reuse": "One independently planned follow-up batch per policy and size; stop before acquiring if only one class survived the old data. This is not a cumulative sequence of three batches.",
+  "recorded_unix_wall": 1795628038.47523,
+  "wall_seconds": 0.3824630845338106,
+  "cpu_seconds": 0.36479799999999984,
+  "protocol": "One diagnostic at nominal 2% old-ref receive noise and fourfold halfwidth. Original same six physically sealed media.",
+  "exposure": "Paired follow-up on primary cohort. Chosen by fixed rule from old added-energy public signal; no new response, material truth or separation-optimized noise tuning.",
+  "noise_radius_by_scene": {
+    "asymmetric_01": "0.006270834885455387",
+    "asymmetric_02": "0.006279374338193809",
+    "half_01": "0.005322657405506764",
+    "half_02": "0.005719685581268011",
+    "occluded_01": "0.005256630835760484",
+    "occluded_02": "0.005072730965499127"
+  },
+  "public_scale_receipt": {
+    "asymmetric_01": {
+      "old_added_public_hash": "8fd6467cafe81bebf46eddc32ee9359e76238faf",
+      "public_old_rms_norm_per_beam": 0.3135417442727694,
+      "noise_radius_decimal": "0.006270834885455387"
+    },
+    "asymmetric_02": {
+      "old_added_public_hash": "178f05b787d5df3c16b14e9524496af51c643dab",
+      "public_old_rms_norm_per_beam": 0.31396871690969047,
+      "noise_radius_decimal": "0.006279374338193809"
+    },
+    "half_01": {
+      "old_added_public_hash": "bf3ba02bf0f57ab21b5346d3410b73c070db2f67",
+      "public_old_rms_norm_per_beam": 0.2661328702753382,
+      "noise_radius_decimal": "0.005322657405506764"
+    },
+    "half_02": {
+      "old_added_public_hash": "324c1376c2eabe95e917b1c53d5a96d01945c79c",
+      "public_old_rms_norm_per_beam": 0.2859842790634005,
+      "noise_radius_decimal": "0.005719685581268011"
+    },
+    "occluded_01": {
+      "old_added_public_hash": "2118c8447c1d57a4ea66dea55f249ea354fdcf3f",
+      "public_old_rms_norm_per_beam": 0.2628315417880242,
+      "noise_radius_decimal": "0.005256630835760484"
+    },
+    "occluded_02": {
+      "old_added_public_hash": "e80538aae62d8060890a9eac932a39986fdb330c",
+      "public_old_rms_norm_per_beam": 0.25363654827495635,
+      "noise_radius_decimal": "0.005072730965499127"
+    }
+  },
+  "diagnostic_supplement_cost": {
+    "wall_seconds": 0.006566749885678291,
+    "cpu_seconds": 0.0050130000000000174
+  }
+}

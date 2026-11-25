@@ -1,0 +1,205 @@
+{
+  "title": "Material-set inversion with fixed constitutive traces and conditional scattering operators",
+  "date_local": "2026-11-26",
+  "timezone": "Asia/Singapore",
+  "publication_scope": "anonymous manuscript, not submitted to journal",
+  "hardware": "Apple M4 arm64 CPU",
+  "precision": "128-bit and 192-bit Arb as identified by case; finite binary or interval discretization contract",
+  "run_environment": "requirements.txt",
+  "stages": [
+    {
+      "id": "P0",
+      "scope": "Six supplied programs, new boundary and retention controls, two native replays",
+      "records": [
+        "results/p0_at_acquisition.json",
+        "results/p0.json",
+        "results/p0_core.json",
+        "results/mechanisms/runs.json",
+        "results/native_replay.json"
+      ]
+    },
+    {
+      "id": "A",
+      "scope": "24 independently generated pairs, 48 base materials; 192 data blocks, 2688 paired data–box tests",
+      "records": [
+        "experiments/A/PREREGISTRATION.json",
+        "experiments/A/PREREGISTRATION_RECEIPT.json",
+        "experiments/A/results/ACQUISITION_SEAL.json",
+        "experiments/A/results/DECISION_SEAL.json",
+        "experiments/A/results/summary.json",
+        "experiments/A/results/all_nodes.csv",
+        "experiments/A/results/diagnostics_and_costs.json",
+        "experiments/A/results/first_pass_trace_correction.json",
+        "experiments/A/results/alternate_witness_audit.json",
+        "experiments/A/results/known_zero_control.json"
+      ]
+    },
+    {
+      "id": "A-positive",
+      "scope": "192-bit strengthened comparisons with vacuum and source-eigenvector controls",
+      "records": [
+        "experiments/A/psd_followup/summary.json",
+        "experiments/A/psd_followup/positive_tail_summary.json",
+        "experiments/A/psd_followup/positive_tail_upper_audit.json"
+      ]
+    },
+    {
+      "id": "B",
+      "scope": "Three 12x12 objects plus an independent 96x96 disk; cover of centre labels and competing peak queries",
+      "records": [
+        "experiments/B/freeze.json",
+        "experiments/B/results/summary.json",
+        "experiments/B/results/map_centers.csv",
+        "experiments/B/results/independent_replay.json",
+        "experiments/B/results/benchmark_100.json",
+        "experiments/B/results/benchmark_1000.json"
+      ]
+    },
+    {
+      "id": "C",
+      "scope": "Six independent materials, three layouts. Paired main and sensitivity studies, four policies, two budgets, 1/2/4 new columns. One round per batch; no claim of sequential multi-round policy superiority.",
+      "records": [
+        "experiments/C/registration.json",
+        "experiments/C/proposal.json",
+        "experiments/C/results.json",
+        "experiments/C/full_menu_replay.json",
+        "experiments/C/diagnostic/registration.json",
+        "experiments/C/diagnostic/proposal.json",
+        "experiments/C/diagnostic/results.json",
+        "experiments/C/diagnostic/full_menu_replay.json",
+        "experiments/C/receive_socp/results.json",
+        "experiments/C/indefinite/results.json"
+      ]
+    },
+    {
+      "id": "NATIVE",
+      "scope": "96x96 native operator with exact exterior vacuum; re-used disk and ring, separate occupied solid and equal-energy 11-beam comparison",
+      "records": [
+        "experiments/native/contract.json",
+        "experiments/native/source_index.json",
+        "experiments/native/compatible_receiver.json",
+        "experiments/native/energy.json",
+        "experiments/native/energy_run_cost.json",
+        "experiments/native/coherent_control.json",
+        "experiments/native/occupied_wide_control.json",
+        "experiments/native/coherent_control_cost.json"
+      ]
+    },
+    {
+      "id": "D",
+      "scope": "Arb disk-integration example; sampled 96x96 vs 32x32 geometry; three Fresnel and four Manitoba measured specimens",
+      "records": [
+        "experiments/D/audit.json",
+        "experiments/D/ports.csv"
+      ]
+    },
+    {
+      "id": "VIRTUAL",
+      "scope": "A supplied three-cell algebraic control revisited and five matched physical unresolved boxes",
+      "records": [
+        "experiments/virtual/result.json",
+        "experiments/virtual/phase_a_followup.json"
+      ]
+    },
+    {
+      "id": "INTERFACE",
+      "scope": "15 API calls, schema mapping and original/reduced controls",
+      "records": [
+        "protocol/API.md",
+        "protocol/schema.json",
+        "protocol/selfcheck.json",
+        "protocol/chart_check.json"
+      ]
+    },
+    {
+      "id": "REVIEW",
+      "scope": "Three independent CLI assessment stages and final revision reread",
+      "records": [
+        "reviews/review_runs.json",
+        "reviews/RESPONSE_ZH.md"
+      ]
+    },
+    {
+      "id": "TEX",
+      "scope": "Independent clean builds from submission archive",
+      "records": [
+        "results/typesetting.json"
+      ]
+    }
+  ],
+  "reported_costs": {
+    "a_independent_replay_seconds": 118.72925496008247,
+    "native_source_and_energy_replays": {
+      "original_attempt": {
+        "log": "energy.log",
+        "failure": "unshifted binary64 eigenframe could not verify all source signs; exact_sign returned None and indexing raised TypeError",
+        "elapsed_seconds": null
+      },
+      "repaired_128": {
+        "results": "energy_initial128.json",
+        "log": "energy_replay.log",
+        "wall_seconds": 110.27657316531986,
+        "cpu_seconds": 213.42345500000002
+      },
+      "strict_192": {
+        "results": "energy.json",
+        "log": "energy_192.log",
+        "wall_seconds": 182.14440312515944,
+        "cpu_seconds": 356.91674300000005
+      },
+      "completed_energy_attempt_total": {
+        "wall_seconds": 292.4209762904793,
+        "cpu_seconds": 570.3401980000001
+      },
+      "source_index_receipt_cost_reused": {
+        "wall_seconds": 392.6953063746914,
+        "cpu_seconds": 725.191828
+      },
+      "completed_energy_plus_reused_source_index_cost": {
+        "wall_seconds": 685.1162826651707,
+        "cpu_seconds": 1295.532026
+      },
+      "timing_scope": "Per-process elapsed and CPU totals include dense operator assembly and solves. The failed original energy attempt had no saved elapsed time."
+    },
+    "native_new_comparison": {
+      "source": "128-bit Arb finite stored operator, Apple arm64, 3 Arb / 2 BLAS threads",
+      "first_attempt": {
+        "log": "coherent_control_first_attempt.log",
+        "failure": "Unfactored common normalization gave unresolved direct receiver inertia; original residual norm formula could straddle zero.",
+        "recorded_phases_lower_bound": {
+          "wall_seconds": 92.13033108320087,
+          "cpu_seconds": 164.219425
+        },
+        "wall_total_available": false
+      },
+      "bounded_followup_fluence_check": {
+        "wall_seconds": 0.3573511252179742,
+        "cpu_seconds": 0.6191709999999999
+      },
+      "narrow_verified": {
+        "wall_seconds": 78.74938249960542,
+        "cpu_seconds": 150.687736
+      },
+      "occupied_wide_incremental": {
+        "wall_seconds": 38.09678724966943,
+        "cpu_seconds": 76.96262300000001
+      },
+      "successful_run_combined": {
+        "wall_seconds": 116.84616974927485,
+        "cpu_seconds": 227.650359
+      },
+      "main_replays_only_recorded_lower_bound": {
+        "wall_seconds": 208.97650083247572,
+        "cpu_seconds": 391.869784
+      },
+      "criterion": "Identical per-arm source count, exact total fluence and conservative old noise upper bound under one fixed narrow box.",
+      "completed": true
+    },
+    "cost_scope": "Time measured per stage. Shared solves reuse inputs. No fictional aggregate CPU cost for unlogged tool attempts, data synthesis, or unmetered model reviews. Individual original receipts include elapsed and CPU when measured."
+  },
+  "scope_exceptions": [
+    "Continuum family error and loaded-chamber discrepancy not known.",
+    "The native centre map concerns 256 given labels with minimum core and known exterior.",
+    "Search over all spatial PSD multipliers remains unbounded here. Protocol row coverage is reported field by field; unrecorded historical fields are unknown."
+  ]
+}

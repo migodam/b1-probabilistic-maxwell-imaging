@@ -1,0 +1,54 @@
+\RequirePackage{fix-cm}
+\documentclass[anonymous,12pt]{iopjournal}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,graphicx,placeins}
+\graphicspath{{figures/}}
+\hypersetup{hidelinks,pdftitle={Material-set inversion with fixed constitutive traces and conditional scattering operators},pdfauthor={}}
+\fancyhead[L]{\small\sffamily Inverse Problems\quad Research paper}
+\fancyhead[R]{\small Material-set inversion}
+\setlength{\headheight}{17pt}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\topfraction}{.94}
+\renewcommand{\bottomfraction}{.9}
+\renewcommand{\textfraction}{.06}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Bd}{\mathcal B}
+\newcommand{\A}{\mathcal A}
+\newcommand{\Po}{P_{\mathrm o}}
+\newcommand{\ReH}{\operatorname{Re}_{H}}
+\newcommand{\ImH}{\operatorname{Im}_{H}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\np}{n_+}
+\newcommand{\nn}{n_-}
+\newcommand{\Tail}{\mathcal T}
+\numberwithin{equation}{section}
+\begin{document}
+\noindent{\sffamily\small RESEARCH PAPER}\par\vspace{1.8ex}
+\title{Material-set inversion with fixed constitutive traces and conditional scattering operators}
+\author{}
+\input{abstract}
+\par\smallskip
+\keywords{inverse medium scattering, material uncertainty, finite aperture, set inversion, illumination design}
+\section{Introduction}
+A microwave array measures exterior fields. In a material calibration experiment the quantity of interest may be the contrast of an inclusion in a specified region, or the position of a high-contrast core. Both questions survive a change in the surrounding material. To rule out a proposed core position, every allowed distribution in its surrounding layer and background must miss the measured fields. Conversely, one distribution fitting the data at that position establishes its physical possibility. The two conclusions require different calculations. We study both for a finite, noisy array with multiple scattering retained.
+
+The relevant structure connects two uses of the same apparatus. On changing a dielectric hypothesis at a cell, only the relation between its induced current and total field changes. The Green function and receiver remain fixed. On changing the illumination of a fixed dielectric, the full scattering response is linear in the incident field, even when its dependence on material is strongly nonlinear. We use the first fact to compare entire material classes and the second to ask which future readings a surviving class could produce. A future illumination can then be selected by a statement about all materials still under consideration.
+
+Subspace inversion methods separate currents visible to the receiver from an ambiguous component \cite{chen,zhong,ffttsom}. They use the integral equation and the common contrast to recover an image. Local conservation bounds constrain electromagnetic responses \cite{kuang,moleskylocal,trivedi}, and cross-field identities enforce common structure in multifunctional design \cite{shim}. Here a receiver residual and its error radius enter the same form as the local material constraints. An indefinite state block is allowed. This is essential when a few reactive current directions can offset material constraints without explaining all incident fields simultaneously.
+
+Several mathematical precedents delimit this approach. Port reduction and static condensation eliminate internal variables in parametrized component problems \cite{huynh}. We retain selected cell fields and currents, together with the nonpositive directions of a common state block. The reduction preserves the full inertia at every noise threshold for the stated family. Interval set inversion supplies the logic of outer covering and retention \cite{sivia}. Monotonicity in inverse medium and obstacle scattering compares probe regions against a far-field operator up to finite-dimensional exceptions \cite{griesmaier_harrach,griesmaier_harrach_erratum,albicker}. Our exception count belongs to an interior current form at the measured finite ports. It does not require a continuum far-field operator.
+
+In interpolation theory a bounded number of negative squares restricts extensions of a Pick matrix \cite{pick}. In guaranteed active diagnosis an input can be chosen so that bounded output sets for different models become disjoint \cite{scott}. The contribution here is to obtain such output sets from a common dielectric law, old complex readings and a fixed full-wave Green operator. We identify a source-side obstruction that can be tested before a particular realization of the old readings is known. This distinguishes a failure of the chosen physical bound from a failure of a particular new illumination. Our numerical tests separate exclusion, physical compatibility and unresolved classes. The results concern the specified discrete model, with a separate accounting of errors when measured fields are used.
+\input{material}
+\input{response}
+\input{space}
+\input{experiments}
+\input{discussion}
+\input{appendix}
+\input{references}
+\end{document}

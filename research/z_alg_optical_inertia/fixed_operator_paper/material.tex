@@ -1,0 +1,94 @@
+\section{What the measurements imply about a material interval}\label{sec:material}
+\subsection{Physical model and data distance}
+We use time dependence $\exp(-{\rm i}\omega t)$ and an out-of-plane electric field in a nonmagnetic, two-dimensional dielectric. If $k$ is the host wavenumber and $\chi$ the relative permittivity contrast, the polarization current in our normalization is $j=\chi e$. Factors of $k^2$ are included in the Green operator. The outgoing kernel for distinct points is $\mathrm{i}k^2 H_0^{(1)}(k|x-x'|)/4$ \cite{colton,richmond}. For pulse cells the field is collocated at cell centres. In the equal-area disk rule a cell of equivalent radius $a$ has self coefficient $\mathrm{i}\pi ka H_1^{(1)}(ka)/2-1$. Specific quadrature and port normalization are part of each discrete model.
+
+Let $G\in\C^{n\times n}$ map currents to internal scattered fields, $S\in\C^{p\times n}$ map currents to the receivers, and $\Bd\in\C^{n\times m}$ contain fields of available physical illuminations. Columns of $V\in\C^{m\times s}$ specify the transmitted beams and $B=\Bd V$. With $X=\diag(\chi_i)$,
+\begin{equation}
+ E=B+GJ,\qquad J=XE,\qquad Y_{\rm clean}=SJ .
+ \label{eq:physics}
+\end{equation}
+Receiver whitening acts on both $S$ and $Y$. A box $\ell_i\leq\chi_i\leq u_i$ specifies the allowed real material independently in every free cell. In vacuum $j_i=0$ exactly. Physical well-posedness gives the response $\mathcal F_X=S(I-XG)^{-1}X\Bd$ to the dictionary. The basic rejection test also applies to all field solutions when the forward equation is interpreted as a relation. Predicting a response to a new beam requires a common linear response to all beams.
+
+For measured $Y$ and joint Frobenius error radius $r$, we bound the infimum of $\|SJ-Y\|_F$ over the class and its physical states. A strict lower endpoint above $r$ excludes the class. A particular material in the class with a verified upper residual at most $r$ establishes compatibility. If neither conclusion follows, the class stays in the cover.
+
+\subsection{The material law as a quadratic form}
+Write $Z=[V^\top,Y^\top]^\top$. The two quantities on which the local material acts are the current row $j_i$ and the field row $e_i$ across all illuminations. With $q_i$ the coordinate vector for cell $i$, set
+\begin{equation}
+ z_i=\begin{bmatrix}j_i\\e_i\end{bmatrix}=T_iJ+E_iZ,\quad
+ T_i=\begin{bmatrix}q_i^\top\\q_i^\top G\end{bmatrix},\quad
+ E_i=\begin{bmatrix}0&0\\q_i^\top\Bd&0\end{bmatrix}.
+ \label{eq:trace}
+\end{equation}
+At every real material row $j_i=\chi_i e_i$ the optical cross product $\ImH(j_i^*e_i)$ vanishes, where $\ImH A=(A-A^*)/(2{\rm i})$.
+Let $m_i=(u_i+\ell_i)/2$, $h_i=(u_i-\ell_i)/2$, $w_i\geq0$, $\lambda_i\in\R$. Then
+\begin{align}
+ D_i&=\begin{bmatrix}w_i&-w_i m_i-{\rm i}\lambda_i/2\\
+                     -w_i m_i+{\rm i}\lambda_i/2&w_i\ell_i u_i\end{bmatrix},\notag\\
+ z_i^*D_i z_i&=w_i(\chi_i-\ell_i)(\chi_i-u_i)e_i^*e_i\preceq0 .
+ \label{eq:sector}
+\end{align}
+Off-diagonal entries of the $s$ by $s$ source Gram matrix couple different beams through the same real material. Adding \eqref{eq:sector} to the squared data residual gives
+\begin{equation}
+ \A=[S,0,-I_p]^*[S,0,-I_p]+\sum_i[T_i,E_i]^*D_i[T_i,E_i]
+   =\begin{bmatrix}K&-R_0\\-R_0^*&D_0\end{bmatrix}.
+ \label{eq:form}
+\end{equation}
+For physical currents $D_{\rm res}=(SJ-Y)^*(SJ-Y)\succeq[J;Z]^*\A[J;Z]$. A semicolon inside brackets denotes vertical concatenation. All terms are formed in the original current coordinates. The state block, linear term and constant term can all change when the material bounds change.
+
+\begin{proposition}[Testing the distance]\label{prop:count}
+Set $\A_Z=\diag(I_n,Z)^*\A\diag(I_n,Z)$ and $P_s=\diag(0_n,I_s)$. If $1\leq j\leq s$, $t\geq0$, $jt\geq r^2$ and $\np(\A_Z-tP_s)\geq n+j$, the full class misses the noise ball. If $K$ is nonsingular, set $\nu=\nn(K)$ and $H=Z^*(D_0-R_0^*K^{-1}R_0)Z$. A lower bound on the squared distance is
+\begin{equation}
+ \Tail_\nu(H)=\sum_{i=\nu+1}^{s}\max\{\lambda_i^\downarrow(H),0\}.
+ \label{eq:tail}
+\end{equation}
+\end{proposition}
+\begin{proof}
+The graph $[J;I_s]$ has dimension $s$. It intersects a positive subspace of $\A_Z-tP_s$ in at least $j$ dimensions. Compression to source space gives at least $j$ eigenvalues of $D_{\rm res}$ strictly above $t$. For invertible $K$, completing the square gives $D_{\rm res}\succeq H+U_+^*U_+-U_-^*U_-$, with at most $\nu$ negative rows. The inertia additivity and interlacing used here are classical \cite{haynsworth,tian,fan}. Interlacing the rank-$\nu$ subtraction and using $D_{\rm res}\succeq0$ gives \eqref{eq:tail}.
+\end{proof}
+An exact uncoupled null state may be divided out and $n$ reduced by its dimension. A zero state coupled to the source must remain. Small numerical eigenvalues alone give no permission to remove a direction.
+
+\begin{proposition}[Sharpness of the rank information]\label{prop:sharp}
+Under only $D\succeq0$, $D\succeq H-U^*U$ and $U\in\C^{\nu\times s}$, the minimum of $\tr D$ equals $\Tail_\nu(H)$.
+\end{proposition}
+\begin{proof}
+For fixed $U$, the positive spectral projector of $H-U^*U$ gives a trace lower bound attained by $D=(H-U^*U)_+$. Interlacing gives \eqref{eq:tail}. Choose $U^*U$ equal to the largest $\min(\nu,\np(H))$ positive spectral components of $H$. Equality follows.
+\end{proof}
+An improved distance at fixed $K$ requires more information about realizable material or current. For one incident field the current derivatives at a regular interior point are the columns of $(I-XG)^{-1}\diag(e)$. When every component of $e$ is nonzero their complex linear span is $\C^n$. A fixed complex linear current space containing every current in the neighbourhood must have dimension $n$, even with a single receiver.
+
+\subsection{A fixed reduction for a family of material classes}
+Suppose the endpoints or multipliers vary only on a common set $R$. Stack the corresponding row pairs to obtain $T_R,E_R$. For a reference form $\A_b$,
+\begin{equation}
+ \A_\theta=\A_b+[T_R,E_R]^*D_\theta[T_R,E_R],
+ \label{eq:update}
+\end{equation}
+where $D_\theta$ contains differences of the local blocks. The exterior may remain unknown throughout the family. A large unknown exterior and a large set of \emph{changes} to the reference form are distinct sources of computational cost.
+
+\begin{theorem}[Exact fixed-trace reduction]\label{th:fixed}
+Let the columns of $U$ be an orthonormal basis for $\ran T_R^*+\mathcal E_{\leq0}(K_b)$, of dimension $d$. Let $W$ span the orthogonal complement orthonormally. Then $C_+=W^*K_bW\succ0$ on that complement. In coordinates $[W,U,\mathrm{ports}]$ eliminate $C_+$ once from $\A_b$, obtaining $\widehat\A_b$. Set $F=[T_R U,E_R]$ and $\widehat\A_\theta=\widehat\A_b+F^*D_\theta F$. For all $\theta,Z,t$, the full and reduced threshold forms have identical negative and zero indices. The full positive index exceeds the reduced index by $n-d$. There is no invertibility requirement on $K_b$, $K_\theta$ or $D_\theta$.
+\end{theorem}
+\begin{proof}
+$W$ lies in the positive spectral space of $K_b$, and $T_R W=0$. Neither the eliminated block nor its couplings to the remaining variables changes in \eqref{eq:update}. A triangular congruence completes the square in its coordinates, leaving $C_+$ and the stated reduced block. Port substitution and the threshold act only on retained coordinates and commute with elimination. Sylvester's law gives the three counts.
+\end{proof}
+
+The dimension satisfies $d\leq\min\{n,2|R|+\dim\mathcal E_{\leq0}(K_b)\}$. Keeping actual receiver traces adds at most $\operatorname{rank} S$ rows. In computation an exact nullspace of selected trace covectors and a verified positive restriction suffice. Extra numerical covectors can define exactly specified additional coordinates. The test on their complement establishes positivity without identifying an approximate eigenbasis with an exact invariant subspace.
+
+Nested intervals transfer information. Write $s_{\ell,u}(j,e)=(j-me)^*(j-me)-h^2e^*e$. For a parent and child with positive half-widths $h\geq h'$ and centres $m,m'$, $\lvert m'-m\rvert\leq h-h'$ implies
+$(h/h')s_{\ell',u'}-s_{\ell,u}\succeq0$ on all row pairs. The difference of the two local forms has first diagonal entry $h/h'-1$ and determinant $(h/h')[(h-h')^2-(m-m')^2]\geq0$, with equality of the forms when $h=h'$. Multiplying the child sector weight by $h/h'$ preserves the parent test. A zero-width interval is an exact row and can inherit the parent's logical exclusion directly.
+
+\subsection{Adding shared material rows}
+Condensation alone cannot change a conclusion at fixed weights. A stronger constraint imposes $j_i=\xi_i e_i$ on chosen cells with one real $\xi_i\in[\ell_i,u_i]$ for every beam. After completing the positive square of $K_b$ write $J=J_c+P v+N c+N_0 d_0$, where $PP^*=K_{b,+}^{\dagger}$, $J_c=K_{b,+}^{\dagger}R_{0,b} Z$, and $c,d_0$ span the negative and null directions. For required traces $z$, put $\Sigma=TPP^*T^*$ and $b=z-EZ-T(J_c+Nc+N_0d_0)$. A positive-space completion exists exactly when $\ran b\subseteq\ran\Sigma$. Its smallest matrix energy is
+\begin{equation}
+ \min_{TPv=b}v^*v=b^*\Sigma^\dagger b .
+ \label{eq:completion}
+\end{equation}
+The minimizer is $(TP)^\dagger b$. Every other completion adds a vector orthogonal to its range, proving the assertion in Loewner order. Retaining the receiver trace makes this an equivalence for the mixed model with the aggregate quadratic constraint and the selected exact rows. Further exact rows give nested outer material sets. Equivalence to \eqref{eq:physics} requires all material rows, including any known background row not eliminated exactly.
+
+For an additional predicted row pair $(\widehat j_i,\widehat e_i)$ let $\Sigma_{i|R}$ be its conditional trace Gram after the preceding rows. With $a_\xi=(1,-\xi)$, the additional minimum energy is
+\begin{equation}
+ \frac{(\widehat j_i-\xi\widehat e_i)^*(\widehat j_i-\xi\widehat e_i)}
+ {a_\xi\Sigma_{i|R}a_\xi^*}.
+ \label{eq:innovation}
+\end{equation}
+This follows by imposing the single linear innovation after \eqref{eq:completion}. At a zero denominator the numerator must vanish. A trace score in a fixed source direction is a ratio of real quadratics, so endpoints and stationary points suffice for ranking. A ranking evaluated on a trial state cannot by itself exclude a material. Verification enforces the chosen equations jointly over their full intervals.
+
+For this calculation one adds their traces to \eqref{eq:update}, drops their now redundant sector terms, and solves a verified nonsingular pivot of the shared row equations. The retained state takes the form $x=N_\xi v+X_\xi Z$ throughout a subinterval. Substitution leaves the source threshold unchanged. A positive frame valid throughout the subinterval proves the same count on the reduced number of free states. Failed pivots and inconclusive frames prompt subdivision. A parent is removed only when all its leaves are removed. The procedure requires no numerical cutoff on the free negative coordinates. Uniform strict margins and a regular chart cover give finite termination by compactness. The number of subdivisions can grow exponentially with the number of shared variables.

@@ -1,0 +1,89 @@
+\section{What a surviving class can scatter next}\label{sec:response}
+\subsection{An operator determined by the old readings}
+Let $K$ be nonsingular. Eliminating current at stationary energy in \eqref{eq:form} gives a fixed port form
+\begin{equation}
+ Q=D_0-R_0^*K^{-1}R_0,\qquad H=Z^*QZ,\qquad \Po=H-\Omega .
+ \label{eq:Q}
+\end{equation}
+Here $\Omega\succeq D_{\rm old}$ is valid for every compatible medium. With a joint Frobenius error ball one can take $\Omega=r^2 I_s$. The errors may be coherent across beams: two equal unit errors have Gram matrix with largest eigenvalue two. Separate unit column radii therefore do not justify $\Omega=I_2$. If only separate bounds $r_i$ are known, one possible common upper matrix is $(\sum_i r_i^2)I_s$.
+
+\begin{theorem}[Conditional scattering operator]\label{th:response}
+Assume each compatible material admits a common linear clean response on the dictionary. Let $\nu=\nn(K)$ and suppose $\Po$ is nonsingular with $\np(\Po)=\nu$. Define
+\begin{equation}
+ Q_c=Q-QZ\Po^{-1}Z^*Q
+   =\begin{bmatrix}Q_{aa}&Q_{ay}\\Q_{ya}&R_y\end{bmatrix}.
+ \label{eq:qc}
+\end{equation}
+Every compatible material satisfies $[I;\mathcal F_X]^* Q_c[I;\mathcal F_X]\preceq0$.
+If $R_y\succ0$, let $C_a=-R_y^{-1}Q_{ya}$ and $\Theta=Q_{ay}R_y^{-1}Q_{ya}-Q_{aa}$. Then
+\begin{equation}
+ (\mathcal F_X-C_a)^*R_y(\mathcal F_X-C_a)\preceq\Theta .
+ \label{eq:ellipse}
+\end{equation}
+A nonempty class implies $\Theta\succeq0$.
+\end{theorem}
+\begin{proof}
+Consider any set of clean future responses $Z_\star=[A_\star;\mathcal F_X A_\star]$ for the same material. Their residuals vanish identically, including their cross terms with old errors. The augmented residual Gram is bounded above by $\diag(\Omega,0)$. The rank bound in proposition~\ref{prop:count} then gives
+\begin{equation}
+ \np\begin{bmatrix}\Po&Z^*Q Z_\star\\Z_\star^*QZ&Z_\star^*QZ_\star\end{bmatrix}\leq\nu .
+ \label{eq:aug}
+\end{equation}
+The old block already has $\nu$ positive directions. Its Schur complement is nonpositive. Taking $A_\star=I_m$ and completing the receiving square proves both assertions.
+\end{proof}
+Old measurement uncertainty has already entered $\Po$. Only the error on the future acquisition dilates the clean response set. If $\Po$ has a known exact nullspace with basis $U_o$, saturation also forces $U_o^*Z^*QZ_\star=0$. A nonzero coupling to this kernel creates an extra positive direction. After imposing this condition, $\Po^\dagger$ replaces $\Po^{-1}$ in \eqref{eq:qc}. At an unresolved near-zero eigenvalue we retain the bordered condition. If $K$ itself has a proven nullspace $N_0$, the port form is a descriptor pair: eliminate the invertible part and retain the zero block with coupling $-N_0^*R_0 Z$. Substituting $K^\dagger$ in \eqref{eq:Q} alone would lose that coupling.
+
+When $k_o=\np(\Po)<\nu$, appending $m_\star$ rows and columns increases the positive index by at most $m_\star$. For $m_\star\leq\nu-k_o$, \eqref{eq:aug} holds for every hypothetical reading. At least $\nu-k_o+1$ further columns are therefore needed for this particular index test to distinguish anything. The necessity concerns a fixed form and error majorant. A different material restriction, multiplier or joint trace bound may give information sooner.
+
+\subsection{A source-side test for bounded prediction}\label{sec:sourceindex}
+Saturation does not by itself bound the next receiver field. The receiving block in \eqref{eq:qc} must also be positive. There is a way of testing this second requirement without constructing responses for trial receivers. Remove the measured power term from \eqref{eq:form} and write its material part on currents and old illuminations as
+\begin{align}
+ \mathcal P_o&=
+ \begin{bmatrix}K_{\rm mat}&-N V\\-V^*N^*&V^*C_{\mathcal B}V-\Omega\end{bmatrix},
+\notag\\
+ K_{\rm mat}&=K-S^*S,\qquad R_0=[N,S^*],\qquad D_0=\diag(C_{\mathcal B},I_p).
+ \label{eq:sourceform}
+\end{align}
+The early absence of receiver directions is an algebraic consequence of allowing the whole receiver field to vary.
+
+\begin{proposition}[Receiver index from the material and the old sources]\label{prop:sourceindex}
+For invertible $K,\Po$, put $h_{\rm src}=n-\np(\mathcal P_o)$. Then
+\begin{equation}
+ \np(R_y)=p-h_{\rm src}+\nu-\np(\Po).
+ \label{eq:index}
+\end{equation}
+If there is at least one material in the class with a physical solution for the old illuminations then $h_{\rm src}\geq0$. At saturation, bounded prediction by the positive receiving square is possible precisely when $h_{\rm src}=0$. In particular $s<\nn(K_{\rm mat})$ rules it out even at saturation.
+\end{proposition}
+\begin{proof}
+Take the form on a current $x$, old source coefficients $v$ and a freely varying receiver vector $y$. Its value is the material form on $(x,Vv)$ plus $\|Sx-Yv-y\|^2-v^*\Omega v$. Translating $y$ yields a direct sum of $I_p$ and $\mathcal P_o$. Eliminating $x$ and then $v$ instead yields $K,\Po,R_y$. Equality of positive indices and $\np(K)=n-\nu$ prove \eqref{eq:index}. The graph of any common material solution has dimension $s$ and is nonpositive for $\mathcal P_o$. Thus $\np(\mathcal P_o)\leq n$. Finally, bordering $K_{\rm mat}$ by $s$ columns can add at most $s$ positive directions.
+\end{proof}
+For fixed $\Omega,V$, material intervals and weights, $h_{\rm src}$ is independent of the values of $Y$ and of the particular receiving array. The array and the measurement still determine whether saturation occurs and the size and position of a bounded set. The proposition permits an inexpensive rejection of unsuitable weights if only a lower bound $\nn(K_{\rm mat})>s$ is known. For invertible $K_{\rm mat}$ a small source form gives the exact deficit,
+\begin{equation}
+ h_{\rm src}=\nn(K_{\rm mat})
+ -\np\!\left(V^*(C_{\mathcal B}-N^*K_{\rm mat}^{-1}N)V-\Omega\right).
+ \label{eq:indexsmall}
+\end{equation}
+At a singular material block \eqref{eq:sourceform} still applies directly. Rank deficiency of the original dielectric inverse map is a different property.
+
+\input{energy}
+
+\subsection{Selecting an illumination before observing its response}
+A source vector $a$ with incident energy $a^*W_{\rm in}a$ produces a clean field in an ellipsoid centred at $C_a a$. In receive direction $w$, its real support radius is
+\[
+ b(a,w)=\sqrt{a^*\Theta a}\sqrt{w^*R_y^{-1}w}.
+\]
+For classes $i,j$ and one future noise radius $r_a$, the separation margin for a chosen $(a,w)$ is
+\begin{equation}
+ \operatorname{Re}w^*(C_j-C_i)a-b_i(a,w)-b_j(a,w)-2r_a\|w\| .
+ \label{eq:gap}
+\end{equation}
+A verified positive margin implies at most one of these two material classes can explain the new reading. The decision is made before that reading exists. With $\|w\|\leq1$, maximizing the clean gap gives exactly the Euclidean distance between the two closed convex ellipsoids (zero if they intersect). Weak duality follows from the support functions. For disjoint compact sets the direction from one closest point to the other attains the distance. This is a receiver-space second-order cone problem \cite{boyd}. A verified trial direction suffices for exclusion even when it is suboptimal.
+
+For a batch $A_\star$, \eqref{eq:ellipse} gives clean fields in
+$C_iA_\star+R_i^{-1/2}\Delta(A_\star^*\Theta_iA_\star)^{1/2}$, $\|\Delta\|_2\leq1$. The matrix support radius for test $W$ is
+$\|R_i^{-1/2}W(A_\star^*\Theta_iA_\star)^{1/2}\|_*$ by spectral/nuclear norm duality. This keeps cross-beam correlations. A Frobenius bound $r_\star$ adds $r_\star\|W\|_F$ to each end. For independent deterministic column bounds $r_j$, the sharper exact support is $\sum_j r_j\|W_{:,j}\|_2$. Beams in the span of the old incident fields have no independent clean response; repeating a beam may have statistical value under a separate noise model.
+
+A single regular form has a restriction here. At saturation with $R_y\succ0$, $\Theta$ is positive semidefinite for any box that contains a material regular on the entire dictionary, even if that material fails to fit the old readings. Indeed, free the source $a$ and the receiver $y$ in the form on $(x,v,a,y)$ with port data $(Vv+a,Yv+y)$ and old penalty $v^*\Omega v$. Eliminating $x,v,y$ gives $K\oplus\Po\oplus R_y\oplus(-\Theta)$. Translating $a,y$ instead gives the material form on $(x,a)$, $-\Omega$ and $I_p$. The material solution graph has dimension $m$ and is nonpositive, so the latter sum has at most $n+p$ positive directions. The former has $n+p+\nn(\Theta)$, proving the claim. This argument requires the stated nonsingular pivots.
+
+There is also an old-data consistency test. If two valid forms for the \emph{same} class yield disjoint clean receiving projections for a common hypothetical illumination, that class is already empty. Otherwise a single physical material would have to scatter that beam into both projections. No new beam need be fired for this implication. In a three-cell algebraic control two individually nonrejecting tail bounds gave disjoint intervals with gap greater than 0.05542. An ordinary uniform weight also rejected this example. Five further physical material boxes that the original test could not exclude also survived this paired-form test. The control verifies the implication without establishing an advantage over weight search.
+
+For more than two classes, connect pairs with a proven positive margin. Each clique contributes at most one survivor. Any clique cover gives a worst-case survivor bound, even if a greedy cover is used. This counts only the classes in the specified cover. To attain the displayed bound after acquisition, compare the new reading with the stored old-data support intervals enlarged by its new error first. Then append the new columns and run the joint material test. A single joint Frobenius bound can discard the separate error information used by the support test.
