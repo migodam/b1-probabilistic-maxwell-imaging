@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · 已知像素容差类的互耦阵列分离证书</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['\(', '\)']], displayMath: [['\[', '\]']], processEscapes: true},
+  options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" defer></script>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="../index.html">实验报告</a><a href="../theory.html">理论</a><a href="../reproduce.html">复现</a><a href="../review.html">评审</a><a href="../handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">理论与复核 · 稳态盲成像与有限端口</p>
+<h1 id="已知像素容差类的互耦阵列分离证书">已知像素容差类的互耦阵列分离证书</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout"><aside class="sidebar"><details open><summary>本页目录</summary><nav aria-label="本页目录"><ol><li><a href="#%E4%BB%8E%E4%B8%A4%E7%82%B9%E6%81%92%E7%AD%89%E5%BC%8F%E5%88%B0%E6%96%B9%E5%90%91%E6%94%AF%E6%92%91">从两点恒等式到方向支撑</a></li><li><a href="#%E5%8A%A0%E6%80%A7%E4%BA%92%E9%98%BB%E6%8A%97%E8%AF%AF%E5%B7%AE%E7%9A%84%E6%96%B9%E5%90%91%E5%8C%96%E4%BD%99%E9%87%8F">加性互阻抗误差的方向化余量</a></li><li><a href="#%E6%95%B0%E5%80%BC%E8%AF%81%E6%8D%AE%E4%B8%8E%E9%80%82%E7%94%A8%E8%8C%83%E5%9B%B4">数值证据与适用范围</a></li></ol></nav></details></aside>
+<article class="article" id="article">
+
+<p>设两个中心材料为 <span class="math-inline">\(c^+,c^-\)</span>，各自的容许材料为</p>
+<div class="formula">\[
+\mathcal C_w(c)=\{c+h:\ \forall i,\ \max(-w,-c_i)\le h_i\le\min(w,4.5-c_i)\}.
+\]</div>
+<p>所有 1,024 个像素各自可变，中心阵形和小偏差上界是这个分支的先验。原始盲反演使用较大的全域盒 <span class="math-inline">\([0,4.5]^{1024}\)</span>。比较固定在 400 MHz 与 1 W 合计可用源功率，允许噪声半径随阵列按固定每复数通道底噪确定。读数和间隔的量纲为 <span class="math-inline">\(\sqrt{\mathrm W}\)</span>，<span class="math-inline">\(c,h,w\)</span> 无量纲。</p>
+<h2 id="从两点恒等式到方向支撑">从两点恒等式到方向支撑</h2>
+<p>记 <span class="math-inline">\(D_x=\operatorname{diag}(x)\)</span>，<span class="math-inline">\(A_c=I-D_cG\)</span>，<span class="math-inline">\(J_c=A_c^{-1}D_cB\)</span>，<span class="math-inline">\(E_c=B+GJ_c\)</span>，<span class="math-inline">\(L_c=SA_c^{-1}\)</span>，<span class="math-inline">\(T_c=GA_c^{-1}\)</span>。消去当前状态之差直接得到</p>
+<div class="formula">\[
+A_c(J_{c+h}-J_c)=D_h E_{c+h},\qquad
+(I-T_cD_h) E_{c+h}=E_c .
+\]</div>
+<p>只要 <span class="math-inline">\(wt_c&lt;1\)</span> 且 <span class="math-inline">\(t_c\)</span> 是 <span class="math-inline">\(\|T_c\|_2\)</span> 的上界，整个像素箱都存在唯一全波状态，且</p>
+<div class="formula">\[
+F(c+h)-F(c)=L_cD_hE_c+L_cD_hT_cD_hE_c
+  + L_cD_h(T_cD_h)^2(I-T_cD_h)^{-1}E_c.
+\]</div>
+<p>给定复矩形方向 <span class="math-inline">\(U\)</span>，令 <span class="math-inline">\(V=L_c^*U\)</span>，实际实内积采用
+<span class="math-inline">\(\langle U,F\rangle_{\mathbb R}=\operatorname{Re}\operatorname{tr}(U^*F)\)</span>。关于真实像素实增量，一阶项系数为
+<span class="math-inline">\(g_i=\operatorname{Re}\sum_j\bar V_{ij} E_{c,ij}\)</span>。给定符号 <span class="math-inline">\(\varepsilon=\pm1\)</span>，逐格取 <span class="math-inline">\(\varepsilon g_i\)</span> 对相应一端的乘积，得到精确线性支撑。二阶项为实二次型，系数</p>
+<div class="formula">\[
+Q_{ij}=\varepsilon\operatorname{Re}\!\left(T_{c,ij}\sum_s\bar V_{is}E_{c,js}\right).
+\]</div>
+<p>取实对称部分。验证其谱上界 <span class="math-inline">\(\bar\lambda\)</span> 后，<span class="math-inline">\(h^\top Qh\le 1024\,w^2\max(0,\bar\lambda)\)</span>。同时取区间化的逐项绝对上界中较小者。若 <span class="math-inline">\(v_0\)</span> 和 <span class="math-inline">\(e_0\)</span> 分别上界
+<span class="math-inline">\(\sup_{\|z\|_\infty\le1}\|T_c^*D_zV\|_F\)</span> 和
+<span class="math-inline">\(\sup_{\|z\|_\infty\le1}\|T_cD_zE_c\|_F\)</span>，绝对三阶尾和不超过</p>
+<div class="formula">\[
+\frac{w^3 v_0 e_0}{1-wt_c}.
+\]</div>
+<p>这两个平方范数本身也是实二次型，由 <span class="math-inline">\(T_cT_c^*\)</span> 或 <span class="math-inline">\(T_c^*T_c\)</span> 与源行内积形成逐项乘积。所有上界同时计入原矩阵输入、复数乘法和状态求解误差。</p>
+<p>取正号下降分支为 <span class="math-inline">\(c^+\)</span>、上升分支为 <span class="math-inline">\(c^-\)</span>，用上述支撑从 <span class="math-inline">\(\langle U,F(c^+)-F(c^-)\rangle_\mathbb R\)</span> 扣去两边最大位移。再扣 <span class="math-inline">\(2r\|U\|_F\)</span> 及两边校准余量。下端点大于零时，两个含噪可达数据集合严格不交。方向既可以取中心端口差，也可取两组一阶外包的最短连线。后者由盒约束最小二乘产生，本身只提供候选方向，所有结论以选定方向的区间验证为准。</p>
+<h2 id="加性互阻抗误差的方向化余量">加性互阻抗误差的方向化余量</h2>
+<p>令 <span class="math-inline">\(K_a\)</span> 和 <span class="math-inline">\(K_b(c)\)</span> 为以 50 Ω 归一化后，从驱动向量到全部端口电流的空场和加载映射。对同一材料，名义的整端口差为 <span class="math-inline">\(P=2(K_a-K_b)\)</span>。无误差的拟合读数 <span class="math-inline">\(F\)</span> 是 <span class="math-inline">\(P\)</span> 的收发子块除以 <span class="math-inline">\(\sqrt q\)</span>，其中 <span class="math-inline">\(q\)</span> 是顺次发射的路数，合计可用源功率为 1 W。共同端口误差 <span class="math-inline">\(D=\Delta Z/(50\,\Omega)\)</span> 使</p>
+<div class="formula">\[
+K_\delta=(I+KD)^{-1}K,\qquad
+P_\delta=(I-K_{b,\delta}D)P(I-DK_{a,\delta}).
+\]</div>
+<p>该恒等式来自在驱动方程加入端口电压 <span class="math-inline">\(D I\)</span> 的反馈，模型内目标加载的作用仍保留。从已校准的中心条件以及全端口材料箱位移 <span class="math-inline">\(\|P-P_c\|_F\le d\)</span> 产生已验证的 <span class="math-inline">\(a\ge\|K_a\|_2\)</span> 与 <span class="math-inline">\(b\ge\|K_b(c+h)\|_2\)</span>。后者可由 <span class="math-inline">\(\|K_b(c)\|_2+d/2\)</span> 得出。若 <span class="math-inline">\(\eta a&lt;1,\eta b&lt;1\)</span>，扰动后的对应上界为 <span class="math-inline">\(a'=a/(1-\eta a)\)</span>、<span class="math-inline">\(b'=b/(1-\eta b)\)</span>。</p>
+<p>将 <span class="math-inline">\(U\)</span> 填入整端口矩形位置得到 <span class="math-inline">\(C\)</span>。Taylor 展开中关于 <span class="math-inline">\(D\)</span> 的一阶实迹绝对值上界为</p>
+<div class="formula">\[
+\eta \left\|P_c C^* K_b(c)+K_a C^*P_c\right\|_* ,
+\]</div>
+<p>其中核范数是奇异值之和。这项上界允许误差在每个比较假设各自从整个给定范数球里取值。其余项的 Frobenius 上界在用 <span class="math-inline">\(\|C\|_F\)</span> 乘前为</p>
+<div class="formula">\[
+\eta\left[(d/2+\eta b b'+\eta a a')p_c+(a'+b')d\right]
+ + \eta^2a'b'(p_c+d),\qquad p_c\ge\|P_c\|_F.
+\]</div>
+<p>所有方向化校准量再除以 <span class="math-inline">\(\sqrt q\)</span>，与端口噪声处在同一量纲。上式对每个材料盒的上界在名义模型中独立计算，普通矩形数据不需要新增测量。</p>
+<p>另一个合同允许独立仪器获得有限精度的整端口读数 <span class="math-inline">\(\widehat P\)</span>，已知 <span class="math-inline">\(\|\widehat P-P_\delta\|_F\le\epsilon_{\mathrm{full}}\)</span>。用于范数膨胀的合法量为 <span class="math-inline">\(\|\widehat P\|_F+\epsilon_{\mathrm{full}}\)</span>。仅有拟合矩形子块时不能用其范数代替整个差矩阵。合成仪表例子的实际复数测量误差上界约 0.00334，声明上界约 0.00667。按一般被动界校准时，漏掉这项有限误差会少加约 <span class="math-inline">\(2.36\times10^{-5}\sqrt{\mathrm W}\)</span> 的矩形允许半径。 <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip" class="archive-link" title="下载归档，文件 ports/public/calibration_example_e005_finite_probe.npz">含噪全端口例<small>（归档内）</small></a></p>
+<h2 id="数值证据与适用范围">数值证据与适用范围</h2>
+<p>磁盘上的原始谱系数和储存矩阵均作为精确二进制系数解释。以 Arb 外包裸 FFT Green 和小端口线性求解，显式二进制64矩阵积结合向外取整的误差界验证候选右逆。对需上界的实对称或复 Hermitian 矩阵，将移位 Cholesky 因子的重构余量计入谱上端点。核范数重构同样计入 SVD 余量。两个盒取的候选值均满足逐格上界；每个中心的代价含一次 1,024 维 LU、1,024 个逆列及全部原物理右端项。完整宽度表、方向选择与时间保存在回执。 <a href="results/mechanism_class_separation.json">完整区间回执</a></p>
+<p>6×6 共同中点的两份生成材料仍分别属于所有这些中心邻域。8×8 的类分离适用于这一对已知小容差族。更宽的盒或整个盲材料类需要自己的合法证据。盲数据的扩展斑块相容对使用各自观测和公开测出的阵列重放，物理反例与这里的已知类结论可以同时成立。 <a href="results/mechanism_witness_arb.json">6×6 共同见证</a> · <a href="results/extended_array_replay.csv">盲扩展重放</a></p>
+<p>在 8×8、400 MHz、1 W 档，半径 <span class="math-inline">\(r=0.00151716894\sqrt{\mathrm W}\)</span>，<span class="math-inline">\(w=0.02\)</span> 的名义与 0.25 Ω 误差下分离裕量下界分别为 <span class="math-inline">\(0.00137752\sqrt{\mathrm W}\)</span> 和 <span class="math-inline">\(0.000148132\sqrt{\mathrm W}\)</span>。对于 <span class="math-inline">\(w=0.05\)</span>，独立寻找两候选材料后，从单一共用的纯虚对称阻抗扰动中验证了一个相交例。两个点对同一中心的距离上界为 0.990322 和 0.990328 个半径。其谱范数上界为 0.24999999999975 Ω。共用扰动保持了有功阻抗的被动性。校准条件下可分离宽度的临界值因而限制在 0.02 到 0.05 之间。无误差时，这个特定宽盒点对的中点距离均略大于一个半径，宽盒全类仍未决。最终分离验证花费 41.43 秒墙时。宽盒反例搜索与独立复核合计 48.23 秒墙时，搜索含 206 次 LU、1,648 个物理右端项、16 个切线右端项和 1,632 个伴随右端项。 <a href="results/mechanism_class_collision.json">宽盒反例</a></p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="可横向滚动的数据表"><table>
+<thead>
+<tr>
+<th style="text-align: right;">像素半宽 <span class="math-inline">\(w\)</span></th>
+<th style="text-align: right;">精确校准的分离裕量下界 <span class="math-inline">\(\sqrt{\mathrm W}\)</span></th>
+<th style="text-align: right;">0.25 Ω 校准球下分离裕量下界 <span class="math-inline">\(\sqrt{\mathrm W}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0.0001</td>
+<td style="text-align: right;">0.00425149</td>
+<td style="text-align: right;">0.00354500</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.00413746</td>
+<td style="text-align: right;">0.00341239</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.00362832</td>
+<td style="text-align: right;">0.00281564</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.00296165</td>
+<td style="text-align: right;">0.00202644</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.00137752</td>
+<td style="text-align: right;">0.00014813</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">−0.01006576</td>
+<td style="text-align: right;">−0.01300017</td>
+</tr>
+</tbody>
+</table></div>
+<p>表中采用一阶最近点所给方向。负下界表示该方向证据无法保证分离。最后一行的实际相交性另有共用校准误差的全波点对见证。</p>
+<nav class="page-end" aria-label="配套报告"><a href="../bounds/index.html">区域界与暗电流</a> <a href="../bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="../imaging/index.html">盲成像</a> <a href="index.html">互耦阵列与实测</a> <a href="../observations.html">观测与材料</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

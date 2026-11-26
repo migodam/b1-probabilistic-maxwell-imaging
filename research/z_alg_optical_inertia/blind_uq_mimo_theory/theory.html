@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · 从同一份带噪散射读数可以断言什么</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['\(', '\)']], displayMath: [['\[', '\]']], processEscapes: true},
+  options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" defer></script>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="index.html">实验报告</a><a href="theory.html" aria-current="page">理论</a><a href="reproduce.html">复现</a><a href="review.html">评审</a><a href="handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">理论与证明 · 稳态盲成像与有限端口</p>
+<h1 id="从同一份带噪散射读数可以断言什么">从同一份带噪散射读数可以断言什么</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout"><aside class="sidebar"><details open><summary>本页目录</summary><nav aria-label="本页目录"><ol><li><a href="#1-%E7%89%A9%E7%90%86%E8%BE%93%E5%85%A5%E4%B8%8E%E5%BE%85%E4%BC%B0%E9%87%8F">1 物理输入与待估量</a></li><li><a href="#2-%E7%94%A8%E5%AE%9A%E7%90%86-1-%E6%8E%92%E9%99%A4%E6%95%B4%E7%B1%BB%E6%9D%90%E6%96%99">2 用定理 1 排除整类材料</a></li><li><a href="#3-%E4%BB%8E%E5%A4%96%E5%8C%85%E8%BD%AC%E5%90%91%E5%8F%AF%E5%AE%9E%E7%8E%B0%E8%8C%83%E5%9B%B4">3 从外包转向可实现范围</a></li><li><a href="#4-%E5%A4%9A%E9%A2%91%E5%90%8C%E6%9D%90%E6%96%99%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%8F%AA%E6%8A%8A%E7%85%A7%E6%98%8E%E6%95%B0%E7%9B%B8%E5%8A%A0">4 多频同材料为什么不能只把照明数相加</a></li><li><a href="#5-%E7%9C%9F%E5%AE%9E%E7%AB%AF%E5%8F%A3%E9%87%8F%E6%A0%A1%E5%87%86%E8%AF%AF%E5%B7%AE%E5%92%8C%E4%B8%A4%E4%B8%AA%E6%9D%90%E6%96%99%E7%B1%BB">5 真实端口量、校准误差和两个材料类</a></li><li><a href="#6-%E5%85%88%E4%BE%8B%E5%92%8C%E9%80%82%E7%94%A8%E8%8C%83%E5%9B%B4">6 先例和适用范围</a></li></ol></nav></details></aside>
+<article class="article" id="article">
+
+<p>本文的材料量是区域峰值。工业探伤中“这里至少有一处高介电材料”“这块亮斑可以从一个相容解释中擦去”“这块在实际样品中是空气”对应三个不同的问题。下面给出前两个问题的判断方法，也给出第三个问题无法由现有读数判断的实例。</p>
+<h2 id="1-物理输入与待估量">1　物理输入与待估量</h2>
+<p>采用时间因子 <span class="math-inline">\(e^{-i\omega t}\)</span> 的二维 TM 模型。盘片等面积脉冲离散后，<span class="math-inline">\(E=B+GJ,\ J=XE,\ F(X)=SJ\)</span>。数据有 <span class="math-inline">\(s\)</span> 个发射列、<span class="math-inline">\(p\)</span> 个接收行。复场的 Frobenius 范数以 <span class="math-inline">\(\sqrt{\mathrm W}\)</span> 计。单频主实验用校准后的有限端口，且每格实对比度独立属于 <span class="math-inline">\([0,U],\ U=4.5\)</span>。个别反事实实验另行明示更窄的材料类。所有公式作用于正演存在且唯一的材料。严格数值结论针对声明的离散系数，在这个意义上图中的 9,216 个独立材料量都保留。</p>
+<p>给定一次训练读数及其硬误差半径 <span class="math-inline">\((Y,r)\)</span>，记 <span class="math-inline">\(\mathcal F=\{X:\|F(X)-Y\|_F\le r\}\)</span>。任一由训练数据产生的非空像素集合 <span class="math-inline">\(R\)</span>，其估计目标为 <span class="math-inline">\(p_R(X)=\max_{i\in R}\chi_i\)</span>。最窄闭区间是 <span class="math-inline">\([\inf_{X\in\mathcal F}p_R(X),\sup_{X\in\mathcal F}p_R(X)]\)</span>。一个外包区间须对所有 <span class="math-inline">\(X\in\mathcal F\)</span> 成立。两个落球材料则从内部给出最小可能宽度。若已找到零和 <span class="math-inline">\(U\)</span> 两端，则任何保证覆盖的区间恰好为 <span class="math-inline">\([0,U]\)</span>。只有证明存在连续的可行路径时，才进一步断言其间所有值都可达到。</p>
+<p>这个结论允许先从 <span class="math-inline">\(Y\)</span> 提取 ROI。固定该读数后，排除运算的量词仍是“对全部材料”，故对于任意数量的数据驱动 ROI 可同时使用。若实际噪声以概率 <span class="math-inline">\(1-\alpha\)</span> 落入预先校准的球，事件上的全部区间同时覆盖真值。本实验给定确定性半径，未估计一个总体的随机覆盖概率。将 ROI 置零失败也不能说明真物体一定存在。反过来，把每个 ROI 分别置零后都成功，并不保证把它们同时删掉还可行。区域均值、支持面积和区域峰值有不同的量纲和估计目标。</p>
+<h2 id="2-用定理-1-排除整类材料">2　用定理 1 排除整类材料</h2>
+<p>一格的电流行和总场行为 <span class="math-inline">\(z_i=(j_i,e_i)^T\)</span>。在盒 <span class="math-inline">\([\ell_i,u_i]\)</span> 上，</p>
+<div class="formula">\[
+D_i=\begin{pmatrix}w_i&amp;-w_i(\ell_i+u_i)/2-i\lambda_i/2\\
+-w_i(\ell_i+u_i)/2+i\lambda_i/2&amp;w_i\ell_i u_i\end{pmatrix},
+\qquad
+z_i^*D_i z_i=w_i(\chi_i-\ell_i)(\chi_i-u_i)e_i^*e_i\preceq0 .
+\]</div>
+<p>这里 <span class="math-inline">\(w_i\ge0\)</span> 且 <span class="math-inline">\(\lambda_i\in\mathbb R\)</span>。把各行的二次型加到 <span class="math-inline">\((SJ-Y)^*(SJ-Y)\)</span>，代入 <span class="math-inline">\(E=B+GJ\)</span>，得到状态与照明上的分块矩阵 <span class="math-inline">\(\mathcal A=[K,L;L^*,C]\)</span>。在矩阵图 <span class="math-inline">\([J;I_s]\)</span> 上其值由真实残差 Gram 支配。若 <span class="math-inline">\(K\)</span> 非奇异，记 <span class="math-inline">\(H=C-L^*K^{-1}L,\ \nu=n_-(K)\)</span>。配方后负项是至多 <span class="math-inline">\(\nu\)</span> 行的 Gram，交错给出</p>
+<div class="formula">\[
+\|F(X)-Y\|_F^2\ge\mathcal T_\nu(H)=
+ \sum_{j=\nu+1}^{s}(\lambda_j^\downarrow(H))_+ .
+\]</div>
+<p>奇异时在带边矩阵 <span class="math-inline">\(\mathcal A-t\operatorname{diag}(0,I_s)\)</span> 上直接计严格正惯性。如果至少有 <span class="math-inline">\(n+j\)</span> 个正方向且 <span class="math-inline">\(jt\ge r^2\)</span>，物理图与正子空间的交至少 <span class="math-inline">\(j\)</span> 维，因此可排除。更换一组像素上端点改变有限个局部行对，分解更新为 <span class="math-inline">\(V^*\Sigma V\)</span> 后，用增广矩阵 <span class="math-inline">\([\mathcal A,V^*;V,-\Sigma^{-1}]\)</span> 的惯性减去 <span class="math-inline">\(-\Sigma^{-1}\)</span> 的惯性。数值上未分离的近零主元不能计成严格特征值。上述是继承的定理。对于峰值<strong>上界</strong>，需要排除某格大于阈值的并集，即逐项排除或用等效并集证明。排除“全区每格都高”只限制最小值。本文未得到超过物理上限 <span class="math-inline">\(U\)</span> 所给的普通亮区上界。</p>
+<p><strong>能量补充与权重的极限。</strong> 若有共同独立证据 <span class="math-inline">\(\|J\|_F^2\le E_c\)</span>，则对 <span class="math-inline">\(\alpha\ge0\)</span>，改用 <span class="math-inline">\(K+\alpha I\)</span>，完成同样配方后得到 <span class="math-inline">\(\|F-Y\|_F^2\ge\mathcal T_{n_-(K+\alpha I)}(H_\alpha)-\alpha E_c\)</span>。负惯性随 <span class="math-inline">\(\alpha\)</span> 单调非增，末项说明为什么减少负方向未必改善最终距离。恢复图的能量不能代替上界。稀疏或质量先验本身也不给出总电流量，转换时必须同时约束总场。在原 Frobenius 球上任意 <span class="math-inline">\(0\preceq W\preceq I\)</span> 将残差 Gram 改为 <span class="math-inline">\((SJ-Y)^*W(SJ-Y)\)</span>，相应带边矩阵只会减小。真正不同的噪声椭球需要独立标定。</p>
+<p><strong>局部暗电流障碍。</strong> 检验 <span class="math-inline">\(p_R=0\)</span> 时可把电流限制到外部 <span class="math-inline">\(E=R^c\)</span>。若在 <span class="math-inline">\(\ker S_E\)</span> 内存在 <span class="math-inline">\(s\)</span> 维子空间，在 <span class="math-inline">\(t_1,t_2\)</span> 两端其外区扇区加光学 Hermitian 型皆负定，且其电流在 ROI 内为零，则对每个 <span class="math-inline">\(t\in[t_1,t_2]\)</span> 都保持负定。针对 ROI 零假设，区内场可非零，而 <span class="math-inline">\(\ell=0\)</span> 使场平方系数为零，两条局部形式在该子空间上均为零；放宽局部上限仍成立。外区正统一缩放不改变符号，接收加权项处处为零。由最小最大原理 <span class="math-inline">\(\nu\ge s\)</span>。这证明特定连续乘子族失去尾谱；它本身不构成任何物理材料对。实测的压缩矩阵、精确零空间校正、光学比区间与不覆盖的权重族见 <a href="bounds/index.html">数值边界</a>。</p>
+<p><strong>区域过大时出现的正面界。</strong> 给 <span class="math-inline">\(R\)</span> 盒 <span class="math-inline">\([0,c]\)</span>，其余格仍独立在 <span class="math-inline">\([0,U]\)</span>。在 <span class="math-inline">\(R\)</span> 用正权 <span class="math-inline">\(\beta\)</span>，若 <span class="math-inline">\(K_{RR}\succeq\gamma I&gt;0\)</span>，消元后的边矩阵由 <span class="math-inline">\(A_{E,Z}-K_{E,Z;R}K_{R;E,Z}/\gamma\)</span> 从下支撑。这里包含源场行，<span class="math-inline">\(\gamma=\beta(1-c\bar g)\)</span>，<span class="math-inline">\(\bar g\)</span> 上包相应实部谱顶，具体式对应外区逐格扇区、区内 <span class="math-inline">\(\ell=0\)</span> 的矩阵。对较小的保守矩阵计惯性仍给全域有效的结论。保留带方向的乘积比用单一范数罚所有照明方向更紧。结论仅为该大区内至少有一格非零。 <a href="bounds/refined_cap.py">算法和严格端点</a></p>
+<p><strong>与 CIE 电流更新的连接。</strong> 令 <span class="math-inline">\(P_0\)</span> 投影到训练接收行空间的正交补，<span class="math-inline">\(V\)</span> 的列取 <span class="math-inline">\(P_0 K P_0|_{\ker S}\)</span> 的低端负 Ritz 向量。在 CIE 的原电流目标中加入</p>
+<div class="formula">\[
+ \Phi(J)=\frac{\gamma}{2}\sum_a h_a\|V^* j_a\|_2^2,
+ \qquad \nabla_{j_a}\Phi=\gamma h_a VV^*j_a .
+\]</div>
+<p>梯度按复向量上的实内积取；<span class="math-inline">\(h_a\)</span> 是原目标的逐源权重。沿搜索方向的曲率增量为 <span class="math-inline">\(\gamma h_a\|V^*d_a\|^2\)</span>，因而原来的逐源二次线搜索仍可直接使用。这里选取的分量对接收数据一阶变化不可见，加入负的扇区型也不意味着它们不能由共享材料产生。此惩罚是待检的成像偏好。以相同初始罚能量、相同继续迭代／计费预算对照普通脊罚和等秩的随机接收核，才能判断其是否含额外的材料信息。</p>
+<p>对亮区归零的可行材料，则可在同一盒约束继续使用原 CIE 或有界全波优化。某个具体归零所得材料若通过原全波复算，可以交付为第二种解释；将该零约束永久加入所有后续反演，需要另外的物理先验或独立测量。某一区域最高值有正下界只表示其中至少有一格达到该下界，不能把它作为每格的下限施加给求解器。 <a href="imaging/method.html">完整耦合与对照</a></p>
+<h2 id="3-从外包转向可实现范围">3　从外包转向可实现范围</h2>
+<p><strong>精确单格可行路径。</strong> 给定一个合法的全波候选 <span class="math-inline">\(X\)</span>，令 <span class="math-inline">\(A=I-XG\)</span>，<span class="math-inline">\(p=SA^{-1}e_i,\ h=(GA^{-1})_{ii}\)</span>，<span class="math-inline">\(e\)</span> 为其第 <span class="math-inline">\(i\)</span> 格总场行。把该格增加实量 <span class="math-inline">\(t\)</span>，用两次本构式相减，得到 <span class="math-inline">\(A(J'-J)=te_i E'_i\)</span>，所以 <span class="math-inline">\(E'_i=e+thE'_i\)</span>。于是在 <span class="math-inline">\(1-th\ne0\)</span> 时有</p>
+<div class="formula">\[
+ F(X+te_ie_i^T)-F(X)=\frac{t}{1-th}p e.
+\]</div>
+<p>行列式引理也给出正演可逆的同一判据。设 <span class="math-inline">\(D=F(X)-Y\)</span>，则精确落球条件为一元实二次不等式</p>
+<div class="formula">\[
+ q(t)=\|(1-th)D+tpe\|_F^2-r^2|1-th|^2\le0 .
+\]</div>
+<p>对于沿线段严格 <span class="math-inline">\(q&lt;0\)</span> 的核验，奇点处右侧为零而第一项非负，因此在整个段上自动排除奇点。将端点及中间 Bernstein 系数在球算术中外包并细分可证明整段。这个对象是非线性物理可行集的内见证。标量分式属于已知秩一更新，新增的用途是直接和同一读数下所有盲 ROI 峰值外界对照。</p>
+<p><strong>允许其余材料补偿。</strong> 把 ROI 全部归零，重新拟合外区。在另一次拟合中将 ROI 内一个像素固定在 <span class="math-inline">\(U\)</span>，或将一个四连通子块逐格约束为 <span class="math-inline">\(\chi_i\ge2\)</span>。候选可由任意优化器产生；只有对两份原全波读数分别给出严格的残差上端点后才报告可行范围。后一构造同时控制平均值和面积。若子块占 ROI 的 <span class="math-inline">\(f\)</span>，两参照图的区域均值之差至少 <span class="math-inline">\(2 f\)</span>。全局矩阵不定、真值由哪一份更好解释、或两份解之间是否有连续路径，均不影响这个两点反证。高维不确定性的证据因此落在实际材料上。</p>
+<p><strong>可扩展正演检查。</strong> 在 96² 保留卷积符号中模长较大的 Fourier 项和已知端口反馈，将 <span class="math-inline">\(A=H-UV^*\)</span> 精确写成 <span class="math-inline">\(\|I-H\|_2\le q&lt;1\)</span> 的尾加有限秩项。取任意数值矩阵 <span class="math-inline">\(Z\)</span> 并独立上包 <span class="math-inline">\(e=\|AZ-U\|_2\)</span>。因</p>
+<div class="formula">\[
+ A(I+ZV^*)=H+(AZ-U)V^*,
+\quad
+ \|A^{-1}\|_2\le\frac{1+\|Z\|_2\|V\|_2}{1-q-e\|V\|_2}
+\]</div>
+<p>在分母严格为正时成立。有限方阵右逆即为逆，未假设真实电流在 Fourier 低维空间内。对接收量可再以 <span class="math-inline">\(A^*D\simeq S^*\)</span> 给出 <span class="math-inline">\(\|SA^{-1}\|\le\|D\|+\|S^*-A^*D\|\|A^{-1}\|\)</span>。将它乘以原状态缺陷即可核查端口残差。完整 DFT 的旋转因子用 128 位 Arb 外包，乘加及矩阵范数计入前向浮点误差。另一路核查对精确归零格消元，直接验证活动块近似逆的缺陷。二者针对保存的离散算子。 <a href="diagnostics/verified_wave.py">实作</a> · <a href="diagnostics/native_replay.py">接收误差核查</a></p>
+<h2 id="4-多频同材料为什么不能只把照明数相加">4　多频同材料为什么不能只把照明数相加</h2>
+<p>两个频率具有不同的 <span class="math-inline">\(G_1,G_2\)</span>。把两组物理场放在块对角状态中，各像素在两个频率的材料实数相同。因此可在频率维上取 <span class="math-inline">\(C_\rho=[1,\rho;\rho,1]\succeq0\)</span>。对每个像素，扇区不等式在 <span class="math-inline">\(C_\rho\)</span> 加权后仍成立，其值等于 <span class="math-inline">\((\chi_i-\ell_i)(\chi_i-u_i)\mathcal E_i^* C_\rho\mathcal E_i\)</span>。两个照明字典可有不同列数。这个构造保留了跨频共享本构，代价是状态行数也翻倍。</p>
+<p><strong>满相干加权的惯性障碍。</strong> 在全场统一 <span class="math-inline">\([0,u]\)</span>、正统一实扇区权、零光学乘子、<span class="math-inline">\(u&gt;0\)</span> 下取 <span class="math-inline">\(\rho=1\)</span>。作酉变换用电流和、差作坐标，状态材料型为 <span class="math-inline">\([A,D;D^*,0]\)</span>。电流平方只看和，扇区交叉项中 <span class="math-inline">\(G_1 j_1+G_2 j_2\)</span> 才含差，故 <span class="math-inline">\(D\)</span> 是 <span class="math-inline">\(G_1-G_2\)</span> 或其伴随的非零标量倍数。若 <span class="math-inline">\(D\)</span> 的秩至少为 <span class="math-inline">\(h\)</span>，选 <span class="math-inline">\(h\)</span> 对左右奇异方向，在压缩矩阵中 <span class="math-inline">\(D_h\)</span> 可逆。用三角合同可消去 Hermitian 左上块，所得 <span class="math-inline">\([0,D_h;D_h^*,0]\)</span> 有 <span class="math-inline">\(h\)</span> 个负特征值。两组接收项均半正定，其总秩最多 <span class="math-inline">\(p_1+p_2\)</span>，从而</p>
+<div class="formula">\[
+ n_-(K_{\rho=1})\ge h-(p_1+p_2).
+\]</div>
+<p>若该数达到 <span class="math-inline">\(s_1+s_2\)</span>，定理 1 的尾必空。这个命题限定了一个自然的耦合方式；双频真实物理仍有可能极有价值。若两频分别有可用距离下界，直接相加平方给出联合距离下界，不需要假设共享状态。实验用预先从几何选定的 80 格在两个原生网格上验证 <span class="math-inline">\(G_1-G_2\)</span> 子矩阵的右逆缺陷小于 1。部分相关的频率权重另做浮点扫描。 <a href="results/frequency_coherence_rank.json">原始矩阵核查</a></p>
+<h2 id="5-真实端口量校准误差和两个材料类">5　真实端口量、校准误差和两个材料类</h2>
+<p><strong>固定加载后的 Green。</strong> 采用互易二维线端口和 RMS 波归一化。空场天线网络为 <span class="math-inline">\(Z_{AA}\)</span>，参考端接电阻 <span class="math-inline">\(R&gt;0\)</span>，令 <span class="math-inline">\(M=Z_{AA}+RI\)</span>，裸激励、读取耦合为 <span class="math-inline">\(L_T,L_R\)</span>，源电压命令为 <span class="math-inline">\(H\)</span>。由 <span class="math-inline">\(MI=H+iL_RJ\)</span> 与 <span class="math-inline">\(E=L_T I+G_0J\)</span> 消去天线电流，</p>
+<div class="formula">\[
+ G=G_0+iL_T M^{-1}L_R,\qquad B=L_T M^{-1}H,\qquad
+ S=-i\sqrt R P_{\rm rx}M^{-1}L_R .
+\]</div>
+<p>于是同一 <span class="math-inline">\(E=B+GJ\)</span> 和定理 1 对该固定布局继续成立，空、加载两状态相减是实际读数。<span class="math-inline">\(\operatorname{Herm}Z_{AA}\)</span> 来自出射 Green 的辐射 Gram 加正欧姆电阻。发射机可用功率按 <span class="math-inline">\(\|H\|_F^2/(4R)\)</span> 归一；天线接受功率、反射和终端耗散分别记账。<span class="math-inline">\(\operatorname{Herm}Z\)</span> 对指定端口电流给实功率，不能与源可用功率混用。此处模型含目标对端口电流的反馈；实验室天线的实测阻抗矩阵没有提供。 <a href="ports/index.html">电路实现及功率闭合</a></p>
+<p><strong>公共互阻抗偏差。</strong> 将端接后的空、加载总阻抗分别除以 <span class="math-inline">\(R\)</span> 得到 <span class="math-inline">\(A,C\)</span>，记完整空场相减归一化传输 <span class="math-inline">\(T_0=2(A^{-1}-C^{-1})\)</span>。同一加性校准偏差 <span class="math-inline">\(D\)</span> 同时作用于两者。由逆差恒等式及交换同一矩阵的解析函数，</p>
+<div class="formula">\[
+ T_D=(I+A^{-1}D)^{-1}T_0(I+DC^{-1})^{-1}
+     =(I+C^{-1}D)^{-1}T_0(I+DA^{-1})^{-1}.
+\]</div>
+<p>若 <span class="math-inline">\(\operatorname{Herm}(A),\operatorname{Herm}(C)\succeq I,\ \|D\|_2\le\eta\)</span>，据此从真实全端口量可得 <span class="math-inline">\(\|T_0-T_D\|_F\le(2\eta+\eta^2)\|T_D\|_F\)</span>。若标定后的两端接网络也被动，则不必另测全端口量，直接对两项逆差给 <span class="math-inline">\(\|T_0-T_D\|_2\le4\eta\)</span>。对于实际读数 <span class="math-inline">\(P T_D V+N\)</span>，后者与 <span class="math-inline">\(\|P\|_2\|V\|_F\)</span> 相乘再加仪器 Frobenius 噪声，递交给定理 1。用实测完整 <span class="math-inline">\(T_D\)</span> 时须另加其探测误差并单列曝光。只读接收子块不能套用该子块的相对误差界，例如 <span class="math-inline">\(A=2I,C=\mathrm{diag}(3,2)\)</span>，名义非对角响应为零，公共对称非对角小扰动会产生非零交叉读数。固定偏差只在这里所声明的两个状态共享，天线移动、不同的目标加载模型误差或独立源相位漂移需要自己的预算。</p>
+<p><strong>两个整类而非两点的分离。</strong> 设 <span class="math-inline">\(X_c\)</span> 是已知候选中心，<span class="math-inline">\(\Delta\)</span> 是任意合法实对角扰动，<span class="math-inline">\(\|\Delta\|_2\le w\)</span>。令 <span class="math-inline">\(T=G(I-X_cG)^{-1},\ L=S(I-X_cG)^{-1}\)</span>，则</p>
+<div class="formula">\[
+ F(X_c+\Delta)-F(X_c)=L\Delta(I-T\Delta)^{-1}E_c .
+\]</div>
+<p>选端口投影 <span class="math-inline">\(v\)</span>，等式的一阶实部在逐格盒上的支持值可按符号精确求和。二阶项是实二次型，取其单侧谱上包；当 <span class="math-inline">\(w\|T\|&lt;1\)</span> 时余下项以三阶几何余量控制。对两个中心取相向的支持上界，校准扰动也分别作单侧控制。若投影中心差超过两侧之和再加 <span class="math-inline">\(2r\|v\|_F\)</span>，两类在规定误差下没有共同读数。数值优化只选投影，重新计算的支持值决定严格结论。已知类中心/盒是附加信息，这个局部充分条件及其收缩假设不用于宽先验的盲分割。相同类的中心若在另一阵列有共同读数，即直接给出任何算法的反例。这一对照把“接收尾谱为空”和“真实材料不可区分”拆开实证。 <a href="ports/class_separation.py">逐类证明与误差余量</a></p>
+<p><strong>共同仪器与分别相容的仪器。</strong> 若两材料在同一已知试验条件下共享相同未知扰动，用同一端口探测方向的一阶灵敏度分别记作 <span class="math-inline">\(H_1,H_2\)</span>。给定 <span class="math-inline">\(\|D\|_2\le\eta\)</span>，校准对两材料差值的一阶损失至多为 <span class="math-inline">\(\eta\|H_1-H_2\|_*\)</span>，由谱范数与核范数对偶即得。若两种竞争解释能各自选取与标定读数相容的不同仪器，安全的一阶损失是 <span class="math-inline">\(\eta(\|H_1\|_*+\|H_2\|_*)\)</span>。前一界用于比较同一硬件的响应差，后一界可用于带未辨认校准参数的集合排除；两式都须另加非线性余项。实际宽盒相交使用同一被动扰动，因此对这两种语义均给出不可分反例。</p>
+<h2 id="6-先例和适用范围">6　先例和适用范围</h2>
+<p>有界噪声下用全部相容模型界定物理量，在线性地球物理统计中有成熟的严格界方法；本文针对有限照明、矩阵值、完整非线性正演。FFT 两重子空间方法已有从可见与模糊电流重建的体系。这里固定数据后判断不同材料能否同时解释这批数据。集合覆盖、Schur 补、秩一更新和球算术均为已知工具。陷入一个稳定 CIE 驻点也并非充分物理拟合或全局最优。 <a href="https://doi.org/10.1029/92JB00739">Stark, 1992</a> · <a href="https://doi.org/10.1109/TAP.2010.2103027">Zhong 与 Chen 的 FFT 两重子空间法</a> · <a href="https://doi.org/10.3390/jimaging5020027">Zhong 与 Xu 的收缩积分方程</a></p>
+<p>多端口互耦、匹配及输入功率约束已有网络理论。这里的研究增量集中在同一互易负载算子下连接区域外界、物理内见证、全类方向性分离与公共校准误差，并给出共享频率权重反而增加负惯性的可复核反例。未给出连续三维 Maxwell 的天线误差转移定理或任意阵列临界端口数。 <a href="https://scholarsarchive.byu.edu/facpub/429/">Wallace 与 Jensen 的耦合 MIMO 网络分析</a></p>
+<nav class="page-end" aria-label="配套报告"><a href="bounds/index.html">区域界与暗电流</a> <a href="bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="imaging/index.html">盲成像</a> <a href="ports/index.html">互耦阵列与实测</a> <a href="observations.html">观测与材料</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

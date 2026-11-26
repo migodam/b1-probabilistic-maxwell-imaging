@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · 盲成像的收敛、归零与暗模对照</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="../index.html">实验报告</a><a href="../theory.html">理论</a><a href="../reproduce.html">复现</a><a href="../review.html">评审</a><a href="../handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">量化结果 · 稳态盲成像与有限端口</p>
+<h1 id="盲成像的收敛归零与暗模对照">盲成像的收敛、归零与暗模对照</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout"><aside class="sidebar"><details open><summary>本页目录</summary><nav aria-label="本页目录"><ol><li><a href="#%E5%81%9C%E6%AD%A2%E9%87%8F%E6%A3%80%E9%AA%8C">停止量检验</a></li><li><a href="#%E4%B8%89%E7%B1%BB%E5%B7%B2%E9%AA%8C%E8%AF%81%E5%BD%92%E9%9B%B6">三类已验证归零</a></li><li><a href="#%E6%9A%97%E6%A8%A1%E6%83%A9%E7%BD%9A">暗模惩罚</a></li></ol></nav></details></aside>
+<article class="article" id="article">
+
+<p>十件独立强散射材料都完成了三阶段 Dual-CIE，并通过单 β CIE-I 的三个连续稳定窗口。单 β 局部稳定图的训练残差仍为 <strong>7.23–12.15 倍噪声半径</strong>。同机等预算的普通全波拟合可以在 9/10 件找到球内材料，两个原生 96² 对象的留出误差仍分别为 61.8% 和 61.0%。这组有限孔径数据容许训练相合、外推和材料误差都很差的解。</p>
+<h2 id="停止量检验">停止量检验</h2>
+<p>三阶段 Dual-CIE 原系数门全部通过，共 974–2,554 步，实际训练残差 11.78–17.12 倍半径。保持终点表示与双 β、把系数门缩紧到原来一半后，十件再次过门，图像仍移动 8.5%–33.5%（同对象相对 L2）。单 β CIE-I 使用同一 Fourier 表示与共享实材料，在 2,688–12,448 次联合更新后有三个连续窗口满足材料、辅助损失和缩放投影梯度条件。单 β 的稳定性范围为冻结表示中的局部状态，每个终点仍用原全波端口独立评价。两件原生 96² 分别用 4,096 与 3,072 步，训练残差为 8.70r 和 8.78r。</p>
+<h2 id="三类已验证归零">三类已验证归零</h2>
+<div class="table-scroll" role="region" tabindex="0" aria-label="可横向滚动的数据表"><table>
+<thead>
+<tr>
+<th>起始成像</th>
+<th>盲区</th>
+<th style="text-align: right;">区域格数 / 真值 &gt;0.25</th>
+<th style="text-align: right;">严格训练上界</th>
+<th style="text-align: right;">全图材料相对 L2</th>
+<th style="text-align: right;">留出误差</th>
+<th style="text-align: right;">同时间普通全波留出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32² 稳定 CIE-I</td>
+<td>n32_c02 ROI2</td>
+<td style="text-align: right;">6 / 5</td>
+<td style="text-align: right;">0.918047r</td>
+<td style="text-align: right;">0.8346 → 0.8621</td>
+<td style="text-align: right;">67.33% → 57.59%</td>
+<td style="text-align: right;">58.26%</td>
+</tr>
+<tr>
+<td>32² 稳定 CIE-I</td>
+<td>n32_c04 ROI3</td>
+<td style="text-align: right;">69 / 11</td>
+<td style="text-align: right;">0.948866r</td>
+<td style="text-align: right;">0.9600 → 0.9624</td>
+<td style="text-align: right;">66.61% → 51.09%</td>
+<td style="text-align: right;">60.84%</td>
+</tr>
+<tr>
+<td>96² Dual-CIE 系数停点</td>
+<td>n96_c01 ROI3</td>
+<td style="text-align: right;">36 / 0</td>
+<td style="text-align: right;">0.912744r</td>
+<td style="text-align: right;">0.7934 → 0.8222</td>
+<td style="text-align: right;">77.58% → 62.32%</td>
+<td style="text-align: right;">61.59%</td>
+</tr>
+</tbody>
+</table></div>
+<p>32² 两个稳定解的归零区域都含真实材料。其中 n32_c02 的 6 格平均真实对比度 3.61。n32_c04 的背景 RMS 从 2.140 降至 2.028，假阳性的空区连通块仍为 1，目标内部与整图并未因此变精确。原生 96² 的 Dual-CIE ROI3 确为空区，单一区域正确归零伴随背景 RMS 从 1.437 升到 1.505，整体材料误差也上升。三例最后保留独立全波见证；其后的 64 步约束 CIE 无更好的合格端点。上述三份落球解的留出残差约为 17–21 倍留出半径。</p>
+<p>稳定单 β 主比较找到 2/10 件可归零，均为 32²。两件 96² 的稳定分割均含真正材料，32 步受约束全波搜索的最佳归零残差分别为 1.825r 与 1.604r。对照的无约束全波训练残差为 0.01402r 与 0.000125r。Dual-CIE 的 96² 原生反例单列为系数停点分割，不能替代稳定图比较。该对象在两个分割方案下仍只计一件独立材料。</p>
+<p>96² 压力回放使用 112 位 Arb 围住全部 FFT 滞后，再对原始发布算子的活动逆做分块逆缺陷检查。n96_c01 的零区见证保留 8,453 个活动坐标，逆缺陷上界 2.97×10⁻⁷，用时 81.62 秒墙钟与 78.74 秒 CPU。其等时普通全波材料的严格残差上界仅 0.000515r，ROI3 峰值为 2.93455，均值 1.42641。两份材料都严格解释同一训练读数，因而覆盖整个训练球可行集的 ROI 峰值区间宽度至少为 <strong>2.93455</strong>。n96_c02 的稳定等时普通全波材料也严格落球，上界 0.000556r。两份独立复核的墙钟为 197.67 秒与 200.40 秒。场与接收误差界均覆盖发布的精确二进制离散名义模型。</p>
+<p><a href="figures/sealed_zero_roi_cases.pdf">两处 32² 真材料被相容归零</a> · <a href="figures/sealed_native_zero_roi.pdf">原生 96² 真空伪影反例</a></p>
+<h2 id="暗模惩罚">暗模惩罚</h2>
+<p>在稳定 CIE-I 后比较 80 次等更新与付费时间前缀，暗模罚令 10/10 件的实际物理电流在八条负模上的能量占比下降，中位绝对变化 6.16×10⁻⁵。相对普通续跑，训练残差下降的有 9/10 件，中位幅度 0.00573r；付费等墙钟前缀的中位降幅 0.00502r。留出相对误差下降的有 8/10 件，中位仅 0.0148 个百分点。材料相对 L2 改善 5/10，配对中位差约 −7.1×10⁻⁶；背景 RMS 只有 1/10 改善，空背景假阳性连通块分数没有减少。相较等秩随机接收核或普通电流脊罚，暗模臂的材料 L2、背景 RMS 和留出误差中位数均略高。能量改变有实测证据，成像增益很小且方向与指标不一致。</p>
+<p>所有假阳性评分阈值在封存前由各基线图的分割规则确定。真值大于 0.25 定义目标支持；背景统计用其补集。留出误差为对留出复数读数的相对 Frobenius 残差。各比较用同一个原算子、数据和材料盒。原生物理 GMRES 预条件更换不改方程或误差门；中断的 4 个旧预条件尝试全部记在费用账中。</p>
+<p><a href="results/summary.csv">完整配对与费用表</a> · <a href="results/material_scores.csv">十件对象的材料、目标内部、背景及留出指标</a> · <a href="results/native_b1_backend_change.json">旧预条件中断成本</a> · <a href="method.html">复现说明</a></p>
+<nav class="page-end" aria-label="配套报告"><a href="../bounds/index.html">区域界与暗电流</a> <a href="../bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="index.html">盲成像</a> <a href="../ports/index.html">互耦阵列与实测</a> <a href="../observations.html">观测与材料</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

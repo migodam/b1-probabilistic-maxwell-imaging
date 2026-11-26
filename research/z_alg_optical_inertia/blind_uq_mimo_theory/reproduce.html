@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · 盲成像、区域材料界与互耦 MIMO 的复现</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="index.html">实验报告</a><a href="theory.html">理论</a><a href="reproduce.html" aria-current="page">复现</a><a href="review.html">评审</a><a href="handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">实验复现 · 稳态盲成像与有限端口</p>
+<h1 id="盲成像区域材料界与互耦-mimo-的复现">盲成像、区域材料界与互耦 MIMO 的复现</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout"><aside class="sidebar"><details open><summary>本页目录</summary><nav aria-label="本页目录"><ol><li><a href="#%E4%BB%8E%E5%86%BB%E7%BB%93%E7%BB%93%E6%9E%9C%E9%87%8D%E7%AE%97%E6%B1%87%E6%80%BB">从冻结结果重算汇总</a></li><li><a href="#%E5%AE%A1%E8%AE%A1%E5%86%BB%E7%BB%93%E5%80%99%E9%80%89%E7%9A%84%E5%8E%9F%E5%85%A8%E6%B3%A2%E7%BB%93%E6%9E%9C">审计冻结候选的原全波结果</a></li><li><a href="#%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90%E5%90%88%E6%88%90%E9%87%87%E9%9B%86">重新生成合成采集</a></li><li><a href="#%E5%8E%9F%E5%A7%8B-manitoba-%E6%95%B0%E6%8D%AE">原始 Manitoba 数据</a></li></ol></nav></details></aside>
+<article class="article" id="article">
+
+<p><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/blind_uq_mimo_theory/">研究网页</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/z_alg_optical_inertia/blind_uq_mimo_theory">原仓库研究目录</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">本轮 Release</a></p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="可横向滚动的数据表"><table>
+<thead>
+<tr>
+<th>附件</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">研究与复算包</a></td>
+<td>公开 32² 和 96² 复数观测、盲图、冻结区域、实际候选、原始统计与全部科学费用和失败轨迹、源码及图</td>
+</tr>
+<tr>
+<td><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">正演算子包</a></td>
+<td>分别以 n32 和 n96 标识的原网格算子、低秩端口加载与原始物理 E0/S</td>
+</tr>
+<tr>
+<td><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">独立材料评分与生成包</a></td>
+<td>十件数值材料的参考标签、清洁参考场及原始生成器。只在封存预测后展开</td>
+</tr>
+</tbody>
+</table></div>
+<p>三个附件都展开到同一个 blind_uq_mimo_theory/ 根目录，文件名保持原样。研究包内的 archive-manifest-study.json 附逐文件清单，另两个包各有独立清单。研究包包含公开的原发射与接收阵列合同、数值证明和复算成本。Manitoba 第三方原始 ZIP 由采集方独立提供。</p>
+<h2 id="从冻结结果重算汇总">从冻结结果重算汇总</h2>
+<p>在可写的复算副本运行以下命令。Python 3.13 的 requirements.txt 记录主研究者原生复算环境。成像配对另用 NumPy 2.5.3、SciPy 1.18.1、python-flint 0.9.0、Matplotlib 3.11.1、threadpoolctl 3.7.0 和 Pillow 12.3.0。严格复算须可导入 python-flint，图形程序可使用 Agg 后端。复算脚本会在各自的 results 目录写入结果。</p>
+<pre><code class="language-sh">unzip blind-uq-mimo-study.zip
+unzip blind-uq-mimo-operators.zip
+cd blind_uq_mimo_theory
+python3.13 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+export PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+export VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+
+python -B imaging/summarize.py
+python -B bounds/summarize.py
+python -B bounds/roi_mimo_summary.py
+python -B diagnostics/aperture_joint.py --aggregate
+</code></pre>
+<p>前四条汇总从存档的数组和回执读取。成像比较见 imaging/results/summary.csv，材料界与阵列汇总见 bounds/results/summary.json 和 bounds/roi_mimo_summary.json，交错布局与原布局联合拟合见 results/aperture_joint/summary.csv。results/aperture_control/summary.csv 为单独布局的固定候选和有限预算重拟合结果，cross_audit.csv 收录同一候选对原 A 与留出数据的重新审计。</p>
+<p>评分和有真值的图在单独的评分阶段生成。从本目录的上一级展开评分包，回到本目录后运行下列命令。</p>
+<pre><code class="language-sh">cd ..
+unzip blind-uq-mimo-scoring-truths.zip
+cd blind_uq_mimo_theory
+python -B imaging/score.py --sealed-manifest imaging/results/sealed_32.json \
+  --private-truth-directory ports/private --output-stem replay_material_scores32
+python -B imaging/score.py --sealed-manifest imaging/results/sealed_96.json \
+  --private-truth-directory ports/private --output-stem replay_material_scores96
+python -B diagnostics/region_summary.py
+python -B diagnostics/region_means.py
+python -B diagnostics/refresh_report.py
+python -B diagnostics/refresh_report.py
+python -B imaging/plot_witness.py
+python -B diagnostics/report_figures.py
+python -B diagnostics/roi_atlas.py
+</code></pre>
+<p>两张材料评分表分别按 32² 与 96² 病例封存白名单生成。ROI 的外置信界、已取得的严格材料端点、连续路径及离线覆盖见 results/region_intervals.csv。原始汇总、逐区域观测 ID、核验入口、假阳性定义与成本分别见 <a href="imaging/index.html">成像结果</a>、<a href="bounds/index.html">区域界结果</a>、<a href="ports/index.html">阵列结果</a> 和 <a href="observations.html">数据登记</a>。</p>
+<h2 id="审计冻结候选的原全波结果">审计冻结候选的原全波结果</h2>
+<p>这些命令选用已有候选和原始离散算子，不重新寻找参数。准确的再计算时间依设备而定。</p>
+<pre><code class="language-sh">python -B imaging/certify.py --stationary n32_c02 n32_c04
+python -B imaging/certify_native.py n96_c01 3
+python -B imaging/certify_native.py n96_c01 3 --source matched
+python -B imaging/certify_native.py n96_c02 1 --source matched --stationary
+python -B bounds/verify.py --case n32_c01 --suffix stationary --dark --dark-key roi_01
+python -B ports/verify_witness.py --bands 400 --counts 6 8 12 16
+python -B diagnostics/aperture_control.py --verify-only
+python -B diagnostics/aperture_joint.py --verify-only
+</code></pre>
+<p>原生 96² 的分块逆复查需数 GB 内存。随包的 ports/native_verify.py --items 1 2 复查原生真值正演，需先展开评分包。另一路原生 ROI 路径复查用 ports/native_roi_path_verify.py，编译选项按本轮 macOS/Clang 执行合同设置。不同平台可先运行只依赖 Python 数值库的严格复算入口。Flint/Arb 复核针对发布的离散算子与观测，适用的校准和范围见 <a href="theory.html">理论报告</a>。</p>
+<p>交错 B 的带噪读数可在解封后由 diagnostics/aperture_control.py 重新生成并重拟合，随后的 --cross-audit 从已保存材料复查原 A 和原留出。联合 A+B 的前向、更新和停机可用 diagnostics/aperture_joint.py 重新运行，或用 --cases 分批运行后 --aggregate。比较保留两次采集各自的噪声半径。</p>
+<p>较大阵列的区域内端点回放可运行 bounds/roi_mimo.py --q 6 --q 8 --q 12 --q 16 --replay-only。带耦合强度及标定误差的逐单元固定候选复查见 ports/roi_coupling.py，可运行 python -B ports/roi_coupling.py --threads 4。其显式区间乘法也使用 macOS/Clang 执行合同。两类回放对原区域和候选作检验；对应费用和未定单元都保存在结果表内。</p>
+<h2 id="重新生成合成采集">重新生成合成采集</h2>
+<p>以下入口会重写复算副本的部分公开观测、算子和代价表，也会在评分目录写出生成用的中间记录。用评分包中的冻结随机生成器依次生成主观测和配对矩阵。阵列生成者、相位与终端来自 <a href="ports/DESIGN.md">采集设计</a>。</p>
+<pre><code class="language-sh">python -B ports/private/generate.py --side 32 --items 1 2 3 4 5 6 7 8
+python -B ports/private/generate.py --side 96 --items 1 2
+python -B ports/sweep.py --side 32 --items 1 2 3 4 5 6 7 8
+python -B ports/sweep.py --side 96 --items 1 2
+</code></pre>
+<p>原生盲成像阶段先使用公开 A 的训练观测。以下示例从头复算一个 32² 对象，再做原系数继续、稳定性控制、物理见证、等更新及等墙钟暗模对照。用于材料评分的预测和选根必须先冻结。从头批跑可传入全部十个病例号。遇到稳定性迭代上限，保留首轮文件并按原协议使用 stationary.py --extend。留出评估为最后一步。</p>
+<pre><code class="language-sh">python -B imaging/run.py baseline n32_c01
+python -B imaging/run.py continuation n32_c01
+python -B imaging/stationary.py n32_c01
+python -B imaging/run.py b1 --stationary n32_c01
+python -B imaging/run.py b2 --stationary n32_c01
+python -B imaging/run.py held --stationary n32_c01
+</code></pre>
+<h2 id="原始-manitoba-数据">原始 Manitoba 数据</h2>
+<p>本轮发布已派生的空室重复量、对称性残差和复算脚本。原始 ZIP 从 University of Manitoba EIGOR 下载。将路径传给 --archive 或 MANITOBA_TOMOGRAPHIC_ZIP。两条命令读取原始微波记录，分别重算不同阵列下的重复空室波动和原读数互易投影。 <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/mwt_data.html">采集方数据页</a> · <a href="https://home.cc.umanitoba.ca/~lovetrij/EMILab/research/EIGOR/Tomographic_Dataset_1.zip">原 Dataset 1 ZIP</a> · <a href="https://home.cc.umanitoba.ca/~lovetrij/Research/PDFs/Journals/JP50.pdf">采集论文</a></p>
+<pre><code class="language-sh">MANITOBA_TOMOGRAPHIC_ZIP=/path/to/Tomographic_Dataset_1.zip python -B diagnostics/chamber.py
+python -B ports/chamber_reciprocity.py --archive /path/to/Tomographic_Dataset_1.zip
+</code></pre>
+<p>从完整研究工作区重新打包时，运行 python -B diagnostics/package_research.py。仅刷新报告、图和研究数组时，传入 --part study，算子和评分附件继续沿用。</p>
+<p>互耦三档的同一候选池重放使用 ports/roi_coupling.py；对 144 Ω 重新拟合的独立研究用 ports/roi_coupling_refit.py。报告中的两个费用分别计入，详见 <a href="ports/roi_coupling.html">逐阵列与互耦读数</a>。</p>
+<nav class="page-end" aria-label="配套报告"><a href="bounds/index.html">区域界与暗电流</a> <a href="bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="imaging/index.html">盲成像</a> <a href="ports/index.html">互耦阵列与实测</a> <a href="observations.html">观测与材料</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/z-alg-blind-uq-mimo-20261127/research/z_alg_optical_inertia/blind_uq_mimo_theory">GitHub 源文件</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

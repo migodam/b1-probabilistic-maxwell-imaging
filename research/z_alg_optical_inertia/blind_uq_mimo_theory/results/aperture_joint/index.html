@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · 原布局与交错布局的联合全波复拟合</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="../../index.html">实验报告</a><a href="../../theory.html">理论</a><a href="../../reproduce.html">复现</a><a href="../../review.html">评审</a><a href="../../handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">实验补充 · 稳态盲成像与有限端口</p>
+<h1 id="原布局与交错布局的联合全波复拟合">原布局与交错布局的联合全波复拟合</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout no-toc">
+<article class="article" id="article">
+
+<p>七个对象中，<strong>一件的零区域材料</strong>与<strong>三件的连接斑块材料</strong>可以同时解释两份读数。无约束拟合也找到三件。三个代表结果通过原离散算子的一侧复核。三类结果各计其对象，不将一个对象的多次射频测量计为新对象。</p>
+<p>原 A 和交错 B 各使用 8 次发射、64 个复数通道与 1 W 总可用源功率。联合控制使用 16 次发射、128 个复数通道和 2 W，总共保留两个独立绝对误差半径。两次采集的 4 个重复源端口只在数值正演中复用，所以一次原方程分解服务十二列独立源。这项复用只影响复算费用。</p>
+<p>对每个材料盒从原 A 候选和 B 重拟合候选开始。无约束对照在各自 A、B 来源中先按付费原全波联合损失选初值。使用同一全波数据空间 Gauss–Newton、盒投影与原全波回溯，每个初值最多 48 个主要迭代。目标为两块分别除以各自半径后的残差平方和的一半。实际通过要求两个比值都不超过 1。主拟合使用 0.97 留出验证裕量，记录所有状态缺陷、有效更新、试探、停止条件及原物理代价。</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="可横向滚动的数据表"><table>
+<thead>
+<tr>
+<th>对象</th>
+<th style="text-align: right;">零区域 A / B</th>
+<th style="text-align: right;">连通斑块 ≥2 A / B</th>
+<th style="text-align: right;">无约束 A / B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n32_c01</td>
+<td style="text-align: right;">7.787 / 5.771</td>
+<td style="text-align: right;">1.387 / 1.433</td>
+<td style="text-align: right;">1.607 / 1.635</td>
+</tr>
+<tr>
+<td>n32_c02</td>
+<td style="text-align: right;"><strong>0.947 / 0.943</strong></td>
+<td style="text-align: right;">1.171 / 1.152</td>
+<td style="text-align: right;">0.960 / 1.132</td>
+</tr>
+<tr>
+<td>n32_c03</td>
+<td style="text-align: right;">5.513 / 5.182</td>
+<td style="text-align: right;"><strong>0.926 / 0.879</strong></td>
+<td style="text-align: right;"><strong>0.966 / 0.950</strong></td>
+</tr>
+<tr>
+<td>n32_c04</td>
+<td style="text-align: right;">3.728 / 3.480</td>
+<td style="text-align: right;"><strong>0.960 / 0.922</strong></td>
+<td style="text-align: right;"><strong>0.848 / 0.870</strong></td>
+</tr>
+<tr>
+<td>n32_c05</td>
+<td style="text-align: right;">3.829 / 4.065</td>
+<td style="text-align: right;">1.831 / 1.726</td>
+<td style="text-align: right;">3.992 / 3.779</td>
+</tr>
+<tr>
+<td>n32_c06</td>
+<td style="text-align: right;">4.546 / 4.478</td>
+<td style="text-align: right;">3.534 / 3.809</td>
+<td style="text-align: right;">4.050 / 3.594</td>
+</tr>
+<tr>
+<td>n32_c08</td>
+<td style="text-align: right;">3.686 / 3.745</td>
+<td style="text-align: right;"><strong>0.806 / 0.914</strong></td>
+<td style="text-align: right;"><strong>0.909 / 0.961</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>严格复算的两个独立残差上界为 n32_c02 零区 <strong>0.952512r_A / 0.948754r_B</strong>，n32_c03 连通斑块 <strong>0.930657r_A / 0.883992r_B</strong>，n32_c03 无约束对照 <strong>0.970547r_A / 0.955513r_B</strong>。c02 的零解已经属于无约束盒，同预算无约束算法却未找到球内点。这一反例显示了优化失败与物理可行性之间的差别。没有对象在这次预算中同时找出两类联合可行见证，未找到的家族保持未决。</p>
+<p>每个对象的完整试算墙钟合计 486.45 秒，CPU 合计 442.81 秒，部分独立对象并行。严格复核另计 1.22 秒墙钟。首批数据读取载入了配对仿真档内的清洁读数键，优化目标、初值和梯度只调用带噪 A/B 及冻结候选。现在复现入口按键白名单读取这些允许输入。保存的全部 21 份结果均从原算子复审两个复数读数与材料盒。</p>
+<p><a href="summary.csv">逐例费用和停机</a> · <a href="verified.json">严格复核</a> · <a href="../../diagnostics/aperture_joint_freeze.json">联合冻结</a> · <a href="../../diagnostics/aperture_joint.py">复现入口</a> · <a href="../aperture_control/index.html">单布局对照</a></p>
+<nav class="page-end" aria-label="配套报告"><a href="../../bounds/index.html">区域界与暗电流</a> <a href="../../bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="../../imaging/index.html">盲成像</a> <a href="../../ports/index.html">互耦阵列与实测</a> <a href="../../observations.html">观测与材料</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

@@ -1,0 +1,43 @@
+{
+  "baseline": {
+    "method": "Repository sourcewise Dual-CIE, projected four-corner Fourier coordinates and exact shared-real CIE material readout",
+    "training_data": "8 calibrated nominal terminated transmit ports by 8 calibrated nominal terminated receive ports; fixed dressed Green",
+    "initial_contrast": 0.25,
+    "material_box": [0, 4.5],
+    "dpcs_relative_singular_cutoff": 0.03,
+    "fourier_corner_width": [5, 8, 10],
+    "beta_current": [6, 6, 6],
+    "beta_material": [6, 2, 0.5],
+    "minimum_updates_per_stage": 20,
+    "maximum_updates_per_stage": 2500,
+    "relative_coefficient_rms_stop_strictly_below": 0.001,
+    "material_prior": "R8 smooth=1e-4 and smoothed TV=1e-4, epsilon=.01; unchanged coefficients",
+    "material_inner_maxiter": 8,
+    "retained_stage_rule": "lowest original full-wave training loss plus common prior among converged stage endpoints and initial incumbent; final converged endpoint also saved",
+    "physical_rtol": 2e-10
+  },
+  "roi": {
+    "method": "Smooth baseline with sigma=side/32 cells, then threshold at max(0.25,0.40*peak); four-connected components, ranked by smoothed contrast sum",
+    "minimum_component_cells": "ceiling(4*(side/32)^2)",
+    "max_components": 3,
+    "fallback": "Strongest threshold component if all rejected by size; peak pixel if empty",
+    "background_tiles": "Four quadrants of low smoothed contrast (strictly below half the foreground threshold), excluding retained components"
+  },
+  "B1": {
+    "witness_updates_per_roi": 32,
+    "witness_target_radius_ratio": 0.97,
+    "checked_q_preferred_margin": 0.97,
+    "ordering": "Test each frozen component; choose in-ball ROI with smallest contrast integral, then lowest residual. Freeze single removal only",
+    "cie_review_updates": 64,
+    "controls": "ordinary continuation for the same 64 CIE updates; ordinary physical objective with same single-thread wall budget spent by all witness fits and constrained refinement"
+  },
+  "B2": {
+    "method": "Penalty on the eight most negative directions of P_kerS K P_kerS with uniform sector [0,4.5]; retain negative eigenvalues only",
+    "weight": "Match initial auxiliary penalty between current ridge, deterministic random receiver-null subspace and K-negative subspace to 10% of initial CIE state energy, at most coefficient 1",
+    "cie_updates": 80,
+    "audit_every_updates": 16,
+    "controls": "ordinary continuation, isotropic current ridge and equal-rank random projected receiver-null modes",
+    "random_seed": 12021
+  },
+  "timing": "Single BLAS thread, single FFT worker, per-arm CPU/wall and original full-wave solve counters. Case pair runs serially. No truth or measured held port array is accessed by fit and selection."
+}

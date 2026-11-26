@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · Independent review 02</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['\(', '\)']], displayMath: [['\[', '\]']], processEscapes: true},
+  options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" defer></script>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="../index.html">实验报告</a><a href="../theory.html">理论</a><a href="../reproduce.html">复现</a><a href="../review.html">评审</a><a href="../handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">独立评审 · 稳态盲成像与有限端口</p>
+<h1 id="independent-review-02">Independent review 02</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout"><aside class="sidebar"><details open><summary>本页目录</summary><nav aria-label="本页目录"><ol><li><a href="#independent-technical-review-of-blind-uq-mimo-27round2">Independent Technical Review of blind-uq-mimo-27/round2</a></li></ol></nav></details></aside>
+<article class="article" id="article">
+
+<p>The following text is the reviewer’s dated snapshot. Numerical updates and the authors’ responses appear in <a href="../review.html">the response</a>. Local workspace addresses have been removed.</p>
+<h3 id="independent-technical-review-of-blind-uq-mimo-27round2">Independent Technical Review of <code>blind-uq-mimo-27/round2</code></h3>
+<p><strong>Personally inspected data files:</strong> mechanism_class_separation.json, frequency_coherence_rank.json (plus material_scores32.csv, one_sided_witness.json, mechanism_witness.npz, and mechanism_witness_arb.json).</p>
+<hr>
+<h4 id="1-8-channel-whole-class-proof-quantifiers-selection-bias-and-assumptions-verified">1. 8-Channel "Whole-Class" Proof: Quantifiers, Selection Bias, and Assumptions (Verified)</h4>
+<p>class_separation.py and mechanism_class_separation.json do <strong>not</strong> prove whole-class separation (<span class="math-inline">\(\forall m_a \in C_+,\ \forall m_b \in C_0\)</span> for presence vs. absence of a 15-cell ROI). They certify support-function separation only between two tiny <span class="math-inline">\(\ell_\infty\)</span> boxes <span class="math-inline">\(B_\infty(m,w)\cap[0,4.5]^{1024}\)</span> centered on a <strong>single pre-selected witness pair</strong> from mechanism_witness.npz (<code>with_region</code>: 283 nonzero cells, 15 ROI cells <span class="math-inline">\(=0.75\)</span>; <code>without_region</code>: 268 nonzero cells, ROI <span class="math-inline">\(=0\)</span>, outside-ROI max difference <span class="math-inline">\(1.963\)</span>). Because that pair was optimized to collide specifically at <span class="math-inline">\(6\times 6\)</span>, 400 MHz (<code>separation_over_2r = 0.0570</code>), its separation at <span class="math-inline">\(8\times 8\)</span> (<code>2.4053</code>) reflects <strong>inner-quantifier selection bias</strong> (<span class="math-inline">\(\exists\)</span> pair, locally) rather than outer-quantifier whole-class separation. Even locally, prior-model calibration fails by <span class="math-inline">\(w=0.01\)</span> (<code>-0.000113</code>, just <span class="math-inline">\(0.22\%\)</span> of <span class="math-inline">\([0,4.5]\)</span>), nominal and directional-calibrated separation fail by <span class="math-inline">\(w=0.02\)</span> (<code>-0.001676</code> and <code>-0.003488</code>), and masked absolute error fails at every tested width down to <span class="math-inline">\(w=0.0001\)</span> (<code>-0.03575</code>).</p>
+<p>Three physical/matrix assumptions further narrow scope:
+1. <strong>Same-operator noise &amp; power scaling:</strong> class_separation.py tests deterministic ball disjointness <span class="math-inline">\(\|F_a-F_b\|_F &gt; 2r\)</span> under identical operators with <span class="math-inline">\(r=\frac{3}{2}q\sigma_{\text{ref}}=0.001517\)</span> (<span class="math-inline">\(q=8\)</span>), while model.py fixes total power at <span class="math-inline">\(1\,\text{W}\)</span> (<span class="math-inline">\(\propto 1/\sqrt{q}\)</span> per shot). Because <span class="math-inline">\(r\propto q\)</span> while per-shot signal dilutes as <span class="math-inline">\(1/\sqrt{q}\)</span>, mechanism_witness_arb.json shows center separation/<span class="math-inline">\(2r\)</span> <em>falling</em> from <span class="math-inline">\(2.405\)</span> (<span class="math-inline">\(q=8\)</span>) to <span class="math-inline">\(1.662\)</span> (<span class="math-inline">\(q=16\)</span>).
+2. <strong>Terminal-only calibration model:</strong> <code>calibration_bounds</code> and <code>projected_calibration</code> model uncertainty solely as a terminal perturbation <span class="math-inline">\((I+KD)^{-1}K\)</span> (<span class="math-inline">\(\|D\|_2\le\eta=0.005\)</span>) and rely on synthetic readout noise in <code>finite_full_probe</code>, omitting element gain/phase/position errors that alter <code>E0_bare</code> and <code>S_bare</code> directly (unlike <code>variation["gain"]</code> in model.py).
+3. <strong>2D lossless, real, nondispersive TM disk-pulse VIE</strong> on transmission-only arcs (<code>[95°,265°]</code> to <code>[-85°,85°]</code>).</p>
+<hr>
+<h4 id="2-two-band-lift-80-cell-obstruction-verified">2. Two-Band Lift &amp; 80-Cell Obstruction (Verified)</h4>
+<p>frequency_lift.py and frequency_coherence_rank.json rigorously verify that <span class="math-inline">\(D=G_{400}-G_{460}\)</span> on 80 scattered cells has full rank 80 (inverse defect <span class="math-inline">\(\le 3.4\times 10^{-10}\)</span>; <span class="math-inline">\(\sigma_{\min}\ge 0.00255\)</span> on <span class="math-inline">\(32^2\)</span>, <span class="math-inline">\(\ge 0.000549\)</span> on <span class="math-inline">\(96^2\)</span>), forcing <code>negative_inertia_lower</code> <span class="math-inline">\(=80-2q \ge 2q\)</span> (<code>tail_forced_zero = true</code>). Crucially, this is an obstruction to a <strong>specific uniform-weight bilinear Gram lift</strong> (<code>C = mu*gamma*(I - cap*(G2+G1^*)/2)</code> with <code>"full_field_independent_4p5": true</code> and <code>"uniform_common_sector_weight": true</code>), assuming strictly nondispersive real <span class="math-inline">\(\chi\)</span>. It does <strong>not</strong> prove two-band physics fails: mechanism_witness_arb.json proves the exact <span class="math-inline">\(6\times 6\)</span> colliding pair separates cleanly at 460 MHz (<code>5.710</code>) and equal-power 400+460 MHz (<code>2.855</code>).</p>
+<hr>
+<h4 id="3-measured-image-metrics-valid-practical-inference-verified">3. Measured Image Metrics &amp; Valid Practical Inference (Verified)</h4>
+<p>material_scores32.csv and baseline.json expose two decisive operational facts:
+- All CIE baselines (<code>baseline</code>, <code>tighter_dual</code>, <code>b2_*</code>) sit far outside the physical noise ball (<code>residual_over_radius</code> <span class="math-inline">\(= 7.2\text{–}17.1\)</span>; e.g., <code>7.328</code> on <code>n32_c02</code> stationary because <code>state_term = 4.96e-4</code> maps to <code>22.0%</code> physical mismatch). Every dark-current variant (<code>b2_*</code>) changes <code>material_relative_L2</code> and IoU by <span class="math-inline">\(&lt;0.001\)</span>—no imaging improvement.
+- Forcing physical ball feasibility (<code>b1_wall_control</code>) <strong>degrades <code>material_relative_L2</code> on all 8 cases</strong> (<code>n32_c01</code> <code>0.8379→0.8652</code>, <code>n32_c08</code> <code>0.7410→0.8078</code>), while <code>held_relative_residual</code> remains <code>0.47–0.86</code> (<code>17–23×</code> held-out radius).</p>
+<p><strong>Valid practical inference:</strong> Without spatial priors beyond pixelwise <span class="math-inline">\([0,4.5]\)</span>, this framework validly certifies <em>global FoV non-emptiness</em> (90–97% union in RESULTS_ZH.md) and <em>data non-identifiability</em>—<strong>not</strong> safe blind artifact deletion or tight local ROI bounds.</p>
+<hr>
+<h4 id="4-concrete-counterexample-to-overstated-claims-verified">4. Concrete Counterexample to Overstated Claims (Verified)</h4>
+<p>On <code>n32_c02</code> (stationary, <span class="math-inline">\(8\times 8\)</span>, 400 MHz), one_sided_witness.json certifies two full-wave materials inside the <strong>same</strong> <span class="math-inline">\(8\times 8\)</span> noise ball: one zeroing <code>roi_02</code> (<code>residual_upper_over_radius = 0.9180 &lt; 1</code>) and an unconstrained solution (<code>0.00128 &lt; 1</code>) with <code>roi_02</code> mean <code>2.526</code>. Yet material_scores32.json shows <code>roi_02</code> has <strong>83.3% ground-truth overlap</strong> (<code>zero_truth_overlap_components = 0</code>), so <code>b1</code> pruning deletes a true scatterer and worsens <code>material_relative_L2</code> (<code>0.8346→0.8621</code>). Together with n32_c01.json (43-cell patch <span class="math-inline">\(\ge 2.0\)</span> inside 172-cell <code>roi_01</code> at <code>0.5568r</code> vs. a zero-ROI witness), this directly refutes both whole-class <span class="math-inline">\(8\times 8\)</span> ROI separation and treating "zero-feasible" as "artifact."</p>
+<hr>
+<h4 id="5-one-creative-physical-test-to-change-the-conclusion-conjecture">5. One Creative Physical Test to Change the Conclusion (Conjecture)</h4>
+<p><strong>Proposal:</strong> Convert the existing fixed two-arc array in model.py from transmission-only <span class="math-inline">\(q\times q\)</span> readout to <strong>full-aperture reciprocal <span class="math-inline">\(2q\times 2q\)</span> reflection + transmission acquisition with in-situ multi-load termination switching (<span class="math-inline">\(Z_L\in\{50\,\Omega,\text{open},\text{short}\}\)</span> on idle/hold ports) at fixed per-shot SNR</strong>.</p>
+<p><strong>Why this can alter the conclusion (conjecture, requiring verification):</strong> First, adding monostatic/bistatic backscatter fills the missing <span class="math-inline">\(2k\)</span> Ewald-sphere wedge responsible for <code>0.52–1.04</code> held-out residuals and doubles independent column rank from <span class="math-inline">\(q\)</span> to <span class="math-inline">\(2q\)</span>. Second, empty-chamber multi-load switching physically identifies true terminal/coupling errors <span class="math-inline">\(\Delta M\)</span> in situ, replacing the unverified terminal-only <span class="math-inline">\(\eta=0.005\)</span> scalar and synthetic <code>finite_full_probe</code>. Caveat: even full-angle data cannot eliminate subwavelength dark currents under unconstrained pixelwise <span class="math-inline">\([0,4.5]\)</span>, so testing this hardware protocol jointly with a physically grounded spatial-smoothness/TV prior is necessary to achieve nontrivial local ROI bounds.</p>
+<nav class="page-end" aria-label="配套报告"><a href="../bounds/index.html">区域界与暗电流</a> <a href="../bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="../imaging/index.html">盲成像</a> <a href="../ports/index.html">互耦阵列与实测</a> <a href="../observations.html">观测与材料</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbfaf6">
+<title>相容区间与互耦阵列 · 独立审查怎样改变了实验和结论</title>
+<style>
+:root{color-scheme:light;--paper:#fbfaf6;--ink:#172f39;--muted:#465e66;--accent:#006e74;--deep:#075967;--rule:#ccd7da;--tint:#e6efee;--code:#edf1ef;--white:#fff;--max:77rem;--read:50rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);font:1rem/1.82 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-wrap:break-word}
+a{color:var(--accent);text-decoration-thickness:.075em;text-underline-offset:.19em}
+a:hover{color:var(--deep);text-decoration-thickness:.12em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.skip{position:fixed;left:1rem;top:-8rem;background:var(--white);padding:.55rem .8rem;z-index:4}
+.skip:focus{top:1rem}
+.site-header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.top,.hero,.layout,.footer-inner{width:min(100%,var(--max));padding-inline:clamp(1rem,3.3vw,2.7rem);margin-inline:auto}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem 1.8rem;padding-block:.7rem}
+.brand{display:inline-flex;align-items:center;gap:.65rem;font-weight:700;white-space:nowrap}
+.brand::before{width:1rem;height:.33rem;background:var(--accent);content:""}
+.site-nav{display:flex;align-items:center;gap:.12rem .3rem;flex-wrap:wrap}
+.site-nav a{display:block;padding:.39rem .61rem;color:var(--muted);font-size:.92rem;white-space:nowrap;text-decoration:none;border-radius:4px}
+.site-nav a:hover{background:var(--code);color:var(--deep)}
+.site-nav a[aria-current=page]{background:var(--tint);color:var(--deep);font-weight:650}
+.hero{padding-block:clamp(1.9rem,5vw,4.5rem) clamp(1.35rem,3vw,2.7rem)}
+.hero .rule{width:3.2rem;height:.25rem;background:var(--accent);margin:0 0 1rem}
+.hero h1{max-width:var(--read);margin:.24em 0 0;font-size:clamp(2rem,5.1vw,3.7rem);line-height:1.18;letter-spacing:-.04em;text-wrap:balance}
+.kicker{color:var(--muted);font-size:.95rem;margin:0;line-height:1.45}
+.hero-links{display:flex;flex-wrap:wrap;gap:.32rem 1.35rem;margin-top:1.12rem;font-size:.93rem}
+.layout{display:grid;grid-template-columns:minmax(12.2rem,16.2rem) minmax(0,1fr);gap:clamp(1.45rem,4vw,3.6rem);align-items:start;padding-bottom:4rem}
+.layout.no-toc{grid-template-columns:minmax(0,var(--read));justify-content:center}
+.sidebar{position:sticky;top:1.2rem;border-top:3px solid var(--rule);padding-top:.55rem;max-height:calc(100vh - 3rem);overflow:auto}
+.sidebar details>summary{font-weight:660;color:var(--deep);cursor:pointer}
+.sidebar ol{list-style:none;margin:.5rem 0 0;padding-inline-start:0}
+.sidebar ol ol{padding-inline-start:.75rem;margin-top:.15rem}
+.sidebar li{margin:.25rem 0}
+.sidebar a{display:block;color:var(--muted);font-size:.88rem;line-height:1.5;padding:.23rem .42rem;text-decoration:none;border-radius:3px}
+.sidebar a:hover{background:var(--tint);color:var(--deep)}
+.article{min-width:0;max-width:var(--read);border-top:1px solid var(--rule);padding-top:1rem}
+.article>p:first-child{font-size:1.09rem}
+.article p{margin:.85em 0}
+.article h2,.article h3,.article h4{line-height:1.38;letter-spacing:-.025em;scroll-margin-top:1.25rem}
+.article h2{font-size:clamp(1.43rem,3.2vw,1.95rem);margin:1.9em 0 .6em;border-top:1px solid var(--rule);padding-top:.8em}
+.article h2:first-child{margin-top:.1em;border-top:0;padding-top:0}
+.article h3{font-size:1.19rem;margin:1.53em 0 .52em}
+.article h4{font-size:1.05rem;margin:1.4em 0 .4em}
+.article strong{color:#173e47}
+.article ul,.article ol{padding-inline-start:1.45rem}
+.article li{margin:.4em 0}
+.article blockquote{margin:1.15rem 0;border-inline-start:.22rem solid var(--accent);background:var(--tint);padding:.3rem 1rem;color:var(--muted)}
+.article hr{border:0;border-top:1px solid var(--rule);margin:2.3rem 0}
+.article figure{margin:1.55rem 0}
+.article img{height:auto;max-width:100%;vertical-align:middle}
+.article figure img{display:block;background:var(--white);border:1px solid var(--rule)}
+.article figcaption{color:var(--muted);font-size:.91rem;padding-top:.5rem;line-height:1.58}
+.table-scroll{max-width:100%;overflow-x:auto;margin:1.1rem 0 1.5rem;border:1px solid var(--rule);border-radius:4px;scrollbar-color:var(--muted) var(--paper)}
+.table-scroll table{border-collapse:collapse;width:100%;min-width:35rem;font-size:.92rem;line-height:1.56;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:.56rem .72rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+.table-scroll th{background:var(--tint);font-weight:700}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tbody tr:nth-child(even) td{background:#f1f4f0}
+code{background:var(--code);padding:.17em .29em;border-radius:2px;font: .88em ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+pre{margin:1rem 0;overflow:auto;max-width:100%;background:var(--code);border:1px solid var(--rule);padding:1rem;border-radius:4px;line-height:1.5}
+pre code{padding:0}
+.formula{overflow-x:auto;max-width:100%;margin:1rem 0;padding:.25rem .08rem}
+.formula mjx-container[jax=CHTML][display=true]{margin:.55rem 0!important}
+.math-inline{white-space:normal}
+.archive-link small{color:var(--muted);font-size:.79em;margin-left:.25em}
+.page-end{display:flex;gap:.4rem 1rem;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:2.3rem;padding-top:1rem;font-size:.92rem}
+.footer{border-top:1px solid var(--rule)}
+.footer-inner{display:flex;gap:.4rem 1.5rem;flex-wrap:wrap;justify-content:space-between;padding-block:1.15rem 1.8rem;color:var(--muted);font-size:.91rem}
+@media(max-width:800px){.layout{grid-template-columns:minmax(0,1fr);gap:.92rem}.sidebar{position:static;max-height:initial}.sidebar ol:first-child{columns:2}.sidebar ol ol{columns:1}.layout.no-toc{justify-content:normal}.article{max-width:none}}
+@media(max-width:460px){.table-scroll table{min-width:31rem}.sidebar ol:first-child{columns:1}.top{gap:.2rem}.site-nav a{padding:.34rem .45rem}.hero{padding-top:1.45rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.site-header,.sidebar,.hero-links,.page-end,.footer{display:none}.layout{display:block}.article,.hero{max-width:none}.table-scroll{overflow:visible}.table-scroll table{min-width:0}a{color:inherit}}
+</style>
+
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="site-header"><div class="top">
+<a class="brand" href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/">Maxwell 逆散射研究</a>
+<nav class="site-nav" aria-label="研究导航"><a href="index.html">实验报告</a><a href="theory.html">理论</a><a href="reproduce.html">复现</a><a href="review.html" aria-current="page">评审</a><a href="handoff.html">研究交接</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">GitHub 发布</a></nav>
+</div></header>
+<main>
+<div class="hero"><div class="rule" aria-hidden="true"></div>
+<p class="kicker">独立评审 · 稳态盲成像与有限端口</p>
+<h1 id="独立审查怎样改变了实验和结论">独立审查怎样改变了实验和结论</h1>
+<div class="hero-links"><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">代码与实验数据 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原生算子 ZIP</a> <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">离线评分真值 ZIP</a></div></div>
+<div class="layout no-toc">
+<article class="article" id="article">
+
+<p>Neon 通过专用命令行研究项目打开了实际源码、压缩矩阵、结果表与理论推导，检查了固定算子的两个方向、频率权重、区域生成和误差上包。四次命令行调用共收到三份完整意见。第一次在审阅材料后超时，保留了本机工具轨迹，没有可引用的结论。第二、三、四次均正常返回。下表说明哪些结论因复审而改变。<a href="reviews/review-02.html">第二次意见原文</a> · <a href="reviews/review-03.html">第三次意见原文</a> · <a href="reviews/review-04.html">第四次数字与量词审查</a></p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="可横向滚动的数据表"><table>
+<thead>
+<tr>
+<th>疑问或建议</th>
+<th>查到的证据与采取的行动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8×8 分开两幅图，是否证明盲区域一定有材料？</td>
+<td>审阅者指出两份中心专为 6×6 寻找，不能用于估计总体成功率。对两个已给定的 1,024 格材料盒分别计入签名二阶支持与三阶余量，再独立寻找相交材料。名义与 0.25 Ω 不确定性下均证明半宽 0.02 可分；半宽 0.05 时在同一硬件扰动下存在共同读数。第二次审阅引用的较早半宽结果保留在原评语，当前数字以完成的两侧计算为准。</td>
+</tr>
+<tr>
+<td>在盲区域中，证明峰值全宽是否只是单格尖峰？</td>
+<td>对同一冻结区域比较整区归零与连通子区每格至少为 2。九个对象有落球的两种材料，原生两件的高值连通区为 156、218 格。另一路显式 96² 状态复算了 156 格斑块和同一区域的连续单格峰值路径。持续可行的路径数与只有端点的数量在主表分列。</td>
+</tr>
+<tr>
+<td>CIE 收敛与拟合是否混淆，暗模惩罚的效果是否来自多花了时间？</td>
+<td>补做双参数更紧停机、单参数三个连续稳定窗口、相同更新和墙钟前缀、简单脊罚和随机接收核。稳定 CIE 图仍有 7.23–12.15r 的原全波残差。降低受罚电流并未稳定改善区域内外材料误差。</td>
+</tr>
+<tr>
+<td>是否存在盲区偷看真值、掩码不同步或零端点漏报？</td>
+<td>自动分割与拟合只由训练读数和 CIE 图驱动。比较图换为稳定终点时发现三处旧区域数组，逐像素核对后重做对应的一侧计算。最初的联合拟合曾将仿真档的清洁读数也载入内存，目标、初值和梯度均不使用这些键；读取已改为白名单。主文的统计由相同的最终区域重算。</td>
+</tr>
+<tr>
+<td>为何部分复数区间的端点误差显示 NaN？</td>
+<td>审阅者指出，两份原生读数的范数平方向外舍入后可能稍微跨过零，直接开方会得到空值。将区间与数学上必然的非负半轴相交后再开方，重算两个区域并要求严格 JSON 拒绝 NaN。原 Bernstein 二次式和独立全波余量始终有效。原结果保存在本地更正目录。额外的 32² 复核还触发了原状态残差保护：连续读取两个材料、先求第二个材料的伴随时复用了第一份 LU。现按材料数组核对缓存，重新完成两份验证。</td>
+</tr>
+<tr>
+<td>为什么仅从左弧发、右弧收？能否同成本改变得到的信息？</td>
+<td>采用 Neon 的双向测量建议，设计了相同功率/通道/发射数的两侧交错布局，前瞻冻结几何和噪声后再产生新复读数。七对固定材料全部分开。随后把两个布局的两个误差球同时纳入全波优化，另设同预算无约束对照。联合区域归零在一件中可行，强斑块在三件中可行；三类代表均经独立原方程复核。</td>
+</tr>
+<tr>
+<td>用单一共享标定方向的灵敏度差能否放大分离半径？</td>
+<td>若检验要求两种材料面对同一已辨认的仪器，从投影的一阶式确可把两侧核范数之和收紧为灵敏度之差的核范数。对一个未知仪器的观测反推材料，每种材料通常允许各自配合一种与校准数据相容的仪器。该更紧条件须绑定共同校准信息。本文保留可分别变动的安全分离界，并给出同一台仪器也可产生的宽盒相交。尚未用实验室加载校准建立更大的实机半径。</td>
+</tr>
+<tr>
+<td>训练残差在离散模型里成立，能否解释真实天线？</td>
+<td>增做 32² 与 96² 相同物理材料或粗化表示的读数差，独立查验 Manitoba 实测的通道切换路径和两次空场。模型差多次超过原噪声球，故明确将严格陈述限于原算子。开放或短路端接的额外校准需要实机数据，本轮没有采集。</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>最终数值复审。</strong> Neon 核对 24/28 个两端、7 个连续路径及双布局的 21 个端点，并确认范数平方与非负半轴求交是有效的区间操作。关于原生首要区，文中的 0.813r / 0.668r 来自独立的伴随误差复核，先前只链接了整条路径较宽的 0.823r / 0.678r 上界。正文已列两组结果并分别直链。依照最后的意见，全段二次式归一化的展示数也改用向上端点转换，重新逐个复算 50 个已通过的原始单格路径。强互耦比较现在逐行说明候选都出自 48 Ω、各档绝对噪声地板相同且相对信噪比会变化。初次回放在 144 Ω 全数落空后，实际按照 144 Ω 的新读数重新拟合 c02 的第二区域，严格同时找到 0 与 4.5。我们还对 28 个区域都计算了相容材料的<strong>区域平均值</strong>差异，以回答单格尖峰能否完全解释观察结果。</p>
+<p>三份原始评语保留审阅时的数字、质疑和建议。本文在意见之后又完成原生首要亮区继续拟合、跨阵列区域核对以及联合双布局实验；最新端点及其文件位置由最终逐区域表给出。没有把模型审查替代独立算术验证或作者的科学判断。<a href="index.html">最终结果与修订后的判断</a> · <a href="diagnostics/verified_wave.py">复核脚本</a></p>
+<nav class="page-end" aria-label="配套报告"><a href="bounds/index.html">区域界与暗电流</a> <a href="bounds/roi_mimo.html">MIMO 峰值区间</a> <a href="imaging/index.html">盲成像</a> <a href="ports/index.html">互耦阵列与实测</a> <a href="observations.html">观测与材料</a></nav>
+</article></div>
+</main>
+<footer class="footer"><div class="footer-inner">
+<span>固定 Green 离散模型 · 2026 年 11 月</span><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">版本与完整归档</a>
+</div></footer>
+</body></html>

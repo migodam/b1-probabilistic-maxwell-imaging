@@ -1,0 +1,17 @@
+{
+  "source": "../results/aperture_control",
+  "cases": ["n32_c01","n32_c02","n32_c03","n32_c04","n32_c05","n32_c06","n32_c08"],
+  "contract": "Two actual simulated separately noisy acquisitions A one-way + B interleaved, 400 MHz, same loaded q8 nominal hardware, total 2 W available across 16 transmit shots; retain each independent 64-channel hard radius. A/B share physical operator and repeated source responses are evaluated only once.",
+  "objective": "0.5*(norm(F_A-Y_A)^2/r_A^2 + norm(F_B-Y_B)^2/r_B^2); require both ratios <=1 separately",
+  "families": ["roi_zero","connected_patch_floor_2","unrestricted"],
+  "warm_starts": "For each constrained family, its old A candidate and its sealed B-refitted material. Unrestricted receives the best original A candidate and best B-refitted map ranked by joint loss under the same original wave solves. All have box [0,4.5].",
+  "optimizer": "Exact-wave measurement-space active-set Levenberg-Gauss-Newton with a projected box step and original-wave backtracking. Identical accepted update and major-iteration cap across families.",
+  "cap_major_iterations_each_start": 48,
+  "max_starts": 2,
+  "reference_discrepancy_target_each_radius": 0.97,
+  "projected_gradient_inf_tolerance": 0.000001,
+  "initial_regularization_curvature_fraction": 0.003,
+  "line_search": [1.0,0.5,0.25,0.125,0.0625],
+  "strict_replay": "Validate first lexicographic successful joint record for each family if any; use saved exact discrete data/operators and interval-backed original Fourier action.",
+  "interpretation": "Successful endpoint is a joint whole-wave existence witness; no numerical miss proves global incompatibility. The unrestricted fit checks whether the budget can find any joint physical explanation."
+}
