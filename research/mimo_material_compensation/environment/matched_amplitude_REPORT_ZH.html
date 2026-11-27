@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>96² 原生网格的同核心增幅对照 · 微波材料反演</title><link rel="stylesheet" href="../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../index.html">研究报告</a><a href="../theory/index.html">数学推导</a><a href="../reproduce.html">原始数据与复算</a><a href="../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="96²-原生网格的同核心增幅对照">96² 原生网格的同核心增幅对照</h1>
+<p>把 96² 原生对照的核心增幅也设为 2，460 MHz 开路在三个预定扰动预算下都能区分两类材料。每类允许绕各自参考在全图所有像素独立改变至多 \(\beta\)，并交物理材料盒 \([0,4.5]\)。对两类任取材料各一份，计入物理开路和保存算子的差异后，读数差仍严格超过 \(2r\)。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: right;">每格扰动预算 \(\beta\)</th>
+<th style="text-align: right;">460 MHz 开路全类距离下界 / \(2r\)</th>
+<th style="text-align: right;">核心区域平均差下界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">2.4091321</td>
+<td style="text-align: right;">1.998</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">2.3076306</td>
+<td style="text-align: right;">1.994</td>
+</tr>
+<tr>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">1.2759433</td>
+<td style="text-align: right;">1.98</td>
+</tr>
+</tbody>
+</table></div>
+<p>最大验证预算为 0.01，同一结论覆盖至零的整个区间。这里使用 wave_96_2.0_1.npz 的原生参考样品，连通核心 164 格，覆盖 \(0.0711805556\,\mathrm{m^2}\)。两频率均用 A 布局的 8 次发射、64 个复数读数、总可用源功率 1 W 与固定额外端接。误差半径 \(r=0.0016152302843858903\sqrt{\mathrm W}\)，来自观测 bmtm26_n96_c01_f400_a08_c48；只读取半径与观测识别符。</p>
+<p>400 MHz 同 A 开路的两个原参考共用一个可能读数，中点残差上界为 \(0.3172534r\)。独立的既有 400 MHz 审计对全 16 口任意相干发射与任意被动负载给出 \(0.8637641(2r)\) 的上界。两个原参考属于此处每个预算下的类，因而同一 400 MHz 合同无法保证两类分离。 <a href="cover_96_2.0_wave_96_2.0_1.json">400 MHz 的独立被动负载审计</a></p>
+<p>460 MHz 在两个参考点分别计算原生总场、方向支撑与非线性余项。全像素传播常数上界为 32.101106 和 27.918715。随后在 24 端空网逆上做右残差核查，计算物理 25 端开路与保存加载算子的全类差异，分别控制两端误差。在 \(\beta=0.01\)，该统一转移的合计扣减为 \(1.09334\times10^{-6}(2r)\)。独立裸 VIE 与 25 端电路重放也逐端通过。首次运行耗用 6.55 秒单线程 CPU，最终复算耗用 5.21 秒，包含两频率合计 4 次冻结材料 LU 与 4 次独立裸材料 LU。</p>
+<p><a href="matched_amplitude.json">数值收据</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">原始复波、读数中点和接收方向</a> · <a href="matched_amplitude.py">复现脚本</a> · <a href="frequency_classes_REPORT_ZH.html">原核心增幅 1 的试验</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

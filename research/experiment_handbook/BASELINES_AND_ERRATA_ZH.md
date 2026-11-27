@@ -231,3 +231,9 @@ NIE2016 式(15)与 CIE2019 式(16)都使用右侧开方量。2016 首阶段 δ<.
 - 外积曲率及其常数余核要求每个源使用同一接收算子。Fresnel 有逐源缺测，使用真实通道掩码；若要形成公共子矩阵，必须重新声明保留了哪些通道。球内的辅助电流在读成实材料后还要重解原 Maxwell，实测未见源独立评分。[源相关端口](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/hc_cie_r2/classical_and_measured.html)
 - 差分信号的 10% 和总散射场的 10% 给出不同的分辨能力。已知参考及“只改变两处”都是公开的额外信息。对同一批对象登记两份观测版本，按改变的支撑和幅度评分，保留后者可容纳其他合法材料的反例。[两种噪声及阵列对照](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/hc_cie_r2/pair_results.html)
 - 完整正演返回和合法候选完成入池的时刻可能不同。只存前一个时间戳时，以后一回调或任务完成时间给保守前缀，同时报告边界处无法确定的候选。成像任务的 CPU、任务墙钟、父端点历史费用和并发队列耗时分别计。[实际前缀与受影响的对象](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/hc_cie_r2/evidence_imaging.html)
+
+### 16 端口材料补偿实验的比较口径
+
+交错收发对七对由单向观测生成的歧义材料提高了约 21 倍的中位分离度。交错取得的 32 条同侧反射通道贡献了大部分差分能量。完整互易端口在相同总能量的原合同下保留交错的无噪分离能力；比较归一化距离时，须写清联合误差球、接收链数和发射次数。交换布局后要用新布局自己的数据重新找反例。一个无源额外探头的全部终端仍可能容许同一对材料。在公开制造公差内区分两频规格，与只给全场宽盒后从同一份带噪读数确定核心，是两个不同的断言。[原始材料与同数据再拟合](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/mimo_material_compensation/)
+
+**一发一读的限定。** 对两份已知材料规格作单个相干判读时，按发射总功率和接收合路范数归一，并对量化波形重新核验整类。在 96² 的两个实际模拟记录中，放开外围材料后都找到了核心 0 与 2 的解释。单标量样品和八发矩阵样品分别登记。[同数据双解](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/mimo_material_compensation/environment/fluence_modes/reattack/DUAL_RESPONSE_ZH.html)

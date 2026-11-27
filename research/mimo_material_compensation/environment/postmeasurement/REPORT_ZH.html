@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>已采双频读数的宽材料盒再攻击 · 微波材料反演</title><link rel="stylesheet" href="../../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../../index.html">研究报告</a><a href="../../theory/index.html">数学推导</a><a href="../../reproduce.html">原始数据与复算</a><a href="../../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="已采双频读数的宽材料盒再攻击">已采双频读数的宽材料盒再攻击</h1>
+<p>同一份 32² 低规格读数允许核心均值 <strong>0 和 2</strong> 的两份全波材料。此前闭环把 batch_leaf 判为低规格。用这份已经记录的旧 400 MHz 与新 460 MHz 读数，在原 \([0,4.5]\) 全材料盒内搜索共享双频材料，找到核心固定为 2 的反例。独立裸 VIE 与 25 端电路复核的残差上界分别为 \( 0.9653477r \) 和 \( 0.9749828r \)。因此宽材料盒下，可行核心均值跨度至少为 2。该反例超出此前按两份参考定义的 \(\pm0.01\) 校准邻域。</p>
+<p>32² 固定核心为 16 格、\(0.0625\,\mathrm{m^2}\)，96² 固定核心为 164 格、\(0.0711805556\,\mathrm{m^2}\)。两频率的材料完全共享，外区允许落入 \([0,4.5]\)。搜索先从公开的两规格启动，对环带划分 4 与 8 扇区，再逐格放开公共参考支撑。未找到同球候选的分支再根据全图导数增加外部像素。搜索没有读取离线样品或目标标签。单独保留旧、新读数的绝对 Frobenius 球。源幅使用 \(\sqrt{E/8}\)，旧频率双方 \(E=1\)，新频率 32² 为 \(E=1/8\)，96² 为 \(E=11/16\)。两份旧读数均对记录的总波幅中点做精确归一化回查。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>网格</th>
+<th>记录样品</th>
+<th>旧闭环规格判定</th>
+<th style="text-align: right;">强制核心均值</th>
+<th style="text-align: right;">400 MHz 严格残差上界 / \(r\)</th>
+<th style="text-align: right;">460 MHz 严格残差上界 / \(r\)</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32²</td>
+<td>batch_arch</td>
+<td>高</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.4272490</td>
+<td style="text-align: right;">1.5398746</td>
+<td>该候选未通过，材料类未决</td>
+</tr>
+<tr>
+<td>32²</td>
+<td>batch_arch</td>
+<td>高</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.2671680</td>
+<td style="text-align: right;">0.8473910</td>
+<td>两球内</td>
+</tr>
+<tr>
+<td>32²</td>
+<td>batch_leaf</td>
+<td>低</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.2671676</td>
+<td style="text-align: right;">0.8510132</td>
+<td>两球内</td>
+</tr>
+<tr>
+<td>32²</td>
+<td>batch_leaf</td>
+<td>低</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.9653477</td>
+<td style="text-align: right;">0.9749828</td>
+<td>两球内</td>
+</tr>
+<tr>
+<td>96²</td>
+<td>specimen_013</td>
+<td>低</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3172278</td>
+<td style="text-align: right;">0.8511338</td>
+<td>两球内</td>
+</tr>
+<tr>
+<td>96²</td>
+<td>specimen_013</td>
+<td>低</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.6916980</td>
+<td style="text-align: right;">1.6905059</td>
+<td>该候选未通过，材料类未决</td>
+</tr>
+<tr>
+<td>96²</td>
+<td>specimen_074</td>
+<td>高</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.7792539</td>
+<td style="text-align: right;">2.1658255</td>
+<td>该候选未通过，材料类未决</td>
+</tr>
+<tr>
+<td>96²</td>
+<td>specimen_074</td>
+<td>高</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.3172289</td>
+<td style="text-align: right;">0.8509842</td>
+<td>两球内</td>
+</tr>
+</tbody>
+</table></div>
+<p>表中未通过只表示该点没有通过外包复算。对应连续材料类未决。表内对向同时通过数为 1。32² 反例距公开高参考的最大像素差下界为 2.00691，远大于闭环的校准预算。该反例限定了闭环可解释的材料类，原来两份校准规格之间的一侧区分证书仍按其已声明的材料邻域解释。</p>
+<p>搜索和独立点态核验的 32² / 96² 单线程 CPU 分别约为 1.75 / 109.28 秒。过程合计材料 LU 分别为 836 / 764 次，前向、转置及逆核验列总数分别为 27692 / 34376。所有实际计算费用在各分支收据中列出。复算见 attack.py 和 expand.py，汇总可通过 report.py 再生成。对于表内压力测试中仅为汇总新核查的严格点，额外费用在汇总收据。</p>
+<p><a href="REPORT_RECEIPT.json">逐例严格残差与归一化回查</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">32² 决定性错规格材料</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">32² 同读数低核心材料</a> · <a href="paired_32.pdf">同色标材料配对图</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

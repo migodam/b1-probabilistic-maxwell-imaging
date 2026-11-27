@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>96² 同核心增幅的低功率闭环 · 微波材料反演</title><link rel="stylesheet" href="../../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../../index.html">研究报告</a><a href="../../theory/index.html">数学推导</a><a href="../../reproduce.html">原始数据与复算</a><a href="../../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="96²-同核心增幅的低功率闭环">96² 同核心增幅的低功率闭环</h1>
+<p>两件新仿真样品各用一次 460 MHz 开路 A 读数，在解盲前分别判为高、低两种规格，解盲后均正确。两件样品也都与同一个 400 MHz 旧读数球相容。</p>
+<p>核心增幅 2，区域为 164 个原生像素、0.0711805556 平方米。两类允许在各自参考的全图所有像素独立改变最多 0.01，且材料保持在 [0, 4.5]。采集前冻结两个均值区间的向外取整版本，低规格为 [0, 0.01]，高规格为 [1.99, 2.01]。两新材料的生成器使用独立随机数，并在两份样品中均加入 96 个原参考为零的外区像素。新测量使用相同的绝对硬 Frobenius 半径，噪声取半径的 85%。未读取旧观测的目标或测量标签。</p>
+<p>两类在 460 MHz 的严格全类间距至少为 1.27594336 倍 \(2r\)。400 MHz 的 KYP 上界为 0.85686447 倍 \(2r\)，适用于该两个参考在本合同内的相干发射和被动负载。460 MHz 冻结阈值为 0.00274969064866。沿用预先声明的 1.04 归一化分离余量，最低可选档为 <strong>11/16</strong>。只要求判别区间严格分开的数学最低档为 0.6250。归一化的理论 460 MHz 充分量上界为 0.6142388。400 MHz 保证区分所需能量至少 1.3619957，相当于实际采用 460 MHz 档位的至少 1.9810846 倍。该比值来自全类证书与 400 MHz 基准反例，两次样品分类用于独立检查这次动作。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>样品</th>
+<th>解盲前判定</th>
+<th style="text-align: right;">解盲后的真实区域均值</th>
+<th style="text-align: right;">400 MHz 旧球严格残差 / \(r\)</th>
+<th style="text-align: right;">460 MHz 新球严格残差 / \(r\)</th>
+<th style="text-align: right;">相对自身规格的最大像素改动上界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>specimen_013</td>
+<td>低</td>
+<td style="text-align: right;">0.002194246</td>
+<td style="text-align: right;">0.3277029</td>
+<td style="text-align: right;">0.8500160</td>
+<td style="text-align: right;">0.0076142</td>
+</tr>
+<tr>
+<td>specimen_074</td>
+<td>高</td>
+<td style="text-align: right;">2.001463326</td>
+<td style="text-align: right;">0.3076639</td>
+<td style="text-align: right;">0.8500362</td>
+<td style="text-align: right;">0.0074611</td>
+</tr>
+</tbody>
+</table></div>
+<p>每件样品发射 8 次、获得 64 个复数读数。总可用功率为 0.6875 W，按两频率等曝光换算归一化能量。总计 16 次发射和 128 个复数读数。发射持续时间未记录，能量以同曝光基准为单位。采集模拟使用 2 次裸材料 LU、50 个右端，决策为每样品一次 128 维实投影。400 MHz 复算计入离线评分，逐频核验两次 LU。冻结、采集、决策和评分的实际单线程 CPU 用时分别为 0.0018、0.3569、0.0013、2.9491 秒。</p>
+<p><a href="proposal.json">冻结动作与阈值</a> · <a href="decision.json">解盲前结果</a> · <a href="offline_scores.json">离线评分与成本</a> · <a href="../kyp_verified_responses_96_2.0_wave_96_2.0_1_400.json">400 MHz KYP 证书</a> · <a href="../matched_amplitude.json">460 MHz 全类证书</a></p>
+<p>本目录保留已封存样品与种子。要新建同合同轨迹，在同一环境下的空目录依次执行 loop.py freeze、acquisition、decide、score、archive。评分阶段从封存种子重生材料和测量，逐项核对原读数。</p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

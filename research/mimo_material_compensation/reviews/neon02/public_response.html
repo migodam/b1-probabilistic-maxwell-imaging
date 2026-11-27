@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>独立读件意见 · 微波材料反演</title><link rel="stylesheet" href="../../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../../index.html">研究报告</a><a href="../../theory/index.html">数学推导</a><a href="../../reproduce.html">原始数据与复算</a><a href="../../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="独立读件意见">独立读件意见</h1>
+<p><strong>一、ROI 升 0.27 的 A/B 差异与局部检验</strong>
+- <strong>已核对</strong>：independent_replay.json 表明，均匀增 0.27（外区 $\beta\le10^{-3}$）时 A 可藏（0.9991），B 至 $\beta=0.003$ 不可藏（1.0011）。但 shape_witness.json 用同均值非均匀轮廓 $[0.321,1.166,10^{-6},0,0,0.133]$ 零外区编辑即藏（0.8371&lt;1），说明 B 的优势仅属均匀形状锁定，不证均值可辨识。
+- <strong>可检局部假设</strong>：用 budget_proof.py 的认证雅可比检 ROI 近零空间，在锥 $\|\delta x_{\mathrm{ROI}}-t\mathbf{1}\|_\infty\le\alpha t$ 求 B 保持不可藏的临界非均匀度 $\alpha^*$。</p>
+<p><strong>二、单被动探头全复负载的有限维判据与反证</strong>
+- <strong>有限维判据</strong>：probe.py 中 $\Delta(k)=S_P^+(k)-S_P^-(k)$ 在 $|k|\le1$ 解析（$|s_{pp}^\pm|&lt;1$）。由最大模原理，全负载最坏相干差即 2 极点有理阵 $H_\infty$ 范数，可直接由 17×17 匹配 $S^\pm$ 化为无网格误差的有限维 KYP-LMI（或辛束）判据，取代 256 点采样；精确隐藏充要条件为 $S_{PP}^+=S_{PP}^-$、$s_{Pp}^+=\pm s_{Pp}^-$、$s_{pp}^+=s_{pp}^-$。
+- <strong>最强可证主张</strong>：phase_32_two_shells.json（数组见 phase_32_two_shells.npz）已核对对比度 0.5/1.0/2.0 均 $&lt;1$（0.037/0.209/0.893）；补 KYP 认证与 $96^2$ 原生复算后，可证单频单被动探头不能对对比度 $\le2.0$ 的有限核心保证相干可检。
+- <strong>反证实验（猜想）</strong>：在 $32^2\to96^2$ 放开非径向自由度并测反号支 $s_{Pp}^+=-s_{Pp}^-$ 试攻 3.5（排除 12 环及 <code>nfev=55</code> 截断）；并用未拟合 460 MHz 测 0.5–2.0 见证，判别破盲靠频域多样性而非单频负载切换。</p>
+<p><strong>三、397 段连续拼接的严格条件</strong>
+- <strong>已核对</strong>：same_data_path.py 与 same_data_path.json 以全局 <code>free=1</code>、$z=1/8192$ 验完 397 段（$\kappa\le0.160$）。
+- <strong>严格条件</strong>：①相邻段共连续折线 $(x_0,x_{\mathrm{free}})$ 与同球心 <code>knots[b]</code>（换图卡须另验高维球包含）；②$\kappa&lt;1$ 保预条件与雅可比可逆，接缝零点在同球内由 Banach 唯一性强制黏合；③脚本仅于 $x_0$ 验 $\det(I-XG)\ne0$，全域去分母等价须证分母非零（本例赖 $\mathrm{Im}\,G\succeq0.24I$ 与 <code>low&gt;0</code>，推广须逐段认证）；④路径含 $t=0$ 锚定 $x_0$，排除脱离参考点的孤立分支。</p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

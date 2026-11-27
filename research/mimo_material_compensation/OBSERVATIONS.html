@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>材料、观测与使用权限 · 微波材料反演</title><link rel="stylesheet" href="site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="index.html">微波材料反演</a><nav aria-label="项目导航"><a href="index.html">研究报告</a><a href="theory/index.html">数学推导</a><a href="reproduce.html">原始数据与复算</a><a href="handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="材料-观测与使用权限">材料、观测与使用权限</h1>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>数据与材料来源</th>
+<th>独立性与暴露史</th>
+<th>在线可用</th>
+<th>独立验收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>历史固定对，32² 编号 c01,c02,c03,c04,c05,c06,c08</td>
+<td>七个不同生成材料对象，各有两个针对布局 A 找到的解释。A 的选择偏向已知。</td>
+<td>公开相容候选、原 400 MHz 网络、带噪 A 读数、各对象自己的噪声半径</td>
+<td>按整件材料做七次留一，保存各切分预测、误差界和留出波形</td>
+</tr>
+<tr>
+<td>原生 96² c01、c02</td>
+<td>两份旧原生生成序列。编号与 32² 相同不能据此视为同一件样品。</td>
+<td>各自原始 A 读数、算子与合法候选</td>
+<td>原生逐段正演或固定对评分。c01 另有 192² 样品级检查</td>
+</tr>
+<tr>
+<td>四对象主动试验</td>
+<td>32² c02、c07 来自旧合成数据，fresh_bg_a、fresh_bg_b 新独立生成。与七件固定对合并共有十件不同的 32² 基础对象。四件 × 十臂为配对比较。</td>
+<td>初始 A、事前区域、可行动作、合法预算、公开物理</td>
+<td>各布局冻结后读取它自己的追加复数矩阵。真值及八个未读端口在在线选择之后单列评分</td>
+</tr>
+<tr>
+<td>区域补偿预算</td>
+<td>32² c02 的公开 A/B 联合零区拟合，96² c02 的公开 A 拟合。另有空气参考对照。若干阈值在观察同对象粗扫后细化。</td>
+<td>已有拟合、已公开 ROI、全像素材料盒、发送接收模型</td>
+<td>点态见证、全族排除与未决分别保存。预算横纵坐标均为同对象条件</td>
+</tr>
+<tr>
+<td>环形外区与固定核心的规格比较</td>
+<td>作者构造的压力测试。先用 400 MHz 探索出相近材料，将其明示为两种公开规格，再检查 460 MHz。旧条件使用两规格读数的公共中点。没有把规格冒充未知实物的一般先验。</td>
+<td>两种公开规格、二选一合同、公差、共同旧数据、两频噪声半径、预留 460 MHz</td>
+<td>新样品在动作和阈值保存后生成。光照、功率档、两种网格均为配对条件。宽盒另求一对同时补偿两个频率的材料</td>
+</tr>
+<tr>
+<td>六单元控制</td>
+<td>随附研究包的互易耗散集总矩阵。一例四实数据坐标</td>
+<td>固定矩阵、方程、起点</td>
+<td>原脚本复算，另用 397 段有接缝唯一性的有理多项式球算术</td>
+</tr>
+</tbody>
+</table></div>
+<p>原波包编号形式为 <code>bmtm26_n32_c01_f400_a08_c48</code>。其后缀沿用上轮磁盘标识；本次加载后的角色试验实际读 8×8 的复数矩阵，端口与留出设置见仪器回执。原网络有 24 个空间端口，包括八个保持匹配端接的独立留出终端。新探头实验添加第 25 端。所有频率比较保持原几何不变，在每个频率分别重建传播算子。材料对比度定义为无量纲实相对介电常数减一。两端预算中的面积元取 \((2/N)^2\,\mathrm m^2\)。</p>
+<p>完整原始观测入口、键名与允许输入随复现包附带。旧物体真值在独立可选包中，新主动试验的真值和反演输入保存在不同文件。公开参考规格不需要现场真值。仪器的研究结论只覆盖标称离散模型，采集时间和材料制造公差并无实物测量记录。<a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/blind_uq_mimo_theory/handoff.html">旧研究</a> · <a href="replication/prior-manifest.json">上游资料映射</a> · <a href="topology/campaign.json">主动采集清单</a></p>
+<p>32² 与 96² 同增幅 2 的四件读数用于宽材料盒复检。固定两球与旧动作，在语义允许的整盒中重拟合核心 0 或 2。另对 96² 的一份数据仅固定均值，保留了精确的 dyadic 和。分支、均值试验与不同初始化不增加物体数。<a href="environment/postmeasurement/REPORT_ZH.html">再拟合</a> · <a href="environment/postmeasurement/mean_task_REPORT_ZH.html">固定均值</a></p>
+<p>另一组单次相干采集从每种公开规格独立产生新样品。四端等幅实验在 32² 采两件，八端幅相自由实验在 32² 与 96² 各采两件。每个新样品只有一条追加复数读数；阵列馈口数与模拟合路器的硬件成本单列。各自的提案先于样品和噪声生成。<a href="environment/fluence_modes/REPORT_ZH.html">八端采集</a> · <a href="environment/coherent_readout/REPORT_ZH.html">四端采集</a></p>
+<p>对八端口相干实验中两件 96² 样品逐件放开外区后再拟合。两次谱段共用同一材料，读取原已封存的一个新标量。两件都得到核心 0/2 的反例，未增加样品数。<a href="environment/fluence_modes/reattack/DUAL_RESPONSE_ZH.html">材料与观测逐件对应</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

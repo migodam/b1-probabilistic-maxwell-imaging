@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>从原始复读数复算 · 微波材料反演</title><link rel="stylesheet" href="site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="index.html">微波材料反演</a><nav aria-label="项目导航"><a href="index.html">研究报告</a><a href="theory/index.html">数学推导</a><a aria-current="page" href="reproduce.html">原始数据与复算</a><a href="handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="从原始复读数复算">从原始复读数复算</h1>
+<p>完整附件含本轮材料数组、25 口复数散射矩阵、两端误差、搜索失败轨迹、封存提案与带噪采集，以及四套原生物理算子和既有 CIE 最小依赖。请在空目录解压。Git 仓库存放阅读页、代码、图与数值回执。原始 NPZ 以研究附件分发。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整计算档案</a> · <a href="replication/README_ZH.html">旧依赖与恢复说明</a></p>
+<h2 id="核心结果的一次冷重放">核心结果的一次冷重放</h2>
+<p>这些命令从解压后的根目录运行。实际冷重放使用 macOS arm64、Python 3.13.13、NumPy、SciPy、python-flint、Matplotlib 与 threadpoolctl；没有使用 GPU。向外误差中的浮点计算要求 IEEE binary64，严算部分使用 Arb。</p>
+<pre><code class="language-sh">python3.13 -m venv .mimo-replay-venv
+PY=.mimo-replay-venv/bin/python
+STUDY=research/mimo_material_compensation
+&quot;$PY&quot; -m pip install -r &quot;$STUDY/replication/requirements.txt&quot;
+&quot;$PY&quot; -B &quot;$STUDY/replication/run_replays.py&quot;
+&quot;$PY&quot; -B &quot;$STUDY/replication/restore_prior.py&quot; .
+&quot;$PY&quot; -B &quot;$STUDY/controls/same_data_path.py&quot;
+&quot;$PY&quot; -B &quot;$STUDY/environment/decision_limits.py&quot;
+&quot;$PY&quot; -B &quot;$STUDY/environment/report_decisions.py&quot;
+&quot;$PY&quot; -B &quot;$STUDY/environment/fluence_loop.py&quot; check 32 96
+&quot;$PY&quot; -B &quot;$STUDY/environment/fluence_modes/reattack/verify_dual.py&quot;
+&quot;$PY&quot; -B &quot;$STUDY/environment/fluence_modes/reattack/verify_loaded.py&quot;
+</code></pre>
+<p>冷重放在临时空目录内复算 32² 材料路径、96² 同幅度两类下界、七件各 6,435 个切分、以及新增读数下的两个外区预算对照。不需要读旧目标真值。重新做离线材料误差评分时才另行恢复历史合成真值。工作目录为独立副本，收敛过程和费用会随机器变化。<a href="replication/replay_receipts/replay_receipt.json">代表性重放的原始回执</a> · <a href="replication/prior-manifest.json">四个物理算子来源</a></p>
+<h2 id="各项结论的源文件">各项结论的源文件</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>要复算的物理结论</th>
+<th>入口与依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原 Pro 控制、0.01 与 1.985 及其证明区别</td>
+<td><code>controls/compensation_small.py</code>、<code>compensation_exact_certificate.py</code>、<code>structural_checks.py</code> 应在 controls 目录运行，原始脚本把代数检查写到当前目录；<code>same_data_path.py</code> 读浮点节点评估严格校正管。<a href="controls/same_data_path.json">397 段回执</a></td>
+</tr>
+<tr>
+<td>已有原生带噪读数的连续路径及 B 重拟合</td>
+<td><a href="paths/REPRODUCE.html">路径执行顺序</a>。每个 <code>reduction.npz</code> 都带原生材料、支撑和可验证的传播算子。连续折线、校正布局、中点复算与单点见证各自保存。</td>
+</tr>
+<tr>
+<td>6,435 切分、条件 Fisher、固定对最大相干波前、重新攻击</td>
+<td><a href="topology/REPORT_ZH.html">拓扑复现与十个比较臂</a>。<code>design_frozen.json</code> 与 <code>new_observed.npz</code> 分开。</td>
+</tr>
+<tr>
+<td>任务方向、形状自由反例与局部两端 SOCP</td>
+<td><a href="budgets/REPRODUCE.html">外区预算执行顺序</a>。方向的顺序为所有实部再所有虚部；加权距离显式使用格面积。</td>
+</tr>
+<tr>
+<td>单个被动探头的一侧全负载界</td>
+<td><a href="environment/passive_replay.py">负载圆盘与原生正演</a>、<a href="environment/bounded_real.py">两状态矩阵核验</a>。每个待审的端口对须有匹配的原生 <code>cover</code> 回执。</td>
+</tr>
+<tr>
+<td>两类所有像素可独立变化的 460 MHz 下界</td>
+<td><a href="environment/frequency_classes_REPORT_ZH.html">公开规格、开路转移和独立裸波</a>、<a href="environment/matched_amplitude_REPORT_ZH.html">96² 核心增幅 2</a>。</td>
+</tr>
+<tr>
+<td>同一份材料隐藏两个频率</td>
+<td><a href="environment/joint_frequency.py">共享两频寻解</a> 与 <a href="environment/joint_coherent.py">按相干波前再优化</a>。<code>common_*</code>、<code>joint_wave_*</code> 的相容性以对应 <code>cover</code> 和 <code>kyp</code> 文件为准。</td>
+</tr>
+<tr>
+<td>已采样品的宽盒反例</td>
+<td><a href="environment/postmeasurement/REPORT_ZH.html">八个固定核心分支的再拟合</a>。复算先用 attack.py 读此前封存的旧新读数，再用 expand.py 增加外部自由度。报告分别列出两球，不以两者平均值验收。</td>
+</tr>
+<tr>
+<td>新样品主动判读</td>
+<td><a href="environment/measurement.py">动作筛选</a>、<a href="environment/energy_loop.py">低功率测量</a>、<a href="environment/low_energy_96_amplitude2/REPORT_ZH.html">原生 96² 同增幅闭环独立复现</a>。复算已封存读数可直接运行判读步骤。重演新采集须另开干净工作副本，保留原提案。</td>
+</tr>
+<tr>
+<td>从整类方向产生一发一读的真实波权</td>
+<td><a href="environment/fluence_modes/REPORT_ZH.html">单发功率分配与盲测</a>。coherent_modes.py 32 96 独立复算整类下界；fluence_loop.py 依次运行 choice、acquire、decide、replay，后接两个网格参数。对封存包运行只读的 check 32 96 即可重放实际读数。重做 choice/acquire/decide/replay 四步须使用干净输出目录。四端版本见 <a href="environment/coherent_readout/REPORT_ZH.html">四相硬件比较</a>。</td>
+</tr>
+<tr>
+<td>原生 96² 一发后的宽盒两解</td>
+<td><a href="environment/fluence_modes/reattack/DUAL_RESPONSE_ZH.html">130 维响应对偶搜索与完整重算</a>。先运行 dual_response.py unit_415 unit_862，延续低规格难例用 --resume unit_862，裸空间 25 端重放用 verify_dual.py，另一路独立的加载 24 端重放用 verify_loaded.py。background_budget.py 从已采单标量及原生 460 MHz 工作点复核所需外区改动范围。</td>
+</tr>
+<tr>
+<td>同机开销</td>
+<td>区分搜索、验证、投影和采集。每个实验证据文件的 <code>cost</code>、<code>wall_s</code>、<code>cpu_s</code> 记录本进程用量。<a href="environment/resource_replay_96.json">独立原生内存计量</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>以 96²、核心增幅 2、400 MHz 为例，下列顺序重新求解两件材料的完整物理波形并验证全负载上界。若只需重验存储矩阵，可直接运行第二条命令。</p>
+<pre><code class="language-sh">&quot;$PY&quot; -B &quot;$STUDY/environment/passive_replay.py&quot; 96 2.0 wave_96_2.0_1.npz --bands 400 460 --steps 4096
+&quot;$PY&quot; -B &quot;$STUDY/environment/bounded_real.py&quot; verified_responses_96_2.0_wave_96_2.0_1_400.npz
+&quot;$PY&quot; -B &quot;$STUDY/environment/matched_amplitude.py&quot;
+&quot;$PY&quot; -B &quot;$STUDY/figures/make_composites.py&quot;
+</code></pre>
+<p>精确等场、同一带噪读数内的整段、固定材料对的未来距离与覆盖两个材料类的未来距离在回执中分别列出。检查前者用原观测的 \(r\)，区分两份可能的新读数用 \(2r\)。数字界只指向保存的离散物理和声明的误差合同。<a href="index.html">科学报告</a> · <a href="handoff.html">局限与交接</a></p>
+<p><a href="results/main.json">各独立结论的机器可读汇总</a> · <a href="results/summary.py">从回执重新汇总</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

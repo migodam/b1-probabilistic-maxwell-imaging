@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>同一份外围材料，能否同时隐藏两个频率？ · 微波材料反演</title><link rel="stylesheet" href="../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../index.html">研究报告</a><a href="../theory/index.html">数学推导</a><a href="../reproduce.html">原始数据与复算</a><a href="../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="同一份外围材料-能否同时隐藏两个频率">同一份外围材料，能否同时隐藏两个频率？</h1>
+<p>任务为核心平均对比度从零升至指定幅度。核心内各格取相同值，核心以外无轮廓限制、每格可取 [0,4.5]，同一件材料在两个频率完全共享。32²、96² 核心分别占 0.06250 和 0.07118 m²。在此合法集合里构造一对材料就能为最坏情形提供物理反例。</p>
+<p>分别在 400 与 460 MHz 原生构造 Green、互阻和 25 端电路。将两件外区分别按半径及角度分组，拟合两个频率、四个探头相位下的完整 16 端口差分矩阵。在每一步最小化奇异值的 14 次幂和。这样做的动机是先给最能分开两件材料的波前较高权重。有限相位与平滑目标只用来找材料；最终使用完整材料和独立的所有负载计算。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原生网格</th>
+<th style="text-align: right;">核心差</th>
+<th style="text-align: right;">角扇数</th>
+<th>全波束全负载上界 400 / 460（单位 2r）</th>
+<th>具体可发波前的距离下界 400 / 460</th>
+<th>材料搜索墙钟 / CPU，秒</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32²</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">8</td>
+<td>0.864 / 0.860</td>
+<td>0.863 / 0.859</td>
+<td>2.73 / 2.70</td>
+</tr>
+<tr>
+<td>32²</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td>1.489 / 1.529</td>
+<td>1.488 / 1.528</td>
+<td>2.73 / 2.69</td>
+</tr>
+<tr>
+<td>96²</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td>0.616 / 0.645</td>
+<td>0.615 / 0.644</td>
+<td>99.78 / 105.07</td>
+</tr>
+<tr>
+<td>96²</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">4</td>
+<td>1.448 / 1.408</td>
+<td>1.447 / 1.406</td>
+<td>107.64 / 114.30</td>
+</tr>
+</tbody>
+</table></div>
+<p>给定两份物理响应，在每个被选择的频率与负载上返回它们的中点。两份材料会让同一自适应策略沿着同一历史继续选动作。将发射能量记作 \(E_f\)，将表中两项上界记作 \(u_f\)，则这条历史对每个材料所需的整块噪声满足</p>
+<p>\[
+\|e\|_F^2/r^2\le u_{400}^2 E_{400}+u_{460}^2 E_{460}.
+\]</p>
+<p>因而 96² 核心差 1，在两个频率之间怎样分配一单位能量均可隐藏，甚至总能量不超过 2.40 单位仍有同样障碍。32² 核心差 1.5 的对应值大于 1.34。其量词是存在给定材料对及一个共同观测历史；允许的硬误差为全追加数据联合 Frobenius 球，两个频点随动作分配的预算共享。各列随机独立高斯噪声的概率误判率是另一问题。96² 同一几何将核心差增至 1.5 时，两条具体波前已能区分本次找到的材料对。其余所有合法材料是否也可分仍未决。</p>
+<p>每个候选材料先通过裸 VIE 残差、原生单元自项及出射 Green 核的一侧检查，再用两个独立手段控制连续复负载。一个用 4,096 弧和解析导数误差，另一个直接验证一个两状态有界实矩阵不等式。后者保持所有 16 个相干激励的诱导范数。两次选频仍使用同一无色散材料。各自搜索另一份最容易隐藏的外区不能支持这一结论。</p>
+<p><a href="joint_coherent.py">寻解与梯度</a> · <a href="cover_96_1.0_joint_wave_96_1.0_s4.json">原生 96² 相位全覆盖</a> · <a href="kyp_verified_responses_96_1.0_joint_wave_96_1.0_s4_400.json">400 MHz 储能矩阵复核</a> · <a href="kyp_verified_responses_96_1.0_joint_wave_96_1.0_s4_460.json">460 MHz 储能矩阵复核</a> · <a href="postmeasurement/REPORT_ZH.html">实际采集的两球再拟合</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>96² 已采单标量的宽先验再攻击 · 微波材料反演</title><link rel="stylesheet" href="../../../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../../../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../../../index.html">研究报告</a><a href="../../../theory/index.html">数学推导</a><a href="../../../reproduce.html">原始数据与复算</a><a href="../../../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="96²-已采单标量的宽先验再攻击">96² 已采单标量的宽先验再攻击</h1>
+<p>在两件已采样品上，针对反向核心的有限搜索均未取得同时相容的材料。这是单次选择活动外区的局部搜索结果。后续在测量空间联合定价、重选外区后，两件都找到了相反物理解。<a href="DUAL_RESPONSE_ZH.html">同一读数最终双解</a></p>
+<p>只使用 n96/controls.npz 中原 400 MHz 总波矩阵与冻结权重，以及 n96/new_readings.npz 中每件样品实际获得的一个 460 MHz 复数。未读取任何离线样品或未采端口。旧读数为 8×8，各列幅度缩放 \(1/\sqrt 8\)。460 MHz 使用原 fluence_loop.readout，即开放端口的总传递乘固定 12 位收发权重，再乘冻结的幅度 0.375。归一化可用能量上界为 0.140625。两频率分开使用绝对半径 \(r=0.0016152302843858903\sqrt{\mathrm W}\)。</p>
+<p>两频率使用同一份实材料，宽盒为 \([0,4.5]\)，核心为 164 格、\(0.0711805556\,\mathrm{m^2}\)。在已判规格的反向固定核心上，从对应公开规格开始，做一次带盒投影的局部 Gauss–Newton 搜索。搜索覆盖公开支撑与当下导数选出的额外外部格。400 MHz 使用 128 个实数方程，460 MHz 的 8×8 导数严格投影为<strong>一个复数对应的两个实数方程</strong>。最终每一候选按独立裸 VIE 与 25 端电路的开路公式重算。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>样品</th>
+<th>封存的校准规格判定</th>
+<th style="text-align: right;">固定核心均值</th>
+<th style="text-align: right;">400 MHz 残差严格上界 / \(r\)</th>
+<th style="text-align: right;">460 MHz 残差严格上界 / \(r\)</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unit_415</td>
+<td>高</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.1923901</td>
+<td style="text-align: right;">0.9822831</td>
+<td>该候选未通过，材料类未决</td>
+</tr>
+<tr>
+<td>unit_415</td>
+<td>高</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.3172289</td>
+<td style="text-align: right;">0.8368897</td>
+<td>两球内</td>
+</tr>
+<tr>
+<td>unit_862</td>
+<td>低</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1.3243120</td>
+<td style="text-align: right;">1.2687997</td>
+<td>该候选未通过，材料类未决</td>
+</tr>
+<tr>
+<td>unit_862</td>
+<td>低</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3172278</td>
+<td style="text-align: right;">0.7981551</td>
+<td>两球内</td>
+</tr>
+</tbody>
+</table></div>
+<p>unit_415 的反向候选已进入追加单标量球，残差上界为 0.9822831r。该点的旧矩阵残差下界为 1.1923596r，仍超过旧球半径。 <a href="validation.json">点态双侧区间</a></p>
+<p>两样品的搜索和独立验证合计 51.827 秒单线程 CPU，墙钟 52.688 秒。逐样品保留数值试探的 LU、导数右端与独立电路复算。未过门槛的点保留为候选，整个连续材料类保持未决。这个试验仅解释本次已采的单标量。两校准邻域原有的单标量证书仍按原合同解释。</p>
+<p><a href="results.json">完整收据</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">unit_415 材料与实际波</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">unit_862 材料与实际波</a> · <a href="run.py">复现入口</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

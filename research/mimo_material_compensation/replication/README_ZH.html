@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>从公开档案复算材料补偿 · 微波材料反演</title><link rel="stylesheet" href="../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../index.html">研究报告</a><a href="../theory/index.html">数学推导</a><a href="../reproduce.html">原始数据与复算</a><a href="../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="从公开档案复算材料补偿">从公开档案复算材料补偿</h1><details class="toc"><summary>本页内容</summary><ol><li><a href="#直接复算">直接复算</a></li><li><a href="#直接使用旧发布附件">直接使用旧发布附件</a></li><li><a href="#依赖清单">依赖清单</a></li><li><a href="#冷重放记录">冷重放记录</a></li></ol></details>
+<p>本目录携带旧研究的最小输入闭包。4 个实际使用的名义端口算子与原始发布附件中的字节一致。旧带噪观测、公开材料锚点和补偿候选来自上一版发布附件。候选压缩包保留本轮脚本读取的原数组键，数值与类型原样保留。冻结的 Fourier 物理算子、Arb 校验器、Dual-CIE 读出和 Fourier 子空间代码均来自公共提交 <code>5f806c9ac2cd568d28ea23bea02f6ccd6ee32c93</code>，21 份源代码和配置同时与旧研究附件逐文件一致。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/z-alg-blind-uq-mimo-20261127">旧版发布页</a> · <a href="prior-manifest.json">逐文件来源</a></p>
+<h2 id="直接复算">直接复算</h2>
+<p>将这一轮研究附件按原目录展开，使当前目录内存在 <code>research/mimo_material_compensation</code>。在空的工作目录内复算，或使用下面的冷重放程序自动创建隔离目录。Python 实测版本 3.13.13，三个物理重放均限制为单 BLAS 线程。</p>
+<pre><code class="language-sh">python3.13 -m venv .mimo-replay-venv
+PY=.mimo-replay-venv/bin/python
+R=research/mimo_material_compensation/replication
+&quot;$PY&quot; -m pip install -r &quot;$R/requirements.txt&quot;
+&quot;$PY&quot; -B &quot;$R/run_replays.py&quot;
+</code></pre>
+<p>冷重放只复制本轮所需脚本与任务证据，然后在空目录恢复 57 个公共依赖文件。它分别重算材料路径的全段证书、原生 96² 同幅频率实验、旧材料的穷举排名，以及新数据下的严格预算见证。程序不会重新寻优旧材料，也不读取旧合成真值。复算产物与逐进程计时写入 <code>replication/replay_receipts/</code>。可用 <code>--keep-workspace /path/to/an/empty/dir</code> 保留冷重放材料数组和工作树。</p>
+<p>需要在展开的工作树直接调用各实验脚本时，先恢复旧依赖。恢复脚本只创建缺失文件，已有一致文件保留原样，发现不同就停止。数据固定恢复到 <code>research/z_alg_optical_inertia/blind_uq_mimo_theory/</code>，与新研究目录为同一 <code>research/</code> 下的两条路径。</p>
+<pre><code class="language-sh">&quot;$PY&quot; -B &quot;$R/restore_prior.py&quot; .
+</code></pre>
+<p>默认包 <code>prior-core.zip</code> 为 55,634,576 字节。另一个 6,073 字节的 <code>prior-scoring-opt-in.zip</code> 只含已经公开的旧合成材料 <code>n32_c02</code> 和 <code>n32_c07</code> 的 <code>material</code>，仅用于重生成这两个对象的追加观测或独立评分。复用追加读数、设计和材料时无需恢复它们。需要重生成时，才使用 <code>restore_prior.py . --include-sealed-scoring</code>。在线设计入口读取各对象的带噪 <code>initial_A.npz</code>，独立模拟采集在提案落盘后从封存合成材料计算新读数。</p>
+<h2 id="直接使用旧发布附件">直接使用旧发布附件</h2>
+<p>已有旧附件时可绕过两份精简压缩包。三个旧文件名、下载位置、包内路径以及本轮读取的键均由 <code>prior-manifest.json</code> 登记。包内的历史前缀是 <code>blind_uq_mimo_theory/</code>，恢复后增加工作树前缀 <code>research/z_alg_optical_inertia/</code>。以下命令只准备当前实验所需的成员。最后一个评分附件只用于上述选择性重生成。</p>
+<pre><code class="language-sh">NEW_WORKSPACE=&quot;$(pwd)&quot;
+OLD_ASSETS=&quot;$(mktemp -d)&quot;
+REPO=migodam/b1-probabilistic-maxwell-imaging
+TAG=z-alg-blind-uq-mimo-20261127
+gh release download &quot;$TAG&quot; -R &quot;$REPO&quot; -D &quot;$OLD_ASSETS&quot; \
+  -p blind-uq-mimo-study.zip -p blind-uq-mimo-operators.zip
+&quot;$PY&quot; -B &quot;$R/restore_prior.py&quot; &quot;$NEW_WORKSPACE&quot; --original-asset-dir &quot;$OLD_ASSETS&quot;
+</code></pre>
+<ul>
+<li><code>blind-uq-mimo-study.zip</code> 为 300,536,885 字节，包含公共代码、原带噪观测和历史候选见证。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-study.zip">旧研究附件</a></li>
+<li><code>blind-uq-mimo-operators.zip</code> 为 517,338,723 字节。这里只用 <code>n32_f400_a08</code>、<code>n32_f460_a08_c048</code>、<code>n96_f400_a08</code>、<code>n96_f460_a08_c048</code>。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-operators.zip">原物理系数附件</a></li>
+<li><code>blind-uq-mimo-scoring-truths.zip</code> 为 3,817,966 字节。选择恢复封存评分材料时再下载，并同时在恢复命令加 <code>--include-sealed-scoring</code>。<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/z-alg-blind-uq-mimo-20261127/blind-uq-mimo-scoring-truths.zip">旧评分附件</a></li>
+</ul>
+<p>精简包里的归档 <code>aperture_control/geometry.npz</code> 保存 <code>E0_both</code> 和 <code>S_both</code>。恢复时从发布的 32² 400 MHz 算子拷入 <code>G</code>，其数值与旧几何文件的 <code>G</code> 逐元素完全相同，省去一份 18 MiB 的重复矩阵。其他用于对照的较大旧实验结果不需展开。</p>
+<h2 id="依赖清单">依赖清单</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>本轮入口</th>
+<th>旧版外部输入</th>
+<th>本轮档案输入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>controls/</code></td>
+<td>无。Python 和 SciPy 的小模型，严格算术用 python-flint。</td>
+<td>同目录的配置和已保存见证。</td>
+</tr>
+<tr>
+<td><code>paths/</code></td>
+<td>32² 和 96² 的 400 MHz 算子，原带噪 <code>c01</code>，旧 GN/稳定零区与扩展斑块，旧 B 观测、B 种子和联合 A/B 种子。读取 <code>imaging/shared</code>、<code>verified_wave</code>、<code>native_replay</code>、<code>aperture_control</code>、<code>aperture_joint</code>。</td>
+<td><code>*_reduction*.npz</code>、<code>*_paths*.npz/.json</code>、B 轨迹和后续联合重拟合产物。</td>
+</tr>
+<tr>
+<td><code>budgets/</code></td>
+<td>同一对 400 MHz 算子，原 <code>n32_c02</code>、<code>n96_c02</code> 的带噪观测、查询掩码和原实材料锚点。读取 B 投影工具、模型和严格验证器。</td>
+<td><code>freeze.json</code>，对偶和场数组 <code>raw_*.npz</code>，bridge 切分原数组。</td>
+</tr>
+<tr>
+<td><code>environment/</code></td>
+<td>四个 400/460 MHz 算子和两件原 <code>c01</code> 的半径/观测 ID。使用旧裸空间 disk 脉冲 Green 和 Arb 验证器，新增第 25 个端口系数在本轮脚本里构建。</td>
+<td><code>phase_*</code>、<code>wave_*</code>、<code>cover_*</code>、<code>verified_responses_*</code> 的材料和物理回执。主动模拟补测需本轮对应提案、噪声和频段读数。</td>
+</tr>
+<tr>
+<td><code>topology/</code></td>
+<td>两个 400 MHz 算子；7 个旧固定对、两件原生旧扩展对及各自原 A。Dual-CIE 加深方案读取旧 Fourier 电流子空间、实材料读出和正则化。只有重生成两个历史主动对象的新数据会读独立评分包。</td>
+<td><code>campaign.json</code>、<code>loop/*/design_frozen.json</code>、原始初读与追加读数、逐臂材料及验证器输入。</td>
+</tr>
+<tr>
+<td><code>inputs/pro/</code></td>
+<td>小模型用 NumPy/SciPy；原参考文稿的可选重新排版用 lxml、Pandoc 和 XeTeX。</td>
+<td>同目录的 TeX、模板、文献标注。</td>
+</tr>
+</tbody>
+</table></div>
+<p>各脚本的直接导入、文件读取表达式见 <a href="script_dependencies.json">逐脚本索引</a>。冷重放从精简包导入 <code>NativeFourierAPCS</code>、<code>Regularizer</code> 和 <code>_readout</code>，并记录提供文件的真实路径。整个依赖链无需原私有外置盘、旧 Git 工作树分支和未登记的编译插件。</p>
+<h2 id="冷重放记录">冷重放记录</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>独立重放</th>
+<th style="text-align: right;">墙钟秒</th>
+<th style="text-align: right;">CPU 秒</th>
+<th>验收输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32² 材料路径</td>
+<td style="text-align: right;">1.515</td>
+<td style="text-align: right;">1.490</td>
+<td>3 条折线、41 段严格通过。最坏段上界 0.9893r；原生独立中点也在球内。</td>
+</tr>
+<tr>
+<td>96² 同幅频率</td>
+<td style="text-align: right;">7.021</td>
+<td style="text-align: right;">6.773</td>
+<td>400 MHz 配对距离上界 0.3173；460 MHz 在两端点盒半径 0.01 下的严格距离下界为 1.2759，单位为两倍噪声半径。</td>
+</tr>
+<tr>
+<td>七对旧材料穷举</td>
+<td style="text-align: right;">7.720</td>
+<td style="text-align: right;">7.477</td>
+<td>每对 6,435 切分，原始端口公平性和高斯投影回执通过。</td>
+</tr>
+<tr>
+<td>新读数预算见证</td>
+<td style="text-align: right;">1.461</td>
+<td style="text-align: right;">1.434</td>
+<td>B 与补偿臂的六个 32² 全波材料重算，旧/新双球、常量/自由 ROI 和 0.35 外区预算全部核验。</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些用时来自新临时目录的回放，不是原实验求解或采集费用。频率重放运行本轮 <code>matched_amplitude.py</code> 的严格端点盒证明入口。材料路径复用本轮已经封存的降阶锚点并对每个全段、原生中点复查。拓扑预算回放对六份材料重新做原物理分解和严格残差审计。仍需重新寻优时，按各子实验复现入口执行，并单列原始搜索预算。<a href="replay_receipts/replay_receipt.json">冷重放回执</a> · <a href="replay_receipts/native_frequency.json">频率证书</a> · <a href="replay_receipts/rank_summary.json">历史排名</a> · <a href="replay_receipts/restoration_modes.json">原附件恢复测试</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>

@@ -1,0 +1,66 @@
+# 有限面积连续路径复算
+
+在 Inv_SLAM 根目录启动。Python 需要 NumPy、SciPy、python-flint 和 threadpoolctl。出图另需 Matplotlib。原生环境可用 `.artifacts/z_alg_diag_python/bin/python`。代码将 BLAS、FFT 和 OpenMP 限为单线程。已保存的降阶算子默认复用；附加 `--recompute` 会重做原生锚点逆、支撑源和 Arb 旋转因子核验。
+
+```sh
+PYTHON=.artifacts/z_alg_diag_python/bin/python
+D=research/mimo_material_compensation/paths
+"$PYTHON" -B "$D/continuation.py" n32_c01 --methods min_margin min_l2 shape_free
+"$PYTHON" -B "$D/continuation.py" n96_c01 --methods min_margin min_l2 shape_free
+"$PYTHON" -B "$D/continuation.py" n32_c01 --run-label _ball
+"$PYTHON" -B "$D/continuation.py" n96_c01 --run-label _ball
+"$PYTHON" -B "$D/continuation.py" n32_c01 --exterior-count 852 --run-label _broad --methods ball_min_margin
+"$PYTHON" -B "$D/extend_32.py"
+"$PYTHON" -B "$D/continuation.py" n96_c01 --exterior-count 512 --run-label _broad --methods ball_min_margin
+"$PYTHON" -B "$D/continuation.py" n32_c01 --whole-region --exterior-count 512 --run-label _whole_region --methods ball_shape_free
+"$PYTHON" -B "$D/continuation.py" n32_c01 --exact-only
+"$PYTHON" -B "$D/continuation.py" n96_c01 --exact-only
+"$PYTHON" -B "$D/shape_chart.py"
+"$PYTHON" -B "$D/replay.py"
+"$PYTHON" -B "$D/plot_paths.py"
+```
+
+`shape_free` 是早期预置棋盘形状对照。数字报告中的形状自由指 `ball_shape_free`，程序在每次迭代中对区内像素投影到给定的平均值，区内形状随迭代变动。复算末尾的 `summary.json` 会列出每一分支的确切来源和步骤。
+
+每个 `*_paths.npz` 保存带噪复读数、材料折线节点、支撑电流、复预测、末端独立原生回放及区域掩码。对应 JSON 记录尝试过的全部判定并保留失败。每个 `*_reduction*.npz` 保留降阶的 (D,K,e,F_0) 和源报告。数学复核可从旧研究中声明的二进制系数重建它们。精确等场图册的 `*_exact_chart.npz` 保存外区提升矩阵和切向量。 `replay.py` 从实存材料读取每段，重新计算严格余量，还取每条路径余量上界最高的段中心，独立运行整个原生正演。它以二进制有理数求区域平均值的下端点。
+
+路径实验的输入白名单包含原 (Y)、半径、已发布盲拟合锚点、盲区域和有限面积斑块、原生算子及组合中的同布局旧可行材料图。复算程序没有加载真值、未用的接收读数或清洁目标。拓扑与独立采集见上级实验。
+
+## 定义和全段判定
+
+从真空区域可行图 (x_0) 出发。以 (U) 表示选择所有可动像素的矩阵，区域变化并列外区补偿。 (A_0=I-X_0G)、(E_0=B+GA_0^{-1}X_0B)。令 (K=U^mathsf T G A_0^{-1}U)、(e=U^mathsf T E_0)、(D=SA_0^{-1}U)。 (delta) 是支撑上的材料改变量。在物理离散上，
+
+[
+(I-operatorname{diag}(delta)K)q=operatorname{diag}(delta)e,qquad
+F=F_0+Dq.
+]
+
+这是原算子的支撑更新。只要降阶算子可逆，原生更新也是可逆的。原生锚点以独立 DFT 残差验证，32² 消元活动块，96² 使用 Fourier 尾和校准端口的有限秩证明。 (K,e,D,F_0) 各自有向外舍入的误差界。反馈增益使用可验证的转置误差，避免把浮点矩阵假设为严格互易。
+
+每段材料作实线性插值。 (A=I-operatorname{diag}(delta)K)、(b=operatorname{diag}(delta)e) 均为仿射函数。将重求的端点电流、端点逆和接收伴随分别插值，于是，例如，
+
+[
+b_\theta-A_\theta q_\theta
+  =(1-\theta)r_0+\theta r_1+\theta(1-\theta)(A_1-A_0)(q_1-q_0).
+]
+
+逆和伴随亦保留对应的二阶交叉项。受控的逆缺陷给出全段可逆性；端口侧乘上伴随后，观测残差的近似为有符号三次 Bernstein 多项式。取其复范数系数的最大值，叠加独立的舍入、系数、逆及伴随余量，得到全段数据球上界。材料盒由两个端点的凸性验证。
+
+精确等场证明对 (F(x_0)) 使用一侧 Banach 管。归零区内做均匀对比度变化，严格内部的外区格构成提升 (L)。每个实读数坐标都保留。实正演雅可比的提升缺陷、切向缺陷和非线性余项均核验；因此固定点和严格连续材料曲线存在。该证明和带噪可行折线分别报告。
+
+## 同一旧 B 观测内独立重拟合
+
+下列命令仅用已归档的带噪复观测。联合部分沿用原来的 A 和 B 两次采集，独立验证每个 64 复通道 Frobenius 球。旧 A 与 B 各 8 发、64 次复读数，每次可用源功率 0.125 W，八列总和 1 W。驻留时间没有提供。联合使用 16 发并产生 128 次复读数，源列功率总和 2 W。原始 B 观测用于重拟合选择；额外接收弧只在材料见证封存后打开评分。
+
+```sh
+"$PYTHON" -B "$D/b_control.py"
+"$PYTHON" -B "$D/b_path.py"
+"$PYTHON" -B "$D/joint_recheck.py" --families high_patch --label _high
+"$PYTHON" -B "$D/joint_recheck.py" --families vacuum --label _vacuum
+"$PYTHON" -B "$D/held_check.py"
+"$PYTHON" -B "$D/bands.py"
+"$PYTHON" -B "$D/build_report.py"
+"$PYTHON" -B "$D/plot_paths.py"
+```
+
+`phase_bands.json` 中每一条带的两端用精确分数记录。条带把该段上的两个材料端点到起始真空图的最大外区 (L^1)、(L^2)、(L^\infty) 成本当作充分预算。整段材料折线保持这些预算。

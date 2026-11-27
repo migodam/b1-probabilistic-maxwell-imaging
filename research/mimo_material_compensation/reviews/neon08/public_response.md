@@ -1,0 +1,4 @@
+# 对同一组单标量记录的独立审稿意见
+
+不能无条件推出对实际真值的逐样本误差下界，因为同一噪声记录若确实存在核心均值 0 与 2 的两个可行解，按三角不等式只能得到**最坏情况存在性下界**（$\forall$ 仅依赖该记录的单值估计 $\hat{\theta}$，$\exists$ 可行介质 $x$ 使 $|\hat{\theta}-\text{core}(x)|\ge 1$），既不约束具体隐藏样品的实际误差，也会在加入 $[0,4.5]$ 盒约束以外的物理先验后失效。按 [dual_verification.json](../../environment/fluence_modes/reattack/dual_verification.json) 的未背书原始读数，`unit_415` 的最大相对残差为 `0.9949945087685581`（`dual_unit_415` 在 400 MHz，`both_balls=true`），`unit_862` 通过双球检验的可行对最大相对残差为 `0.9947034289225324`（`continued_unit_862` 在 400 MHz，`both_balls=true`），而同件 `dual_unit_862` 在 400 MHz 达 `1.0476924120500586`（`both_balls=false`，已出球）。更关键的漏洞在于 [verify_dual.py](../../environment/fluence_modes/reattack/verify_dual.py) 并非独立验证，它直接导入 `run.py` 的 `proof`/`controller`/`read_pair` 来假定前向模型、误差界与半径 $r$ 成立，仅检查 $96\times 96$ 离散网格上的 $[0,4.5]$ 盒约束（且未对 `public_reference` 断言 `roi_indices` 与观测数据一致），在两件可行反例均以 `0.9947–0.9950` 紧贴球界 `1` 且未核验 `run.py` 与离散化误差的前提下，不能为该回执结论背书。
+

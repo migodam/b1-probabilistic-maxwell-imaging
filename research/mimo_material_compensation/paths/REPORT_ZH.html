@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>原生带噪观测允许的有限面积连续材料变化 · 微波材料反演</title><link rel="stylesheet" href="../site.css"><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},svg:{fontCache:'global'}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script></head>
+<body><header><div class="topline"><a class="brand" href="../index.html">微波材料反演</a><nav aria-label="项目导航"><a href="../index.html">研究报告</a><a href="../theory/index.html">数学推导</a><a href="../reproduce.html">原始数据与复算</a><a href="../handoff.html">研究交接</a></nav></div></header>
+<main><article><h1 id="原生带噪观测允许的有限面积连续材料变化">原生带噪观测允许的有限面积连续材料变化</h1>
+<p>两套原始布局 A 都允许把一整块原本归零的区域连续增亮。严格核验覆盖整段材料折线及其中每个未采样的材料配置。另一项固定点证书给出精确等复读数的连续曲线，证明的幅度小得多。原 B 的同一份带噪数据也允许零区和大斑块两个重新拟合的物理解。</p>
+<p>在两张固定的原生标称校准网络上，采用 400 MHz 二维标量 TM、24 个 50 Ω 端口、独立实对比度 0 到 4.5 和原封存的复 Frobenius 球。A 或 B 各使用 8 次照明、64 个复读数，每次 0.125 W，源列可用功率共 1 W。源驻留时间未提供。原测量指保存在发布数据中的、已扣除空场并带噪的复端口观测。两套原生网格为不同对象。</p>
+<h2 id="原布局-a-的严格连续区间">原布局 A 的严格连续区间</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原生观测</th>
+<th>任务</th>
+<th style="text-align: right;">面积 m²</th>
+<th style="text-align: right;">任务均值上达</th>
+<th style="text-align: right;">全登记区均值上达</th>
+<th style="text-align: right;">严格段</th>
+<th style="text-align: right;">最大段残差／半径</th>
+<th style="text-align: right;">全程外区 L¹ / L² / L∞ 预算上界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n32_c01</td>
+<td>固定连接斑块，每格同幅</td>
+<td style="text-align: right;">0.167969</td>
+<td style="text-align: right;">1.94141</td>
+<td style="text-align: right;">0.485352</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">0.979613</td>
+<td style="text-align: right;">3.97692 / 3.33998 / 4.5</td>
+</tr>
+<tr>
+<td>n32_c01</td>
+<td>全登记区均值，形状自由</td>
+<td style="text-align: right;">0.671875</td>
+<td style="text-align: right;">1.73828</td>
+<td style="text-align: right;">1.73828</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">0.999973</td>
+<td style="text-align: right;">3.04689 / 2.86946 / 4.5</td>
+</tr>
+<tr>
+<td>n96_c01</td>
+<td>固定连接斑块，每格同幅</td>
+<td style="text-align: right;">0.0677083</td>
+<td style="text-align: right;">0.345703</td>
+<td style="text-align: right;">0.0864258</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.952419</td>
+<td style="text-align: right;">0.390254 / 0.945312 / 4.34785</td>
+</tr>
+<tr>
+<td>n96_c01</td>
+<td>斑块均值，形状自由</td>
+<td style="text-align: right;">0.0677083</td>
+<td style="text-align: right;">0.458008</td>
+<td style="text-align: right;">0.114502</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0.95457</td>
+<td style="text-align: right;">0.183274 / 0.630726 / 4.39418</td>
+</tr>
+</tbody>
+</table></div>
+<p>表中每个任务区间从零开始。固定斑块均匀增亮，剩余登记区始终固定为零。形状自由的分支允许任务区内每格独立变化，只将区内均值投影回指定值。外区成本相对于该分支自己的真空区锚点，L¹ 单位为 m²，L² 为 m，L∞ 为无量纲对比度。成本对比覆盖每条折线上所有材料。</p>
+<p>原观测的完整编号为 <code>bmtm26_n32_c01_f400_a08_c48</code> 和 <code>bmtm26_n96_c01_f400_a08_c48</code>。每条路径的最紧段中心另以原网格全波直接求解，完整复数读数和独立原生回放都随材料节点保存。先前的单像素路径分别把一个像素升至 2.25 和 4.5，对全区均值的贡献只有约 0.01308 和 0.00721。固定面积试验分别包含 43 和 156 像素，占原登记区四分之一。</p>
+<ul>
+<li><code>n32_c01</code> 的 <code>n32_c01_paths_broad.json</code> 分支支付了计算折线 872.327 秒墙钟、652.559 秒 CPU，核验原生支撑预处理 0.896864 秒墙钟、0.793654 秒 CPU。该形状任务均值离 2 尚有 0.0585938。</li>
+<li><code>n32_c01</code> 的 <code>n32_c01_paths_whole_region.json</code> 分支支付了计算折线 481.257 秒墙钟、281.967 秒 CPU，核验原生支撑预处理 0.887986 秒墙钟、0.573164 秒 CPU。该形状任务均值离 2 尚有 0.261719。</li>
+<li><code>n96_c01</code> 的 <code>n96_c01_paths_broad.json</code> 分支支付了计算折线 107.904 秒墙钟、56.1055 秒 CPU，核验原生支撑预处理 118.682 秒墙钟、85.9036 秒 CPU。该形状任务均值离 2 尚有 1.6543。</li>
+<li><code>n96_c01</code> 的 <code>n96_c01_paths_ball.json</code> 分支支付了计算折线 29.4443 秒墙钟、26.1489 秒 CPU，核验原生支撑预处理 38.8595 秒墙钟、37.614 秒 CPU。该形状任务均值离 2 尚有 1.54199。</li>
+<li>32² 固定斑块先用尽 140 次尝试，在幅度 1.88184 封存材料。随后从同一份材料独立重启，另用了 22 次尝试，增加 8 条严格段。</li>
+</ul>
+<p>同一 256 外区像素支持的余量加权与最小 L² 对照均保留，包含每次失败的端点、材料余量、实雅可比谱、端点逆缺陷和原物理交叉项。加大支持用旧数据拟合图的差异辅助选取外区像素。每个候选仍用原始观测独立验真。用尽步进预算或降至最小步长只能确定本次找到的区间。</p>
+<p><a href="summary.json">原生结果与费用</a> · <a href="certified_paths.png">路径带图</a> · <a href="REPRODUCE.html">复算与全段证明</a> · <a href="phase_bands.png">预算条带图</a> · <a href="phase_bands.json">条带原数</a></p>
+<h2 id="精确等读数的固定点曲线">精确等读数的固定点曲线</h2>
+<ul>
+<li><code>n32_c01</code> 的固定连接斑块在精确校准存储系数下保持复读数 F(x₀) 不变，严格幅度为 0 到 1.52588e-05。收缩上界 0.292259，外区材料余量占用上界 0.0016487。 <a href="n32_c01_exact_chart.json">n32_c01 证书</a></li>
+<li><code>n96_c01</code> 的固定连接斑块在精确校准存储系数下保持复读数 F(x₀) 不变，严格幅度为 0 到 1.52588e-05。收缩上界 0.283212，外区材料余量占用上界 0.0050817。 <a href="n96_c01_exact_chart.json">n96_c01 证书</a></li>
+<li><code>n32_c01</code> 允许任务区形状自由。数据雅可比选出的形状方向在各任务格介于 0.25 和 2.5，整区实际变亮。172 格任务区均值严格连续到 1.52588e-05，所有原复读数等于锚点。 <a href="n32_c01_exact_shape.json">均值任务等场证书</a></li>
+<li><code>n96_c01</code> 允许任务区形状自由。数据雅可比选出的形状方向在各任务格介于 0.25 和 2.5，整区实际变亮。156 格任务区均值严格连续到 3.05176e-05，所有原复读数等于锚点。 <a href="n96_c01_exact_shape.json">均值任务等场证书</a></li>
+</ul>
+<p>降阶计算使用原生锚点、全波支撑反馈和真实端口。端点电流、逆、接收伴随沿每段分别插值，保留材料变化与场变化的二阶交叉项。接收修正后的三次 Bernstein 系数保留复数正负方向，最后才取范数并加向外误差。精确等场管单独包围雅可比提升缺陷、切向缺陷、方向二阶反馈和横向余量。</p>
+<h2 id="原-b-和-a-b-重拟合">原 B 和 A+B 重拟合</h2>
+<p>原 B 的同一份封存观测同时允许零区和 43 个连接斑块像素逐格不低于 2。两个严格残差上界分别为 0.770145 和 0.532545 倍 B 半径，全区均值为 0 和 2.65633。相对两端点的外区变化 L¹、L²、L∞ 分别为 3.62568、2.76188、4.5。旧研究的 B 真空搜索停在约 4.51 倍半径，这一较长的独立重拟合找出了球内材料。</p>
+<p>同一对材料复查 A 的残差下界分别为 12.8449 和 12.6328 倍 A 半径。B 的另一条固定斑块折线严格覆盖均匀振幅 0 到 0.368164，包含 17 段，最大段残差上界 0.95368 倍 B 半径。</p>
+<p>先封存 B 的两个材料，再用未参与求解的原 A 发射列与另外 8 个接收端口评分。两份材料的留出残差下界为 19.2005 和 21.7556 倍留出半径。这个独立留出结果只评分这里实际找到的两份材料。 <a href="B_refit_shapes.png">材料与留出复波形</a> · <a href="B_independent_held.json">留出核验</a></p>
+<ul>
+<li>原 A+B 采集的真空区域分支未找到联合可行解，所选候选两球残差上界中的较大者为 2.68911。 <a href="joint_original_AB_vacuum.json">独立复核与全部尝试</a></li>
+<li>原 A+B 采集的固定斑块最低 2分支严格可行，所选候选两球残差上界中的较大者为 0.8708。 <a href="joint_original_AB_high.json">独立复核与全部尝试</a></li>
+<li>联合高斑块见证封存后在独立接收弧复查，留出残差下界为 19.3405 倍半径。 <a href="joint_original_AB.json">复算收据</a></li>
+</ul>
+<p>A+B 使用原来各自封存的两份观测，支付 16 发、128 个原始复读数和总计 2 W 源列可用功率。两球分别验收。联合真空分支判定按当前数据与计算范围给出，未覆盖材料全类。 <a href="joint_original_AB.json">联合收据</a></p></article></main><footer><div><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/mimo-material-compensation-20261128/mimo-material-compensation-20261128.zip">完整研究包</a><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/mimo_material_compensation">公开源码</a><a href="https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/">研究目录</a></div></footer></body></html>
