@@ -1,0 +1,142 @@
+{
+  "case": "obs_b20d5a55677d4eca",
+  "endpoint": "cie_single",
+  "arm": "continue",
+  "without_truth": true,
+  "diagnostics": {
+    "free_cells": 55,
+    "lower_cells": 452,
+    "upper_cells": 69
+  },
+  "input_paths": [
+    "research/delegated/max_struct_r1/r6_worktree/research/research_max_struct_r2/data_public/obs_b20d5a55677d4eca.npz",
+    "research/delegated/max_struct_r1/r6_worktree/research/research_max_struct_r6/RESULTS/primary/obs_b20d5a55677d4eca__cie_single/prediction.npz"
+  ],
+  "selected": 0,
+  "selected_jump": null,
+  "total_cpu": 0.020572999999998842,
+  "total_wall": 0.0209820419549942,
+  "direction_cpu": 0.0,
+  "termination": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+  "endpoint_port_disagreement": 0.0,
+  "configuration": {
+    "id": "large_region_curvature_v1",
+    "timestamp_local": "2026-11-28T04:43:00+08:00",
+    "object_exposure": "Previously scored objects and a revision following the local-block experiment",
+    "budget_cpu_seconds": 2.0,
+    "prefixes": [
+      0.25,
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "radius_L2": [
+      6.0,
+      18.0,
+      36.0
+    ],
+    "active_tol": 1e-07,
+    "negative_eigenvalue_tol": 1e-12,
+    "rng_seed": 26112843,
+    "arms": [
+      "continue",
+      "gauss_newton",
+      "random",
+      "curvature"
+    ],
+    "cases": [
+      [
+        "r13_fresh_0007",
+        "cie"
+      ],
+      [
+        "r13_fresh_0016",
+        "cie"
+      ],
+      [
+        "r13_fresh_0029",
+        "cie"
+      ],
+      [
+        "r13_fresh_0037",
+        "cie"
+      ],
+      [
+        "r13_fresh_0044",
+        "cie"
+      ],
+      [
+        "r13_fresh_0045",
+        "a_plus_arc_r7"
+      ],
+      [
+        "obs_b20d5a55677d4eca",
+        "cie_single"
+      ],
+      [
+        "obs_7b8d5df517f1497d",
+        "a_material"
+      ]
+    ],
+    "construction": "Compute the exact original physical Hessian at the given endpoint. Restrict all ray directions to free cells. Test the two signs of the minimum eigenvector, even if it has nonnegative curvature, at fixed realized L2 norms after clipping. Compare with identical sign/radius Gauss-Newton and random rays. Perform original full wave audits, polish the best legal moved candidate, and select the past minimum original Phi including the endpoint. Continue is identical polish directly from the endpoint."
+  },
+  "threadpool": [],
+  "cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 1,
+    "actual_complex_RHS": 24,
+    "LU": 1,
+    "source_RHS": 12,
+    "full_factorization_dimension": 576,
+    "DATA_ADJOINT": 1,
+    "adjoint_RHS": 12
+  },
+  "auxiliary_cost": {},
+  "chain": [
+    {
+      "i": 0,
+      "stage": "endpoint",
+      "cpu": 0.01710300000000231,
+      "wall": 0.017476791515946388,
+      "Phi": 0.0051511084690239505,
+      "D": 0.005126426110651091,
+      "R": 2.468235837285953e-05,
+      "relative_port_error": 0.10125636879378097,
+      "residual_over_delta": 96.56738465445645,
+      "paid": true,
+      "setup_counts": {},
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 1,
+        "actual_complex_RHS": 12,
+        "LU": 1,
+        "source_RHS": 12,
+        "full_factorization_dimension": 576
+      }
+    },
+    {
+      "i": 1,
+      "stage": "polish",
+      "cpu": 0.018246000000001317,
+      "wall": 0.018524833023548126,
+      "Phi": 0.0051511084690239505,
+      "D": 0.005126426110651091,
+      "R": 2.468235837285953e-05,
+      "relative_port_error": 0.10125636879378097,
+      "residual_over_delta": 96.56738465445645,
+      "paid": true,
+      "setup_counts": {},
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 1,
+        "actual_complex_RHS": 24,
+        "LU": 1,
+        "source_RHS": 12,
+        "full_factorization_dimension": 576,
+        "DATA_ADJOINT": 1,
+        "adjoint_RHS": 12
+      }
+    }
+  ]
+}

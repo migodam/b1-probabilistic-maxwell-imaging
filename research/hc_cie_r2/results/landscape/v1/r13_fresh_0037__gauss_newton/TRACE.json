@@ -1,0 +1,3339 @@
+{
+  "case": "r13_fresh_0037",
+  "endpoint": "cie",
+  "arm": "gauss_newton",
+  "without_truth": true,
+  "diagnostics": {
+    "free_cells": 341,
+    "lower_cells": 167,
+    "upper_cells": 68,
+    "damping": 3.1634677975648855e-09,
+    "participation_pixels": 48.09690012358674,
+    "participation_fraction_free": 0.14104662792840686,
+    "mass90_pixels": 129,
+    "energy_rms_radius_cells": 9.257554894275641,
+    "weighted_center_rc": [
+      10.945901556569057,
+      10.476126875579936
+    ],
+    "straight_step_max_sign_-1": 0.01731193243707825,
+    "straight_step_max_sign_1": 0.0025012529323179974
+  },
+  "input_paths": [
+    "research/delegated/max_struct_r1/r13_worktree/research/research_max_struct_r13/data_public/fresh48/r13_fresh_0037.npz",
+    "research/delegated/max_struct_r1/r13_worktree/research/research_max_struct_r13/RESULTS/confirmation_core48/r13_fresh_0037__cie/primary.npz"
+  ],
+  "selected": 108,
+  "selected_jump": 1,
+  "total_cpu": 2.0146919999999984,
+  "total_wall": 2.2670717081055045,
+  "direction_cpu": 0.028085000000000804,
+  "termination": "PROCESS_CPU_LIMIT",
+  "endpoint_port_disagreement": 4.003338487751411e-15,
+  "configuration": {
+    "id": "large_region_curvature_v1",
+    "timestamp_local": "2026-11-28T04:43:00+08:00",
+    "object_exposure": "Previously scored objects and a revision following the local-block experiment",
+    "budget_cpu_seconds": 2.0,
+    "prefixes": [
+      0.25,
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "radius_L2": [
+      6.0,
+      18.0,
+      36.0
+    ],
+    "active_tol": 1e-07,
+    "negative_eigenvalue_tol": 1e-12,
+    "rng_seed": 26112843,
+    "arms": [
+      "continue",
+      "gauss_newton",
+      "random",
+      "curvature"
+    ],
+    "cases": [
+      [
+        "r13_fresh_0007",
+        "cie"
+      ],
+      [
+        "r13_fresh_0016",
+        "cie"
+      ],
+      [
+        "r13_fresh_0029",
+        "cie"
+      ],
+      [
+        "r13_fresh_0037",
+        "cie"
+      ],
+      [
+        "r13_fresh_0044",
+        "cie"
+      ],
+      [
+        "r13_fresh_0045",
+        "a_plus_arc_r7"
+      ],
+      [
+        "obs_b20d5a55677d4eca",
+        "cie_single"
+      ],
+      [
+        "obs_7b8d5df517f1497d",
+        "a_material"
+      ]
+    ],
+    "construction": "Compute the exact original physical Hessian at the given endpoint. Restrict all ray directions to free cells. Test the two signs of the minimum eigenvector, even if it has nonnegative curvature, at fixed realized L2 norms after clipping. Compare with identical sign/radius Gauss-Newton and random rays. Perform original full wave audits, polish the best legal moved candidate, and select the past minimum original Phi including the endpoint. Continue is identical polish directly from the endpoint."
+  },
+  "threadpool": [],
+  "cost": {
+    "cached_operator_imports": 1,
+    "FULL_FORWARD": 110,
+    "actual_complex_RHS": 2580,
+    "LU": 110,
+    "source_RHS": 1320,
+    "full_factorization_dimension": 63360,
+    "MATERIAL_RECEIVER": 1,
+    "receiver_transpose_RHS": 24,
+    "DATA_ADJOINT": 103,
+    "adjoint_RHS": 1236
+  },
+  "auxiliary_cost": {
+    "jacobian_material_columns": 576,
+    "jac_gram": 1,
+    "GN_dimension": 341
+  },
+  "chain": [
+    {
+      "i": 0,
+      "stage": "endpoint",
+      "cpu": 0.02580399999999905,
+      "wall": 0.02829920779913664,
+      "Phi": 0.0004655938860069133,
+      "D": 0.00043119150544115403,
+      "R": 3.4402380565759245e-05,
+      "relative_port_error": 0.029366358488622794,
+      "residual_over_delta": 2.7497717667540713,
+      "paid": true,
+      "setup_counts": {},
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 1,
+        "actual_complex_RHS": 12,
+        "LU": 1,
+        "source_RHS": 12,
+        "full_factorization_dimension": 576
+      }
+    },
+    {
+      "i": 1,
+      "stage": "jump",
+      "cpu": 0.06218799999999902,
+      "wall": 0.06529112532734871,
+      "Phi": 0.000489380345069522,
+      "D": 0.0004551117076524359,
+      "R": 3.426863741708613e-05,
+      "relative_port_error": 0.0301699091033578,
+      "residual_over_delta": 2.8250136730466826,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 2,
+        "actual_complex_RHS": 48,
+        "LU": 2,
+        "source_RHS": 24,
+        "full_factorization_dimension": 1152,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24
+      },
+      "radius": 6.0,
+      "signed_direction": -1,
+      "actual_radius": 6.0,
+      "ray_parameter": 6.084032576437113,
+      "direction_cosine": 0.9960617624068661,
+      "n_changed": 341,
+      "n_newly_clipped": 11,
+      "linear_term": 1.3155429280379194e-05,
+      "quad_term": null
+    },
+    {
+      "i": 2,
+      "stage": "jump",
+      "cpu": 0.07621199999999995,
+      "wall": 0.07974679209291935,
+      "Phi": 0.00115420031168076,
+      "D": 0.0011199297023779156,
+      "R": 3.4270609302844326e-05,
+      "relative_port_error": 0.04732715293312953,
+      "residual_over_delta": 4.4315630413212626,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 3,
+        "actual_complex_RHS": 60,
+        "LU": 3,
+        "source_RHS": 36,
+        "full_factorization_dimension": 1728,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24
+      },
+      "radius": 18.0,
+      "signed_direction": -1,
+      "actual_radius": 18.0,
+      "ray_parameter": 19.10546360765864,
+      "direction_cosine": 0.974665191928306,
+      "n_changed": 341,
+      "n_newly_clipped": 30,
+      "linear_term": 4.084759545526468e-05,
+      "quad_term": null
+    },
+    {
+      "i": 3,
+      "stage": "jump",
+      "cpu": 0.0944269999999996,
+      "wall": 0.09839600045233965,
+      "Phi": 0.006515300107194773,
+      "D": 0.00648064849347041,
+      "R": 3.465161372436296e-05,
+      "relative_port_error": 0.11384769205803348,
+      "residual_over_delta": 10.660333301201678,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 4,
+        "actual_complex_RHS": 72,
+        "LU": 4,
+        "source_RHS": 48,
+        "full_factorization_dimension": 2304,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24
+      },
+      "radius": 36.0,
+      "signed_direction": -1,
+      "actual_radius": 36.0,
+      "ray_parameter": 39.77880570462803,
+      "direction_cosine": 0.9482933734066142,
+      "n_changed": 341,
+      "n_newly_clipped": 44,
+      "linear_term": 8.358112758569545e-05,
+      "quad_term": null
+    },
+    {
+      "i": 4,
+      "stage": "jump",
+      "cpu": 0.11285099999999915,
+      "wall": 0.11735712550580502,
+      "Phi": 0.0006819467134051918,
+      "D": 0.0006475762457301001,
+      "R": 3.437046767509173e-05,
+      "relative_port_error": 0.03598822712304956,
+      "residual_over_delta": 3.369822339968844,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 5,
+        "actual_complex_RHS": 84,
+        "LU": 5,
+        "source_RHS": 60,
+        "full_factorization_dimension": 2880,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24
+      },
+      "radius": 6.0,
+      "signed_direction": 1,
+      "actual_radius": 6.0,
+      "ray_parameter": 6.9869814168306625,
+      "direction_cosine": 0.9017283629550451,
+      "n_changed": 341,
+      "n_newly_clipped": 124,
+      "linear_term": -6.110756491651249e-06,
+      "quad_term": null
+    },
+    {
+      "i": 5,
+      "stage": "jump",
+      "cpu": 0.1275069999999996,
+      "wall": 0.13215537555515766,
+      "Phi": 0.00399099022376512,
+      "D": 0.003956743631030806,
+      "R": 3.424659273431418e-05,
+      "relative_port_error": 0.08895778359458835,
+      "residual_over_delta": 8.32972197952928,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 6,
+        "actual_complex_RHS": 96,
+        "LU": 6,
+        "source_RHS": 72,
+        "full_factorization_dimension": 3456,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24
+      },
+      "radius": 18.0,
+      "signed_direction": 1,
+      "actual_radius": 18.0,
+      "ray_parameter": 21.955826481988197,
+      "direction_cosine": 0.8588451775103947,
+      "n_changed": 341,
+      "n_newly_clipped": 146,
+      "linear_term": -1.3760276029411012e-05,
+      "quad_term": null
+    },
+    {
+      "i": 6,
+      "stage": "jump",
+      "cpu": 0.1496119999999994,
+      "wall": 0.15445400029420853,
+      "Phi": 0.024320658432421306,
+      "D": 0.02428621272550194,
+      "R": 3.4445706919364795e-05,
+      "relative_port_error": 0.22039152762981584,
+      "residual_over_delta": 20.636756870725257,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 7,
+        "actual_complex_RHS": 108,
+        "LU": 7,
+        "source_RHS": 84,
+        "full_factorization_dimension": 4032,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24
+      },
+      "radius": 36.0,
+      "signed_direction": 1,
+      "actual_radius": 36.0,
+      "ray_parameter": 45.652719307137325,
+      "direction_cosine": 0.8319655693483965,
+      "n_changed": 341,
+      "n_newly_clipped": 167,
+      "linear_term": -1.7682147182835036e-05,
+      "quad_term": null
+    },
+    {
+      "i": 7,
+      "stage": "polish",
+      "cpu": 0.16570099999999854,
+      "wall": 0.17103916686028242,
+      "Phi": 0.000489380345069522,
+      "D": 0.0004551117076524359,
+      "R": 3.426863741708613e-05,
+      "relative_port_error": 0.0301699091033578,
+      "residual_over_delta": 2.8250136730466826,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 8,
+        "actual_complex_RHS": 132,
+        "LU": 8,
+        "source_RHS": 96,
+        "full_factorization_dimension": 4608,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 1,
+        "adjoint_RHS": 12
+      }
+    },
+    {
+      "i": 8,
+      "stage": "polish",
+      "cpu": 0.18065599999999904,
+      "wall": 0.18656245805323124,
+      "Phi": 0.5575281978061752,
+      "D": 0.557500563655989,
+      "R": 2.763415018629908e-05,
+      "relative_port_error": 1.0559361378947014,
+      "residual_over_delta": 98.87447844795258,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 9,
+        "actual_complex_RHS": 156,
+        "LU": 9,
+        "source_RHS": 108,
+        "full_factorization_dimension": 5184,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 2,
+        "adjoint_RHS": 24
+      }
+    },
+    {
+      "i": 9,
+      "stage": "polish",
+      "cpu": 0.2096599999999995,
+      "wall": 0.21853666752576828,
+      "Phi": 0.000490673450182691,
+      "D": 0.0004564238160607693,
+      "R": 3.424963412192166e-05,
+      "relative_port_error": 0.030213368433882684,
+      "residual_over_delta": 2.8290830655839176,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 10,
+        "actual_complex_RHS": 180,
+        "LU": 10,
+        "source_RHS": 120,
+        "full_factorization_dimension": 5760,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 3,
+        "adjoint_RHS": 36
+      }
+    },
+    {
+      "i": 10,
+      "stage": "polish",
+      "cpu": 0.2316629999999993,
+      "wall": 0.2414722079411149,
+      "Phi": 0.00048670164591820724,
+      "D": 0.00045244157697961273,
+      "R": 3.426006893859453e-05,
+      "relative_port_error": 0.030081275803383496,
+      "residual_over_delta": 2.8167143346742387,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 11,
+        "actual_complex_RHS": 204,
+        "LU": 11,
+        "source_RHS": 132,
+        "full_factorization_dimension": 6336,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 4,
+        "adjoint_RHS": 48
+      }
+    },
+    {
+      "i": 11,
+      "stage": "polish",
+      "cpu": 0.24414399999999858,
+      "wall": 0.2541712084785104,
+      "Phi": 0.0004843065783593744,
+      "D": 0.00045004678471050486,
+      "R": 3.4259793648869536e-05,
+      "relative_port_error": 0.030001559449818766,
+      "residual_over_delta": 2.8092499506081716,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 12,
+        "actual_complex_RHS": 228,
+        "LU": 12,
+        "source_RHS": 144,
+        "full_factorization_dimension": 6912,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 5,
+        "adjoint_RHS": 60
+      }
+    },
+    {
+      "i": 12,
+      "stage": "polish",
+      "cpu": 0.2685179999999985,
+      "wall": 0.2800612924620509,
+      "Phi": 0.000479398764481021,
+      "D": 0.0004451403210384363,
+      "R": 3.4258443442584684e-05,
+      "relative_port_error": 0.02983757098151377,
+      "residual_over_delta": 2.7938945955888213,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 13,
+        "actual_complex_RHS": 252,
+        "LU": 13,
+        "source_RHS": 156,
+        "full_factorization_dimension": 7488,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 6,
+        "adjoint_RHS": 72
+      }
+    },
+    {
+      "i": 13,
+      "stage": "polish",
+      "cpu": 0.2912139999999983,
+      "wall": 0.30329091753810644,
+      "Phi": 0.0004788265960904011,
+      "D": 0.00044456788399448583,
+      "R": 3.425871209591528e-05,
+      "relative_port_error": 0.029818379700932304,
+      "residual_over_delta": 2.792097585532868,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 14,
+        "actual_complex_RHS": 276,
+        "LU": 14,
+        "source_RHS": 168,
+        "full_factorization_dimension": 8064,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 7,
+        "adjoint_RHS": 84
+      }
+    },
+    {
+      "i": 14,
+      "stage": "polish",
+      "cpu": 0.2985149999999983,
+      "wall": 0.3107185419648886,
+      "Phi": 0.0004783785381169524,
+      "D": 0.00044411856751988527,
+      "R": 3.425997059706717e-05,
+      "relative_port_error": 0.029803307451351277,
+      "residual_over_delta": 2.790686268349111,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 15,
+        "actual_complex_RHS": 300,
+        "LU": 15,
+        "source_RHS": 180,
+        "full_factorization_dimension": 8640,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 8,
+        "adjoint_RHS": 96
+      }
+    },
+    {
+      "i": 15,
+      "stage": "polish",
+      "cpu": 0.31800099999999887,
+      "wall": 0.3306840006262064,
+      "Phi": 0.0004781831054035845,
+      "D": 0.0004439219737325318,
+      "R": 3.426113167105268e-05,
+      "relative_port_error": 0.02979671034636313,
+      "residual_over_delta": 2.790068536564431,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 16,
+        "actual_complex_RHS": 324,
+        "LU": 16,
+        "source_RHS": 192,
+        "full_factorization_dimension": 9216,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 9,
+        "adjoint_RHS": 108
+      }
+    },
+    {
+      "i": 16,
+      "stage": "polish",
+      "cpu": 0.34784099999999896,
+      "wall": 0.36089708283543587,
+      "Phi": 0.00047804362137493923,
+      "D": 0.000443781824546543,
+      "R": 3.426179682839622e-05,
+      "relative_port_error": 0.02979200646302773,
+      "residual_over_delta": 2.7896280799925073,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 17,
+        "actual_complex_RHS": 348,
+        "LU": 17,
+        "source_RHS": 204,
+        "full_factorization_dimension": 9792,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 10,
+        "adjoint_RHS": 120
+      }
+    },
+    {
+      "i": 17,
+      "stage": "polish",
+      "cpu": 0.3733779999999989,
+      "wall": 0.38710683304816484,
+      "Phi": 0.0004777613511054036,
+      "D": 0.00044349811575607824,
+      "R": 3.4263235349325376e-05,
+      "relative_port_error": 0.029782481956884595,
+      "residual_over_delta": 2.7887362357383134,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 18,
+        "actual_complex_RHS": 372,
+        "LU": 18,
+        "source_RHS": 216,
+        "full_factorization_dimension": 10368,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 11,
+        "adjoint_RHS": 132
+      }
+    },
+    {
+      "i": 18,
+      "stage": "polish",
+      "cpu": 0.3945679999999996,
+      "wall": 0.41105012502521276,
+      "Phi": 0.0004775618837854794,
+      "D": 0.00044329621789815257,
+      "R": 3.426566588732685e-05,
+      "relative_port_error": 0.029775702104170527,
+      "residual_over_delta": 2.788101392041806,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 19,
+        "actual_complex_RHS": 396,
+        "LU": 19,
+        "source_RHS": 228,
+        "full_factorization_dimension": 10944,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 12,
+        "adjoint_RHS": 144
+      }
+    },
+    {
+      "i": 19,
+      "stage": "polish",
+      "cpu": 0.4100149999999996,
+      "wall": 0.4271867498755455,
+      "Phi": 0.000477315340018219,
+      "D": 0.0004430464506465025,
+      "R": 3.4268889371716536e-05,
+      "relative_port_error": 0.02976731263135799,
+      "residual_over_delta": 2.787315828673886,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 20,
+        "actual_complex_RHS": 420,
+        "LU": 20,
+        "source_RHS": 240,
+        "full_factorization_dimension": 11520,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 13,
+        "adjoint_RHS": 156
+      }
+    },
+    {
+      "i": 20,
+      "stage": "polish",
+      "cpu": 0.4295959999999983,
+      "wall": 0.4470184585079551,
+      "Phi": 0.0004769543462485751,
+      "D": 0.000442680470809078,
+      "R": 3.427387543949705e-05,
+      "relative_port_error": 0.029755015402754475,
+      "residual_over_delta": 2.7861643555678017,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 21,
+        "actual_complex_RHS": 444,
+        "LU": 21,
+        "source_RHS": 252,
+        "full_factorization_dimension": 12096,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 14,
+        "adjoint_RHS": 168
+      }
+    },
+    {
+      "i": 21,
+      "stage": "polish",
+      "cpu": 0.43942699999999846,
+      "wall": 0.45688041765242815,
+      "Phi": 0.000476601806784467,
+      "D": 0.00044231319545851125,
+      "R": 3.4288611325955726e-05,
+      "relative_port_error": 0.02974266953245829,
+      "residual_over_delta": 2.7850083278093853,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 22,
+        "actual_complex_RHS": 468,
+        "LU": 22,
+        "source_RHS": 264,
+        "full_factorization_dimension": 12672,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 15,
+        "adjoint_RHS": 180
+      }
+    },
+    {
+      "i": 22,
+      "stage": "polish",
+      "cpu": 0.46890499999999946,
+      "wall": 0.487292000092566,
+      "Phi": 0.00047627793734216384,
+      "D": 0.0004419840932468806,
+      "R": 3.429384409528322e-05,
+      "relative_port_error": 0.029731602487820284,
+      "residual_over_delta": 2.7839720451903203,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 23,
+        "actual_complex_RHS": 492,
+        "LU": 23,
+        "source_RHS": 276,
+        "full_factorization_dimension": 13248,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 16,
+        "adjoint_RHS": 192
+      }
+    },
+    {
+      "i": 23,
+      "stage": "polish",
+      "cpu": 0.48170799999999936,
+      "wall": 0.5110336672514677,
+      "Phi": 0.00047611027147966825,
+      "D": 0.0004418168774670728,
+      "R": 3.4293394012595444e-05,
+      "relative_port_error": 0.02972597777927827,
+      "residual_over_delta": 2.7834453654948774,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 24,
+        "actual_complex_RHS": 516,
+        "LU": 24,
+        "source_RHS": 288,
+        "full_factorization_dimension": 13824,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 17,
+        "adjoint_RHS": 204
+      }
+    },
+    {
+      "i": 24,
+      "stage": "polish",
+      "cpu": 0.5021319999999996,
+      "wall": 0.5346882082521915,
+      "Phi": 0.00047592315539811105,
+      "D": 0.00044162885077731384,
+      "R": 3.429430462079722e-05,
+      "relative_port_error": 0.02971965177377803,
+      "residual_over_delta": 2.7828530185980833,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 25,
+        "actual_complex_RHS": 540,
+        "LU": 25,
+        "source_RHS": 300,
+        "full_factorization_dimension": 14400,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 18,
+        "adjoint_RHS": 216
+      }
+    },
+    {
+      "i": 25,
+      "stage": "polish",
+      "cpu": 0.518224,
+      "wall": 0.5564702926203609,
+      "Phi": 0.0004756449193561169,
+      "D": 0.0004413475819271407,
+      "R": 3.4297337428976166e-05,
+      "relative_port_error": 0.029710186196896873,
+      "residual_over_delta": 2.781966692291267,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 26,
+        "actual_complex_RHS": 564,
+        "LU": 26,
+        "source_RHS": 312,
+        "full_factorization_dimension": 14976,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 19,
+        "adjoint_RHS": 228
+      }
+    },
+    {
+      "i": 26,
+      "stage": "polish",
+      "cpu": 0.5401889999999998,
+      "wall": 0.5839160829782486,
+      "Phi": 0.00047513382828150727,
+      "D": 0.0004408276096562475,
+      "R": 3.430621862525975e-05,
+      "relative_port_error": 0.029692679557636676,
+      "residual_over_delta": 2.780327426653783,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 27,
+        "actual_complex_RHS": 588,
+        "LU": 27,
+        "source_RHS": 324,
+        "full_factorization_dimension": 15552,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 20,
+        "adjoint_RHS": 240
+      }
+    },
+    {
+      "i": 27,
+      "stage": "polish",
+      "cpu": 0.5684119999999986,
+      "wall": 0.6169370422139764,
+      "Phi": 0.00047437298855711706,
+      "D": 0.0004400550675195191,
+      "R": 3.4317921037597946e-05,
+      "relative_port_error": 0.029666650216009192,
+      "residual_over_delta": 2.7778901224595236,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 28,
+        "actual_complex_RHS": 612,
+        "LU": 28,
+        "source_RHS": 336,
+        "full_factorization_dimension": 16128,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 21,
+        "adjoint_RHS": 252
+      }
+    },
+    {
+      "i": 28,
+      "stage": "polish",
+      "cpu": 0.582338,
+      "wall": 0.6363460831344128,
+      "Phi": 0.0004738999868403427,
+      "D": 0.0004395765194489984,
+      "R": 3.432346739134425e-05,
+      "relative_port_error": 0.029650514985375832,
+      "residual_over_delta": 2.77637927113409,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 29,
+        "actual_complex_RHS": 636,
+        "LU": 29,
+        "source_RHS": 348,
+        "full_factorization_dimension": 16704,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 22,
+        "adjoint_RHS": 264
+      }
+    },
+    {
+      "i": 29,
+      "stage": "polish",
+      "cpu": 0.5997059999999994,
+      "wall": 0.657018874771893,
+      "Phi": 0.000473583445224779,
+      "D": 0.0004392529768049352,
+      "R": 3.4330468419843744e-05,
+      "relative_port_error": 0.029639601104095015,
+      "residual_over_delta": 2.775357330241306,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 30,
+        "actual_complex_RHS": 660,
+        "LU": 30,
+        "source_RHS": 360,
+        "full_factorization_dimension": 17280,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 23,
+        "adjoint_RHS": 276
+      }
+    },
+    {
+      "i": 30,
+      "stage": "polish",
+      "cpu": 0.6254039999999996,
+      "wall": 0.689623792655766,
+      "Phi": 0.000473418670507015,
+      "D": 0.0004390873296533695,
+      "R": 3.433134085364554e-05,
+      "relative_port_error": 0.02963401186654853,
+      "residual_over_delta": 2.774833971936293,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 31,
+        "actual_complex_RHS": 684,
+        "LU": 31,
+        "source_RHS": 372,
+        "full_factorization_dimension": 17856,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 24,
+        "adjoint_RHS": 288
+      }
+    },
+    {
+      "i": 31,
+      "stage": "polish",
+      "cpu": 0.6498999999999988,
+      "wall": 0.715426167473197,
+      "Phi": 0.0004729802087488847,
+      "D": 0.0004386445106657705,
+      "R": 3.433569808311417e-05,
+      "relative_port_error": 0.02961906516640154,
+      "residual_over_delta": 2.773434410799482,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 32,
+        "actual_complex_RHS": 708,
+        "LU": 32,
+        "source_RHS": 384,
+        "full_factorization_dimension": 18432,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 25,
+        "adjoint_RHS": 300
+      }
+    },
+    {
+      "i": 32,
+      "stage": "polish",
+      "cpu": 0.6838889999999989,
+      "wall": 0.7504813754931092,
+      "Phi": 0.00047270048197723096,
+      "D": 0.0004383594508810844,
+      "R": 3.4341031096146534e-05,
+      "relative_port_error": 0.029609439403037823,
+      "residual_over_delta": 2.772533085143417,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 33,
+        "actual_complex_RHS": 732,
+        "LU": 33,
+        "source_RHS": 396,
+        "full_factorization_dimension": 19008,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 26,
+        "adjoint_RHS": 312
+      }
+    },
+    {
+      "i": 33,
+      "stage": "polish",
+      "cpu": 0.7147410000000001,
+      "wall": 0.7831155834719539,
+      "Phi": 0.0004722878936360186,
+      "D": 0.0004379412150266027,
+      "R": 3.4346678609415866e-05,
+      "relative_port_error": 0.029595310947060607,
+      "residual_over_delta": 2.771210141770338,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 34,
+        "actual_complex_RHS": 756,
+        "LU": 34,
+        "source_RHS": 408,
+        "full_factorization_dimension": 19584,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 27,
+        "adjoint_RHS": 324
+      }
+    },
+    {
+      "i": 34,
+      "stage": "polish",
+      "cpu": 0.736224,
+      "wall": 0.8072995832189918,
+      "Phi": 0.0004717894882936853,
+      "D": 0.0004374380913963964,
+      "R": 3.435139689728892e-05,
+      "relative_port_error": 0.029578305948664348,
+      "residual_over_delta": 2.7696178481769107,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 35,
+        "actual_complex_RHS": 780,
+        "LU": 35,
+        "source_RHS": 420,
+        "full_factorization_dimension": 20160,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 28,
+        "adjoint_RHS": 336
+      }
+    },
+    {
+      "i": 35,
+      "stage": "polish",
+      "cpu": 0.7590519999999987,
+      "wall": 0.8426055004820228,
+      "Phi": 0.00047147352730538163,
+      "D": 0.0004371188092652714,
+      "R": 3.435471804011025e-05,
+      "relative_port_error": 0.029567509508420603,
+      "residual_over_delta": 2.768606904086747,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 36,
+        "actual_complex_RHS": 804,
+        "LU": 36,
+        "source_RHS": 432,
+        "full_factorization_dimension": 20736,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 29,
+        "adjoint_RHS": 348
+      }
+    },
+    {
+      "i": 36,
+      "stage": "polish",
+      "cpu": 0.7692509999999988,
+      "wall": 0.8567225420847535,
+      "Phi": 0.00047113147141366045,
+      "D": 0.00043677202747895323,
+      "R": 3.435944393470719e-05,
+      "relative_port_error": 0.029555778706674377,
+      "residual_over_delta": 2.767508469377668,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 37,
+        "actual_complex_RHS": 828,
+        "LU": 37,
+        "source_RHS": 444,
+        "full_factorization_dimension": 21312,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 30,
+        "adjoint_RHS": 360
+      }
+    },
+    {
+      "i": 37,
+      "stage": "polish",
+      "cpu": 0.7880949999999984,
+      "wall": 0.8872943334281445,
+      "Phi": 0.00047066792485256603,
+      "D": 0.0004363009757660817,
+      "R": 3.436694908648434e-05,
+      "relative_port_error": 0.029539836687635282,
+      "residual_over_delta": 2.766015709767186,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 38,
+        "actual_complex_RHS": 852,
+        "LU": 38,
+        "source_RHS": 456,
+        "full_factorization_dimension": 21888,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 31,
+        "adjoint_RHS": 372
+      }
+    },
+    {
+      "i": 38,
+      "stage": "polish",
+      "cpu": 0.8039529999999999,
+      "wall": 0.9052932923659682,
+      "Phi": 0.0004700178732086858,
+      "D": 0.0004356406114000678,
+      "R": 3.4377261808618004e-05,
+      "relative_port_error": 0.029517473177766006,
+      "residual_over_delta": 2.763921662319393,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 39,
+        "actual_complex_RHS": 876,
+        "LU": 39,
+        "source_RHS": 468,
+        "full_factorization_dimension": 22464,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 32,
+        "adjoint_RHS": 384
+      }
+    },
+    {
+      "i": 39,
+      "stage": "polish",
+      "cpu": 0.8223219999999998,
+      "wall": 0.9292124174535275,
+      "Phi": 0.00046955308090318286,
+      "D": 0.0004351702989407392,
+      "R": 3.4382781962443673e-05,
+      "relative_port_error": 0.029501535517350252,
+      "residual_over_delta": 2.7624293108364424,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 40,
+        "actual_complex_RHS": 900,
+        "LU": 40,
+        "source_RHS": 480,
+        "full_factorization_dimension": 23040,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 33,
+        "adjoint_RHS": 396
+      }
+    },
+    {
+      "i": 40,
+      "stage": "polish",
+      "cpu": 0.8361459999999994,
+      "wall": 0.946271083317697,
+      "Phi": 0.0004692774984150407,
+      "D": 0.0004348913350268712,
+      "R": 3.438616338816955e-05,
+      "relative_port_error": 0.02949207808978103,
+      "residual_over_delta": 2.7615437476050997,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 41,
+        "actual_complex_RHS": 924,
+        "LU": 41,
+        "source_RHS": 492,
+        "full_factorization_dimension": 23616,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 34,
+        "adjoint_RHS": 408
+      }
+    },
+    {
+      "i": 41,
+      "stage": "polish",
+      "cpu": 0.8505369999999992,
+      "wall": 0.9614565828815103,
+      "Phi": 0.0004691250645024383,
+      "D": 0.00043473765281445135,
+      "R": 3.438741168798698e-05,
+      "relative_port_error": 0.029486866663463968,
+      "residual_over_delta": 2.7610557663337163,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 42,
+        "actual_complex_RHS": 948,
+        "LU": 42,
+        "source_RHS": 504,
+        "full_factorization_dimension": 24192,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 35,
+        "adjoint_RHS": 420
+      }
+    },
+    {
+      "i": 42,
+      "stage": "polish",
+      "cpu": 0.8688699999999994,
+      "wall": 0.9822966670617461,
+      "Phi": 0.00046887170229092386,
+      "D": 0.0004344806602303481,
+      "R": 3.4391042060575756e-05,
+      "relative_port_error": 0.029478149881915862,
+      "residual_over_delta": 2.760239554823963,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 43,
+        "actual_complex_RHS": 972,
+        "LU": 43,
+        "source_RHS": 516,
+        "full_factorization_dimension": 24768,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 36,
+        "adjoint_RHS": 432
+      }
+    },
+    {
+      "i": 43,
+      "stage": "polish",
+      "cpu": 0.8826529999999995,
+      "wall": 1.0810829168185592,
+      "Phi": 0.00046877292919424054,
+      "D": 0.00043438004540399713,
+      "R": 3.43928837902434e-05,
+      "relative_port_error": 0.029474736484114566,
+      "residual_over_delta": 2.759919935184833,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 44,
+        "actual_complex_RHS": 996,
+        "LU": 44,
+        "source_RHS": 528,
+        "full_factorization_dimension": 25344,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 37,
+        "adjoint_RHS": 444
+      }
+    },
+    {
+      "i": 44,
+      "stage": "polish",
+      "cpu": 0.8981239999999993,
+      "wall": 1.099584000185132,
+      "Phi": 0.0004686761669912349,
+      "D": 0.00043428155439508286,
+      "R": 3.439461259615205e-05,
+      "relative_port_error": 0.029471394754747623,
+      "residual_over_delta": 2.759607026348386,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 45,
+        "actual_complex_RHS": 1020,
+        "LU": 45,
+        "source_RHS": 540,
+        "full_factorization_dimension": 25920,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 38,
+        "adjoint_RHS": 456
+      }
+    },
+    {
+      "i": 45,
+      "stage": "polish",
+      "cpu": 0.9226849999999995,
+      "wall": 1.125970957800746,
+      "Phi": 0.0004685363863232312,
+      "D": 0.0004341382746185446,
+      "R": 3.439811170468664e-05,
+      "relative_port_error": 0.029466532697911527,
+      "residual_over_delta": 2.759151758916388,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 46,
+        "actual_complex_RHS": 1044,
+        "LU": 46,
+        "source_RHS": 552,
+        "full_factorization_dimension": 26496,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 39,
+        "adjoint_RHS": 468
+      }
+    },
+    {
+      "i": 46,
+      "stage": "polish",
+      "cpu": 0.9427069999999986,
+      "wall": 1.1470882082358003,
+      "Phi": 0.0004684387791930125,
+      "D": 0.00043403684670332204,
+      "R": 3.440193248969046e-05,
+      "relative_port_error": 0.029463090357371612,
+      "residual_over_delta": 2.758829429171899,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 47,
+        "actual_complex_RHS": 1068,
+        "LU": 47,
+        "source_RHS": 564,
+        "full_factorization_dimension": 27072,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 40,
+        "adjoint_RHS": 480
+      }
+    },
+    {
+      "i": 47,
+      "stage": "polish",
+      "cpu": 0.9608469999999993,
+      "wall": 1.166462542489171,
+      "Phi": 0.000468351302224981,
+      "D": 0.0004339482948234634,
+      "R": 3.440300740151755e-05,
+      "relative_port_error": 0.029460084684992453,
+      "residual_over_delta": 2.7585479876356076,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 48,
+        "actual_complex_RHS": 1092,
+        "LU": 48,
+        "source_RHS": 576,
+        "full_factorization_dimension": 27648,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 41,
+        "adjoint_RHS": 492
+      }
+    },
+    {
+      "i": 48,
+      "stage": "polish",
+      "cpu": 0.9727259999999998,
+      "wall": 1.1786765418946743,
+      "Phi": 0.0004680637032200009,
+      "D": 0.0004336543529103546,
+      "R": 3.440935030964632e-05,
+      "relative_port_error": 0.029450105361793006,
+      "residual_over_delta": 2.757613555768756,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 49,
+        "actual_complex_RHS": 1116,
+        "LU": 49,
+        "source_RHS": 588,
+        "full_factorization_dimension": 28224,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 42,
+        "adjoint_RHS": 504
+      }
+    },
+    {
+      "i": 49,
+      "stage": "polish",
+      "cpu": 0.9821929999999988,
+      "wall": 1.1887615425512195,
+      "Phi": 0.000467882865465268,
+      "D": 0.00043346844656713007,
+      "R": 3.4414418898137965e-05,
+      "relative_port_error": 0.029443792098407775,
+      "residual_over_delta": 2.757022402002806,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 50,
+        "actual_complex_RHS": 1140,
+        "LU": 50,
+        "source_RHS": 600,
+        "full_factorization_dimension": 28800,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 43,
+        "adjoint_RHS": 516
+      }
+    },
+    {
+      "i": 50,
+      "stage": "polish",
+      "cpu": 0.9969009999999994,
+      "wall": 1.203848292119801,
+      "Phi": 0.0004677459418158423,
+      "D": 0.00043330970186596454,
+      "R": 3.443623994987779e-05,
+      "relative_port_error": 0.029438400155781717,
+      "residual_over_delta": 2.756517517762329,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 51,
+        "actual_complex_RHS": 1164,
+        "LU": 51,
+        "source_RHS": 612,
+        "full_factorization_dimension": 29376,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 44,
+        "adjoint_RHS": 528
+      }
+    },
+    {
+      "i": 51,
+      "stage": "polish",
+      "cpu": 1.010337999999999,
+      "wall": 1.2186459582298994,
+      "Phi": 0.0004674627391232305,
+      "D": 0.0004330281157227813,
+      "R": 3.443462340044919e-05,
+      "relative_port_error": 0.029428833334768176,
+      "residual_over_delta": 2.755621711279179,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 52,
+        "actual_complex_RHS": 1188,
+        "LU": 52,
+        "source_RHS": 624,
+        "full_factorization_dimension": 29952,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 45,
+        "adjoint_RHS": 540
+      }
+    },
+    {
+      "i": 52,
+      "stage": "polish",
+      "cpu": 1.0275849999999984,
+      "wall": 1.2378053748980165,
+      "Phi": 0.000467400347707452,
+      "D": 0.00043296628877531406,
+      "R": 3.443405893213794e-05,
+      "relative_port_error": 0.029426732362779054,
+      "residual_over_delta": 2.7554249829902195,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 53,
+        "actual_complex_RHS": 1212,
+        "LU": 53,
+        "source_RHS": 636,
+        "full_factorization_dimension": 30528,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 46,
+        "adjoint_RHS": 552
+      }
+    },
+    {
+      "i": 53,
+      "stage": "polish",
+      "cpu": 1.0496309999999998,
+      "wall": 1.259961667470634,
+      "Phi": 0.0004672206527556989,
+      "D": 0.0004327863726765518,
+      "R": 3.4434280079147126e-05,
+      "relative_port_error": 0.029420617691562893,
+      "residual_over_delta": 2.7548524247590147,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 54,
+        "actual_complex_RHS": 1236,
+        "LU": 54,
+        "source_RHS": 648,
+        "full_factorization_dimension": 31104,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 47,
+        "adjoint_RHS": 564
+      }
+    },
+    {
+      "i": 54,
+      "stage": "polish",
+      "cpu": 1.0660469999999993,
+      "wall": 1.2764852922409773,
+      "Phi": 0.0004670831128029625,
+      "D": 0.00043264559489928516,
+      "R": 3.443751790367731e-05,
+      "relative_port_error": 0.029415832298246642,
+      "residual_over_delta": 2.7544043358535095,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 55,
+        "actual_complex_RHS": 1260,
+        "LU": 55,
+        "source_RHS": 660,
+        "full_factorization_dimension": 31680,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 48,
+        "adjoint_RHS": 576
+      }
+    },
+    {
+      "i": 55,
+      "stage": "polish",
+      "cpu": 1.0790439999999997,
+      "wall": 1.2895585000514984,
+      "Phi": 0.0004668782445754105,
+      "D": 0.00043243035701953224,
+      "R": 3.444788755587825e-05,
+      "relative_port_error": 0.029408514311999246,
+      "residual_over_delta": 2.7537191030562465,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 56,
+        "actual_complex_RHS": 1284,
+        "LU": 56,
+        "source_RHS": 672,
+        "full_factorization_dimension": 32256,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 49,
+        "adjoint_RHS": 588
+      }
+    },
+    {
+      "i": 56,
+      "stage": "polish",
+      "cpu": 1.103247999999999,
+      "wall": 1.3148424997925758,
+      "Phi": 0.00046675530131990047,
+      "D": 0.00043230458128439995,
+      "R": 3.445072003550054e-05,
+      "relative_port_error": 0.029404237153321966,
+      "residual_over_delta": 2.7533186036147765,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 57,
+        "actual_complex_RHS": 1308,
+        "LU": 57,
+        "source_RHS": 684,
+        "full_factorization_dimension": 32832,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 50,
+        "adjoint_RHS": 600
+      }
+    },
+    {
+      "i": 57,
+      "stage": "polish",
+      "cpu": 1.124066000000001,
+      "wall": 1.3360055834054947,
+      "Phi": 0.0004666836295691793,
+      "D": 0.0004322317316107764,
+      "R": 3.4451897958402906e-05,
+      "relative_port_error": 0.02940175952594594,
+      "residual_over_delta": 2.7530866065215793,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 58,
+        "actual_complex_RHS": 1332,
+        "LU": 58,
+        "source_RHS": 696,
+        "full_factorization_dimension": 33408,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 51,
+        "adjoint_RHS": 612
+      }
+    },
+    {
+      "i": 58,
+      "stage": "polish",
+      "cpu": 1.1366689999999995,
+      "wall": 1.3493672078475356,
+      "Phi": 0.00046660815150226963,
+      "D": 0.00043215379460472187,
+      "R": 3.4454356897547776e-05,
+      "relative_port_error": 0.029399108646512462,
+      "residual_over_delta": 2.752838386660541,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 59,
+        "actual_complex_RHS": 1356,
+        "LU": 59,
+        "source_RHS": 708,
+        "full_factorization_dimension": 33984,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 52,
+        "adjoint_RHS": 624
+      }
+    },
+    {
+      "i": 59,
+      "stage": "polish",
+      "cpu": 1.1454129999999996,
+      "wall": 1.358074207790196,
+      "Phi": 0.00046650808353900007,
+      "D": 0.0004320507685463902,
+      "R": 3.445731499260987e-05,
+      "relative_port_error": 0.029395604043679396,
+      "residual_over_delta": 2.7525102268743087,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 60,
+        "actual_complex_RHS": 1380,
+        "LU": 60,
+        "source_RHS": 720,
+        "full_factorization_dimension": 34560,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 53,
+        "adjoint_RHS": 636
+      }
+    },
+    {
+      "i": 60,
+      "stage": "polish",
+      "cpu": 1.163977000000001,
+      "wall": 1.38025145791471,
+      "Phi": 0.0004662033134032095,
+      "D": 0.0004317337075595153,
+      "R": 3.446960584369418e-05,
+      "relative_port_error": 0.02938481606406667,
+      "residual_over_delta": 2.7515000750105396,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 61,
+        "actual_complex_RHS": 1404,
+        "LU": 61,
+        "source_RHS": 732,
+        "full_factorization_dimension": 35136,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 54,
+        "adjoint_RHS": 648
+      }
+    },
+    {
+      "i": 61,
+      "stage": "polish",
+      "cpu": 1.1773569999999989,
+      "wall": 1.3964970419183373,
+      "Phi": 0.0004660450020666836,
+      "D": 0.00043156195648211325,
+      "R": 3.4483045584570313e-05,
+      "relative_port_error": 0.029378970590615092,
+      "residual_over_delta": 2.7509527235959377,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 62,
+        "actual_complex_RHS": 1428,
+        "LU": 62,
+        "source_RHS": 744,
+        "full_factorization_dimension": 35712,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 55,
+        "adjoint_RHS": 660
+      }
+    },
+    {
+      "i": 62,
+      "stage": "polish",
+      "cpu": 1.1863019999999995,
+      "wall": 1.4057896668091416,
+      "Phi": 0.00046590916938574884,
+      "D": 0.0004314258504681141,
+      "R": 3.448331891763475e-05,
+      "relative_port_error": 0.029374337455272556,
+      "residual_over_delta": 2.750518891639504,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 63,
+        "actual_complex_RHS": 1452,
+        "LU": 63,
+        "source_RHS": 756,
+        "full_factorization_dimension": 36288,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 56,
+        "adjoint_RHS": 672
+      }
+    },
+    {
+      "i": 63,
+      "stage": "polish",
+      "cpu": 1.193695,
+      "wall": 1.413257417269051,
+      "Phi": 0.00046584995839418417,
+      "D": 0.0004313661458211238,
+      "R": 3.4483812573060353e-05,
+      "relative_port_error": 0.029372304840482772,
+      "residual_over_delta": 2.750328564099785,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 64,
+        "actual_complex_RHS": 1476,
+        "LU": 64,
+        "source_RHS": 768,
+        "full_factorization_dimension": 36864,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 57,
+        "adjoint_RHS": 684
+      }
+    },
+    {
+      "i": 64,
+      "stage": "polish",
+      "cpu": 1.2002469999999992,
+      "wall": 1.4209356252104044,
+      "Phi": 0.0004657564878138553,
+      "D": 0.000431270930280995,
+      "R": 3.4485557532860244e-05,
+      "relative_port_error": 0.029369062984065223,
+      "residual_over_delta": 2.750025007046489,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 65,
+        "actual_complex_RHS": 1500,
+        "LU": 65,
+        "source_RHS": 780,
+        "full_factorization_dimension": 37440,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 58,
+        "adjoint_RHS": 696
+      }
+    },
+    {
+      "i": 65,
+      "stage": "polish",
+      "cpu": 1.2119060000000008,
+      "wall": 1.43496616743505,
+      "Phi": 0.00046563186804557573,
+      "D": 0.0004311416825103317,
+      "R": 3.449018553524405e-05,
+      "relative_port_error": 0.029364661840734066,
+      "residual_over_delta": 2.749612898079075,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 66,
+        "actual_complex_RHS": 1524,
+        "LU": 66,
+        "source_RHS": 792,
+        "full_factorization_dimension": 38016,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 59,
+        "adjoint_RHS": 708
+      }
+    },
+    {
+      "i": 66,
+      "stage": "polish",
+      "cpu": 1.2320969999999978,
+      "wall": 1.4560755835846066,
+      "Phi": 0.00046540173737752763,
+      "D": 0.0004309011461181582,
+      "R": 3.4500591259369466e-05,
+      "relative_port_error": 0.02935646934214529,
+      "residual_over_delta": 2.748845778746683,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 67,
+        "actual_complex_RHS": 1548,
+        "LU": 67,
+        "source_RHS": 804,
+        "full_factorization_dimension": 38592,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 60,
+        "adjoint_RHS": 720
+      }
+    },
+    {
+      "i": 67,
+      "stage": "polish",
+      "cpu": 1.2478089999999984,
+      "wall": 1.4718450419604778,
+      "Phi": 0.0004651640927244839,
+      "D": 0.0004306530868509633,
+      "R": 3.451100587352059e-05,
+      "relative_port_error": 0.029348018224437687,
+      "residual_over_delta": 2.748054443148199,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 68,
+        "actual_complex_RHS": 1572,
+        "LU": 68,
+        "source_RHS": 816,
+        "full_factorization_dimension": 39168,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 61,
+        "adjoint_RHS": 732
+      }
+    },
+    {
+      "i": 68,
+      "stage": "polish",
+      "cpu": 1.2665029999999984,
+      "wall": 1.4906192924827337,
+      "Phi": 0.0004650191876857818,
+      "D": 0.00043050608711318205,
+      "R": 3.4513100572599754e-05,
+      "relative_port_error": 0.029343008949771394,
+      "residual_over_delta": 2.747585390710028,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 69,
+        "actual_complex_RHS": 1596,
+        "LU": 69,
+        "source_RHS": 828,
+        "full_factorization_dimension": 39744,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 62,
+        "adjoint_RHS": 744
+      }
+    },
+    {
+      "i": 69,
+      "stage": "polish",
+      "cpu": 1.288867999999999,
+      "wall": 1.5136150829494,
+      "Phi": 0.0004647589545545042,
+      "D": 0.0004302375720325498,
+      "R": 3.452138252195442e-05,
+      "relative_port_error": 0.029333856617654277,
+      "residual_over_delta": 2.7467283956397894,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 70,
+        "actual_complex_RHS": 1620,
+        "LU": 70,
+        "source_RHS": 840,
+        "full_factorization_dimension": 40320,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 63,
+        "adjoint_RHS": 756
+      }
+    },
+    {
+      "i": 70,
+      "stage": "polish",
+      "cpu": 1.3173429999999993,
+      "wall": 1.5446935426443815,
+      "Phi": 0.0004646577381927823,
+      "D": 0.0004301342918568032,
+      "R": 3.4523446335979076e-05,
+      "relative_port_error": 0.02933033555405745,
+      "residual_over_delta": 2.746398694520352,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 71,
+        "actual_complex_RHS": 1644,
+        "LU": 71,
+        "source_RHS": 852,
+        "full_factorization_dimension": 40896,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 64,
+        "adjoint_RHS": 768
+      }
+    },
+    {
+      "i": 71,
+      "stage": "polish",
+      "cpu": 1.3289460000000002,
+      "wall": 1.5564324175938964,
+      "Phi": 0.00046453627533198495,
+      "D": 0.0004300094099538277,
+      "R": 3.452686537815726e-05,
+      "relative_port_error": 0.02932607747223715,
+      "residual_over_delta": 2.7459999813746783,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 72,
+        "actual_complex_RHS": 1668,
+        "LU": 72,
+        "source_RHS": 864,
+        "full_factorization_dimension": 41472,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 65,
+        "adjoint_RHS": 780
+      }
+    },
+    {
+      "i": 72,
+      "stage": "polish",
+      "cpu": 1.3467359999999982,
+      "wall": 1.5751862078905106,
+      "Phi": 0.00046438352648053225,
+      "D": 0.0004298510490371686,
+      "R": 3.4532477443363634e-05,
+      "relative_port_error": 0.02932067697162426,
+      "residual_over_delta": 2.7454942957917208,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 73,
+        "actual_complex_RHS": 1692,
+        "LU": 73,
+        "source_RHS": 876,
+        "full_factorization_dimension": 42048,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 66,
+        "adjoint_RHS": 792
+      }
+    },
+    {
+      "i": 73,
+      "stage": "polish",
+      "cpu": 1.366746000000001,
+      "wall": 1.5953858336433768,
+      "Phi": 0.00046417308015256527,
+      "D": 0.00042962623615019045,
+      "R": 3.4546844002374795e-05,
+      "relative_port_error": 0.02931300858493343,
+      "residual_over_delta": 2.7447762526190482,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 74,
+        "actual_complex_RHS": 1716,
+        "LU": 74,
+        "source_RHS": 888,
+        "full_factorization_dimension": 42624,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 67,
+        "adjoint_RHS": 804
+      }
+    },
+    {
+      "i": 74,
+      "stage": "polish",
+      "cpu": 1.3803129999999992,
+      "wall": 1.6113566672429442,
+      "Phi": 0.00046402029014450976,
+      "D": 0.0004294698599010045,
+      "R": 3.4550430243505265e-05,
+      "relative_port_error": 0.02930767339455674,
+      "residual_over_delta": 2.7442766824774605,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 75,
+        "actual_complex_RHS": 1740,
+        "LU": 75,
+        "source_RHS": 900,
+        "full_factorization_dimension": 43200,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 68,
+        "adjoint_RHS": 816
+      }
+    },
+    {
+      "i": 75,
+      "stage": "polish",
+      "cpu": 1.3925119999999982,
+      "wall": 1.6236473750323057,
+      "Phi": 0.0004638016337621847,
+      "D": 0.00042924066605970674,
+      "R": 3.4560967702477965e-05,
+      "relative_port_error": 0.02929985208357567,
+      "residual_over_delta": 2.7435443199639713,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 76,
+        "actual_complex_RHS": 1764,
+        "LU": 76,
+        "source_RHS": 912,
+        "full_factorization_dimension": 43776,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 69,
+        "adjoint_RHS": 828
+      }
+    },
+    {
+      "i": 76,
+      "stage": "polish",
+      "cpu": 1.4090559999999979,
+      "wall": 1.640290125273168,
+      "Phi": 0.0004636477687524864,
+      "D": 0.0004290836333563754,
+      "R": 3.456413539611101e-05,
+      "relative_port_error": 0.029294492088321838,
+      "residual_over_delta": 2.7430424271731226,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 77,
+        "actual_complex_RHS": 1788,
+        "LU": 77,
+        "source_RHS": 924,
+        "full_factorization_dimension": 44352,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 70,
+        "adjoint_RHS": 840
+      }
+    },
+    {
+      "i": 77,
+      "stage": "polish",
+      "cpu": 1.4267050000000001,
+      "wall": 1.6583510003983974,
+      "Phi": 0.00046340613296121027,
+      "D": 0.0004288384657033646,
+      "R": 3.456766725784564e-05,
+      "relative_port_error": 0.029286121822575437,
+      "residual_over_delta": 2.7422586622933673,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 78,
+        "actual_complex_RHS": 1812,
+        "LU": 78,
+        "source_RHS": 936,
+        "full_factorization_dimension": 44928,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 71,
+        "adjoint_RHS": 852
+      }
+    },
+    {
+      "i": 78,
+      "stage": "polish",
+      "cpu": 1.4431959999999986,
+      "wall": 1.6752541670575738,
+      "Phi": 0.00046324450361700696,
+      "D": 0.00042867459006139,
+      "R": 3.4569913555617e-05,
+      "relative_port_error": 0.029280525612133058,
+      "residual_over_delta": 2.741734651068713,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 79,
+        "actual_complex_RHS": 1836,
+        "LU": 79,
+        "source_RHS": 948,
+        "full_factorization_dimension": 45504,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 72,
+        "adjoint_RHS": 864
+      }
+    },
+    {
+      "i": 79,
+      "stage": "polish",
+      "cpu": 1.4575130000000005,
+      "wall": 1.6897550001740456,
+      "Phi": 0.0004630300128661641,
+      "D": 0.0004284553343703541,
+      "R": 3.457467849580998e-05,
+      "relative_port_error": 0.02927303654800281,
+      "residual_over_delta": 2.7410333990863553,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 80,
+        "actual_complex_RHS": 1860,
+        "LU": 80,
+        "source_RHS": 960,
+        "full_factorization_dimension": 46080,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 73,
+        "adjoint_RHS": 876
+      }
+    },
+    {
+      "i": 80,
+      "stage": "polish",
+      "cpu": 1.489755999999998,
+      "wall": 1.7229045005515218,
+      "Phi": 0.0004628935456423504,
+      "D": 0.00042831521021313625,
+      "R": 3.457833542921415e-05,
+      "relative_port_error": 0.029268249357046836,
+      "residual_over_delta": 2.740585141855623,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 81,
+        "actual_complex_RHS": 1884,
+        "LU": 81,
+        "source_RHS": 972,
+        "full_factorization_dimension": 46656,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 74,
+        "adjoint_RHS": 888
+      }
+    },
+    {
+      "i": 81,
+      "stage": "polish",
+      "cpu": 1.5144590000000004,
+      "wall": 1.7487808335572481,
+      "Phi": 0.0004627916881843572,
+      "D": 0.00042821253502382773,
+      "R": 3.457915316052945e-05,
+      "relative_port_error": 0.029264741072622794,
+      "residual_over_delta": 2.740256637337002,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 82,
+        "actual_complex_RHS": 1908,
+        "LU": 82,
+        "source_RHS": 984,
+        "full_factorization_dimension": 47232,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 75,
+        "adjoint_RHS": 900
+      }
+    },
+    {
+      "i": 82,
+      "stage": "polish",
+      "cpu": 1.5306920000000002,
+      "wall": 1.765317083336413,
+      "Phi": 0.00046245647544998166,
+      "D": 0.00042787323728305085,
+      "R": 3.4583238166930795e-05,
+      "relative_port_error": 0.029253144695333213,
+      "residual_over_delta": 2.7391707897035653,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 83,
+        "actual_complex_RHS": 1932,
+        "LU": 83,
+        "source_RHS": 996,
+        "full_factorization_dimension": 47808,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 76,
+        "adjoint_RHS": 912
+      }
+    },
+    {
+      "i": 83,
+      "stage": "polish",
+      "cpu": 1.5567759999999975,
+      "wall": 1.7915790425613523,
+      "Phi": 0.0004623199572575436,
+      "D": 0.00042773644254595833,
+      "R": 3.45835147115853e-05,
+      "relative_port_error": 0.029248468081113525,
+      "residual_over_delta": 2.7387328865243106,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 84,
+        "actual_complex_RHS": 1956,
+        "LU": 84,
+        "source_RHS": 1008,
+        "full_factorization_dimension": 48384,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 77,
+        "adjoint_RHS": 924
+      }
+    },
+    {
+      "i": 84,
+      "stage": "polish",
+      "cpu": 1.5730319999999995,
+      "wall": 1.8080225829035044,
+      "Phi": 0.0004620593083426797,
+      "D": 0.00042747507133002763,
+      "R": 3.458423701265207e-05,
+      "relative_port_error": 0.029239530479473422,
+      "residual_over_delta": 2.737895998128292,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 85,
+        "actual_complex_RHS": 1980,
+        "LU": 85,
+        "source_RHS": 1020,
+        "full_factorization_dimension": 48960,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 78,
+        "adjoint_RHS": 936
+      }
+    },
+    {
+      "i": 85,
+      "stage": "polish",
+      "cpu": 1.5971700000000002,
+      "wall": 1.8327583335340023,
+      "Phi": 0.0004618718998843526,
+      "D": 0.0004272873350156566,
+      "R": 3.4584564868696014e-05,
+      "relative_port_error": 0.02923310914068692,
+      "residual_over_delta": 2.7372947245278647,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 86,
+        "actual_complex_RHS": 2004,
+        "LU": 86,
+        "source_RHS": 1032,
+        "full_factorization_dimension": 49536,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 79,
+        "adjoint_RHS": 948
+      }
+    },
+    {
+      "i": 86,
+      "stage": "polish",
+      "cpu": 1.617742999999999,
+      "wall": 1.8540987502783537,
+      "Phi": 0.0004614964127510228,
+      "D": 0.00042691209816818435,
+      "R": 3.458431458283844e-05,
+      "relative_port_error": 0.02922027029882456,
+      "residual_over_delta": 2.7360925364906716,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 87,
+        "actual_complex_RHS": 2028,
+        "LU": 87,
+        "source_RHS": 1044,
+        "full_factorization_dimension": 50112,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 80,
+        "adjoint_RHS": 960
+      }
+    },
+    {
+      "i": 87,
+      "stage": "polish",
+      "cpu": 1.6347539999999992,
+      "wall": 1.8721041670069098,
+      "Phi": 0.00046125281892882655,
+      "D": 0.0004266693383418731,
+      "R": 3.458348058695347e-05,
+      "relative_port_error": 0.029211961192014243,
+      "residual_over_delta": 2.735314498337838,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 88,
+        "actual_complex_RHS": 2052,
+        "LU": 88,
+        "source_RHS": 1056,
+        "full_factorization_dimension": 50688,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 81,
+        "adjoint_RHS": 972
+      }
+    },
+    {
+      "i": 88,
+      "stage": "polish",
+      "cpu": 1.6620550000000005,
+      "wall": 1.8994525419548154,
+      "Phi": 0.0004604134622522661,
+      "D": 0.00042583282564139104,
+      "R": 3.4580636610875036e-05,
+      "relative_port_error": 0.029183311177499754,
+      "residual_over_delta": 2.732631802726819,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 89,
+        "actual_complex_RHS": 2076,
+        "LU": 89,
+        "source_RHS": 1068,
+        "full_factorization_dimension": 51264,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 82,
+        "adjoint_RHS": 984
+      }
+    },
+    {
+      "i": 89,
+      "stage": "polish",
+      "cpu": 1.6763379999999994,
+      "wall": 1.9139306675642729,
+      "Phi": 0.00046057238570924224,
+      "D": 0.00042599384339671726,
+      "R": 3.4578542312524985e-05,
+      "relative_port_error": 0.029188828116137766,
+      "residual_over_delta": 2.733148391193571,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 90,
+        "actual_complex_RHS": 2100,
+        "LU": 90,
+        "source_RHS": 1080,
+        "full_factorization_dimension": 51840,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 83,
+        "adjoint_RHS": 996
+      }
+    },
+    {
+      "i": 90,
+      "stage": "polish",
+      "cpu": 1.698534999999998,
+      "wall": 1.9363491255789995,
+      "Phi": 0.0004603071200429567,
+      "D": 0.00042572749123987596,
+      "R": 3.457962880308077e-05,
+      "relative_port_error": 0.02917970154884645,
+      "residual_over_delta": 2.7322938086591115,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 91,
+        "actual_complex_RHS": 2124,
+        "LU": 91,
+        "source_RHS": 1092,
+        "full_factorization_dimension": 52416,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 84,
+        "adjoint_RHS": 1008
+      }
+    },
+    {
+      "i": 91,
+      "stage": "polish",
+      "cpu": 1.710229,
+      "wall": 1.9479994168505073,
+      "Phi": 0.0004601815372061496,
+      "D": 0.00042560277368195533,
+      "R": 3.4578763524194316e-05,
+      "relative_port_error": 0.029175427115363892,
+      "residual_over_delta": 2.731893564396148,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 92,
+        "actual_complex_RHS": 2148,
+        "LU": 92,
+        "source_RHS": 1104,
+        "full_factorization_dimension": 52992,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 85,
+        "adjoint_RHS": 1020
+      }
+    },
+    {
+      "i": 92,
+      "stage": "polish",
+      "cpu": 1.7323319999999978,
+      "wall": 1.9702202081680298,
+      "Phi": 0.0004598635293960769,
+      "D": 0.0004252881880857859,
+      "R": 3.4575341310291e-05,
+      "relative_port_error": 0.029164642568897906,
+      "residual_over_delta": 2.7308837340012455,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 93,
+        "actual_complex_RHS": 2172,
+        "LU": 93,
+        "source_RHS": 1116,
+        "full_factorization_dimension": 53568,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 86,
+        "adjoint_RHS": 1032
+      }
+    },
+    {
+      "i": 93,
+      "stage": "polish",
+      "cpu": 1.7481559999999998,
+      "wall": 1.9861309174448252,
+      "Phi": 0.00045977247607878875,
+      "D": 0.0004251981018150734,
+      "R": 3.4574374263715334e-05,
+      "relative_port_error": 0.029161553518805318,
+      "residual_over_delta": 2.730594485242875,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 94,
+        "actual_complex_RHS": 2196,
+        "LU": 94,
+        "source_RHS": 1128,
+        "full_factorization_dimension": 54144,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 87,
+        "adjoint_RHS": 1044
+      }
+    },
+    {
+      "i": 94,
+      "stage": "polish",
+      "cpu": 1.7591990000000006,
+      "wall": 1.9972742078825831,
+      "Phi": 0.00045955817937551763,
+      "D": 0.0004249871952384187,
+      "R": 3.4570984137098945e-05,
+      "relative_port_error": 0.02915432027121945,
+      "residual_over_delta": 2.729917187102513,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 95,
+        "actual_complex_RHS": 2220,
+        "LU": 95,
+        "source_RHS": 1140,
+        "full_factorization_dimension": 54720,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 88,
+        "adjoint_RHS": 1056
+      }
+    },
+    {
+      "i": 95,
+      "stage": "polish",
+      "cpu": 1.7701839999999986,
+      "wall": 2.018252500332892,
+      "Phi": 0.0004593692548331832,
+      "D": 0.0004248021924351983,
+      "R": 3.4567062397984874e-05,
+      "relative_port_error": 0.029147973941088885,
+      "residual_over_delta": 2.7293229370724217,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 96,
+        "actual_complex_RHS": 2244,
+        "LU": 96,
+        "source_RHS": 1152,
+        "full_factorization_dimension": 55296,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 89,
+        "adjoint_RHS": 1068
+      }
+    },
+    {
+      "i": 96,
+      "stage": "polish",
+      "cpu": 1.781146999999999,
+      "wall": 2.029813500121236,
+      "Phi": 0.0004590279762744757,
+      "D": 0.00042446993168606127,
+      "R": 3.455804458841443e-05,
+      "relative_port_error": 0.029136572608529688,
+      "residual_over_delta": 2.728255352802932,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 97,
+        "actual_complex_RHS": 2268,
+        "LU": 97,
+        "source_RHS": 1164,
+        "full_factorization_dimension": 55872,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 90,
+        "adjoint_RHS": 1080
+      }
+    },
+    {
+      "i": 97,
+      "stage": "polish",
+      "cpu": 1.8117660000000004,
+      "wall": 2.0612578336149454,
+      "Phi": 0.0004587068088042059,
+      "D": 0.0004241579362914706,
+      "R": 3.454887251273534e-05,
+      "relative_port_error": 0.029125862606675552,
+      "residual_over_delta": 2.7272525025267633,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 98,
+        "actual_complex_RHS": 2292,
+        "LU": 98,
+        "source_RHS": 1176,
+        "full_factorization_dimension": 56448,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 91,
+        "adjoint_RHS": 1092
+      }
+    },
+    {
+      "i": 98,
+      "stage": "polish",
+      "cpu": 1.8334099999999989,
+      "wall": 2.0831313328817487,
+      "Phi": 0.0004585028061090535,
+      "D": 0.0004239758164115113,
+      "R": 3.452698969754216e-05,
+      "relative_port_error": 0.02911960907744166,
+      "residual_over_delta": 2.726666942075453,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 99,
+        "actual_complex_RHS": 2316,
+        "LU": 99,
+        "source_RHS": 1188,
+        "full_factorization_dimension": 57024,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 92,
+        "adjoint_RHS": 1104
+      }
+    },
+    {
+      "i": 99,
+      "stage": "polish",
+      "cpu": 1.8501180000000002,
+      "wall": 2.100103832781315,
+      "Phi": 0.00045825137970893163,
+      "D": 0.00042372245121850903,
+      "R": 3.45289284904226e-05,
+      "relative_port_error": 0.02911090693257457,
+      "residual_over_delta": 2.7258521010976384,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 100,
+        "actual_complex_RHS": 2340,
+        "LU": 100,
+        "source_RHS": 1200,
+        "full_factorization_dimension": 57600,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 93,
+        "adjoint_RHS": 1116
+      }
+    },
+    {
+      "i": 100,
+      "stage": "polish",
+      "cpu": 1.865412000000001,
+      "wall": 2.1154318330809474,
+      "Phi": 0.00045815539250941654,
+      "D": 0.0004236265651685408,
+      "R": 3.452882734087573e-05,
+      "relative_port_error": 0.029107612927498566,
+      "residual_over_delta": 2.7255436610109642,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 101,
+        "actual_complex_RHS": 2364,
+        "LU": 101,
+        "source_RHS": 1212,
+        "full_factorization_dimension": 58176,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 94,
+        "adjoint_RHS": 1128
+      }
+    },
+    {
+      "i": 101,
+      "stage": "polish",
+      "cpu": 1.8860009999999985,
+      "wall": 2.136279624886811,
+      "Phi": 0.0004580145565649182,
+      "D": 0.0004234881153356235,
+      "R": 3.4526441229294686e-05,
+      "relative_port_error": 0.02910285605694477,
+      "residual_over_delta": 2.7250982428855948,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 102,
+        "actual_complex_RHS": 2388,
+        "LU": 102,
+        "source_RHS": 1224,
+        "full_factorization_dimension": 58752,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 95,
+        "adjoint_RHS": 1140
+      }
+    },
+    {
+      "i": 102,
+      "stage": "polish",
+      "cpu": 1.9043519999999976,
+      "wall": 2.154793499968946,
+      "Phi": 0.00045788275785643674,
+      "D": 0.000423360219799163,
+      "R": 3.452253805727376e-05,
+      "relative_port_error": 0.029098461120793416,
+      "residual_over_delta": 2.7246867151386196,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 103,
+        "actual_complex_RHS": 2412,
+        "LU": 103,
+        "source_RHS": 1236,
+        "full_factorization_dimension": 59328,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 96,
+        "adjoint_RHS": 1152
+      }
+    },
+    {
+      "i": 103,
+      "stage": "polish",
+      "cpu": 1.916262999999999,
+      "wall": 2.1669681249186397,
+      "Phi": 0.0004576193483028698,
+      "D": 0.00042310429963122385,
+      "R": 3.451504867164598e-05,
+      "relative_port_error": 0.029089664818667947,
+      "residual_over_delta": 2.7238630575766574,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 104,
+        "actual_complex_RHS": 2436,
+        "LU": 104,
+        "source_RHS": 1248,
+        "full_factorization_dimension": 59904,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 97,
+        "adjoint_RHS": 1164
+      }
+    },
+    {
+      "i": 104,
+      "stage": "polish",
+      "cpu": 1.925088999999998,
+      "wall": 2.1760529167950153,
+      "Phi": 0.00045729632609407546,
+      "D": 0.0004227953249635236,
+      "R": 3.450100113055186e-05,
+      "relative_port_error": 0.029079041420360597,
+      "residual_over_delta": 2.722868316579272,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 105,
+        "actual_complex_RHS": 2460,
+        "LU": 105,
+        "source_RHS": 1260,
+        "full_factorization_dimension": 60480,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 98,
+        "adjoint_RHS": 1176
+      }
+    },
+    {
+      "i": 105,
+      "stage": "polish",
+      "cpu": 1.9469109999999983,
+      "wall": 2.198616792447865,
+      "Phi": 0.00045705950266693065,
+      "D": 0.00042256349142471644,
+      "R": 3.4496011242214194e-05,
+      "relative_port_error": 0.0290710677968566,
+      "residual_over_delta": 2.7221216920088986,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 106,
+        "actual_complex_RHS": 2484,
+        "LU": 106,
+        "source_RHS": 1272,
+        "full_factorization_dimension": 61056,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 99,
+        "adjoint_RHS": 1188
+      }
+    },
+    {
+      "i": 106,
+      "stage": "polish",
+      "cpu": 1.957438999999999,
+      "wall": 2.2091365000233054,
+      "Phi": 0.00045681638203434955,
+      "D": 0.0004223275448365346,
+      "R": 3.448883719781494e-05,
+      "relative_port_error": 0.029062950464002604,
+      "residual_over_delta": 2.721361610955202,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 107,
+        "actual_complex_RHS": 2508,
+        "LU": 107,
+        "source_RHS": 1284,
+        "full_factorization_dimension": 61632,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 100,
+        "adjoint_RHS": 1200
+      }
+    },
+    {
+      "i": 107,
+      "stage": "polish",
+      "cpu": 1.9697179999999985,
+      "wall": 2.2215437926352024,
+      "Phi": 0.0004565169249799979,
+      "D": 0.0004220407886209752,
+      "R": 3.447613635902266e-05,
+      "relative_port_error": 0.029053082060978494,
+      "residual_over_delta": 2.7204375652983606,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 108,
+        "actual_complex_RHS": 2532,
+        "LU": 108,
+        "source_RHS": 1296,
+        "full_factorization_dimension": 62208,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 101,
+        "adjoint_RHS": 1212
+      }
+    },
+    {
+      "i": 108,
+      "stage": "polish",
+      "cpu": 1.9874019999999977,
+      "wall": 2.2395500000566244,
+      "Phi": 0.00045623803704078513,
+      "D": 0.00042177103695589503,
+      "R": 3.446700008489011e-05,
+      "relative_port_error": 0.029043795790354092,
+      "residual_over_delta": 2.719568028655222,
+      "paid": true,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 109,
+        "actual_complex_RHS": 2556,
+        "LU": 109,
+        "source_RHS": 1308,
+        "full_factorization_dimension": 62784,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 102,
+        "adjoint_RHS": 1224
+      }
+    },
+    {
+      "i": 109,
+      "stage": "polish",
+      "cpu": 2.0012190000000007,
+      "wall": 2.253406958654523,
+      "Phi": 0.0004559361058567379,
+      "D": 0.0004214766498150162,
+      "R": 3.445945604172173e-05,
+      "relative_port_error": 0.029033658047687212,
+      "residual_over_delta": 2.7186187628967584,
+      "paid": false,
+      "setup_counts": {
+        "jacobian_material_columns": 576,
+        "jac_gram": 1,
+        "GN_dimension": 341
+      },
+      "original_counts": {
+        "cached_operator_imports": 1,
+        "FULL_FORWARD": 110,
+        "actual_complex_RHS": 2580,
+        "LU": 110,
+        "source_RHS": 1320,
+        "full_factorization_dimension": 63360,
+        "MATERIAL_RECEIVER": 1,
+        "receiver_transpose_RHS": 24,
+        "DATA_ADJOINT": 103,
+        "adjoint_RHS": 1236
+      }
+    }
+  ]
+}

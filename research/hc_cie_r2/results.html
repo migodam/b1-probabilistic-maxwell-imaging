@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>逐项结果与原始数据 · HC-CIE-R2</title><link rel="stylesheet" href="study.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
+<body><header><a href="../">Maxwell 逆散射研究</a><span>HC-CIE-R2</span><nav><a href="index.html">研究结论</a> <a href="theory.html">证明</a> <a href="results.html" aria-current="page">逐案证据</a> <a href="reproduce.html">复现</a> <a href="handoff.html">交接</a></nav></header>
+<main><h1>逐项结果与原始数据</h1>
+<p>下表的分母分别是材料、端点或观测条件。一个材料的多源、多预算及多噪声条件始终配对。噪声球半径用各观测合同中的 \(\delta\)。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>实际范围与结果</th>
+<th>可以直接复查的证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小模型能否精确消掉非线性</td>
+<td>三格软数据，五格精确数据纤维，32 个同秩随机对照，多接收布置、峰值 1–100；五格特定几何可线性恢复，直接真实材料目标另有区间认证的驻点</td>
+<td><a href="toy_and_certificates.html">模型、优化与区间结论</a> · <a href="results/toy/hard5.json">五格全部起点</a></td>
+</tr>
+<tr>
+<td>大网格有多少线性方程</td>
+<td>21 观测、10 独立材料、570 个照明和截断条件。物理 Gram 秩分别为 575/576、1023/1024，精确余核仅为常数</td>
+<td><a href="spectral_results.html">谱与误差界</a> · <a href="results/spectra/array_index.json">完整谱的数组键</a> · <a href="results/spectra/spectrum.csv">逐条件 CSV</a></td>
+</tr>
+<tr>
+<td>这些方程中有多少高于原测量噪声</td>
+<td>五个代表观测、两种接收截断、三档公开电流幅度。R13 半环最多 45/6804，R13 全环与 SRAP 同侧线均为零</td>
+<td><a href="results/spectra/noise_rank.csv">逐条件有效秩</a> · <a href="results/spectra/noise_rank_arrays.npz">实际协方差和谱</a></td>
+</tr>
+<tr>
+<td>保留余项或实性是否有用</td>
+<td>231 个截断投影条件；3 个真实球内材料另做复核；六个材料上实际部署 36 个前端和校正臂。实权没有提高四个半环校正后的恢复</td>
+<td><a href="results/spectra/partial.csv">部分消元</a> · <a href="results/spectra/feasible_followup.csv">球内反例</a> · <a href="results/real_frontend/scores.csv">前端逐案</a></td>
+</tr>
+<tr>
+<td>可以排除多局部的修复</td>
+<td>48 个父材料 × 五个历史端点的基础下界。八个 Dual-CIE 端点逐对枚举，两案普通秩界不足，三原子的几何界将其排除</td>
+<td><a href="results/support/archived_minimum.csv">基础下界</a> · <a href="results/support/all_pairs.csv">所有位置对的最优距离</a> · <a href="results/support/all_pairs_verified.json">两案保守数值界</a></td>
+</tr>
+<tr>
+<td>有限跃迁能否恢复整图</td>
+<td>十件暴露过的材料。修订版四类起点、七方法，保留原来的 7/40 个合格端点，未增加合格解</td>
+<td><a href="results/imaging/score_v2/OUTCOMES.csv">端点与候选</a> · <a href="results/imaging/score_v2/STRUCTURE.csv">前景和背景</a> · <a href="results/imaging/score_v2/WALL_PREFIXES.csv">实际墙钟</a></td>
+</tr>
+<tr>
+<td>真实负曲率能否跨盆地</td>
+<td>八件、32 臂。五个共败 CIE 端点都找到真实负曲率，有限盒内跳步未救回这些对象</td>
+<td><a href="landscape.html">曲率及活动面</a> · <a href="results/landscape/score_v1/DIRECTIONS.csv">方向数据</a></td>
+</tr>
+<tr>
+<td>已知背景内的两格变化</td>
+<td>24 个参考材料，每件两种变化。10% 差场时前两名 MUSIC 42/48；四候选单格拟合、交叉拟合、闭式读出各 47/48</td>
+<td><a href="results/interaction/offline.csv">原始分数</a> · <a href="results/support/monitor_offline.csv">闭式与单格见证</a> · <a href="results/interaction/paired_object_statistics.json">按独立父材料的配对不确定性</a></td>
+</tr>
+<tr>
+<td>跨网格与孔径</td>
+<td>六个 SRAP 父材料，两阵、两种变化、四测量条件。10% 跨网格差场的闭式读出 16/24，普通 MUSIC 同为 16/24。两者在同一个体上可能定位不同</td>
+<td><a href="results/cross_changes/offline.csv">差分监测</a> · <a href="results/model_gap/gaps.csv">粗化真材质与测量</a> · <a href="results/model_gap/scores.csv">原物理拟合</a></td>
+</tr>
+<tr>
+<td>经典合成与公开实测</td>
+<td>Austria 同形三观测 × NIE/Dual，FoamTwinDiel 一实物 × 两起点。实物的公平终点取实际五个留出源。没有实物像素真值</td>
+<td><a href="results/classical/score_v2/OUTCOMES.csv">训练与留出原始成绩</a> · <a href="results/classical/score_v2/HELDOUT_PREDICTIONS.npz">实际复端口数组</a></td>
+</tr>
+<tr>
+<td>三维同一改变能否被看见</td>
+<td>四个已知三维参考、两种阵列、三个噪声条件。10% 差场的半球字典 4/4、面阵 0/4；干净面阵的两侧修正 4/4</td>
+<td><a href="results/vector_change/scores.csv">三维评分</a> · <a href="results/vector_change/report.json">各极化和完整候选</a> · <a href="results/vector_change/two_sided.json">两侧子空间复算</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>同色标重建、物理 Pareto 和失败图可从相应章节点开。所有源均在同一批量里进出的任务给整批墙钟。使用旧端点的研究另外标明其既有费用。<a href="cost.html">汇总费用</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/hc_cie_r2/figures">全部图像的文件目录</a></p></main><footer><a href="contents.html">完整目录</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/hc_cie_r2/RESULTS.md">Markdown 原文</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/hc-cie-r2-20261128">数值附件</a></footer></body></html>

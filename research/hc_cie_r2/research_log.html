@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>研究问题如何随反例改变 · HC-CIE-R2</title><link rel="stylesheet" href="study.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
+<body><header><a href="../">Maxwell 逆散射研究</a><span>HC-CIE-R2</span><nav><a href="index.html">研究结论</a> <a href="theory.html">证明</a> <a href="results.html">逐案证据</a> <a href="reproduce.html">复现</a> <a href="handoff.html">交接</a></nav></header>
+<main><h1>研究问题如何随反例改变</h1>
+<p>原始科学问题是有限观测下有哪些非线性可以安全消去，哪些必须保留才能恢复材料。本轮 2026-11-28 的来源为 22 页 Pro 报告、复现包里的理论、数据和程序，以及当前项目的冻结输入。研究回答和历史对话《Maxwell逆散射结构改革》《高对比度 Maxwell 逆散射研究裁决》《逆散射虚拟散射体方案》用于追踪假说；数值结论按当轮源码、观测与计算结果核定。<a href="novelty_audit.html">来源与先例</a></p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>先有的证据</th>
+<th>会区分哪种解释</th>
+<th>实际执行和决定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>五格存在精确线性恢复，软数据与严格纤维有坏点</td>
+<td>坏点是否都由放松实材料造成</td>
+<td>重放多接收、对比度 1–100 与随机同秩投影。加入实材料条件后旧坏点改变。再用完全消去电流的真实材料目标，在合法盒内找到了五格严格坏极小，三格另有边界坏极小，用区间法分别证明。</td>
+</tr>
+<tr>
+<td>Pro 提醒可能只剩互易</td>
+<td>在实际网格是近似趋势还是可数的秩亏</td>
+<td>构造复对称泛型秩证明，在 21 份存档观测上计算全谱与误差，再推导唯一常数左核时的闭式源对谱。分离绝对线性信号、相对条件数和暗坐标数。</td>
+</tr>
+<tr>
+<td>第一次部分消元的物理起点都在球外</td>
+<td>余项强是因为起点太差吗</td>
+<td>只用公开测量取得 0.883δ 的真实物理材料，再用两个也在球内的扰动复算。余项仍与线性项同阶。</td>
+</tr>
+<tr>
+<td>半环实材料功率行具有较强仿射项</td>
+<td>同一条物理关系能否提供有用前端</td>
+<td>从纯暗电流推广至实性 Hermitian 约束，推导辐射强度界。36 臂比较 BP、互易及实权方案，加入同样的短物理校正后没有新增材料优势。</td>
+</tr>
+<tr>
+<td>物理材料在改动格以外满足同一本构</td>
+<td>任意暗电流曲率能否换成有物理支撑的割线</td>
+<td>推导内部二次信息与端口三原子之间的精确系数关系。对 48 件原材料的 240 个端点做基础排除，再对八个指定端点做全对枚举，独立加严 0017、0044 的计算误差界。</td>
+</tr>
+<tr>
+<td>小响应计算准确</td>
+<td>提名能否把已停滞的真实图像带到另一材料区域</td>
+<td>第一版 60 臂。只参考公开提名处的原物理值，修订“跳点先下降”的规则，让跨障碍候选也能得到同成本抛光。第二版 280 臂没有新增合格材料。</td>
+</tr>
+<tr>
+<td>固定块可能太窄</td>
+<td>允许全图变化的负曲率能否解释失败</td>
+<td>测完整材料 Hessian、等范数盒内 GN/随机/负曲率、直接续跑。根据原物理二阶差分再验证极短的未触盒窗口。微弱负曲率可重现，所测有限扰动未带来恢复。</td>
+</tr>
+<tr>
+<td>曝光端点合成的噪声合同与离散经常混杂</td>
+<td>全图误差下降或端口达标能否归因于算法</td>
+<td>分别重算 SRAP 的原细网、粗化后铺回的材料和原粗算子。比较匹配/跨格、干净/带噪四条件。接入成熟 Austria/Fresnel 端点与真实留出。</td>
+</tr>
+<tr>
+<td>端口可见性给出两格条件读出</td>
+<td>在明确已有参考材料的实验里能否用起来</td>
+<td>24 背景 × 两种新改变，冻结定位不使用真支撑，再以闭式和单格方案做随访。跨网格重做六个背景和两阵。三维用全部矢量分量，干净面阵字典未命中后追加两侧子空间修正，所有四父材料两阵同跑。</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>实现中发生的错误。</strong> 第一次成像启动把工作树的上级目录当作物理根，导入即失败。第二次产生六份临时预测，在 JSON 序列化 NumPy 整数时退出，未形成可评分封存；两次都未读评分真值。路径与序列化修复后按相同算法重跑。第一次跨网格二格生成使用大小写错误的入射场字段，在一次细网求解后中止；改用原公开键再生成。外部经典对照第一版沿用 R13 的目标缩放；在查看材料和留出分数前恢复到原对照线搜索尺度，保留两版和全部成本。墙钟前缀补做时间戳前后两界，避免在完成物理计算与写入选根之间作过强断言。<a href="results/imaging/EXECUTION_NOTES.json">成像失败记录</a> · <a href="classical_and_measured.html">经典目标尺度</a> · <a href="cost.html">实际成本</a></p>
+<p>独立研究审阅第一轮在时限内完成源码、原数据和小型独立数值阅读，未返回完整评议；第二次在相同隔离研究项目完成。已采纳其关于源相关掩码、任意对称矩阵松弛与真实材料可行性、已知支撑 oracle 的限制。下一步的区域类提名仍待检验。<a href="novelty_audit.html">独立批评与来源</a></p></main><footer><a href="contents.html">完整目录</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/hc_cie_r2/RESEARCH_LOG.md">Markdown 原文</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/hc-cie-r2-20261128">数值附件</a></footer></body></html>

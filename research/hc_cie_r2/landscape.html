@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>原 Maxwell 材料负曲率与广域有限步 · HC-CIE-R2</title><link rel="stylesheet" href="study.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
+<body><header><a href="../">Maxwell 逆散射研究</a><span>HC-CIE-R2</span><nav><a href="index.html">研究结论</a> <a href="theory.html">证明</a> <a href="results.html">逐案证据</a> <a href="reproduce.html">复现</a> <a href="handoff.html">交接</a></nav></header>
+<main><h1>原 Maxwell 材料负曲率与广域有限步</h1>
+<p><strong>五个共败对象的 CIE 端点都有可测的自由面负曲率。负曲率只在很短的未触盒窗口兑现。48 个等范数广域候选全数抬高原目标，随后共同抛光也没有救回任何材料。</strong> 五件共败的平均 NRMSE 为曲率 .56218、续跑 .56176、Gauss–Newton .56213、随机 .56189。曲率臂相对续跑的配对误差差为 +.00042。局部双块失败也出现在放开块支撑后，现有证据把限制指向材料盒和端点附近的弱负曲率。</p>
+<h2>原目标的精确 Hessian</h2>
+<p>用保存端点 \(m\) 的 \(L=I-D_mG\) 分解，已付原物理场为 \(U=E_0+Gj\)。固定当前场，定义 dressed 接收 \(T=SL^{-1}\) 与内部传播 \(K=GL^{-1}\)。任意两实材料方向 \(v,w\) 的端口导数是</p>
+<p>\[
+Y&#x27;[v]=TD_vU,\qquad
+Y&#x27;&#x27;[v,w]=TD_vKD_wU+TD_wKD_vU .
+\]</p>
+<p>令 \(r=Y(m)-Y_{\rm obs}\)，\(J\) 为复端口 Jacobian，\(C=(T^{\mathsf T}\bar r\,U^{\mathsf T})\odot K\)。原目标 \(\Phi=\|r\|^2/(2\|Y_{\rm obs}\|^2)+R(m)\) 的实材料 Hessian 为</p>
+<p>\[
+H=\frac{\operatorname{Re}\{J^*J+C+C^{\mathsf T}\}}{\|Y_{\rm obs}\|^2}+\nabla^2R .
+\]</p>
+<p>\(R\) 原 smooth 与平滑 TV 均保留。差分 \(z\) 的 TV 二阶权重为 \(\epsilon^2/(z^2+\epsilon^2)^{3/2}\)，由原目标直接求导。八端点在独立固定向量上复算原梯度中心差分，\(h=.002\) 时 \(Hv\) 最大相对误差 \(2.48\times10^{-9}\)。旧端口复算最大相对差 \(4.57\times10^{-15}\)。</p>
+<h2>自由面和合法候选</h2>
+<p>五个历史共败观测 0007、0016、0029、0037、0044 均从保存 CIE primary 开始。正面对照为 0045 的 A+-Arc。两个弯条各一端点，b20d 取 R6 CIE 坏解，7b8d 取 R6 A-material 好解。所有材料已曝光，广域试验是在局部跃迁之后冻结的修订。每物体一票，八对象、四臂、32 次独立运行。五件共败均复用同原观测和同噪声，操作覆盖 576 个原材料坐标。</p>
+<p>在起点距上下界 \(10^{-7}\) 内的像素固定，取余下的 \(H_{ff}\) 最小特征向量。两个符号各沿同一自由面的投影射线，以实际箱内变化 \(\|\Delta m\|_2=6,18,36\) 相等比较。每臂六个不同候选，三档对应全图材料 RMS 变化 .25、.75、1.50，目标半径实现误差不超过 \(9\times10^{-16}\)。Gauss–Newton 沿最小二乘及同一 prior Hessian 的阻尼步，随机用自由面固定种子高斯方向。三臂都用原 Maxwell 全解审计，从本臂最小 \(\Phi\) 跳点开始共同抛光。直接续跑从保存端点重建 L-BFGS-B。选择池始终保留原端点，输出任何符合 2 CPU 秒前缀、材料盒与原物理审计要求的最小原 \(\Phi\)。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>对象 / 起点</th>
+<th style="text-align: right;">自由格</th>
+<th style="text-align: right;">投影梯度 \(\infty\) 范数</th>
+<th style="text-align: right;">最小 \(\lambda\)</th>
+<th style="text-align: right;">负特征值个数</th>
+<th style="text-align: right;">参与像素数</th>
+<th style="text-align: right;">90%能量像素数</th>
+<th style="text-align: right;">两符号中较长的未触盒位移</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0007 CIE</td>
+<td style="text-align: right;">194</td>
+<td style="text-align: right;">2.20e−6</td>
+<td style="text-align: right;">−2.85e−8</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">19.3</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">.00416</td>
+</tr>
+<tr>
+<td>0016 CIE</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">1.01e−6</td>
+<td style="text-align: right;">−1.10e−8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.65</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">.482</td>
+</tr>
+<tr>
+<td>0029 CIE</td>
+<td style="text-align: right;">397</td>
+<td style="text-align: right;">2.71e−6</td>
+<td style="text-align: right;">−1.76e−8</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">32.4</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">.000359</td>
+</tr>
+<tr>
+<td>0037 CIE</td>
+<td style="text-align: right;">341</td>
+<td style="text-align: right;">2.81e−6</td>
+<td style="text-align: right;">−4.64e−8</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">6.47</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">.00295</td>
+</tr>
+<tr>
+<td>0044 CIE</td>
+<td style="text-align: right;">299</td>
+<td style="text-align: right;">1.02e−6</td>
+<td style="text-align: right;">−1.63e−8</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">33.9</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">.0216</td>
+</tr>
+<tr>
+<td>0045 A+-Arc</td>
+<td style="text-align: right;">356</td>
+<td style="text-align: right;">1.06e−7</td>
+<td style="text-align: right;">−2.77e−9</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">27.9</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">.000267</td>
+</tr>
+<tr>
+<td>b20d CIE</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">9.86e−9</td>
+<td style="text-align: right;">+7.16e−9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8.26</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">5.56</td>
+</tr>
+<tr>
+<td>7b8d A-material</td>
+<td style="text-align: right;">439</td>
+<td style="text-align: right;">9.49e−9</td>
+<td style="text-align: right;">+1.51e−9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">.0191</td>
+</tr>
+</tbody>
+</table></div>
+<p>参与像素数为单位方向 \(1/\sum_i v_i^4\)。五共败方向能量的空间均方根半径为 2.30–8.86 格，具体分布见方向图。自由面上的负曲率也出现在已恢复的 0045。b20d 错解与 7b8d 好解在测试的自由面上均为正曲率。部分 CIE 端点的活动格可沿梯度方向释放，冻结自由面限于所测方向，表中数值不认证整个材料盒的约束局部极小。<a href="results/landscape/score_v1/DIRECTIONS.csv">所有方向和活动格数据</a> · <a href="figures/landscape_directions_page1.png">统一色标物体与方向图一</a> · <a href="figures/landscape_directions_page2.png">统一色标物体与方向图二</a></p>
+<h3>原物理复算小自由窗口</h3>
+<p>取可同时容纳正负两符号的最长直线步长 \(\rho\)。在 \(h=.25\rho,.5\rho\) 分别全波复算 \(\Phi(m\pm hv)\)，保留原数、直接中心差及按复端口差重组的中心差以减少抵消。中心差直接与 \(\lambda h^2\) 对照。五共败即时方向的 10 个复算中心差均为负。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>共败对象</th>
+<th style="text-align: right;">\(.5\rho\)</th>
+<th style="text-align: right;">\(\lambda h^2\)</th>
+<th style="text-align: right;">实测中心差</th>
+<th>两个符号的 \(\Delta\Phi\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0007</td>
+<td style="text-align: right;">6.33e−4</td>
+<td style="text-align: right;">−1.144e−14</td>
+<td style="text-align: right;">−1.143e−14</td>
+<td>+2.255e−10、−2.255e−10</td>
+</tr>
+<tr>
+<td>0016</td>
+<td style="text-align: right;">.144</td>
+<td style="text-align: right;">−2.276e−10</td>
+<td style="text-align: right;">−2.271e−10</td>
+<td>+8.411e−9、−8.638e−9</td>
+</tr>
+<tr>
+<td>0029</td>
+<td style="text-align: right;">6.33e−5</td>
+<td style="text-align: right;">−7.061e−17</td>
+<td style="text-align: right;">−6.379e−17</td>
+<td>−1.576e−11、+1.576e−11</td>
+</tr>
+<tr>
+<td>0037</td>
+<td style="text-align: right;">.00123</td>
+<td style="text-align: right;">−7.003e−14</td>
+<td style="text-align: right;">−7.001e−14</td>
+<td>+9.612e−11、−9.619e−11</td>
+</tr>
+<tr>
+<td>0044</td>
+<td style="text-align: right;">3.98e−4</td>
+<td style="text-align: right;">−2.580e−15</td>
+<td style="text-align: right;">−2.573e−15</td>
+<td>+2.137e−11、−2.137e−11</td>
+</tr>
+</tbody>
+</table></div>
+<p>四件的中心差匹配在 .25% 内。0029 在 \(10^{-17}\) 量级辅助计算相差 9.7%。0045 窗口预测在 \(10^{-19}\) 量级，数值抵消阻止用中心差确认其符号。两个 R6 端点在小窗算得正中心差，其中 b20d 的较大半径高阶项已明显。五共败的一侧变好主要来自尚存的一阶下降，中心差给出的二阶收益小得多。小窗对照全用公开端点和场，另计 40 次全阶 LU、.525 CPU 秒，未重跑抛光。<a href="results/landscape/free_window/FREE_WINDOW.csv">两个半径的原目标、中心差和费用</a></p>
+<h3>广域结果和费用</h3>
+<p>八件的 48 个曲率候选全部抬高原 \(\Phi\)。截入盒后，实际位移与选定符号的向量余弦范围 .4853–.99999，48 个实际位移上的原点二次项全部变为正。小量方向变化已经能压过量级弱 \(10^{-8}\) 的负特征值。每物的最佳曲率候选均在半径 6，五共败其原 \(\Phi\) 倍率为 1.00495、1.00006、1.04770、1.06452、1.01940。抛光后曲率臂无一物达到低于直接续跑的 \(\Phi\)。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>R13 共败对象</th>
+<th style="text-align: right;">续跑 NRMSE</th>
+<th style="text-align: right;">曲率 NRMSE</th>
+<th style="text-align: right;">续跑 IoU</th>
+<th style="text-align: right;">曲率 IoU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0007</td>
+<td style="text-align: right;">.57163</td>
+<td style="text-align: right;">.57271</td>
+<td style="text-align: right;">.3792</td>
+<td style="text-align: right;">.3716</td>
+</tr>
+<tr>
+<td>0016</td>
+<td style="text-align: right;">.50750</td>
+<td style="text-align: right;">.50742</td>
+<td style="text-align: right;">.1587</td>
+<td style="text-align: right;">.1627</td>
+</tr>
+<tr>
+<td>0029</td>
+<td style="text-align: right;">.60073</td>
+<td style="text-align: right;">.60118</td>
+<td style="text-align: right;">.4105</td>
+<td style="text-align: right;">.4088</td>
+</tr>
+<tr>
+<td>0037</td>
+<td style="text-align: right;">.68272</td>
+<td style="text-align: right;">.68285</td>
+<td style="text-align: right;">.3288</td>
+<td style="text-align: right;">.3297</td>
+</tr>
+<tr>
+<td>0044</td>
+<td style="text-align: right;">.44621</td>
+<td style="text-align: right;">.44672</td>
+<td style="text-align: right;">.6242</td>
+<td style="text-align: right;">.6342</td>
+</tr>
+</tbody>
+</table></div>
+<p>五共败配对幅度 NRMSE 差为 +.000420，描述性自助区间 \([+.000079,+.000768]\)。四臂的两个已合格端点均保有，六个未合格端点全部仍未过 NRMSE ≤ .15 与 IoU ≥ .70。整理表同时含前景、背景、组件、孔数及真实复端口误差。<a href="results/landscape/score_v1/OUTCOMES.csv">原端点、跳点及抛光输出</a> · <a href="results/landscape/score_v1/PAID_PREFIXES.csv">付费前缀与 Pareto</a></p>
+<p>两单线程进程共 32/32，3583 个原物理候选，批墙钟 33.71 秒，任务 CPU 共 60.71 秒。下表包含准备被加进同一预算的付费量，完整 Hessian 方向臂的诊断四次全解也计入。预算后的原子操作保存且收费。历史父端点不用本轮 CPU 代偿。<a href="results/landscape/v1/PREDICTION_SEAL.json">预测封存与任务明细</a></p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>臂</th>
+<th style="text-align: right;">任务 CPU 中位秒</th>
+<th style="text-align: right;">方向准备 CPU 中位秒</th>
+<th style="text-align: right;">全解 LU 中位</th>
+<th style="text-align: right;">全阶复 RHS 中位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>续跑</td>
+<td style="text-align: right;">2.016</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">2148</td>
+</tr>
+<tr>
+<td>Gauss–Newton</td>
+<td style="text-align: right;">2.023</td>
+<td style="text-align: right;">.031</td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">2616</td>
+</tr>
+<tr>
+<td>随机</td>
+<td style="text-align: right;">2.025</td>
+<td style="text-align: right;">.016</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">2820</td>
+</tr>
+<tr>
+<td>最小曲率</td>
+<td style="text-align: right;">2.017</td>
+<td style="text-align: right;">.141</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">3312</td>
+</tr>
+</tbody>
+</table></div>
+<p>该试验检验每个保存端点最负自由面向量及其最小曲率对照。结果支持原 Maxwell 目标在真实困难离散材料上存在微弱局部非凸，但这项信息没有转化成已测广域合法步的材料恢复。证据范围为给定起点、冻结自由面、投影射线和 2 CPU 秒。</p>
+<h2>复现</h2>
+<p>输入沿用 <a href="evidence_imaging.html#复现">有限局部跃迁的历史输入</a>。以工作区根为当前目录，依次运行以下命令。配置在计算之前落盘，实际落盘时间为 04:45:28，配置里的 04:43 是排定开始时间。</p>
+<pre><code class="language-bash">PY=Gaussian/.venv_nn/bin/python
+ROOT=research/hc_cie_r2
+REPLAY=.artifacts/hc_cie_landscape_replay
+$PY &quot;$ROOT/src/landscape_run.py&quot; --config &quot;$ROOT/configs/landscape_v1.json&quot; --out &quot;$REPLAY/v1&quot; --workers 2
+$PY &quot;$ROOT/src/landscape_probe.py&quot; --sealed &quot;$REPLAY/v1&quot; --out &quot;$REPLAY/free_window&quot;
+$PY &quot;$ROOT/src/landscape_score.py&quot; --sealed &quot;$REPLAY/v1&quot; --out &quot;$REPLAY/score_v1&quot; --figures &quot;$REPLAY/figures&quot;
+</code></pre></main><footer><a href="contents.html">完整目录</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/hc_cie_r2/LANDSCAPE.md">Markdown 原文</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/hc-cie-r2-20261128">数值附件</a></footer></body></html>

@@ -224,3 +224,10 @@ NIE2016 式(15)与 CIE2019 式(16)都使用右侧开方量。2016 首阶段 δ<.
 ## 固定本构迹与移动支撑
 
 共同权重下全维与固定迹在 2688 盒逐项一致。用于 100/1000 盒计时的移动支撑实现还要求公共状态正定、局部更新可逆。比较正定与不定乘子时，先同样消去已知真空，正定方法应取完整正源谱。90 项差异只在已声明的 72 组权重内得到证明；冷启动凸对照在 32 个结构测试上与不定方法逐项相同。详见[原始数据与评阅回应](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/z_alg_optical_inertia/fixed_operator_paper/).
+
+
+## HC-CIE-R2 的三项比较误差
+
+- 外积曲率及其常数余核要求每个源使用同一接收算子。Fresnel 有逐源缺测，使用真实通道掩码；若要形成公共子矩阵，必须重新声明保留了哪些通道。球内的辅助电流在读成实材料后还要重解原 Maxwell，实测未见源独立评分。[源相关端口](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/hc_cie_r2/classical_and_measured.html)
+- 差分信号的 10% 和总散射场的 10% 给出不同的分辨能力。已知参考及“只改变两处”都是公开的额外信息。对同一批对象登记两份观测版本，按改变的支撑和幅度评分，保留后者可容纳其他合法材料的反例。[两种噪声及阵列对照](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/hc_cie_r2/pair_results.html)
+- 完整正演返回和合法候选完成入池的时刻可能不同。只存前一个时间戳时，以后一回调或任务完成时间给保守前缀，同时报告边界处无法确定的候选。成像任务的 CPU、任务墙钟、父端点历史费用和并发队列耗时分别计。[实际前缀与受影响的对象](https://migodam.github.io/b1-probabilistic-maxwell-imaging/research/hc_cie_r2/evidence_imaging.html)

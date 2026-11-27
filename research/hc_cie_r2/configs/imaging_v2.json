@@ -1,0 +1,77 @@
+{
+  "id": "local_block_secant_v2_uphill",
+  "physical_claim": "At surviving wrong physical endpoints, residual-sensitive finite pairs of local material changes can enter a better recovery basin more often than the same action deck ranked by the Born approximation, random pairs, or ordinary continuation.",
+  "historical_exposure": true,
+  "budget_cpu_seconds": 2.0,
+  "proposal_audits": 12,
+  "block_side": 4,
+  "amplitudes": [
+    2.0,
+    5.0
+  ],
+  "seed": 261129,
+  "prefix_cpu_seconds": [
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0
+  ],
+  "arms": [
+    "continue",
+    "restart",
+    "single",
+    "pair_random",
+    "pair_born",
+    "pair_secant",
+    "pair_exact"
+  ],
+  "r13_cases": [
+    "r13_fresh_0007",
+    "r13_fresh_0016",
+    "r13_fresh_0029",
+    "r13_fresh_0037",
+    "r13_fresh_0044",
+    "r13_fresh_0017",
+    "r13_fresh_0026",
+    "r13_fresh_0045"
+  ],
+  "r6_cases": [
+    "obs_b20d5a55677d4eca",
+    "obs_7b8d5df517f1497d"
+  ],
+  "r13_endpoints": [
+    "cie",
+    "dual_cie",
+    "a_plus_arc_r7",
+    "g19"
+  ],
+  "r6_endpoints": [
+    "cie_single",
+    "cie_dual",
+    "a_material",
+    "global_dual"
+  ],
+  "processing": "Retain the audited endpoint in the pool, but start the common full-Maxwell L-BFGS-B from the best audited nonzero jump even if its Phi momentarily increases. Score all arms by minimum original Phi among paid audits. Exact-pair arm reranks the 48 best additive finite-signature pairs with the exact 32-cell two-block resolvent and retains the same 12 full audits.",
+  "folds": [
+    [
+      "r13_fresh_0007",
+      "r13_fresh_0037",
+      "r13_fresh_0017",
+      "obs_b20d5a55677d4eca"
+    ],
+    [
+      "r13_fresh_0016",
+      "r13_fresh_0044",
+      "r13_fresh_0026",
+      "obs_7b8d5df517f1497d"
+    ],
+    [
+      "r13_fresh_0029",
+      "r13_fresh_0045"
+    ]
+  ],
+  "allow_uphill_seed": true,
+  "exact_shortlist": 48,
+  "repeat_decision": "V1 public traces 0007 and 0016 had 0/12 descending pair-secants and a no-jump selector. Force audited jump seeds on all proposal arms to test crossing. Add same-candidate-count exact reranking to test omitted mutual scattering."
+}

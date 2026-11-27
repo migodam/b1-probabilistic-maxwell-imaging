@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>半环实权前端的短程材料检验 · HC-CIE-R2</title><link rel="stylesheet" href="study.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
+<body><header><a href="../">Maxwell 逆散射研究</a><span>HC-CIE-R2</span><nav><a href="index.html">研究结论</a> <a href="theory.html">证明</a> <a href="results.html">逐案证据</a> <a href="reproduce.html">复现</a> <a href="handoff.html">交接</a></nav></header>
+<main><h1>半环实权前端的短程材料检验</h1>
+<p><strong>实权方程在 R13 半环有可测信号，但这次前端没有改善短校正后的材料。</strong> 四件半环从同一公开初值起跑，在只保留互易约束的对照上增加实权，直接读回的材料 NRMSE 两件小幅降低、两件升高。运行相同六步物理校正后，四件的 NRMSE 均升高。沿同一方向精确保留二次项，所得步长与仿射步长的最大差只有 0.00022，材料结果几乎相同。两件同网格全环的实权和互易行都低于冻结尺度门槛。</p>
+<h2>冻结观测和共同输入</h2>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>阵列</th>
+<th>观测 ID</th>
+<th>历史分层用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>半环，12 源×24 收</td>
+<td><code>r13_fresh_0000</code></td>
+<td>原实权 0.0157% 的谱和物理状态见证，历史 CIE corrected 合格</td>
+</tr>
+<tr>
+<td>半环，12 源×24 收</td>
+<td><code>r13_fresh_0002</code></td>
+<td>剩余同网格同源数半环的首个历史 CIE corrected 失败</td>
+</tr>
+<tr>
+<td>半环，12 源×24 收</td>
+<td><code>r13_fresh_0005</code></td>
+<td>剩余同网格同源数半环的首个历史 CIE corrected 合格</td>
+</tr>
+<tr>
+<td>半环，12 源×24 收</td>
+<td><code>r13_fresh_0016</code></td>
+<td>原四个方法共败中已登记的典型半环</td>
+</tr>
+<tr>
+<td>全环，12 源×48 收</td>
+<td><code>r13_fresh_0001</code></td>
+<td>原全环谱见证</td>
+</tr>
+<tr>
+<td>全环，12 源×48 收</td>
+<td><code>r13_fresh_0008</code></td>
+<td>剩余同网格同源数全环的首个历史 CIE corrected 合格</td>
+</tr>
+</tbody>
+</table></div>
+<p>六件都是已暴露的原仿真材料。历史分层只用于预选案例，新反演不使用历史端点的材料或残差。新候选只读公开 <code>G,E0,S,Y,sigma,delta,m_init</code>，从逐元素相同的均匀 \(\chi=0.1\) 完整正演起步。材料预测全保存后再单独读原 24² 真值。旧 0.0157% 是从已数据相容 CIE 锚点计算的整段余量，本节在空气背景附近的公共初值逐步构造新状态。<a href="configs/real_frontend.json">冻结配置</a> · <a href="real_weights.html">原实权谱及物理状态</a></p>
+<h2>一步前端与噪声资格</h2>
+<p>先用强接收模的原噪声读数把初场 \(J_{\rm init}\) 作截断最小范数数据校正 \(J_{\rm bp}\)。强阈值为 \(\sigma(S)&gt;0.01\sigma_1(S)\)，半环保留 9/24、全环保留 13/48。弱接收分量保持初始场的预测，不硬拟合放大后的原噪声。所有后续电流变化都取原 \(S\) 的数值全接收零空间。最终材料正演始终对原完整 \(S,Y,\delta\) 审计，因此未硬锁的弱通道仍受检验。每种阵列的 \(G,S\) 与该阵原谱见证逐元素相同，沿用相同最弱单位实权 \(w\)。</p>
+<p>只互易臂在 \(J_{\rm bp}\) 上求截断最小范数线性修正，得到 \(J_r\)。新增实权臂在所保留互易行的核内沿实线性算子求最小范数方向。对实权</p>
+<p>\[
+F_w(J)=\operatorname{Im}_H\{J^*D_w(B+GJ)\},\quad
+F_w(J_r+\alpha H)=F_w(J_r)+\alpha D F_w(J_r)[H]+\alpha^2\operatorname{Im}_H(H^*D_w GH).
+\]</p>
+<p>仿射臂取 \(\alpha=1\)。精确保留项的臂在同一个方向上比较 \(\alpha\in[0,1.5]\) 内四次平方范数的临界点和边界。所有源使用 Hermitian Frobenius 等距实坐标，互易使用复上三角的实化。两个行算子的截断下限均为 \(\max(0.01\sigma_1,10^{-8}\|B\|_F)\)，实权先扣除保留的互易行空间再分解。</p>
+<p>噪声资格版本把原独立复噪声的 \(\sigma/\sqrt2\) 实标准差，通过强接收伪逆、互易校正及实权导数传播到每个新增行模态。保留仅达到 1% 家族 Bonferroni 正态阈值的偏置模态。24 次从这一已知噪声模型产生的纯噪声扰动，核算各例最大的二次噪声响应只占一次响应中位数的 0.9%–4.1%。这个尺度诊断围绕当前 \(J_r\)，原试验是否进入噪声球则完全由重算的物理预测判定。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>观测尾号</th>
+<th style="text-align: right;">保留的互易实行</th>
+<th style="text-align: right;">实权尺度通过／再过噪声筛</th>
+<th style="text-align: right;">实权最大奇异值</th>
+<th style="text-align: right;">实权二次项／一次项</th>
+<th style="text-align: right;">精确步长</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">44／11</td>
+<td style="text-align: right;">0.07909</td>
+<td style="text-align: right;">0.0597%</td>
+<td style="text-align: right;">1.000112</td>
+</tr>
+<tr>
+<td>0002</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">44／14</td>
+<td style="text-align: right;">0.07370</td>
+<td style="text-align: right;">0.0930%</td>
+<td style="text-align: right;">1.000114</td>
+</tr>
+<tr>
+<td>0005</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">47／7</td>
+<td style="text-align: right;">0.06589</td>
+<td style="text-align: right;">0.2548%</td>
+<td style="text-align: right;">1.000216</td>
+</tr>
+<tr>
+<td>0016</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">44／20</td>
+<td style="text-align: right;">0.06812</td>
+<td style="text-align: right;">0.0736%</td>
+<td style="text-align: right;">0.999985</td>
+</tr>
+<tr>
+<td>0001</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0／0</td>
+<td style="text-align: right;">\(1.61\times10^{-12}\)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">无步</td>
+</tr>
+<tr>
+<td>0008</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0／0</td>
+<td style="text-align: right;">\(1.61\times10^{-12}\)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">无步</td>
+</tr>
+</tbody>
+</table></div>
+<p>半环实权的最大奇异值占 \(\|B\|_F\) 的 1.17%–1.40%，加入约束后加权方程范数降低 98% 以上。二次展开直接重算的最大绝对差为 \(1.65\times10^{-16}\)。这些实线性行作用于复电流坐标，未消去相同数量的材料参数，也未闭合逐像素实本构。<a href="results/real_frontend/physical_receipt.json">逐例谱、噪声尺度和代数复核</a></p>
+<h2>实盒读回与完整非线性复核</h2>
+<p>分别对初始、BP、互易、仿射、精确余项、噪声资格六个臂，在完整 \(G\) 上按局部实最小二乘读回材料并夹入 [0.02,20]。每个读回立即用原 VIE 重分解并预测完整端口。然后从各臂读回用相同盒约束 L-BFGS-B，最多六个接受步，保留已完成原物理评价且端口残差最小的点。该短校正只使用原带噪值和完整正演／伴随，无真值目标。指标按原 R13 幅度 NRMSE 和 \(\chi&gt;1\) IoU，另外保留全图区间、内部和背景误差。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>半环尾号</th>
+<th style="text-align: right;">只互易 NRMSE，直接／短校正</th>
+<th style="text-align: right;">实权保留二次项，直接／短校正</th>
+<th style="text-align: right;">只互易端口残差 / δ，短校正</th>
+<th style="text-align: right;">保留二次项端口残差 / δ，短校正</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td style="text-align: right;">0.24708／0.24590</td>
+<td style="text-align: right;">0.25058／0.24867</td>
+<td style="text-align: right;">102.93</td>
+<td style="text-align: right;">104.35</td>
+</tr>
+<tr>
+<td>0002</td>
+<td style="text-align: right;">0.48990／0.46434</td>
+<td style="text-align: right;">0.48736／0.46481</td>
+<td style="text-align: right;">71.15</td>
+<td style="text-align: right;">66.85</td>
+</tr>
+<tr>
+<td>0005</td>
+<td style="text-align: right;">0.57555／0.56811</td>
+<td style="text-align: right;">0.57504／0.62264</td>
+<td style="text-align: right;">40.96</td>
+<td style="text-align: right;">46.79</td>
+</tr>
+<tr>
+<td>0016</td>
+<td style="text-align: right;">0.52312／0.47046</td>
+<td style="text-align: right;">0.52313／0.47198</td>
+<td style="text-align: right;">55.67</td>
+<td style="text-align: right;">55.72</td>
+</tr>
+</tbody>
+</table></div>
+<p>相对只互易，精确实权臂的直接 NRMSE 差中位数为 −0.000253，短校正后变为 +0.002139，四件均变差。仅用过噪声资格的实权，短校正差中位数 +0.003223，同样四件均变差。直接读回的四个实权 NRMSE 也全部高于单独 BP。<code>0002</code> 的短校正端口误差因加入实权降低 4.31δ，材料 NRMSE 却略增。<code>0005</code> 的端口和材料一起变差，IoU 从 0.3273 降到 0.1983。两件全环的互易及加权臂与 BP 给出同样数组。全部精确实权端点均在原噪声球之外，因此本轮结论仅针对这个从共同公开初值出发的低成本前端及短校正。小二次余量能解释仿射步为何接近精确步，这个解释本身并未带来材料增益。<a href="results/real_frontend/scores.csv">原图数组和逐例分数</a></p>
+<h2>复现与费用</h2>
+<pre><code class="language-bash">Gaussian/.venv_nn/bin/python -B research/hc_cie_r2/src/real_frontend.py generate
+Gaussian/.venv_nn/bin/python -B research/hc_cie_r2/src/real_frontend.py score
+</code></pre>
+<p>单线程 CPU、复双精度。36 臂的端口生成及校正，共墙钟 3.36 秒、CPU 3.29 秒。初始物理场、直接实盒审计分别为 72 和 432 个正演 RHS，短校正为 3708 个正演与 3708 个伴随 RHS。包括每观测接收分解、两个实线性行谱、纯噪声校准、二次步和输出。只采用原已存最弱权向量，其先前谱构造费用见原实权研究。独立评分只在全部预测保存后执行。<a href="results/real_frontend/physical_receipt.json">逐臂实际费用</a></p></main><footer><a href="contents.html">完整目录</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/hc_cie_r2/REAL_FRONTEND.md">Markdown 原文</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/hc-cie-r2-20261128">数值附件</a></footer></body></html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>复现、输入和逐步运行 · HC-CIE-R2</title><link rel="stylesheet" href="study.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
+<body><header><a href="../">Maxwell 逆散射研究</a><span>HC-CIE-R2</span><nav><a href="index.html">研究结论</a> <a href="theory.html">证明</a> <a href="results.html">逐案证据</a> <a href="reproduce.html" aria-current="page">复现</a> <a href="handoff.html">交接</a></nav></header>
+<main><h1>复现、输入和逐步运行</h1>
+<p><a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/tree/main/research/hc_cie_r2">源码与原始指标</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/hc-cie-r2-20261128/HC_CIE_R2_Replay_Inputs.zip">历史输入附件，90,741,531 字节</a> · <a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/download/hc-cie-r2-20261128/HC_CIE_R2_States.zip">逐候选和暗电流状态，124,526,330 字节</a></p>
+<p><strong>仅复查结果</strong>可直接读仓库内的 CSV、JSON、NPZ。第二个附件含 340 个有限跃迁运行和 32 个动力学运行的全部材料候选，另有 21 份首次谱实验的扰动场及余项。解压时保留目录，候选出现在原 <code>results/imaging/</code>、<code>results/landscape/</code>，扰动场在 <code>results/spectra/field_states/</code>。<a href="results/spectra/array_index.json">数组索引</a></p>
+<p><strong>重算</strong>使用带历史研究代码的主仓新克隆。若仅从零运行某项，通常只须第一个输入附件。有些生成命令默认写回复算克隆的 <code>results/</code>，用新克隆可与已发表数组独立比较。按实际时间选根时，机器速度和系统调度会改变当时入池的候选。从已保存的前缀复算有相同的输入。</p>
+<pre><code class="language-bash">git clone https://github.com/migodam/b1-probabilistic-maxwell-imaging.git
+cd b1-probabilistic-maxwell-imaging
+unzip -n /path/to/HC_CIE_R2_Replay_Inputs.zip
+unzip -n /path/to/HC_CIE_R2_States.zip
+export HC_CIE_R2_INPUT_ROOT=&quot;$PWD&quot; MAXWELL_KILLTEST_WORKSPACE=&quot;$PWD&quot;
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1 BLIS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
+R=research/hc_cie_r2
+</code></pre>
+<p>本机环境为 macOS 26.6.2 arm64、Python 3.13.13、NumPy 2.5.3、SciPy 1.18.1、matplotlib 3.11.1、SymPy 1.14.0、mpmath 1.3.0、PyTorch 2.14.0，另使用 <code>threadpoolctl</code>。CPU 复双精度运行。网页重建另用 Python-Markdown。历史物理依赖及数据授权另列。<a href="inputs.html">输入说明</a></p>
+<h2>三项决定性结果</h2>
+<pre><code class="language-bash">python &quot;$R/src/toy_replay.py&quot; --source &quot;$R/replay_inputs/toy&quot; --out hc_replay/toy
+python &quot;$R/src/toy_certificates.py&quot; --source &quot;$R/replay_inputs/toy&quot; --out hc_replay/toy
+python &quot;$R/src/toy_material_interval.py&quot; --source &quot;$R/replay_inputs/toy&quot; --out hc_replay/toy
+python &quot;$R/src/toy_feedback.py&quot; --out hc_replay/toy
+python &quot;$R/src/spectra.py&quot; --workspace &quot;$PWD&quot; --states-output hc_replay/fields
+python &quot;$R/src/spectra_feasible.py&quot; --workspace &quot;$PWD&quot;
+python &quot;$R/src/verify_pair_bounds.py&quot;
+</code></pre>
+<p>依次得到小模型坏极小与消融、真实算子的完整谱与球内材料复核、0017/0044 两件全部位置对的保守下界。数组索引可回查实际噪声、材料箱、父端点和实现版本。</p>
+<h2>相同历史端点与真实物理审计</h2>
+<pre><code class="language-bash">python &quot;$R/src/imaging_run.py&quot; --config &quot;$R/configs/imaging_v2.json&quot; --out hc_replay/imaging --workers 2
+python &quot;$R/src/imaging_score.py&quot; --sealed hc_replay/imaging --out hc_replay/score --figures hc_replay/figures
+python &quot;$R/src/landscape_run.py&quot; --config &quot;$R/configs/landscape_v1.json&quot; --out hc_replay/landscape --workers 2
+python &quot;$R/src/landscape_score.py&quot; --sealed hc_replay/landscape --out hc_replay/landscape_scores --figures hc_replay/figures
+python &quot;$R/src/landscape_probe.py&quot; --sealed hc_replay/landscape --out hc_replay/probe
+</code></pre>
+<p>针对已发表的存档，额外结构评分与墙钟重放默认读取现有封存及标签，分别为 <code>structure_scores.py</code> 和 <code>wall_prefixes.py</code>，需要第二个状态附件。逐臂前景、背景、原端口、材料全图、活动盒、不同起点及截止规则见<a href="evidence_imaging.html">有限跃迁</a>与<a href="landscape.html">动力学</a>。零/普通初值、BP、已知支撑和成熟端点只在相应实验内配对。二维前端可单独重算。</p>
+<pre><code class="language-bash">python &quot;$R/src/real_weights.py&quot; --workspace &quot;$PWD&quot;
+python &quot;$R/src/real_frontend.py&quot; generate --workspace &quot;$PWD&quot;
+python &quot;$R/src/real_frontend.py&quot; score --workspace &quot;$PWD&quot;
+python &quot;$R/src/radiation.py&quot; &quot;$PWD&quot;
+python &quot;$R/src/noise_rank.py&quot; --workspace &quot;$PWD&quot;
+</code></pre>
+<h2>已知背景的条件读出及独立网格</h2>
+<pre><code class="language-bash">python &quot;$R/src/interaction.py&quot; generate
+python &quot;$R/src/interaction.py&quot; solve
+python &quot;$R/src/interaction.py&quot; score
+python &quot;$R/src/support.py&quot;
+python &quot;$R/src/model_gap.py&quot; all --workspace &quot;$PWD&quot;
+python &quot;$R/src/cross_changes.py&quot; &quot;$PWD&quot;
+python &quot;$R/src/paired_change_stats.py&quot;
+python &quot;$R/src/change_figures.py&quot;
+python &quot;$R/src/model_gap_figures.py&quot;
+</code></pre>
+<p><code>interaction.py</code> 把 24 个历史 CIE 材料当作公开参考，只对新改变评分。<code>support.py</code> 另做历史端点的支持数下界、全对排除和监测单格/闭式读出。<code>cross_changes.py</code> 使用前一步 <code>model_gap.py</code> 产生的细网参考端口与粗网公开数组。设计和种子在 <code>configs/</code>，已发表的新观测按对象与几何登记。<a href="algorithm.html">算法</a> · <a href="results/interaction/paired_object_statistics.json">按父材料配对</a></p>
+<h2>真三维与实测</h2>
+<pre><code class="language-bash">python &quot;$R/src/vector_change.py&quot; --workspace &quot;$PWD&quot;
+python &quot;$R/src/vector_change_subspace.py&quot; --workspace &quot;$PWD&quot;
+python &quot;$R/src/vector_change_figures.py&quot;
+python &quot;$R/src/spectra_physical_limits.py&quot; --workspace &quot;$PWD&quot;
+</code></pre>
+<p>监测沿用原 TensorDDA 的三分量和两个极化。独立搜索的输入、真支撑对照与后评分的入口见<a href="vector_change.html">三维实验</a>。外部 Fresnel 13 源分割需先从原作者授权渠道取得 <code>FoamTwinDielTM.exp</code>，设置 <code>FRESNEL_2005_DIR</code>，按<a href="inputs.html">原件准备</a>生成读数。V2 是原尺度主合同，V1 保留作目标尺度对照。</p>
+<pre><code class="language-bash">python &quot;$R/src/classical_run.py&quot; --config &quot;$R/configs/classical_v2.json&quot; --out hc_replay/classical --workers 2
+python &quot;$R/src/classical_score.py&quot; --sealed hc_replay/classical --out hc_replay/classical_scores --figures hc_replay/figures
+</code></pre>
+<p>实测公布允许共享的派生预测、掩码及评分。平铺输入附件完成后，在独立目录实算验证了历史观测、两种旧母模型、三维端口、数值小模型及区间证书。<a href="inputs.html">已执行的平铺复算范围</a></p></main><footer><a href="contents.html">完整目录</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/hc_cie_r2/REPRODUCE.md">Markdown 原文</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/hc-cie-r2-20261128">数值附件</a></footer></body></html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>计算费用及比较边界 · HC-CIE-R2</title><link rel="stylesheet" href="study.css">
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head>
+<body><header><a href="../">Maxwell 逆散射研究</a><span>HC-CIE-R2</span><nav><a href="index.html">研究结论</a> <a href="theory.html">证明</a> <a href="results.html">逐案证据</a> <a href="reproduce.html">复现</a> <a href="handoff.html">交接</a></nav></header>
+<main><h1>计算费用及比较边界</h1>
+<p>本轮数值计算主要在 Mac 的 Apple M4 上完成，二维稠密核和三维复双精度 dyadic 算子均用 CPU。成像队列使用两个各单线程的工作进程，其余主要物理账本为单线程。没有计入任何 RTX 4060 加速。父端点由先前研究产生，须另加历史费用才能形成从零开始的成本。二维 576、1024、3600 阶 LU 和三维 Krylov 多右端按各自规模记。<a href="results/imaging/score_v2/HISTORICAL_ENDPOINT_COSTS.csv">父端点费用</a></p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>新增工作</th>
+<th style="text-align: right;">进程 CPU 秒</th>
+<th style="text-align: right;">实际墙钟秒</th>
+<th>计费范围和原始记录</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>圆盘数值研究；直接材料区间证书</td>
+<td style="text-align: right;">0.69；0.46</td>
+<td style="text-align: right;">0.88；0.63</td>
+<td>数值回放和两合同区间复核分别记。其余有理证明、符号代数及作图没有统一计时。<a href="results/toy/replay_environment.json">小模型环境</a> · <a href="results/toy/material_interval.json">区间证书</a></td>
+</tr>
+<tr>
+<td>21 观测的谱与物理扰动</td>
+<td style="text-align: right;">100.51</td>
+<td style="text-align: right;">132.35</td>
+<td>39 次独立曲率分解已含于总数。峰值 RSS 829,390,848 字节；462 次完整二维正演、5,016 个复 RHS。<a href="results/spectra/receipt.json">逐项账本</a></td>
+</tr>
+<tr>
+<td>球内随访；三维与实测历史端口界</td>
+<td style="text-align: right;">6.61；20.79</td>
+<td style="text-align: right;">11.42；39.58</td>
+<td>前者含建立球内锚点和物理审计，后者含三维端点重算及同实测掩码上的界。<a href="results/spectra/feasible_followup.json">随访</a> · <a href="results/spectra/physical_limits.json">端口和迭代数</a></td>
+</tr>
+<tr>
+<td>四个实权算例；六件前端 36 臂</td>
+<td style="text-align: right;">8.37；3.29</td>
+<td style="text-align: right;">10.10；3.36</td>
+<td>实权峰值 RSS 510,328,832 字节。前端校正 3,708 正演与 3,708 伴随 RHS，初始场与材料审计另计。辐射分解四条件另做四次 LU/44 RHS。<a href="results/real_weights/receipt.json">实权</a> · <a href="results/real_frontend/physical_receipt.json">前端</a></td>
+</tr>
+<tr>
+<td>有限跃迁第一版 60 臂；第二版 280 臂</td>
+<td style="text-align: right;">102.36；546.76，单任务和</td>
+<td style="text-align: right;">61.32；461.27，整批</td>
+<td>包括 5,896 和 27,326 个原物理候选。第二版离线评分另有 22.04 CPU 秒。预算耗尽才完成的原子操作照付。<a href="evidence_imaging.html">前缀与 Pareto</a></td>
+</tr>
+<tr>
+<td>材料 Hessian 及等位移比较，32 臂</td>
+<td style="text-align: right;">60.71，单任务和</td>
+<td style="text-align: right;">33.71，整批</td>
+<td>3,583 个物理候选；追加的 40 次小步正演支付 40 LU、约 0.53 CPU 秒。包括方向建立成本。<a href="landscape.html">方向和累计计算量</a></td>
+</tr>
+<tr>
+<td>八端点全对枚举；0017/0044 独立保守复算</td>
+<td style="text-align: right;">4.74；6.77</td>
+<td style="text-align: right;">10.06；6.96</td>
+<td>每个端点 165,600 对。前者 8 LU/4,980 RHS；后者含参考正演、三列端口框架与计算不确定性。<a href="results/support/all_pairs.csv">枚举</a> · <a href="results/support/all_pairs_verified.json">误差界</a></td>
+</tr>
+<tr>
+<td>二维匹配监测生成；背景准备；三种方法</td>
+<td style="text-align: right;">1.34；1.39；18.96</td>
+<td style="text-align: right;">2.72；2.65；34.04，各段计</td>
+<td>生成 72 LU/774 RHS，准备 24 LU/14,994 RHS。432 次搜索、432 次完整审计、1,296 组支持拟合。另有 288 次单格/闭式读出和完整审计，CPU 5.04，墙钟和 10.87 秒，另一次共用背景重建未单独计时。<a href="results/interaction/generation_cost.csv">生成</a> · <a href="results/interaction/setup_cost.csv">准备</a> · <a href="results/interaction/predictions.csv">求解</a></td>
+</tr>
+<tr>
+<td>跨网格差分监测，背景准备与 288 次搜索</td>
+<td style="text-align: right;">3.48；15.58</td>
+<td style="text-align: right;">3.55；15.92，各段计</td>
+<td>准备 24 LU/25,296 RHS。搜索含最终 288 LU/2,880 RHS 和 4,595 次内层函数评价。细网改变生成在两个阵列间共享，按材料与变化关系只计一次。<a href="results/cross_changes/reference_model_gap.csv">生成记录</a> · <a href="results/cross_changes/predictions.csv">预测</a></td>
+</tr>
+<tr>
+<td>SRAP 细粗误差分解；48 个短物理拟合</td>
+<td style="text-align: right;">12.67；52.50</td>
+<td style="text-align: right;">13.10；55.90，后者为逐臂和</td>
+<td>细网原材料及铺回材料 372 RHS。48 臂拟合及端点验证有 7,400 正演、6,920 伴随 RHS。历史 Dual 验证另计。<a href="results/model_gap/gaps.json">数据</a> · <a href="results/model_gap/solve_trace.json">运行</a></td>
+</tr>
+<tr>
+<td>经典对象与 Fresnel，V1；原尺度 V2</td>
+<td style="text-align: right;">22.51；22.09，单任务和</td>
+<td style="text-align: right;">V2 整批 13.81</td>
+<td>V1、V2 分别 122、133 次不同维数的全 LU。V2 封存后另做 7 个 3600 阶全 LU/35 RHS 评留出。<a href="classical_and_measured.html">费用和端口</a></td>
+</tr>
+<tr>
+<td>三维 12³ 全矢量改变；两侧子空间追加</td>
+<td style="text-align: right;">65.41；29.87</td>
+<td style="text-align: right;">66.93；30.46</td>
+<td>首批准备 256 正演和 256 接收伴随 RHS。未知位置字典另 1,302 物理 RHS 及 2,605 次六维响应。两侧追加含准备及 770 正演 RHS。显存不适用于这些 CPU 作业。<a href="vector_change.html">三维账本与独立盲重放</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>第二版端点计算先在同机按 2 CPU 秒追加预算选择，再回放 0.25、0.5、1、1.5、2 秒任务墙钟。原正演结束与其后写入候选之间的时间未逐次记录。用下一次回调或任务完成时间给出保守可用前缀，并保留较早端点作另一界。两种口径和允许逐任务在其间变化的结果均未增加材料恢复数。监测的 0.039/0.110 秒是复用已知背景时的在线中位时间，跨两批负载。单次使用应加背景准备和取得准确参考的成本。<a href="figures/wall_prefixes.png">墙钟图</a> · <a href="evidence_imaging.html">选根时间的上下界</a></p>
+<p>求互易方程在测量噪声传播后的可分辨秩另付 1.40 CPU 秒、1.41 墙钟秒，含 5 个公开参考全解、54 正演 RHS、10 个接收配置的协方差与白化谱。<a href="results/spectra/noise_rank.json">计数与实际成本</a></p>
+<p>三维数据另分到纯公开观测与离线标签目录，以独立进程从头做 40 次未知位置重放并保存全部预测。最终在线 CPU 54.19 秒、墙钟 55.21 秒；该臂计入 128 个背景和 256 个接收伴随 RHS、另有 2,072 个局部响应和审计 RHS。初版隔离重放另耗 52.37 墙钟秒。两轮均与首批物理结果相符。<a href="vector_change.html">盲重放和封存结果</a></p>
+<p>两次成像启动错误和一次跨网格生成字段错误都记为失败，CPU 与部分峰值内存无法追溯。独立研究评议两次的墙钟约 962.6 与 83.9 秒，前次 CLI 超时，后次完成；没有模型费用账单。绘图、打包、公开资料读取未按实验臂逐项计时。不同来源和并发阶段没有可解释的统一机时总和。<a href="research_log.html">运行记录</a></p></main><footer><a href="contents.html">完整目录</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/blob/main/research/hc_cie_r2/COST.md">Markdown 原文</a>
+<a href="https://github.com/migodam/b1-probabilistic-maxwell-imaging/releases/tag/hc-cie-r2-20261128">数值附件</a></footer></body></html>

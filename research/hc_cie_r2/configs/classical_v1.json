@@ -1,0 +1,14 @@
+{
+  "id": "external_ports_two_pixel_v1",
+  "observation_ids": [
+    "austria_eps4_400MHz", "austria_eps3p5_600MHz",
+    "austria_eps3p5_400MHz_limited180", "FoamTwinDielTM_8GHz_13tx"
+  ],
+  "parent_methods": ["paper_nie", "cie_dual"],
+  "parent_suffix": "_30_light",
+  "arms": ["finite_two_pixels", "continue"],
+  "budget_cpu_s": {"synthetic": 1.0, "measured": 4.0},
+  "amplitudes": [0.5, 1.5, 3.0],
+  "material_box": [0.0, 20.0],
+  "selection": "Use the frozen public endpoints and observation-specific physical objective. The two cells with greatest projected gradient absolute magnitude define positive/negative material changes as legal descent at the endpoint. Score both individual cells and the two together at each fixed amplitude with exact low-rank resolvent. Dedupe actual box-clipped materials. Audit the best as proposed by the exact public objective with a new full-wave solve. In the continue arm use the identical original objective and L-BFGS-B. Each selects its then-available original Phi minimum, including the starting material. Preserve every audited trial and actual CPU checkout."
+}

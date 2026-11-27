@@ -1,3 +1,7 @@
+## 高对比度逆散射的结构消元与材料变化
+
+[中文图文报告](hc_cie_r2/index.html) · [数学推导](hc_cie_r2/THEORY.md) · [数值结果](hc_cie_r2/RESULTS.md) · [交接](hc_cie_r2/CHAT_HANDOFF.md)
+
 <!-- Z_ALG_XUDONG_CIE_20261124 -->
 ## Maxwell 电流守恒与材料歧义
 
